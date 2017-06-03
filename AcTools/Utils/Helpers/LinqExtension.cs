@@ -578,14 +578,16 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
-        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
+        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] params T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
+            if (additionalItems == null) return source;
             return source.Where(x => !additionalItems.Contains(x));
         }
 
         [Pure]
-        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, IEnumerable<T> additionalItems) {
+        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
+            if (additionalItems == null) return source;
             var list = additionalItems.ToIReadOnlyListIfItIsNot();
             return source.Where(x => !list.Contains(x));
         }
@@ -597,7 +599,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
-        public static int Count<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
+        public static int Count<T>([NotNull] this IEnumerable<T> source, T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Count(additionalItems.Contains);
         }

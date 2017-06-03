@@ -344,7 +344,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private readonly ISaveHelper _saveable;
-        
+
         public class MissingShowroomHelper : IMissingShowroomHelper {
             public Task OfferToInstall(string showroomName, string showroomId, string informationUrl) {
                 if (ShowMessage(string.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
@@ -352,7 +352,7 @@ namespace AcManager.Pages.Dialogs {
                 return InstallShowroom(showroomName, showroomId);
             }
         }
-        
+
         private Task ShowroomMessageInstance([Localizable(false)] string showroomName, [Localizable(false)] string showroomId, [Localizable(false)] string informationUrl) {
             if (ShowMessage(string.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
                     AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
@@ -659,7 +659,7 @@ namespace AcManager.Pages.Dialogs {
                                     Close();
                                     SettingsHolder.CustomShowroom.CustomShowroomPreviews = true;
                                     _toUpdate.Run(UpdatePreviewMode.Options);
-                                }).ListenOnWeak(this, nameof(CanBeSaved)), 
+                                }).ListenOnWeak(this, nameof(CanBeSaved)),
                                 toolTip: "It’s faster, more reliable and has some additional effects such as SSLR or PCSS"),
                         CloseButton
                     };
@@ -683,7 +683,7 @@ namespace AcManager.Pages.Dialogs {
                 case Phase.Error:
                     Resize(null, null, false);
                     ErrorMessage = (whatsGoingOn?.GetDescription() ?? errorMessage)?.ToSentence();
-                    if (whatsGoingOn?.Fix != null) {
+                    if (whatsGoingOn?.Solution != null) {
                         Buttons = new[] {
                             this.CreateFixItButton(whatsGoingOn.Solution),
                             OkButton
@@ -741,7 +741,7 @@ namespace AcManager.Pages.Dialogs {
                 }, this, cancellation);
                 if (cancellation.IsCancellationRequested) return;
             } catch (ProcessExitedException e) when (applyImmediately) {
-                Errors.Add(new UpdatePreviewError(toUpdate, e.Message, AcLogHelper.TryToDetermineWhatsGoingOn())); 
+                Errors.Add(new UpdatePreviewError(toUpdate, e.Message, AcLogHelper.TryToDetermineWhatsGoingOn()));
                 return;
             }
 
@@ -833,7 +833,7 @@ namespace AcManager.Pages.Dialogs {
                 if (_toUpdate.Count > 1 && !ApplyImmediately) {
                     throw new Exception("Can’t apply previews later if there are more than one car");
                 }
-                
+
                 for (var i = 0; i < _toUpdate.Count; i++) {
                     var toUpdate = _toUpdate[i];
                     SeriesProgress = new AsyncProgressEntry(toUpdate.Car.DisplayName, i, _toUpdate.Count);

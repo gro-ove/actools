@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private static bool _active;
 
         public static void Initialize() {
-            _previous = DateTime.Now;
+            //_previous = DateTime.Now;
         }
 
         public static NonfatalError Instance { get; } = new NonfatalError();

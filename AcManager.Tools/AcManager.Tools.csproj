@@ -277,6 +277,7 @@
     <Compile Include="Helpers\Loaders\FlexibleLoader.cs" />
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
+    <Compile Include="Helpers\Loaders\MediaFireLoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\ServerSavedDriver.cs" />
+    <Compile Include="Managers\TrueTypeFontsManager.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
@@ -322,6 +324,7 @@
     <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Stats.cs" />
     <Compile Include="Objects\TrackObjectBase.Kunos.cs" />
+    <Compile Include="Objects\TrueTypeFontObject.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />
     <Compile Include="Objects\UserChampionshipRound.cs" />
@@ -373,6 +376,7 @@
     <Compile Include="Profile\OverallStats.cs" />
     <Compile Include="Profile\StorageObjectExtension.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
+    <Compile Include="SemiGui\DataUpdateWarning.cs" />
     <Compile Include="SemiGui\GameStartedArgs.cs" />
     <Compile Include="SemiGui\IBookingUi.cs" />
     <Compile Include="Helpers\SidekickHelper.cs" />

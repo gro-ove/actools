@@ -53,6 +53,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private string GetTrimmedPath(double width) {
+            if (Text == null) return "";
+
             width -= 20d;
 
             var fontStyle = FontStyle;

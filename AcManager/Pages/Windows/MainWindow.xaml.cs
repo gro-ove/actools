@@ -55,9 +55,7 @@ using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
-    public partial class MainWindow : IFancyBackgroundListener, IPluginsSusanin {
-        public static bool OptionLiteModeSupported = false;
-
+    public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator {
         private readonly bool _cancelled;
         private readonly string _testGameDialog = null;
 
@@ -68,10 +66,6 @@ namespace AcManager.Pages.Windows {
             }
 
             _cancelled = false;
-
-            if (AppArguments.Values.Any()) {
-                ProcessArguments();
-            }
 
             if (_testGameDialog != null) {
                 Logging.Write("Testing mode");
@@ -126,8 +120,6 @@ namespace AcManager.Pages.Windows {
                 Toast.Show("Don’t forget to install plugins!", ""); // TODO?
             }
 
-            EntryPoint.HandleSecondInstanceMessages(this, HandleMessagesAsync);
-
             _defaultOnlineGroupCount = OnlineGroup.FixedLinks.Count;
 
             if (FileBasedOnlineSources.IsInitialized()) {
@@ -144,7 +136,7 @@ namespace AcManager.Pages.Windows {
                 LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
             }
 
-            ContentInstallationManager.PluginsSusanin = this;
+            ContentInstallationManager.PluginsNavigator = this;
 
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
@@ -300,18 +292,6 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private async void ProcessArguments() {
-            if (OptionLiteModeSupported) {
-                Visibility = Visibility.Hidden;
-            }
-
-            if (await ArgumentsHandler.ProcessArguments(AppArguments.Values) && OptionLiteModeSupported) {
-                Close();
-            } else {
-                Visibility = Visibility.Visible;
-            }
-        }
-
         public new void Show() {
             if (_cancelled) {
                 Logging.Write("Cancelled");
@@ -329,6 +309,11 @@ namespace AcManager.Pages.Windows {
             public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new DelegateCommand(() => {
                 new AppKeyDialog().ShowDialog();
             }));
+
+            private DelegateCommand _showAdditionalContentDialogCommand;
+
+            public DelegateCommand ShowAdditionalContentDialogCommand => _showAdditionalContentDialogCommand ??
+                    (_showAdditionalContentDialogCommand = new DelegateCommand(InstallAdditionalContentDialog.ShowInstallDialog));
 
             public AppUpdater AppUpdater => AppUpdater.Instance;
         }
@@ -727,7 +712,7 @@ namespace AcManager.Pages.Windows {
             MakeSureOnlineIsReady(e.LoadedUri);
         }
 
-        void IPluginsSusanin.ShowPluginsList() {
+        void IPluginsNavigator.ShowPluginsList() {
             if (IsVisible) {
                 NavigateTo(new Uri("/Pages/Settings/SettingsPage.xaml?Category=SettingsGeneral", UriKind.Relative));
             }

@@ -86,7 +86,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
-            
+
             if (_frame != null) {
                 _frame.Navigating -= Frame_Navigating;
                 _frame.Navigated -= Frame_Navigated;
@@ -249,22 +249,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ILinkNavigator LinkNavigator {
             get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
             set { SetValue(LinkNavigatorProperty, value); }
-        }
-
-        public static readonly DependencyProperty AppUpdateAvailableProperty = DependencyProperty.Register(nameof(AppUpdateAvailable), typeof(string),
-                typeof(ModernWindow));
-
-        public string AppUpdateAvailable {
-            get { return (string)GetValue(AppUpdateAvailableProperty); }
-            set { SetValue(AppUpdateAvailableProperty, value); }
-        }
-
-        public static readonly DependencyProperty AppUpdateCommandProperty = DependencyProperty.Register(nameof(AppUpdateCommand), typeof(ICommand),
-                typeof(ModernWindow));
-
-        public ICommand AppUpdateCommand {
-            get { return (ICommand)GetValue(AppUpdateCommandProperty); }
-            set { SetValue(AppUpdateCommandProperty, value); }
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),

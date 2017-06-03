@@ -84,26 +84,45 @@ namespace AcManager.Pages.Drive {
             ResizingStuff();
         }
 
-        private bool _showExtendedInformation;
+        private bool? _showExtendedInformation;
 
         public bool ShowExtendedInformation {
-            get { return _showExtendedInformation; }
+            get { return _showExtendedInformation ?? false; }
             set {
                 if (Equals(value, _showExtendedInformation)) return;
                 _showExtendedInformation = value;
 
                 if (value) {
                     ExtendedInformation.Visibility = Visibility.Visible;
+                    ScrollViewer.Margin = new Thickness(0d, 0d, -4d, 0d);
+                    ScrollViewer.Padding = new Thickness(0d, 0d, 4d, 8d);
                     CarsListBox.ItemsSource = CarsComboBox.ItemsSource;
                     CarsListBox.SelectedItem = CarsComboBox.SelectedItem;
                 } else {
                     ExtendedInformation.Visibility = Visibility.Collapsed;
+                    ScrollViewer.Margin = new Thickness(0d, 0d, -8d, 0d);
+                    ScrollViewer.Padding = new Thickness(0d, 0d, 8d, 8d);
                 }
+            }
+        }
+
+        private bool? _scrollableContent;
+
+        public bool ScrollableContent {
+            get { return _scrollableContent ?? false; }
+            set {
+                if (Equals(value, _scrollableContent)) return;
+                _scrollableContent = value;
+                ScrollViewer.VerticalScrollBarVisibility = value ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled;
             }
         }
 
         private void ResizingStuff() {
             ShowExtendedInformation = ActualWidth > 600;
+
+            var contentHeight = ErrorsPanel.ActualHeight + PasswordPanel.ActualHeight + DataPanel.ActualHeight;
+            var availableHeight = ScrollViewer.ActualHeight;
+            ScrollableContent = availableHeight - contentHeight < 120;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -432,6 +451,13 @@ namespace AcManager.Pages.Drive {
             switch (e.PropertyName) {
                 case nameof(ServerEntry.Status):
                     UpdateCarsView();
+                    ResizingStuff();
+                    break;
+                case nameof(ServerEntry.ErrorsString):
+                case nameof(ServerEntry.PasswordRequired):
+                case nameof(ServerEntry.PortExtended):
+                case nameof(ServerEntry.Description):
+                    ResizingStuff();
                     break;
                 case nameof(ServerEntry.SelectedCarEntry):
                     UpdateSelectedCar();

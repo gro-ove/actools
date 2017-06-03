@@ -56,7 +56,7 @@ namespace AcManager.Controls {
             CarsPool.Clear();
             SessionsPool.Clear();
         }
-        
+
         private readonly List<Inline> _errorIcons = new List<Inline>(4);
 
         private Inline GetErrorIconInline() {
@@ -66,7 +66,7 @@ namespace AcManager.Controls {
                 _errorIcons.RemoveAt(c - 1);
                 return result;
             }
-            
+
             return (Inline)TryFindResource(@"WarningIconInline");
         }
 
@@ -343,6 +343,8 @@ namespace AcManager.Controls {
             private readonly TextBlock _text;
             private readonly AcItemWrapper _wrapper;
 
+            public AcItemWrapper Wrapper => _wrapper;
+
             public CarDisplayNameBind(TextBlock text, AcItemWrapper wrapper) {
                 _text = text;
                 _wrapper = wrapper;
@@ -385,7 +387,12 @@ namespace AcManager.Controls {
         }
 
         private void UpdateCar(TextBlockBindable child, ServerEntry.CarEntry car) {
-            if (ReferenceEquals(child.DataContext, car)) return;
+            if (ReferenceEquals(car, child.DataContext) &&
+                    // Additional check, in case CarObjectWrapper changed
+                    ReferenceEquals(child.Bind?.Wrapper, car.CarObjectWrapper)) {
+                return;
+            }
+
             InitializeBrushes();
 
             DisposeHelper.Dispose(ref child.Bind);
@@ -514,7 +521,7 @@ namespace AcManager.Controls {
         }
 
         private bool _bookedForPlayer;
-        
+
         private void UpdateBookedState(ServerEntry n) {
             if (_bookedForPlayer != n.IsBookedForPlayer) {
                 _bookedForPlayer = n.IsBookedForPlayer;
@@ -537,7 +544,7 @@ namespace AcManager.Controls {
                 _clientsText.ToolTip = null;
                 _clientsTooltipSet = false;
             }
-            
+
             if (!n.FromLan) {
                 _countryName.Text = n.Country;
             }
@@ -545,7 +552,7 @@ namespace AcManager.Controls {
             _pingText.Text = n.Ping?.ToString() ?? @"?";
             _clientsText.Text = n.DisplayClients;
             _errorMessageGroup.BbCode = n.ErrorsString;
-            
+
             if (_timeLeftText != null) {
                 _timeLeftText.Text = n.DisplayTimeLeft;
             }
@@ -699,7 +706,7 @@ namespace AcManager.Controls {
             foreach (var item in _carsPanel.Children.Cast<TextBlock>()) {
                 item.ToolTip = toolTip;
             }
-            
+
             _carsTooltipsSet = true;
         }
 

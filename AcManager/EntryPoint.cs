@@ -122,11 +122,11 @@ namespace AcManager {
                         }
                     }
                 }
-                
+
                 ProcessExtension.Start(MainExecutingFile.Location, args.Where(x => x != WindowsHelper.RestartArg));
                 return;
             }
-            
+
             using (var mutex = new Mutex(false, mutexId)) {
                 SecondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
@@ -273,13 +273,13 @@ namespace AcManager {
             }
         }
 
-        public static void HandleSecondInstanceMessages(DpiAwareWindow window, Action<IEnumerable<string>> handler) {
+        public static void HandleSecondInstanceMessages(Window window, Action<IEnumerable<string>> handler) {
             HwndSource hwnd = null;
             HwndSourceHook hook = (IntPtr handle, int message, IntPtr wParam, IntPtr lParam, ref bool handled) => {
                 if (message == SecondInstanceMessage) {
                     try {
                         handler(ReceiveSomeData());
-                        window.BringToFront();
+                        (window as DpiAwareWindow)?.BringToFront();
                     } catch (Exception e) {
                         Logging.Warning("Can’t handle message: " + e);
                     }
@@ -308,7 +308,7 @@ namespace AcManager {
                     hook = null;
                 }
             };
-            
+
             // unloaded
             handlers[1] = (sender, args) => {
                 window.Unloaded -= handlers[1];

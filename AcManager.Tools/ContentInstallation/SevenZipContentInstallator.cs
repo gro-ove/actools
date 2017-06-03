@@ -18,7 +18,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
-    internal class SevenZipContentInstallator : ContentInstallatorBase {
+    public class SevenZipContentInstallator : ContentInstallatorBase {
         public static readonly string PluginId = "7Zip";
 
         public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams, CancellationToken c) {
@@ -159,7 +159,6 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         private static void CheckForErrors(string[] o) {
-            Logging.Debug("Errors: " + o.JoinToString("\n"));
             foreach (var error in o.Where(x => x.StartsWith("ERROR:"))) {
                 if (error.Contains("Wrong password")) {
                     Logging.Debug("Password is invalid");
@@ -170,8 +169,14 @@ namespace AcManager.Tools.ContentInstallation {
         #endregion
 
         #region 7-zip methods
+        private List<SevenZipEntry> _cachedList;
+
         [ItemCanBeNull]
         private async Task<List<SevenZipEntry>> ListFiles(CancellationToken c) {
+            if (_cachedList != null) {
+                return _cachedList;
+            }
+
             var o = await Execute(new[] {
                 "l", $"-p{Password}", "--",
                 Path.GetFileName(_filename)
@@ -179,7 +184,9 @@ namespace AcManager.Tools.ContentInstallation {
             if (o == null) return null;
 
             CheckForErrors(o.Error);
-            return ParseListOfFiles(o.Out).ToList();
+
+            _cachedList = ParseListOfFiles(o.Out).ToList();
+            return _cachedList;
         }
 
         [ItemCanBeNull]
@@ -250,10 +257,12 @@ namespace AcManager.Tools.ContentInstallation {
         private class SevenZipFileInfo : IFileInfo {
             private readonly SevenZipEntry _archiveEntry;
             private readonly Func<string, byte[]> _reader;
+            private readonly Func<string, bool> _tester;
 
-            public SevenZipFileInfo(SevenZipEntry archiveEntry, Func<string, byte[]> reader = null) {
+            public SevenZipFileInfo(SevenZipEntry archiveEntry, Func<string, byte[]> reader, Func<string, bool> tester) {
                 _archiveEntry = archiveEntry;
                 _reader = reader;
+                _tester = tester;
             }
 
             public string Key => _archiveEntry.Key.Replace('/', '\\');
@@ -265,13 +274,17 @@ namespace AcManager.Tools.ContentInstallation {
                 return await Task.Run(() => _reader(_archiveEntry.Key)).ConfigureAwait(false);
             }
 
+            public bool IsAvailable() {
+                return _tester?.Invoke(_archiveEntry.Key) == true;
+            }
+
             public Task CopyToAsync(string destination) {
                 throw new NotSupportedException();
             }
         }
 
         protected override async Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
-            return (await ListFiles(cancellation))?.Select(x => new SevenZipFileInfo(x, ReadData));
+            return (await ListFiles(cancellation))?.Select(x => new SevenZipFileInfo(x, ReadData, CheckData));
         }
 
         private List<string> _askedData;
@@ -291,6 +304,20 @@ namespace AcManager.Tools.ContentInstallation {
             return null;
         }
 
+        private bool CheckData(string key) {
+            if (_preloadedData != null && _preloadedData.ContainsKey(key)) {
+                return true;
+            }
+
+            if (_askedData == null) {
+                _askedData = new List<string> { key };
+            } else {
+                _askedData.Add(key);
+            }
+
+            return false;
+        }
+
         protected override async Task LoadMissingContents(CancellationToken cancellation) {
             if (_askedData == null) return;
 
@@ -304,7 +331,17 @@ namespace AcManager.Tools.ContentInstallation {
             await GetFiles(list.Select(x => x.Key), async s => {
                 foreach (var l in list) {
                     var buffer = new byte[l.Size];
-                    Array.Resize(ref buffer, await s.ReadAsync(buffer, 0, buffer.Length));
+                    var read = 0;
+
+                    while (read < l.Size) {
+                        var local = await s.ReadAsync(buffer, read, buffer.Length - read);
+                        read += local;
+
+                        if (read != l.Size && local == 0) {
+                            throw new Exception("Unexpected end");
+                        }
+                    }
+
                     _preloadedData[l.Key] = buffer;
                 }
             }, cancellation).ConfigureAwait(false);
@@ -312,7 +349,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         protected override async Task CopyFileEntries(CopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var filtered = (await ListFiles(cancellation))?.Select(x => {
-                var destination = callback(new SevenZipFileInfo(x));
+                var destination = callback(new SevenZipFileInfo(x, null, null));
                 return destination == null ? null : Tuple.Create(x.Key, x.Size, destination);
             }).NonNull().ToList();
             if (filtered == null) return;

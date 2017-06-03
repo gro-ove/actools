@@ -180,6 +180,7 @@ namespace AcTools.Processes {
             public string ServerName, ServerIp, Guid, Password, RequestedCar, SessionName;
             public int ServerPort;
             public int? ServerHttpPort;
+            public bool ExtendedMode;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -205,6 +206,7 @@ namespace AcTools.Processes {
                     section.Set("GUID", Guid);
                     section.Set("PASSWORD", Password);
                     section.Set("ACTIVE", true);
+                    section.Set("__CM_EXTENDED", ExtendedMode);
                 }
 
                 {

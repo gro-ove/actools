@@ -14,7 +14,7 @@ namespace AcManager.Tools.ContentInstallation {
                 return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
             }
 
-            if (!IsZipArchive(filename) && PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsReady == true) {
+            if (/*!IsZipArchive(filename) &&*/ PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsReady == true) {
                 try {
                     return SevenZipContentInstallator.Create(filename, installationParams, cancellation);
                 } catch (Exception e) {

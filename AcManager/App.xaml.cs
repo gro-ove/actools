@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Windows.UI.Xaml.Documents;
 using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Converters;
@@ -129,7 +130,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.EnableRaceIniTestMode, ref Game.OptionRaceIniTestMode);
             AppArguments.Set(AppFlag.RaceOutDebug, ref Game.OptionDebugMode);
 
-            AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
             AppArguments.Set(AppFlag.NfsPorscheTribute, ref RaceGridViewModel.OptionNfsPorscheNames);
             AppArguments.Set(AppFlag.KeepIniComments, ref IniFile.OptionKeepComments);
             AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
@@ -272,9 +272,6 @@ namespace AcManager {
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
-            StartupUri = new Uri(acRootIsFine ?
-                    @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
-
             if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {
                 if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;
@@ -330,6 +327,14 @@ namespace AcManager {
             // auto-show that thing
             // TODO: find a way to show a bit of progress bar on main window?
             InstallAdditionalContentDialog.Initialize();
+
+            if (acRootIsFine) {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                new AppUi(this).Run();
+            } else {
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
+                StartupUri = new Uri(@"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+            }
         }
 
         private class LiveryGenerator : ILiveryGenerator {

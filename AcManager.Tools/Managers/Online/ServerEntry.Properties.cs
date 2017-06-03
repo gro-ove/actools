@@ -329,28 +329,6 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private bool _allCarsAvailable = true;
-
-        public bool AllCarsAvailable {
-            get { return _allCarsAvailable; }
-            set {
-                if (Equals(value, _allCarsAvailable)) return;
-                _allCarsAvailable = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _allContentAvailable = true;
-
-        public bool AllContentAvailable {
-            get { return _allContentAvailable; }
-            set {
-                if (Equals(value, _allContentAvailable)) return;
-                _allContentAvailable = value;
-                OnPropertyChanged();
-            }
-        }
-
         private int _connectedDrivers;
 
         public int ConnectedDrivers {
@@ -448,16 +426,15 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private IReadOnlyList<string> _errors;
+        private IReadOnlyList<string> _errors = new List<string>();
 
         /// <summary>
         /// Cannot be empty, will be null if there is no errors.
         /// </summary>
-        [CanBeNull]
+        [NotNull]
         public IReadOnlyList<string> Errors {
             get { return _errors; }
             set {
-                if (value != null && value.Count == 0) value = null;
                 if (Equals(value, _errors)) return;
                 _errors = value;
                 _errorsString = null;

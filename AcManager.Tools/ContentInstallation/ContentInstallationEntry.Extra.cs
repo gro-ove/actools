@@ -1,25 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Loaders;
-using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Plugins;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {

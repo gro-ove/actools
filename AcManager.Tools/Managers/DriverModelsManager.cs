@@ -43,7 +43,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public override DriverModelObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"default"));
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"driver.kn5"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 

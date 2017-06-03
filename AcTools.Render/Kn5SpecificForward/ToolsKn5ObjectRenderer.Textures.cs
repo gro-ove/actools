@@ -55,7 +55,6 @@ namespace AcTools.Render.Kn5SpecificForward {
                 view.Dispose();
 
                 temporary.KeepView = true;
-                Texture2D.SaveTextureToFile(DeviceContext, temporary.Texture, ImageFileFormat.Dds, @"U:\test.dds");
                 return temporary.View;
             }
         }

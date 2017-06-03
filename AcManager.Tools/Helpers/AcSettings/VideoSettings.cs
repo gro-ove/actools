@@ -280,20 +280,23 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private void UpdateResolutionsList() {
             var r = Resolution;
             Resolutions = GetResolutions().Append(CustomResolution).ToArray();
-            Resolution = Resolutions.FirstOrDefault(x => x.Equals(r)) ?? GetPreferredResolution();
+            var resolution = Resolutions.FirstOrDefault(x => x.Equals(r)) ?? GetPreferredResolution();
+            if (resolution != null) {
+                Resolution = resolution;
+            }
         }
 
         [NotNull]
         public ResolutionEntry CustomResolution { get; } = new ResolutionEntry();
 
-        [NotNull]
+        [CanBeNull]
         private ResolutionEntry GetPreferredResolution() {
-            return Resolutions.ApartFrom(CustomResolution).MaxEntry(x => x.Volume);
+            return Resolutions.ApartFrom(CustomResolution).MaxEntryOrDefault(x => x.Volume);
         }
 
         private ResolutionEntry _resolution;
 
-        [NotNull]
+        [CanBeNull]
         public ResolutionEntry Resolution {
             get { return _resolution; }
             set {
@@ -303,7 +306,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(UseCustomResolution));
 
-                if (!ReferenceEquals(value, CustomResolution)) {
+                if (value != null && !ReferenceEquals(value, CustomResolution)) {
                     CustomResolution.Width = value.Width;
                     CustomResolution.Height = value.Height;
                     CustomResolution.Framerate = value.Framerate;
@@ -698,12 +701,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        [NotNull]
+        [CanBeNull]
         private ResolutionEntry GetClosestToCustom() {
             return Resolutions.FirstOrDefault(
                     x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height && Equals(x.Framerate, CustomResolution.Framerate)) ??
                     Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height) ?? GetPreferredResolution();
-        } 
+        }
 
         protected override void LoadFromIni() {
             // VIDEO
@@ -773,10 +776,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         protected override void SetToIni(IniFile ini) {
             var section = ini["VIDEO"];
-            section.Set("WIDTH", Resolution.Width);
-            section.Set("HEIGHT", Resolution.Height);
-            section.Set("REFRESH", Resolution.Framerate);
-            section.Set("INDEX", Resolution.Index);
+            if (Resolution != null) {
+                section.Set("WIDTH", Resolution.Width);
+                section.Set("HEIGHT", Resolution.Height);
+                section.Set("REFRESH", Resolution.Framerate);
+                section.Set("INDEX", Resolution.Index);
+            }
 
             section.Set("FULLSCREEN", Fullscreen);
             section.Set("VSYNC", VerticalSyncronization);

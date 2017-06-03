@@ -1290,22 +1290,22 @@
     <value>New weather {0}</value>
   </data>
   <data name="ContentInstallation_CarExisting" xml:space="preserve">
-    <value>New version for car {0}</value>
+    <value>Update for a car {0}</value>
   </data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>New version for car skin {0}</value>
+    <value>Update for a car skin {0}</value>
   </data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
-    <value>New version for track {0}</value>
+    <value>Update for a track {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>New version for showroom {0}</value>
+    <value>Update for a showroom {0}</value>
   </data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
-    <value>New version for font {0}</value>
+    <value>Update for a font {0}</value>
   </data>
   <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
-    <value>New version for weather {0}</value>
+    <value>Update for a weather {0}</value>
   </data>
   <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
     <value>Select another ID.</value>

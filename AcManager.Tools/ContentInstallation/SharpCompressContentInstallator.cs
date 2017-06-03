@@ -67,6 +67,10 @@ namespace AcManager.Tools.ContentInstallation {
                 throw new NotSupportedException();
             }
 
+            public virtual bool IsAvailable() {
+                throw new NotSupportedException();
+            }
+
             public virtual Task CopyToAsync(string destination) {
                 throw new NotSupportedException();
             }
@@ -77,10 +81,13 @@ namespace AcManager.Tools.ContentInstallation {
 
             // for solid archives
             private readonly Func<string, byte[]> _reader;
+            private readonly Func<string, bool> _availableCheck;
 
-            public ArchiveFileInfo(IArchiveEntry archiveEntry, [CanBeNull] Func<string, byte[]> reader) : base(archiveEntry) {
+            public ArchiveFileInfo(IArchiveEntry archiveEntry, [CanBeNull] Func<string, byte[]> reader,
+                    Func<string, bool> availableCheck) : base(archiveEntry) {
                 _archiveEntry = archiveEntry;
                 _reader = reader;
+                _availableCheck = availableCheck;
             }
 
             public override async Task<byte[]> ReadAsync() {
@@ -93,6 +100,10 @@ namespace AcManager.Tools.ContentInstallation {
                     await stream.CopyToAsync(memory);
                     return memory.ToArray();
                 }
+            }
+
+            public override bool IsAvailable() {
+                return _availableCheck?.Invoke(_archiveEntry.Key) != false;
             }
 
             public override async Task CopyToAsync(string destination) {
@@ -156,6 +167,20 @@ namespace AcManager.Tools.ContentInstallation {
             return null;
         }
 
+        private bool CheckSolid(string key) {
+            if (_preloadedData != null && _preloadedData.ContainsKey(key)) {
+                return true;
+            }
+
+            if (_askedData == null) {
+                _askedData = new List<string> { key };
+            } else {
+                _askedData.Add(key);
+            }
+
+            return false;
+        }
+
         protected override async Task LoadMissingContents(CancellationToken cancellation) {
             if (_askedData == null) return;
             if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
@@ -188,7 +213,9 @@ namespace AcManager.Tools.ContentInstallation {
 
             return Task.FromResult(
                     _extractor.Entries.Where(x => !x.IsDirectory).Select(
-                            x => (IFileInfo)new ArchiveFileInfo(x, _extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null)));
+                            x => (IFileInfo)new ArchiveFileInfo(x,
+                                    _extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
+                                    _extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
         }
 
         protected override async Task CopyFileEntries(CopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {

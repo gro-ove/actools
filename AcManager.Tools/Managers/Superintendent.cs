@@ -23,7 +23,7 @@ namespace AcManager.Tools.Managers {
                 if (AcRootDirectory.Instance == null) return;
             }
 
-            AcRootDirectory.Instance.Changed += AcRootDirectory_Changed;
+            AcRootDirectory.Instance.Changed += OnAcRootDirectoryChanged;
         }
 
         private IReadOnlyList<IAcManagerNew> _managers;
@@ -53,7 +53,6 @@ namespace AcManager.Tools.Managers {
 
         public IReadOnlyList<string> UnsavedChanges() {
             var args = new ClosingEventArgs();
-            Logging.Debug(args);
             Closing?.Invoke(this, args);
             Logging.Debug(args.UnsavedDisplayNames.JoinToString(";"));
             return args.UnsavedDisplayNames;
@@ -74,7 +73,7 @@ namespace AcManager.Tools.Managers {
             Logging.Write($"Rescanning finished: {_managers.Count} managers, {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
-        void AcRootDirectory_Changed(object sender, AcRootDirectoryEventArgs e) {
+        void OnAcRootDirectoryChanged(object sender, AcRootDirectoryEventArgs e) {
             RescanManagers();
         }
 

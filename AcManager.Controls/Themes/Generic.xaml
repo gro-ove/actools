@@ -8,6 +8,7 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectHeaderSection.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectListBox.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcToolBar.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AppModernWindow.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/BestLapsList.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/MessageBlock.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />

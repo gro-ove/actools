@@ -28,7 +28,7 @@ namespace AcManager.Tools.GameProperties {
 
         private static IEnumerable<string> GetWithoutExtension() {
             try {
-                return Directory.GetFiles(FileUtils.GetReplaysDirectory())
+                return Directory.GetFiles(FileUtils.GetReplaysDirectory(), "*", SearchOption.AllDirectories)
                                 .Where(file => !file.EndsWith(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase) &&
                                         !string.Equals(Path.GetFileName(file), @"cr", StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {

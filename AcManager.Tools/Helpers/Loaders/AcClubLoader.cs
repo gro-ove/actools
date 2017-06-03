@@ -18,13 +18,16 @@ namespace AcManager.Tools.Helpers.Loaders {
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 
-            var match = Regex.Match(downloadPage, @"<p class=""download""><a href=""([^""]+)");
-            if (!match.Success) {
+            var versionMatch = Regex.Match(downloadPage, @"""spec"">[\s\S]+?V\. ([^<]+)");
+            Version = versionMatch.Success ? versionMatch.Groups[1].Value : null;
+
+            var downloadUrlMatch = Regex.Match(downloadPage, @"<p class=""download""><a href=""([^""]+)");
+            if (!downloadUrlMatch.Success) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_AcClubChanged);
                 return false;
             }
 
-            Url = HttpUtility.HtmlDecode(match.Groups[1].Value);
+            Url = HttpUtility.HtmlDecode(downloadUrlMatch.Groups[1].Value);
             Logging.Write("AssettoCorsa.club download link: " + Url);
 
             _innerLoader = FlexibleLoader.CreateLoader(Url);
@@ -33,9 +36,14 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public override long TotalSize => _innerLoader?.TotalSize ?? -1L;
+        public override string FileName => _innerLoader?.FileName;
 
         public override Task DownloadAsync(WebClient client, string destination, CancellationToken cancellation) {
             return _innerLoader.DownloadAsync(client, destination, cancellation);
+        }
+
+        public override Task<string> GetDownloadLink(CancellationToken cancellation) {
+            return _innerLoader.GetDownloadLink(cancellation);
         }
     }
 }

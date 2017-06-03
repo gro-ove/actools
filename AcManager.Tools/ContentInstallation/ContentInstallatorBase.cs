@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
@@ -20,6 +21,12 @@ namespace AcManager.Tools.ContentInstallation {
         /// </summary>
         [ItemCanBeNull]
         Task<byte[]> ReadAsync();
+
+        /// <summary>
+        /// Is data available now or it’s better to wait for the second pass? If called, data will be prepared
+        /// for it (it’s like ReadAsync(), but without reading, if data is not available).
+        /// </summary>
+        bool IsAvailable();
 
         Task CopyToAsync(string destination);
     }
@@ -50,11 +57,12 @@ namespace AcManager.Tools.ContentInstallation {
         }
     }
 
-    internal abstract class ContentInstallatorBase : IAdditionalContentInstallator {
+    public abstract class ContentInstallatorBase : IAdditionalContentInstallator {
+        [NotNull]
         public ContentInstallationParams InstallationParams { get; }
 
-        protected ContentInstallatorBase(ContentInstallationParams installationParams) {
-            InstallationParams = installationParams;
+        protected ContentInstallatorBase([CanBeNull] ContentInstallationParams installationParams) {
+            InstallationParams = installationParams ?? ContentInstallationParams.Default;
         }
 
         public virtual Task TrySetPasswordAsync(string password, CancellationToken cancellation) {
@@ -89,7 +97,7 @@ namespace AcManager.Tools.ContentInstallation {
                     if (cancellation.IsCancellationRequested) return null;
                 }
 
-                var result = await ContentScanner.GetEntriesAsync(list, GetBaseId(), progress, cancellation);
+                var result = await new ContentScanner(InstallationParams).GetEntriesAsync(list, GetBaseId(), progress, cancellation);
                 if (result == null || cancellation.IsCancellationRequested) return null;
 
                 if (result.MissingContent) {

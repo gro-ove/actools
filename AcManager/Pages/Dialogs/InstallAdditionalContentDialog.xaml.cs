@@ -4,54 +4,76 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
+    public class AdditionalContentEntryTemplateSelectorInner : DataTemplateSelector {
+        public DataTemplate BasicTemplate { get; set; }
+
+        public DataTemplate TrackTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
+            return (item as ContentInstallationEntry.EntryWrapper)?.Entry is TrackContentEntry ?
+                    TrackTemplate : BasicTemplate;
+        }
+    }
+
     public partial class InstallAdditionalContentDialog {
         private static InstallAdditionalContentDialog _dialog;
 
         public static void Initialize() {
+            ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
             ContentInstallationManager.Instance.Queue.CollectionChanged += OnQueueChanged;
         }
 
-        private static bool _waiting;
-        private static async void OnQueueChanged(object o, NotifyCollectionChangedEventArgs a) {
-            if (_waiting) return;
+        private static readonly Busy TaskAddedBusy = new Busy();
+        private static readonly Busy QueueChangedBusy = new Busy();
 
-            var added = a.Action == NotifyCollectionChangedAction.Add;
-            if (added != (_dialog != null)) {
-                _waiting = true;
-                await Task.Delay(100);
-                _waiting = false;
+        private static void OnTaskAdded(object sender, EventArgs e) {
+            TaskAddedBusy.DoDelay(ShowInstallDialog, 100);
+        }
 
-                if (added) {
-                    if (_dialog == null) {
-                        _dialog = new InstallAdditionalContentDialog();
-                        _dialog.Show();
-                        _dialog.Closed += (sender, args) => {
-                            foreach (var entry in ContentInstallationManager.Instance.Queue.ToList()) {
-                                entry.CancelCommand.Execute();
-                            }
-
-                            _dialog = null;
-                        };
-                    }
-                } else if (ContentInstallationManager.Instance.Queue.Count == 0 && _dialog?.IsActive != true) {
-                    _dialog?.Close();
+        private static void OnQueueChanged(object o, NotifyCollectionChangedEventArgs a) {
+            QueueChangedBusy.DoDelay(() => {
+                if (ContentInstallationManager.Instance.Queue.Count == 0 && _dialog?.IsActive != true) {
+                    CloseInstallDialog();
                 }
+            }, 100);
+        }
+
+        public static void ShowInstallDialog() {
+            if (_dialog == null) {
+                _dialog = new InstallAdditionalContentDialog();
+                _dialog.Show();
+                _dialog.Closed += (sender, args) => {
+                    if (IsAlone) {
+                        ContentInstallationManager.Instance.Cancel();
+                    }
+
+                    _dialog = null;
+                };
             }
         }
 
-        public InstallAdditionalContentDialog() {
+        private static void CloseInstallDialog() {
+            _dialog?.Close();
+        }
+
+        private static bool IsAlone => Application.Current?.Windows.OfType<MainWindow>().FirstOrDefault()?.IsVisible != true;
+
+        private InstallAdditionalContentDialog() {
             DataContext = this;
             InitializeComponent();
-
-            Buttons = new [] {
-                // TODO: rename “close” to “hide”?
-                CloseButton
-            };
+            Buttons = new[] { IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None) };
         }
+
+        private void OnClosed(object sender, EventArgs e) {}
 
         private void OnDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;

@@ -1,0 +1,10 @@
+﻿sid: wl6av2t9
+
+If you’re making AC apps, you might want for CM to be able to figure out which version is currently installed. This way, it will be easier for user to update apps.
+
+To find app’s version number, CM looks for several files: “version.txt”, “changelog.txt”, “readme.txt” and “read me.txt”. In each file, CM will try to find a version string, looking like a bunch of numbers splitted by dots in a start of the like (optionally, with “v”, “-” or both in front).
+
+So, basically, as the easiest solution, just keep changelog in app’s folder — apart from everything else, this way user will be able to find out what changed. Oh, and keep version strings sensible. If there are something else than numbers in it, CM simply won’t be able to compare them.
+
+ [img="http://i.imgur.com/kbmchUg.png|355"]Example[/img]
+

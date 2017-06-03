@@ -195,6 +195,11 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
+        public static string GetGuiIconsFilename(string acRoot) {
+            return Path.Combine(acRoot, "content", "gui", "icons");
+        }
+
+        [NotNull, Pure]
         public static string GetResultJsonFilename() {
             return Path.Combine(GetDocumentsOutDirectory(), "race_out.json");
         }
@@ -205,7 +210,7 @@ namespace AcTools.Utils {
         }
 
         public static bool ArePathsEqual(string pathA, string pathB) {
-            return Path.GetFullPath(pathA).Equals(Path.GetFullPath(pathB), StringComparison.OrdinalIgnoreCase);
+            return NormalizePath(pathA).Equals(NormalizePath(pathB), StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

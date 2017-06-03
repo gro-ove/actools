@@ -43,8 +43,12 @@ namespace AcManager.Tools.Managers.Online {
                 yield break;
             }
 
-            if (Status != ServerStatus.Ready) {
+            if (Status != ServerStatus.Ready && Status != ServerStatus.MissingContent) {
                 yield return "CM isn’t ready";
+            }
+
+            if (Status == ServerStatus.MissingContent) {
+                yield return "Required content is missing";
             }
 
             if (!IsBookedForPlayer) {
@@ -68,8 +72,8 @@ namespace AcManager.Tools.Managers.Online {
                     yield return "Wait for the next booking";
                 }
             }
-            
-            if (!BookingMode && SelectedCarEntry?.IsAvailable != true) {
+
+            if (!BookingMode && SelectedCarEntry?.IsAvailable != true && SelectedCarEntry?.CarExists == true) {
                 yield return "Selected car isn’t available";
             }
         }
@@ -127,7 +131,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!IsBooked) return;
             IsBooked = false;
-            await Task.Run(() => KunosApiProvider.TryToUnbook(Ip, PortHttp));
+            await Task.Run(() => KunosApiProvider.TryToUnbookAsync(Ip, PortHttp));
             if (!_updating) {
                 Update(UpdateMode.Lite, true, true).Forget();
             }
@@ -183,7 +187,7 @@ namespace AcManager.Tools.Managers.Online {
 
             PrepareBookingUi();
 
-            var result = await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
+            var result = await Task.Run(() => KunosApiProvider.TryToBookAsync(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
                     DriverName.GetOnline(), ""));
             if (result?.IsSuccessful != true) return false;
 
@@ -240,7 +244,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 PrepareBookingUi();
-                ProcessBookingResponse(await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
+                ProcessBookingResponse(await Task.Run(() => KunosApiProvider.TryToBookAsync(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
                         DriverName.GetOnline(), "")));
                 return;
             }
@@ -254,14 +258,17 @@ namespace AcManager.Tools.Managers.Online {
                 CarSkinId = carEntry.AvailableSkin?.Id,
                 TrackId = Track?.Id,
                 TrackConfigurationId = Track?.LayoutId
-            }, null, null, null, new Game.OnlineProperties {
+            }, null, new Game.ConditionProperties {
+                WeatherName = WeatherId
+            }, null, new Game.OnlineProperties {
                 RequestedCar = correctId,
                 ServerIp = Ip,
                 ServerName = DisplayName,
                 ServerPort = PortRace,
                 ServerHttpPort = PortHttp,
                 Guid = SteamIdHelper.Instance.Value,
-                Password = Password
+                Password = Password,
+                ExtendedMode = WeatherId != null
             });
 
             var now = DateTime.Now;

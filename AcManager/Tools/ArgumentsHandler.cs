@@ -36,16 +36,23 @@ namespace AcManager.Tools {
             FailedShow
         }
 
+        /// <summary>
+        /// Returns true if MainWindow should be shown afterwards.
+        /// </summary>
         public static async Task<bool> ProcessArguments(IEnumerable<string> arguments, TimeSpan extraDelay = default(TimeSpan)) {
-            var cancelled = true;
+            var showMainWindow = false;
 
             var list = arguments.ToList();
-            var remote = list.Where(x => ContentInstallationManager.IsRemoteSource(x) ||
-                    ContentInstallationManager.IsAdditionalContent(x)).ToList();
+            var remote = (await list.Select(async x => Tuple.Create(x,
+                    ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
+                            await ContentInstallationManager.IsRemoteSourceFlexible(x))
+                    ).WhenAll()).Where(x => x.Item2 != null).ToList();
 
             if (remote.Any()) {
-                list = list.ApartFrom(remote).ToList();
-                await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x)).WhenAll(5);
+                list = list.ApartFrom(remote.Select(x => x.Item1)).ToList();
+                if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2)).WhenAll()).All(x => !x)) {
+                    await Task.Delay(ContentInstallationManager.OptionFailedDelay);
+                }
             }
 
             foreach (var arg in list) {
@@ -60,11 +67,11 @@ namespace AcManager.Tools {
                 }
 
                 if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
-                    cancelled = false;
+                    showMainWindow = true;
                 }
             }
 
-            return cancelled;
+            return showMainWindow;
         }
 
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {
@@ -91,13 +98,21 @@ namespace AcManager.Tools {
 
         private static async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.TryToLoadAsync(argument, name, extension, waiting, waiting.CancellationToken);
+                return await FlexibleLoader.TryToLoadAsync(argument, name, extension, true, waiting, information => {
+                    if (information.FileName != null) {
+                        waiting.Title = $@"Loading {information.FileName}…";
+                    }
+                }, waiting.CancellationToken);
             }
         }
 
         private static async Task<string> LoadRemoveFileTo(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.TryToLoadAsyncTo(argument, destination, waiting, waiting.CancellationToken);
+                return await FlexibleLoader.TryToLoadAsyncTo(argument, destination, waiting, information => {
+                    if (information.FileName != null) {
+                        waiting.Title = $@"Loading {information.FileName}…";
+                    }
+                }, waiting.CancellationToken);
             }
         }
 

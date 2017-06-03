@@ -36,6 +36,9 @@ namespace AcManager.Tools.Helpers.Loaders {
             Url = "https://drive.google.com" + HttpUtility.HtmlDecode(match.Groups[1].Value);
             Logging.Write("Google Drive download link: " + Url);
 
+            var fileNameMatch = Regex.Match(downloadPage, @"/<span class=""uc-name-size""><a[^>]*>([^<]+)");
+            FileName = fileNameMatch.Success ? fileNameMatch.Groups[1].Value : null;
+
             try {
                 var totalSizeMatch = Regex.Match(downloadPage, @"</a> \((\d+(?:\.\d+)?)([KMGT])\)</span> ");
                 if (totalSizeMatch.Success) {

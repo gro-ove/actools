@@ -12,17 +12,44 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
 using StringBasedFilter.Parsing;
 
 namespace AcManager.Tools.Objects {
-    public class PythonAppObject : AcCommonObject {
+    public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation {
+        public static readonly string[] VersionSources = { "version.txt", "changelog.txt", "readme.txt", "read me.txt" };
+        private static readonly Regex VersionRegex = new Regex(@"^\s*(?:-\s*)?v?(\d+(?:\.\d+)+)", RegexOptions.Compiled);
+
+        [CanBeNull]
+        public static string GetVersion(string fileData) {
+            return fileData.Split('\n').Select(x => VersionRegex.Match(x))
+                           .Where(x => x.Success).Select(x => x.Groups[1].Value)
+                           .Aggregate((string)null, (a, b) => a == null || a.IsVersionOlderThan(b) ? b : a);
+        }
+
         public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         protected override void LoadOrThrow() {
             Name = Id;
+            TryToLoadVersion();
+        }
+
+        private void TryToLoadVersion() {
+            try {
+                foreach (var candidate in VersionSources) {
+                    var filename = Path.Combine(Location, candidate);
+                    if (File.Exists(filename)) {
+                        Version = GetVersion(File.ReadAllText(filename));
+                        if (Version != null) break;
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+                Version = null;
+            }
         }
 
         public override bool HasData => true;
@@ -82,7 +109,23 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
+            if (VersionSources.Contains(FileUtils.GetRelativePath(filename, Location).ToLowerInvariant())) {
+                TryToLoadVersion();
+                return true;
+            }
+
             return base.HandleChangedFile(filename);
+        }
+
+        private string _version;
+
+        public string Version {
+            get { return _version; }
+            private set {
+                if (value == _version) return;
+                _version = value;
+                OnPropertyChanged();
+            }
         }
     }
 

@@ -223,13 +223,13 @@ namespace AcManager.Tools.Objects {
         }
 
         [CanBeNull]
-        private static string FindNameForMultiLayoutMode(IReadOnlyList<TrackObjectBase> obj) {
-            var baseName = obj[0].Name;
+        public static string FindNameForMultiLayoutMode(IReadOnlyList<string> obj) {
+            var baseName = obj[0];
             if (baseName == null) return null;
 
-            for (var i = obj.Where(x => x.Name != null).Select(x => x.Name.Length).Min(); i > 2; i--) {
+            for (var i = obj.Where(x => x != null).Select(x => x.Length).Min(); i > 2; i--) {
                 var result = baseName.Substring(0, i);
-                if (obj.Skip(1).Any(x => x.Name?.Substring(0, i) != result)) continue;
+                if (obj.Skip(1).Any(x => x?.Substring(0, i) != result)) continue;
 
                 result = result.Trim();
                 if (result.Length > 2 && result.EndsWith(@"-") || result.EndsWith(@"—")) {
@@ -239,6 +239,11 @@ namespace AcManager.Tools.Objects {
             }
 
             return null;
+        }
+
+        [CanBeNull]
+        private static string FindNameForMultiLayoutMode(IReadOnlyList<TrackObjectBase> obj) {
+            return FindNameForMultiLayoutMode(obj.Select(x => x.Name).ToList());
         }
 
         public override bool HandleChangedFile(string filename) {

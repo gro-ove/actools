@@ -62,18 +62,6 @@
                                                     Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="Red"
                                                     StrokeThickness="0" Stretch="Uniform" />
                                             </Button>
-                                            <Button Command="{TemplateBinding AppUpdateCommand}" Style="{StaticResource SystemButton}"
-                                                    RenderOptions.EdgeMode="Aliased"
-                                                    Visibility="{TemplateBinding AppUpdateAvailable, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                                <Button.ToolTip>
-                                                    <ToolTip Content="{Binding AppUpdateAvailable, RelativeSource={RelativeSource TemplatedParent}}"
-                                                             ContentStringFormat="{x:Static mui:UiStrings.UpdateAvailable}" />
-                                                </Button.ToolTip>
-                                                <Path
-                                                    Data="F1 M 37.8516,35.625L 34.6849,38.7917L 23.6016,50.2708L 23.6016,39.9792L 37.8516,24.9375L 52.1016,39.9792L 52.1016,50.2708L 41.0182,38.7917L 37.8516,35.625 Z"
-                                                    Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                    Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
-                                            </Button>
                                             <Button Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}"
                                                     ToolTip="{x:Static mui:UiStrings.Minimize}" Style="{StaticResource SystemButton}"
                                                     RenderOptions.EdgeMode="Aliased">

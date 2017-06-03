@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,17 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public virtual long TotalSize { get; protected set; } = -1L;
 
+        private string _fileName;
+
+        public virtual string FileName {
+            get => _fileName;
+            protected set => _fileName = value;
+        }
+
+        public virtual string Version { get; protected set; }
+
         public DirectLoader(string url) {
+            _fileName = Path.GetFileName(url);
             Url = url;
         }
 
@@ -18,6 +29,10 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public virtual async Task DownloadAsync(WebClient client, string destination, CancellationToken cancellation) {
             await client.DownloadFileTaskAsync(Url, destination);
+        }
+
+        public virtual Task<string> GetDownloadLink(CancellationToken cancellation) {
+            return Task.FromResult(Url);
         }
     }
 }

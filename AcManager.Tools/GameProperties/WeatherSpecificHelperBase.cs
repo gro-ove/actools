@@ -11,7 +11,9 @@ namespace AcManager.Tools.GameProperties {
 
         public sealed override void Set(IniFile file) {
             try {
-                if (file["REMOTE"].GetBool("ACTIVE", false) || file["REMOTE"].GetBool("BENCHMARK", false)) return;
+                var remote = file["REMOTE"];
+                if (remote.GetBool("ACTIVE", false) && !remote.GetBool("__CM_EXTENDED", false) ||
+                        file["BENCHMARK"].GetBool("ACTIVE", false)) return;
 
                 var weatherId = file["WEATHER"].GetNonEmpty("NAME");
                 var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);

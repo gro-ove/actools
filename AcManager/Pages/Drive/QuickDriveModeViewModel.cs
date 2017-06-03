@@ -25,7 +25,7 @@ namespace AcManager.Pages.Drive {
 
         [NotNull]
         protected virtual ISaveHelper CreateSaveable(string key) {
-            return new SaveHelper<SaveableData>("__QuickDrive_Practice", () => Save(new SaveableData()), Load);
+            return new SaveHelper<SaveableData>(key, () => Save(new SaveableData()), Load);
         }
 
         private bool _penalties;
@@ -77,9 +77,9 @@ namespace AcManager.Pages.Drive {
         }
 
         protected void Load(SaveableData data) {
-            data.Penalties = Penalties;
-            data.PlayerBallast = PlayerBallast;
-            data.PlayerRestrictor = PlayerRestrictor;
+            Penalties = data.Penalties;
+            PlayerBallast = data.PlayerBallast;
+            PlayerRestrictor = data.PlayerRestrictor;
         }
     }
 

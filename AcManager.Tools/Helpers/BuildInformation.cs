@@ -1,14 +1,23 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
-    public static class BuildInformation {
+        public static class BuildInformation {
         private static string _appVersion;
 
         [NotNull]
-        public static string AppVersion => _appVersion ??
-                                    (_appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion);
+        public static string AppVersion {
+            get {
+                try {
+                    return _appVersion ??
+                            (_appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion);
+                } catch (Exception e) {
+                    return _appVersion = "0";
+                }
+            }
+        }
 
 #if PLATFORM_X86
         public static string Platform { get; private set; } = @"x86";

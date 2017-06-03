@@ -368,8 +368,25 @@ namespace AcTools.Utils {
         }
 
         public static string NormalizePath(string filename) {
-            return filename.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                    StringSplitOptions.RemoveEmptyEntries).JoinToString(Path.DirectorySeparatorChar);
+            var parts = filename.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                    StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2) {
+                return filename == "." ? "" : filename;
+            }
+
+            var sb = new List<string>(parts.Length * 2);
+            for (var i = 0; i < parts.Length; i++) {
+                var part = parts[i];
+                if (part == ".") continue;
+                if (part == ".." && sb.Count > 0) {
+                    sb.RemoveAt(sb.Count - 1);
+                    continue;
+                }
+
+                sb.Add(part);
+            }
+
+            return sb.JoinToString(Path.DirectorySeparatorChar);
         }
 
         /// <summary>

@@ -58,6 +58,10 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
+            public bool IsAvailable() {
+                return true;
+            }
+
             public async Task CopyToAsync(string destination) {
                 using (var fileStream = new FileStream(destination, FileMode.Create))
                 using (var stream = _archiveEntry.Open()) {

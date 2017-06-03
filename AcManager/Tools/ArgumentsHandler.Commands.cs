@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using AcManager.Pages.Drive;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -63,7 +64,6 @@ namespace AcManager.Tools {
                     break;
 
                 case "open":
-                case "install":
                     var address = Convert.FromBase64String(param).ToUtf8String();
                     var path = await LoadRemoveFile(address, query?.Get(@"name"));
                     if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
@@ -75,6 +75,10 @@ namespace AcManager.Tools {
                     }
 
                     return await ProcessInputFile(path);
+
+                case "install":
+                    return await ContentInstallationManager.Instance.InstallAsync(param) ?
+                            ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
             }
 
             return ArgumentHandleResult.Successful;
@@ -113,6 +117,10 @@ namespace AcManager.Tools {
 
                     case "loadgooglespreadsheetslocale":
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
+
+                    case "install":
+                        return await ContentInstallationManager.Instance.InstallAsync(custom.Params.Get(@"url")) ?
+                                ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);

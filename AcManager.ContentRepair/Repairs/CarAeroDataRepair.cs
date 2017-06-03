@@ -12,7 +12,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
-            if (car.AcdData?.GetIniFile(@"aero.ini").ContainsKey(@"DATA") != true) return null;
+            if (data.GetIniFile(@"aero.ini").ContainsKey(@"DATA") != true) return null;
             return new ContentObsoleteSuggestion("Obsolete section DATA in aero.ini", "How old is this mod? ಠ_ಠ",
                     (p, c) => FixAsync(car, p, c)) {
                 AffectsData = true

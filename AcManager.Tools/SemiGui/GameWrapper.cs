@@ -121,10 +121,14 @@ namespace AcManager.Tools.SemiGui {
 
         private static bool _nationCodesProviderSet;
 
-        private static async Task<Game.Result> StartAsync(Game.StartProperties properties, GameMode mode) {
+        private static void StartAsync_Prepare(Game.StartProperties properties) {
             if (!_nationCodesProviderSet) {
                 _nationCodesProviderSet = true;
-                Game.NationCodeProvider = NationCodeProvider.Instance;
+                try {
+                    Game.NationCodeProvider = NationCodeProvider.Instance;
+                } catch (Exception e) {
+                    Logging.Unexpected(e);
+                }
             }
 
             AcSettingsHolder.Graphics.FixShadowMapBias();
@@ -134,6 +138,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             if (SettingsHolder.Common.FixResolutionAutomatically) {
+                Logging.Debug("Trying to fix resolution just in case…");
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
             }
 
@@ -156,32 +161,33 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
-            // properties.SetAdditional(new FocusHelper());
+        }
 
-            if (mode == GameMode.Race) {
-                if (properties.AssistsProperties == null) {
-                    properties.AssistsProperties = _defaultAssistsFactory?.Create();
-                }
-
-                PrepareRaceModeImmediateStart(properties);
-                PrepareRaceDriverName(properties);
-
-                Logging.Write("Assists: " + properties.AssistsProperties?.GetDescription());
+        private static void StartAsync_PrepareRace(Game.StartProperties properties) {
+            if (properties.AssistsProperties == null) {
+                properties.AssistsProperties = _defaultAssistsFactory?.Create();
             }
 
-            if (_uiFactory == null) {
-                using (ReplaysExtensionSetter.OnlyNewIfEnabled())
-                using (ScreenshotsConverter.OnlyNewIfEnabled()) {
-                    if (mode == GameMode.Race) {
-                        properties.SetAdditional(new RaceCommandExecutor(properties));
-                    } else if (mode == GameMode.Replay) {
-                        properties.SetAdditional(new ReplayCommandExecutor(properties));
-                    }
+            PrepareRaceModeImmediateStart(properties);
+            PrepareRaceDriverName(properties);
 
-                    return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
+            Logging.Write("Assists: " + properties.AssistsProperties?.GetDescription());
+        }
+
+        private static async Task<Game.Result> StartAsync_NoUi(Game.StartProperties properties, GameMode mode) {
+            using (ReplaysExtensionSetter.OnlyNewIfEnabled())
+            using (ScreenshotsConverter.OnlyNewIfEnabled()) {
+                if (mode == GameMode.Race) {
+                    properties.SetAdditional(new RaceCommandExecutor(properties));
+                } else if (mode == GameMode.Replay) {
+                    properties.SetAdditional(new ReplayCommandExecutor(properties));
                 }
-            }
 
+                return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
+            }
+        }
+
+        private static async Task<Game.Result> StartAsync_Ui(Game.StartProperties properties, GameMode mode) {
             using (var ui = _uiFactory.Create()) {
                 Logging.Write($"Starting game: {properties.GetDescription()}");
                 ui.Show(properties, mode);
@@ -258,6 +264,17 @@ namespace AcManager.Tools.SemiGui {
                     IsInGame = false;
                 }
             }
+        }
+
+        private static Task<Game.Result> StartAsync(Game.StartProperties properties, GameMode mode) {
+            StartAsync_Prepare(properties);
+            // properties.SetAdditional(new FocusHelper());
+
+            if (mode == GameMode.Race) {
+                StartAsync_PrepareRace(properties);
+            }
+
+            return _uiFactory == null ? StartAsync_NoUi(properties, mode) : StartAsync_Ui(properties, mode);
         }
     }
 }

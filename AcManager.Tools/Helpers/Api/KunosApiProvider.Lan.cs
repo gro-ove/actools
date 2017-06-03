@@ -10,11 +10,13 @@ using System.Windows;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
     public static class StringsHelper {
@@ -81,6 +83,22 @@ namespace AcManager.Tools.Helpers.Api {
             public int Current;
         }
 
+        [CanBeNull]
+        private static ServerInformationComplete TryToGetInformationDirect(string ip, int portC) {
+            var requestUri = $@"http://{ip}:{portC}/INFO";
+
+            try {
+                return PrepareLoadedDirectly(
+                        JsonConvert.DeserializeObject<ServerInformationComplete>(LoadAsync(requestUri, OptionDirectRequestTimeout).Result), ip);
+            } catch (WebException e) {
+                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
+                return null;
+            } catch (Exception e) {
+                Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
+                return null;
+            }
+        }
+
         private static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
                 CancellationToken cancellation) {
             var addresses = GetBroadcastAddresses().ToList();
@@ -99,7 +117,8 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 Parallel.ForEach(entries, new ParallelOptions {
-                    CancellationToken = cancellation
+                    CancellationToken = cancellation,
+                    MaxDegreeOfParallelism = (Environment.ProcessorCount - 1).Clamp(1, 4)
                 }, (entry, ipLoopState) => {
                     cancellation.ThrowIfCancellationRequested();
 

@@ -134,6 +134,7 @@ namespace AcManager.Tools.AcManagersNew {
                     if (obj != null && !isFreshlyLoaded &&
                             (change.FullFilename == null || !obj.HandleChangedFile(change.FullFilename))) {
                         obj.Reload();
+                        UpdateList(true);
                     }
                     break;
 
@@ -141,6 +142,7 @@ namespace AcManager.Tools.AcManagersNew {
                     if (obj != null) {
                         if (!isFreshlyLoaded) {
                             obj.Reload();
+                            UpdateList(true);
                         }
                     } else if (FileUtils.Exists(dir) && Filter(dir)) {
                         id = Directories.GetId(FileUtils.GetOriginalFilename(dir));
@@ -155,6 +157,7 @@ namespace AcManager.Tools.AcManagersNew {
                         if (FileUtils.Exists(dir) && Filter(dir)) {
                             if (!isFreshlyLoaded) {
                                 obj.Reload();
+                                UpdateList(true);
                             }
                         } else {
                             RemoveFromList(obj.Id);
@@ -166,6 +169,7 @@ namespace AcManager.Tools.AcManagersNew {
                     if (obj != null) {
                         if (dir == change.NewLocation) {
                             if (isFreshlyLoaded) {
+                                // TODO: why without inversion? could be an issue? or some explanation required
                                 obj.Reload();
                             }
                             break;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -45,6 +46,10 @@ namespace AcManager.Tools.ContentInstallation {
                 _progress = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+
+                if (value.IsReady) {
+                    ContentInstallationManager.Instance.UpdateBusyDoingSomething();
+                }
             }
         }
 
@@ -89,6 +94,7 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
                 _applyPasswordCommand?.RaiseCanExecuteChanged();
+                ContentInstallationManager.Instance.UpdateBusyDoingSomething();
             }
         }
 
@@ -151,6 +157,7 @@ namespace AcManager.Tools.ContentInstallation {
                 _waitingForConfirmation = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                ContentInstallationManager.Instance.UpdateBusyDoingSomething();
                 _confirmCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -179,6 +186,30 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
+        #region Some details
+        private string _fileName;
+
+        public string FileName {
+            get { return _fileName; }
+            set {
+                if (Equals(value, _fileName)) return;
+                _fileName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _version;
+
+        public string Version {
+            get { return _version; }
+            set {
+                if (Equals(value, _version)) return;
+                _version = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         private static bool _sevenZipWarning;
 
         public async Task<bool> RunAsync() {
@@ -196,12 +227,19 @@ namespace AcManager.Tools.ContentInstallation {
 
                     string localFilename;
 
-                    // load remote file if it is remote
+                    // Load remote file if it is remote
                     if (ContentInstallationManager.IsRemoteSource(Source)) {
                         progress.Report(AsyncProgressEntry.FromStringIndetermitate("Downloading…"));
 
                         try {
                             localFilename = await FlexibleLoader.LoadAsync(Source,
+                                    metaInformationCallback: information => {
+                                        if (information.FileName != Path.GetFileName(Source)) {
+                                            FileName = information.FileName;
+                                        }
+
+                                        Version = information.Version;
+                                    },
                                     progress: progress.Subrange(0.001, 0.999, "Downloading ({0})…"),
                                     cancellation: cancellation.Token);
                             if (CheckCancellation()) return false;
@@ -223,7 +261,7 @@ namespace AcManager.Tools.ContentInstallation {
                     try {
                         progress.Report(AsyncProgressEntry.FromStringIndetermitate("Searching for content…"));
 
-                        // scan for content
+                        // Scan for content
                         using (var installator = await ContentInstallation.FromFile(localFilename, _installationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
@@ -234,8 +272,8 @@ namespace AcManager.Tools.ContentInstallation {
                                         PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsInstalled != true) {
                                     Toast.Show("Try 7-Zip",
                                             "Have some unusual archive you want to install content from? Try 7-Zip plugin, you can find it in Settings",
-                                            ContentInstallationManager.PluginsSusanin == null ? (Action)null : () => {
-                                                ContentInstallationManager.PluginsSusanin?.ShowPluginsList();
+                                            ContentInstallationManager.PluginsNavigator == null ? (Action)null : () => {
+                                                ContentInstallationManager.PluginsNavigator?.ShowPluginsList();
                                             });
                                     _sevenZipWarning = true;
                                 }
@@ -275,12 +313,9 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             var wrappers = new List<EntryWrapper>();
-                            foreach (var entryWrapper in entries) {
-                                var manager = entryWrapper.GetManager();
-                                if (manager == null) continue;
-
-                                var existed = await manager.GetObjectByIdAsync(entryWrapper.Id);
-                                wrappers.Add(new EntryWrapper(entryWrapper, existed == null, (existed as AcJsonObjectNew)?.Version));
+                            foreach (var entry in entries) {
+                                wrappers.Add(new EntryWrapper(entry, await entry.GetExistingAcCommonObjectAsync()));
+                                entry.SingleEntry = entries.Count == 1;
                             }
 
                             if (wrappers.Count == 0) {
@@ -339,7 +374,11 @@ namespace AcManager.Tools.ContentInstallation {
 
         #region Found entries
         public class EntryWrapper : NotifyPropertyChanged {
+            [NotNull]
             public ContentEntryBase Entry { get; }
+
+            [CanBeNull]
+            public AcCommonObject Existing { get; }
 
             private bool _active;
 
@@ -352,11 +391,12 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
-            public EntryWrapper(ContentEntryBase entry, bool isNew, [CanBeNull] string existingVersion) {
+            public EntryWrapper([NotNull] ContentEntryBase entry, [CanBeNull] AcCommonObject existing) {
                 Entry = entry;
+                Existing = existing;
+                IsNew = existing == null;
+                ExistingVersion = (existing as IAcObjectVersionInformation)?.Version;
                 Active = true;
-                IsNew = isNew;
-                ExistingVersion = existingVersion;
                 IsNewer = entry.Version.IsVersionNewerThan(ExistingVersion);
                 IsOlder = entry.Version.IsVersionOlderThan(ExistingVersion);
             }
@@ -369,13 +409,7 @@ namespace AcManager.Tools.ContentInstallation {
             public bool IsNewer { get; set; }
             public bool IsOlder { get; set; }
 
-            public string DisplayName => IsNew ? Entry.GetNew(Entry.Name) : Entry.GetExisting(Entry.Name);
-            public string DisplayEntryId => string.IsNullOrEmpty(Entry.Id) ? "N/A" : Entry.Id;
-            public string DisplayEntryPath => string.IsNullOrEmpty(Entry.EntryPath) ? "N/A" : Entry.EntryPath;
-
-            private BetterImage.BitmapEntry? _icon;
-            public BetterImage.BitmapEntry? Icon => Entry.IconData == null ? null :
-                    _icon ?? (_icon = BetterImage.LoadBitmapSourceFromBytes(Entry.IconData, 32, 32));
+            public string DisplayName => IsNew ? Entry.GetNew(Entry.Name) : Entry.GetExisting(Existing?.DisplayName ?? Entry.Name);
         }
 
         private EntryWrapper[] _entries;

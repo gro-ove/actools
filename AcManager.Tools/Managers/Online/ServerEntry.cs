@@ -25,19 +25,19 @@ namespace AcManager.Tools.Managers.Online {
 
             Ping = null;
 
-            var errors = new List<string>(3);
-            var status = UpdateValues(information, errors, true);
+            PrepareErrorsList();
+            var status = UpdateValues(information, true);
             Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
-            Errors = errors;
+            UpdateErrorsList();
         }
 
         public void UpdateValues([NotNull] ServerInformation information) {
-            var errors = new List<string>(3);
-            var status = UpdateValues(information, errors, true);
+            PrepareErrorsList();
+            var status = UpdateValues(information, true);
             if (status.HasValue) {
                 Status = status.Value;
-                Errors = errors;
             }
+            UpdateErrorsList();
         }
 
         private string _actualName;
@@ -52,21 +52,37 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private void UpdateMissingContent() {
+            if (!IsFullyLoaded || Cars == null) {
+                _missingCarsError = null;
+            } else {
+                var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
+                _missingCarsError = list.Any() ? (list.Count == 1
+                        ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
+                        : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString())) : null;
+            }
+
+            if (!IsFullyLoaded || Track != null) {
+                _missingTrackError = null;
+            } else {
+                _missingTrackError = string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));
+            }
+        }
+
         /// <summary>
         /// Sets properties based on loaded information.
         /// </summary>
         /// <param name="baseInformation">Loaded information.</param>
-        /// <param name="errors">Errors will be put here.</param>
         /// <param name="setCurrentDriversCount">Set CurrentDriversCount property.</param>
         /// <returns>Null if everything is OK, ServerStatus.Error/ServerStatus.Unloaded message otherwise.</returns>
-        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, [NotNull] ICollection<string> errors, bool setCurrentDriversCount) {
+        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, bool setCurrentDriversCount) {
             if (Ip != baseInformation.Ip) {
-                errors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
+                _updateCurrentErrors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
                 return ServerStatus.Error;
             }
 
             if (PortHttp != baseInformation.PortHttp) {
-                errors.Add($"HTTP port changed (from {PortHttp} to {baseInformation.PortHttp})");
+                _updateCurrentErrors.Add($"HTTP port changed (from {PortHttp} to {baseInformation.PortHttp})");
                 return ServerStatus.Error;
             }
 
@@ -115,23 +131,14 @@ namespace AcManager.Tools.Managers.Online {
                 Track = TrackId == null ? null : GetTrack(TrackId);
             }
 
-            bool missingContent;
-            if (IsFullyLoaded) {
-                var missingCar = SetMissingCarErrorIfNeeded(errors);
-                var missingTrack = SetMissingTrackErrorIfNeeded(errors);
-                missingContent = missingCar || missingTrack;
-
-                AllCarsAvailable = !missingCar;
-                AllContentAvailable = !missingContent;
-            } else {
-                missingContent = false;
-                AllCarsAvailable = true;
-                AllContentAvailable = true;
-                errors.Add("Information’s missing");
+            if (!IsFullyLoaded) {
+                _updateCurrentErrors.Add("Information is missing");
             }
 
+            UpdateMissingContent();
+
             ServerStatus? result;
-            if (missingContent) {
+            if (_missingCarsError != null || _missingTrackError != null) {
                 result = SettingsHolder.Online.LoadServersWithMissingContent ? ServerStatus.MissingContent : ServerStatus.Error;
             } else if (Status == ServerStatus.Error) {
                 result = ServerStatus.Unloaded;
@@ -169,24 +176,6 @@ namespace AcManager.Tools.Managers.Online {
             // var url = SettingsHolder.Content.MissingContentSearch.GetUri(id, car ? SettingsHolder.MissingContentType.Car : SettingsHolder.MissingContentType.Track);
             var url = $"cmd://findmissing/{(car ? "car" : "track")}?param={id}";
             return string.Format("“{0}”", $@"[url={BbCodeBlock.EncodeAttribute(url)}]{id}[/url]");
-        }
-
-        private bool SetMissingCarErrorIfNeeded([NotNull] ICollection<string> errorMessage) {
-            if (!IsFullyLoaded || Cars == null) return false;
-
-            var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
-            if (!list.Any()) return false;
-
-            errorMessage.Add(list.Count == 1
-                    ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
-                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString()));
-            return true;
-        }
-
-        private bool SetMissingTrackErrorIfNeeded([NotNull] ICollection<string> errorMessage) {
-            if (!IsFullyLoaded || Track != null) return false;
-            errorMessage.Add(string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)));
-            return true;
         }
 
         private DateTime _previousUpdateTime;

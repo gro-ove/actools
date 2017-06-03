@@ -24,6 +24,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools;
 using AcTools.DataAnalyzer;
 using AcTools.DataFile;

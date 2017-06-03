@@ -25,6 +25,10 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
+        public static async Task WhenAll(this IEnumerable<Task> tasks) {
+            await Task.WhenAll(tasks);
+        }
+
         public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
             var list = new List<Task<T>>(limit);
             var result = new List<T>();
@@ -44,6 +48,21 @@ namespace AcManager.Tools.Helpers {
                 result.AddRange(await Task.WhenAll(list));
             }
             return result;
+        }
+
+        public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks) {
+            return await Task.WhenAll(tasks);
+        }
+
+        public static Task<TBase> FromDerived<TBase, TDerived>(this Task<TDerived> task) where TDerived : TBase {
+            var tcs = new TaskCompletionSource<TBase>();
+            task.ContinueWith(t => tcs.SetResult(t.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.ContinueWith(t => {
+                if (t.Exception == null) return;
+                tcs.SetException(t.Exception.InnerExceptions);
+            }, TaskContinuationOptions.OnlyOnFaulted);
+            task.ContinueWith(t => tcs.SetCanceled(), TaskContinuationOptions.OnlyOnCanceled);
+            return tcs.Task;
         }
     }
 }

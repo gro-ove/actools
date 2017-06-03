@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -8,11 +9,11 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Lists;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -32,18 +33,71 @@ namespace AcManager.Tools.Managers.Online {
             _holdedList.Released += OnHoldedListReleased;
 
             CarsManager.Instance.WrappersList.CollectionReady += OnCarsListCollectionReady;
+            CarsManager.Instance.WrappersList.ItemPropertyChanged += OnCarPropertyChanged;
+            CarSkinsManager.AnySkinsCollectionReady += OnAnySkinsCollectionReady;
+            TracksManager.Instance.WrappersList.CollectionReady += OnTracksListCollectionReady;
+            TracksManager.Instance.WrappersList.ItemPropertyChanged += OnTrackPropertyChanged;
+            WeatherManager.Instance.WrappersList.CollectionReady += OnWeatherListCollectionReady;
         }
 
-        private void OnCarsListCollectionReady(object sender, CollectionReadyEventArgs eventArgs) {
-            Logging.Debug("Event " + eventArgs.JustReady);
+        private void OnAnySkinsCollectionReady(object sender, SkinsCollectionReadyEventArgs e) {
+            if (e.JustReady) return;
 
-            if (eventArgs.JustReady) return;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                List[i].CheckCarSkins(e.CarId);
+            }
+        }
+
+        private void OnCarPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(CarObject.Version)) return;
+
+            var car = (CarObject)sender;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                List[i].OnCarVersionChanged(car);
+            }
+        }
+
+        private void OnTrackPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(TrackObjectBase.Version)) return;
+
+            var track = (TrackObjectBase)sender;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                List[i].OnTrackVersionChanged(track);
+            }
+        }
+
+        private void OnCarsListCollectionReady(object sender, CollectionReadyEventArgs e) {
+            if (e.JustReady) return;
 
             var dirty = false;
             for (var i = List.Count - 1; i >= 0; i--) {
-                var server = List[i];
-                Logging.Debug("server: " + server.Id);
-                dirty |= server.CheckCars();
+                dirty |= List[i].CheckCars();
+            }
+
+            if (dirty) {
+                PingEverything(null).Forget();
+            }
+        }
+
+        private void OnTracksListCollectionReady(object sender, CollectionReadyEventArgs e) {
+            if (e.JustReady) return;
+
+            var dirty = false;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                dirty |= List[i].CheckTrack();
+            }
+
+            if (dirty) {
+                PingEverything(null).Forget();
+            }
+        }
+
+        private void OnWeatherListCollectionReady(object sender, CollectionReadyEventArgs e) {
+            if (e.JustReady) return;
+
+            var dirty = false;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                dirty |= List[i].CheckWeather();
             }
 
             if (dirty) {

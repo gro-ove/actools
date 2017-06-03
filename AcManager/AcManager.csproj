@@ -203,6 +203,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="AppUi.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
     <Compile Include="CustomShowroom\CarTextureDialog.xaml.cs">
       <DependentUpon>CarTextureDialog.xaml</DependentUpon>
@@ -520,7 +521,6 @@
     <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
-    <Compile Include="Tools\DataUpdateWarning.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
@@ -1467,6 +1467,7 @@
     <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="About\ImportantTips\Python Apps Versions.txt" />
     <None Include="About\Licenses\AdornedControl\LICENSE" />
     <None Include="About\Licenses\AssettoCorsaSharedMemory\LICENSE" />
     <None Include="About\Licenses\AvalonEdit\LICENSE" />
@@ -1768,7 +1769,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>cd "$(ProjectDir)\About" &amp; zsh -c "~/bin/t4auto Data.tt *(F)"
+vsincver --smart $(ProjectDir)</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup>

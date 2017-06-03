@@ -55,6 +55,10 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
+            public bool IsAvailable() {
+                return true;
+            }
+
             public async Task CopyToAsync(string destination) {
                 if (!File.Exists(_filename)) {
                     throw new FileNotFoundException(ToolsStrings.DirectoryInstallator_FileNotFound, _filename);

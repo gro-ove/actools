@@ -22,7 +22,8 @@ namespace FirstFloor.ModernUI.Dialogs {
                 MinHeight = 0,
                 MinWidth = 0,
                 MaxHeight = 480,
-                MaxWidth = 640
+                MaxWidth = 640,
+                Owner = null
             };
 
             dlg.Buttons = entry.Solutions.Select(x => dlg.CreateFixItButton(x, entry)).Where(x => x != null).Union(new[] { dlg.OkButton });

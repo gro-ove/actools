@@ -29,6 +29,9 @@ namespace AcTools.Tests {
             Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\Windows"));
             Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\Windows\"));
             Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\/Windows\\"));
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\/Windows\\system32\.."));
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\.\Windows\."));
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@".\C:\.\Windows\..\Windows"));
         }
 
         [Test]

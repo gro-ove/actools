@@ -18,6 +18,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

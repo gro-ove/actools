@@ -49,6 +49,12 @@ namespace AcManager.Tools.Helpers.AcLog {
         FlamesV1TextureNotFound,
 
         [Description("Flames textures are missing")]
-        FlamesFlashTexturesAreMissing
+        FlamesFlashTexturesAreMissing,
+
+        [Description("Default tyres index might be wrong")]
+        DefaultTyresIndexMightBeWrong,
+
+        [Description("Tyres might be wrong")]
+        TyresMightBeWrong
     }
 }

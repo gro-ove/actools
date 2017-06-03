@@ -77,38 +77,82 @@ namespace AcManager.Tools.Managers.Online {
             public string Id { get; }
 
             [CanBeNull]
-            public AcItemWrapper CarObjectWrapper { get; }
+            private AcItemWrapper _carObjectWrapper;
 
-            public bool CarExists { get; }
+            [CanBeNull]
+            public AcItemWrapper CarObjectWrapper {
+                get { return _carObjectWrapper; }
+                set {
+                    if (Equals(value, _carObjectWrapper)) return;
+                    _carObjectWrapper = value;
+                    _availableSkinSet = false;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CarObject));
+                    OnPropertyChanged(nameof(DisplayName));
+                    OnPropertyChanged(nameof(CarExists));
+                    OnPropertyChanged(nameof(PreviewImage));
+                    OnPropertyChanged(nameof(IsAvailable));
+                }
+            }
+
+            public bool CarExists => CarObjectWrapper != null;
 
             [CanBeNull]
             public CarObject CarObject => (CarObject)CarObjectWrapper?.Loaded();
 
-            private CarSkinObject _availableSkin;
-
             private CarEntry(string carId, AcItemWrapper carObjectWrapper) {
                 Id = carId;
                 CarObjectWrapper = carObjectWrapper;
-                CarExists = carObjectWrapper != null;
             }
 
             public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) {}
 
-            public CarEntry([NotNull] AcItemWrapper carObjectWrapper) : this(carObjectWrapper.Id, carObjectWrapper) {}
+            public bool UpdateCarObject() {
+                var co = CarsManager.Instance.GetWrapperById(Id);
+                if (co != CarObjectWrapper) {
+                    CarObjectWrapper = co;
+                    return true;
+                }
+
+                return false;
+            }
+
+            private string _availableSkinId;
 
             [CanBeNull]
-            public CarSkinObject AvailableSkin {
-                get { return _availableSkin; }
+            public string AvailableSkinId {
+                get {
+                    return _availableSkinId;
+                }
                 set {
-                    if (Equals(value, _availableSkin)) return;
-                    _availableSkin = value;
+                    if (Equals(value, _availableSkinId)) return;
+                    _availableSkinId = value;
+                    _availableSkinSet = false;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(AvailableSkin));
                     OnPropertyChanged(nameof(PreviewImage));
 
                     if (Total == 0 && value != null && CarObject != null) {
-                        CarObject.SelectedSkin = value;
+                        CarObject.SelectedSkin = AvailableSkin;
                     }
                 }
+            }
+
+            private bool _availableSkinSet;
+            private CarSkinObject _availableSkin;
+
+            [CanBeNull]
+            public CarSkinObject AvailableSkin {
+                get {
+                    if (!_availableSkinSet) {
+                        _availableSkin = _availableSkinId == null ? null :
+                                CarObject?.GetSkinById(_availableSkinId) ?? CarObject?.GetFirstSkinOrNull();
+                        _availableSkinSet = true;
+                    }
+
+                    return _availableSkin;
+                }
+                set { AvailableSkinId = value?.Id; }
             }
 
             public string PreviewImage => AvailableSkin?.PreviewImage ?? CarObject?.SelectedSkin?.PreviewImage;
@@ -138,11 +182,10 @@ namespace AcManager.Tools.Managers.Online {
             private bool _isAvailable;
 
             public bool IsAvailable {
-                get { return _isAvailable; }
+                get { return _isAvailable && CarExists; }
                 set {
                     if (Equals(value, _isAvailable)) return;
                     _isAvailable = value;
-                    OnPropertyChanged();
                     OnPropertyChanged();
                 }
             }

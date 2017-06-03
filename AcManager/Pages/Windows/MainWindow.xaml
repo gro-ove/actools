@@ -1,4 +1,4 @@
-﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<c:AppModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
@@ -9,7 +9,11 @@
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
     AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+    LocationAndSizeKey="MainWindow_LS" x:Name="Window"
+    AdditionalContentAvailable="{Binding Queue.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}"
+    AdditionalContentDownloading="{Binding BusyDoingSomething, Source={x:Static t:ContentInstallationManager.Instance}}"
+    AdditionalContentToolTip="{Binding Queue.Count, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} in installing queue'}"
+    ShowAdditionalContentDialogCommand="{Binding ShowAdditionalContentDialogCommand}">
   <mui:ModernWindow.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
   </mui:ModernWindow.Resources>
@@ -154,4 +158,4 @@
       </Border>
     </Popup>
   </mui:Cell>
-</mui:ModernWindow>
+</c:AppModernWindow>

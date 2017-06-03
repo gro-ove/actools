@@ -135,6 +135,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppModernWindow.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
@@ -380,6 +381,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\MessageBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\AppModernWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

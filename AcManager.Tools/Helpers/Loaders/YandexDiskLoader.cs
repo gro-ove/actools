@@ -23,7 +23,9 @@ namespace AcManager.Tools.Helpers.Loaders {
             Logging.Write("Yandex Disk download link: " + Url);
 
             try {
-                if (FlexibleParser.TryParseLong(HttpUtility.ParseQueryString(Url)["fsize"], out long size)) {
+                var query = HttpUtility.ParseQueryString(Url);
+                FileName = query["filename"];
+                if (FlexibleParser.TryParseLong(query["fsize"], out long size)) {
                     TotalSize = size;
                 }
             } catch (Exception) {

@@ -42,7 +42,7 @@ namespace AcManager.ContentRepair {
 
                 cancellation.ThrowIfCancellationRequested();
                 kn5.Save(filename);
-            }, cancellation); 
+            }, cancellation);
         }
 
         public static Task FixMissingDefaultPpFilter(CancellationToken cancellation) {
@@ -58,11 +58,11 @@ namespace AcManager.ContentRepair {
 
                     File.WriteAllBytes(PpFiltersManager.Instance.DefaultFilename, entry.OpenEntryStream().ReadAsBytesAndDispose());
                 }
-            }, cancellation); 
+            }, cancellation);
         }
 
         public static Func<CancellationToken, Task> FixOldFlames(IEnumerable<string> carIds) {
-            return async c => { 
+            return async c => {
                 foreach (var car in carIds.Select(x => CarsManager.Instance.GetById(x)).Where(x => x != null)) {
                     await CarFlamesRepair.UpgradeToSecondVersionAsync(car, cancellation: c);
                     if (c.IsCancellationRequested) return;
@@ -86,31 +86,54 @@ namespace AcManager.ContentRepair {
             };
         }
 
+        public static bool IsDefaultTyresIndexWrong(IEnumerable<string> carId) {
+            return carId.Select(x => CarsManager.Instance.GetById(x)?.AcdData).NonNull().Any(CarDefaultTyreSetRepair.IsInvalid);
+        }
+
+        public static Func<CancellationToken, Task> FixDefaultTyresIndex(IEnumerable<string> carId) {
+            return c => {
+                foreach (var data in carId.Select(x => CarsManager.Instance.GetById(x)?.AcdData).NonNull().Where(CarDefaultTyreSetRepair.IsInvalid)) {
+                    CarDefaultTyreSetRepair.Fix(data);
+                }
+
+                return Task.Delay(0);
+            };
+        }
+
         public static void Initialize() {
             AcLogHelper.AddExtension(new LogExtension());
         }
 
         public class LogExtension : IAcLogHelperExtension {
-            private static IEnumerable<string> GetCarsIds(string log) {
-                return Regex.Matches(log, @"content/cars/(\w+)").Cast<Match>().Select(x => x.Groups[1].Value).Distinct().ToList();
-            }
-
             public WhatsGoingOn Detect(string log, string crash) {
                 if (log.Contains(@"Flame V1: texture not found")) {
                     return new WhatsGoingOn(WhatsGoingOnType.FlamesV1TextureNotFound) {
-                        Fix = FixOldFlames(GetCarsIds(log))
+                        Fix = FixOldFlames(WhatsGoingOn.GetCarsIds(log)),
+                        FixAffectingDataOriginalLog = log
                     };
+                }
+
+                if (log.Contains(@": AIDriver::updateTyres") && log.Contains("getVKMForMult")) {
+                    var ids = WhatsGoingOn.GetCarsIds(log).ToList();
+                    if (IsDefaultTyresIndexWrong(ids)) {
+                        return new WhatsGoingOn(WhatsGoingOnType.DefaultTyresIndexMightBeWrong) {
+                            Fix = FixDefaultTyresIndex(ids),
+                            FixAffectingDataOriginalLog = log
+                        };
+                    }
+
+                    return new WhatsGoingOn(WhatsGoingOnType.TyresMightBeWrong);
                 }
 
                 if (log.Contains(@"FlameStart : Flash textures are missing!")) {
                     return new WhatsGoingOn(WhatsGoingOnType.FlamesFlashTexturesAreMissing) {
-                        Fix = FixMissingFlamesTextures(GetCarsIds(log))
+                        Fix = FixMissingFlamesTextures(WhatsGoingOn.GetCarsIds(log))
                     };
                 }
 
                 if (log.Contains(@"COULD NOT FIND SUSPENSION OBJECT SUSP_")) {
                     return new WhatsGoingOn(WhatsGoingOnType.SuspensionIsMissing) {
-                        Fix = FixMissingSuspNodes(GetCarsIds(log))
+                        Fix = FixMissingSuspNodes(WhatsGoingOn.GetCarsIds(log))
                     };
                 }
 

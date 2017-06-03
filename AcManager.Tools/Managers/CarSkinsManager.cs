@@ -10,15 +10,34 @@ using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
+    public class SkinsCollectionReadyEventArgs : CollectionReadyEventArgs {
+        public readonly string CarId;
+        public readonly bool JustReady;
+
+        public SkinsCollectionReadyEventArgs(string carId, CollectionReadyEventArgs baseArgs) {
+            CarId = carId;
+            JustReady = baseArgs.JustReady;
+        }
+    }
+
     public class CarSkinsManager : AcManagerNew<CarSkinObject> {
+        public static event EventHandler<SkinsCollectionReadyEventArgs> AnySkinsCollectionReady;
+        private readonly EventHandler<CollectionReadyEventArgs> _collectionReadyHandler;
+
         public string CarId { get; }
 
         public override IAcDirectories Directories { get; }
 
         internal CarSkinsManager(string carId, AcDirectoriesBase directories, EventHandler<CollectionReadyEventArgs> collectionReadyHandler) {
+            _collectionReadyHandler = collectionReadyHandler;
             CarId = carId;
             Directories = directories;
-            InnerWrappersList.CollectionReady += collectionReadyHandler;
+            InnerWrappersList.CollectionReady += OnCollectionReady;
+        }
+
+        private void OnCollectionReady(object sender, CollectionReadyEventArgs e) {
+            _collectionReadyHandler.Invoke(sender, e);
+            AnySkinsCollectionReady?.Invoke(sender, new SkinsCollectionReadyEventArgs(CarId, e));
         }
 
         private class NumericSortedAcWrapperObservableCollection : SortedAcWrapperObservableCollection {

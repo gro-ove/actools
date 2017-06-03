@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api;
@@ -11,30 +13,66 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
+    public class FlexibleLoaderMetaInformation {
+        public FlexibleLoaderMetaInformation(long totalSize, string fileName, string version) {
+            TotalSize = totalSize;
+            FileName = fileName;
+            Version = version;
+        }
+
+        public long TotalSize { get; }
+        public string FileName { get; }
+        public string Version { get; }
+    }
+
     public static class FlexibleLoader {
         internal static ILoader CreateLoader(string uri) {
             if (GoogleDriveLoader.Test(uri)) return new GoogleDriveLoader(uri);
             if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
+            if (MediaFireLoader.Test(uri)) return new MediaFireLoader(uri);
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
             if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);
             return new DirectLoader(uri);
         }
 
+        private static string GetTemporaryName(string argument) {
+            using (var sha1 = new SHA1Managed()) {
+                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(argument));
+                return BitConverter.ToString(hash).Replace(@"-", "").ToLower();
+            }
+        }
+
         [ItemCanBeNull]
-        public static Task<string> TryToLoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<string> TryToLoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
+                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var tmp = name == null
-                    ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
-                    : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
-            return TryToLoadAsyncTo(argument, tmp, progress, cancellation);
+            if (useCachedIfAny) {
+                var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
+                var destination = Path.Combine(Path.GetTempPath(), fileName);
+                if (File.Exists(destination)) return destination;
+
+                var temporary = destination + ".tmp";
+                if (await TryToLoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation) == null ||
+                        !File.Exists(temporary)) {
+                    return null;
+                }
+
+                File.Move(temporary, destination);
+                return destination;
+            } else {
+                var destination = name == null
+                        ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
+                        : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+                return await TryToLoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
+            }
         }
 
         [ItemCanBeNull]
         public static async Task<string> TryToLoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             try {
-                return await LoadAsyncTo(argument, destination, progress, cancellation).ConfigureAwait(false);
+                return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
             } catch (TaskCanceledException) {
                 return null;
             } catch (WebException) when (cancellation.IsCancellationRequested) {
@@ -46,17 +84,49 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         [ItemNotNull]
-        public static Task<string> LoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
+                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var tmp = name == null
-                    ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
-                    : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
-            return LoadAsyncTo(argument, tmp, progress, cancellation);
+            if (useCachedIfAny) {
+                var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
+                var destination = Path.Combine(Path.GetTempPath(), fileName);
+                if (File.Exists(destination)) return destination;
+
+                var temporary = destination + ".tmp";
+                await LoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation);
+                if (File.Exists(temporary)) {
+                    File.Move(temporary, destination);
+                    return destination;
+                }
+
+                throw new Exception("Downloaded file is missing");
+            } else {
+                var destination = name == null
+                        ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
+                        : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+                return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
+            }
+        }
+
+        public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default(CancellationToken)) {
+            var loader = CreateLoader(argument);
+            using (var order = KillerOrder.Create(new CookieAwareWebClient {
+                Headers = {
+                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
+                }
+            }, TimeSpan.FromMinutes(2))) {
+                var client = order.Victim;
+                if (!await loader.PrepareAsync(client, cancellation)) {
+                    throw new InformativeException("Can’t load file", "Loader preparation failed.");
+                }
+
+                return await loader.GetDownloadLink(cancellation);
+            }
         }
 
         [ItemNotNull]
-        public static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+        private static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
 
             using (var order = KillerOrder.Create(new CookieAwareWebClient {
@@ -75,6 +145,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
                 cancellation.ThrowIfCancellationRequested();
+                metaInformationCallback?.Invoke(new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version));
 
                 var s = Stopwatch.StartNew();
                 client.DownloadProgressChanged += (sender, args) => {

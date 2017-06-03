@@ -73,6 +73,7 @@
     <Compile Include="Repairs\CarAeroDataRepair.cs" />
     <Compile Include="Repairs\CarAiShiftingPointsRepair.cs" />
     <Compile Include="Repairs\CarDashCameraRepair.cs" />
+    <Compile Include="Repairs\CarDefaultTyreSetRepair.cs" />
     <Compile Include="Repairs\CarDriver3DRepair.cs" />
     <Compile Include="Repairs\CarFlamesRepair.cs" />
     <Compile Include="Repairs\CarIniVersionRepair.cs" />

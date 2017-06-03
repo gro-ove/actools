@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation;
@@ -10,7 +9,6 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
@@ -48,6 +46,17 @@ namespace AcManager.Tools.Managers.Online {
             set {
                 if (Equals(value, _city)) return;
                 _city = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _description;
+
+        public string Description {
+            get { return _description; }
+            set {
+                if (Equals(value, _description)) return;
+                _description = value;
                 OnPropertyChanged();
             }
         }
@@ -219,11 +228,23 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private ServerInformationExtendedAssists _assists;
+
+        public ServerInformationExtendedAssists Assists {
+            get { return _assists; }
+            set {
+                if (Equals(value, _assists)) return;
+                _assists = value;
+                OnPropertyChanged();
+            }
+        }
+
         public enum IsAbleToInstallMissingContent {
             NoMissingContent,
             NotAbleTo,
             Partially,
-            AllOfIt
+            AllOfIt,
+            Updates
         }
 
         private void UpdateValuesExtended([CanBeNull] ServerInformationExtended extended) {
@@ -235,6 +256,8 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             City = extended.City;
+            Assists = extended.Assists;
+            Description = extended.Description;
             WeatherId = extended.WeatherId;
             AmbientTemperature = extended.AmbientTemperature;
             RoadTemperature = extended.RoadTemperature;
@@ -260,9 +283,8 @@ namespace AcManager.Tools.Managers.Online {
                 foreach (var carPair in cars) {
                     var car = CarsManager.Instance.GetById(carPair.Key);
 
-                    if (car == null) {
+                    if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
                         if (carPair.Value.GetBoolValueOnly("unavailable") == true) continue;
-
                         var url = carPair.Value.GetStringValueOnly("url") ??
                                 $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}";
                         yield return ContentInstallationManager.Instance.InstallAsync(url);
@@ -295,19 +317,20 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var track = mref["track"] as JObject;
-            if (track != null && Track == null) {
+            if (track != null && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version))) {
                 var url = track.GetStringValueOnly("url") ??
                         $"http://{Ip}:{PortExtended}/content/track";
                 yield return ContentInstallationManager.Instance.InstallAsync(url);
             }
         }
 
-        private AsyncCommand _installMissingContentCommand;
+        private DelegateCommand _installMissingContentCommand;
 
-        public AsyncCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new AsyncCommand(async () => {
-            await InstallMissingContentTasks().WhenAll(5);
+        public DelegateCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(() => {
+            InstallMissingContentTasks().WhenAll().Forget();
         }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
-                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt));
+                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
+                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates));
 
         private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
 
@@ -330,7 +353,11 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private ServerStatus? UpdateMissingContentExtended([NotNull] ICollection<string> errors, bool alreadyMissingSomething) {
+        private ServerStatus? UpdateMissingContentExtended(bool alreadyMissingSomething) {
+            _updateMissingExtendedErrors.Clear();
+            _carVersionIsWrong = false;
+            _trackVersionIsWrong = false;
+
             var mref = _missingContentReferences;
             if (mref == null) {
                 IsAbleToInstallMissingContentState = alreadyMissingSomething ?
@@ -340,18 +367,26 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var missingSomething = false;
+            var somethingIsObsolete = false;
 
             var cars = mref["cars"] as JObject;
             if (cars != null) {
                 var missingSkins = new List<string>();
 
                 foreach (var carPair in cars) {
+                    var carId = carPair.Key;
+                    var car = CarsManager.Instance.GetById(carId);
+                    if (car == null) continue;
+
+                    var version = carPair.Value.GetStringValueOnly("version");
+                    if (version.IsVersionNewerThan(car.Version)) {
+                        _updateMissingExtendedErrors.Add($"{car.DisplayName} is obsolete (installed: {car.Version}; server runs: {version})");
+                        _carVersionIsWrong = true;
+                        somethingIsObsolete = true;
+                    }
+
                     var skins = carPair.Value["skins"] as JObject;
                     if (skins != null) {
-                        var carId = carPair.Key;
-                        var car = CarsManager.Instance.GetById(carId);
-                        if (car == null) continue;
-
                         foreach (var skinPair in skins) {
                             if (car.SkinsManager.GetWrapperById(skinPair.Key) == null) {
                                 missingSkins.Add($"“{skinPair.Key}” ({car.DisplayName})");
@@ -361,22 +396,33 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (missingSkins.Any()) {
-                    errors.Add(string.Format(
+                    _updateMissingExtendedErrors.Add(string.Format(
                             missingSkins.Count == 1 ? ToolsStrings.Online_Server_CarSkinIsMissing : ToolsStrings.Online_Server_CarSkinsAreMissing,
                             missingSkins.JoinToReadableString()));
                     missingSomething = true;
                 }
             }
 
+            if (Track != null) {
+                var track = mref["track"];
+                var version = track?.GetStringValueOnly("version");
+                if (version.IsVersionNewerThan(Track.Version)) {
+                    _updateMissingExtendedErrors.Add($"{Track.Name} is obsolete (installed: {Track.Version}; server runs: {version})");
+                    _trackVersionIsWrong = true;
+                    somethingIsObsolete = true;
+                }
+            }
+
             var missingWeatherIds = GetKeys(mref["weather"]).Where(x => WeatherManager.Instance.GetWrapperById(x) == null).ToList();
             if (missingWeatherIds.Any()) {
-                errors.Add(string.Format(ToolsStrings.Online_Server_WeatherIsMissing,
+                _updateMissingExtendedErrors.Add(string.Format(ToolsStrings.Online_Server_WeatherIsMissing,
                         missingWeatherIds.Select(x => $"“{x}”").JoinToReadableString()));
                 missingSomething = true;
             }
 
+            IsAbleToInstallMissingContent state;
             if (!missingSomething && !alreadyMissingSomething) {
-                IsAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
+                state = IsAbleToInstallMissingContent.NoMissingContent;
             } else {
                 var allCarsAvailable = true;
                 var trackAvailable = true;
@@ -392,10 +438,15 @@ namespace AcManager.Tools.Managers.Online {
                     trackAvailable = mref["track"] != null;
                 }
 
-                IsAbleToInstallMissingContentState = allCarsAvailable && trackAvailable
+                state = allCarsAvailable && trackAvailable
                         ? IsAbleToInstallMissingContent.AllOfIt : IsAbleToInstallMissingContent.Partially;
             }
 
+            if (somethingIsObsolete && state == IsAbleToInstallMissingContent.NoMissingContent) {
+                state = IsAbleToInstallMissingContent.Updates;
+            }
+
+            IsAbleToInstallMissingContentState = state;
             return missingSomething ? ServerStatus.MissingContent : (ServerStatus?)null;
         }
         #endregion

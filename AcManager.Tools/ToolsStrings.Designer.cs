@@ -1906,7 +1906,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for car {0}.
+        ///   Looks up a localized string similar to Update for a car {0}.
         /// </summary>
         public static string ContentInstallation_CarExisting {
             get {
@@ -1924,7 +1924,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for car skin {0}.
+        ///   Looks up a localized string similar to Update for a car skin {0}.
         /// </summary>
         public static string ContentInstallation_CarSkinExisting {
             get {
@@ -1942,7 +1942,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for font {0}.
+        ///   Looks up a localized string similar to Update for a font {0}.
         /// </summary>
         public static string ContentInstallation_FontExisting {
             get {
@@ -1987,7 +1987,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for showroom {0}.
+        ///   Looks up a localized string similar to Update for a showroom {0}.
         /// </summary>
         public static string ContentInstallation_ShowroomExisting {
             get {
@@ -2005,7 +2005,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for track {0}.
+        ///   Looks up a localized string similar to Update for a track {0}.
         /// </summary>
         public static string ContentInstallation_TrackExisting {
             get {
@@ -2023,7 +2023,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New version for weather {0}.
+        ///   Looks up a localized string similar to Update for a weather {0}.
         /// </summary>
         public static string ContentInstallation_WeatherExisting {
             get {

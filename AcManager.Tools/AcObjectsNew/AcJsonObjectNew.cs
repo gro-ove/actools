@@ -14,13 +14,22 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcObjectsNew {
+    public interface IAcObjectVersionInformation {
+        [CanBeNull]
+        string Version { get; }
+    }
+
     public interface IAcObjectAuthorInformation {
+        [CanBeNull]
         string Author { get; set; }
 
+        [CanBeNull]
         string Version { get; set; }
 
+        [CanBeNull]
         string Url { get; set; }
 
+        [CanBeNull]
         string VersionInfoDisplay { get; }
     }
 
@@ -38,7 +47,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
     }
 
-    public abstract partial class AcJsonObjectNew : AcCommonObject, IAcObjectAuthorInformation {
+    public abstract partial class AcJsonObjectNew : AcCommonObject, IAcObjectAuthorInformation, IAcObjectVersionInformation {
         protected AcJsonObjectNew(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             Tags = new TagsCollection();
@@ -266,7 +275,7 @@ namespace AcManager.Tools.AcObjectsNew {
                     Changed = true;
                 }
             }
-        } 
+        }
         #endregion
 
         #region Version info

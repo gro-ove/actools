@@ -6,11 +6,15 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Localizable;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 
 // Localize me!
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
-        public static string JoinToReadableString(this IEnumerable<string> items) {
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static string JoinToReadableString([CanBeNull] this IEnumerable<string> items) {
+            if (items == null) return null;
+
             var list = items as IReadOnlyList<string> ?? items.ToList();
             switch (list.Count) {
                 case 0:
