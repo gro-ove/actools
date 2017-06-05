@@ -111,6 +111,7 @@ namespace AcManager.Tools.ContentInstallation {
         public static readonly ContentInstallationParams Default = new ContentInstallationParams();
 
         public string CarId { get; set; }
+        public string FallbackId { get; set; }
     }
 
     public enum ContentInstallationEntryState {

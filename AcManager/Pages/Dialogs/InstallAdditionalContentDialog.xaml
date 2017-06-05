@@ -224,7 +224,7 @@
             </mui:SpacingUniformGrid>
 
             <TextBlock Style="{StaticResource Small}" Text="Installing from: " DockPanel.Dock="Left" />
-            <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding Source}" />
+            <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding DisplaySource}" />
           </DockPanel>
 
           <mui:Switch Value="{Binding State}" Margin="0 12 0 0">

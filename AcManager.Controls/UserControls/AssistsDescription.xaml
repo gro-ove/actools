@@ -64,8 +64,8 @@
 
         <DockPanel Margin="0 0 0 4">
             <Label Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Assists_TyreWearLabel}" />
-            <TextBlock Text="{Binding TyreWearMultipler, StringFormat='{}{0}×'}"
-                    Foreground="{Binding TyreWearMultiplerRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+            <TextBlock Text="{Binding TyreWearMultiplier, StringFormat='{}{0}×'}"
+                    Foreground="{Binding TyreWearMultiplierRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
         </DockPanel>
     </StackPanel>
 </UserControl>

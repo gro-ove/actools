@@ -30,6 +30,10 @@ using Image = System.Drawing.Image;
 using Size = System.Windows.Size;
 
 namespace AcManager.Pages.Dialogs {
+    public class LiveryIcon : NotifyPropertyChanged {
+        
+    }
+
     public partial class LiveryIconEditor : INotifyPropertyChanged {
         public const string KeyStyle = "__LiveryIconEditor.style";
         public const string KeyShape = "__LiveryIconEditor.shape";
@@ -78,7 +82,7 @@ namespace AcManager.Pages.Dialogs {
         private int _shapeColorsNumber;
 
         public int ShapeColorsNumber {
-            get { return _shapeColorsNumber; }
+            get => _shapeColorsNumber;
             set {
                 value = value.Clamp(1, 3);
                 if (Equals(value, _shapeColorsNumber)) return;
@@ -92,7 +96,7 @@ namespace AcManager.Pages.Dialogs {
         private int _styleColorsNumber;
 
         public int StyleColorsNumber {
-            get { return _styleColorsNumber; }
+            get => _styleColorsNumber;
             set {
                 if (Equals(value, _styleColorsNumber)) return;
                 _styleColorsNumber = value;
@@ -105,7 +109,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _customShape;
 
         public bool CustomShape {
-            get { return _customShape; }
+            get => _customShape;
             set {
                 if (Equals(value, _customShape)) return;
                 _customShape = value;
@@ -154,7 +158,7 @@ namespace AcManager.Pages.Dialogs {
         private SettingEntry _selectedShape;
 
         public SettingEntry SelectedShape {
-            get { return _selectedShape; }
+            get => _selectedShape;
             set {
                 if (Equals(value, _selectedShape)) return;
                 _selectedShape = value;
@@ -175,7 +179,7 @@ namespace AcManager.Pages.Dialogs {
         private SettingEntry _selectedNumbers;
 
         public SettingEntry SelectedNumbers {
-            get { return _selectedNumbers; }
+            get => _selectedNumbers;
             set {
                 if (Equals(value, _selectedNumbers)) return;
                 _selectedNumbers = value;
@@ -199,7 +203,7 @@ namespace AcManager.Pages.Dialogs {
         private SettingEntry _selectedStyle;
 
         public SettingEntry SelectedStyle {
-            get { return _selectedStyle; }
+            get => _selectedStyle;
             set {
                 if (Equals(value, _selectedStyle)) return;
                 _selectedStyle = value;
@@ -273,17 +277,18 @@ namespace AcManager.Pages.Dialogs {
             Kn5TexturesCache.Purge();
 
             string kn5Filename = null;
-            Func<string> getKn5Filename = () => kn5Filename ??
-                    (kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData));
+            string GetKn5Filename() {
+                return kn5Filename ?? (kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData));
+            }
 
             var materialsKn5 = Kn5MaterialsCache.FirstOrDefault(x => x?.Item1 == car.Id)?.Item2;
             if (materialsKn5 == null) {
-                if (!File.Exists(getKn5Filename())) {
+                if (!File.Exists(GetKn5Filename())) {
                     Logging.Debug("KN5 not found");
                     return null;
                 }
 
-                materialsKn5 = Kn5.FromFile(getKn5Filename(), SkippingTextureLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
+                materialsKn5 = Kn5.FromFile(GetKn5Filename(), SkippingTextureLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
                 Kn5MaterialsCache.Add(Tuple.Create(car.Id, materialsKn5));
             }
 
@@ -309,7 +314,8 @@ namespace AcManager.Pages.Dialogs {
             var s = Stopwatch.StartNew();
             try {
                 Kn5 texturesKn5 = null;
-                Func<string, Color> getColor = textureName => {
+
+                Color GetColor(string textureName) {
                     if (textureName == null) return Colors.White;
 
                     var filename = Path.Combine(skin.Location, textureName);
@@ -317,7 +323,7 @@ namespace AcManager.Pages.Dialogs {
                         if (texturesKn5 == null) {
                             texturesKn5 = Kn5TexturesCache.FirstOrDefault(x => x?.Item1 == car.Id)?.Item2;
                             if (texturesKn5 == null) {
-                                if (!File.Exists(getKn5Filename())) return Colors.White;
+                                if (!File.Exists(GetKn5Filename())) return Colors.White;
                                 texturesKn5 = Kn5.FromFile(kn5Filename, materialLoader: SkippingMaterialLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
                                 Kn5TexturesCache.Add(Tuple.Create(car.Id, texturesKn5));
                             }
@@ -330,20 +336,18 @@ namespace AcManager.Pages.Dialogs {
                             reader = new TextureReader();
                         }
 
-                        return ImageUtils.GetTextureColor(
-                                reader.ToPngNoFormat(bytes, true, new System.Drawing.Size(32, 32))).ToColor();
+                        return ImageUtils.GetTextureColor(reader.ToPngNoFormat(bytes, true, new System.Drawing.Size(32, 32))).ToColor();
                     }
 
                     if (reader == null) {
                         reader = new TextureReader();
                     }
 
-                    return ImageUtils.GetTextureColor(
-                            reader.ToPngNoFormat(File.ReadAllBytes(filename), true, new System.Drawing.Size(32, 32))).ToColor();
-                };
+                    return ImageUtils.GetTextureColor(reader.ToPngNoFormat(File.ReadAllBytes(filename), true, new System.Drawing.Size(32, 32))).ToColor();
+                }
 
                 var result = new[] {
-                    getColor(texture),
+                    GetColor(texture),
                     Colors.Black,
                     Colors.Black
                 };
@@ -358,7 +362,7 @@ namespace AcManager.Pages.Dialogs {
                         Logging.Debug($"Extra: {slotId} = {slotTexture} (priority: {item.LiveryPriority})");
 
                         if (slotId < 0 || slotId > 2 || slotTexture == null) continue;
-                        result[slotId] = getColor(slotTexture);
+                        result[slotId] = GetColor(slotTexture);
                     }
                 }
 
@@ -418,7 +422,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public FrameworkElement ShapeObject {
-                get { return _shapeObject; }
+                get => _shapeObject;
                 set {
                     if (Equals(value, _shapeObject)) return;
                     _shapeObject = value;
@@ -441,7 +445,7 @@ namespace AcManager.Pages.Dialogs {
 
             [CanBeNull]
             public FrameworkElement NumbersObject {
-                get { return _numbersObject; }
+                get => _numbersObject;
                 set {
                     if (Equals(value, _numbersObject)) return;
                     _numbersObject = value;
@@ -471,7 +475,7 @@ namespace AcManager.Pages.Dialogs {
             private Color? _colorValue;
 
             public Color ColorValue {
-                get { return _colorValue ?? Colors.Black; }
+                get => _colorValue ?? Colors.Black;
                 set {
                     if (Equals(value, _colorValue)) return;
                     _colorValue = value;
@@ -487,7 +491,7 @@ namespace AcManager.Pages.Dialogs {
             private Color? _secondaryColorValue;
 
             public Color SecondaryColorValue {
-                get { return _secondaryColorValue ?? Colors.Black; }
+                get => _secondaryColorValue ?? Colors.Black;
                 set {
                     if (Equals(value, _secondaryColorValue)) return;
                     _secondaryColorValue = value;
@@ -503,7 +507,7 @@ namespace AcManager.Pages.Dialogs {
             private Color? _tertiaryColorValue;
 
             public Color TertiaryColorValue {
-                get { return _tertiaryColorValue ?? Colors.Black; }
+                get => _tertiaryColorValue ?? Colors.Black;
                 set {
                     if (Equals(value, _tertiaryColorValue)) return;
                     _tertiaryColorValue = value;
@@ -519,7 +523,7 @@ namespace AcManager.Pages.Dialogs {
             private string _value;
 
             public string Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -529,14 +533,14 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public int NumberValue {
-                get { return _value.AsInt(); }
-                set { Value = value.ToInvariantString(); }
+                get => _value.AsInt();
+                set => Value = value.ToInvariantString();
             }
 
             private Color? _textColorValue;
 
             public Color TextColorValue {
-                get { return _textColorValue ?? Colors.Black; }
+                get => _textColorValue ?? Colors.Black;
                 set {
                     if (Equals(value, _textColorValue)) return;
                     _textColorValue = value;
@@ -587,13 +591,19 @@ namespace AcManager.Pages.Dialogs {
                 NonfatalError.Notify(AppStrings.LiveryIcon_CannotChange, e);
             }
         }
-        
+
         public static Task GenerateAsync(CarSkinObject target, Color[] colors, string preferredStyle) {
             return new LiveryIconEditor(target, true, false, colors, preferredStyle).CreateNewIcon();
         }
 
         public static Task GenerateAsync(CarSkinObject target) {
-            return new LiveryIconEditor(target, true, false, null, null).CreateNewIcon();
+            var tcs = new TaskCompletionSource<bool>();
+            Application.Current.Dispatcher.InvokeAsync(() => {
+                return new LiveryIconEditor(target, true, false, null, null).CreateNewIcon();
+            }).GetAwaiter().OnCompleted(() => {
+                tcs.SetResult(false);
+            });
+            return tcs.Task;
         }
 
         public static Task GenerateRandomAsync(CarSkinObject target) {

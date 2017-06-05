@@ -260,7 +260,7 @@
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <c:ModernPopup Padding="16 12 16 16">
                 <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}"
-                    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}">
+                    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" Width="240">
                   <CheckBox IsChecked="{Binding RandomTemperature}">
                     <Label Content="Random temperature" />
                   </CheckBox>

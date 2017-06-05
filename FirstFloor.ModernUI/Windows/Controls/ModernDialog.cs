@@ -339,7 +339,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             (GetWindow(element) as ModernDialog)?.CloseCommand.Execute(value);
         }
 
-        private FrameworkElement _bottomRow;
+        private FrameworkElement _bottomRow, _bottomRowExtra;
         private double _offsetX, _offsetY;
 
         private void UpdateBottomRowStyle() {
@@ -348,6 +348,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var offsetX = _bottomRow.ActualWidth;
             var offsetY = _bottomRow.ActualHeight;
             if (Math.Abs(offsetX - _offsetX) < 0.5 && Math.Abs(offsetY - _offsetY) < 0.5) return;
+
+            if (_bottomRowExtra != null && _bottomRowExtra.HorizontalAlignment == HorizontalAlignment.Right) {
+                _offsetX += _bottomRowExtra.ActualWidth;
+            }
 
             _offsetX = offsetX;
             _offsetY = offsetY;
@@ -367,12 +371,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _bottomRow.SizeChanged -= OnBottomRowSizeChanged;
             }
 
+            if (_bottomRowExtra != null) {
+                _bottomRowExtra.SizeChanged -= OnBottomRowSizeChanged;
+            }
+
             base.OnApplyTemplate();
 
-            _bottomRow = GetTemplateChild("PART_BottomRow") as FrameworkElement;
+            _bottomRow = GetTemplateChild("PART_BottomRow_Buttons") as FrameworkElement;
+            _bottomRowExtra = GetTemplateChild("PART_BottomRow_Content") as FrameworkElement;
+
             if (_bottomRow != null) {
                 _bottomRow.SizeChanged += OnBottomRowSizeChanged;
                 UpdateBottomRowStyle();
+            }
+
+            if (_bottomRowExtra != null) {
+                _bottomRowExtra.SizeChanged += OnBottomRowSizeChanged;
             }
         }
 

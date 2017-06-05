@@ -13,7 +13,7 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
-            const string mark = "🛈";
+            const string mark = "ℹ";
             var specialIndex = name.IndexOf(mark, StringComparison.InvariantCulture);
             if (specialIndex != -1) {
                 extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + mark.Length));

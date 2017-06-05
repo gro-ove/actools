@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -14,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public class FrameworkElementAdorner : Adorner {
-        // The framework element that is the adorner. 
+        // The framework element that is the adorner.
         private readonly FrameworkElement _child;
 
         // Placement of the child.
@@ -203,7 +205,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public new FrameworkElement AdornedElement => (FrameworkElement)base.AdornedElement;
     }
-    
+
     public class AdornedControl : ContentControl {
         #region Dependency Properties
         public static readonly DependencyProperty IsAdornerVisibleProperty = DependencyProperty.Register(nameof(IsAdornerVisible), typeof(bool),
@@ -436,7 +438,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static AdornerLayer GetAdornerLayer(Visual visual) {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
-            
+
             foreach (var parent in visual.GetParents()) {
                 {
                     var decorator = parent as AdornerDecorator;
@@ -498,6 +500,49 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                              .Invoke(_adornerLayer, new object[] { _adorner, Order });
             } catch {
+                // ignored
+            }
+        }
+        #endregion
+
+        #region Order for AdornedElementPlaceholder
+        public static int GetZOrder(DependencyObject obj) {
+            return (int)obj.GetValue(ZOrderProperty);
+        }
+
+        public static void SetZOrder(DependencyObject obj, int value) {
+            obj.SetValue(ZOrderProperty, value);
+        }
+
+        public static readonly DependencyProperty ZOrderProperty = DependencyProperty.RegisterAttached("ZOrder", typeof(int),
+                typeof(AdornedControl), new UIPropertyMetadata(OnZOrderChanged));
+
+        private static void OnZOrderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            var element = d as AdornedElementPlaceholder;
+            if (element == null || !(e.NewValue is int)) return;
+            if (element.IsLoaded) {
+                UpdateAdornedElementPlaceholderZOrder(element);
+            } else {
+                element.Loaded += OnZOrderElementLoaded;
+            }
+        }
+
+        private static async void OnZOrderElementLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            await Task.Delay(100);
+            var element = (AdornedElementPlaceholder)sender;
+            UpdateAdornedElementPlaceholderZOrder(element);
+        }
+
+        private static void UpdateAdornedElementPlaceholderZOrder(AdornedElementPlaceholder p) {
+            var adorner = p.GetType().GetProperty("TemplatedAdorner",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(p) as Adorner;
+            var adornerLayer = AdornerLayer.GetAdornerLayer(p.AdornedElement);
+            if (adornerLayer == null || adorner == null) return;
+
+            try {
+                adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                             .Invoke(adornerLayer, new object[] { adorner, GetZOrder(p) });
+            } catch (Exception) {
                 // ignored
             }
         }

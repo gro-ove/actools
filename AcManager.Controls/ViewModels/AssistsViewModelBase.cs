@@ -5,19 +5,19 @@ using System.IO;
 using System.Windows.Data;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api.Kunos;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
     /// Base view model — usually only to load stuff to display from serialized data.
-    /// Could save data too, it depends on creation way. For more information look 
+    /// Could save data too, it depends on creation way. For more information look
     /// at Constructors region.
     /// </summary>
     public class AssistsViewModelBase : NotifyPropertyChanged {
@@ -26,6 +26,7 @@ namespace AcManager.Controls.ViewModels {
         public const string UserPresetableKeyValue = "Assists";
 
         /* values for combobox */
+
         public AssistState[] AssistStates { get; } = {
             AssistState.Off,
             AssistState.Factory,
@@ -54,11 +55,72 @@ namespace AcManager.Controls.ViewModels {
 
         public static IValueConverter AssistStateToStringConverter { get; } = new InnerAssistStateToStringConverter();
 
+        [CanBeNull]
+        private ServerInformationExtendedAssists _serverAssists;
+
+        [CanBeNull]
+        public ServerInformationExtendedAssists ServerAssists {
+            get => _serverAssists;
+            set {
+                if (Equals(value, _serverAssists)) return;
+                var oldValue = _serverAssists;
+                _serverAssists = value;
+                OnPropertyChanged();
+
+                OnPropertyChanged(nameof(Damage));
+                OnPropertyChanged(nameof(DamageEditable));
+                OnPropertyChanged(nameof(DamageRealismLevel));
+
+                OnPropertyChanged(nameof(TyreWearMultiplier));
+                OnPropertyChanged(nameof(TyreWearMultiplierEditable));
+                OnPropertyChanged(nameof(TyreWearMultiplierRealismLevel));
+
+                OnPropertyChanged(nameof(FuelConsumption));
+                OnPropertyChanged(nameof(FuelConsumptionEditable));
+                OnPropertyChanged(nameof(FuelConsumptionRealismLevel));
+
+                if (oldValue == null != (value == null)) {
+                    OnPropertyChanged(nameof(AutoBrake));
+                    OnPropertyChanged(nameof(AutoBrakeEditable));
+                    OnPropertyChanged(nameof(TyreBlanketsEditable));
+                }
+
+                if (oldValue?.TyreBlankets != value?.TyreBlankets) {
+                    OnPropertyChanged(nameof(TyreBlankets));
+                    OnPropertyChanged(nameof(TyreBlanketsRealismLevel));
+                }
+
+                if (oldValue?.AutoclutchAllowed != value?.AutoclutchAllowed) {
+                    OnPropertyChanged(nameof(AutoClutch));
+                    OnPropertyChanged(nameof(AutoClutchEditable));
+                    OnPropertyChanged(nameof(AutoClutchRealismLevel));
+                }
+
+                if (oldValue?.StabilityAllowed != value?.StabilityAllowed) {
+                    OnPropertyChanged(nameof(StabilityControl));
+                    OnPropertyChanged(nameof(StabilityControlEditable));
+                    OnPropertyChanged(nameof(StabilityControlRealismLevel));
+                }
+
+                if (oldValue?.AbsState != value?.AbsState) {
+                    OnPropertyChanged(nameof(Abs));
+                    OnPropertyChanged(nameof(AbsEditable));
+                    OnPropertyChanged(nameof(AbsRealismLevel));
+                }
+
+                if (oldValue?.TractionControlState != value?.TractionControlState) {
+                    OnPropertyChanged(nameof(TractionControl));
+                    OnPropertyChanged(nameof(TractionControlEditable));
+                    OnPropertyChanged(nameof(TractionControlRealismLevel));
+                }
+            }
+        }
+
         #region Properties
         private bool _idealLine;
 
         public bool IdealLine {
-            get { return _idealLine; }
+            get => _idealLine;
             set {
                 if (Equals(value, _idealLine)) return;
                 _idealLine = value;
@@ -73,7 +135,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _autoBlip;
 
         public bool AutoBlip {
-            get { return _autoBlip; }
+            get => _autoBlip;
             set {
                 if (Equals(value, _autoBlip)) return;
                 _autoBlip = value;
@@ -88,7 +150,7 @@ namespace AcManager.Controls.ViewModels {
         private int _stabilityControl;
 
         public int StabilityControl {
-            get { return _stabilityControl; }
+            get => _serverAssists?.StabilityAllowed == false ? 0 : _stabilityControl;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _stabilityControl)) return;
@@ -99,12 +161,15 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel StabilityControlRealismLevel => StabilityControl > 20d ? RealismLevel.NonRealistic : StabilityControl > 10d ? RealismLevel.NotQuiteRealistic : StabilityControl > 0d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
+        public bool StabilityControlEditable => _serverAssists?.StabilityAllowed != false;
+
+        public RealismLevel StabilityControlRealismLevel => StabilityControl > 20d ? RealismLevel.NonRealistic : StabilityControl > 10d
+                ? RealismLevel.NotQuiteRealistic : StabilityControl > 0d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoBrake;
 
         public bool AutoBrake {
-            get { return _autoBrake; }
+            get => _serverAssists == null && _autoBrake;
             set {
                 if (Equals(value, _autoBrake)) return;
                 _autoBrake = value;
@@ -114,12 +179,14 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        public bool AutoBrakeEditable => _serverAssists == null;
+
         public RealismLevel AutoBrakeRealismLevel => AutoBrake ? RealismLevel.NonRealistic : RealismLevel.Realistic;
 
         private bool _autoShifter;
 
         public bool AutoShifter {
-            get { return _autoShifter; }
+            get => _autoShifter;
             set {
                 if (Equals(value, _autoShifter)) return;
                 _autoShifter = value;
@@ -134,7 +201,7 @@ namespace AcManager.Controls.ViewModels {
         private double _slipsteamMultipler = 1d;
 
         public double SlipsteamMultipler {
-            get { return _slipsteamMultipler; }
+            get => _slipsteamMultipler;
             set {
                 value = Math.Round(value.Clamp(0d, 10d), 1);
                 if (Equals(value, _slipsteamMultipler)) return;
@@ -145,12 +212,13 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel SlipsteamMultiplerRealismLevel => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic : !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public RealismLevel SlipsteamMultiplerRealismLevel
+            => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic : !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoClutch;
 
         public bool AutoClutch {
-            get { return _autoClutch; }
+            get => _serverAssists?.AutoclutchAllowed != false && _autoClutch;
             set {
                 if (Equals(value, _autoClutch)) return;
                 _autoClutch = value;
@@ -160,12 +228,14 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        public bool AutoClutchEditable => _serverAssists?.AutoclutchAllowed != false;
+
         public RealismLevel AutoClutchRealismLevel => AutoClutch ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private AssistState _abs = AssistState.Factory;
 
         public AssistState Abs {
-            get { return _abs; }
+            get => _serverAssists?.AbsState.ToAssistState() ?? _abs;
             set {
                 if (Equals(value, _abs)) return;
                 _abs = value;
@@ -175,12 +245,15 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel AbsRealismLevel => Abs == AssistState.Factory ? RealismLevel.Realistic : Abs == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NotQuiteRealistic;
+        public bool AbsEditable => _serverAssists == null;
+
+        public RealismLevel AbsRealismLevel => Abs == AssistState.Factory ? RealismLevel.Realistic :
+                Abs == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NotQuiteRealistic;
 
         private AssistState _tractionControl = AssistState.Factory;
 
         public AssistState TractionControl {
-            get { return _tractionControl; }
+            get => _serverAssists?.TractionControlState.ToAssistState() ?? _tractionControl;
             set {
                 if (Equals(value, _tractionControl)) return;
                 _tractionControl = value;
@@ -190,12 +263,15 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel TractionControlRealismLevel => TractionControl == AssistState.Factory ? RealismLevel.Realistic : TractionControl == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NonRealistic;
+        public bool TractionControlEditable => _serverAssists == null;
+
+        public RealismLevel TractionControlRealismLevel => TractionControl == AssistState.Factory ? RealismLevel.Realistic :
+                TractionControl == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NonRealistic;
 
         private bool _visualDamage = true;
 
         public bool VisualDamage {
-            get { return _visualDamage; }
+            get => _visualDamage;
             set {
                 if (Equals(value, _visualDamage)) return;
                 _visualDamage = value;
@@ -211,7 +287,7 @@ namespace AcManager.Controls.ViewModels {
         private double _damage = 100;
 
         public double Damage {
-            get { return _damage; }
+            get => _serverAssists?.DamageMultiplier ?? _damage;
             set {
                 value = Math.Round(value.Clamp(0d, 100d), 1);
                 if (Equals(value, _damage)) return;
@@ -222,28 +298,34 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel DamageRealismLevel => Damage < 20d ? RealismLevel.NonRealistic : Damage < 50d ? RealismLevel.NotQuiteRealistic : Damage < 100d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
+        public bool DamageEditable => _serverAssists == null;
+
+        public RealismLevel DamageRealismLevel => Damage < 20d ? RealismLevel.NonRealistic
+                : Damage < 50d ? RealismLevel.NotQuiteRealistic : Damage < 100d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
         private double _tyreWearMultipler = 1d;
 
-        public double TyreWearMultipler {
-            get { return _tyreWearMultipler; }
+        public double TyreWearMultiplier {
+            get => _serverAssists?.TyreWearRate / 100d ?? _tyreWearMultipler;
             set {
                 value = Math.Round(value.Clamp(0d, 5d), 2);
                 if (Equals(value, _tyreWearMultipler)) return;
                 _tyreWearMultipler = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TyreWearMultiplerRealismLevel));
+                OnPropertyChanged(nameof(TyreWearMultiplierRealismLevel));
                 SaveLater();
             }
         }
 
-        public RealismLevel TyreWearMultiplerRealismLevel => TyreWearMultipler > 5 ? RealismLevel.NonRealistic : !Equals(TyreWearMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public bool TyreWearMultiplierEditable => _serverAssists == null;
+
+        public RealismLevel TyreWearMultiplierRealismLevel => TyreWearMultiplier > 5 ? RealismLevel.NonRealistic :
+                !Equals(TyreWearMultiplier, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private double _fuelConsumption = 1d;
 
         public double FuelConsumption {
-            get { return _fuelConsumption; }
+            get => _serverAssists?.FuelRate / 100d ?? _fuelConsumption;
             set {
                 value = Math.Round(value.Clamp(0d, 50d), 2);
                 if (Equals(value, _fuelConsumption)) return;
@@ -254,6 +336,8 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        public bool FuelConsumptionEditable => _serverAssists == null;
+
         public RealismLevel FuelConsumptionRealismLevel => Math.Abs(FuelConsumption - 1f) < 0.01 ? RealismLevel.Realistic :
                 Math.Abs(FuelConsumption - 1f) <= 0.5 ? RealismLevel.QuiteRealistic :
                         RealismLevel.NotQuiteRealistic;
@@ -261,7 +345,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _tyreBlankets;
 
         public bool TyreBlankets {
-            get { return _tyreBlankets; }
+            get => _serverAssists?.TyreBlankets ?? _tyreBlankets;
             set {
                 if (Equals(value, _tyreBlankets)) return;
                 _tyreBlankets = value;
@@ -270,6 +354,8 @@ namespace AcManager.Controls.ViewModels {
                 SaveLater();
             }
         }
+
+        public bool TyreBlanketsEditable => _serverAssists == null;
 
         /* totally legit stuff */
         public RealismLevel TyreBlanketsRealismLevel => RealismLevel.Realistic;
@@ -294,6 +380,7 @@ namespace AcManager.Controls.ViewModels {
              JsonConverter(typeof(JsonBoolToDoubleConverter)),
              JsonProperty(@"FuelConsumption", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
             public double FuelConsumption = 1d;
+
             public bool TyreBlankets;
 
             string IJsonSerializable.ToJson() {
@@ -334,20 +421,20 @@ namespace AcManager.Controls.ViewModels {
         /// <param name="fixedMode">Prevent saving</param>
         protected AssistsViewModelBase(string key, bool fixedMode) {
             Saveable = new SaveHelper<SaveableData>(key ?? DefaultKey, () => fixedMode ? null : new SaveableData {
-                IdealLine = IdealLine,
-                AutoBlip = AutoBlip,
-                StabilityControl = StabilityControl,
-                AutoBrake = AutoBrake,
-                AutoShifter = AutoShifter,
-                SlipSteam = SlipsteamMultipler,
-                AutoClutch = AutoClutch,
-                Abs = Abs,
-                TractionControl = TractionControl,
-                VisualDamage = VisualDamage,
-                Damage = Damage,
-                TyreWear = TyreWearMultipler,
-                FuelConsumption = FuelConsumption,
-                TyreBlankets = TyreBlankets
+                IdealLine = _idealLine,
+                AutoBlip = _autoBlip,
+                StabilityControl = _stabilityControl,
+                AutoBrake = _autoBrake,
+                AutoShifter = _autoShifter,
+                SlipSteam = _slipsteamMultipler,
+                AutoClutch = _autoClutch,
+                Abs = _abs,
+                TractionControl = _tractionControl,
+                VisualDamage = _visualDamage,
+                Damage = _damage,
+                TyreWear = _tyreWearMultipler,
+                FuelConsumption = _fuelConsumption,
+                TyreBlankets = _tyreBlankets
             }, o => {
                 IdealLine = o.IdealLine;
                 AutoBlip = o.AutoBlip;
@@ -360,7 +447,7 @@ namespace AcManager.Controls.ViewModels {
                 TractionControl = o.TractionControl;
                 VisualDamage = o.VisualDamage;
                 Damage = o.Damage;
-                TyreWearMultipler = o.TyreWear;
+                TyreWearMultiplier = o.TyreWear;
                 FuelConsumption = o.FuelConsumption;
                 TyreBlankets = o.TyreBlankets;
             }, () => {
@@ -375,7 +462,7 @@ namespace AcManager.Controls.ViewModels {
                 TractionControl = AssistState.Factory;
                 VisualDamage = true;
                 Damage = 100d;
-                TyreWearMultipler = 1d;
+                TyreWearMultiplier = 1d;
                 FuelConsumption = 1d;
                 TyreBlankets = false;
             });
@@ -384,7 +471,7 @@ namespace AcManager.Controls.ViewModels {
 
         #region Constructors
         /// <summary>
-        /// Full load-and-save mode. All changes will be saved automatically and loaded 
+        /// Full load-and-save mode. All changes will be saved automatically and loaded
         /// later (only with this constuctor).
         /// </summary>
         public AssistsViewModelBase() : this(null, false) {
@@ -418,7 +505,7 @@ namespace AcManager.Controls.ViewModels {
                 TractionControl = TractionControl,
                 VisualDamage = VisualDamage,
                 Damage = Damage,
-                TyreWearMultipler = TyreWearMultipler,
+                TyreWearMultipler = TyreWearMultiplier,
                 FuelConsumption = FuelConsumption,
                 TyreBlankets = TyreBlankets
             };

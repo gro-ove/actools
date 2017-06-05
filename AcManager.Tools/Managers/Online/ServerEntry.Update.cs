@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -13,13 +11,13 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
         private static string GetFailedReason(WebException e) {
             switch (e.Status) {
                 case WebExceptionStatus.RequestCanceled:
+                case WebExceptionStatus.Timeout:
                     return "Server did not respond in given time";
                 case WebExceptionStatus.ConnectFailure:
                     return "Connect failure";
@@ -155,8 +153,8 @@ namespace AcManager.Tools.Managers.Online {
                         UpdateValuesExtended(extended);
 
                         driversCount = extended.Clients;
-                        informationLoadedExtended = true;
                         carsInformation = extended.Players;
+                        informationLoadedExtended = true;
                     } catch (Exception e) {
                         Logging.Warning(e);
                         PortExtended = null;

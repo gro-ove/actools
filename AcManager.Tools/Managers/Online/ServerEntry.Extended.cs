@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -9,6 +14,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
@@ -206,6 +212,19 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string[] _passwordChecksum;
+
+        [CanBeNull]
+        public string[] PasswordChecksum {
+            get { return _passwordChecksum; }
+            set {
+                if (Equals(value, _passwordChecksum)) return;
+                _passwordChecksum = value;
+                OnPropertyChanged();
+                InvalidatePasswordIsWrong();
+            }
+        }
+
         private double? _grip;
 
         public double? Grip {
@@ -228,13 +247,24 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private ServerInformationExtendedAssists _assists;
+        private double? _maxContactsPerKm;
 
-        public ServerInformationExtendedAssists Assists {
-            get { return _assists; }
+        public double? MaxContactsPerKm {
+            get { return _maxContactsPerKm; }
             set {
-                if (Equals(value, _assists)) return;
-                _assists = value;
+                if (Equals(value, _maxContactsPerKm)) return;
+                _maxContactsPerKm = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ServerInformationExtendedAssists _assistsInformation;
+
+        public ServerInformationExtendedAssists AssistsInformation {
+            get { return _assistsInformation; }
+            set {
+                if (Equals(value, _assistsInformation)) return;
+                _assistsInformation = value;
                 OnPropertyChanged();
             }
         }
@@ -256,7 +286,8 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             City = extended.City;
-            Assists = extended.Assists;
+            PasswordChecksum = extended.PasswordChecksum;
+            AssistsInformation = extended.Assists;
             Description = extended.Description;
             WeatherId = extended.WeatherId;
             AmbientTemperature = extended.AmbientTemperature;
@@ -267,7 +298,20 @@ namespace AcManager.Tools.Managers.Online {
             GripTransfer = extended.GripTransfer;
             TrackBaseId = extended.TrackBase;
             FrequencyHz = extended.FrequencyHz ?? 0;
+            MaxContactsPerKm = extended.MaxContactsPerKm;
             _missingContentReferences = extended.Content;
+        }
+
+        private bool CheckPasswordChecksum() {
+            if (PasswordChecksum == null) return true;
+            using (var sha1 = SHA1.Create()) {
+                return PasswordChecksum.Contains(sha1.ComputeHash(Encoding.UTF8.GetBytes("apatosaur" + ActualName + Password))
+                                                     .ToHexString().ToLowerInvariant());
+            }
+        }
+
+        private bool IsPasswordValid() {
+            return !PasswordRequired || !string.IsNullOrEmpty(Password) && !PasswordWasWrong && CheckPasswordChecksum();
         }
 
         #region Missing content
@@ -276,7 +320,16 @@ namespace AcManager.Tools.Managers.Online {
 
         private IEnumerable<Task> InstallMissingContentTasks() {
             var mref = _missingContentReferences;
-            if (mref == null) yield break;
+            if (mref == null) {
+                throw new Exception("MREFs are not defined");
+            }
+
+            var passwordPostfix = Lazier.Create(() => {
+                using (var sha1 = SHA1.Create()) {
+                    return "?password=" + sha1.ComputeHash(Encoding.UTF8.GetBytes("tanidolizedhoatzin" + Password))
+                               .ToHexString().ToLowerInvariant();
+                }
+            });
 
             var cars = mref["cars"] as JObject;
             if (cars != null) {
@@ -286,8 +339,10 @@ namespace AcManager.Tools.Managers.Online {
                     if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
                         if (carPair.Value.GetBoolValueOnly("unavailable") == true) continue;
                         var url = carPair.Value.GetStringValueOnly("url") ??
-                                $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}";
-                        yield return ContentInstallationManager.Instance.InstallAsync(url);
+                                $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
+                        yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                            FallbackId = carPair.Key
+                        });
                     } else {
                         var skins = carPair.Value["skins"] as JObject;
                         if (skins != null) {
@@ -295,9 +350,10 @@ namespace AcManager.Tools.Managers.Online {
                                 if (car.SkinsManager.GetWrapperById(skinPair.Key) != null) continue;
 
                                 var url = skinPair.Value.GetStringValueOnly("url") ??
-                                        $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}";
+                                        $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
                                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
-                                    CarId = carPair.Key
+                                    CarId = carPair.Key,
+                                    FallbackId = skinPair.Key
                                 });
                             }
                         }
@@ -311,23 +367,36 @@ namespace AcManager.Tools.Managers.Online {
                     if (WeatherManager.Instance.GetWrapperById(weatherPair.Key) != null) continue;
 
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
-                            $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}";
-                    yield return ContentInstallationManager.Instance.InstallAsync(url);
+                            $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
+                    yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                        FallbackId = weatherPair.Key
+                    });
                 }
             }
 
             var track = mref["track"] as JObject;
             if (track != null && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version))) {
                 var url = track.GetStringValueOnly("url") ??
-                        $"http://{Ip}:{PortExtended}/content/track";
-                yield return ContentInstallationManager.Instance.InstallAsync(url);
+                        $"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
+                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                    FallbackId = TrackBaseId
+                });
             }
         }
 
         private DelegateCommand _installMissingContentCommand;
 
-        public DelegateCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(() => {
-            InstallMissingContentTasks().WhenAll().Forget();
+        public DelegateCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(async () => {
+            if (_missingContentReferences?.GetBoolValueOnly("password") == true && !IsPasswordValid()) {
+                ModernDialog.ShowMessage("Can’t install content, password is required.", "Can’t install content", MessageBoxButton.OK);
+                return;
+            }
+
+            try {
+                await InstallMissingContentTasks().WhenAll();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t install content", e);
+            }
         }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
                 IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
                 IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates));

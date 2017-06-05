@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -23,6 +24,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
+using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -32,6 +34,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
@@ -73,6 +76,7 @@ namespace AcManager.Pages.Drive {
 
             DataContext = new ViewModel(entry);
             InitializeComponent();
+            AssistsPopup.DataContext = AssistsDescription.DataContext = Model.Assists;
 
             var list = ListsButton.MenuItems;
             _sourcesMenuItems = new Sublist<MenuItem>(list, list.Count - 1, 0);
@@ -143,7 +147,7 @@ namespace AcManager.Pages.Drive {
             FileBasedOnlineSources.Instance.Update += OnUserSourcesUpdated;
         }
 
-        public bool ImmediateChange(Uri uri) {
+        bool IImmediateContent.ImmediateChange(Uri uri) {
             var id = uri.GetQueryParam("Id");
             if (id == null) return false;
 
@@ -166,6 +170,7 @@ namespace AcManager.Pages.Drive {
             UpdateCheckedMenuItems();
             Model.Entry.PropertyChanged += OnEntryPropertyChanged;
             Model.Entry.RaiseSelectedCarChanged();
+            CommandManager.InvalidateRequerySuggested();
             return true;
         }
 
@@ -292,6 +297,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IComparer {
+            public AssistsViewModel Assists { get; } = new AssistsViewModel("onlineassists");
+
             private ServerEntry _entry;
 
             [NotNull]
@@ -314,6 +321,8 @@ namespace AcManager.Pages.Drive {
 
             public void ChangeEntry([NotNull] ServerEntry entry) {
                 Entry = entry;
+                Assists.ServerAssists = Entry.AssistsInformation;
+                Entry.Assists = Assists.ToGameProperties();
             }
 
             private static readonly Regex TsRegex = new Regex(@"\s+(?:teamspeak|ts):?\s*((?:(?:[12]?\d{1,2})\.){3}(?:[12]?\d{1,2})(?::\d+)?)",
@@ -321,9 +330,18 @@ namespace AcManager.Pages.Drive {
 
             public ViewModel([NotNull] ServerEntry entry) {
                 Entry = entry;
+                Assists.ServerAssists = Entry.AssistsInformation;
+
                 if (Entry.SelectedCarEntry == null) {
                     Entry.LoadSelectedCar();
                 }
+
+                Entry.Assists = Assists.ToGameProperties();
+                Assists.Changed += OnAssistsChanged;
+            }
+
+            private void OnAssistsChanged(object sender, EventArgs eventArgs) {
+                Entry.Assists = Assists.ToGameProperties();
             }
 
             int IComparer.Compare(object x, object y) {
@@ -452,6 +470,9 @@ namespace AcManager.Pages.Drive {
                 case nameof(ServerEntry.Status):
                     UpdateCarsView();
                     ResizingStuff();
+                    break;
+                case nameof(ServerEntry.AssistsInformation):
+                    Model.Assists.ServerAssists = Model.Entry.AssistsInformation;
                     break;
                 case nameof(ServerEntry.ErrorsString):
                 case nameof(ServerEntry.PasswordRequired):

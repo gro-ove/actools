@@ -49,8 +49,8 @@ namespace AcManager.Tools.ContentInstallation {
 
             public FileNodeBase(string key, DirectoryNode parent) {
                 // ReSharper disable once VirtualMemberCallInConstructor
-                Key = key;
-                Name = Path.GetFileName(Key);
+                Key = parent == null ? null : key;
+                Name = Path.GetFileName(key);
                 NameLowerCase = Name?.ToLowerInvariant();
                 Parent = parent;
             }
@@ -229,7 +229,7 @@ namespace AcManager.Tools.ContentInstallation {
             if (trackId == null) {
                 Logging.Write("Directory’s name is null, let’s try to guess track’s ID");
 
-                if (directory.Files.Any(x => uiTrack != null ? x.NameLowerCase == "models.ini" : false ||
+                if (directory.Files.Any(x => uiTrack != null ? x.NameLowerCase == "models.ini" :
                         layoutLowerCaseIds.Any(y => x.NameLowerCase == $"models_{y}.ini"))) {
                     // Looks like KN5 are referenced via ini-files, we can’t rely on KN5 name to determine
                     // missing track ID
@@ -533,7 +533,7 @@ namespace AcManager.Tools.ContentInstallation {
             Exception readException = null;
 
             var s = Stopwatch.StartNew();
-            var root = new DirectoryNode(baseId, null);
+            var root = new DirectoryNode(_installationParams.FallbackId ?? baseId, null);
             foreach (var info in list) {
                 root.Add(info);
             }

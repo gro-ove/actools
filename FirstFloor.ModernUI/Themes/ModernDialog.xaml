@@ -70,14 +70,15 @@
 
                       <!-- buttons -->
                       <DockPanel x:Name="PART_BottomRow" DockPanel.Dock="Bottom" Margin="{TemplateBinding ButtonsMargin}" Panel.ZIndex="1">
-                        <ItemsControl DockPanel.Dock="Right" ItemsSource="{TemplateBinding Buttons}">
+                        <ItemsControl x:Name="PART_BottomRow_Buttons" DockPanel.Dock="Right" ItemsSource="{TemplateBinding Buttons}">
                           <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                               <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                           </ItemsControl.ItemsPanel>
                         </ItemsControl>
-                        <ContentControl HorizontalAlignment="{TemplateBinding ButtonRowContentAlignment}" Content="{TemplateBinding ButtonsRowContent}" />
+                        <ContentControl x:Name="PART_BottomRow_Content" HorizontalAlignment="{TemplateBinding ButtonRowContentAlignment}"
+                            Content="{TemplateBinding ButtonsRowContent}" />
                       </DockPanel>
 
                       <!-- content -->

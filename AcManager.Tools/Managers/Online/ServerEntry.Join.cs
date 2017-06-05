@@ -55,7 +55,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (PasswordRequired) {
                     if (string.IsNullOrEmpty(Password)) {
                         yield return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
-                    } else if (WrongPassword) {
+                    } else if (PasswordWasWrong) {
                         yield return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
                     }
                 }
@@ -227,6 +227,18 @@ namespace AcManager.Tools.Managers.Online {
             return Cars?.FirstOrDefault(x => string.Equals(x.Id, carId, StringComparison.OrdinalIgnoreCase))?.Id;
         }
 
+        private Game.AssistsProperties _assists;
+
+        [CanBeNull]
+        public Game.AssistsProperties Assists {
+            get { return _assists; }
+            set {
+                if (Equals(value, _assists)) return;
+                _assists = value;
+                OnPropertyChanged();
+            }
+        }
+
         private async Task Join(object o) {
             var carEntry = SelectedCarEntry;
             if (carEntry == null || Cars == null) return;
@@ -258,7 +270,7 @@ namespace AcManager.Tools.Managers.Online {
                 CarSkinId = carEntry.AvailableSkin?.Id,
                 TrackId = Track?.Id,
                 TrackConfigurationId = Track?.LayoutId
-            }, null, new Game.ConditionProperties {
+            }, Assists, new Game.ConditionProperties {
                 WeatherName = WeatherId
             }, null, new Game.OnlineProperties {
                 RequestedCar = correctId,
@@ -274,7 +286,7 @@ namespace AcManager.Tools.Managers.Online {
             var now = DateTime.Now;
             await GameWrapper.StartAsync(properties);
             var whatsGoingOn = properties.GetAdditional<WhatsGoingOn>();
-            WrongPassword = whatsGoingOn?.Type == WhatsGoingOnType.OnlineWrongPassword;
+            PasswordWasWrong = whatsGoingOn?.Type == WhatsGoingOnType.OnlineWrongPassword;
 
             if (whatsGoingOn == null) {
                 LastConnected = now;

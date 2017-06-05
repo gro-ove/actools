@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -315,10 +316,10 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
     [Localizable(false)]
     public class ServerInformationExtendedAssists : NotifyPropertyChanged {
         [JsonProperty(PropertyName = "absState")]
-        public int AbsState { get; set; } = 1;
+        public ServerPresetAssistState AbsState { get; set; } = ServerPresetAssistState.Factory;
 
         [JsonProperty(PropertyName = "tcState")]
-        public int TcState { get; set; } = 1;
+        public ServerPresetAssistState TractionControlState { get; set; } = ServerPresetAssistState.Factory;
 
         [JsonProperty(PropertyName = "fuelRate")]
         public int FuelRate { get; set; } = 100;
@@ -339,7 +340,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         public bool AutoclutchAllowed { get; set; }
 
         [JsonProperty(PropertyName = "tyreBlanketsAllowed")]
-        public bool TyreBlanketsAllowed { get; set; }
+        public bool TyreBlankets { get; set; }
 
         [JsonProperty(PropertyName = "forceVirtualMirror")]
         public bool ForceVirtualMirror { get; set; }
@@ -352,6 +353,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [CanBeNull, JsonProperty(PropertyName = "city")]
         public string City { get; set; }
+
+        [CanBeNull, JsonProperty(PropertyName = "passwordChecksum")]
+        public string[] PasswordChecksum { get; set; }
 
         [CanBeNull, JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
@@ -391,6 +395,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [JsonProperty(PropertyName = "gripTransfer")]
         public double? GripTransfer { get; set; }
+
+        [JsonProperty(PropertyName = "maxContactsPerKm")]
+        public double? MaxContactsPerKm { get; set; }
 
         [JsonIgnore]
         public DateTime LoadedAt { get; set; }

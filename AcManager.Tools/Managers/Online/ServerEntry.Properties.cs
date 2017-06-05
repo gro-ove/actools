@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -8,13 +12,14 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers.Online {
     public enum RaceMode {
         Laps, Timed, TimedExtra
     }
 
-    public partial class ServerEntry {
+    public partial class ServerEntry : INotifyDataErrorInfo {
         /// <summary>
         /// Combined from IP and HTTP port.
         /// </summary>
@@ -92,9 +97,8 @@ namespace AcManager.Tools.Managers.Online {
                 _passwordRequired = value;
                 OnPropertyChanged();
 
-                _wrongPassword = false;
-                OnPropertyChanged(nameof(WrongPassword));
-                _joinCommand?.RaiseCanExecuteChanged();
+                PasswordWasWrong = false;
+                InvalidatePasswordIsWrong();
             }
         }
 
@@ -115,25 +119,56 @@ namespace AcManager.Tools.Managers.Online {
             set {
                 if (Equals(value, Password)) return;
                 _password = value;
-                _wrongPassword = false;
                 ValuesStorage.SetEncrypted(KeyPasswordStorage, value);
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(WrongPassword));
+                InvalidatePasswordIsWrong();
+                PasswordWasWrong = false;
                 AvailableUpdate();
             }
         }
 
-        private bool _wrongPassword;
+        private bool _passwordWasWrong;
 
-        public bool WrongPassword {
-            get { return _wrongPassword; }
+        public bool PasswordWasWrong {
+            get { return _passwordWasWrong; }
             set {
-                if (Equals(value, _wrongPassword)) return;
-                _wrongPassword = value;
+                if (Equals(value, _passwordWasWrong)) return;
+                _passwordWasWrong = value;
                 OnPropertyChanged();
-                AvailableUpdate();
+                InvalidatePasswordIsWrong();
             }
         }
+
+        private bool? _correctPassword;
+
+        private void InvalidatePasswordIsWrong() {
+            var correct = IsPasswordValid();
+            if (_correctPassword != correct) {
+                _correctPassword = correct;
+                OnPropertyChanged(nameof(PasswordIsWrong));
+                OnErrorsChanged(nameof(Password));
+            }
+        }
+
+        public bool PasswordIsWrong => _correctPassword == false;
+
+        #region Password error thing
+        public IEnumerable GetErrors(string propertyName) {
+            switch (propertyName) {
+                case nameof(Password):
+                    return PasswordIsWrong ? new[] { "Password is wrong" } : null;
+                default:
+                    return null;
+            }
+        }
+
+        bool INotifyDataErrorInfo.HasErrors => PasswordIsWrong;
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public void OnErrorsChanged([CallerMemberName] string propertyName = null) {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+        #endregion
 
         private string _country;
 
@@ -167,7 +202,6 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _bookingMode)) return;
                 _bookingMode = value;
                 OnPropertyChanged();
-                _joinCommand?.RaiseCanExecuteChanged();
 
                 if (!value) {
                     DisposeHelper.Dispose(ref _ui);
@@ -287,7 +321,6 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
                 OnPropertyChanged();
-                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -403,7 +436,6 @@ namespace AcManager.Tools.Managers.Online {
                 _sessions = value;
                 OnPropertyChanged();
                 CurrentSessionType = Sessions?.FirstOrDefault(x => x.IsActive)?.Type;
-                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -417,7 +449,6 @@ namespace AcManager.Tools.Managers.Online {
                 _status = value;
                 OnPropertyChanged();
 
-                _joinCommand?.RaiseCanExecuteChanged();
                 _addToRecentCommand?.RaiseCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {

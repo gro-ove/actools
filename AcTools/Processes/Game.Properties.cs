@@ -474,10 +474,9 @@ namespace AcTools.Processes {
             }
 
             public static double GetRoadTemperature(double seconds, double ambientTemperature, double weatherCoefficient = 1.0) {
-                var wc = Equals(weatherCoefficient, 0.0) ? 1.0 : weatherCoefficient;
-                var tc = (seconds / 60.0 / 60.0 - 7.0) * 0.04167;
-                return ambientTemperature + 20.0 * wc * (1.0 - tc) * (
-                        (0.4 * Math.Exp(-6.0 * tc) * Math.Sin(6.0 * tc) + 0.1) * Math.Sin(0.9 * tc) * ambientTemperature / 1.5);
+                var time = (seconds / 60d / 60d - 7d) * 0.04167;
+                return ambientTemperature * (1d + 5.33332 * (weatherCoefficient == 0d ? 1d : weatherCoefficient) * (1d - time) *
+                        (Math.Exp(-6d * time) * Math.Sin(6d * time) + 0.25) * Math.Sin(0.9 * time));
             }
         }
 

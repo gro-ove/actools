@@ -111,13 +111,15 @@
         <ToggleButton x:Name="AssistsButton" Content="{x:Static t:ToolsStrings.Assists_Title}"
             IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
           <ToggleButton.ToolTip>
-            <c:AssistsDescription DataContext="{x:Static c:AssistsViewModel.Instance}" />
+            <c:AssistsDescription x:Name="AssistsDescription" />
           </ToggleButton.ToolTip>
         </ToggleButton>
+
         <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
             IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
-          <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
+          <uc:AssistsEditor />
         </c:ModernPopup>
+
         <mui:BooleanSwitch Value="{Binding IsBooked}" DataContext="{Binding Entry}">
           <mui:BooleanSwitch.True>
             <Button Content="{x:Static mui:UiStrings.Toolbar_OnlineCancelBooking}" Command="{Binding CancelBookingCommand}" />
@@ -268,16 +270,14 @@
             </StackPanel>
 
             <!--password-->
-            <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding PasswordRequired}"
-                x:Name="PasswordPanel">
+            <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding PasswordRequired}" x:Name="PasswordPanel" Margin="0 4 0 0">
               <mui:BooleanSwitch.True>
                 <DockPanel Margin="0 0 0 20" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}">
-                  <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right"
-                      Visibility="{Binding WrongPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <Path Data="{StaticResource LockIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}" Stretch="Uniform" Margin="0 0 6 0" />
                   <TextBlock DockPanel.Dock="Left" Text="{x:Static g:AppStrings.Online_PasswordLabel}" Style="{StaticResource Heading2}" Margin="0 0 16 0" />
-                  <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      Style="{StaticResource ProperPasswordBox.Borderless}" />
+                  <mui:ProperPasswordBox FontSize="16"
+                      Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                      Style="{StaticResource ProperPasswordBox.Borderless}" Margin="0 0 4 0" />
                 </DockPanel>
               </mui:BooleanSwitch.True>
               <mui:BooleanSwitch.False>
@@ -290,13 +290,12 @@
                           IsChecked="{Binding AlwaysAllowToUsePassword, Source={x:Static t:SettingsHolder.Online}}" />
                     </ContextMenu>
                   </mui:ContextMenuButton>
-                  <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right"
-                      Visibility="{Binding WrongPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <Path DockPanel.Dock="Left" Data="{StaticResource ToolsIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}"
                       Stretch="Uniform" Margin="0 0 6 0" />
                   <TextBlock DockPanel.Dock="Left" Text="{x:Static t:ToolsStrings.Online_AdminPassword}" Style="{StaticResource Heading2}" Margin="0 0 16 0" />
-                  <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      Style="{StaticResource ProperPasswordBox.Borderless}" />
+                  <mui:ProperPasswordBox FontSize="16"
+                      Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                      Style="{StaticResource ProperPasswordBox.Borderless}" Margin="0 0 4 0" />
                 </DockPanel>
               </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
@@ -457,9 +456,17 @@
                     </TextBlock.ToolTip>
                   </TextBlock>
                   <c:TemperatureBlock c:PropertiesGrid.Label="Temperature:" Text="{Binding AmbientTemperature, TargetNullValue='?'}" Background="Transparent" />
-                  <TextBlock c:PropertiesGrid.Label="Wind:" Text="{Binding WindSpeed, StringFormat='{}{0:F1} km/h'}" Background="Transparent" />
+                  <TextBlock c:PropertiesGrid.Label="Wind:" Background="Transparent">
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="{}{0:F0} km/h ({1})">
+                        <Binding Path="WindSpeed" FallbackValue="?" TargetNullValue="?" />
+                        <Binding Path="DisplayWindDirection" FallbackValue="?" TargetNullValue="?" />
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
                   <c:TemperatureBlock c:PropertiesGrid.Label="Road temp.:" Text="{Binding RoadTemperature, TargetNullValue='?'}" Background="Transparent" />
-                  <TextBlock c:PropertiesGrid.Label="Wind dir.:" Text="{Binding DisplayWindDirection}" Background="Transparent" />
+                  <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="Maximum amount of contacts per kilometer"
+                      Text="{Binding MaxContactsPerKm, StringFormat='{}{0:F1} per km', TargetNullValue='not limited'}" Background="Transparent" />
                 </c:PropertiesGrid>
               </StackPanel>
 

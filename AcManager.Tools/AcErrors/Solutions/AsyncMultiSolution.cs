@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.AcErrors.Solutions {
     using AsyncAction = Func<IAcError, Task>;
@@ -34,11 +35,16 @@ namespace AcManager.Tools.AcErrors.Solutions {
                 var list = errors.ToList();
                 for (var i = 0; i < list.Count; i++) {
                     var error = list[i];
-                    progress?.Report(new AsyncProgressEntry(error.Target.DisplayName, (double)i / list.Count));
-                    await _action.Invoke(error, cancellation);
+                    progress?.Report(error.Target.DisplayName, i, list.Count);
+                    Logging.Debug("starting…");
+                    await _action.Invoke(error, cancellation).ConfigureAwait(false);
+                    Logging.Debug("done!");
                     if (cancellation.IsCancellationRequested) return;
-                    await Task.Delay(10, cancellation);
+                    Logging.Debug("w0");
+                    await Task.Delay(10, cancellation).ConfigureAwait(false);
+                    Logging.Debug("wd");
                     if (cancellation.IsCancellationRequested) return;
+                    Logging.Debug("ns");
                 }
             }
         }

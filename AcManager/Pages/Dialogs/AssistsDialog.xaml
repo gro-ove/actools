@@ -74,8 +74,8 @@
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_TyreWear_Tooltip}">
-            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_TyreWear}" Value="{Binding TyreWearMultipler}" Postfix="×" />
-            <Slider Minimum="0" Maximum="5" Value="{Binding TyreWearMultipler}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
+            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_TyreWear}" Value="{Binding TyreWearMultiplier}" Postfix="×" />
+            <Slider Minimum="0" Maximum="5" Value="{Binding TyreWearMultiplier}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
                     IsSnapToTickEnabled="False" />
         </StackPanel>
 

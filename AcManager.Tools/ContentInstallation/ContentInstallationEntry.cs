@@ -25,6 +25,9 @@ namespace AcManager.Tools.ContentInstallation {
         public string Source { get; }
 
         [NotNull]
+        public string DisplaySource => Source.Split(new[] { "?password=" }, StringSplitOptions.None)[0];
+
+        [NotNull]
         private readonly ContentInstallationParams _installationParams;
 
         internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
@@ -214,6 +217,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public async Task<bool> RunAsync() {
             IProgress<AsyncProgressEntry> progress = this;
+            ContentInstallationManager.Instance.UpdateBusyDoingSomething();
 
             try {
                 using (var cancellation = new CancellationTokenSource()) {
@@ -248,6 +252,9 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         } catch (WebException e) when (e.Response is HttpWebResponse) {
                             Failed = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
+                            return false;
+                        } catch (WebException) when (cancellation.IsCancellationRequested) {
+                            CheckCancellation(true);
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);

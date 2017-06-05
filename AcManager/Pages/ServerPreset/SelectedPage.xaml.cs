@@ -75,7 +75,7 @@ namespace AcManager.Pages.ServerPreset {
                     if (Equals(value, _track)) return;
                     _track = value;
                     OnPropertyChanged();
-                    
+
                     SelectedObject.TrackId = _track.MainTrackObject.Id;
                     SelectedObject.TrackLayoutId = _track.LayoutId;
 
@@ -150,7 +150,7 @@ different.";
             private AsyncCommand _goCommand;
 
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(async () => {
-                var notPacked = Cars.Where(x => x.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
+                var notPacked = Cars.Where(x => x?.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
                 WaitingDialog waiting = null;
                 try {
                     if (notPacked.Any() &&
@@ -220,7 +220,7 @@ different.";
         async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
             _object = await ServerPresetsManager.Instance.GetByIdAsync(_id);
             if (_object == null) return;
-            
+
             _track = _object.TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(_object.TrackId, _object.TrackLayoutId);
             _cars = (await _object.CarIds.Select(x => CarsManager.Instance.GetByIdAsync(x)).WhenAll(4)).ToArray();
         }

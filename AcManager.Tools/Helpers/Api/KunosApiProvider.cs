@@ -25,9 +25,9 @@ namespace AcManager.Tools.Helpers.Api {
 
         public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
 
-        // actual server should be able to respond in four seconds, otherwise there is no sense
-        // in communicating with it
-        public static TimeSpan OptionDirectRequestTimeout = TimeSpan.FromSeconds(4d);
+        // This timeout looks like too much, but sometimes, with a lot of async requests in background,
+        // even requests which usually take couple of milliseconds might go on up to several seconds.
+        public static TimeSpan OptionDirectRequestTimeout = TimeSpan.FromSeconds(5d);
 
         public static int ServersNumber => InternalUtils.KunosServersNumber;
 
@@ -78,9 +78,13 @@ namespace AcManager.Tools.Helpers.Api {
             if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            using (var cancellation = new CancellationTokenSource(timeout.Value))
-            using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            try {
+                using (var cancellation = new CancellationTokenSource(timeout.Value))
+                using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+            } catch (OperationCanceledException) {
+                throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }
 
@@ -93,26 +97,34 @@ namespace AcManager.Tools.Helpers.Api {
                 request.Headers.IfModifiedSince = DateTime.SpecifyKind(ifModifiedSince.Value, DateTimeKind.Utc);
             }
 
-            using (var cancellation = new CancellationTokenSource(timeout.Value))
-            using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
-                if (response.StatusCode == HttpStatusCode.NotModified) {
-                    return new LoadedData { Data = null, LastModified = ifModifiedSince ?? DateTime.Now };
-                }
+            try {
+                using (var cancellation = new CancellationTokenSource(timeout.Value))
+                using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
+                    if (response.StatusCode == HttpStatusCode.NotModified) {
+                        return new LoadedData { Data = null, LastModified = ifModifiedSince ?? DateTime.Now };
+                    }
 
-                return new LoadedData {
-                    Data = await response.Content.ReadAsStringAsync().ConfigureAwait(false),
-                    LastModified = response.Content.Headers.LastModified?.DateTime ?? DateTime.Now
-                };
+                    return new LoadedData {
+                        Data = await response.Content.ReadAsStringAsync().ConfigureAwait(false),
+                        LastModified = response.Content.Headers.LastModified?.DateTime ?? DateTime.Now
+                    };
+                }
+            } catch (OperationCanceledException) {
+                throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }
 
         [NotNull]
-        private static T[] LoadListUsingRequest<T>(string uri, TimeSpan timeout, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
+        private static T[] LoadList<T>(string uri, TimeSpan timeout, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            using (var cancellation = new CancellationTokenSource(timeout))
-            using (var response = GetHttpClient().SendAsync(request, cancellation.Token).Result)
-            using (var stream = response.Content.ReadAsStreamAsync().Result) {
-                return deserializationFn(stream);
+            try {
+                using (var cancellation = new CancellationTokenSource(timeout))
+                using (var response = GetHttpClient().SendAsync(request, cancellation.Token).Result)
+                using (var stream = response.Content.ReadAsStreamAsync().Result) {
+                    return deserializationFn(stream);
+                }
+            } catch (OperationCanceledException) {
+                throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }
 
@@ -132,7 +144,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
+                    var parsed = LoadList(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
                     Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (Exception e) {
@@ -149,7 +161,7 @@ namespace AcManager.Tools.Helpers.Api {
         public static MinoratingServerInformation[] TryToGetMinoratingList() {
             try {
                 var watch = Stopwatch.StartNew();
-                var parsed = LoadListUsingRequest(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
+                var parsed = LoadList(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
 
                 for (var i = 0; i < parsed.Length; i++) {
                     var information = parsed[i];

@@ -29,7 +29,9 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public AsyncProgressEntry(string message, int value, int total) {
             Message = message;
-            Progress = (double)value / total + 0.000001;
+
+            const double x = 0.000001;
+            Progress = (double)value / total * (1d - 2d * x) + x;
         }
 
         public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes) {

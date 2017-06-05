@@ -1312,7 +1312,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} day.
+        ///   Looks up a localized string similar to {0} day.
         /// </summary>
         public static string Time_Day {
             get {
@@ -1321,7 +1321,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} hour.
+        ///   Looks up a localized string similar to {0} hour.
         /// </summary>
         public static string Time_Hour {
             get {
@@ -1330,7 +1330,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} minute.
+        ///   Looks up a localized string similar to {0} minute.
         /// </summary>
         public static string Time_Minute {
             get {
@@ -1339,7 +1339,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} month.
+        ///   Looks up a localized string similar to {0} month.
         /// </summary>
         public static string Time_Month {
             get {
@@ -1348,7 +1348,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} second.
+        ///   Looks up a localized string similar to {0} second.
         /// </summary>
         public static string Time_Second {
             get {
@@ -1357,7 +1357,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} week.
+        ///   Looks up a localized string similar to {0} week.
         /// </summary>
         public static string Time_Week {
             get {
