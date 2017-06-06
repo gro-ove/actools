@@ -38,7 +38,7 @@ namespace AcManager.Pages.AcSettings {
             InitializeComponent();
 
             ResizingStuff();
-            
+
             AcSettingsHolder.Controls.Used++;
             this.OnActualUnload(() => {
                 AcSettingsHolder.Controls.Used--;
@@ -124,6 +124,8 @@ namespace AcManager.Pages.AcSettings {
             public ControlsSettings Controls => AcSettingsHolder.Controls;
 
             public SystemSettings System => AcSettingsHolder.System;
+
+            public FfPostProcessSettings FfPostProcess => AcSettingsHolder.FfPostProcess;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

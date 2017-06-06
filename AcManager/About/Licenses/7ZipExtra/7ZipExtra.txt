@@ -1,0 +1,4 @@
+name: 7-Zip Extra
+url: http://www.7-zip.org/
+content: License.txt
+sid: iowasjor

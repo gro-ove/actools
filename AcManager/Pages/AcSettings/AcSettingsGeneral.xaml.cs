@@ -14,6 +14,8 @@ namespace AcManager.Pages.AcSettings {
             public ExposureSettings Exposure => AcSettingsHolder.Exposure;
 
             public ReplaySettings Replay => AcSettingsHolder.Replay;
+
+            public PitStopSettings PitStop => AcSettingsHolder.PitStop;
         }
     }
 }

@@ -2,12 +2,12 @@
 using System.Linq;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcManager.Tools.Tests {
-    [TestClass]
+    [TestFixture]
     public class WeatherDescriptionTest {
-        [TestMethod]
+        [Test]
         public void FindClosestTest() {
             var values = Enum.GetValues(typeof(WeatherType)).OfType<WeatherType>().ToArray();
             WeatherType? result = null;

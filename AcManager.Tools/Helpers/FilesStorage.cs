@@ -24,6 +24,7 @@ namespace AcManager.Tools.Helpers {
         public static readonly string PresetsPerModeConditions = "Presets Per Mode Conditions";
         public static readonly string UpgradeIcons = "Upgrade Icons";
         public static readonly string GridTypes = "Grid Types";
+        public static readonly string Livery = "Livery";
         public static readonly string LicensePlates = "License Plates";
         public static readonly string PaintShop = "Paint Shop";
         public static readonly string CustomShowroomLights = "Custom Showroom Lights";
@@ -84,7 +85,7 @@ namespace AcManager.Tools.Helpers {
 
             var contentFile = Combine(DataDirName, nameJoined);
             var contentUserFile = Combine(DataUserDirName, nameJoined);
-            
+
             EnsureDirectory(Path.GetDirectoryName(contentFile));
             EnsureDirectory(Path.GetDirectoryName(contentUserFile));
 

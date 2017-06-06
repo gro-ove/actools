@@ -1420,6 +1420,32 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _rdLogin;
+
+            public string RdLogin {
+                get { return _rdLogin ?? (_rdLogin = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdLogin", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _rdLogin)) return;
+                    _rdLogin = value;
+                    ValuesStorage.SetEncrypted("Settings.ContentSettings.RdLogin", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _rdPassword;
+
+            public string RdPassword {
+                get { return _rdPassword ?? (_rdPassword = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdPassword", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _rdPassword)) return;
+                    _rdPassword = value;
+                    ValuesStorage.SetEncrypted("Settings.ContentSettings.RdPassword", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _fontIconCharacter;
 
             public string FontIconCharacter {

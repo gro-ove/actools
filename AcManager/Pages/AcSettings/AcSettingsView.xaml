@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    
+
     <ScrollViewer mui:SaveScroll.Key="AcSettingsView">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
@@ -37,6 +37,10 @@
 
             <CheckBox IsChecked="{Binding Gameplay.AllowOverlapping}">
                 <Label Content="{x:Static t:ToolsStrings.AcSettings_View_AllowAppsOverlapping}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Gameplay.DownshiftProtectionNotification}">
+                <Label Content="Display downshift protection notification" />
             </CheckBox>
 
             <!--camera-->

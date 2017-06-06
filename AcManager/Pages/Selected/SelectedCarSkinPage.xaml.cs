@@ -28,7 +28,7 @@ namespace AcManager.Pages.Selected {
             public ViewModel(CarObject car, [NotNull] CarSkinObject acObject) : base(acObject) {
                 Car = car;
             }
-            
+
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "team":
@@ -47,7 +47,7 @@ namespace AcManager.Pages.Selected {
                         NewFilterTab(SelectedObject.Priority.HasValue ? $"priority:{SelectedObject.Priority.Value}" : @"priority-");
                         break;
                 }
-                
+
                 base.FilterExec(type);
             }
 
@@ -72,7 +72,7 @@ namespace AcManager.Pages.Selected {
             private CommandBase _changeLiveryCommand;
 
             public ICommand ChangeLiveryCommand => _changeLiveryCommand ??
-                    (_changeLiveryCommand = new DelegateCommand(() => new LiveryIconEditor(SelectedObject).ShowDialog()));
+                    (_changeLiveryCommand = new DelegateCommand(() => new LiveryIconEditorDialog(SelectedObject).ShowDialog()));
 
             private CommandBase _generateLiveryCommand;
 

@@ -1924,7 +1924,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a car skin {0}.
+        ///   Looks up a localized string similar to Update for a skin {0} for {1}.
         /// </summary>
         public static string ContentInstallation_CarSkinExisting {
             get {
@@ -1933,7 +1933,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New car skin {0}.
+        ///   Looks up a localized string similar to New skin {0} for {1}.
         /// </summary>
         public static string ContentInstallation_CarSkinNew {
             get {

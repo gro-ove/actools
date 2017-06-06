@@ -19,7 +19,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public GoogleDriveLoader(string url) : base(PrepareUrl(url)) {}
 
-        public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             if (!Url.Contains("://drive.google.com/uc?", StringComparison.OrdinalIgnoreCase)) return true;
 
             // TODO: drop if page is bigger than, let’s say, 1MB

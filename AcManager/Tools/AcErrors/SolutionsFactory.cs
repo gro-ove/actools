@@ -326,7 +326,7 @@ namespace AcManager.Tools.AcErrors {
                                 AppStrings.Solution_SetupLivery,
                                 AppStrings.Solution_SetupLivery_Details,
                                 e => {
-                                    if (!new LiveryIconEditor((CarSkinObject)e.Target).ShowDialog()) {
+                                    if (!new LiveryIconEditorDialog((CarSkinObject)e.Target).ShowDialog()) {
                                         throw new SolvingException();
                                     }
                                 }) { IsUiSolution = true }

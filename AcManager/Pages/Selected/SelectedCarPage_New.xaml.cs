@@ -709,7 +709,7 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(new Separator());
 
             item = new MenuItem { Header = AppStrings.Toolbar_ChangeLivery };
-            item.Click += (sender, args) => new LiveryIconEditor(skin).ShowDialog();
+            item.Click += (sender, args) => new LiveryIconEditorDialog(skin).ShowDialog();
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = AppStrings.Toolbar_GenerateLivery, ToolTip = AppStrings.Solution_GenerateLivery_Details };

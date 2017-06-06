@@ -138,6 +138,11 @@
     <Compile Include="AppModernWindow.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
+    <Compile Include="Graphs\CarGraphViewer.cs" />
+    <Compile Include="Graphs\CustomGraphViewer.cs" />
+    <Compile Include="Graphs\CustomTrackerControl.cs" />
+    <Compile Include="Graphs\GraphDataViewerBase.cs" />
+    <Compile Include="Graphs\OxyExtenstion.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
@@ -242,7 +247,6 @@
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
-    <Compile Include="OxyPlotGraphViewer.cs" />
     <Compile Include="Helpers\FinishableControl.cs" />
     <Compile Include="ViewModels\AcListPageViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapper.cs" />

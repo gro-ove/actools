@@ -36,15 +36,10 @@ namespace AcManager.Tools.AcErrors.Solutions {
                 for (var i = 0; i < list.Count; i++) {
                     var error = list[i];
                     progress?.Report(error.Target.DisplayName, i, list.Count);
-                    Logging.Debug("starting…");
-                    await _action.Invoke(error, cancellation).ConfigureAwait(false);
-                    Logging.Debug("done!");
+                    await _action.Invoke(error, cancellation);
                     if (cancellation.IsCancellationRequested) return;
-                    Logging.Debug("w0");
-                    await Task.Delay(10, cancellation).ConfigureAwait(false);
-                    Logging.Debug("wd");
+                    await Task.Delay(10, cancellation);
                     if (cancellation.IsCancellationRequested) return;
-                    Logging.Debug("ns");
                 }
             }
         }

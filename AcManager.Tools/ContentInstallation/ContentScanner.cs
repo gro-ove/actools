@@ -423,8 +423,13 @@ namespace AcManager.Tools.ContentInstallation {
                     carId = JsonExtension.Parse(skinFor.ToUtf8String())["id"]?.ToString();
                 } else {
                     carId = _installationParams.CarId;
+
                     if (carId == null && directory.Parent?.NameLowerCase == "skins") {
                         carId = directory.Parent.Parent?.Name;
+                    }
+
+                    if (carId == null) {
+                        carId = AcContext.Instance.CurrentCar?.Id;
                     }
                 }
 

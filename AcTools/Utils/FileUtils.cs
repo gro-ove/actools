@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using SlimDX.DirectInput;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Local
@@ -520,6 +521,10 @@ namespace AcTools.Utils {
             } else {
                 HardlinkOrCopy(source, destination, true);
             }
+        }
+
+        public static bool Unblock(string fileName) {
+            return Kernel32.DeleteFile(fileName + ":Zone.Identifier");
         }
     }
 }

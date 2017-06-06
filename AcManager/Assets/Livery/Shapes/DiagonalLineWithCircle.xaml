@@ -1,5 +1,0 @@
-﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Tag="Colors=3">
-    <Rectangle Fill="{Binding Color}" />
-    <Path Fill="{Binding SecondaryColor}" Data="F1 M 0,60L 60,0L 64,0L 64,4L 4,64L 0,64L 0,60 Z" />
-    <Ellipse Fill="{Binding TertiaryColor}" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
-</Grid>

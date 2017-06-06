@@ -57,16 +57,19 @@ namespace AcTools.Render.Base.Utils {
                 using (var resource = ShaderResourceView.FromMemory(holder.Device, bytes)) {
                     var texture = (Texture2D)resource.Resource;
                     var loaded = texture.Description;
+                    var width = downsize?.Width ?? loaded.Width;
+                    var height = downsize?.Height ?? loaded.Height;
+
                     effect.Initialize(holder.Device);
 
                     format = loaded.Format;
-                    output.Resize(holder, downsize?.Width ?? loaded.Width, downsize?.Height ?? loaded.Height, null);
+                    output.Resize(holder, width, height, null);
 
                     holder.DeviceContext.ClearRenderTargetView(output.TargetView, Color.Transparent);
                     holder.DeviceContext.OutputMerger.SetTargets(output.TargetView);
 
                     viewports = holder.DeviceContext.Rasterizer.GetViewports();
-                    holder.DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, loaded.Width, loaded.Height, 0.0f, 1.0f));
+                    holder.DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, width, height, 0f, 1f));
 
                     holder.DeviceContext.OutputMerger.BlendState = null;
                     holder.QuadBuffers.Prepare(holder.DeviceContext, effect.LayoutPT);

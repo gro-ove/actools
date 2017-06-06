@@ -4,7 +4,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
-    public sealed class SettingEntry : Displayable, IWithId, IWithId<int?> {
+    public class SettingEntry : Displayable, IWithId, IWithId<int?> {
         public SettingEntry([LocalizationRequired(false)] string value, string displayName) {
             DisplayName = displayName;
             Value = value;
@@ -15,6 +15,11 @@ namespace AcManager.Tools.Helpers {
             DisplayName = displayName;
             Value = value.ToInvariantString();
             IntValue = value;
+        }
+
+        public sealed override string DisplayName {
+            get => base.DisplayName;
+            set => base.DisplayName = value;
         }
 
         [Localizable(false)]

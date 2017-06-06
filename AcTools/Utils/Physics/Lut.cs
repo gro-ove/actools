@@ -36,6 +36,12 @@ namespace AcTools.Utils.Physics {
         }
     }
 
+    public static class LutExtension {
+        public static Lut ToLut(this IEnumerable<LutPoint> lut) {
+            return new Lut(lut);
+        }
+    }
+
     public class Lut : List<LutPoint> {
         public Lut() {}
 
@@ -52,11 +58,43 @@ namespace AcTools.Utils.Physics {
             }
             return result;
         }
-        
+
         public void TransformSelf(Func<LutPoint, double> fn) {
             for (var i = 0; i < Count; i++) {
                 var point = this[i];
                 this[i] = new LutPoint(point.X, fn(point));
+            }
+        }
+
+        public Lut Transform(Func<LutPoint, LutPoint> fn) {
+            var result = new Lut(Count);
+            for (var i = 0; i < Count; i++) {
+                var point = this[i];
+                result.Add(fn(point));
+            }
+            return result;
+        }
+
+        public void TransformSelf(Func<LutPoint, LutPoint> fn) {
+            for (var i = 0; i < Count; i++) {
+                var point = this[i];
+                this[i] = fn(point);
+            }
+        }
+
+        public Lut TransformHorizontally(Func<LutPoint, double> fn) {
+            var result = new Lut(Count);
+            for (var i = 0; i < Count; i++) {
+                var point = this[i];
+                result.Add(new LutPoint(fn(point), point.Y));
+            }
+            return result;
+        }
+
+        public void TransformHorizontallySelf(Func<LutPoint, double> fn) {
+            for (var i = 0; i < Count; i++) {
+                var point = this[i];
+                this[i] = new LutPoint(fn(point), point.Y);
             }
         }
 
@@ -167,7 +205,7 @@ namespace AcTools.Utils.Physics {
             optimized.Add(this[Count - 1]);
             return optimized;
         }
-        
+
         /// <summary>
         /// Parse lut value from INI-file, something like “(|0=0.8|1000=0.9|)”.
         /// Files are parsed by <see cref="LutDataFile" /> type (also, it warns user about syntax errors).
@@ -208,7 +246,7 @@ namespace AcTools.Utils.Physics {
 
             return result;
         }
-        
+
         [NotNull, Pure]
         public Lut ScaleTo(double maxY) {
             UpdateBoundingBox();
@@ -220,15 +258,37 @@ namespace AcTools.Utils.Physics {
         public Lut ScaleBy(double multipler) {
             return new Lut(Transform(x => x.Y * multipler));
         }
-        
+
         public void ScaleToSelf(double maxY) {
             UpdateBoundingBox();
             var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
             ScaleBySelf(multipler);
         }
-        
+
         public void ScaleBySelf(double multipler) {
             TransformSelf(x => x.Y * multipler);
+        }
+
+        [NotNull, Pure]
+        public Lut ScaleHorizontallyTo(double maxY) {
+            UpdateBoundingBox();
+            var multipler = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
+            return ScaleHorizontallyBy(multipler);
+        }
+
+        [NotNull, Pure]
+        public Lut ScaleHorizontallyBy(double multipler) {
+            return new Lut(TransformHorizontally(x => x.X * multipler));
+        }
+
+        public void ScaleHorizontallyToSelf(double maxY) {
+            UpdateBoundingBox();
+            var multipler = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
+            ScaleHorizontallyBySelf(multipler);
+        }
+
+        public void ScaleHorizontallyBySelf(double multipler) {
+            TransformHorizontallySelf(x => x.X * multipler);
         }
 
         [Pure]

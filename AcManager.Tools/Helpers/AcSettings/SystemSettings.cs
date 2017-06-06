@@ -15,7 +15,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _softLock;
 
         public bool SoftLock {
-            get { return _softLock; }
+            get => _softLock;
             set {
                 if (Equals(value, _softLock)) return;
                 _softLock = value;
@@ -36,48 +36,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }*/
         #endregion
 
-        #region Experimental FFB
-        private bool _ffbGyro;
-
-        public bool FfbGyro {
-            get { return _ffbGyro; }
-            set {
-                if (Equals(value, _ffbGyro)) return;
-                _ffbGyro = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _ffbDamperMinLevel;
-
-        public int FfbDamperMinLevel {
-            get { return _ffbDamperMinLevel; }
-            set {
-                value = value.Clamp(0, 100);
-                if (Equals(value, _ffbDamperMinLevel)) return;
-                _ffbDamperMinLevel = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _ffbDamperGain;
-
-        public int FfbDamperGain {
-            get { return _ffbDamperGain; }
-            set {
-                value = value.Clamp(0, 100);
-                if (Equals(value, _ffbDamperGain)) return;
-                _ffbDamperGain = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
         #region Miscellaneous
         private int _simulationValue;
 
         public int SimulationValue {
-            get { return _simulationValue; }
+            get => _simulationValue;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _simulationValue)) return;
@@ -89,7 +52,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _developerApps;
 
         public bool DeveloperApps {
-            get { return _developerApps; }
+            get => _developerApps;
             set {
                 if (Equals(value, _developerApps)) return;
                 _developerApps = value;
@@ -100,7 +63,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _hideDriver;
 
         public bool HideDriver {
-            get { return _hideDriver; }
+            get => _hideDriver;
             set {
                 if (Equals(value, _hideDriver)) return;
                 _hideDriver = value;
@@ -111,7 +74,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _allowFreeCamera;
 
         public bool AllowFreeCamera {
-            get { return _allowFreeCamera; }
+            get => _allowFreeCamera;
             set {
                 if (Equals(value, _allowFreeCamera)) return;
                 _allowFreeCamera = value;
@@ -122,7 +85,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _logging;
 
         public bool Logging {
-            get { return _logging; }
+            get => _logging;
             set {
                 if (Equals(value, _logging)) return;
                 _logging = value;
@@ -133,7 +96,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _screenshotFormat;
 
         public SettingEntry ScreenshotFormat {
-            get { return _screenshotFormat; }
+            get => _screenshotFormat;
             set {
                 if (!ScreenshotFormats.Contains(value)) value = ScreenshotFormats[0];
                 if (Equals(value, _screenshotFormat)) return;
@@ -147,7 +110,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _mirrorsFieldOfView;
 
         public int MirrorsFieldOfView {
-            get { return _mirrorsFieldOfView; }
+            get => _mirrorsFieldOfView;
             set {
                 value = value.Clamp(1, 180);
                 if (Equals(value, _mirrorsFieldOfView)) return;
@@ -161,12 +124,52 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _mirrorsFarPlane;
 
         public int MirrorsFarPlane {
-            get { return _mirrorsFarPlane; }
+            get => _mirrorsFarPlane;
             set {
                 value = value.Clamp(10, 2000);
                 if (Equals(value, _mirrorsFarPlane)) return;
                 _mirrorsFarPlane = value;
                 OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Experimental FFB
+        private bool _ffbGyro;
+
+        public bool FfbGyro {
+            get => _ffbGyro;
+            set {
+                if (Equals(value, _ffbGyro)) return;
+                _ffbGyro = value;
+                OnPropertyChanged();
+                AcSettingsHolder.Controls.CurrentPresetChanged = true;
+            }
+        }
+
+        private int _ffbDamperMinLevel;
+
+        public int FfbDamperMinLevel {
+            get => _ffbDamperMinLevel;
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _ffbDamperMinLevel)) return;
+                _ffbDamperMinLevel = value;
+                OnPropertyChanged();
+                AcSettingsHolder.Controls.CurrentPresetChanged = true;
+            }
+        }
+
+        private int _ffbDamperGain;
+
+        public int FfbDamperGain {
+            get => _ffbDamperGain;
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _ffbDamperGain)) return;
+                _ffbDamperGain = value;
+                OnPropertyChanged();
+                AcSettingsHolder.Controls.CurrentPresetChanged = true;
             }
         }
         #endregion
@@ -189,6 +192,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("ENABLE_GYRO", FfbGyro);
             section.Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());
             section.Set("DAMPER_GAIN", FfbDamperGain.ToDoublePercentage());
+        }
+
+        public void ImportFfb(string serialized) {
+            if (string.IsNullOrWhiteSpace(serialized)) return;
+            LoadFfbFromIni(IniFile.Parse(serialized));
+        }
+
+        public string ExportFfb() {
+            var ini = new IniFile();
+            SaveFfbToIni(ini);
+            return ini.ToString();
         }
 
         protected override void LoadFromIni() {
@@ -224,7 +238,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _ignoreResultTeleport;
 
         public bool IgnoreResultTeleport {
-            get { return _ignoreResultTeleport; }
+            get => _ignoreResultTeleport;
             set {
                 if (Equals(value, _ignoreResultTeleport)) return;
                 _ignoreResultTeleport = value;

@@ -23,11 +23,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             Url = url;
         }
 
-        public virtual Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public virtual Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             return Task.FromResult(true);
         }
 
-        public virtual async Task DownloadAsync(WebClient client, string destination, CancellationToken cancellation) {
+        public virtual async Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {
             await client.DownloadFileTaskAsync(Url, destination);
         }
 

@@ -435,13 +435,12 @@ namespace AcManager.Pages.Windows {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
             Focus();
-
-            var data = e.Data.GetData(DataFormats.FileDrop) as string[] ??
-                       (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
-                                                                           .Select(x => x.Trim())
-                                                                           .Select(x => x.Length > 1 && x.StartsWith(@"""") && x.EndsWith(@"""")
-                                                                                   ? x.Substring(1, x.Length - 2) : x);
-            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
+            var data = e.GetInputFiles().ToList();
+            Dispatcher.InvokeAsync(() => {
+                if (!e.Handled) {
+                    ProcessDroppedFiles(data);
+                }
+            });
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) {

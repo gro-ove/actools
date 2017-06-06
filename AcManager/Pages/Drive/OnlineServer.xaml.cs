@@ -180,6 +180,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
                 new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.Entry.ToggleFavouritedCommand, new KeyGesture(Key.D, ModifierKeys.Control)),
+                new InputBinding(Model.InviteCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(Model.Entry.ToggleHiddenCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.ManageListsCommand, new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift)),
@@ -506,6 +507,8 @@ namespace AcManager.Pages.Drive {
         }
 
         private void UpdateSelectedCar() {
+            AcContext.Instance.CurrentCar = Model.Entry.SelectedCarEntry?.CarObject;
+
             CarsComboBox.SelectedItem = Model.Entry.SelectedCarEntry;
             if (ShowExtendedInformation) {
                 CarsListBox.SelectedItem = CarsComboBox.SelectedItem;

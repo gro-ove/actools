@@ -107,7 +107,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public int LapsNumberMaximum => SettingsHolder.Drive.QuickDriveExpandBounds ? 999 : 40;
+            public int LapsNumberMaximum => SettingsHolder.Drive.QuickDriveExpandBounds ? 999 : 200;
 
             public int LapsNumberMaximumLimited => Math.Min(LapsNumberMaximum, 50);
 

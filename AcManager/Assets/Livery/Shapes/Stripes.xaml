@@ -1,4 +1,0 @@
-﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Tag="Colors=2">
-    <Rectangle Fill="{Binding Color}" />
-    <Path Fill="{Binding SecondaryColor}" Data="F1 M 0,0L 8,0L 8,64L 0,64L 0,0 Z M 16,0L 24,0L 24,64L 16,64L 16,0 Z" HorizontalAlignment="Center" />
-</Grid>

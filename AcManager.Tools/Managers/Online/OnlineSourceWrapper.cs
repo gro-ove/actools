@@ -164,7 +164,7 @@ namespace AcManager.Tools.Managers.Online {
             BackgroundLoading = background;
             return Status == OnlineManagerStatus.Loading ? ReloadLater(cancellation) : LoadAsync(cancellation);
         }
-        
+
         private Task _loadingTask;
         private bool _reloadAfterwards;
 
@@ -182,9 +182,9 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         // During loading, sudden cancellation might occur, but then immediately loading might
-        // be started again. To avoid unnecessary lost of almost loaded data, weíll put all
+        // be started again. To avoid unnecessary lost of almost loaded data, we‚Äôll put all
         // those requests in a special list and will use a local CancellationTokenSource instead.
-        // When request will get cancelled, weíll remove it from that list, wait for a while (for
+        // When request will get cancelled, we‚Äôll remove it from that list, wait for a while (for
         // new requests) and then check if the list is empty. If it is, cancellation will be
         // cancelled properly.
 
@@ -229,7 +229,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 // new LoadAsyncInner() might be started, if this one is cancelled
                 if (_cancellationSource == cancellationSource) {
-                    // GetLoadInnerTask() returns ìfalseî, if loading was cancelled before all servers
+                    // GetLoadInnerTask() returns ‚Äúfalse‚Äù, if loading was cancelled before all servers
                     // were loaded and ready to be added to the list. In this case, we need to revert state
                     // to Waiting so source will be properly loaded later.
                     Status = ready ? OnlineManagerStatus.Ready : OnlineManagerStatus.Waiting;
@@ -340,7 +340,7 @@ namespace AcManager.Tools.Managers.Online {
                     if (list.GetByIdOrDefault(_list[i].Id) == null) {
                         var serverEntry = _list[i];
                         var empty = serverEntry.RemoveOrigin(_source.Id);
-                        
+
                         if (empty) {
                             if (OnlineManager.Instance.IsHolded(serverEntry)) {
                                 OnlineManager.Instance.RemoveWhenReleased(serverEntry);
@@ -354,9 +354,8 @@ namespace AcManager.Tools.Managers.Online {
         }
     }
 }
- 
- 
- 
- 
- 
- 
+
+
+
+
+

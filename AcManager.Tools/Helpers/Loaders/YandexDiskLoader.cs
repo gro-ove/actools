@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public YandexDiskLoader(string url) : base(url) {}
 
-        public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             var description = await client.DownloadStringTaskAsync(
                     "https://cloud-api.yandex.net:443/v1/disk/public/resources/download?public_key=" + HttpUtility.UrlEncode(Url));
             if (cancellation.IsCancellationRequested) return false;

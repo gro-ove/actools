@@ -26,14 +26,14 @@ namespace AcManager.Tools.Managers.Online {
             Ping = null;
 
             PrepareErrorsList();
-            var status = UpdateValues(information, true);
+            var status = UpdateValues(information, true, true);
             Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
             UpdateErrorsList();
         }
 
         public void UpdateValues([NotNull] ServerInformation information) {
             PrepareErrorsList();
-            var status = UpdateValues(information, true);
+            var status = UpdateValues(information, true, false);
             if (status.HasValue) {
                 Status = status.Value;
             }
@@ -74,8 +74,9 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <param name="baseInformation">Loaded information.</param>
         /// <param name="setCurrentDriversCount">Set CurrentDriversCount property.</param>
+        /// <param name="forceExtendedDisabling">Set to true if PortExtended should be removed if baseInformation is not extended information.</param>
         /// <returns>Null if everything is OK, ServerStatus.Error/ServerStatus.Unloaded message otherwise.</returns>
-        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, bool setCurrentDriversCount) {
+        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, bool setCurrentDriversCount, bool forceExtendedDisabling) {
             if (Ip != baseInformation.Ip) {
                 _updateCurrentErrors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
                 return ServerStatus.Error;
@@ -90,9 +91,21 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!IsFullyLoaded || information != null) {
                 int? extPort = null;
-                DisplayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort);
+                var displayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort);
+
+                if (baseInformation is ServerInformationExtended ext) {
+                    PortExtended = ext.PortExtended;
+                } else if (extPort.HasValue || !PortExtended.HasValue) {
+                    PortExtended = extPort;
+                } else if (forceExtendedDisabling) {
+                    PortExtended = null;
+                    UpdateValuesExtended(null);
+                } else {
+                    return null;
+                }
+
+                DisplayName = displayName;
                 ActualName = baseInformation.Name ?? Id;
-                PortExtended = baseInformation is ServerInformationExtended ext ? ext.PortExtended : extPort;
             }
 
             if (information == null) {

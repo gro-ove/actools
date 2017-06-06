@@ -84,7 +84,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _used;
 
         public int Used {
-            get { return _used; }
+            get => _used;
             set {
                 if (Equals(_used, value)) return;
 
@@ -256,7 +256,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 UpdateWheelHShifterDevice();
             }
         }
-        
+
         private static bool _busy;
 
         private async Task AssignInput<T>(T provider) where T : class, IInputProvider {
@@ -343,21 +343,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static readonly string PresetsDirectory;
         public static readonly string UserPresetsDirectory;
 
-        protected override void OnRenamed(object sender, RenamedEventArgs e) {
-            if (FileUtils.IsAffected(PresetsDirectory, e.OldFullPath) || FileUtils.IsAffected(PresetsDirectory, e.FullPath) ||
-                    FileUtils.IsAffected(e.OldFullPath, PresetsDirectory) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
+        protected override void OnFileChanged(string filename) {
+            if (FileUtils.IsAffected(PresetsDirectory, filename) || FileUtils.IsAffected(filename, PresetsDirectory)) {
                 PresetsUpdated?.Invoke(this, EventArgs.Empty);
             }
 
-            base.OnRenamed(sender, e);
-        }
-
-        protected override void OnChanged(object sender, FileSystemEventArgs e) {
-            if (FileUtils.IsAffected(PresetsDirectory, e.FullPath) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
-                PresetsUpdated?.Invoke(this, EventArgs.Empty);
-            }
-
-            base.OnChanged(sender, e);
+            base.OnFileChanged(filename);
         }
 
         public event EventHandler PresetsUpdated;
@@ -375,7 +366,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         [CanBeNull]
         public string CurrentPresetFilename {
-            get { return _currentPresetFilename; }
+            get => _currentPresetFilename;
             set {
                 if (Equals(value, _currentPresetFilename)) return;
                 _currentPresetFilename = value;
@@ -389,7 +380,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _currentPresetChanged = true;
 
         public bool CurrentPresetChanged {
-            get { return _currentPresetChanged; }
+            get => _currentPresetChanged;
             set {
                 if (Equals(value, _currentPresetChanged)) return;
                 _currentPresetChanged = value;
@@ -429,7 +420,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _inputMethod;
 
         public SettingEntry InputMethod {
-            get { return _inputMethod; }
+            get => _inputMethod;
             set {
                 if (!InputMethods.Contains(value)) value = InputMethods[0];
                 if (Equals(value, _inputMethod)) return;
@@ -443,7 +434,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _debouncingInterval;
 
         public int DebouncingInterval {
-            get { return _debouncingInterval; }
+            get => _debouncingInterval;
             set {
                 value = value.Clamp(0, 500);
                 if (Equals(value, _debouncingInterval)) return;
@@ -463,7 +454,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _combineWithKeyboardInput;
 
         public bool CombineWithKeyboardInput {
-            get { return _combineWithKeyboardInput; }
+            get => _combineWithKeyboardInput;
             set {
                 if (Equals(value, _combineWithKeyboardInput)) return;
                 _combineWithKeyboardInput = value;
@@ -493,7 +484,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _wheelUseHShifter;
 
         public bool WheelUseHShifter {
-            get { return _wheelUseHShifter; }
+            get => _wheelUseHShifter;
             set {
                 if (Equals(value, _wheelUseHShifter)) return;
                 _wheelUseHShifter = value;
@@ -504,7 +495,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private IDirectInputDevice _wheelHShifterDevice;
 
         public IDirectInputDevice WheelHShifterDevice {
-            get { return _wheelHShifterDevice; }
+            get => _wheelHShifterDevice;
             set {
                 if (Equals(value, _wheelHShifterDevice)) return;
                 _wheelHShifterDevice = value;
@@ -603,7 +594,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _wheelFfbInvert;
 
         public bool WheelFfbInvert {
-            get { return _wheelFfbInvert; }
+            get => _wheelFfbInvert;
             set {
                 if (Equals(value, _wheelFfbInvert)) return;
                 _wheelFfbInvert = value;
@@ -614,7 +605,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbGain;
 
         public int WheelFfbGain {
-            get { return _wheelFfbGain; }
+            get => _wheelFfbGain;
             set {
                 value = value.Clamp(0, 300);
                 if (Equals(value, _wheelFfbGain)) return;
@@ -626,7 +617,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbFilter;
 
         public int WheelFfbFilter {
-            get { return _wheelFfbFilter; }
+            get => _wheelFfbFilter;
             set {
                 value = value.Clamp(0, 99);
                 if (Equals(value, _wheelFfbFilter)) return;
@@ -638,7 +629,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _wheelFfbMinForce;
 
         public double WheelFfbMinForce {
-            get { return _wheelFfbMinForce; }
+            get => _wheelFfbMinForce;
             set {
                 value = value.Clamp(0, 50);
                 if (Equals(value, _wheelFfbMinForce)) return;
@@ -650,7 +641,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbKerbEffect;
 
         public int WheelFfbKerbEffect {
-            get { return _wheelFfbKerbEffect; }
+            get => _wheelFfbKerbEffect;
             set {
                 value = value.Clamp(0, 200);
                 if (Equals(value, _wheelFfbKerbEffect)) return;
@@ -662,7 +653,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbRoadEffect;
 
         public int WheelFfbRoadEffect {
-            get { return _wheelFfbRoadEffect; }
+            get => _wheelFfbRoadEffect;
             set {
                 value = value.Clamp(0, 200);
                 if (Equals(value, _wheelFfbRoadEffect)) return;
@@ -674,7 +665,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbSlipEffect;
 
         public int WheelFfbSlipEffect {
-            get { return _wheelFfbSlipEffect; }
+            get => _wheelFfbSlipEffect;
             set {
                 value = value.Clamp(0, 200);
                 if (Equals(value, _wheelFfbSlipEffect)) return;
@@ -686,7 +677,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _wheelFfbEnhancedUndersteer;
 
         public bool WheelFfbEnhancedUndersteer {
-            get { return _wheelFfbEnhancedUndersteer; }
+            get => _wheelFfbEnhancedUndersteer;
             set {
                 if (Equals(value, _wheelFfbEnhancedUndersteer)) return;
                 _wheelFfbEnhancedUndersteer = value;
@@ -697,7 +688,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _wheelFfbSkipSteps;
 
         public int WheelFfbSkipSteps {
-            get { return _wheelFfbSkipSteps; }
+            get => _wheelFfbSkipSteps;
             set {
                 value = value.Clamp(0, 1000);
                 if (Equals(value, _wheelFfbSkipSteps)) return;
@@ -711,7 +702,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _keyboardSteeringSpeed;
 
         public double KeyboardSteeringSpeed {
-            get { return _keyboardSteeringSpeed; }
+            get => _keyboardSteeringSpeed;
             set {
                 value = value.Clamp(0.4, 3.0);
                 if (Equals(value, _keyboardSteeringSpeed)) return;
@@ -723,7 +714,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _keyboardOppositeLockSpeed;
 
         public double KeyboardOppositeLockSpeed {
-            get { return _keyboardOppositeLockSpeed; }
+            get => _keyboardOppositeLockSpeed;
             set {
                 value = value.Clamp(1.0, 5.0);
                 if (Equals(value, _keyboardOppositeLockSpeed)) return;
@@ -735,7 +726,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _keyboardReturnRate;
 
         public double KeyboardReturnRate {
-            get { return _keyboardReturnRate; }
+            get => _keyboardReturnRate;
             set {
                 value = value.Clamp(1.0, 5.0);
                 if (Equals(value, _keyboardReturnRate)) return;
@@ -747,7 +738,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _keyboardMouseSteering;
 
         public bool KeyboardMouseSteering {
-            get { return _keyboardMouseSteering; }
+            get => _keyboardMouseSteering;
             set {
                 if (Equals(value, _keyboardMouseSteering)) return;
                 _keyboardMouseSteering = value;
@@ -758,7 +749,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _keyboardMouseButtons;
 
         public bool KeyboardMouseButtons {
-            get { return _keyboardMouseButtons; }
+            get => _keyboardMouseButtons;
             set {
                 if (Equals(value, _keyboardMouseButtons)) return;
                 _keyboardMouseButtons = value;
@@ -769,7 +760,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _keyboardMouseSteeringSpeed;
 
         public double KeyboardMouseSteeringSpeed {
-            get { return _keyboardMouseSteeringSpeed; }
+            get => _keyboardMouseSteeringSpeed;
             set {
                 value = value.Clamp(0.1, 1.0);
                 if (Equals(value, _keyboardMouseSteeringSpeed)) return;
@@ -962,6 +953,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseButtons = section.GetBool("MOUSE_ACCELERATOR_BRAKE", false);
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
+            section = Ini["__EXTRA_CM"];
+            AcSettingsHolder.FfPostProcess.Import(DecodePreset(section.GetNonEmpty("FF_POST_PROCESS")));
+            AcSettingsHolder.System.ImportFfb(DecodePreset(section.GetNonEmpty("SYSTEM")));
+
             section = Ini["__LAUNCHER_CM"];
             var name = section.GetNonEmpty("PRESET_NAME");
             CurrentPresetFilename = name == null ? null : Path.Combine(PresetsDirectory, name);
@@ -1034,6 +1029,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("MOUSE_ACCELERATOR_BRAKE", KeyboardMouseButtons);
             section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
 
+            section = Ini["__EXTRA_CM"];
+            section.Set("FF_POST_PROCESS", EncodePreset(AcSettingsHolder.FfPostProcess.Export()));
+            section.Set("SYSTEM", EncodePreset(AcSettingsHolder.System.ExportFfb()));
+
             section = Ini["__LAUNCHER_CM"];
             section.Set("PRESET_NAME", CurrentPresetFilename?.SubstringExt(PresetsDirectory.Length + 1));
             section.Set("PRESET_CHANGED", CurrentPresetChanged);
@@ -1043,6 +1042,40 @@ namespace AcManager.Tools.Helpers.AcSettings {
 #if DEBUG
             Logging.Write($"Controls saving time: {sw.Elapsed.TotalMilliseconds:F2} ms");
 #endif
+        }
+
+        private static string DecodePreset(string encoded) {
+            if (!string.IsNullOrWhiteSpace(encoded)) {
+                try {
+                    if (encoded.Length % 4 != 0) {
+                        var sb = new StringBuilder(encoded, 4);
+                        for (var i = 0; i < encoded.Length % 4; i++) {
+                            sb.Append('=');
+                        }
+
+                        encoded = sb.ToString();
+                    }
+
+                    return Convert.FromBase64String(encoded).ToUtf8String();
+                } catch (Exception e) {
+                    Logging.Debug(">" + encoded + "<");
+                    Logging.Warning(e);
+                }
+            }
+
+            return null;
+        }
+
+        private static string EncodePreset(string decoded) {
+            if (!string.IsNullOrWhiteSpace(decoded)) {
+                try {
+                    return Convert.ToBase64String(Encoding.UTF8.GetBytes(decoded)).TrimEnd('=');
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            return null;
         }
 
         public void SavePreset(string filename) {

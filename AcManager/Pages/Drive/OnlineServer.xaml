@@ -414,11 +414,11 @@
                 <DockPanel c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_ContryLabel}" HorizontalAlignment="Left" Background="Transparent">
                   <DockPanel.ToolTip>
                     <ToolTip>
-                      <mui:BooleanSwitch Value="{Binding ExtendedMode}">
-                        <mui:BooleanSwitch.False>
+                      <mui:ReferenceSwitch Value="{Binding City}">
+                        <mui:ReferenceSwitch.Null>
                           <TextBlock Text="{Binding Country}" />
-                        </mui:BooleanSwitch.False>
-                        <mui:BooleanSwitch.True>
+                        </mui:ReferenceSwitch.Null>
+                        <mui:ReferenceSwitch.NonNull>
                           <TextBlock>
                             <TextBlock.Text>
                               <MultiBinding StringFormat="{}{0}, {1}">
@@ -427,12 +427,12 @@
                               </MultiBinding>
                             </TextBlock.Text>
                           </TextBlock>
-                        </mui:BooleanSwitch.True>
-                      </mui:BooleanSwitch>
+                        </mui:ReferenceSwitch.NonNull>
+                      </mui:ReferenceSwitch>
                     </ToolTip>
                   </DockPanel.ToolTip>
                   <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" HorizontalAlignment="Right"
-                      Width="24" Height="16" DockPanel.Dock="Right" RenderOptions.BitmapScalingMode="LowQuality" Margin="4 0 0 0" />
+                      Width="24" Height="16" DockPanel.Dock="Right" RenderOptions.BitmapScalingMode="LowQuality" Margin="4 -6 0 -1" VerticalAlignment="Bottom" />
                   <TextBlock Text="{Binding Country}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </DockPanel>
                 <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Online_ClientsLabel}" Text="{Binding DisplayClients}" />

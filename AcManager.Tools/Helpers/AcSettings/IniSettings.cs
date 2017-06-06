@@ -56,16 +56,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        protected virtual void OnRenamed(object sender, RenamedEventArgs e) {
-            if (FileUtils.IsAffected(e.OldFullPath, Filename) || FileUtils.IsAffected(e.FullPath, Filename)) {
+        protected virtual void OnFileChanged(string filename) {
+            if (FileUtils.IsAffected(filename, Filename)) {
                 ReloadLater();
             }
         }
 
-        protected virtual void OnChanged(object sender, FileSystemEventArgs e) {
-            if (FileUtils.IsAffected(e.FullPath, Filename)) {
-                ReloadLater();
-            }
+        private void OnRenamed(object sender, RenamedEventArgs e) {
+            OnFileChanged(e.OldFullPath);
+            OnFileChanged(e.FullPath);
+        }
+
+        private void OnChanged(object sender, FileSystemEventArgs e) {
+            OnFileChanged(e.FullPath);
         }
 
         protected void Replace(IniFile ini, bool backup = false) {

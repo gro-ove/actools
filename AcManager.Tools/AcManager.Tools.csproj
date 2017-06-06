@@ -208,6 +208,7 @@
     <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcContext.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
     <Compile Include="Helpers\AcLog\AcLogHelper.cs" />
     <Compile Include="Helpers\AcLog\IAcLogHelperExtension.cs" />
@@ -224,8 +225,10 @@
     <Compile Include="Helpers\AcSettings\AcSettingsHolder.cs" />
     <Compile Include="Helpers\AcSettings\CameraManagerSettings.cs" />
     <Compile Include="Helpers\AcSettings\ExposureSettings.cs" />
+    <Compile Include="Helpers\AcSettings\FfPostProcessSettings.cs" />
     <Compile Include="Helpers\AcSettings\GameplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GhostSettings.cs" />
+    <Compile Include="Helpers\AcSettings\PitStopSettings.cs" />
     <Compile Include="Helpers\AcSettings\ProximityIndicatorSettings.cs" />
     <Compile Include="Helpers\AcSettings\ReplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GraphicsSettings.cs" />

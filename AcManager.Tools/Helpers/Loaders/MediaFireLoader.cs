@@ -9,7 +9,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public MediaFireLoader(string url) : base(url) {}
 
-        public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             var str = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 

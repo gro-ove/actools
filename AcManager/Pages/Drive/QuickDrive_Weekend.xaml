@@ -40,7 +40,16 @@
                 <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
                         Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}">
                 </mui:ValueLabel>
-                <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
+                <!--<Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />-->
+                <Slider Minimum="0" Maximum="1">
+                    <Slider.Value>
+                        <Binding Path="LapsNumber">
+                            <Binding.Converter>
+                                <mui:LogarithmicScale Minimum="1" Middle="40" Maximum="120" />
+                            </Binding.Converter>
+                        </Binding>
+                    </Slider.Value>
+                </Slider>
             </StackPanel>
 
             <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">

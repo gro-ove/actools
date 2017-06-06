@@ -129,13 +129,17 @@
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="LUTLibrary, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\LUTLibrary\LUTLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
       <HintPath>..\Packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\Packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
@@ -149,8 +153,8 @@
       <HintPath>..\packages\SharpCompress.0.16.1\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\SlimDX-x86\SlimDX.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -314,8 +318,8 @@
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
-      <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
+    <Compile Include="Pages\Dialogs\LiveryIconEditorDialog.xaml.cs">
+      <DependentUpon>LiveryIconEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\OnlineAddManuallyDialog.xaml.cs">
       <DependentUpon>OnlineAddManuallyDialog.xaml</DependentUpon>
@@ -523,6 +527,7 @@
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
+    <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
@@ -630,102 +635,6 @@
     <Compile Include="UserControls\SelectCar.xaml.cs">
       <DependentUpon>SelectCar.xaml</DependentUpon>
     </Compile>
-    <Page Include="Assets\Livery\Numbers\Light.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Numbers\LightOutlined.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Numbers\Condensed.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\CornerTriangle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\TripleHorizontalSplit.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\HorizontalSplit.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\TripleVerticalSplit.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\VerticalSplit.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\DiagonalLineWithCircle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\DiagonalWithCircle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\Circle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\Carbon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\Diagonal.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\Flat.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\HorizontalStripes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\DoubleStripes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\Stripes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Shapes\StripesSide.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Bright.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Gradient.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Tesla.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Gloss.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Miura.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\Livery\Styles\Solid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="CustomShowroom\CarTextureDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -874,7 +783,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\LiveryIconEditor.xaml">
+    <Page Include="Pages\Dialogs\LiveryIconEditorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1468,6 +1377,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="About\ImportantTips\Python Apps Versions.txt" />
+    <Content Include="About\Licenses\7ZipExtra\License.txt" />
     <None Include="About\Licenses\AdornedControl\LICENSE" />
     <None Include="About\Licenses\AssettoCorsaSharedMemory\LICENSE" />
     <None Include="About\Licenses\AvalonEdit\LICENSE" />
@@ -1711,26 +1621,10 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\Livery\Styles\Gloss.png" />
-    <Resource Include="Assets\Livery\Styles\Miura.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Livery\Styles\Gradient.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Livery\Shapes\Carbon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Livery\Styles\Tesla.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Assets\Data\RsrStyle.css" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Data\SrsStyle.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Livery\Styles\Bright.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="About\ImportantTips\Custom Weather’s Clouds.txt" />
@@ -1743,6 +1637,7 @@
     <Content Include="About\ImportantTips\Recommended Mods.txt" />
     <None Include="About\ImportantTips\Custom Showroom Big Screenshots.txt" />
     <None Include="About\ImportantTips\Custom Showroom Shortcuts.txt" />
+    <Content Include="About\Licenses\7ZipExtra\7ZipExtra.txt" />
     <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
     <Content Include="About\Licenses\AreaLightLTC\AreaLightLTC.txt" />
     <Content Include="About\Licenses\ExifLib\ExifLib.txt" />

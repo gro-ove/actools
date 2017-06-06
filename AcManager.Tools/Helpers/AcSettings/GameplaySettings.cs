@@ -88,6 +88,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        private bool _downshiftProtectionNotification;
+
+        public bool DownshiftProtectionNotification {
+            get { return _downshiftProtectionNotification; }
+            set {
+                if (Equals(value, _downshiftProtectionNotification)) return;
+                _downshiftProtectionNotification = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         private int _steeringWheelLimit;
@@ -110,6 +121,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             DisplayMirror = Ini["VIRTUAL_MIRROR"].GetBool("ACTIVE", true);
             DisplayDriverNames = Ini["DRIVER_NAME_DISPLAYER"].GetBool("IS_ACTIVE", false);
             AllowOverlapping = Ini["GUI"].GetBool("ALLOW_OVERLAPPING_FORMS", true);
+            DownshiftProtectionNotification = Ini["DOWNSHIFT_PROTECTION_NOTIFICATION"].GetBool("ACTIVE", true);
             SteeringWheelLimit = Ini["STEER_ANIMATION"].GetInt("MAX_DEGREES", 0);
         }
 
@@ -121,6 +133,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["VIRTUAL_MIRROR"].Set("ACTIVE", DisplayMirror);
             Ini["DRIVER_NAME_DISPLAYER"].Set("IS_ACTIVE", DisplayDriverNames);
             Ini["GUI"].Set("ALLOW_OVERLAPPING_FORMS", AllowOverlapping);
+            Ini["DOWNSHIFT_PROTECTION_NOTIFICATION"].Set("ACTIVE", DownshiftProtectionNotification);
             Ini["STEER_ANIMATION"].Set("MAX_DEGREES", SteeringWheelLimit);
         }
     }

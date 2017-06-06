@@ -210,8 +210,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static SkidmarksSettings Skidmarks => _skidmarks ?? (_skidmarks = new SkidmarksSettings());
 
 
+        private static PitStopSettings _pitStop;
+        public static PitStopSettings PitStop => _pitStop ?? (_pitStop = new PitStopSettings());
+
+
         private static SystemSettings _system;
         public static SystemSettings System => _system ?? (_system = new SystemSettings());
+
+
+        private static FfPostProcessSettings _ffPostProcess;
+        public static FfPostProcessSettings FfPostProcess => _ffPostProcess ?? (_ffPostProcess = new FfPostProcessSettings());
 
 
         private static SystemOptionsSettings _systemOptions;

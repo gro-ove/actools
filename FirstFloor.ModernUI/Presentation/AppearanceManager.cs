@@ -10,6 +10,7 @@ namespace FirstFloor.ModernUI.Presentation {
         public static readonly Uri DarkThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml", UriKind.Relative);
         public static readonly Uri LightThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml", UriKind.Relative);
 
+        // TODO: rearrange
         public static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml", UriKind.Relative);
         public static readonly Uri PopupToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Popup.xaml", UriKind.Relative);
 
@@ -23,7 +24,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public event EventHandler ThemeChange;
         public event EventHandler ThemeObsolete;
-        
+
         private AppearanceManager() {
         }
 
@@ -146,7 +147,7 @@ namespace FirstFloor.ModernUI.Presentation {
                             _actualColor = null;
                         }
                         await Task.Delay(300);
-                    } while (_actualColor.HasValue); 
+                    } while (_actualColor.HasValue);
                     AccentColor = value;
                     _lastSet = DateTime.Now;
                 } finally {

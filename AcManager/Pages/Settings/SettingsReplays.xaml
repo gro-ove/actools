@@ -50,7 +50,7 @@
       </DockPanel>
 
       <!--replays autosave-->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays Autosave:" />
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays autosave:" />
 
       <CheckBox IsChecked="{Binding Replay.Autosave}" ToolTip="Autosave replays using new AC mechanism added in 1.14 update">
         <Label Content="{x:Static g:AppStrings.Settings_Replays_AutosaveReplays}" />

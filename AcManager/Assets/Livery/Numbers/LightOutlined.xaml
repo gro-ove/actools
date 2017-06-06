@@ -1,4 +1,0 @@
-﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mui="http://firstfloorsoftware.com/ModernUI" Width="64" Height="64">
-    <mui:OutlinedTextBlock Text="{Binding Value}" FontFamily="Segoe UI" FontWeight="Light" FontSize="36" TextWrapping="NoWrap" TextAlignment="Center"
-            Fill="{Binding TextColor}" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-</Grid>

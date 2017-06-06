@@ -2,13 +2,14 @@ using System;
 using System.ComponentModel;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public abstract class IniPresetableSettings : IniSettings {
         protected IniPresetableSettings([Localizable(false)] string name, bool reload = true, bool systemConfig = false) : base(name, reload, systemConfig) { }
 
-        public void Import(string serialized) {
-            if (serialized == null) return;
+        public void Import([CanBeNull] string serialized) {
+            if (string.IsNullOrWhiteSpace(serialized)) return;
             try {
                 Replace(IniFile.Parse(serialized));
             } catch (Exception e) {

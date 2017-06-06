@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ButtonWithComboBox() {
             DefaultStyleKey = typeof(ButtonWithComboBox);
             MenuItems = new Collection<DependencyObject>();
+            PreviewMouseRightButtonDown += OnRightClick;
+        }
+
+        private void OnRightClick(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
+            if (_item != null) {
+                _item.IsSubmenuOpen = true;
+            }
+        }
+
+        private MenuItem _item;
+
+        public override void OnApplyTemplate() {
+            base.OnApplyTemplate();
+            _item = GetTemplateChild("PART_MenuItem") as MenuItem;
         }
 
         public IList MenuItems {

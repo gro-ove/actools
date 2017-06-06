@@ -1,19 +1,19 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using AcManager.Tools.Miscellaneous;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcManager.Tools.Tests {
-    [TestClass]
+    [TestFixture]
     public class SharedLocaleReaderTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public void Test() {
             var read = SharedLocaleReader.Read(Path.Combine(TestDir, "test.xlsx"), "ru");
-            Assert.AreEqual("Крут. момент:", read["AppStrings"]["CarSpecs_TorqueLabel"]);
+            Assert.AreEqual("РљСЂСѓС‚. РјРѕРјРµРЅС‚:", read["AppStrings"]["CarSpecs_TorqueLabel"]);
             Assert.IsFalse(read["AppStrings"].ContainsKey("Settings_Locale_LoadCustom"));
 
             var nothing = SharedLocaleReader.Read(Path.Combine(TestDir, "test.xlsx"), "pl");

@@ -723,10 +723,12 @@ namespace AcManager.Tools.ContentInstallation {
         public CarSkinContentEntry([NotNull] string path, [NotNull] string id, [NotNull] string carId, string name = null, byte[] iconData = null)
                 : base(path, id, name, null, iconData) {
             _car = CarsManager.Instance.GetById(carId) ?? throw new Exception($"Car “{carId}” for a skin not found");
+            NewFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinNew, "{0}", _car.DisplayName);
+            ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _car.DisplayName);
         }
 
-        public override string NewFormat => ToolsStrings.ContentInstallation_CarSkinNew;
-        public override string ExistingFormat => ToolsStrings.ContentInstallation_CarSkinExisting;
+        public override string NewFormat { get; }
+        public override string ExistingFormat { get; }
 
         public override FileAcManager<CarSkinObject> GetManager() {
             return _car.SkinsManager;

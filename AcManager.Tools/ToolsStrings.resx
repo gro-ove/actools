@@ -1275,7 +1275,7 @@
     <value>New car {0}</value>
   </data>
   <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
-    <value>New car skin {0}</value>
+    <value>New skin {0} for {1}</value>
   </data>
   <data name="ContentInstallation_TrackNew" xml:space="preserve">
     <value>New track {0}</value>
@@ -1293,7 +1293,7 @@
     <value>Update for a car {0}</value>
   </data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>Update for a car skin {0}</value>
+    <value>Update for a skin {0} for {1}</value>
   </data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
     <value>Update for a track {0}</value>

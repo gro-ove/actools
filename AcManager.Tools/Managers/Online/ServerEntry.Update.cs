@@ -117,7 +117,7 @@ namespace AcManager.Tools.Managers.Online {
                         return;
                     }
 
-                    var update = UpdateValues(loaded, false);
+                    var update = UpdateValues(loaded, false, true);
                     if (update != null) {
                         resultStatus = update.Value;
                         if (update != ServerStatus.MissingContent) {
@@ -140,7 +140,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (PortExtended != null) {
                     try {
                         var extended = await GetExtendedInformationDirectly();
-                        var update = UpdateValues(extended, false);
+                        var update = UpdateValues(extended, false, true);
 
                         if (update != null) {
                             resultStatus = update.Value;
@@ -187,7 +187,7 @@ namespace AcManager.Tools.Managers.Online {
                             // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
                             // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
                             // loaded just before that and loaded information wasn’t loaded from it.
-                            var update = UpdateValues(loaded, false);
+                            var update = UpdateValues(loaded, false, true);
                             if (update != null) {
                                 resultStatus = update.Value;
                                 if (update != ServerStatus.MissingContent) return;
@@ -203,7 +203,7 @@ namespace AcManager.Tools.Managers.Online {
                                 return;
                             }
 
-                            var update = UpdateValues(directlyLoaded, false);
+                            var update = UpdateValues(directlyLoaded, false, true);
                             if (update != null) {
                                 resultStatus = update.Value;
                                 if (update != ServerStatus.MissingContent) return;

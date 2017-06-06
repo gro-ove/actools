@@ -107,7 +107,7 @@
                                     Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}">
-                                <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
+                                <c:LazyMenuItem x:Name="PART_MenuItem" Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
                                         ItemsSource="{TemplateBinding MenuItems}" />
                             </Menu>
                         </StackPanel>
@@ -156,7 +156,7 @@
                                     Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}" FontWeight="Normal">
-                                <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
+                                <c:LazyMenuItem x:Name="PART_MenuItem" Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
                                         ItemsSource="{TemplateBinding MenuItems}" />
                             </Menu>
                         </StackPanel>

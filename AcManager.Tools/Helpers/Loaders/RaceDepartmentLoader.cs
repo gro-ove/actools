@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Collections.Specialized;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using AcManager.Internal;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
@@ -11,7 +13,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public RaceDepartmentLoader(string url) : base(url) { }
 
-        public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 
@@ -21,7 +23,26 @@ namespace AcManager.Tools.Helpers.Loaders {
                 return false;
             }
 
-            Url = "http://www.racedepartment.com/" + HttpUtility.HtmlDecode(match.Groups[1].Value);
+            var url = "http://www.racedepartment.com/" + HttpUtility.HtmlDecode(match.Groups[1].Value);
+
+            // Why, RD, why?!
+            try {
+                using (client.SetMethod("HEAD")) {
+                    await client.DownloadStringTaskAsync(url);
+                }
+            } catch (WebException e) when ((e.Response as HttpWebResponse)?.StatusCode == HttpStatusCode.Forbidden) {
+                var login = SettingsHolder.Content.RdLogin;
+                var password = SettingsHolder.Content.RdPassword;
+                await client.UploadValuesTaskAsync("http://www.racedepartment.com/login/login",
+                        string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password)
+                                ? InternalUtils.GetRdLoginParams()
+                                : new NameValueCollection {
+                                    ["login"] = login,
+                                    ["password"] = password,
+                                });
+            }
+
+            Url = url;
             Logging.Write("RaceDepartment download link: " + Url);
             return true;
         }

@@ -293,6 +293,8 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(GoCommand));
                     OnSelectedUpdated();
                     SaveLater();
+
+                    AcContext.Instance.CurrentCar = value;
                 }
             }
 

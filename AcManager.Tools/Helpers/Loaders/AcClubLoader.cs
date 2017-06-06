@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         private ILoader _innerLoader;
 
-        public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
+        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         public override long TotalSize => _innerLoader?.TotalSize ?? -1L;
         public override string FileName => _innerLoader?.FileName;
 
-        public override Task DownloadAsync(WebClient client, string destination, CancellationToken cancellation) {
+        public override Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {
             return _innerLoader.DownloadAsync(client, destination, cancellation);
         }
 

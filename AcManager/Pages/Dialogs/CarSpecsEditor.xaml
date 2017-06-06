@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" 
+        xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding Car.DisplayName, StringFormat={x:Static g:AppStrings.CarSpecs_Title}}" d:DataContext="{d:DesignInstance di:CarSpecsEditor}">
     <AdornerDecorator>
         <StackPanel>
@@ -78,7 +80,7 @@
             <CheckBox IsChecked="{Binding AutomaticallyRecalculate}" Margin="0 0 0 8">
                 <Label Content="{x:Static g:AppStrings.CarSpecs_AutomaticallyRecalculatePwRatio}" />
             </CheckBox>
-            <c:OxyPlotGraphViewer SourceTorque="{Binding TorqueGraph}" SourcePower="{Binding PowerGraph}" Height="200" HorizontalAlignment="Stretch" />
+            <graphs:CarGraphViewer SourceTorque="{Binding TorqueGraph}" SourcePower="{Binding PowerGraph}" Height="200" HorizontalAlignment="Stretch" />
         </StackPanel>
     </AdornerDecorator>
 </mui:ModernDialog>

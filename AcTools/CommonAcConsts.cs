@@ -9,13 +9,15 @@
 
         public static readonly int PreviewWidth = 1022;
         public static readonly int PreviewHeight = 575;
+        public static readonly int LiveryWidth = 64;
+        public static readonly int LiveryHeight = 64;
 
         public static readonly int TrackPreviewHeight = 200;
         public static readonly int TrackPreviewWidth = 355;
 
         public static readonly int TrackOutlineHeight = 192;
         public static readonly int TrackOutlineWidth = 365;
-        
+
         /// <summary>
         /// Seconds from 00:00.
         /// </summary>

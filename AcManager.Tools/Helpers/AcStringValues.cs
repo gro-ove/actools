@@ -9,7 +9,6 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
-
     public static class AcStringValues {
         private static Regex _idYearRegex;
 
@@ -26,7 +25,7 @@ namespace AcManager.Tools.Helpers {
 
         private static Regex NameYearRegex => _nameYearRegex ??
                                               (_nameYearRegex = new Regex(@"\s(?:['’](\d\d))$", RegexOptions.Compiled));
-        
+
         public static int? GetYearFromName([NotNull] string name) {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (name.Length == 0 || !char.IsDigit(name[name.Length - 1])) return null;

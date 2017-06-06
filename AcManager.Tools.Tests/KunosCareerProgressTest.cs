@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 using AcManager.Tools.Data;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcManager.Tools.Tests {
-    [TestClass]
+    // TODO: what’s that?
+    /*[TestFixture]
     public class KunosCareerProgressTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public async Task Test() {
             IniFile.Write(Path.Combine(TestDir, "progress_1.ini"), "SERIES1", "EVENT0", 1);
             using (var progress = KunosCareerProgress.CreateForTests(Path.Combine(TestDir, "progress_1.ini"))) {
@@ -47,5 +48,5 @@ namespace AcManager.Tools.Tests {
                 Assert.AreEqual(94, progress.Entries["series_ruf_cup"].AiPoints[4]);
             }
         }
-    }
+    }*/
 }

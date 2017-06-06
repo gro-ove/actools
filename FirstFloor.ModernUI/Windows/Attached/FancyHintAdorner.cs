@@ -77,6 +77,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 VisibilityAnimation.SetVisible(cell, true);
 
                 _window.PreviewMouseDown += OnWindowMouseDown;
+                _window.PreviewKeyDown += OnWindowMouseDown;
+
                 if (_hint.CloseOnResize) {
                     _window.SizeChanged += OnWindowSizeChanged;
                 }
@@ -95,15 +97,15 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        private void OnWindowMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
+        private void OnWindowMouseDown(object sender, EventArgs args) {
             Close();
         }
 
-        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs args) {
             Close();
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
+        private void OnMouseDown(object sender, MouseButtonEventArgs args) {
             Close();
         }
 
@@ -111,6 +113,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             IsHitTestVisible = false;
 
             _window.PreviewMouseDown -= OnWindowMouseDown;
+            _window.PreviewKeyDown -= OnWindowMouseDown;
+
             if (_hint.CloseOnResize) {
                 _window.SizeChanged -= OnWindowSizeChanged;
             }

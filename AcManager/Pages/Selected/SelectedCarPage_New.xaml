@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}" SizeChanged="OnSizeChanged">
     <UserControl.Resources>
@@ -186,7 +188,7 @@
                     </Grid.ColumnDefinitions>
 
                     <DockPanel VerticalAlignment="Top">
-                        <c:OxyPlotGraphViewer DockPanel.Dock="Bottom" SourceTorque="{Binding SelectedObject.SpecsTorqueCurve}"
+                        <graphs:CarGraphViewer DockPanel.Dock="Bottom" SourceTorque="{Binding SelectedObject.SpecsTorqueCurve}"
                                 SourcePower="{Binding SelectedObject.SpecsPowerCurve}" Height="200" />
                         <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick" />
                         <TextBlock Style="{StaticResource Label}" Text="Power graph:" />
