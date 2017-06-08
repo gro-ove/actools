@@ -49,8 +49,20 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
             });
+
             InitializeComponent();
             ResizingStuff();
+
+            var pack = Model.Pack;
+            pack.SubscribeWeak(OnPackPropertyChanged);
+            this.OnActualUnload(() => pack.UnsubscribeWeak(OnPackPropertyChanged));
+        }
+
+        private async void OnPackPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(SourcesPack.Status) && Model.Pack?.Status == OnlineManagerStatus.Ready) {
+                await Task.Delay(1);
+                ResizingStuff();
+            }
         }
 
         private void ShowDetails(ServerEntry entry) {
@@ -64,7 +76,7 @@ namespace AcManager.Pages.Drive {
 
         private int _timerTick;
 
-        private void Timer_Tick(object sender, EventArgs e) {
+        private void OnTimerTick(object sender, EventArgs e) {
             if (++_timerTick > 5) {
                 _timerTick = 0;
 
@@ -103,14 +115,14 @@ namespace AcManager.Pages.Drive {
                     if (value == ListMode.DetailedPlus) {
                         factory.SetValue(StyleProperty, FindResource(@"OnlineItem.Plus"));
                     }
-                    
+
                     factory.SetValue(OnlineItem.HideSourceIconProperty, _hideIconSourceId);
 
                     ServersListBox.ItemTemplate = new DataTemplate(typeof(OnlineItem)) {
                         VisualTree = factory
                     };
                 }
-                
+
                 if (value == ListMode.Simple || _simpleListMode == ListMode.Simple) {
                     ServersListBox.ItemContainerStyle =
                             (Style)FindResource(value == ListMode.Simple ? @"SimpledListItemContainer" : @"DetailedListItemContainer");
@@ -166,7 +178,7 @@ namespace AcManager.Pages.Drive {
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             ResizingStuff();
         }
-        
+
         private TaskbarProgress _taskbarProgress;
         private bool _scrolling;
 
@@ -286,7 +298,7 @@ namespace AcManager.Pages.Drive {
                     FilterEmpty ? @"(drivers>0)" : null,
                     FilterFull ? @"(full-)" : null,
                     FilterPassword ? @"(password-)" : null,
-                    FilterMissing ? @"(haserrors-)" : null,
+                    FilterMissing ? @"(haserrors- & missing-)" : null,
                     FilterBooking ? @"(booking-)" : null,
                     FilterFriendsOnly ? @"(friends+)" : null
                 }.Where(x => x != null).JoinToString('&');
@@ -421,7 +433,7 @@ namespace AcManager.Pages.Drive {
                         filter = filterParam;
                     }
                 }
-                
+
                 Pack = OnlineManager.Instance.GetSourcesPack(sources);
                 UserListMode = Pack.SourceWrappers.Count == 1 && FileBasedOnlineSources.Instance.GetUserSources()
                                                                                        .Select(x => x.Id)
@@ -447,7 +459,7 @@ namespace AcManager.Pages.Drive {
             public void Load() {
                 Debug.Assert(!_loaded);
                 _loaded = true;
-                
+
                 Manager.List.CollectionChanged += List_CollectionChanged;
                 Manager.List.ItemPropertyChanged += List_ItemPropertyChanged;
 
@@ -466,7 +478,7 @@ namespace AcManager.Pages.Drive {
                 if (Pack.Status == OnlineManagerStatus.Ready) {
                     StartPinging().Forget();
                 }
-                
+
                 LoadCurrent();
                 MainList.CurrentChanged += OnCurrentChanged;
 
@@ -573,7 +585,7 @@ namespace AcManager.Pages.Drive {
                 } else {
                     MainList.MoveCurrentToFirst();
                 }
-                
+
                 CurrentChanged(false);
                 MainList.CurrentChanged += OnCurrentChanged;
             }
@@ -798,7 +810,7 @@ namespace AcManager.Pages.Drive {
                 Interval = TimeSpan.FromSeconds(1),
                 IsEnabled = true
             };
-            _timer.Tick += Timer_Tick;
+            _timer.Tick += OnTimerTick;
 
             var scrollViewer = ServersListBox.FindVisualChild<ScrollViewer>();
             var viewer = scrollViewer?.FindVisualChild<Thumb>();

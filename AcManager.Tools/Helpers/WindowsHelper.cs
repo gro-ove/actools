@@ -45,7 +45,11 @@ namespace AcManager.Tools.Helpers {
         [Localizable(false)]
         public static void ViewInBrowser([CanBeNull] string url) {
             if (string.IsNullOrWhiteSpace(url)) return;
-            Process.Start(url);
+            try {
+                Process.Start(url);
+            } catch (Exception) {
+                NonfatalError.Notify("Can’t open link", $"App tried to open: “{url}”");
+            }
         }
 
         [Localizable(false)]

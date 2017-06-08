@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
@@ -213,6 +216,9 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
+        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private static bool _sevenZipWarning;
 
         public async Task<bool> RunAsync() {
@@ -263,6 +269,16 @@ namespace AcManager.Tools.ContentInstallation {
                         }
                     } else {
                         localFilename = Source;
+                    }
+
+                    if (_installationParams.Checksum != null) {
+                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var sha1 = new SHA1Managed()) {
+                            if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), _installationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
+                                Failed = "Checksum failed";
+                                return false;
+                            }
+                        }
                     }
 
                     try {
@@ -350,8 +366,11 @@ namespace AcManager.Tools.ContentInstallation {
                             await Task.Run(() => FileUtils.Recycle(toInstall.SelectMany(x => x.ToRemoval).ToArray()));
                             if (CheckCancellation()) return false;
 
-                            await installator.InstallEntryToAsync(info => toInstall.Select(x => x.CopyCallback(info)).FirstOrDefault(x => x != null),
-                                    progress, cancellation.Token);
+                            var preventExecutables = !_installationParams.AllowExecutables;
+                            await installator.InstallEntryToAsync(info => {
+                                if (preventExecutables && ExecutablesRegex.IsMatch(info.Key)) return null;
+                                return toInstall.Select(x => x.CopyCallback(info)).FirstOrDefault(x => x != null);
+                            }, progress, cancellation.Token);
                             if (CheckCancellation()) return false;
 
                             foreach (var extra in ExtraOptions.Select(x => x.PostInstallation).NonNull()) {

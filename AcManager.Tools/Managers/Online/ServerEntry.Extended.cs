@@ -341,7 +341,8 @@ namespace AcManager.Tools.Managers.Online {
                         var url = carPair.Value.GetStringValueOnly("url") ??
                                 $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
                         yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
-                            FallbackId = carPair.Key
+                            FallbackId = carPair.Key,
+                            Checksum = carPair.Value.GetStringValueOnly("checksum")
                         });
                     } else {
                         var skins = carPair.Value["skins"] as JObject;
@@ -353,7 +354,8 @@ namespace AcManager.Tools.Managers.Online {
                                         $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
                                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                                     CarId = carPair.Key,
-                                    FallbackId = skinPair.Key
+                                    FallbackId = skinPair.Key,
+                                    Checksum = skinPair.Value.GetStringValueOnly("checksum")
                                 });
                             }
                         }
@@ -369,7 +371,8 @@ namespace AcManager.Tools.Managers.Online {
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
                             $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
-                        FallbackId = weatherPair.Key
+                        FallbackId = weatherPair.Key,
+                        Checksum = weatherPair.Value.GetStringValueOnly("checksum")
                     });
                 }
             }
@@ -379,7 +382,8 @@ namespace AcManager.Tools.Managers.Online {
                 var url = track.GetStringValueOnly("url") ??
                         $"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
-                    FallbackId = TrackBaseId
+                    FallbackId = TrackBaseId,
+                    Checksum = track.GetStringValueOnly("checksum")
                 });
             }
         }

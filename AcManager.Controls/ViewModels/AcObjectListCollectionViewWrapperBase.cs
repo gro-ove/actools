@@ -71,6 +71,7 @@ namespace AcManager.Controls.ViewModels {
 
         private bool _grouped;
         private string _groupByPropertyName;
+        private GroupDescription _groupDescription;
         private GroupByConverter _groupByConverter;
 
         [CanBeNull]
@@ -85,10 +86,19 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        public void GroupBy(string propertyName, GroupDescription description) {
+            _groupByPropertyName = propertyName;
+            _groupDescription = description;
+
+            if (Loaded) {
+                SetGrouping();
+            }
+        }
+
         private void SetGrouping() {
             if (_groupByPropertyName == null || _grouped) return;
             _grouped = true;
-            MainList.GroupDescriptions?.Add(new PropertyGroupDescription(
+            MainList.GroupDescriptions?.Add(_groupDescription ?? new PropertyGroupDescription(
                     $@"Value.{_groupByPropertyName}",
                     _groupByConverter == null ? null : new ToGroupNameConverter(_groupByConverter)));
         }

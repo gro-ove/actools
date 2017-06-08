@@ -11,12 +11,15 @@
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Windows.Forms" #>
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>using AcManager.Tools.About;
 using System.Linq;
 
-namespace AcManager.About {<#   
+namespace AcManager.About {<#
     var location = Path.GetDirectoryName(this.Host.TemplateFile);
+    if (string.IsNullOrEmpty(location)) location = Environment.CurrentDirectory;
+
     foreach (var sub in Directory.GetDirectories(location)){
         var className = Path.GetFileName(sub);
 
@@ -53,7 +56,7 @@ namespace AcManager.About {<#
                         if (version == null){
                             version = name;
                         }
-                        name = v; 
+                        name = v;
                         break;
                     }
                 }
@@ -75,7 +78,7 @@ namespace AcManager.About {<#
 
 			return new {
 				fid = entry.Name.ToLowerInvariant(), uid = i.ToString(),
-				sid, id, name, version, 
+				sid, id, name, version,
 				contentFileName, content, contentReferenced = new[]{ 0 }, contentParentId = new[]{ (string)null },
 				url, limited, hidden
 			};
@@ -96,13 +99,13 @@ namespace AcManager.About {<#
 
 		foreach (var entry in subDirectoryEntries.Where(x => x.contentReferenced[0] > 0)){
 		#>
-        private static readonly string C<#= entry.uid #> = <#= C(entry.content) #>;		
+        private static readonly string C<#= entry.uid #> = <#= C(entry.content) #>;
 <#
 		}
 
 		#>
         public static readonly PieceOfInformation[] Entries = new []{<#
-            
+
         foreach (var entry in subDirectoryEntries){
 			var content = entry.contentReferenced[0] == 0 && entry.contentParentId[0] == null ?
 					C(entry.content) :
@@ -112,7 +115,7 @@ namespace AcManager.About {<#
 
             new PieceOfInformation(<#= O(entry.sid) #>, <#= O(entry.id) #>, <#= O(entry.name) #>, <#= O(entry.version) #>, <#= O(entry.url) #>, <#= content #>, <#= O(entry.limited) #>, <#= O(entry.hidden) #>),<#
         }
-            
+
         foreach (var entry in subDirectory.GetFiles("*.txt", SearchOption.TopDirectoryOnly)
                 .OrderBy(f => f.LastWriteTime.Year <= 1601 ? f.CreationTime : f.LastWriteTime)){
             var lines = File.ReadAllLines(entry.FullName);
@@ -140,7 +143,7 @@ namespace AcManager.About {<#
                         if (version == null){
                             version = name;
                         }
-                        name = v; 
+                        name = v;
                         break;
                     }
                 }
@@ -161,11 +164,11 @@ namespace AcManager.About {<#
 
         }.Where(x => !x.IsHidden).ToArray();
     }
-<# 
+<#
 }
 #>
 }
-<#+ 
+<#+
     string O(string s){ return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\""; }
     string O(bool s){ return s ? "true" : "false"; }
 
@@ -175,7 +178,7 @@ namespace AcManager.About {<#
 		using (var output = new MemoryStream()){
 			using (var gzip = new DeflateStream(output, CompressionMode.Compress)){
 				using (var writer = new StreamWriter(gzip, System.Text.Encoding.UTF8)){
-					writer.Write(s);           
+					writer.Write(s);
 				}
 			}
 

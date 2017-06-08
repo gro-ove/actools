@@ -1098,7 +1098,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             if (bufferF == null) return;
 
             _dof.FocusPlane = DofFocusPlane;
-            _dof.DofCoCScale = DofScale * (ShotInProcess ? 6f * Width / ActualWidth : 6f);
+            _dof.DofCoCScale = DofScale * (ShotInProcess ? 6f * (ActualWidth / 960f).Clamp(1f, 2f) * Width / ActualWidth : 6f);
             _dof.DofCoCLimit = ShotInProcess ? 64f : 24f;
             _dof.MaxSize = ShotInProcess ? 1920 : 960;
             _dof.Prepare(DeviceContextHolder, ActualWidth, ActualHeight);

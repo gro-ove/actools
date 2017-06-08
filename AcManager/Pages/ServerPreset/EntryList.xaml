@@ -1,56 +1,56 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.EntryList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls"
-        mc:Ignorable="d" d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager"
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <Button PreviewMouseDoubleClick="OnCarClick">
-                    <Button.Template>
-                        <ControlTemplate TargetType="{x:Type ButtonBase}">
-                            <ContentPresenter x:Name="Presenter" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4">
-                        <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
-                        <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
-                    </mui:SpacingStackPanel>
-                </Button>
-            </DataTemplate>
+      <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <Button PreviewMouseDoubleClick="OnCarClick">
+          <Button.Template>
+            <ControlTemplate TargetType="{x:Type ButtonBase}">
+              <ContentPresenter x:Name="Presenter" />
+            </ControlTemplate>
+          </Button.Template>
+          <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4">
+            <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
+            <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
+          </mui:SpacingStackPanel>
+        </Button>
+      </DataTemplate>
 
-            <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <DataTemplate.Resources>
-                    <CollectionViewSource x:Key="SkinsList" Source="{Binding CarObject.SkinsEnabledWrappersList}" />
-                </DataTemplate.Resources>
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding CarSkinObject}" Value="{x:Null}">
-                        <!--<Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding SpectatorMode}" Value="True">
-                        <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-                <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
-                    <!--<mui:BetterComboBox ItemsSource="{Binding Car.SkinsEnabledWrappersList}" SelectedItem="{Binding CarSkinWrapper, Mode=TwoWay}"
+      <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <DataTemplate.Resources>
+          <CollectionViewSource x:Key="SkinsList" Source="{Binding CarObject.SkinsEnabledWrappersList}" />
+        </DataTemplate.Resources>
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding CarSkinObject}" Value="{x:Null}">
+            <!--<Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />-->
+          </DataTrigger>
+          <DataTrigger Binding="{Binding SpectatorMode}" Value="True">
+            <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
+          </DataTrigger>
+        </DataTemplate.Triggers>
+        <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
+          <!--<mui:BetterComboBox ItemsSource="{Binding Car.SkinsEnabledWrappersList}" SelectedItem="{Binding CarSkinWrapper, Mode=TwoWay}"
                             IsEditable="False" Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}"
                             Style="{StaticResource BetterComboBox.Borderless.White}" PreviewMouseDown="OpponentSkinCell_OnMouseDown">
                         -->
-                    <!--<mui:BetterComboBox.ItemsSource>
+          <!--<mui:BetterComboBox.ItemsSource>
                             <CompositeCollection>
                                 <x:Null />
                                 <CollectionContainer Collection="{Binding Source={StaticResource SkinsList}}" />
                             </CompositeCollection>
                         </mui:BetterComboBox.ItemsSource>-->
-                    <!--
+          <!--
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel Height="18">
@@ -61,27 +61,26 @@
                         </ComboBox.ItemTemplate>
                     </mui:BetterComboBox>-->
 
-                    <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="False"
-                            ItemsSource="{Binding CarObject.SkinsActualList}" IsSynchronizedWithCurrentItem="False"
-                            SelectedItem="{Binding CarSkinObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <DockPanel Height="18">
-                                    <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18"
-                                            Height="18" />
-                                    <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
-                                </DockPanel>
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
-                                        <Setter TargetName="Image" Property="Visibility" Value="Collapsed" />
-                                        <Setter TargetName="Text" Property="Text" Value="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </mui:BetterComboBox>
+          <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="False"
+              ItemsSource="{Binding CarObject.SkinsActualList}" IsSynchronizedWithCurrentItem="False"
+              SelectedItem="{Binding CarSkinObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Height="18">
+                  <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                  <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                    <Setter TargetName="Image" Property="Visibility" Value="Collapsed" />
+                    <Setter TargetName="Text" Property="Text" Value="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </mui:BetterComboBox>
 
-                    <!--<mui:ContextMenuButton DockPanel.Dock="Right">
+          <!--<mui:ContextMenuButton DockPanel.Dock="Right">
                         <c:ModernPopup mui:PopupHelper.Group="1">
                             <DockPanel MaxWidth="240">
                                 <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding RandomSkinCommand}" Content="Random" />
@@ -102,142 +101,138 @@
                             ClearOnChange="True" />
                     <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
                             Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />-->
-                </DockPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="Detailed.GuidDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Guid, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
-                        Style="{StaticResource Borderless.White}" />
-            </DataTemplate>
-
-            <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding DriverName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
-                        Style="{StaticResource Borderless.White}" />
-            </DataTemplate>
-
-            <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding TeamName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
-                        Style="{StaticResource Borderless.White}" />
-            </DataTemplate>
-
-            <DataTemplate x:Key="Detailed.BallastDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Auto" Minimum="0"
-                        Maximum="500" Mode="Number" Style="{StaticResource Borderless.White}" />
-            </DataTemplate>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
-    <DockPanel>
-        <DockPanel DockPanel.Dock="Right" Width="200" Margin="20 0 0 0"
-                Visibility="{Binding ActualWidth, ElementName=This, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Known drivers:" DockPanel.Dock="Top" />
-
-            <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers, Source={x:Static t:ServerPresetsManager.Instance}}"
-                    Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True" Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <mui:SpacingStackPanel Spacing="2" TextBlock.FontWeight="Normal" Height="52" Background="Transparent"
-                                mui:ContextMenuAdvancement.PropagateToChildren="True">
-                            <mui:SpacingStackPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Delete Entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
-                                </ContextMenu>
-                            </mui:SpacingStackPanel.ContextMenu>
-                            <mui:BetterTextBox Text="{Binding DriverName, ValidatesOnDataErrors=True}" Style="{StaticResource Borderless.White}" Placeholder="?" />
-                            <c:PropertiesGrid LabelWidth="60" TextBlock.FontSize="{DynamicResource SmallFontSize}" Height="32" Columns="1">
-                                <mui:BetterTextBox c:PropertiesGrid.Label="Team:" Text="{Binding TeamName}" Style="{StaticResource Borderless.White.Small}"
-                                        Placeholder="None" />
-                                <mui:BetterTextBox c:PropertiesGrid.Label="GUID:" Text="{Binding Guid, ValidatesOnDataErrors=True}"
-                                        Style="{StaticResource Borderless.White.Small}" Placeholder="?" />
-                            </c:PropertiesGrid>
-                        </mui:SpacingStackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
         </DockPanel>
+      </DataTemplate>
 
-        <DockPanel DockPanel.Dock="Top" Margin="0 0 20 4">
-            <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Right">
-                <mui:ModernToggleButton x:Name="AddCarButton" IconData="{StaticResource AddIconData}" ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}"
-                        Style="{StaticResource NonTransparent}"
-                        IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-                <!--<mui:ModernToggleButton x:Name="DetailsButton" IconData="{StaticResource ListGearIconData}"
+      <DataTemplate x:Key="Detailed.GuidDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Guid, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+            Style="{StaticResource Borderless.White}" />
+      </DataTemplate>
+
+      <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding DriverName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+            Style="{StaticResource Borderless.White}" />
+      </DataTemplate>
+
+      <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding TeamName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+            Style="{StaticResource Borderless.White}" />
+      </DataTemplate>
+
+      <DataTemplate x:Key="Detailed.BallastDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Auto" Minimum="0" Maximum="500"
+            Mode="Number" Style="{StaticResource Borderless.White}" />
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <DockPanel>
+    <DockPanel DockPanel.Dock="Right" Width="200" Margin="20 0 0 0"
+        Visibility="{Binding ActualWidth, ElementName=This, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
+      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Known drivers:" DockPanel.Dock="Top" />
+
+      <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers, Source={x:Static t:ServerPresetsManager.Instance}}"
+          Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True" Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <mui:SpacingStackPanel Spacing="2" TextBlock.FontWeight="Normal" Height="52" Background="Transparent"
+                mui:ContextMenuAdvancement.PropagateToChildren="True">
+              <mui:SpacingStackPanel.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Delete Entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
+                </ContextMenu>
+              </mui:SpacingStackPanel.ContextMenu>
+              <mui:BetterTextBox Text="{Binding DriverName, ValidatesOnDataErrors=True}" Style="{StaticResource Borderless.White}" Placeholder="?" />
+              <c:PropertiesGrid LabelWidth="60" TextBlock.FontSize="{DynamicResource SmallFontSize}" Height="32" Columns="1">
+                <mui:BetterTextBox c:PropertiesGrid.Label="Team:" Text="{Binding TeamName}" Style="{StaticResource Borderless.White.Small}" Placeholder="None" />
+                <mui:BetterTextBox c:PropertiesGrid.Label="GUID:" Text="{Binding Guid, ValidatesOnDataErrors=True}"
+                    Style="{StaticResource Borderless.White.Small}" Placeholder="?" />
+              </c:PropertiesGrid>
+            </mui:SpacingStackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </DockPanel>
+
+    <DockPanel DockPanel.Dock="Top" Margin="0 0 20 4">
+      <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Right">
+        <mui:ModernToggleButton x:Name="AddCarButton" IconData="{StaticResource AddIconData}" ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}"
+            Style="{StaticResource NonTransparent}"
+            IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
+        <!--<mui:ModernToggleButton x:Name="DetailsButton" IconData="{StaticResource ListGearIconData}"
                     ToolTip="{x:Static g:AppStrings.RaceGrid_DetailedSettings}"
                     Style="{StaticResource NonTransparent}"
                     IsHitTestVisible="{Binding ElementName=DetailsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />-->
-            </mui:SpacingStackPanel>
+      </mui:SpacingStackPanel>
 
-            <TextBlock Style="{StaticResource Heading2}">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} ({1}):">
-                        <Binding Path="SelectedObject.DriverEntries.Count" Converter="{StaticResource PluralizingConverter}" ConverterParameter="{}{0} entry" />
-                        <Binding Path="SelectedObject.Capacity" Converter="{StaticResource PluralizingConverter}" ConverterParameter="{}{0} client" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+      <TextBlock Style="{StaticResource Heading2}">
+        <TextBlock.Text>
+          <MultiBinding StringFormat="{}{0} ({1}):">
+            <Binding Path="SelectedObject.DriverEntries.Count" Converter="{StaticResource PluralizingConverter}" ConverterParameter="{}{0} entry" />
+            <Binding Path="SelectedObject.Capacity" Converter="{StaticResource PluralizingConverter}" ConverterParameter="{}{0} client" />
+          </MultiBinding>
+        </TextBlock.Text>
+      </TextBlock>
+    </DockPanel>
+
+    <c:ModernPopup x:Name="SelectCarPopup" Placement="Right" PlacementTarget="{Binding ElementName=AddCarButton}" Padding="8"
+        IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right" Opened="SelectCarPopup_OnOpened"
+        mui:PopupHelper.Register="True">
+      <Grid Width="320" DataContext="{x:Reference This}">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="480" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Height="90" LastChildFill="False" Margin="0 0 0 8">
+          <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="160"
+              Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <mui:BetterImage.ToolTip>
+              <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
+            </mui:BetterImage.ToolTip>
+          </mui:BetterImage>
+
+          <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+          <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
+              Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}" />
+          <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="Wrap" />
         </DockPanel>
 
-        <c:ModernPopup x:Name="SelectCarPopup" Placement="Right" PlacementTarget="{Binding ElementName=AddCarButton}" Padding="8"
-                IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
-                Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
-            <Grid Width="320" DataContext="{x:Reference This}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="480" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <userControls:SelectCar Grid.Row="1" SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
+          <Button Command="{Binding AddOpponentCarCommand}" Content="{x:Static mui:UiStrings.Common_Add}" />
+          <Button Command="{Binding ClosePopupsCommand}" Content="{x:Static mui:UiStrings.Close}" Margin="4 0 0 0" />
+        </StackPanel>
+      </Grid>
+    </c:ModernPopup>
 
-                <DockPanel Grid.Row="0" Height="90" LastChildFill="False" Margin="0 0 0 8">
-                    <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="160"
-                            Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                        <mui:BetterImage.ToolTip>
-                            <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
-                        </mui:BetterImage.ToolTip>
-                    </mui:BetterImage>
-
-                    <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap"
-                            TextTrimming="CharacterEllipsis" />
-                    <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
-                            Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}">
-                    </TextBlock>
-                    <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
-                            TextWrapping="Wrap" />
-                </DockPanel>
-
-                <userControls:SelectCar Grid.Row="1" SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
-                    <Button Command="{Binding AddOpponentCarCommand}" Content="{x:Static mui:UiStrings.Common_Add}" />
-                    <Button Command="{Binding ClosePopupsCommand}" Content="{x:Static mui:UiStrings.Close}" Margin="4 0 0 0" />
-                </StackPanel>
-            </Grid>
-        </c:ModernPopup>
-
-        <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite.VisibleDetails}" mui:Draggable.Enabled="True"
-                MinRowHeight="20" CanUserSortColumns="False">
-            <mui:Draggable.DestinationConverter>
-                <l:ServerPresetDriverEntryDraggableConverter />
-            </mui:Draggable.DestinationConverter>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <Border Background="Transparent" Padding="20 4">
-                        <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal">
-                            <Button Content="Store" Padding="4 2" Command="{Binding StoreCommand}" />
-                            <Button Content="Delete" Padding="4 2" Command="{Binding DeleteCommand}" />
-                        </mui:SpacingStackPanel>
-                    </Border>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
-                        CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"
-                        CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
-                <DataGridTemplateColumn Width="140" Header="GUID" SortMemberPath="Name" CellTemplate="{StaticResource Detailed.GuidDataTemplate}" />
-                <DataGridTemplateColumn Width="140*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"
-                        CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-                <DataGridTemplateColumn Width="100*" Header="Team" SortMemberPath="Nationality" CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-                <DataGridTemplateColumn Width="80" Header="Ballast" SortMemberPath="AiLevel" CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+    <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite.VisibleDetails}" mui:Draggable.Enabled="True"
+        MinRowHeight="20" CanUserSortColumns="False">
+      <mui:Draggable.DestinationConverter>
+        <l:ServerPresetDriverEntryDraggableConverter />
+      </mui:Draggable.DestinationConverter>
+      <DataGrid.RowDetailsTemplate>
+        <DataTemplate>
+          <Border Background="Transparent" Padding="20 4">
+            <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal">
+              <Button Content="Store" Padding="4 2" Command="{Binding StoreCommand}" />
+              <Button Content="Delete" Padding="4 2" Command="{Binding DeleteCommand}" />
+            </mui:SpacingStackPanel>
+          </Border>
+        </DataTemplate>
+      </DataGrid.RowDetailsTemplate>
+      <DataGrid.Columns>
+        <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
+            CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
+        <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"
+            CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
+        <DataGridTemplateColumn Width="140" Header="GUID" SortMemberPath="Name" CellTemplate="{StaticResource Detailed.GuidDataTemplate}" />
+        <DataGridTemplateColumn Width="140*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"
+            CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
+        <DataGridTemplateColumn Width="100*" Header="Team" SortMemberPath="Nationality" CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
+        <DataGridTemplateColumn Width="80" Header="Ballast" SortMemberPath="AiLevel" CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </DockPanel>
 </UserControl>

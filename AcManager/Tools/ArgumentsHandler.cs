@@ -36,6 +36,8 @@ namespace AcManager.Tools {
             FailedShow
         }
 
+        private static List<string> _previousArguments;
+
         /// <summary>
         /// Returns true if MainWindow should be shown afterwards.
         /// </summary>
@@ -43,6 +45,12 @@ namespace AcManager.Tools {
             var showMainWindow = false;
 
             var list = arguments.ToList();
+            if (_previousArguments?.SequenceEqual(list) == true) {
+                return false;
+            }
+
+            _previousArguments = list;
+
             var remote = (await list.Select(async x => Tuple.Create(x,
                     ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
                             await ContentInstallationManager.IsRemoteSourceFlexible(x))
@@ -50,7 +58,9 @@ namespace AcManager.Tools {
 
             if (remote.Any()) {
                 list = list.ApartFrom(remote.Select(x => x.Item1)).ToList();
-                if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2)).WhenAll()).All(x => !x)) {
+                if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
+                    AllowExecutables = true
+                })).WhenAll()).All(x => !x)) {
                     await Task.Delay(ContentInstallationManager.OptionFailedDelay);
                 }
             }
@@ -71,6 +81,7 @@ namespace AcManager.Tools {
                 }
             }
 
+            _previousArguments = null;
             return showMainWindow;
         }
 

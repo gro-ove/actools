@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -25,11 +28,17 @@ namespace AcManager.Pages.Lists {
             ((ViewModel)DataContext).Unload();
         }
 
+        private class CategoryGroupDescription : GroupDescription {
+            public override object GroupNameFromItem(object item, int level, CultureInfo culture) {
+                var category = ((item as AcItemWrapper)?.Value as ReplayObject)?.EditableCategory;
+                return category == ReplayObject.AutosaveCategory ? "Autosave"  : category ?? "";
+            }
+        }
+
         private class ViewModel : AcListPageViewModel<ReplayObject> {
             public ViewModel(IFilter<ReplayObject> listFilter)
                     : base(ReplaysManager.Instance, listFilter) {
-                GroupBy(nameof(ReplayObject.EditableCategory),
-                        id => string.Equals(id, ReplayObject.AutosaveCategory, StringComparison.OrdinalIgnoreCase) ? "Autosave" : id);
+                GroupBy(nameof(ReplayObject.EditableCategory), new CategoryGroupDescription());
             }
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Replays);

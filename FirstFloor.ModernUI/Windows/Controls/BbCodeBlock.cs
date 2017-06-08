@@ -42,7 +42,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         internal static void OnImageClicked(BbCodeImageEventArgs args) {
             ImageClicked?.Invoke(null, args);
         }
-        
+
         public static readonly DependencyProperty BbCodeProperty = DependencyProperty.Register(nameof(BbCode), typeof(string), typeof(BbCodeBlock),
                 new PropertyMetadata(OnBbCodeChanged));
 
@@ -51,7 +51,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(BbCodeProperty, value); }
         }
 
-        internal static readonly ILinkNavigator DefaultLinkNavigator = new DefaultLinkNavigator();
+        public static readonly ILinkNavigator DefaultLinkNavigator = new DefaultLinkNavigator();
 
         public static void AddLinkCommand(Uri key, ICommand value) {
             DefaultLinkNavigator.Commands.Add(key, value);
@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator),
                 typeof(BbCodeBlock), new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
-        
+
         public ILinkNavigator LinkNavigator {
             get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
             set { SetValue(LinkNavigatorProperty, value); }
@@ -167,7 +167,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 converted.Append(bbCode.Substring(lastIndex));
                 bbCode = converted.ToString();
             }
-            
+
             if (complex) {
                 try {
                     return new BbCodeParser(bbCode, element) {
@@ -177,7 +177,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Logging.Error(e);
                 }
             }
-            
+
             return new Run { Text = bbCode };
         }
 

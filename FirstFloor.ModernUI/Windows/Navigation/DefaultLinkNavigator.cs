@@ -29,12 +29,14 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <remarks>
         /// Default schemes are http, https and mailto.
         /// </remarks>
-        public string[] ExternalSchemes { get; set; } = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto };
+        public  string[] ExternalSchemes { get; set; } = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto };
 
         /// <summary>
         /// Gets or sets the navigable _commands.
         /// </summary>
         public CommandDictionary Commands { get; set; } = new CommandDictionary();
+
+        public event EventHandler<NavigateEventArgs> PreviewNavigate;
 
         /// <summary>
         /// Performs navigation to specified link.
@@ -46,6 +48,10 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
             if (uri == null) {
                 throw new ArgumentNullException(nameof(uri));
             }
+
+            var args = new NavigateEventArgs(uri);
+            PreviewNavigate?.Invoke(this, args);
+            if (args.Cancel) return;
 
             // first check if uri refers to a command
             if (Commands != null) {

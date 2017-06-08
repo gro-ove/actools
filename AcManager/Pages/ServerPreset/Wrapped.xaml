@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Wrapped" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200" />
+      <ColumnDefinition Width="9" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Style="{StaticResource SettingsPanel}">
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
+        <Run Text="AC Server Wrapper" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
+                                            BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
+                                            CommandParameter="https://github.com/gro-ove/ac-server-wrapper">[?]</Hyperlink><Run Text=":" />
+      </TextBlock>
+      <DockPanel>
+        <Label Content="Wrapper port:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+            Maximum="65535" />
+      </DockPanel>
+    </StackPanel>
+
+    <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
+
+    <StackPanel Grid.Column="2" Style="{StaticResource SettingsPanel}">
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Remote management:" />
+
+      <DockPanel>
+        <Label Content="Remote server IP:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperIpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <DockPanel>
+        <Label Content="Remote server password:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <Button Command="{Binding SelectedObject.ConnectWrapperCommand}" Content="Connect" />
+
+      <DockPanel>
+        <Label Content="Connected state:" />
+        <mui:BooleanSwitch Value="{Binding SelectedObject.IsWrapperConnected}">
+          <mui:BooleanSwitch.True>
+            <DockPanel>
+              <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                  Margin="0 0 8 0" VerticalAlignment="Center" />
+              <TextBlock TextWrapping="Wrap" Text="Connected" />
+            </DockPanel>
+          </mui:BooleanSwitch.True>
+          <mui:BooleanSwitch.False>
+            <mui:ReferenceSwitch Value="{Binding SelectedObject.WrapperConnectionFailedReason}">
+              <mui:ReferenceSwitch.NonNull>
+                <DockPanel>
+                  <Path Data="{StaticResource AlertIconData}" Width="112" Height="112" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
+                      DockPanel.Dock="Left" Margin="0 0 8 0" />
+                  <TextBlock Text="{Binding SelectedObject.WrapperConnectionFailedReason}" />
+                </DockPanel>
+              </mui:ReferenceSwitch.NonNull>
+              <mui:ReferenceSwitch.Null>
+                <TextBlock Text="Not connected" />
+              </mui:ReferenceSwitch.Null>
+            </mui:ReferenceSwitch>
+          </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
+      </DockPanel>
+    </StackPanel>
+  </Grid>
+</UserControl>

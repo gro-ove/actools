@@ -70,7 +70,7 @@ namespace AcManager.Pages.ServerPreset {
             private TrackObjectBase _track;
 
             public TrackObjectBase Track {
-                get { return _track; }
+                get => _track;
                 set {
                     if (Equals(value, _track)) return;
                     _track = value;
@@ -86,7 +86,7 @@ namespace AcManager.Pages.ServerPreset {
             private int _maximumCapacity;
 
             public int MaximumCapacity {
-                get { return _maximumCapacity; }
+                get => _maximumCapacity;
                 set {
                     if (Equals(value, _maximumCapacity)) return;
                     _maximumCapacity = value;
@@ -103,23 +103,23 @@ namespace AcManager.Pages.ServerPreset {
             }));
 
             public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
-                SelectedObject.PropertyChanged += AcObject_PropertyChanged;
+                SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
 
                 Track = track;
                 Cars = new BetterObservableCollection<CarObject>(cars);
-                Cars.CollectionChanged += Cars_CollectionChanged;
+                Cars.CollectionChanged += OnCarsCollectionChanged;
             }
 
-            private void Cars_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            private void OnCarsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
                 SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray();
             }
 
             public override void Unload() {
                 base.Unload();
-                SelectedObject.PropertyChanged -= AcObject_PropertyChanged;
+                SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
             }
 
-            private void AcObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.TrackId):
                     case nameof(SelectedObject.TrackLayoutId):

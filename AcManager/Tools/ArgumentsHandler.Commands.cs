@@ -77,8 +77,9 @@ namespace AcManager.Tools {
                     return await ProcessInputFile(path);
 
                 case "install":
-                    return await ContentInstallationManager.Instance.InstallAsync(param) ?
-                            ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                    return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams {
+                        AllowExecutables = true
+                    }) ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
             }
 
             return ArgumentHandleResult.Successful;
@@ -119,8 +120,9 @@ namespace AcManager.Tools {
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
 
                     case "install":
-                        return await ContentInstallationManager.Instance.InstallAsync(custom.Params.Get(@"url")) ?
-                                ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                        return await ContentInstallationManager.Instance.InstallAsync(custom.Params.Get(@"url"), new ContentInstallationParams {
+                            AllowExecutables = true
+                        }) ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);

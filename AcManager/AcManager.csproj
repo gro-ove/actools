@@ -485,6 +485,9 @@
     <Compile Include="Pages\ServerPreset\SelectedPage.xaml.cs">
       <DependentUpon>SelectedPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ServerPreset\Wrapped.xaml.cs">
+      <DependentUpon>Wrapped.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsLapTimes.xaml.cs">
       <DependentUpon>SettingsLapTimes.xaml</DependentUpon>
     </Compile>
@@ -1114,6 +1117,10 @@
     <Page Include="Pages\Selected\SelectedWeatherPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\Wrapped.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Settings\SettingsLapTimes.xaml">
       <Generator>MSBuild:Compile</Generator>

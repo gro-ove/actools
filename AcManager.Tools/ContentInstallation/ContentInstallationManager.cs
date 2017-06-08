@@ -78,6 +78,7 @@ namespace AcManager.Tools.ContentInstallation {
                     source.StartsWith(@"https:", StringComparison.OrdinalIgnoreCase) ||
                     source.StartsWith(@"ftp:", StringComparison.OrdinalIgnoreCase);
         }
+
         [ItemCanBeNull]
         public static async Task<string> IsRemoteSourceFlexible(string url) {
             if (!Regex.IsMatch(url, @"^(?:[\w-]+\.)*[\w-]+\.[\w-]+/.+$")) return null;
@@ -110,8 +111,10 @@ namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationParams {
         public static readonly ContentInstallationParams Default = new ContentInstallationParams();
 
+        public bool AllowExecutables { get; set; }
         public string CarId { get; set; }
         public string FallbackId { get; set; }
+        public string Checksum { get; set; }
     }
 
     public enum ContentInstallationEntryState {

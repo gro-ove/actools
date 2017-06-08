@@ -185,6 +185,14 @@ namespace AcManager.Controls {
             get => (AcWrapperCollectionView)GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
         }
+
+        public static readonly DependencyProperty IsGroupingEnabledProperty = DependencyProperty.Register(nameof(IsGroupingEnabled), typeof(bool),
+                typeof(AcListPage));
+
+        public bool IsGroupingEnabled {
+            get { return (bool)GetValue(IsGroupingEnabledProperty); }
+            set { SetValue(IsGroupingEnabledProperty, value); }
+        }
         #endregion
     }
 

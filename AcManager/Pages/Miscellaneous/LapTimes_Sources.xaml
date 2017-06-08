@@ -1,78 +1,79 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Sources" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:miscellaneous="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance miscellaneous:LapTimes_Sources+ViewModel}" Margin="{StaticResource ContentMarginWithPadding}">
-    <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-    </UserControl.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:miscellaneous="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance miscellaneous:LapTimes_Sources+ViewModel}" Margin="{StaticResource ContentMarginWithPadding}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+  </UserControl.Resources>
 
-    <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" x:Name="List">
-        <ItemsControl.Template>
-            <ControlTemplate TargetType="ItemsControl">
-                <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
-                        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </ScrollViewer>
-            </ControlTemplate>
-        </ItemsControl.Template>
-        <ItemsControl.ItemTemplate>
-            <DataTemplate DataType="t:LapTimesSource">
-                <Border Background="#aa000000" TextBlock.Foreground="White" Padding="20" Margin="20">
-                    <DockPanel>
-                        <Button DockPanel.Dock="Bottom" Content="Export" ToolTip="Export lap times from other enabled sources" Command="{Binding ExportCommand}"
-                                Margin="0 12 0 0" />
-                        <mui:SpacingStackPanel Spacing="4" Height="160">
-                            <!--name-->
-                            <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32">
-                                <mui:ReferenceSwitch.Null>
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
-                                </mui:ReferenceSwitch.Null>
-                                <mui:ReferenceSwitch.NonNull>
-                                    <TextBlock Style="{StaticResource Heading2}" VerticalAlignment="Bottom">
-                                                <Run Text="{Binding DisplayName}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                                BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink" CommandParameter="{Binding DetailsUrl}">[?]</Hyperlink>
-                                    </TextBlock>
-                                </mui:ReferenceSwitch.NonNull>
-                            </mui:ReferenceSwitch>
+  <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" x:Name="List">
+    <ItemsControl.Template>
+      <ControlTemplate TargetType="ItemsControl">
+        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </ScrollViewer>
+      </ControlTemplate>
+    </ItemsControl.Template>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate DataType="t:LapTimesSource">
+        <Border Background="#aa000000" TextBlock.Foreground="White" Padding="20" Margin="20">
+          <DockPanel>
+            <Button DockPanel.Dock="Bottom" Content="Export" ToolTip="Export lap times from other enabled sources" Command="{Binding ExportCommand}"
+                Margin="0 12 0 0" />
+            <mui:SpacingStackPanel Spacing="4" Height="160">
+              <!--name-->
+              <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32">
+                <mui:ReferenceSwitch.Null>
+                  <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
+                </mui:ReferenceSwitch.Null>
+                <mui:ReferenceSwitch.NonNull>
+                  <TextBlock Style="{StaticResource Heading2}" VerticalAlignment="Bottom">
+                    <Run Text="{Binding DisplayName}" /><Hyperlink
+                        Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
+                        CommandParameter="{Binding DetailsUrl}">[?]</Hyperlink>
+                  </TextBlock>
+                </mui:ReferenceSwitch.NonNull>
+              </mui:ReferenceSwitch>
 
-                            <!--description-->
-                            <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+              <!--description-->
+              <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
 
-                            <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
-                                <Label>Enabled</Label>
-                            </CheckBox>
+              <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
+                <Label>Enabled</Label>
+              </CheckBox>
 
-                            <mui:SpacingStackPanel Spacing="4" Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <CheckBox IsChecked="{Binding AutoAddEntries}" IsEnabled="{Binding ReaderBased}"
-                                        Visibility="{Binding AutoAddAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Label>Add new lap times automatically</Label>
-                                </CheckBox>
+              <mui:SpacingStackPanel Spacing="4" Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <CheckBox IsChecked="{Binding AutoAddEntries}" IsEnabled="{Binding ReaderBased}"
+                    Visibility="{Binding AutoAddAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <Label>Add new lap times automatically</Label>
+                </CheckBox>
 
-                                <!--loading-->
-                                <Border Height="12" Margin="0 12 0 0" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Center" Width="200" />
-                                </Border>
-
-                                <!--amount of entries-->
-                                <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12" Margin="0 12 0 0"
-                                        Text="{Binding EntriesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', TargetNullValue='Loading…'}"
-                                        Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-
-                                <!--last modified-->
-                                <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12"
-                                        Text="{Binding LastModified, StringFormat='Last modified: {0}', TargetNullValue=''}"
-                                        Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                            </mui:SpacingStackPanel>
-                        </mui:SpacingStackPanel>
-                    </DockPanel>
+                <!--loading-->
+                <Border Height="12" Margin="0 12 0 0" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Center" Width="200" />
                 </Border>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="320" ItemHeight="300" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+
+                <!--amount of entries-->
+                <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12" Margin="0 12 0 0"
+                    Text="{Binding EntriesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', TargetNullValue='Loading…'}"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+
+                <!--last modified-->
+                <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12"
+                    Text="{Binding LastModified, StringFormat='Last modified: {0}', TargetNullValue=''}"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+              </mui:SpacingStackPanel>
+            </mui:SpacingStackPanel>
+          </DockPanel>
+        </Border>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel ItemWidth="320" ItemHeight="300" />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+  </ItemsControl>
 </UserControl>

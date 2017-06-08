@@ -88,12 +88,13 @@ namespace AcManager.Tools.SemiGui {
                 _name = file?.Name;
                 IsAvailable = file != null;
             } else {
+                IsRenameable = true;
+
                 _originalFilename = Path.Combine(directory, ReplayObject.PreviousReplayName);
                 _renamedFilename = FileUtils.EnsureUnique(_originalFilename);
                 Name = GetReplayName(startProperties, result);
 
                 IsAvailable = File.Exists(_originalFilename);
-                IsRenameable = true;
                 if (IsAvailable && SettingsHolder.Drive.AutoSaveReplays) {
                     IsKept = true;
                 }

@@ -65,6 +65,7 @@
                     <mui:Link DisplayName="Rules, Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
                     <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
                     <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
+                    <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/Wrapped.xaml" />
                 </mui:ModernTab.Links>
             </mui:ModernTab>
 

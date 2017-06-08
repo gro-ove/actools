@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -8,6 +9,7 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -170,7 +172,24 @@ namespace AcManager.Tools.Objects {
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;
-            return or != null ? CreationDateTime.CompareTo(or.CreationDateTime) : base.CompareTo(o);
+
+
+
+            var r = o as ReplayObject;
+            if (r == null) return base.CompareTo(o);
+
+            var tp = Category;
+            var rp = r.Category;
+
+            if (tp != rp) {
+                if (tp == AutosaveCategory) return -1;
+                if (rp == AutosaveCategory) return 1;
+                if (tp == null) return 1;
+                if (rp == null) return -1;
+                return AlphanumComparatorFast.Compare(tp, rp);
+            }
+
+            return CreationDateTime.CompareTo(or.CreationDateTime);
         }
 
         #region Simple Properties

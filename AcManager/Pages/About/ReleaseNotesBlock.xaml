@@ -10,7 +10,7 @@
                 <TextBlock Text="{Binding Version, StringFormat={x:Static g:AppStrings.About_VersionFormat}}" Style="{StaticResource Heading1}" />
             </DockPanel>
             <TextBlock Style="{StaticResource Label}" Margin="0 0 0 16" Text="{Binding DisplayName}" />
-            <mui:BbCodeBlock BbCode="{Binding Content}" LineHeight="20" />
+            <mui:BbCodeBlock BbCode="{Binding Content}" LineHeight="22" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

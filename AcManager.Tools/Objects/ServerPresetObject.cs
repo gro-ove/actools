@@ -19,10 +19,10 @@ namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject : AcIniObject {
         public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(new[] {
-                new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false, false), 
-                new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true, true), 
-                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true, true), 
-                new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true), 
+                new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false, false),
+                new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true, true),
+                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true, true),
+                new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true),
             });
         }
 
@@ -56,7 +56,7 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
-        
+
         private string[] _carIds;
 
         [NotNull]
@@ -277,6 +277,7 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _adminPassword)) return;
                 _adminPassword = value;
+                WrapperPassword = value;
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;

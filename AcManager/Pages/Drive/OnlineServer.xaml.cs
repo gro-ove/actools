@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,7 +23,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
-using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -34,7 +32,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
@@ -91,7 +88,7 @@ namespace AcManager.Pages.Drive {
         private bool? _showExtendedInformation;
 
         public bool ShowExtendedInformation {
-            get { return _showExtendedInformation ?? false; }
+            get => _showExtendedInformation ?? false;
             set {
                 if (Equals(value, _showExtendedInformation)) return;
                 _showExtendedInformation = value;
@@ -113,7 +110,7 @@ namespace AcManager.Pages.Drive {
         private bool? _scrollableContent;
 
         public bool ScrollableContent {
-            get { return _scrollableContent ?? false; }
+            get => _scrollableContent ?? false;
             set {
                 if (Equals(value, _scrollableContent)) return;
                 _scrollableContent = value;
@@ -304,7 +301,7 @@ namespace AcManager.Pages.Drive {
 
             [NotNull]
             public ServerEntry Entry {
-                get { return _entry; }
+                get => _entry;
                 private set {
                     if (Equals(value, _entry)) return;
 
@@ -360,7 +357,7 @@ namespace AcManager.Pages.Drive {
             private bool _copyPasswordToInviteLink = ValuesStorage.GetBool(KeyCopyPasswordToInviteLink, true);
 
             public bool CopyPasswordToInviteLink {
-                get { return _copyPasswordToInviteLink; }
+                get => _copyPasswordToInviteLink;
                 set {
                     if (Equals(value, _copyPasswordToInviteLink)) return;
                     _copyPasswordToInviteLink = value;

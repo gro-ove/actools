@@ -249,6 +249,7 @@
     <Compile Include="ContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="ContentInstallation\UpdateOption.cs" />
     <Compile Include="ContentInstallation\ZipContentInstallator.cs" />
+    <Compile Include="Helpers\Api\AcServerWrapperApi.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\IpGeoProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\BookingResult.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />
+    <Compile Include="Helpers\Loaders\DropboxLoader.cs" />
     <Compile Include="Helpers\Loaders\FlexibleLoader.cs" />
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
@@ -323,6 +325,7 @@
     <Compile Include="Objects\ServerPresetAssistState.cs" />
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
+    <Compile Include="Objects\ServerPresetObject.Wrapped.cs" />
     <Compile Include="Objects\ServerSessionEntry.cs" />
     <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Stats.cs" />
