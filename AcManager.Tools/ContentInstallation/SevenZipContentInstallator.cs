@@ -66,14 +66,6 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        private class SevenZipBinaryResult : SevenZipResult {
-            public readonly byte[] Out;
-
-            public SevenZipBinaryResult(byte[] data, string[] error) : base(error) {
-                Out = data;
-            }
-        }
-
         [NotNull]
         private Process Run(IEnumerable<string> args, string directory) {
             var argsLine = args.Select(ProcessExtension.GetQuotedArgument).JoinToString(" ");
@@ -127,14 +119,6 @@ namespace AcManager.Tools.ContentInstallation {
 
                 await process.WaitForExitAsync(c).ConfigureAwait(false);
                 return c.IsCancellationRequested ? null : new SevenZipResult(Split(error));
-            }
-        }
-
-        [ItemCanBeNull]
-        private async Task<SevenZipBinaryResult> ExecuteBinary(IEnumerable<string> args, string directory, CancellationToken c){
-            using (var memory = new MemoryStream()) {
-                var result = await ExecuteBinary(args, directory, s => s.CopyToAsync(memory), c);
-                return result == null ? null : new SevenZipBinaryResult(memory.ToArray(), result.Error);
             }
         }
         #endregion
@@ -198,33 +182,11 @@ namespace AcManager.Tools.ContentInstallation {
             return _cachedList;
         }
 
-        [ItemCanBeNull]
-        private async Task<byte[]> GetFiles([NotNull] IEnumerable<string> keys, CancellationToken c) {
-            var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
-                Path.GetFileName(_filename)
-            }.Concat(keys), Path.GetDirectoryName(_filename), c);
-            if (o == null) return null;
-
-            CheckForErrors(o.Error);
-            return o.Out;
-        }
-
         private async Task GetFiles([NotNull] IEnumerable<string> keys, Func<Stream, Task> streamCallback, CancellationToken c) {
             var o = await ExecuteBinary(new[] {
                 "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
                 Path.GetFileName(_filename)
             }.Concat(keys), Path.GetDirectoryName(_filename), streamCallback, c);
-            if (o == null) return;
-
-            CheckForErrors(o.Error);
-        }
-
-        private async Task GetFiles(Func<Stream, Task> streamCallback, CancellationToken c) {
-            var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
-                Path.GetFileName(_filename)
-            }, Path.GetDirectoryName(_filename), streamCallback, c);
             if (o == null) return;
 
             CheckForErrors(o.Error);
