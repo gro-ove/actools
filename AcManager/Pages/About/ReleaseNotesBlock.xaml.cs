@@ -8,7 +8,6 @@ namespace AcManager.Pages.About {
     public partial class ReleaseNotesBlock {
         public ReleaseNotesBlock() {
             InitializeComponent();
-            Root.DataContext = this;
 
             /* TODO */
             var mainWindow = Application.Current?.MainWindow;
@@ -30,6 +29,7 @@ namespace AcManager.Pages.About {
         }
 
         private void OnPieceChanged(PieceOfInformation newValue) {
+            Root.DataContext = newValue;
             MarkAsRead(newValue).Forget();
         }
 

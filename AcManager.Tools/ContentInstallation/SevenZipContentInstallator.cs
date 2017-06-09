@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -85,6 +86,8 @@ namespace AcManager.Tools.ContentInstallation {
                     RedirectStandardInput = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding =  Encoding.UTF8,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
                     UseShellExecute = false
@@ -170,6 +173,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         #region 7-zip methods
         private List<SevenZipEntry> _cachedList;
+        private bool _solidArchive;
 
         [ItemCanBeNull]
         private async Task<List<SevenZipEntry>> ListFiles(CancellationToken c) {
@@ -178,12 +182,17 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             var o = await Execute(new[] {
-                "l", $"-p{Password}", "--",
+                "l", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
                 Path.GetFileName(_filename)
             }, Path.GetDirectoryName(_filename), c);
             if (o == null) return null;
 
             CheckForErrors(o.Error);
+
+            var solidLine = o.Out.FirstOrDefault(x => x.StartsWith("Solid = "));
+            if (solidLine != null) {
+                _solidArchive = solidLine == "Solid = +";
+            }
 
             _cachedList = ParseListOfFiles(o.Out).ToList();
             return _cachedList;
@@ -192,7 +201,7 @@ namespace AcManager.Tools.ContentInstallation {
         [ItemCanBeNull]
         private async Task<byte[]> GetFiles([NotNull] IEnumerable<string> keys, CancellationToken c) {
             var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "--",
+                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
                 Path.GetFileName(_filename)
             }.Concat(keys), Path.GetDirectoryName(_filename), c);
             if (o == null) return null;
@@ -203,7 +212,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private async Task GetFiles([NotNull] IEnumerable<string> keys, Func<Stream, Task> streamCallback, CancellationToken c) {
             var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "--",
+                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
                 Path.GetFileName(_filename)
             }.Concat(keys), Path.GetDirectoryName(_filename), streamCallback, c);
             if (o == null) return;
@@ -213,7 +222,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private async Task GetFiles(Func<Stream, Task> streamCallback, CancellationToken c) {
             var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "--",
+                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
                 Path.GetFileName(_filename)
             }, Path.GetDirectoryName(_filename), streamCallback, c);
             if (o == null) return;
@@ -229,12 +238,22 @@ namespace AcManager.Tools.ContentInstallation {
 
             try {
                 var list = await ListFiles(c);
+                if (list == null) return;
 
                 // TODO: for solid archive, load first entry, otherwise, the smallest one
-                var first = list?.FirstOrDefault();
-                if (first == null) return;
+                SevenZipEntry testFile;
 
-                await GetFiles(new[]{ first.Key }, s => Task.Delay(0), c);
+                if (_solidArchive == false) {
+                    Logging.Debug("Archive is not solid, testing password on the smallest file…");
+                    testFile = list.MinEntryOrDefault(x => x.Size);
+                } else {
+                    Logging.Debug("Archive is solid, testing password on the first file…");
+                    testFile = list.FirstOrDefault();
+                }
+
+                if (testFile == null) return;
+
+                await GetFiles(new[]{ testFile.Key }, s => Task.Delay(0), c);
                 _passwordCorrect = true;
             } catch (CryptographicException) {
                 IsPasswordRequired = true;
@@ -328,20 +347,45 @@ namespace AcManager.Tools.ContentInstallation {
             var list = (await ListFiles(cancellation))?.Where(x => _askedData.Contains(x.Key)).ToList();
             if (list == null) return;
 
+            // for debugging in case of unexpected end
+            var readInTotal = 0;
+            var readList = new Dictionary<string, byte[]>();
+
             await GetFiles(list.Select(x => x.Key), async s => {
                 foreach (var l in list) {
                     var buffer = new byte[l.Size];
                     var read = 0;
+                    var waiting = 0;
 
                     while (read < l.Size) {
                         var local = await s.ReadAsync(buffer, read, buffer.Length - read);
                         read += local;
+                        readInTotal += local;
 
                         if (read != l.Size && local == 0) {
-                            throw new Exception("Unexpected end");
+                            if (waiting < 2) {
+                                waiting++;
+                                await Task.Delay(500);
+                            } else {
+                                Logging.Debug("Entries to read:\n" + list.Select(x => $"{x.Key} ({x.Size} bytes)"));
+                                Logging.Debug($"Summary required: {list.Sum(x => x.Size)} bytes");
+                                Logging.Debug($"Able to read: {readInTotal} bytes, {readList.Count} entries");
+                                Logging.Debug($"Now trying to read: {l.Key}");
+                                using (var archive = ZipFile.Open(FilesStorage.Instance.GetTemporaryFilename("Unexpected end.zip"),
+                                        ZipArchiveMode.Create)) {
+                                    foreach (var r in readList) {
+                                        archive.CreateEntryFromBytes(r.Key, r.Value);
+                                    }
+                                    archive.CreateEntryFromBytes(l.Key, buffer, 0, read);
+                                }
+
+                                Logging.Debug("Dump as archive created, look for it in CM’s temporary directory");
+                                throw new Exception("Unexpected end");
+                            }
                         }
                     }
 
+                    readList[l.Key] = buffer;
                     _preloadedData[l.Key] = buffer;
                 }
             }, cancellation).ConfigureAwait(false);

@@ -186,9 +186,17 @@ namespace AcManager.Tools.Managers.Online {
                 id = Regex.Replace(id, @"-([^-]+)$", "/$1");
             }
 
-            // var url = SettingsHolder.Content.MissingContentSearch.GetUri(id, car ? SettingsHolder.MissingContentType.Car : SettingsHolder.MissingContentType.Track);
             var url = $"cmd://findmissing/{(car ? "car" : "track")}?param={id}";
-            return string.Format("“{0}”", $@"[url={BbCodeBlock.EncodeAttribute(url)}]{id}[/url]");
+            var basePiece = $@"[url={BbCodeBlock.EncodeAttribute(url)}]{id}[/url]";
+            if (!SettingsHolder.Content.MissingContentIndexCheck ||
+                    car ? !OnlineManager.IsCarAvailable(id) : !OnlineManager.IsTrackAvailable(id)) {
+                return string.Format("“{0}”", basePiece);
+            }
+
+            var downloadUrl = $"cmd://downloadmissing/{(car ? "car" : "track")}?param={id}";
+            return string.Format("“{0}” ({1})",
+                    basePiece,
+                    $@"[url={BbCodeBlock.EncodeAttribute(downloadUrl)}]download[/url]");
         }
 
         private DateTime _previousUpdateTime;

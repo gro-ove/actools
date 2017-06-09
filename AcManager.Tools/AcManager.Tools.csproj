@@ -208,6 +208,7 @@
     <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\IndexDirectDownloader.cs" />
     <Compile Include="Helpers\AcContext.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
     <Compile Include="Helpers\AcLog\AcLogHelper.cs" />

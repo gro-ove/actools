@@ -212,7 +212,11 @@
                   HorizontalAlignment="Center" StrokeThickness="1" />
             </Button>
 
-            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" DockPanel.Dock="Bottom">
+            <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom">
+              <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0" >
+                <TextBlock Style="{StaticResource Small}" Text="Name: " />
+                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding DisplayName, Mode=OneWay}" />
+              </DockPanel>
               <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0" >
                 <TextBlock Style="{StaticResource Small}" Text="File name: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />

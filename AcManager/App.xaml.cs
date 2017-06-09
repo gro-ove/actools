@@ -264,6 +264,14 @@ namespace AcManager {
                 WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
             }));
 
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/car"), new DelegateCommand<string>(id => {
+                IndexDirectDownloader.DownloadCarAsync(id).Forget();
+            }));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/track"), new DelegateCommand<string>(id => {
+                IndexDirectDownloader.DownloadTrackAsync(id).Forget();
+            }));
+
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.Scheme == "acmanager") {
                     ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }).Forget();

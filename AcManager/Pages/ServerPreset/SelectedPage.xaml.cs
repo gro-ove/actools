@@ -67,6 +67,8 @@ namespace AcManager.Pages.ServerPreset {
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
 
         public class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
+            private readonly Busy _busy = new Busy();
+
             private TrackObjectBase _track;
 
             public TrackObjectBase Track {
@@ -76,10 +78,15 @@ namespace AcManager.Pages.ServerPreset {
                     _track = value;
                     OnPropertyChanged();
 
-                    SelectedObject.TrackId = _track.MainTrackObject.Id;
-                    SelectedObject.TrackLayoutId = _track.LayoutId;
+                    if (value == null) {
+                        throw new NullReferenceException("New track selected is null");
+                    }
 
-                    MaximumCapacity = _track.SpecsPitboxesValue;
+                    _busy.Do(() => {
+                        SelectedObject.TrackId = _track.MainTrackObject.Id;
+                        SelectedObject.TrackLayoutId = _track.LayoutId;
+                        MaximumCapacity = _track.SpecsPitboxesValue;
+                    });
                 }
             }
 
@@ -111,7 +118,9 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private void OnCarsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-                SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray();
+                _busy.Do(() => {
+                    SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray();
+                });
             }
 
             public override void Unload() {
@@ -120,16 +129,18 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                switch (e.PropertyName) {
-                    case nameof(SelectedObject.TrackId):
-                    case nameof(SelectedObject.TrackLayoutId):
-                        Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId);
-                        break;
+                _busy.Do(() => {
+                    switch (e.PropertyName) {
+                        case nameof(SelectedObject.TrackId):
+                        case nameof(SelectedObject.TrackLayoutId):
+                            Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId);
+                            break;
 
-                    case nameof(SelectedObject.CarIds):
-                        Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
-                        break;
-                }
+                        case nameof(SelectedObject.CarIds):
+                            Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
+                            break;
+                    }
+                });
             }
 
             [Localizable(false)]

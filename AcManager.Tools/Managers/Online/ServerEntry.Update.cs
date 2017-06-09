@@ -47,7 +47,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (_updateException != null) {
                 errors.Add((_updateException as InformativeException)?.Message ??
-                        string.Format(ToolsStrings.Online_Server_UnhandledError, _updateException.Message));
+                        string.Format(ToolsStrings.Online_Server_UnhandledError, _updateException.Message.ToSentenceMember()));
             }
 
             if (_updateWebException != null) {

@@ -64,6 +64,10 @@
             DisplayMemberPath="DisplayName" />
       </DockPanel>
 
+      <CheckBox IsChecked="{Binding Holder.MissingContentIndexCheck}" ToolTip="Online indexes of AcClub and RD will be used">
+        <Label Content="Look for direct links to missing content" />
+      </CheckBox>
+
       <DockPanel>
         <Label Content="RaceDepartment credentials:" ToolTip="Optional, default will be used if not set" Background="Transparent" />
         <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">

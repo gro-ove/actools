@@ -115,6 +115,8 @@ namespace AcManager.Tools.ContentInstallation {
         public string CarId { get; set; }
         public string FallbackId { get; set; }
         public string Checksum { get; set; }
+        public string DisplayName { get; set; }
+        public string DisplayVersion { get; set; }
     }
 
     public enum ContentInstallationEntryState {

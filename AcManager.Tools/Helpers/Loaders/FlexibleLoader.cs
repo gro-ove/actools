@@ -46,11 +46,16 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         [ItemCanBeNull]
         public static async Task<string> TryToLoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
-                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                string directory = null, IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            var fixedDirectory = directory != null;
+            if (!fixedDirectory) {
+                directory = Path.GetTempPath();
+            }
+
             if (useCachedIfAny) {
                 var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
-                var destination = Path.Combine(Path.GetTempPath(), fileName);
+                var destination = Path.Combine(directory, fileName);
                 if (File.Exists(destination)) return destination;
 
                 var temporary = destination + ".tmp";
@@ -62,9 +67,18 @@ namespace AcManager.Tools.Helpers.Loaders {
                 File.Move(temporary, destination);
                 return destination;
             } else {
-                var destination = name == null
-                        ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
-                        : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+                string destination;
+                if (name != null) {
+                    destination = Path.Combine(directory, name);
+                    if (!fixedDirectory && File.Exists(destination)) {
+                        destination = FileUtils.GetTempFileNameFixed(directory, name);
+                    }
+                } else {
+                    destination = extension == null
+                            ? FileUtils.GetTempFileName(directory)
+                            : FileUtils.GetTempFileName(directory, extension);
+                }
+
                 return await TryToLoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
             }
         }
@@ -86,11 +100,16 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         [ItemNotNull]
         public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
-                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                string directory = null, IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            var fixedDirectory = directory != null;
+            if (!fixedDirectory) {
+                directory = Path.GetTempPath();
+            }
+
             if (useCachedIfAny) {
                 var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
-                var destination = Path.Combine(Path.GetTempPath(), fileName);
+                var destination = Path.Combine(directory, fileName);
                 if (File.Exists(destination)) return destination;
 
                 var temporary = destination + ".tmp";
@@ -102,9 +121,18 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 throw new Exception("Downloaded file is missing");
             } else {
-                var destination = name == null
-                        ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
-                        : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+                string destination;
+                if (name != null) {
+                    destination = Path.Combine(directory, name);
+                    if (!fixedDirectory && File.Exists(destination)) {
+                        destination = FileUtils.GetTempFileNameFixed(directory, name);
+                    }
+                } else {
+                    destination = extension == null
+                            ? FileUtils.GetTempFileName(directory)
+                            : FileUtils.GetTempFileName(directory, extension);
+                }
+
                 return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
             }
         }

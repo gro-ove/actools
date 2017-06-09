@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers.Api {
                 if (cancellation.IsCancellationRequested) return null;
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
-                Logging.Warning($"Cannot read as UTF8 from {url}: " + e);
+                Logging.Warning(e);
                 return null;
             }
         }
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var json = GetString(url);
                 return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
-                Logging.Warning($"Cannot read as JSON from {url}: " + e);
+                Logging.Warning(e);
                 return default(T);
             }
         }
@@ -61,7 +61,7 @@ namespace AcManager.Tools.Helpers.Api {
                 if (cancellation.IsCancellationRequested) return default(T);
                 return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
-                Logging.Warning($"Cannot read as JSON from {url}: " + e);
+                Logging.Warning(e);
                 return default(T);
             }
         }
@@ -75,6 +75,30 @@ namespace AcManager.Tools.Helpers.Api {
         public static Task<byte[]> GetDataAsync(string url, IProgress<double?> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<string> GetContentStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
+            try {
+                var result = await InternalUtils.CmGetContentDataAsync(url, UserAgent, null, cancellation);
+                if (cancellation.IsCancellationRequested) return null;
+                return result == null ? null : Encoding.UTF8.GetString(result);
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
+            }
+        }
+
+        [ItemCanBeNull]
+        public static async Task<T> GetContentAsync<T>(string url = "", CancellationToken cancellation = default(CancellationToken)) {
+            try {
+                var json = await GetContentStringAsync(url, cancellation);
+                if (cancellation.IsCancellationRequested) return default(T);
+                return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return default(T);
+            }
         }
     }
 }

@@ -109,7 +109,7 @@ namespace AcManager.Tools {
 
         private static async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.TryToLoadAsync(argument, name, extension, true, waiting, information => {
+                return await FlexibleLoader.TryToLoadAsync(argument, name, extension, true, null, waiting, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }

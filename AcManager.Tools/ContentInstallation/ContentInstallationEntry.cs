@@ -36,6 +36,8 @@ namespace AcManager.Tools.ContentInstallation {
         internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
             Source = source;
             _installationParams = installationParams ?? ContentInstallationParams.Default;
+            DisplayName = _installationParams.DisplayName;
+            Version = _installationParams.DisplayVersion;
         }
 
         public ContentInstallationEntryState State => _progress.IsReady ? ContentInstallationEntryState.Finished :
@@ -193,6 +195,17 @@ namespace AcManager.Tools.ContentInstallation {
         #endregion
 
         #region Some details
+        private string _displayName;
+
+        public string DisplayName {
+            get { return _displayName; }
+            set {
+                if (Equals(value, _displayName)) return;
+                _displayName = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _fileName;
 
         public string FileName {
@@ -244,11 +257,13 @@ namespace AcManager.Tools.ContentInstallation {
                         try {
                             localFilename = await FlexibleLoader.LoadAsync(Source,
                                     metaInformationCallback: information => {
-                                        if (information.FileName != Path.GetFileName(Source)) {
+                                        if (information.FileName != null && information.FileName != Path.GetFileName(Source)) {
                                             FileName = information.FileName;
                                         }
 
-                                        Version = information.Version;
+                                        if (Version == null) {
+                                            Version = information.Version;
+                                        }
                                     },
                                     progress: progress.Subrange(0.001, 0.999, "Downloading ({0})…"),
                                     cancellation: cancellation.Token);

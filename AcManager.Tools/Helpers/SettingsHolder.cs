@@ -1582,6 +1582,21 @@ namespace AcManager.Tools.Helpers {
                 new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true)
             });
 
+            private bool? _missingContentIndexCheck;
+
+            public bool MissingContentIndexCheck {
+                get {
+                    return _missingContentIndexCheck ??
+                            (_missingContentIndexCheck = ValuesStorage.GetBool("Settings.ContentSettings.MissingContentIndexCheck", true)).Value;
+                }
+                set {
+                    if (Equals(value, _missingContentIndexCheck)) return;
+                    _missingContentIndexCheck = value;
+                    ValuesStorage.Set("Settings.ContentSettings.MissingContentIndexCheck", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private MissingContentSearchEntry _missingContentSearch;
 
             public MissingContentSearchEntry MissingContentSearch {

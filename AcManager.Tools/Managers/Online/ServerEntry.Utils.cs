@@ -151,5 +151,11 @@ namespace AcManager.Tools.Managers.Online {
             Status = ServerStatus.Unloaded;
             return true;
         }
+
+        public void UpdateMissing() {
+            if (Status == ServerStatus.MissingContent || Status == ServerStatus.Error) {
+                CheckPostUpdate();
+            }
+        }
     }
 }
