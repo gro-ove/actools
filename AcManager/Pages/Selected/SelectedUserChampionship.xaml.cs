@@ -485,6 +485,12 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
+            this.AddSizeCondition(Base, 800f,
+                    b => b.HeaderPadding = new Thickness(0, 0, 360, 0),
+                    b => b.HeaderPadding = default(Thickness));
+            this.AddSizeCondition(Tab, 800f,
+                    b => b.Margin = new Thickness(0, -30, 0, 0),
+                    b => b.Margin = new Thickness(0, 0, 0, 0));
         }
 
         private void SetModel() {

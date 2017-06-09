@@ -325,6 +325,7 @@
     <Compile Include="Objects\DriverModelObject.cs" />
     <Compile Include="Objects\ServerPresetAssistState.cs" />
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
+    <Compile Include="Objects\ServerPresetObject.Properties.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
     <Compile Include="Objects\ServerPresetObject.Wrapped.cs" />
     <Compile Include="Objects\ServerSessionEntry.cs" />

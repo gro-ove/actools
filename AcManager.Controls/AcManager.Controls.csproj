@@ -145,6 +145,7 @@
     <Compile Include="Graphs\OxyExtenstion.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
+    <Compile Include="SizeRelatedCondition.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />

@@ -17,15 +17,27 @@
       <Label Content="Pickup mode" />
     </CheckBox>
 
+    <CheckBox IsChecked="{Binding SelectedObject.PickupModeLockedEntryList}" IsEnabled="{Binding SelectedObject.IsPickupModeAvailable}">
+      <Label Content="Locked entry list in pickup mode" ToolTip="Flag it if you want to limit the server to the entrylist GUID players and ignore password" />
+    </CheckBox>
+
     <CheckBox IsChecked="{Binding SelectedObject.LoopMode}">
       <Label Content="Loop mode" />
     </CheckBox>
 
-    <DockPanel ToolTip="{Binding SelectedObject.RaceOverTime, Converter={StaticResource ReadableTimeSpanConverter}}">
-      <mui:ValueLabel Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Race over time" />
-      <Slider Minimum="0" Maximum="300" TickFrequency="30" TickPlacement="BottomRight"
-          Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
-    </DockPanel>
+    <mui:SpacingUniformGrid HorizontalSpacing="8" Columns="{Binding }">
+      <DockPanel ToolTip="{Binding SelectedObject.RaceOverTime, Converter={StaticResource ReadableTimeSpanConverter}}">
+        <mui:ValueLabel Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Race over time" />
+        <Slider Minimum="0" Maximum="300" TickFrequency="30" TickPlacement="BottomRight"
+            Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
+      </DockPanel>
+
+      <DockPanel ToolTip="{Binding SelectedObject.ResultScreenTime, Converter={StaticResource ReadableTimeSpanConverter}}">
+        <mui:ValueLabel Value="{Binding SelectedObject.ResultScreenTime, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Result screen time" />
+        <Slider Minimum="0" Maximum="120" TickFrequency="15" TickPlacement="BottomRight"
+            Value="{Binding SelectedObject.ResultScreenTime, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
+      </DockPanel>
+    </mui:SpacingUniformGrid>
 
     <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sessions:" />
     <ItemsControl ItemsSource="{Binding SelectedObject.Sessions}">

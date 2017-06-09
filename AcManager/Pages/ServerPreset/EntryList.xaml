@@ -154,6 +154,12 @@
       </ListBox>
     </DockPanel>
 
+    <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top" Margin="0 0 20 4">
+      <CheckBox IsChecked="{Binding SelectedObject.PickupModeLockedEntryList}" IsEnabled="{Binding SelectedObject.IsPickupModeAvailable}">
+        <Label Content="Locked entry list in pickup mode" ToolTip="Flag it if you want to limit the server to the entrylist GUID players and ignore password" />
+      </CheckBox>
+    </StackPanel>
+
     <DockPanel DockPanel.Dock="Top" Margin="0 0 20 4">
       <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Right">
         <mui:ModernToggleButton x:Name="AddCarButton" IconData="{StaticResource AddIconData}" ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}"

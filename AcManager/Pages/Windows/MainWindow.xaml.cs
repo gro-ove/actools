@@ -475,10 +475,18 @@ namespace AcManager.Pages.Windows {
                 if (running.Count > 0 && ModernDialog.ShowMessage(
                         $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
                                 running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",
-                        "Some servers are running", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
+                        "Some servers are running", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     e.Cancel = true;
                     return;
                 }
+            }
+
+            var loading = ContentInstallationManager.Instance.Queue.Count(x => x.State != ContentInstallationEntryState.Finished);
+            if (loading > 0 && ModernDialog.ShowMessage(
+                    "If you’ll close app, installation queue will be cancelled. Are you sure?",
+                    "Something is being installed", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                e.Cancel = true;
+                return;
             }
 
             var unsaved = Superintendent.Instance.UnsavedChanges();

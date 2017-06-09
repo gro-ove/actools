@@ -1,4 +1,3 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,102 +6,8 @@ using AcManager.Controls.ViewModels;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
-using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    internal abstract class SizeRelatedCondition {
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                float widthThreshold, [NotNull] Action<T, Visibility> action) where TParent : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, p => p.ActualWidth >= widthThreshold,
-                    (t, b) => action(t, b ? Visibility.Visible : Visibility.Collapsed));
-        }
-
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                [NotNull] Func<TParent, bool> condition, [NotNull] Action<T, Visibility> action) where TParent : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, condition, (t, b) => action(t, b ? Visibility.Visible : Visibility.Collapsed));
-        }
-
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                float widthThreshold) where TParent : FrameworkElement where T : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, p => p.ActualWidth >= widthThreshold,
-                    (t, b) => t.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
-        }
-
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                [NotNull] Func<TParent, bool> condition) where TParent : FrameworkElement where T : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, condition,
-                    (t, b) => t.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
-        }
-
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                float widthThreshold, [NotNull] Action<T, bool> action) where TParent : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, p => p.ActualWidth >= widthThreshold, action);
-        }
-
-        public static SizeRelatedCondition Create<T, TParent>([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                [NotNull] Func<TParent, bool> condition, [NotNull] Action<T, bool> action) where TParent : FrameworkElement {
-            return new SizeRelatedCondition<T, TParent>(parent, getChild, condition, action);
-        }
-
-        public abstract void Update();
-    }
-
-    internal class SizeRelatedCondition<T, TParent> : SizeRelatedCondition where TParent : FrameworkElement {
-        private readonly TParent _parent;
-        private readonly Func<TParent, T> _getChild;
-        private readonly Func<TParent, bool> _condition;
-        private readonly Action<T, bool> _action;
-
-        private T _element;
-
-        [CanBeNull]
-        private T Element {
-            get { return _element; }
-            set {
-                if (Equals(value, _element)) return;
-
-                if (value == null != (_element == null)) {
-                    if (value == null) {
-                        _parent.SizeChanged -= OnParentSizeChanged;
-                    } else {
-                        _parent.SizeChanged += OnParentSizeChanged;
-                    }
-                }
-
-                _element = value;
-                _state = null;
-                UpdateState();
-            }
-        }
-
-        public override void Update() {
-            Element = _getChild(_parent);
-        }
-
-        internal SizeRelatedCondition([NotNull] TParent parent, [NotNull] Func<TParent, T> getChild,
-                [NotNull] Func<TParent, bool> condition, [NotNull] Action<T, bool> action) {
-            _parent = parent;
-            _getChild = getChild;
-            _condition = condition;
-            _action = action;
-        }
-
-        private void OnParentSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
-            UpdateState();
-        }
-
-        private bool? _state;
-
-        private void UpdateState() {
-            if (Element == null) return;
-
-            var state = _condition(_parent);
-            if (_state != state) {
-                _action(Element, state);
-            }
-        }
-    }
-
     public class RaceGridEditorTable : Control {
         static RaceGridEditorTable() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RaceGridEditorTable), new FrameworkPropertyMetadata(typeof(RaceGridEditorTable)));
@@ -151,18 +56,12 @@ namespace AcManager.Controls {
 
         public RaceGridEditorTable() {
             _sizeRelated = new[] {
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_NameColumn") as DataGridColumn, 640, (c, b) => c.Visibility = b),
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn, 980, (c, b) => c.Visibility = b),
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_BallastColumn") as DataGridColumn, 740, (c, b) => c.Visibility = b),
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn, 840, (c, b) => c.Visibility = b),
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement, p => p.ActualWidth >= 740 && p._model.PlayerCar != null),
-                SizeRelatedCondition.Create(this,
-                        t => GetTemplateChild(@"PART_PlayerRestrictor") as FrameworkElement, 840)
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_NameColumn") as DataGridColumn, 640, (c, b) => c.Visibility = b),
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn, 980, (c, b) => c.Visibility = b),
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_BallastColumn") as DataGridColumn, 740, (c, b) => c.Visibility = b),
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn, 840, (c, b) => c.Visibility = b),
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement, p => p.ActualWidth >= 740 && p._model.PlayerCar != null),
+                this.AddSizeCondition(t => GetTemplateChild(@"PART_PlayerRestrictor") as FrameworkElement, 840)
             };
         }
 
