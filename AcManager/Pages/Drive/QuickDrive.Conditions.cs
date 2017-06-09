@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
@@ -32,99 +33,6 @@ namespace AcManager.Pages.Drive {
         /// Moved outside in a pity attempt to sort everything out.
         /// </summary>
         public partial class ViewModel {
-            #region Constants and other non-changeable values
-            public AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
-
-            private HierarchicalGroup _hierarchicalWeatherList;
-
-            public HierarchicalGroup HierarchicalWeatherList {
-                get => _hierarchicalWeatherList;
-                set {
-                    if (Equals(value, _hierarchicalWeatherList)) return;
-                    _hierarchicalWeatherList = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
-
-            private static bool IsKunosWeather(WeatherObject o) {
-                switch (o.Id) {
-                    case "1_heavy_fog":
-                    case "2_light_fog":
-                    case "3_clear":
-                    case "4_mid_clear":
-                    case "5_light_clouds":
-                    case "6_mid_clouds":
-                    case "7_heavy_clouds":
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            private static bool IsGbwWeather(WeatherObject o) {
-                return o.Id.Contains("gbW");
-            }
-
-            private static bool IsModWeather(WeatherObject o) {
-                return !IsKunosWeather(o) && !IsGbwWeather(o);
-            }
-
-            private class GbwConverter : IValueConverter {
-                public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                    return value?.ToString().Replace("gbW_", "");
-                }
-
-                public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-                    throw new NotSupportedException();
-                }
-            }
-
-            private sealed class WeatherTypeWrapped : Displayable {
-                public WeatherType Type { get; }
-
-                public WeatherTypeWrapped(WeatherType type) {
-                    Type = type;
-                    DisplayName = type.GetDescription();
-                }
-            }
-
-            private async Task UpdateHierarchicalWeatherList() {
-                await WeatherManager.Instance.EnsureLoadedAsync();
-
-                var list = new HierarchicalGroup { RandomWeather };
-                if (WeatherList.All(IsKunosWeather)) {
-                    list.Add(new Separator());
-                    list.AddRange(WeatherList);
-                } else {
-                    if (WeatherList.Any(IsKunosWeather)) {
-                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original, WeatherList.Where(IsKunosWeather)));
-                    }
-
-                    if (WeatherList.Any(x => x.Type != WeatherType.None)) {
-                        list.Add(new HierarchicalGroup("By Type", WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
-                                                                             .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
-                    }
-
-                    if (WeatherList.Any(IsGbwWeather)) {
-                        list.Add(new HierarchicalGroup("GBW", WeatherList.Where(IsGbwWeather)) {
-                            HeaderConverter = new GbwConverter()
-                        });
-                    }
-
-                    if (WeatherList.Any(IsModWeather)) {
-                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods, WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x))));
-                    }
-                }
-
-                HierarchicalWeatherList = list;
-            }
-
-            private void OnWeatherListUpdated(object sender, EventArgs e) {
-                UpdateHierarchicalWeatherList().Forget();
-            }
-            #endregion
 
             #region User-set variables which define working mode
             private bool _realConditions;
@@ -252,8 +160,8 @@ namespace AcManager.Pages.Drive {
 
                     if (value is WeatherObject weatherObject) {
                         SelectedWeatherObject = weatherObject;
-                    } else if (value is WeatherTypeWrapped weatherTypeWrapped) {
-                        SelectedWeatherObject = WeatherList.Where(x => x.Type == weatherTypeWrapped.Type).RandomElementOrDefault();
+                    } else {
+                        SelectedWeatherObject = WeatherComboBox.Unwrap(value);
                     }
 
                     OnPropertyChanged();

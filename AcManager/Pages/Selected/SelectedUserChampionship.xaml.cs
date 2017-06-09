@@ -89,8 +89,6 @@ namespace AcManager.Pages.Selected {
         }
 
         public class ViewModel : SelectedAcObjectViewModel<UserChampionshipObject> {
-            public static int OptionPlacePointsCount = 10;
-
             public Game.JumpStartPenaltyType[] JumpStartPenaltyTypes { get; } = {
                 Game.JumpStartPenaltyType.None,
                 Game.JumpStartPenaltyType.Pits,
@@ -485,12 +483,13 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
-            this.AddSizeCondition(Base, 800f,
-                    b => b.HeaderPadding = new Thickness(0, 0, 360, 0),
-                    b => b.HeaderPadding = default(Thickness));
-            this.AddSizeCondition(Tab, 800f,
-                    b => b.Margin = new Thickness(0, -30, 0, 0),
-                    b => b.Margin = new Thickness(0, 0, 0, 0));
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            this.AddWidthCondition((Tab.GetLinkListWidth() ?? 360d) + 250d).Add(v => {
+                Base.HeaderPadding = v ? new Thickness(0, 0, Tab.GetLinkListWidth() ?? 360, 0) : default(Thickness);
+                Tab.Margin = v ? new Thickness(0, -30, 0, 0) : default(Thickness);
+            });
         }
 
         private void SetModel() {

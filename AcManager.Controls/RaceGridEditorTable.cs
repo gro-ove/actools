@@ -55,13 +55,16 @@ namespace AcManager.Controls {
         private readonly SizeRelatedCondition[] _sizeRelated;
 
         public RaceGridEditorTable() {
-            _sizeRelated = new[] {
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_NameColumn") as DataGridColumn, 640, (c, b) => c.Visibility = b),
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn, 980, (c, b) => c.Visibility = b),
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_BallastColumn") as DataGridColumn, 740, (c, b) => c.Visibility = b),
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn, 840, (c, b) => c.Visibility = b),
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement, p => p.ActualWidth >= 740 && p._model.PlayerCar != null),
-                this.AddSizeCondition(t => GetTemplateChild(@"PART_PlayerRestrictor") as FrameworkElement, 840)
+            _sizeRelated = new SizeRelatedCondition[] {
+                this.AddWidthCondition(640).Add(t => GetTemplateChild(@"PART_NameColumn") as DataGridColumn),
+                this.AddWidthCondition(740).Add(t => GetTemplateChild(@"PART_BallastColumn") as DataGridColumn),
+                this.AddWidthCondition(840).Add(t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn),
+                this.AddWidthCondition(980).Add(t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn),
+                
+                this.AddSizeCondition(p => p.ActualWidth >= 740 && p._model.PlayerCar != null).Add(
+                        t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement),
+                this.AddSizeCondition(p => p.ActualWidth >= 840 && p._model.PlayerCar != null).Add(
+                        t => GetTemplateChild(@"PART_PlayerRestrictor") as FrameworkElement)
             };
         }
 

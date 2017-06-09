@@ -214,15 +214,15 @@
     <value>Previous Session</value>
   </data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
-    <value>Car Locked</value>
+    <value>Lock Car</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="JumpStart_DriveThrough" xml:space="preserve">
-    <value>DriveThrough</value>
+    <value>Drive Through</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="JumpStart_TeleportToPit" xml:space="preserve">
-    <value>Teleport To Pit</value>
+    <value>Teleport To Pits</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">

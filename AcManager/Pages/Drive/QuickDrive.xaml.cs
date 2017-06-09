@@ -389,18 +389,14 @@ namespace AcManager.Pages.Drive {
                     RealConditionsLocalWeather = RealConditionsLocalWeather,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsManualTime = RealConditionsManualTime,
-
                     Mode = SelectedMode,
                     ModeData = SelectedModeViewModel?.ToSerializedString(),
-
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
                     WeatherId = SelectedWeather is WeatherTypeWrapped wrapped ? $@"*{((int)wrapped.Type).ToInvariantString()}" : SelectedWeatherObject?.Id,
-
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
-
                     Temperature = Temperature,
                     Time = Time,
                     TimeMultipler = TimeMultipler,
@@ -409,7 +405,6 @@ namespace AcManager.Pages.Drive {
                     WindDirection = WindDirection,
                     RandomWindSpeed = RandomWindSpeed,
                     RandomWindDirection = RandomWindDirection,
-
                     RandomTemperature = RandomTemperature,
                     RandomTime = RandomTime,
                     CustomRoadTemperature = CustomRoadTemperature,
@@ -451,10 +446,11 @@ namespace AcManager.Pages.Drive {
 
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
+
                     if (_weatherId != null) {
                         SelectedWeather = WeatherManager.Instance.GetById(_weatherId);
                     } else if (o.WeatherId == null) {
-                        SelectedWeather = RandomWeather;
+                        SelectedWeather = WeatherComboBox.RandomWeather;
                     } else if (o.WeatherId.StartsWith(@"*")) {
                         try {
                             SelectedWeather = new WeatherTypeWrapped((WeatherType)(FlexibleParser.TryParseInt(o.WeatherId.Substring(1)) ?? 0));
@@ -537,9 +533,9 @@ namespace AcManager.Pages.Drive {
 
                 UpdateConditions();
 
-                UpdateHierarchicalWeatherList().Forget();
-                WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
-                        nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
+                //UpdateHierarchicalWeatherList().Forget();
+                //WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
+                 //       nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
 
                 FancyHints.MoreDriveAssists.Trigger(TimeSpan.FromSeconds(1d));
 
@@ -761,10 +757,7 @@ namespace AcManager.Pages.Drive {
                 return false;
             }
 
-            public void Unload() {
-                WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.RemoveHandler(WeatherManager.Instance.WrappersList,
-                        nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
-            }
+            public void Unload() {}
         }
 
         public static bool Run(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null, Uri mode = null) {

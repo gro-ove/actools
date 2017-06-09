@@ -5,7 +5,7 @@
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
     mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}" Unloaded="OnUnloaded" x:Name="This">
+    d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

@@ -241,18 +241,8 @@
             </Border>
             <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
           </DockPanel>
-          <mui:HierarchicalComboBox ItemsSource="{Binding HierarchicalWeatherList}" SelectedItem="{Binding SelectedWeather}">
-            <mui:HierarchicalComboBox.PreviewProvider>
-              <tools:WeatherPreviewProvider />
-            </mui:HierarchicalComboBox.PreviewProvider>
-          </mui:HierarchicalComboBox>
-          <!--<mui:BetterComboBox Margin="4 0 4 0" IsEditable="False" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}">
-                        <ComboBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
-                            </Style>
-                        </ComboBox.ItemContainerStyle>
-                    </mui:BetterComboBox>-->
+
+          <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True" />
         </StackPanel>
 
         <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ManualConditions}">

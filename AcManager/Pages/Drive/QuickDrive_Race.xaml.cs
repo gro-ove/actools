@@ -65,7 +65,7 @@ namespace AcManager.Pages.Drive {
                 public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                     switch (value as Game.JumpStartPenaltyType?) {
                         case Game.JumpStartPenaltyType.None:
-                            return ToolsStrings.Common_None;
+                            return ToolsStrings.Common_Disabled;
                         case Game.JumpStartPenaltyType.Pits:
                             return ToolsStrings.JumpStartPenalty_Pits;
                         case Game.JumpStartPenaltyType.DriveThrough:

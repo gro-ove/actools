@@ -57,7 +57,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public class ModernTab : Control {
-        public static readonly DependencyProperty LinksHorizontalAlignmentProperty = DependencyProperty.Register("LinksHorizontalAlignment", 
+        public static readonly DependencyProperty LinksHorizontalAlignmentProperty = DependencyProperty.Register("LinksHorizontalAlignment",
             typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
         public HorizontalAlignment LinksHorizontalAlignment {
@@ -65,10 +65,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(LinksHorizontalAlignmentProperty, value); }
         }
 
-        public static readonly DependencyProperty LinksMarginProperty = DependencyProperty.Register("LinksMargin", typeof(Thickness), 
+        public static readonly DependencyProperty LinksMarginProperty = DependencyProperty.Register("LinksMargin", typeof(Thickness),
             typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
-        public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register("FrameMargin", typeof(Thickness), 
+        public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register("FrameMargin", typeof(Thickness),
             typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public Thickness LinksMargin {
@@ -89,19 +89,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(SavePolicyProperty, value); }
         }
 
-        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader), 
+        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader),
             typeof(ModernTab), new PropertyMetadata(new DefaultContentLoader()));
 
-        public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register("Layout", typeof(TabLayout), 
+        public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register("Layout", typeof(TabLayout),
             typeof(ModernTab), new PropertyMetadata(TabLayout.Tab));
 
-        public static readonly DependencyProperty ListWidthProperty = DependencyProperty.Register("ListWidth", typeof(GridLength), 
+        public static readonly DependencyProperty ListWidthProperty = DependencyProperty.Register("ListWidth", typeof(GridLength),
             typeof(ModernTab), new PropertyMetadata(new GridLength(170)));
 
         public static readonly DependencyProperty LinksProperty = DependencyProperty.Register("Links", typeof(LinkCollection),
             typeof(ModernTab), new PropertyMetadata(OnLinksChanged));
 
-        public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register("SelectedSource", typeof(Uri), 
+        public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register("SelectedSource", typeof(Uri),
             typeof(ModernTab), new PropertyMetadata(OnSelectedSourceChanged));
 
         public event EventHandler<SourceEventArgs> SelectedSourceChanged;
@@ -166,6 +166,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             UpdateSelection(false);
+        }
+
+        public double? GetLinkListWidth() {
+            return _linkList?.ActualWidth;
         }
 
         private void OnLinkListSelectionChanged(object sender, SelectionChangedEventArgs e) {

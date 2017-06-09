@@ -480,6 +480,17 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+
+        private bool _raceGasPenaltyDisabled;
+
+        public bool RaceGasPenaltyDisabled {
+            get { return _raceGasPenaltyDisabled; }
+            set {
+                if (Equals(value, _raceGasPenaltyDisabled)) return;
+                _raceGasPenaltyDisabled = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Sessions and conditions

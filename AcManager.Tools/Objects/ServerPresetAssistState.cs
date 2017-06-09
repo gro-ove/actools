@@ -19,13 +19,13 @@ namespace AcManager.Tools.Objects {
     }
 
     public enum ServerPresetJumpStart {
-        [LocalizedDescription("JumpStart_CarLocked")]
+        [LocalizedDescription(nameof(ToolsStrings.Common_Disabled))]
         CarLocked = 0,
 
-        [LocalizedDescription("JumpStart_TeleportToPit")]
+        [LocalizedDescription(nameof(ToolsStrings.JumpStartPenalty_Pits))]
         TeleportToPit = 1,
 
-        [LocalizedDescription("JumpStart_DriveThrough")]
+        [LocalizedDescription(nameof(ToolsStrings.JumpStartPenalty_DriveThrough))]
         DriveThrough = 2
     }
 

@@ -1,7 +1,7 @@
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Windows.Controls;
 
-namespace AcManager.Tools {
+namespace AcManager.Controls.Helpers {
     public class WeatherPreviewProvider : IHierarchicalItemPreviewProvider {
         public object GetPreview(object item) {
             if (item is WeatherObject weather) {

@@ -38,8 +38,9 @@ namespace AcManager.Tools.Helpers {
 
                 _fsWatcher = new FileSystemWatcher {
                     Path = _path,
-                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                    Filter = "*.*"
+                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.CreationTime,
+                    Filter = "*.*",
+                    IncludeSubdirectories = true
                 };
                 _fsWatcher.Changed += FsWatcher_Changed;
                 _fsWatcher.Created += FsWatcher_Changed;

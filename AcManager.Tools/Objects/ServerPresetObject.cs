@@ -126,6 +126,7 @@ namespace AcManager.Tools.Objects {
             MaxBallast = section.GetInt("MAX_BALLAST_KG", 0);
             QualifyLimitPercentage = section.GetInt("QUALIFY_MAX_WAIT_PERC", 120);
             JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
+            RaceGasPenaltyDisabled = section.GetBool("RACE_GAS_PENALTY_DISABLED", false);
 
             SunAngle = section.GetDouble("SUN_ANGLE", 0d);
             DynamicTrackEnabled = ini.ContainsKey(@"DYNAMIC_TRACK");
@@ -195,6 +196,7 @@ namespace AcManager.Tools.Objects {
             section.Set("MAX_BALLAST_KG", MaxBallast);
             section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
             section.SetIntEnum("START_RULE", JumpStart);
+            section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
 
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());
             ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));

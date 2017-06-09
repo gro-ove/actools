@@ -45,6 +45,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _displayName = displayName;
         }
 
+        public HierarchicalGroup(List<object> list) : base(list) {}
+
+        public HierarchicalGroup([NotNull] IEnumerable<object> collection) : base(collection) {}
+
         public HierarchicalGroup(string displayName) {
             _displayName = displayName;
         }

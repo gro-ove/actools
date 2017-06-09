@@ -1,86 +1,84 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.ServerPreset.SelectedPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" xmlns:system="clr-namespace:System;assembly=System"
-        mc:Ignorable="d" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
+    xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" xmlns:system="clr-namespace:System;assembly=System"
+    mc:Ignorable="d" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}" Loaded="OnLoaded">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-            <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/RunningLog.xaml</system:Uri>
-        </ResourceDictionary>
-    </UserControl.Resources>
+      <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/RunningLog.xaml</system:Uri>
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
-        <ac:AcObjectBase.ToolBars>
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}">
-                    <Button.ToolTip>Open preset’s folder (Ctrl+F)</Button.ToolTip>
-                </Button>
-                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
-                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone preset (Ctrl+Shift+D)" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
-                <Button Content="Pack" Command="{Binding PackCommand}" ToolTip="Pack a new package for quick installation on a remote machine (Ctrl+P)"
-                        IsEnabled="False" />
-                <Button Content="Run" Style="{StaticResource Go.ToolBarButton}" Command="{Binding GoCommand}"
-                        ToolTip="Run a new server using this preset (Ctrl+G)"
-                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Restart" Style="{StaticResource Go.ToolBarButton}" Command="{Binding RestartCommand}"
-                        ToolTip="Restart server using this preset (Ctrl+Shift+G)"
-                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Stop" Command="{Binding SelectedObject.StopServerCommand}" ToolTip="Stop running server"
-                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            </ToolBar>
-            <ToolBar Band="1" BandIndex="1">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
-                        ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
-            </ToolBar>
-        </ac:AcObjectBase.ToolBars>
+  <ac:AcObjectBase x:Name="Base" AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
+    <ac:AcObjectBase.ToolBars>
+      <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}">
+          <Button.ToolTip>Open preset’s folder (Ctrl+F)</Button.ToolTip>
+        </Button>
+        <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+            Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone preset (Ctrl+Shift+D)" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
+        <Button Content="Pack" Command="{Binding PackCommand}" ToolTip="Pack a new package for quick installation on a remote machine (Ctrl+P)"
+            IsEnabled="False" />
+        <Button Content="Run" Style="{StaticResource Go.ToolBarButton}" Command="{Binding GoCommand}" ToolTip="Run a new server using this preset (Ctrl+G)"
+            Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Content="Restart" Style="{StaticResource Go.ToolBarButton}" Command="{Binding RestartCommand}"
+            ToolTip="Restart server using this preset (Ctrl+Shift+G)"
+            Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Stop" Command="{Binding SelectedObject.StopServerCommand}" ToolTip="Stop running server"
+            Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
+      </ToolBar>
+      <ToolBar Band="1" BandIndex="1">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+            ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+      </ToolBar>
+    </ac:AcObjectBase.ToolBars>
 
-        <mui:Cell>
-            <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 8 0 0" x:Name="Tabs" SaveKey="__serpr.st"
-                    mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml"
-                    SavePolicy="Strict">
-                <mui:ModernTab.Links>
-                    <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
-                    <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
-                    <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
-                    <mui:Link DisplayName="Rules, Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
-                    <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
-                    <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
-                    <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/Wrapped.xaml" />
-                </mui:ModernTab.Links>
-            </mui:ModernTab>
+    <mui:Cell>
+      <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" x:Name="Tab" SaveKey="__serpr.st"
+          mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml"
+          SavePolicy="Strict">
+        <mui:ModernTab.Links>
+          <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
+          <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
+          <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
+          <mui:Link DisplayName="Rules" Source="/Pages/ServerPreset/Assists.xaml" />
+          <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
+          <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
+          <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/Wrapped.xaml" />
+        </mui:ModernTab.Links>
+      </mui:ModernTab>
 
-            <Border x:Name="IsRunningMessage">
-                <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" MaxWidth="320"
-                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <DockPanel>
-                        <Path Data="{StaticResource PlayIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                                Margin="0 0 8 0" VerticalAlignment="Center" />
-                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
-                            <TextBlock.Text>Server is running</TextBlock.Text>
-                        </TextBlock>
-                    </DockPanel>
-                </Border>
-            </Border>
-        </mui:Cell>
-    </ac:AcObjectBase>
+      <Border x:Name="IsRunningMessage">
+        <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" MaxWidth="320"
+            Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <DockPanel>
+            <Path Data="{StaticResource PlayIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                Margin="0 0 8 0" VerticalAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+              <TextBlock.Text>Server is running</TextBlock.Text>
+            </TextBlock>
+          </DockPanel>
+        </Border>
+      </Border>
+    </mui:Cell>
+  </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

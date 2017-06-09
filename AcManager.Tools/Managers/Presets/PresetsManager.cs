@@ -7,6 +7,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
@@ -95,14 +96,17 @@ namespace AcManager.Tools.Managers.Presets {
                                              ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                     return SavePresetUsingDialog(key, category, data, filename);
                 }
-                
+
                 return false;
             }
-            
+
             File.WriteAllText(filename, data);
+            Logging.Debug("Preset saved as " + filename);
+
             if (key != null) {
                 PresetSaved?.Invoke(this, new PresetSavedEventArgs(key, filename));
             }
+
             return true;
         }
     }

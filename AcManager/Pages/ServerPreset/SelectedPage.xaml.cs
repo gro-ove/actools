@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
@@ -34,9 +35,7 @@ using SharpCompress.Writers;
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public static ServerPresetAssistState[] AssistStates { get; } = EnumExtension.GetValues<ServerPresetAssistState>();
-
         public static ServerPresetJumpStart[] JumpStarts { get; } = EnumExtension.GetValues<ServerPresetJumpStart>();
-
         public static ServerPresetRaceJoinType[] RaceJoinTypes { get; } = EnumExtension.GetValues<ServerPresetRaceJoinType>();
 
         private class ProgressCapacityConverterInner : IValueConverter {
@@ -62,6 +61,15 @@ namespace AcManager.Pages.ServerPreset {
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
                 throw new NotSupportedException();
             }
+        }
+
+        private SizeRelatedCondition _widthCondition;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            _widthCondition = this.AddSizeCondition(x => x.ActualWidth > (Tab.GetLinkListWidth() ?? 360d) + 250d).Add(v => {
+                Base.HeaderPadding = v ? new Thickness(0, 0, Tab.GetLinkListWidth() ?? 360, 0) : default(Thickness);
+                Tab.Margin = v ? new Thickness(0, -30, 0, 0) : default(Thickness);
+            });
         }
 
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
@@ -274,6 +282,7 @@ different.";
             _cars = cars;
 
             SetModel();
+            _widthCondition?.UpdateLater();
             return true;
         }
 
@@ -292,12 +301,13 @@ different.";
             switch (e.PropertyName) {
                 case nameof(ServerPresetObject.RunningLog):
                     RunningLogLink.IsShown = _object.RunningLog != null;
+                    _widthCondition?.UpdateLater();
                     break;
             }
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
-            IsRunningMessage.Visibility = Tabs.SelectedSource == TryFindResource(@"RunningLogUri") as Uri ? Visibility.Collapsed : Visibility.Visible;
+            IsRunningMessage.Visibility = Tab.SelectedSource == TryFindResource(@"RunningLogUri") as Uri ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

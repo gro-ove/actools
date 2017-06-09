@@ -144,6 +144,7 @@
     <Compile Include="Graphs\GraphDataViewerBase.cs" />
     <Compile Include="Graphs\OxyExtenstion.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
+    <Compile Include="Helpers\WeatherPreviewProvider.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="SizeRelatedCondition.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="ViewModels\RealismLevel.cs" />
     <Compile Include="ViewModels\TrackStateViewModel.cs" />
     <Compile Include="ViewModels\TrackStateViewModelBase.cs" />
+    <Compile Include="WeatherComboBox.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

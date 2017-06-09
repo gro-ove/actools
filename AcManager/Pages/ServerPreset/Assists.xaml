@@ -102,6 +102,10 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
       </DockPanel>
+      <CheckBox IsChecked="{Binding RaceGasPenaltyDisabled}"
+          ToolTip="Flag it if you want to disable race Gas Penalty. Cuts will be registered on result JSONs.">
+        <Label Content="Disable gas cut penalty" />
+      </CheckBox>
     </StackPanel>
   </Grid>
 </UserControl>

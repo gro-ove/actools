@@ -13,18 +13,16 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="WeatherDataTemplate" DataType="{x:Type t:ServerWeatherEntry}">
-        <StackPanel Style="{StaticResource SettingsPanel}" Width="270" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
+        <StackPanel Style="{StaticResource SettingsPanel}" Width="350" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
           <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}"
               Style="{StaticResource Small}" Margin="0 0 0 8" />
 
-          <DockPanel>
-            <Label Content="{x:Static g:AppStrings.Drive_WeatherLabel}" />
-            <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}" />
-          </DockPanel>
+          <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}"
+              Margin="0 0 0 8" />
 
           <DockPanel>
             <c:TemperatureValueLabel Value="{Binding BaseAmbientTemperature, StringFormat='\{0:F1\}'}" Background="Transparent"
-                Content="{x:Static g:AppStrings.Drive_Temperature}" />
+                Content="{x:Static g:AppStrings.Drive_Temperature}" Width="200" Padding="0" />
             <Slider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
                 Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
           </DockPanel>
@@ -33,20 +31,21 @@
               Style="{StaticResource SettingsPanel.Small}" />
 
           <DockPanel>
-            <c:TemperatureValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" Background="Transparent" Content="Road temperature" />
-            <Slider TickFrequency="3" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}"
+            <c:TemperatureValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" Background="Transparent" Content="Road temperature"
+                Width="200" Padding="0" />
+            <Slider TickFrequency="10" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}"
                 Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
           </DockPanel>
 
           <DockPanel>
             <c:TemperatureValueLabel Value="{Binding AmbientTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
-                Content="Temp. variation" />
+                Content="Temp. variation" Width="200" Padding="0" />
             <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding AmbientTemperatureVariation}" Minimum="0" Maximum="10" />
           </DockPanel>
 
           <DockPanel>
             <c:TemperatureValueLabel Value="{Binding RoadTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
-                Content="Road t. variation" />
+                Content="Road t. variation" Width="200" Padding="0" />
             <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding RoadTemperatureVariation}" Minimum="0" Maximum="10" />
           </DockPanel>
 
@@ -65,7 +64,7 @@
           SmallChange="900" LargeChange="1800" />
     </mui:SpacingStackPanel>
 
-    <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}">
+    <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}" Margin="0">
       <CheckBox IsChecked="{Binding DynamicTrackEnabled}">
         <Label>
           <TextBlock Style="{StaticResource Heading2}" Text="Dynamic Track" />
@@ -96,7 +95,7 @@
       </mui:SpacingUniformGrid>
     </StackPanel>
 
-    <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}" Margin="0 -8 0 0">
+    <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}">
       <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Weather" />
 
       <TextBlock Style="{StaticResource SettingsPanel.Small}">
