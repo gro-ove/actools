@@ -202,9 +202,7 @@ namespace AcManager.Tools.ContentInstallation {
                 var list = await ListFiles(c);
                 if (list == null) return;
 
-                // TODO: for solid archive, load first entry, otherwise, the smallest one
                 SevenZipEntry testFile;
-
                 if (_solidArchive == false) {
                     Logging.Debug("Archive is not solid, testing password on the smallest file…");
                     testFile = list.MinEntryOrDefault(x => x.Size);
