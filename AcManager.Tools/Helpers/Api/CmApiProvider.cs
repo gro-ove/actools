@@ -12,7 +12,11 @@ namespace AcManager.Tools.Helpers.Api {
     [Localizable(false)]
     public static class CmApiProvider {
         #region Initialization
-        public static readonly string UserAgent;
+        public static string UserAgent { get; private set; }
+
+        public static void OverrideUserAgent(string newValue) {
+            UserAgent = newValue;
+        }
 
         static CmApiProvider() {
             var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";

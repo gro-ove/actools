@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ToUpperSubMenuConverter : IValueConverter {
@@ -25,8 +26,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public static class DependencyObjectHelper {
-        public static T FindChild<T>(this DependencyObject parent, string childName) where T : DependencyObject {
-            // Confirm parent and childName are valid. 
+        [CanBeNull]
+        public static T FindChild<T>([CanBeNull] this DependencyObject parent, [CanBeNull] string childName) where T : DependencyObject {
+            // Confirm parent and childName are valid.
             if (parent == null) return null;
 
             T foundChild = null;
@@ -40,7 +42,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
 
-                    // If the child is found, break so we do not overwrite the found child. 
+                    // If the child is found, break so we do not overwrite the found child.
                     if (foundChild != null) break;
                 } else if (!string.IsNullOrEmpty(childName)) {
                     var frameworkElement = child as FrameworkElement;

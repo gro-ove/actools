@@ -17,11 +17,11 @@ namespace AcManager.Controls.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return ToFahrenheit(value.AsDouble());
+            return parameter as string == "relative" ? value.AsDouble() * 1.8 : ToFahrenheit(value.AsDouble());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            return ToCelsius(value.AsDouble());
+            return parameter as string == "relative" ? value.AsDouble() / 1.8 : ToCelsius(value.AsDouble());
         }
     }
 }

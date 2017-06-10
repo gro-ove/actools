@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -96,7 +97,14 @@ namespace AcManager.Controls {
 
         private readonly Busy _updateLater = new Busy();
         public void UpdateLater() {
-            _updateLater.DoDelay(Update, 10);
+            _updateLater.DoDelay(Update, 1);
+        }
+
+        private static readonly Action EmptyDelegate = delegate {};
+
+        public async void UpdateAfterRender() {
+            await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
+            Update();
         }
     }
 
@@ -109,9 +117,16 @@ namespace AcManager.Controls {
             _parent.SizeChanged += OnParentSizeChanged;
             _condition = condition;
 
-            if (_parent.IsInitialized) {
-                UpdateState();
+            if (_parent.IsLoaded) {
+                Update();
+            } else {
+                _parent.Loaded += OnParentLoaded;
             }
+        }
+
+        private void OnParentLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            _parent.Loaded -= OnParentLoaded;
+            Update();
         }
 
         private readonly List<ChildHolderBase> _children = new List<ChildHolderBase>(10);

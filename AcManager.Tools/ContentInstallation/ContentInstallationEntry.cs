@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,6 +36,7 @@ namespace AcManager.Tools.ContentInstallation {
             Source = source;
             _installationParams = installationParams ?? ContentInstallationParams.Default;
             DisplayName = _installationParams.DisplayName;
+            InformationUrl = _installationParams.InformationUrl;
             Version = _installationParams.DisplayVersion;
         }
 
@@ -198,18 +198,36 @@ namespace AcManager.Tools.ContentInstallation {
         private string _displayName;
 
         public string DisplayName {
-            get { return _displayName; }
+            get => _displayName;
             set {
                 if (Equals(value, _displayName)) return;
                 _displayName = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayNameWithUrl));
+                Logging.Debug(DisplayNameWithUrl);
             }
         }
+
+        private string _informationUrl;
+
+        public string InformationUrl {
+            get => _informationUrl;
+            set {
+                if (Equals(value, _informationUrl)) return;
+                _informationUrl = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayNameWithUrl));
+                Logging.Debug(DisplayNameWithUrl);
+            }
+        }
+
+        public string DisplayNameWithUrl => InformationUrl != null
+                ? $@"[url={BbCodeBlock.EncodeAttribute(InformationUrl)}]{BbCodeBlock.Encode(DisplayName ?? "?")}[/url]" : BbCodeBlock.Encode(DisplayName);
 
         private string _fileName;
 
         public string FileName {
-            get { return _fileName; }
+            get => _fileName;
             set {
                 if (Equals(value, _fileName)) return;
                 _fileName = value;
@@ -220,7 +238,7 @@ namespace AcManager.Tools.ContentInstallation {
         private string _version;
 
         public string Version {
-            get { return _version; }
+            get => _version;
             set {
                 if (Equals(value, _version)) return;
                 _version = value;

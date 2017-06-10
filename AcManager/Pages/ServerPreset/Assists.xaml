@@ -89,10 +89,6 @@
         <Slider Minimum="0" Maximum="200" Value="{Binding MaxBallast}" TickFrequency="25" TickPlacement="BottomRight" />
       </DockPanel>
       <DockPanel>
-        <mui:ValueLabel Value="{Binding QualifyLimitPercentage}" Postfix="%" Content="Qualify limit" />
-        <Slider Minimum="100" Maximum="200" Value="{Binding QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
-      </DockPanel>
-      <DockPanel>
         <Label Content="Jump start:" />
         <ComboBox ItemsSource="{x:Static local:SelectedPage.JumpStarts}" SelectedItem="{Binding JumpStart}">
           <ComboBox.ItemTemplate>

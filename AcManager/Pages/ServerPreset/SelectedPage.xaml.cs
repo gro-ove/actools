@@ -282,7 +282,7 @@ different.";
             _cars = cars;
 
             SetModel();
-            _widthCondition?.UpdateLater();
+            _widthCondition?.UpdateAfterRender();
             return true;
         }
 
@@ -301,7 +301,7 @@ different.";
             switch (e.PropertyName) {
                 case nameof(ServerPresetObject.RunningLog):
                     RunningLogLink.IsShown = _object.RunningLog != null;
-                    _widthCondition?.UpdateLater();
+                    _widthCondition?.UpdateAfterRender();
                     break;
             }
         }

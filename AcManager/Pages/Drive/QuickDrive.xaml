@@ -169,10 +169,10 @@
                   <CheckBox IsChecked="{Binding RandomTime}">
                     <Label Content="Random time" />
                   </CheckBox>
-                  <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" Margin="-8 0 0 0" />
+                  <mui:ValueLabel Value="{Binding TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" Margin="-8 0 0 0" />
                   <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False" Margin="-5 0 0 0">
                     <Slider.Value>
-                      <Binding Path="TimeMultipler">
+                      <Binding Path="TimeMultiplier">
                         <Binding.Converter>
                           <mui:LogarithmicScale Minimum="0" Middle="10" Maximum="60" />
                         </Binding.Converter>

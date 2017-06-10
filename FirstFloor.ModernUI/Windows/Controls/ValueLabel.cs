@@ -60,7 +60,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty RelativeRangeBaseProperty = DependencyProperty.Register(nameof(RelativeRangeBase), typeof(string),
-                typeof(DoubleValueLabel), new PropertyMetadata("", OnRelativeRangeBaseChanged));
+                typeof(DoubleValueLabel), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRelativeRangeBaseChanged));
 
         private string _relativeRangeBase = "";
         public string RelativeRangeBase {
@@ -78,7 +78,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty RelativeRangeHalfProperty = DependencyProperty.Register(nameof(RelativeRangeHalf), typeof(string),
-                typeof(DoubleValueLabel), new PropertyMetadata("", OnRelativeRangeHalfChanged));
+                typeof(DoubleValueLabel), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRelativeRangeHalfChanged));
 
         private string _relativeRangeHalf = "";
         public string RelativeRangeHalf {

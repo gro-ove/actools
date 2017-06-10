@@ -64,12 +64,12 @@ namespace AcTools.DataFile {
         internal void SetDirect(string key, string value) {
             base[key] = value;
         }
-        
+
         [CanBeNull, Pure, Localizable(false)]
         public string GetPossiblyEmpty([NotNull, LocalizationRequired(false)] string key) {
             return ContainsKey(key) ? base[key] : null;
         }
-        
+
         [CanBeNull, Pure, Localizable(false)]
         public string GetNonEmpty([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) return null;
@@ -115,7 +115,7 @@ namespace AcTools.DataFile {
             for (var i = 0; i < result.Length; i++) {
                 FlexibleParser.TryParseDouble(s[i], out result[i]);
             }
-            
+
             return result;
         }
 
@@ -134,7 +134,7 @@ namespace AcTools.DataFile {
                     result[i] = (float)f;
                 }
             }
-            
+
             return result;
         }
 
@@ -346,7 +346,7 @@ namespace AcTools.DataFile {
             base[key] = DoubleToString(value.Value);
         }
 
-        public void Set([NotNull, LocalizationRequired(false)] string key, double value, string format) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, double value, [Localizable(false)] string format) {
             base[key] = value.ToString(format, CultureInfo.InvariantCulture);
         }
 

@@ -13,40 +13,92 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="WeatherDataTemplate" DataType="{x:Type t:ServerWeatherEntry}">
-        <StackPanel Style="{StaticResource SettingsPanel}" Width="350" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
+        <StackPanel Style="{StaticResource SettingsPanel}" Width="400" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal"
+            mui:ContextMenuAdvancement.PropagateToChildren="True">
+          <StackPanel.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Temperature In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'temperatureRelativeRange=True'}" />
+              <Separator />
+              <MenuItem Header="Wind Speed In Meters Per Second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
+              <MenuItem Header="Wind Speed In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+              <MenuItem Header="Wind Direction In Degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
+              <MenuItem Header="Wind Speed In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+            </ContextMenu>
+          </StackPanel.ContextMenu>
+
           <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}"
               Style="{StaticResource Small}" Margin="0 0 0 8" />
 
-          <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}"
-              Margin="0 0 0 8" />
+          <c:WeatherComboBox SelectedWeather="{Binding Weather}" Margin="0 0 0 8" />
 
           <DockPanel>
-            <c:TemperatureValueLabel Value="{Binding BaseAmbientTemperature, StringFormat='\{0:F1\}'}" Background="Transparent"
-                Content="{x:Static g:AppStrings.Drive_Temperature}" Width="200" Padding="0" />
-            <Slider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
-                Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
-          </DockPanel>
-
-          <TextBlock Text="{Binding RecommendedRoadTemperature, StringFormat='{}Recommended road temperature: {0:F1} °C'}"
-              Style="{StaticResource SettingsPanel.Small}" />
-
-          <DockPanel>
-            <c:TemperatureValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" Background="Transparent" Content="Road temperature"
-                Width="200" Padding="0" />
-            <Slider TickFrequency="10" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}"
-                Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
+            <c:DoubleTemperatureValueLabel Padding="8 0 0 0" RelativeRangeBase="{Binding BaseAmbientTemperature, StringFormat='{}{0:F1}'}"
+                RelativeRangeHalf="{Binding AmbientTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent"
+                Content="{x:Static g:AppStrings.Drive_Temperature}" Width="240" JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
+            <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
+                Range="{Binding AmbientTemperatureVariation}" BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
+                Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
           </DockPanel>
 
           <DockPanel>
-            <c:TemperatureValueLabel Value="{Binding AmbientTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
-                Content="Temp. variation" Width="200" Padding="0" />
-            <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding AmbientTemperatureVariation}" Minimum="0" Maximum="10" />
+            <DockPanel.ToolTip>
+              <ToolTip Content="{Binding RecommendedRoadTemperature}" ContentStringFormat="{}Recommended road temperature: {0:F1} °C" />
+            </DockPanel.ToolTip>
+            <c:DoubleTemperatureValueLabel Padding="8 0 0 0" RelativeRangeBase="{Binding BaseRoadTemperature, StringFormat='{}{0:F1}'}"
+                RelativeRangeHalf="{Binding RoadTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent" Content="Road temperature"
+                Width="240" JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
+            <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}" Range="{Binding RoadTemperatureVariation}"
+                BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
+          </DockPanel>
+
+          <DockPanel Margin="0 4 0 0">
+            <mui:RoundSlider Minimum="0" Maximum="360" TickFrequency="22.5" Value="{Binding WindDirectionFlipped}" DockPanel.Dock="Right" Margin="4 -14 0 0"
+                TickPlacement="Both" IsSnapToTickEnabled="{Binding Value, ElementName=WindDirectionSwitch, Converter={StaticResource InvertBooleanConverter}}">
+              <mui:RoundSlider.Content>
+                <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24" Height="24">
+                  <mui:BooleanSwitch x:Name="WindDirectionSwitch">
+                    <mui:BooleanSwitch.Value>
+                      <MultiBinding Converter="{StaticResource AndConverter}">
+                        <!--<Binding Path="RandomWindDirection" Converter="{StaticResource InvertBooleanConverter}" />-->
+                        <mui:Stored Key="windDirectionInDegrees" />
+                      </MultiBinding>
+                    </mui:BooleanSwitch.Value>
+                    <mui:BooleanSwitch.False>
+                      <TextBlock Text="{Binding DisplayWindDirection}" Style="{StaticResource Label}" Padding="0 0 0 2" />
+                    </mui:BooleanSwitch.False>
+                    <mui:BooleanSwitch.True>
+                      <mui:ValueLabel Value="{Binding WindDirection, StringFormat='{}{0:F0}'}" Postfix="°" VerticalAlignment="Center" Padding="3 0 0 0"
+                          Margin="0 1 0 -1" />
+                    </mui:BooleanSwitch.True>
+                  </mui:BooleanSwitch>
+                </Viewbox>
+              </mui:RoundSlider.Content>
+            </mui:RoundSlider>
+
+            <mui:BooleanSwitch Value="{mui:Stored windSpeedInMetersPerSecond}" Margin="0 0 0 -2" DockPanel.Dock="Top" HorizontalAlignment="Left">
+              <mui:BooleanSwitch.True>
+                <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" m/s" JoinIfEqual="True"
+                    RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="F1"
+                    Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}"
+                    SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}" />
+              </mui:BooleanSwitch.True>
+              <mui:BooleanSwitch.False>
+                <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" km/h" JoinIfEqual="True"
+                    RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="F1" Value="{Binding WindSpeedMin}"
+                    SecondValue="{Binding WindSpeedMax}" />
+              </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch>
+
+            <mui:DoubleSlider Minimum="0" Maximum="35" From="{Binding WindSpeedMin}" To="{Binding WindSpeedMax}" Margin="0 6 0 4" TickFrequency="3.5"
+                TickPlacement="BottomRight" IsSnapToTickEnabled="False" SmallChange="7" LargeChange="7" BindingMode="FromToFixed"
+                mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}" mui:FancyHintsService.HorizontalAlignment="Right"
+                mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
           </DockPanel>
 
           <DockPanel>
-            <c:TemperatureValueLabel Value="{Binding RoadTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
-                Content="Road t. variation" Width="200" Padding="0" />
-            <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding RoadTemperatureVariation}" Minimum="0" Maximum="10" />
+            <mui:ValueLabel Padding="8 0 0 0" Value="{Binding WindDirectionVariation, StringFormat='{}{0:F0}'}" Background="Transparent"
+                Content="Wind direction variation" Width="240" Postfix="°" />
+            <Slider TickFrequency="15" TickPlacement="BottomRight" Value="{Binding WindDirectionVariation}" Minimum="0" Maximum="90" />
           </DockPanel>
 
           <Button Content="Delete" Command="{Binding DeleteCommand}"
@@ -64,36 +116,48 @@
           SmallChange="900" LargeChange="1800" />
     </mui:SpacingStackPanel>
 
-    <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}" Margin="0">
-      <CheckBox IsChecked="{Binding DynamicTrackEnabled}">
-        <Label>
-          <TextBlock Style="{StaticResource Heading2}" Text="Dynamic Track" />
-        </Label>
-      </CheckBox>
+    <mui:SpacingStackPanel Spacing="4" Margin="0 -12 0 0">
+      <mui:ValueLabel Value="{Binding SelectedObject.TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
+      <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False">
+        <Slider.Value>
+          <Binding Path="SelectedObject.TimeMultiplier">
+            <Binding.Converter>
+              <mui:LogarithmicScale Minimum="0" Middle="20" Maximum="60" />
+            </Binding.Converter>
+          </Binding>
+        </Slider.Value>
+      </Slider>
+    </mui:SpacingStackPanel>
 
-      <mui:SpacingUniformGrid HorizontalSpacing="20" IsEnabled="{Binding DynamicTrackEnabled}">
-        <DockPanel DataContext="{Binding TrackProperties}">
-          <mui:ValueLabel Value="{Binding SessionStart}" Content="Start value" Postfix="%" />
-          <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionStart}" />
-        </DockPanel>
+    <CheckBox IsChecked="{Binding SelectedObject.DynamicTrackEnabled}">
+      <Label>
+        <TextBlock Style="{StaticResource Heading2}" Text="Dynamic Track" />
+      </Label>
+    </CheckBox>
 
-        <DockPanel DataContext="{Binding TrackProperties}">
-          <mui:ValueLabel Value="{Binding Randomness}" Content="Randomness" Postfix="%" />
-          <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding Randomness}" />
-        </DockPanel>
+    <mui:SpacingUniformGrid Margin="0 -12 0 0" HorizontalSpacing="0" VerticalSpacing="8" IsEnabled="{Binding DynamicTrackEnabled}"
+        DataContext="{Binding SelectedObject}">
+      <DockPanel DataContext="{Binding TrackProperties}">
+        <mui:ValueLabel Value="{Binding SessionStart}" Content="Start value" Postfix="%" />
+        <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionStart}" />
+      </DockPanel>
 
-        <DockPanel DataContext="{Binding TrackProperties}">
-          <mui:ValueLabel Value="{Binding SessionTransfer}" Content="Transferred" Postfix="%" />
-          <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionTransfer}" />
-        </DockPanel>
+      <DockPanel DataContext="{Binding TrackProperties}">
+        <mui:ValueLabel Value="{Binding Randomness}" Content="Randomness" Postfix="%" />
+        <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding Randomness}" />
+      </DockPanel>
 
-        <DockPanel DataContext="{Binding TrackProperties}">
-          <mui:ValueLabel Value="{Binding LapGain}" Content="Laps to improve" mui:BetterTextBox.Mode="Positive"
-              Postfix="{Binding LapGain, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
-          <Slider Minimum="1" Maximum="81" TickFrequency="9" TickPlacement="BottomRight" Value="{Binding LapGain}" />
-        </DockPanel>
-      </mui:SpacingUniformGrid>
-    </StackPanel>
+      <DockPanel DataContext="{Binding TrackProperties}">
+        <mui:ValueLabel Value="{Binding SessionTransfer}" Content="Transferred" Postfix="%" />
+        <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionTransfer}" />
+      </DockPanel>
+
+      <DockPanel DataContext="{Binding TrackProperties}">
+        <mui:ValueLabel Value="{Binding LapGain}" Content="Laps to improve" mui:BetterTextBox.Mode="Positive"
+            Postfix="{Binding LapGain, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
+        <Slider Minimum="1" Maximum="81" TickFrequency="9" TickPlacement="BottomRight" Value="{Binding LapGain}" />
+      </DockPanel>
+    </mui:SpacingUniformGrid>
 
     <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}">
       <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Weather" />
@@ -121,7 +185,7 @@
         <ItemsControl.ItemsSource>
           <CompositeCollection>
             <CollectionContainer Collection="{Binding Source={StaticResource Rounds}}" />
-            <Border Height="120">
+            <Border Height="120" Margin="20 0" Width="160">
               <Border.Resources>
                 <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
               </Border.Resources>

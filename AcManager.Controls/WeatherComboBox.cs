@@ -45,6 +45,9 @@ namespace AcManager.Controls {
         }
     }
 
+    /// <summary>
+    /// Bind to SelectedItem if you’re gonna use Random or Select-By-Type features, or to SelectedWeather otherwise.
+    /// </summary>
     public class WeatherComboBox : HierarchicalComboBox {
         public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
         public static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
@@ -86,7 +89,7 @@ namespace AcManager.Controls {
         private readonly Busy _busy = new Busy();
 
         public static readonly DependencyProperty SelectedWeatherProperty = DependencyProperty.Register(nameof(SelectedWeather), typeof(WeatherObject),
-                typeof(WeatherComboBox), new PropertyMetadata(OnSelectedWeatherChanged));
+                typeof(WeatherComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedWeatherChanged));
 
         public WeatherObject SelectedWeather {
             get => (WeatherObject)GetValue(SelectedWeatherProperty);

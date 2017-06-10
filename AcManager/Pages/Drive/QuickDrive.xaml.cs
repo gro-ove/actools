@@ -349,13 +349,13 @@ namespace AcManager.Pages.Drive {
 
             public int TimeMultiplerMaximumLimited => 60;
 
-            private int _timeMultipler;
+            private int _timeMultiplier;
 
-            public int TimeMultipler {
-                get => _timeMultipler;
+            public int TimeMultiplier {
+                get => _timeMultiplier;
                 set {
-                    if (value == _timeMultipler) return;
-                    _timeMultipler = value.Clamp(TimeMultiplerMinimum, TimeMultiplerMaximum);
+                    if (value == _timeMultiplier) return;
+                    _timeMultiplier = value.Clamp(TimeMultiplerMinimum, TimeMultiplerMaximum);
                     OnPropertyChanged();
                     SaveLater();
                 }
@@ -399,7 +399,7 @@ namespace AcManager.Pages.Drive {
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
                     Temperature = Temperature,
                     Time = Time,
-                    TimeMultipler = TimeMultipler,
+                    TimeMultipler = TimeMultiplier,
                     WindSpeedMin = WindSpeedMin,
                     WindSpeedMax = WindSpeedMax,
                     WindDirection = WindDirection,
@@ -410,7 +410,7 @@ namespace AcManager.Pages.Drive {
                     CustomRoadTemperature = CustomRoadTemperature,
                     CustomRoadTemperatureValue = _customRoadTemperatureValue
                 }, o => {
-                    TimeMultipler = o.TimeMultipler;
+                    TimeMultiplier = o.TimeMultipler;
 
                     RealConditions = _weatherId == null && o.RealConditions;
                     IdealConditions = _weatherId == null && o.IdealConditions;
@@ -488,7 +488,7 @@ namespace AcManager.Pages.Drive {
 
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
-                    TimeMultipler = 1;
+                    TimeMultiplier = 1;
                     WindSpeedMin = 10;
                     WindSpeedMax = 10;
                     WindDirection = 0;
@@ -694,7 +694,7 @@ namespace AcManager.Pages.Drive {
                         RoadTemperature = roadTemperature,
 
                         SunAngle = Game.ConditionProperties.GetSunAngle(_forceTime ?? Time),
-                        TimeMultipler = TimeMultipler,
+                        TimeMultipler = TimeMultiplier,
                         CloudSpeed = 0.2,
 
                         WeatherName = weather?.Id,

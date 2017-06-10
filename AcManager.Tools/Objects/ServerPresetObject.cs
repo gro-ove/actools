@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
@@ -14,13 +15,20 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject : AcIniObject {
+        public ChangeableObservableCollection<ServerSessionEntry> Sessions { get; }
+        public ServerSessionEntry[] SimpleSessions { get; }
+        public ServerSessionEntry RaceSession { get; }
+
         public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
-            Sessions = new ChangeableObservableCollection<ServerSessionEntry>(new[] {
+            SimpleSessions = new[] {
                 new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false, false),
                 new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true, true),
-                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true, true),
-                new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true),
-            });
+                new ServerQualificationSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true, true)
+            };
+
+            RaceSession = new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true);
+            Sessions = new ChangeableObservableCollection<ServerSessionEntry>(SimpleSessions.Append(RaceSession));
+            Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -98,8 +106,6 @@ namespace AcManager.Tools.Objects {
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", false);
             PickupModeLockedEntryList = section.GetBool("LOCKED_ENTRY_LIST", false);
-            RaceOverTime = TimeSpan.FromSeconds(section.GetDouble("RACE_OVER_TIME", 60d));
-            ResultScreenTime = TimeSpan.FromSeconds(section.GetDouble("RESULT_SCREEN_TIME", 60d));
             Capacity = section.GetInt("MAX_CLIENTS", 3);
 
             UdpPort = section.GetInt("UDP_PORT", 9600);
@@ -124,11 +130,11 @@ namespace AcManager.Tools.Objects {
             TyreWearRate = section.GetInt("TYRE_WEAR_RATE", 100);
             AllowTyresOut = section.GetInt("ALLOWED_TYRES_OUT", 2);
             MaxBallast = section.GetInt("MAX_BALLAST_KG", 0);
-            QualifyLimitPercentage = section.GetInt("QUALIFY_MAX_WAIT_PERC", 120);
             JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
             RaceGasPenaltyDisabled = section.GetBool("RACE_GAS_PENALTY_DISABLED", false);
 
             SunAngle = section.GetDouble("SUN_ANGLE", 0d);
+            TimeMultiplier = section.GetDouble("TIME_OF_DAY_MULT", 1d);
             DynamicTrackEnabled = ini.ContainsKey(@"DYNAMIC_TRACK");
             TrackProperties = Game.TrackProperties.Load(DynamicTrackEnabled ? ini["DYNAMIC_TRACK"] : ini["__CM_DYNAMIC_TRACK_OFF"]);
 
@@ -143,6 +149,7 @@ namespace AcManager.Tools.Objects {
             if (weather.Count == 0) {
                 weather.Add(new ServerWeatherEntry());
             }
+
             Weather = weather;
         }
 
@@ -168,8 +175,6 @@ namespace AcManager.Tools.Objects {
             section.Set("LOOP_MODE", LoopMode);
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
             section.Set("LOCKED_ENTRY_LIST", PickupModeLockedEntryList);
-            section.Set("RACE_OVER_TIME", RaceOverTime.TotalSeconds.RoundToInt());
-            section.Set("RESULT_SCREEN_TIME", ResultScreenTime.TotalSeconds.RoundToInt());
             section.Set("MAX_CLIENTS", Capacity);
 
             section.Set("UDP_PORT", UdpPort);
@@ -194,11 +199,11 @@ namespace AcManager.Tools.Objects {
             section.Set("TYRE_WEAR_RATE", TyreWearRate);
             section.Set("ALLOWED_TYRES_OUT", AllowTyresOut);
             section.Set("MAX_BALLAST_KG", MaxBallast);
-            section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
             section.SetIntEnum("START_RULE", JumpStart);
             section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
 
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());
+            section.Set("TIME_OF_DAY_MULT", TimeMultiplier, "F3");
             ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));
             if (DynamicTrackEnabled) {
                 ini.Remove("__CM_DYNAMIC_TRACK_OFF");

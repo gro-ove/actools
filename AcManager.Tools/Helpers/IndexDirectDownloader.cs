@@ -13,8 +13,9 @@ namespace AcManager.Tools.Helpers {
                 if (entry != null) {
                     await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
                         AllowExecutables = false,
-                        DisplayName = entry.Name,
-                        DisplayVersion = entry.UiVersion
+                        DisplayName = entry.UiName,
+                        DisplayVersion = entry.UiVersion,
+                        InformationUrl = entry.OriginUrl
                     });
                 } else {
                     NonfatalError.Notify($"Can’t download car {id}", "Attempt to find a description failed.");
@@ -30,8 +31,9 @@ namespace AcManager.Tools.Helpers {
                 if (entry != null) {
                     await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
                         AllowExecutables = false,
-                        DisplayName = entry.Name,
-                        DisplayVersion = entry.UiVersion
+                        DisplayName = entry.UiName,
+                        DisplayVersion = entry.UiVersion,
+                        InformationUrl = entry.OriginUrl
                     });
                 } else {
                     NonfatalError.Notify($"Can’t download track {id}", "Attempt to find a description failed.");
@@ -43,24 +45,24 @@ namespace AcManager.Tools.Helpers {
 
         private class AcContentEntry {
             [JsonConstructor]
-            public AcContentEntry(string id, string name, string uiVersion, string acClubVersion, string acClubUrl, string sourceUrl, string downloadUrl) {
+            public AcContentEntry(string id, string uiName, string originName, string uiVersion, string originVersion, string originUrl, string authorUrl, string downloadUrl) {
                 Id = id;
-                Name = name;
+                UiName = uiName;
+                OriginName = originName;
                 UiVersion = uiVersion;
-                AcClubVersion = acClubVersion;
-                AcClubUrl = acClubUrl;
-                SourceUrl = sourceUrl;
+                OriginVersion = originVersion;
+                OriginUrl = originUrl;
+                AuthorUrl = authorUrl;
                 DownloadUrl = downloadUrl;
             }
 
-            // {"id":"acc_porsche_914-6","name":"Porsche 914/6 '70","uiVersion":"1.1","acClubVersion":"1.1","acClubUrl":"http://assettocorsa.club/mods/auto/porsche-914.html","sourceUrl":null,"downloadUrl":"https://drive.google.com/file/d/0BzHandomFZfxVVJjLWl6ZlA0NU0/view?usp=sharing"}
-
             public string Id { get; }
-            public string Name { get; }
+            public string UiName { get; }
+            public string OriginName { get; }
             public string UiVersion { get; }
-            public string AcClubVersion { get; }
-            public string AcClubUrl { get; }
-            public string SourceUrl { get; }
+            public string OriginVersion { get; }
+            public string OriginUrl { get; }
+            public string AuthorUrl { get; }
             public string DownloadUrl { get; }
         }
     }

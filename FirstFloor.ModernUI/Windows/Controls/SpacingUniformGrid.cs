@@ -8,90 +8,166 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int FirstColumn {
-            get { return (int)GetValue(FirstColumnProperty); }
-            set { SetValue(FirstColumnProperty, value); }
+            get => (int)GetValue(FirstColumnProperty);
+            set => SetValue(FirstColumnProperty, value);
         }
 
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(SpacingUniformGrid),
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int Columns {
-            get { return (int)GetValue(ColumnsProperty); }
-            set { SetValue(ColumnsProperty, value); }
+            get => (int)GetValue(ColumnsProperty);
+            set => SetValue(ColumnsProperty, value);
         }
 
         public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int), typeof(SpacingUniformGrid),
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int Rows {
-            get { return (int)GetValue(RowsProperty); }
-            set { SetValue(RowsProperty, value); }
+            get => (int)GetValue(RowsProperty);
+            set => SetValue(RowsProperty, value);
         }
 
         public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(nameof(HorizontalSpacing), typeof(double),
                 typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double HorizontalSpacing {
-            get { return (double)GetValue(HorizontalSpacingProperty); }
-            set { SetValue(HorizontalSpacingProperty, value); }
+            get => (double)GetValue(HorizontalSpacingProperty);
+            set => SetValue(HorizontalSpacingProperty, value);
         }
 
         public static readonly DependencyProperty VerticalSpacingProperty = DependencyProperty.Register(nameof(VerticalSpacing), typeof(double),
                 typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double VerticalSpacing {
-            get { return (double)GetValue(VerticalSpacingProperty); }
-            set { SetValue(VerticalSpacingProperty, value); }
+            get => (double)GetValue(VerticalSpacingProperty);
+            set => SetValue(VerticalSpacingProperty, value);
+        }
+
+        public static readonly DependencyProperty StackModeProperty = DependencyProperty.Register(nameof(StackMode), typeof(bool),
+                typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public bool StackMode {
+            get => (bool)GetValue(StackModeProperty);
+            set => SetValue(StackModeProperty, value);
         }
 
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
-            var childConstraint = new Size(
-                    Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
-                    Math.Max(constraint.Height - _totalSpacingHeight, 0) / _rows);
+            if (_stackMode) {
+                var childConstraint = new Size(
+                        Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
+                        double.PositiveInfinity);
 
-            var maxChildDesiredWidth = 0d;
-            var maxChildDesiredHeight = 0d;
+                var maxChildDesiredWidth = 0d;
+                var summaryChildrenHeight = 0d;
+                var rowHeight = 0d;
+                var itemsInRow = 0;
 
-            //  Measure each child, keeping track of maximum desired width and height.
-            for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
-                var child = InternalChildren[i];
+                //  Measure each child, keeping track of maximum desired width and height.
+                for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                    var child = InternalChildren[i];
 
-                // Measure the child.
-                child.Measure(childConstraint);
-                var childDesiredSize = child.DesiredSize;
+                    // Measure the child.
+                    child.Measure(childConstraint);
+                    var childDesiredSize = child.DesiredSize;
 
-                if (maxChildDesiredWidth < childDesiredSize.Width) {
-                    maxChildDesiredWidth = childDesiredSize.Width;
+                    if (maxChildDesiredWidth < childDesiredSize.Width) {
+                        maxChildDesiredWidth = childDesiredSize.Width;
+                    }
+
+                    if (childDesiredSize.Height > rowHeight) {
+                        rowHeight = childDesiredSize.Height;
+                    }
+
+                    if (++itemsInRow == _columns) {
+                        itemsInRow = 0;
+                        summaryChildrenHeight += rowHeight;
+                    }
                 }
 
-                if (maxChildDesiredHeight < childDesiredSize.Height) {
-                    maxChildDesiredHeight = childDesiredSize.Height;
+                return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, summaryChildrenHeight + _totalSpacingHeight);
+            } else {
+                var childConstraint = new Size(
+                        Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
+                        Math.Max(constraint.Height - _totalSpacingHeight, 0) / _rows);
+
+                var maxChildDesiredWidth = 0d;
+                var maxChildDesiredHeight = 0d;
+
+                //  Measure each child, keeping track of maximum desired width and height.
+                for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                    var child = InternalChildren[i];
+
+                    // Measure the child.
+                    child.Measure(childConstraint);
+                    var childDesiredSize = child.DesiredSize;
+
+                    if (maxChildDesiredWidth < childDesiredSize.Width) {
+                        maxChildDesiredWidth = childDesiredSize.Width;
+                    }
+
+                    if (maxChildDesiredHeight < childDesiredSize.Height) {
+                        maxChildDesiredHeight = childDesiredSize.Height;
+                    }
                 }
+
+                return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, maxChildDesiredHeight * _rows + _totalSpacingHeight);
             }
-
-            return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, maxChildDesiredHeight * _rows + _totalSpacingHeight);
         }
 
         protected override Size ArrangeOverride(Size arrangeSize) {
-            var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, (arrangeSize.Height - _totalSpacingHeight) / _rows);
-            var xStep = childBounds.Width + _horizontalSpacing;
-            var yStep = childBounds.Height + _verticalSpacing;
-            var xBound = arrangeSize.Width - 1.0;
+            var children = InternalChildren;
 
-            childBounds.X += xStep * FirstColumn;
+            if (_stackMode) {
+                var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, 0);
+                var xStep = childBounds.Width + _horizontalSpacing;
+                var maxHeight = 0d;
+                var xBound = arrangeSize.Width - 1.0;
 
-            // Arrange and Position each child to the same cell size
-            foreach (UIElement child in InternalChildren) {
-                child.Arrange(childBounds);
+                childBounds.X += xStep * FirstColumn;
 
-                // only advance to the next grid cell if the child was not collapsed
-                if (child.Visibility != Visibility.Collapsed) {
-                    childBounds.X += xStep;
-                    if (childBounds.X >= xBound) {
-                        childBounds.Y += yStep;
-                        childBounds.X = 0;
+                // Arrange and Position each child to the same cell size
+                for (var i = 0; i < children.Count; i++) {
+                    var child = children[i];
+                    childBounds.Height = child.DesiredSize.Height;
+                    child.Arrange(childBounds);
+
+                    // only advance to the next grid cell if the child was not collapsed
+                    if (child.Visibility != Visibility.Collapsed) {
+                        childBounds.X += xStep;
+
+                        if (childBounds.Height > maxHeight) {
+                            maxHeight = childBounds.Height;
+                        }
+
+                        if (childBounds.X >= xBound) {
+                            childBounds.Y += maxHeight + _verticalSpacing;
+                            childBounds.X = 0;
+                        }
+                    }
+                }
+            } else {
+                var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, (arrangeSize.Height - _totalSpacingHeight) / _rows);
+                var xStep = childBounds.Width + _horizontalSpacing;
+                var yStep = childBounds.Height + _verticalSpacing;
+                var xBound = arrangeSize.Width - 1.0;
+
+                childBounds.X += xStep * FirstColumn;
+
+                // Arrange and Position each child to the same cell size
+                for (var i = 0; i < children.Count; i++) {
+                    var child = children[i];
+                    child.Arrange(childBounds);
+
+                    // only advance to the next grid cell if the child was not collapsed
+                    if (child.Visibility != Visibility.Collapsed) {
+                        childBounds.X += xStep;
+                        if (childBounds.X >= xBound) {
+                            childBounds.Y += yStep;
+                            childBounds.X = 0;
+                        }
                     }
                 }
             }
@@ -100,6 +176,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateComputedValues() {
+            _stackMode = StackMode;
             _columns = Columns;
             _rows = Rows;
 
@@ -143,6 +220,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _totalSpacingHeight = _rows == 0 ? 0 : _verticalSpacing * (_rows - 1);
         }
 
+        private bool _stackMode;
         private int _rows;
         private int _columns;
         private double _horizontalSpacing;

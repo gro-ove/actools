@@ -1,24 +1,13 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Microsoft.VisualBasic.Logging;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
@@ -237,31 +226,6 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private TimeSpan _resultScreenTime;
-
-        public TimeSpan ResultScreenTime {
-            get { return _resultScreenTime; }
-            set {
-                if (Equals(value, _resultScreenTime)) return;
-                _resultScreenTime = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private TimeSpan _raceOverTime;
-
-        public TimeSpan RaceOverTime {
-            get => _raceOverTime;
-            set {
-                if (Equals(value, _raceOverTime)) return;
-                _raceOverTime = value;
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
         private string _password;
 
         [CanBeNull]
@@ -452,21 +416,6 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _qualifyLimitPercentage;
-
-        public int QualifyLimitPercentage {
-            get => _qualifyLimitPercentage;
-            set {
-                value = value.Clamp(1, 65535);
-                if (Equals(value, _qualifyLimitPercentage)) return;
-                _qualifyLimitPercentage = value;
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
         private ServerPresetJumpStart _jumpStart;
 
         public ServerPresetJumpStart JumpStart {
@@ -488,34 +437,15 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _raceGasPenaltyDisabled)) return;
                 _raceGasPenaltyDisabled = value;
-                OnPropertyChanged();
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
             }
         }
         #endregion
 
         #region Sessions and conditions
-        private ChangeableObservableCollection<ServerSessionEntry> _sessions;
-
-        public ChangeableObservableCollection<ServerSessionEntry> Sessions {
-            get => _sessions;
-            set {
-                if (Equals(value, _sessions)) return;
-
-                if (_sessions != null) {
-                    // _sessions.CollectionChanged -= OnSessionEntriesCollectionChanged;
-                    _sessions.ItemPropertyChanged -= OnSessionEntryPropertyChanged;
-                }
-
-                _sessions = value;
-                OnPropertyChanged();
-
-                if (_sessions != null) {
-                    // _sessions.CollectionChanged += OnSessionEntriesCollectionChanged;
-                    _sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
-                }
-            }
-        }
-
         private void OnSessionEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(ServerSessionEntry.IsAvailable):
@@ -601,6 +531,21 @@ namespace AcManager.Tools.Objects {
                     Changed = true;
 
                     UpdateWeatherIndexes();
+                }
+            }
+        }
+
+        private double _timeMultiplier;
+
+        public double TimeMultiplier {
+            get { return _timeMultiplier; }
+            set {
+                value = value.Clamp(0, 60).Round();
+                if (Equals(value, _timeMultiplier)) return;
+                _timeMultiplier = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
                 }
             }
         }

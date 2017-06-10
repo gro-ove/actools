@@ -101,4 +101,26 @@ namespace AcManager.Controls {
             set { SetValue(FahrenheitPostfixProperty, value); }
         }
     }
+
+    public class DoubleTemperatureValueLabel : DoubleValueLabel {
+        static DoubleTemperatureValueLabel() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DoubleTemperatureValueLabel), new FrameworkPropertyMetadata(typeof(DoubleTemperatureValueLabel)));
+        }
+
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(TemperatureUnitMode),
+                typeof(DoubleTemperatureValueLabel));
+
+        public TemperatureUnitMode Mode {
+            get { return (TemperatureUnitMode)GetValue(ModeProperty); }
+            set { SetValue(ModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty FahrenheitPostfixProperty = DependencyProperty.Register(nameof(FahrenheitPostfix), typeof(string),
+                typeof(DoubleTemperatureValueLabel));
+
+        public string FahrenheitPostfix {
+            get { return (string)GetValue(FahrenheitPostfixProperty); }
+            set { SetValue(FahrenheitPostfixProperty, value); }
+        }
+    }
 }

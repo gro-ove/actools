@@ -137,6 +137,12 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
+        private static IWebProxy _proxy;
+
+        public static void SetProxy(IWebProxy proxy) {
+            _proxy = proxy;
+        }
+
         public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             using (var order = KillerOrder.Create(new CookieAwareWebClient {
@@ -145,6 +151,11 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
             }, TimeSpan.FromMinutes(2))) {
                 var client = order.Victim;
+
+                if (_proxy != null) {
+                    client.Proxy = _proxy;
+                }
+
                 if (!await loader.PrepareAsync(client, cancellation)) {
                     throw new InformativeException("Can’t load file", "Loader preparation failed.");
                 }
@@ -164,6 +175,11 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
             }, TimeSpan.FromMinutes(2))) {
                 var client = order.Victim;
+
+                if (_proxy != null) {
+                    client.Proxy = _proxy;
+                }
+
                 progress?.Report(AsyncProgressEntry.Indetermitate);
 
                 cancellation.ThrowIfCancellationRequested();
