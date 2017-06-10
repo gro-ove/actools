@@ -853,8 +853,8 @@ Depth mode: [b]{4}[/b]</value>
     <value>Año de inicio de produccion</value>
   </data>
   <data name="Controls_MinimumForce" xml:space="preserve">
-    <value>Zona muerta / Fuerza minima</value>
-  </data>
+    <value>Zona muerta/Fuerza minima</value>
+  <alternative>Zona muerta / Fuerza minima</alternative></data>
   <data name="Controls_Gain" xml:space="preserve">
     <value>Ganancia</value>
   </data>
@@ -877,14 +877,14 @@ Depth mode: [b]{4}[/b]</value>
     <value>Mejorar efectos del contravolante</value>
   </data>
   <data name="Controls_SoftLock" xml:space="preserve">
-    <value>Bloqueo incompleto</value>
-  </data>
+    <value>Bloqueo incompleto. El volante se bloqueara en el limite de los grados reales del coche</value>
+  <alternative>Bloqueo incompleto</alternative></data>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
-    <value>Saktar pasos del FFB</value>
-  </data>
+    <value>Saltar pasos del FFB</value>
+  <alternative>Saktar pasos del FFB</alternative></data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>EXperimental:</value>
-  </data>
+    <value>Experimental:</value>
+  <alternative>EXperimental:</alternative></data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Desbloquear opciones experimentales (precaucion!)</value>
   </data>
@@ -920,5 +920,17 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_Unsaved" xml:space="preserve">
     <value>No guardado</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Negro</value>
+  </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Ocultar piloto</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Ocultar modelo del piloto</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value>Vuelta</value>
   </data>
 </root>

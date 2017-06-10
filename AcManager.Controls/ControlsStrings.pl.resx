@@ -211,11 +211,11 @@
     <value>Zapisz preset</value>
   </data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Zapisz bierzące ustawienia jako preset (Ctrl+S)</value>
-  </data>
+    <value>Zapisz bieżące ustawienia jako preset (Ctrl+S)</value>
+  <alternative>Zapisz bierzące ustawienia jako preset (Ctrl+S)</alternative></data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Nie zapisano</value>
-  </data>
+    <value>Brak zapisów</value>
+  <alternative>Nie zapisano</alternative></data>
   <data name="QuickSwitches_Header" xml:space="preserve">
     <value>Szybkie przełączniki</value>
   </data>
@@ -226,8 +226,8 @@
     <value>Ukryj sterowanie kierownicą</value>
   </data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
-    <value>Blokuj kiero.</value>
-  </data>
+    <value>Blokuj kierown.</value>
+  <alternative>Blokuj kiero.</alternative></data>
   <data name="QuickSwitches_LockCamera" xml:space="preserve">
     <value>Blokuj kamerę</value>
   </data>
@@ -286,8 +286,8 @@
     <value>Tryb pełnego ekranu (na przykład Shadowplay nie będzie działać bez tego)</value>
   </data>
   <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
-    <value>Aktywuj dev apikacje</value>
-  </data>
+    <value>Aktywuj dev aplikacje</value>
+  <alternative>Aktywuj dev apikacje</alternative></data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
     <value>Aktywuj swobodą kamerę (naciśnij F7 na torze)</value>
   </data>
@@ -373,10 +373,12 @@
     <value>Niestandardowe ID:</value>
   </data>
   <data name="Share_VerifyMessage" xml:space="preserve">
-    <value>Nazwa autoa: [b]{0}[/b]
+    <value>Nazwa auta: [b]{0}[/b]
  Wpisz nazwę: [b]{1}[/b]
  Typ wpisu: [b]{2}[/b]</value>
-  </data>
+  <alternative>Nazwa autoa: [b]{0}[/b]
+ Wpisz nazwę: [b]{1}[/b]
+ Typ wpisu: [b]{2}[/b]</alternative></data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
     <value>Wszystko w porządku?</value>
   </data>
@@ -534,14 +536,14 @@
     <value>Tryb edycji malowania</value>
   </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
-    <value>Automatycznie aktualizuj tekstury; użyj PSD, XCF, itp zamiast tego jeśli istnieje (Magick.NET dodatek jest wymagany)</value>
-  </data>
+    <value>Użyj PSD, XCF, itp w zamian jeśli istnieją (Magick.NET dodatek jest wymagany)</value>
+  <alternative>Automatycznie aktualizuj tekstury; użyj PSD, XCF, itp zamiast tego jeśli istnieje (Magick.NET dodatek jest wymagany)</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
     <value>Aktualizuj cienie otoczenia</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
-    <value>Zresetowane do wartości zalecanych</value>
-  </data>
+    <value>Zresetuj do wartości zalecanych</value>
+  <alternative>Zresetowane do wartości zalecanych</alternative></data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
     <value>Cień otoczenia</value>
   </data>
@@ -564,8 +566,8 @@
     <value>Reset</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
-    <value>Dopasowanie</value>
-  </data>
+    <value>Dopasuj</value>
+  <alternative>Dopasowanie</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
     <value>Zapisz</value>
   </data>
@@ -591,8 +593,8 @@
     <value>Dane są szyfrowane</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
-    <value>Rozmiar cienia zostanie zapisany do “data/ambient_shadows.ini”, ale dane są szyfrowane, więc nie będzie żadnego wpływu. Kontyntynuj?</value>
-  </data>
+    <value>Rozmiar cienia zostanie zapisany do “data/ambient_shadows.ini”, ale dane są szyfrowane, więc nie będzie żadnego wpływu. Kontynuować?</value>
+  <alternative>Rozmiar cienia zostanie zapisany do “data/ambient_shadows.ini”, ale dane są szyfrowane, więc nie będzie żadnego wpływu. Kontyntynuj?</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
     <value>Narzędzia deweloperskie</value>
   </data>
@@ -610,6 +612,21 @@
   </data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
     <value>Nazwa obiektu: [b]{0}[/b]
+Klasa: [b]{1}[/b]
+ 
+Aktywny: [b]{2}[/b]
+Renderowalność: [b]{3}[/b]
+Widoczny: [b]{4}[/b]
+ 
+Przezroczysty: [b]{5}[/b]
+Rzutowanie cieni: [b]{6}[/b]
+ 
+Warstwa: [b]{7}[/b]
+Poziom szczegółów w: [b]{8}[/b]
+Poziom szczegółów w: [b]{9}[/b]
+ 
+Materiał: [b]{10}[/b]</value>
+  <alternative>Nazwa obiektu: [b]{0}[/b]
  Klasa: [b]{1}[/b]
  
  Aktywny: [b]{2}[/b]
@@ -623,16 +640,20 @@
  LOD In: [b]{8}[/b]
  LOD In: [b]{9}[/b]
  
- Materiał: [b]{10}[/b]</value>
-  </data>
+ Materiał: [b]{10}[/b]</alternative></data>
   <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
-    <value>Material name: [b]{0}[/b]
+    <value>Nazwa materiału: [b]{0}[/b]
+Cieniowanie: [b]{1}[/b]
+ 
+Tryb mieszania: [b]{2}[/b]
+Test alfa: [b]{3}[/b]
+Tryb głębi: [b]{4}[/b]</value>
+  <alternative>Material name: [b]{0}[/b]
  Shader: [b]{1}[/b]
  
  Blend mode: [b]{2}[/b]
  Alpha test: [b]{3}[/b]
- Depth mode: [b]{4}[/b]</value>
-  </data>
+ Depth mode: [b]{4}[/b]</alternative></data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>Właściwości cieniowania:</value>
   </data>
@@ -724,11 +745,11 @@
     <value>Ładuję…</value>
   </data>
   <data name="Common_GoodNews" xml:space="preserve">
-    <value>Dobra wiadomość!</value>
-  </data>
+    <value>Dobre wiadomości!</value>
+  <alternative>Dobra wiadomość!</alternative></data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
-    <value>Coche base (si esta seleccionado, este coche sera una version tuneada)</value>
-  </data>
+    <value>Baza samochodu (jeśli wybierzesz, to auto będzie wersją ulepszoną na bazie innego modelu samochodu)</value>
+  <alternative>Coche base (si esta seleccionado, este coche sera una version tuneada)</alternative></data>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
     <value>Nie można zaktualizować cieni otoczenia</value>
   </data>
@@ -820,8 +841,8 @@
     <value>Instalowanie...</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Uczyń go niezależnym</value>
-  <alternative>Bądź niezależny</alternative></data>
+    <value>Niezależny od innego modelu</value>
+  <alternative>Bądź niezależny</alternative><alternative>Uczyń go niezależnym</alternative></data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
     <value>Folder zostanie przeniesiony do katalogu nadrzędnego!</value>
   </data>
@@ -874,8 +895,8 @@
     <value>Różne:</value>
   </data>
   <data name="Controls_EnhancedUndersteer" xml:space="preserve">
-    <value>Efekt podsteerowności</value>
-  </data>
+    <value>Efekt podsterowności</value>
+  <alternative>Efekt podsteerowności</alternative></data>
   <data name="Controls_SoftLock" xml:space="preserve">
     <value>Blokada obrotu</value>
   </data>
@@ -910,8 +931,8 @@
     <value>FPS</value>
   </data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>Ściągni i instaluj ({0})</value>
-  </data>
+    <value>Ściągnij i zainstaluj ({0})</value>
+  <alternative>Ściągni i instaluj ({0})</alternative></data>
   <data name="Plugins_NotAvailable" xml:space="preserve">
     <value>Nie dostępne, wymagana wersja aplikacji {0}.</value>
   </data>

@@ -187,8 +187,8 @@
     <value>Installazione...</value>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
-    <value>Modo offline</value>
-  </data>
+    <value>Modalità Offline</value>
+  <alternative>Modo offline</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Prova ancora</value>
   </data>
@@ -335,5 +335,179 @@
   </data>
   <data name="Assists_TyreWearLabel" xml:space="preserve">
     <value>Tipo Gomme:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Traiettoria ideale:</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Aiuti alla guida:</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Cambio automatico:</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Frizione automatica:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Controllo stabilità</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Carburante:</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Marchio:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Paese:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Classe:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specifiche:</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>Apri in Showroom</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Opzioni</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Settaggi</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>Apri in Showroom personalizzato</value>
+  </data>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>Completato:</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Impossibile riprodurre video</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Città:</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Nasconsi ruota</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Nasconsi volante</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Specchietto</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Nomi</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>Classifica</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>Danno (UI)</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Schermo pieno</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>Apps sviluppatori</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>Telecamera libera</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Nome Online</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>Esposizione</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>Campo visivo</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>Blocca rotazione volante</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>Mostra specchietto virtuale</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>Mostra nomi piloti</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>Mostra classifica</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>Mostra danni</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Immagine</value>
+  </data>
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
+    <value>Salva immagine come</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Impossibile salvare immagine</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>Texture mancante</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>Mostra mappatura</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>Impossibile avviare Showroom personalizzato</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Triangoli:</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Controllo</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>Luci</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>Diffusione</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Adatta</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Dimensione</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Aggiornamento ombre...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Ricaricamento textures...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>I dati sono criptati</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>Strumenti di sviluppo</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>Cambia Skin</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Salva e Chiudi</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Sperimentale:</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>Effetto giroscopico</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Scarica e installa ({0})</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Aggiorna (Nuova versione: {0})</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Non salvato</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Nero</value>
   </data>
 </root>

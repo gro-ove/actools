@@ -547,4 +547,67 @@
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>Subido {0} de {1}</value>
   </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Candidatos compatibles no encontrados</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Guardar parrilla de Carrera como Preset</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Compartir Parrilla de Carrera</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Favorito</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Eliminar Favorito</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Ocultar</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Administrar Listas...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Invitar</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Cancelar Booking</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Compartir link a este server, asi tus amigos pueden unirse rapidamente (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Incluir Contraseña</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Añadir servidor a la lista de Favoritos (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Eliminar servidor de la lista de Favoritos  (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Añadir servidor a la lista de servidores ocultos (busca por “@hidden” para abrirla)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Eliminar servidor de la lista de servidores ocultos</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
 </root>

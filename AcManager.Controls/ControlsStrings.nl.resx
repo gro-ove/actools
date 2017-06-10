@@ -123,4 +123,7 @@
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>Bestuurder model verbergen</value>
   </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value>ronde</value>
+  </data>
 </root>

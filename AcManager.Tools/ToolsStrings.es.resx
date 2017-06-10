@@ -505,8 +505,8 @@
     <value>Directorio perdido</value>
   </data>
   <data name="Controls_Decrease" xml:space="preserve">
-    <value>Disminución</value>
-  </data>
+    <value>Disminuir</value>
+  <alternative>Disminución</alternative></data>
   <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
     <value>Disminuir entrega</value>
   </data>
@@ -559,8 +559,8 @@
     <value>El filtro de Postprocesado por defecto (default.ini) está perdido pero se requiere</value>
   </data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
-    <value>El lanzador original no se encuentra: por favor, cambia el arrancador.</value>
-  <alternative>El lanzador original no se encuentra: por favor, cambia el arranque.</alternative></data>
+    <value>No se encuentra el Lanzador Original: por favor, cambia el Lanzador.</value>
+  <alternative>El lanzador original no se encuentra: por favor, cambia el arranque.</alternative><alternative>El lanzador original no se encuentra: por favor, cambia el arrancador.</alternative></data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
     <value>El modelo del piloto posiblemente se haya perdido.</value>
   </data>
@@ -667,8 +667,8 @@
     <value>Freno de mano</value>
   </data>
   <data name="Controls_Brakes" xml:space="preserve">
-    <value>Frenos</value>
-  </data>
+    <value>Freno</value>
+  <alternative>Frenos</alternative></data>
   <data name="Weather_Cold" xml:space="preserve">
     <value>Frio</value>
   </data>
@@ -728,11 +728,11 @@
     <value>Imposible de desempaquetar {0}</value>
   </data>
   <data name="Controls_Increase" xml:space="preserve">
-    <value>Incrementar</value>
-  </data>
+    <value>Aumentar</value>
+  <alternative>Incrementar</alternative></data>
   <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
-    <value>Incrementar recuperación</value>
-  </data>
+    <value>Aumentar recuperación</value>
+  <alternative>Incrementar recuperación</alternative></data>
   <data name="Settings_Starter_Naive" xml:space="preserve">
     <value>Ingenuo</value>
   </data>
@@ -740,8 +740,8 @@
     <value>Inicio</value>
   </data>
   <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
-    <value>Inrementar suministro</value>
-  </data>
+    <value>Aumentar entrega</value>
+  <alternative>Inrementar suministro</alternative></data>
   <data name="TryAgainDot" xml:space="preserve">
     <value>Inténtalo de nuevo.</value>
   </data>
@@ -788,8 +788,8 @@
     <value>Latitud:</value>
   </data>
   <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
-    <value>Limitación del volante</value>
-  </data>
+    <value>Limite del volante</value>
+  <alternative>Limitación del volante</alternative></data>
   <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
     <value>Limite de rotación del volante virtual</value>
   </data>
@@ -857,8 +857,8 @@
     <value>Mando de Xbox 360</value>
   </data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>Calcentadores de neumaticos</value>
-  </data>
+    <value>Calentadores de neumaticos</value>
+  <alternative>Calcentadores de neumaticos</alternative></data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
     <value>Mantener información de UI</value>
   </data>
@@ -881,8 +881,8 @@
     <value>Marcha atrás</value>
   </data>
   <data name="Controls_PreviousGear" xml:space="preserve">
-    <value>Marcha previa</value>
-  </data>
+    <value>Bajar  marcha</value>
+  <alternative>Marcha previa</alternative></data>
   <data name="AcSettings_Quality_Maximum" xml:space="preserve">
     <value>Máximo</value>
   </data>
@@ -1064,11 +1064,11 @@
     <value>No se puede ejecutar el comando</value>
   </data>
   <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
-    <value>No se puede ejecutar el juego</value>
-  </data>
+    <value>No se puede iniciar la carrera</value>
+  <alternative>No se puede ejecutar el juego</alternative></data>
   <data name="OfficialStarter_CannotRun" xml:space="preserve">
-    <value>No se puede ejecutar.</value>
-  </data>
+    <value>No se puede iniciar.</value>
+  <alternative>No se puede ejecutar.</alternative></data>
   <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
     <value>No se puede eliminar el archivo original “{0}” para instalar la actualización. Intenta eliminarlo manualmente y entonces inicialo “{1}”.</value>
   </data>
@@ -1109,8 +1109,8 @@
     <value>No se puede renombrar las repeticiones</value>
   </data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>No se puede restaurar la version no parcheada del arranque original.</value>
-  </data>
+    <value>No se puede restaurar la version no parcheada del arranque original. Por favor, restaurala manualmente: tienes que reemplazar "AssettoCorsa.exe" con “AssettoCorsa_backup_sp.exe”.</value>
+  <alternative>No se puede restaurar la version no parcheada del arranque original.</alternative></data>
   <data name="PpFilterObject_CannotSave" xml:space="preserve">
     <value>No se puede salvar el filtro de Postprocesado</value>
   </data>
@@ -1202,8 +1202,8 @@
     <value>Obteniendo informacíon directamente...</value>
   </data>
   <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
-    <value>Ocultar manos del piloto</value>
-  </data>
+    <value>Ocultar brazos del piloto</value>
+  <alternative>Ocultar manos del piloto</alternative></data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
     <value>Ocultar volante</value>
   </data>
@@ -1256,8 +1256,8 @@
     <value>Por favor, escoge un archivo en el directorio inicial o en algún subdirectorio</value>
   </data>
   <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
-    <value>Por favor, restaura el arrancador original  e inténtalo de nuevo ( o cambia el arrancador).</value>
-  <alternative>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</alternative></data>
+    <value>Por favor, restaura el lanzador original e intentalo de nuevo (o cambia el lanzador).</value>
+  <alternative>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</alternative><alternative>Por favor, restaura el arrancador original  e inténtalo de nuevo ( o cambia el arrancador).</alternative></data>
   <data name="Common_Power" xml:space="preserve">
     <value>Potencia</value>
   </data>
@@ -1283,8 +1283,8 @@
     <value>punto</value>
   </data>
   <data name="Controls_Complain" xml:space="preserve">
-    <value>Quejarse</value>
-  </data>
+    <value>Queja</value>
+  <alternative>Quejarse</alternative></data>
   <data name="Controls_Gear_Fifth" xml:space="preserve">
     <value>Quinta marcha</value>
   </data>
@@ -1355,8 +1355,8 @@
     <value>Sexta marcha</value>
   </data>
   <data name="Controls_NextGear" xml:space="preserve">
-    <value>Siguiente marcha</value>
-  </data>
+    <value>Subir marcha</value>
+  <alternative>Siguiente marcha</alternative></data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
     <value>Sincronizar automáticamente las RPM al bajar marchas</value>
   </data>
@@ -1475,8 +1475,8 @@
     <value>Velocidad de mirada</value>
   </data>
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
-    <value>Ver intévalo de tiempo de los oponentes</value>
-  </data>
+    <value>Mostrar la diferencia de tiempo entre los oponentes</value>
+  <alternative>Ver intévalo de tiempo de los oponentes</alternative></data>
   <data name="AcSettings_View_Vertical" xml:space="preserve">
     <value>Vertical</value>
   </data>
@@ -1494,5 +1494,203 @@
   </data>
   <data name="SearchEngine_Yandex" xml:space="preserve">
     <value>Yandex</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Dia de Tandas</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>No se puede actualizar la parrilla de carrera</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Error de sintaxis: {0}</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>El script deberia devolver una funcion de filtrado</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Aleatorio</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>El modo de parrilla de carrera no esta</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>No se puede encontrar el modo de parrilla de carrera con ID “{0}”</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>No se puede iniciar Lua</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Proceso oficial por Kunos; puede ser mas lento y poco fiable, pero no requiere parchear</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>
+Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona sin Steam iniciado o conexion a Internet</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>Modulo UI</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Añade un modulo UI especial al launcher original que escucha a algunas ordenes e inicia la carrera; usalo si necesitas usar CM y el launcher original al mismo tiempo</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Version modificada del launcher original, obsoleta desde la version 1.7</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>El mas rapido, inicia la carrera directamente sin usar Steam en absoluto; funcionara online, pero no otendras ningun logro</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Intenta iniciar acs.exe directamente; en la mayoria de casos fallara</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>No se puede cargar la imagen usando Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Por favor, intenta hacer la imagen un poco mas pequeña.</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Enviar </value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Error de sintaxis en empaquetado {0} en {1} linea</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Error de sintaxis en  {0} en {1} linea</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>El archivo esta todavia siendo analizado, pero algunos valores pueden haberse omitido.</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Abrir Archivo</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>No se puede obtener una lista adecuada de resoluciones</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Modulo UI "CM Helper" instalado y activado. No olvides reiniciar AssettoCorsa.exe antes de correr!</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Aleatorio</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Aleatorio</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Organizar Parrilla de Salida</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Mezclar</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Aleatorio</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Organizacion de candidatos</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Usar nombres de skin si esta disponible</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Global:</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>Tu</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Campeonato</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Preset de ajustes de Audio</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Facil</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Dificil</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} en {1}.</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Puntos</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Posicion</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Hora</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Victorias</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>No se puede iniciar RHM</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Los datos de {0} no estan empaquetados, los usuarios podrian modificarlo antes de entrar y obtener ventaja.
+
+Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Los datos no estan encriptados</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Por favor, selecciona un coche soportado por el servidor</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>La contraseña no es valida</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>La sesion Reserva / Booking esta cerrada</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Has sido incluido en la lista negra de este servidor.</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>El servidor esta lleno</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>El servidor dice: “{0}”</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>El coche seleccionado no tiene un sonido adecuado</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Selecciona algun otro coche.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>No se puede reemplazar el sonido del coche.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Asegurate de que tienes suficiente espacio y los archivos originales pueden ser eliminados.</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Tienes reserva en este server</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Estas en este server</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Tu)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Contraseña Administrador:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Mostrar entrada de contraseña de administrador</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Si lo desactivas, siempre puedes activarlo en ajustes, online</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>La etiqueta “{0}” no esta</value>
   </data>
 </root>

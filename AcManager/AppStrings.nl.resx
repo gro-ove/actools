@@ -705,8 +705,8 @@
     <value>Zal langer dan 50 0ms duren</value>
   </data>
   <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
-    <value>Hoe moet je vertalen</value>
-  </data>
+    <value>Hoe te vertalen</value>
+  <alternative>Hoe moet je vertalen</alternative></data>
   <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
     <value>Aangepaste vertalingen</value>
   </data>
@@ -775,5 +775,80 @@
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Rondetijden raster</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
+    <value>Converteer automatisch screenshots van BMP formaat naar JPG bij sluiten</value>
+  </data>
+  <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
+    <value>Gebruik andere naam online</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
+    <value>Ik raad het sterk aan om Magick.NET eerst aan te zetten — daarmee zal het resultaat van hogere kwaliteit zijn</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds_Tooltip" xml:space="preserve">
+    <value>Natuurlijk alleen tijdelijk</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
+    <value>Staat toe om 999 rondes enzo in te stellen, gebruik op eigen risico.</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Assetto Corsa folder:</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Developer modus</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>App key:</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>Start Menu snelkoppeling (voor moderne notificaties)</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
+    <value>Creëer Start Menu snelkoppeling; nodig voor het laten zien van moderne notificaties in WIndows 8, 8.1 en 10</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Automatische Updates:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>Check voor updates:</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>App versie:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdates" xml:space="preserve">
+    <value>Check Voor Updates:</value>
+  </data>
+  <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+    <value>Data versie:</value>
+  </data>
+  <data name="Settings_General_ValuesHeader" xml:space="preserve">
+    <value>Opslag Van Waarden:</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
+    <value>Ruim Op</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>Verwijder alle onbelangrijke waarden</value>
+  </data>
+  <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
+    <value>Tijd van opslaan:</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Settings_General_TestingAccess" xml:space="preserve">
+    <value>Update naar ongeteste versies</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Sessie-informatie</value>
+  </data>
+  <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
+    <value>Voeg jaar toe achter de naam van auto's</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Ga akkoord voor verwijdering</value>
   </data>
 </root>

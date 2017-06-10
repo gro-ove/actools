@@ -253,11 +253,11 @@
     <value>Brakuje filtra PP “{0}”</value>
   </data>
   <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
-    <value>Brakuje "shadera" “{0}” (mógł zostać usunięty podczas aktualizacji AC), model potrzebuje naprawy</value>
-  </data>
+    <value>Brakuje cieniowania “{0}” (mogło zostać usunięte podczas aktualizacji AC), model potrzebuje naprawy</value>
+  <alternative>Brakuje "shadera" “{0}” (mógł zostać usunięty podczas aktualizacji AC), model potrzebuje naprawy</alternative></data>
   <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
-    <value>Chmury (content/texture/clouds) mogą być wybrakowane</value>
-  </data>
+    <value>Chmury (content/texture/clouds) mogą być niekompletne</value>
+  <alternative>Chmury (content/texture/clouds) mogą być wybrakowane</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Rozpakowana wersja nie obsługuje automatycznego aktualizowania.</value>
   </data>
@@ -388,8 +388,8 @@
     <value>B/D</value>
   </data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
-    <value>Zakończony</value>
-  </data>
+    <value>Zakończono</value>
+  <alternative>Zakończony</alternative></data>
   <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
     <value>“[url="http://assetto-db.com/car/{0}"]{0}[/url]”</value>
   </data>
@@ -655,8 +655,8 @@
     <value>Spójrz za siebie</value>
   </data>
   <data name="Controls_ChangeCamera" xml:space="preserve">
-    <value>Zmień kamere</value>
-  </data>
+    <value>Zmień kamerę</value>
+  <alternative>Zmień kamere</alternative></data>
   <data name="Controls_Celebrate" xml:space="preserve">
     <value>Celebrowanie</value>
   </data>
@@ -676,8 +676,8 @@
     <value>Upewnij się, że aplikacja ma dostęp do folderu cfg.</value>
   </data>
   <data name="AcSettings_Off" xml:space="preserve">
-    <value>Off</value>
-  </data>
+    <value>Wyłączone</value>
+  <alternative>Off</alternative></data>
   <data name="AcSettings_Quality_Minimum" xml:space="preserve">
     <value>Minimalne</value>
   </data>
@@ -724,26 +724,26 @@
     <value>Maksymalne</value>
   </data>
   <data name="AcSettings_Cubemap_Static" xml:space="preserve">
-    <value>Statyczne</value>
-  </data>
+    <value>Statyczna</value>
+  <alternative>Statyczne</alternative></data>
   <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
-    <value>One face per frame</value>
-  </data>
+    <value>Jedna powierzchnia na klatkę</value>
+  <alternative>One face per frame</alternative></data>
   <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
-    <value>Two faces per frame</value>
-  </data>
+    <value>Dwie powierzchnie na klatkę</value>
+  <alternative>Two faces per frame</alternative></data>
   <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
-    <value>Three faces per frame</value>
-  </data>
+    <value>Trzy powierzchnie na klatkę</value>
+  <alternative>Three faces per frame</alternative></data>
   <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
-    <value>Four faces per frame</value>
-  </data>
+    <value>Cztery powierzchnie na klatkę</value>
+  <alternative>Four faces per frame</alternative></data>
   <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
-    <value>Five faces per frame</value>
-  </data>
+    <value>Pięć powierzchni na klatkę</value>
+  <alternative>Five faces per frame</alternative></data>
   <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
-    <value>Six faces per frame</value>
-  </data>
+    <value>Sześć powierzchni na klatkę</value>
+  <alternative>Six faces per frame</alternative></data>
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5 model</value>
   </data>
@@ -811,8 +811,8 @@
     <value>Lite</value>
   </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
-    <value>Nieznany problem (Process=Null)</value>
-  </data>
+    <value>Nieznany problem (Proces=Zero)</value>
+  <alternative>Nieznany problem (Process=Null)</alternative></data>
   <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
     <value>Upewnij się, że polecenie nie zajmie więcej niż {0:F1} sekund; użyj "start [app.exe]" zamiast "[app.exe]" jeśli aplikacja ma działać w tle</value>
   </data>
@@ -829,8 +829,8 @@
     <value>Drift</value>
   </data>
   <data name="Session_Booking" xml:space="preserve">
-    <value>Rezerwacja (Booking)</value>
-  </data>
+    <value>Rezerwacja</value>
+  <alternative>Rezerwacja (Booking)</alternative></data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Trening</value>
   </data>
@@ -1333,8 +1333,8 @@
     <value>Zablokuj kierownicę</value>
   </data>
   <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
-    <value>Stopnie obrotu kierownicy</value>
-  </data>
+    <value>Obrót kierownicy</value>
+  <alternative>Stopnie obrotu kierownicy</alternative></data>
   <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
     <value>Ogranicz obrót kierownicy</value>
   </data>
@@ -1345,11 +1345,11 @@
     <value>Długość:</value>
   </data>
   <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
-    <value>Zalecany format: “…° N” o “…° S”</value>
-  </data>
+    <value>Zalecany format: “…° N” lub “…° S”</value>
+  <alternative>Zalecany format: “…° N” o “…° S”</alternative></data>
   <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
-    <value>Zalecany format: “…° W” o “…° E”</value>
-  </data>
+    <value>Zalecany format: “…° W” lub “…° E”</value>
+  <alternative>Zalecany format: “…° W” o “…° E”</alternative></data>
   <data name="TrackGeoTags_FindIt" xml:space="preserve">
     <value>Znajdź to</value>
   </data>
@@ -1357,8 +1357,8 @@
     <value>serwer</value>
   </data>
   <data name="Online_Server_SessionInProcess" xml:space="preserve">
-    <value>w trakcie</value>
-  </data>
+    <value>Trwa wyścig</value>
+  <alternative>w trakcie</alternative></data>
   <data name="Settings_PeriodFormat" xml:space="preserve">
     <value>Co {0}</value>
   </data>
@@ -1381,8 +1381,8 @@
     <value>Przygazówka</value>
   </data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
-    <value>Automatycznie synchronizuj RPM podczas redukcji</value>
-  </data>
+    <value>Automatycznie synchronizuj obroty podczas redukcji</value>
+  <alternative>Automatycznie synchronizuj RPM podczas redukcji</alternative></data>
   <data name="Assists_AutoClutch" xml:space="preserve">
     <value>Automatyczne sprzęgło</value>
   </data>
@@ -1420,8 +1420,8 @@
     <value>Kontrola stabilności</value>
   </data>
   <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
-    <value>Nierealistyczne, ale może być pomocne, jeśli dopiero zaczynasz się uczyć jeździć lub driftować</value>
-  </data>
+    <value>Nierealistyczne, ale może być pomocne, jeżeli dopiero zaczynasz uczyć się jeździć lub driftować</value>
+  <alternative>Nierealistyczne, ale może być pomocne, jeśli dopiero zaczynasz się uczyć jeździć lub driftować</alternative></data>
   <data name="Assists_Title" xml:space="preserve">
     <value>Asysty</value>
   </data>
@@ -1429,8 +1429,8 @@
     <value>Kontrola trakcji:</value>
   </data>
   <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
-    <value>Optymalizacja przyczepność podczas przyspieszania</value>
-  </data>
+    <value>Optymalizacja przyczepności podczas przyspieszania</value>
+  <alternative>Optymalizacja przyczepność podczas przyspieszania</alternative></data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
     <value>Koce grzewcze</value>
   </data>
@@ -1480,14 +1480,14 @@
     <value>Typ gridu</value>
   </data>
   <data name="AssistState_Off" xml:space="preserve">
-    <value>Off</value>
-  </data>
+    <value>Wyłączone</value>
+  <alternative>Off</alternative></data>
   <data name="AssistState_Factory" xml:space="preserve">
     <value>Fabryczne</value>
   </data>
   <data name="AssistState_On" xml:space="preserve">
-    <value>On</value>
-  </data>
+    <value>Włączone</value>
+  <alternative>On</alternative></data>
   <data name="JumpStartPenalty_Pits" xml:space="preserve">
     <value>Przeniesienie do pitu</value>
   </data>
@@ -1636,7 +1636,9 @@
     <value>Dane {0} nie są spakowane, więc użytkownicy mogą zmienić je przed przystąpieniem i uzyska nieuczciwą przewagę.
 
 Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij udostępnić spakowanej wersji klientom.</value>
-  </data>
+  <alternative>Dane {0} nie są spakowane, więc użytkownicy mogą zmienić je przed przystąpieniem i uzyska nieuczciwą przewagę.
+
+Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij udostępnić spakowanej wersji klientom.</alternative></data>
   <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
     <value>Dane nie są szyfrowane</value>
   </data>
@@ -1687,5 +1689,8 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   </data>
   <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
     <value>Jeśli to wyłączysz, zawsze można włączyć w ustawieniach online</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Brakuje tagu “{0}”</value>
   </data>
 </root>

@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>En arriere</value>
-  </data>
+    <value>En arrière</value>
+  <alternative>En arriere</alternative></data>
   <data name="Cancel" xml:space="preserve">
     <value>Annuler</value>
   </data>
@@ -134,8 +134,8 @@
     <value>En avant</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Lancer</value>
-  </data>
+    <value>Go</value>
+  <alternative>Lancer</alternative></data>
   <data name="HidePassword" xml:space="preserve">
     <value>Masquer le mot de passe</value>
     <comment>Pour la fenêtre mot de passe</comment>
@@ -144,8 +144,8 @@
     <value>Home</value>
   </data>
   <data name="ImagesFilter" xml:space="preserve">
-    <value>Fichiers images|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
+    <value>Fichiers image|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Tous les fichiers (*.*)|*.*</value>
+  <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative><alternative>Fichiers images|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
   <data name="KeyAlt" xml:space="preserve">
     <value>Alt</value>
   </data>
@@ -156,59 +156,59 @@
     <value>Alt (Droite)</value>
   </data>
   <data name="KeyBackspace" xml:space="preserve">
-    <value>Backspace</value>
-  </data>
+    <value>Retour arrière</value>
+  <alternative>Backspace</alternative></data>
   <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Navigateur Retour</value>
-  </data>
+    <value>Navigateur retour</value>
+  <alternative>Navigateur Retour</alternative></data>
   <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Navigateur Favories</value>
-  </data>
+    <value>Navigateur favoris</value>
+  <alternative>Navigateur Favories</alternative></data>
   <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Navigateur Arriere</value>
-  </data>
+    <value>Navigateur arrière</value>
+  <alternative>Navigateur Arriere</alternative></data>
   <data name="KeyBrowserHome" xml:space="preserve">
     <value>Navigateur Home</value>
   </data>
   <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Navigateur Rafraichir</value>
-  </data>
+    <value>Navigateur rafraîchir</value>
+  <alternative>Navigateur Rafraichir</alternative></data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Navigateur Recherche</value>
-  </data>
+    <value>Navigateur recherche</value>
+  <alternative>Navigateur Recherche</alternative></data>
   <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Navigateur Stop</value>
-  </data>
+    <value>Navigateur stop</value>
+  <alternative>Navigateur Stop</alternative></data>
   <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
+    <value>Verrouillage majuscules</value>
+  <alternative>Caps Lock</alternative></data>
   <data name="KeyContextMenu" xml:space="preserve">
     <value>Menu contextuel</value>
   </data>
   <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
+    <value>Contrôle</value>
+  <alternative>Control</alternative></data>
   <data name="KeyControlLeft" xml:space="preserve">
-    <value>Controle (Gauche)</value>
-  </data>
+    <value>Contrôle (gauche)</value>
+  <alternative>Controle (Gauche)</alternative></data>
   <data name="KeyControlRight" xml:space="preserve">
-    <value>Controle (Droite)</value>
-  </data>
+    <value>Contrôle (droite)</value>
+  <alternative>Controle (Droite)</alternative></data>
   <data name="KeyDelete" xml:space="preserve">
-    <value>Suppr.</value>
-  <alternative>Delete</alternative></data>
+    <value>Suppression</value>
+  <alternative>Delete</alternative><alternative>Suppr.</alternative></data>
   <data name="KeyDownArrow" xml:space="preserve">
-    <value>Fleche Bas</value>
-  </data>
+    <value>Flèche bas</value>
+  <alternative>Fleche Bas</alternative></data>
   <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
+    <value>Fin</value>
+  <alternative>End</alternative></data>
   <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
+    <value>Entrée</value>
+  <alternative>Enter</alternative></data>
   <data name="KeyEscape" xml:space="preserve">
-    <value>Escape</value>
-  </data>
+    <value>Échappement</value>
+  <alternative>Escape</alternative></data>
   <data name="KeyHelp" xml:space="preserve">
     <value>Help</value>
   </data>
@@ -216,30 +216,30 @@
     <value>Home</value>
   </data>
   <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
-  </data>
+    <value>Insertion</value>
+  <alternative>Insert</alternative></data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
-    <value>Lancer l'Application Favorite 1</value>
-  <alternative>Lancer l'Application Favorie 1</alternative></data>
+    <value>Lancer l'application favorite 1</value>
+  <alternative>Lancer l'Application Favorie 1</alternative><alternative>Lancer l'Application Favorite 1</alternative></data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
-    <value>Lancer l'Application Favorite 2</value>
-  <alternative>Lancer l'Application Favorie 2</alternative></data>
+    <value>Lancer l'application favorite 2</value>
+  <alternative>Lancer l'Application Favorie 2</alternative><alternative>Lancer l'Application Favorite 2</alternative></data>
   <data name="KeyLaunchMail" xml:space="preserve">
     <value>Lancer Mail</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Fleche Gauche</value>
-  </data>
+    <value>Flèche gauche</value>
+  <alternative>Fleche Gauche</alternative></data>
   <data name="KeyMediaNextTrack" xml:space="preserve">
-    <value>Piste suivante</value>
-  </data>
+    <value>Circuit suivant</value>
+  <alternative>Piste suivante</alternative></data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Ecouter
-</value>
-  <alternative>Play</alternative></data>
+    <value>Lire</value>
+  <alternative>Play</alternative><alternative>Ecouter
+</alternative></data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
-    <value>Piste précédente</value>
-  </data>
+    <value>Circuit précédent</value>
+  <alternative>Piste précédente</alternative></data>
   <data name="KeyMediaStop" xml:space="preserve">
     <value>Stop</value>
   </data>
@@ -247,78 +247,78 @@
     <value>Pavé numérique {0}</value>
   </data>
   <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
+    <value>Verr. num.</value>
+  <alternative>Num Lock</alternative></data>
   <data name="KeyPageDown" xml:space="preserve">
-    <value>Page Down</value>
-  </data>
+    <value>Page suivante</value>
+  <alternative>Page Down</alternative></data>
   <data name="KeyPageUp" xml:space="preserve">
-    <value>Page Up</value>
-  </data>
+    <value>Page précédente</value>
+  <alternative>Page Up</alternative></data>
   <data name="KeyPause" xml:space="preserve">
     <value>Pause</value>
   </data>
   <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
+    <value>Imprimer l'écran</value>
+  <alternative>Print Screen</alternative></data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Fleche Droite</value>
-  </data>
+    <value>Flèche droite</value>
+  <alternative>Fleche Droite</alternative></data>
   <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
+    <value>Touche d'arrêt du défilement</value>
+  <alternative>Scroll Lock</alternative></data>
   <data name="KeySelectMedia" xml:space="preserve">
-    <value>Selectionner Media</value>
-  </data>
+    <value>Selectionner le média</value>
+  <alternative>Selectionner Media</alternative></data>
   <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
+    <value>Majuscule</value>
+  <alternative>Shift</alternative></data>
   <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Shift (Gauche)</value>
-  </data>
+    <value>Majuscule (gauche)</value>
+  <alternative>Shift (Gauche)</alternative></data>
   <data name="KeyShiftRight" xml:space="preserve">
-    <value>Shift (Droite)</value>
-  </data>
+    <value>Majuscule (droite)</value>
+  <alternative>Shift (Droite)</alternative></data>
   <data name="KeySpace" xml:space="preserve">
-    <value>Space</value>
-  </data>
+    <value>Espace</value>
+  <alternative>Space</alternative></data>
   <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
-  </data>
+    <value>Tabulation</value>
+  <alternative>Tab</alternative></data>
   <data name="KeyUpArrow" xml:space="preserve">
-    <value>Fleche Haut</value>
-  </data>
+    <value>Flèche haut</value>
+  <alternative>Fleche Haut</alternative></data>
   <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Descendre le Volume</value>
-  </data>
+    <value>Baisser le volume</value>
+  <alternative>Descendre le Volume</alternative></data>
   <data name="KeyVolumeMute" xml:space="preserve">
     <value>Couper le Volume</value>
   </data>
   <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Monter le Volume</value>
-  </data>
+    <value>Monter le volume</value>
+  <alternative>Monter le Volume</alternative></data>
   <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Gauche)</value>
-  </data>
+    <value>Windows (gauche)</value>
+  <alternative>Windows (Gauche)</alternative></data>
   <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Droite)</value>
-  </data>
+    <value>Windows (droite)</value>
+  <alternative>Windows (Droite)</alternative></data>
   <data name="KeyZoom" xml:space="preserve">
     <value>Zoom</value>
   </data>
   <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>O
-</value>
+    <value>O</value>
     <comment>Byte</comment>
-  <alternative>B</alternative></data>
+  <alternative>B</alternative><alternative>O
+</alternative></data>
   <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
     <value>Eo</value>
     <comment>Exabyte</comment>
   <alternative>EB</alternative></data>
   <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>Go</value>
+    <value>GB</value>
     <comment>Gygabyte</comment>
-  <alternative>GB</alternative></data>
+  <alternative>Go</alternative></data>
   <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
     <value>Ko</value>
     <comment>Kilobyte</comment>
@@ -336,8 +336,8 @@
     <comment>Terabyte</comment>
   <alternative>TB</alternative></data>
   <data name="MarkLimited" xml:space="preserve">
-    <value>LIMITE</value>
-  <alternative>LIMITED</alternative></data>
+    <value>LIMITÉ</value>
+  <alternative>LIMITED</alternative><alternative>LIMITE</alternative></data>
   <data name="MarkNew" xml:space="preserve">
     <value>NOUVEAU</value>
   <alternative>NEW</alternative></data>
@@ -351,11 +351,11 @@
     <value>Navigate link</value>
   </data>
   <data name="NavigationFailed" xml:space="preserve">
-    <value>Navigation failed</value>
-  </data>
+    <value>Navigation échouée</value>
+  <alternative>Navigation failed</alternative></data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
-  </data>
+    <value>Impossible de naviguer vers {0}, impossible de trouver ModernFrame target '{1}'</value>
+  <alternative>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</alternative></data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>Impossible d'atteindre {0}, aucune source définie</value>
   <alternative>Unable to navigate to {0}, no source specified</alternative></data>
@@ -369,8 +369,8 @@
     <value>Choisir une couleur</value>
   <alternative>Prendre une couleur</alternative></data>
   <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Prendre une couleur de l'écran</value>
-  </data>
+    <value>Choisir une couleur sur l'écran</value>
+  <alternative>Prendre une couleur de l'écran</alternative></data>
   <data name="Restore" xml:space="preserve">
     <value>Rétablir</value>
   <alternative>Restorer</alternative></data>
@@ -391,11 +391,11 @@
     <value>Suggestions</value>
   </data>
   <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
-  </data>
+    <value>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]précédente[/url].</value>
+  <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative></data>
   <data name="TexturesFilter" xml:space="preserve">
-    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
-  </data>
+    <value>Fichiers DDS &amp; TIFF|*.dds;*.tif;*.tiff|Fichiers image|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Tous les fichiers (*.*)|*.*</value>
+  <alternative>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</alternative></data>
   <data name="UIThreadRequired" xml:space="preserve">
     <value>L'Operation requiere le Thread UI</value>
   </data>
@@ -421,11 +421,11 @@
     <value>{0} of {1} chargé</value>
   </data>
   <data name="Progress_Uploading" xml:space="preserve">
-    <value>{0} uploadé</value>
-  </data>
+    <value>{0} téléversé</value>
+  <alternative>{0} uploadé</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} uploadé</value>
-  </data>
+    <value>{0} of {1} téléversé</value>
+  <alternative>{0} of {1} uploadé</alternative></data>
   <data name="Ordinalizing_First" xml:space="preserve">
     <value>Premier</value>
   </data>
@@ -463,8 +463,8 @@
     <value>Douzième</value>
   </data>
   <data name="Ordinalizing_Thirteenth" xml:space="preserve">
-    <value>Treisième</value>
-  </data>
+    <value>Treizième</value>
+  <alternative>Treisième</alternative></data>
   <data name="Ordinalizing_Fourteenth" xml:space="preserve">
     <value>Quatorzième</value>
   </data>
@@ -496,8 +496,8 @@
     <value>Vingt-troisième</value>
   </data>
   <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>Vingt-quattrième</value>
-  </data>
+    <value>Vingt-quatrième</value>
+  <alternative>Vingt-quattrième</alternative></data>
   <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
     <value>Vingt-cinquième</value>
   </data>
@@ -517,8 +517,8 @@
     <value>Trentième</value>
   </data>
   <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>Trent-et-unième</value>
-  </data>
+    <value>Trente-et-unième</value>
+  <alternative>Trent-et-unième</alternative></data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
     <value>{0}e</value>
   </data>
@@ -544,14 +544,14 @@
     <value>Oups !</value>
   </data>
   <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Patientez...</value>
-  </data>
+    <value>Veuillez patienter...</value>
+  <alternative>Patientez...</alternative></data>
   <data name="Common_Add" xml:space="preserve">
     <value>Ajouter</value>
   </data>
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Partager la grille de course</value>
-  </data>
+    <value>Partager la grille de départ</value>
+  <alternative>Partager la grille de course</alternative></data>
   <data name="Common_Ascending" xml:space="preserve">
     <value>Ascendant</value>
   </data>
@@ -560,5 +560,44 @@
   </data>
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0} : </value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Rendre visible</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Annuler la réservation</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Favori</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Inviter</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Masquer</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Sauvegarder la grille de départ comme préréglage</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>et</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Supprimer des favoris</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Gérer les listes...</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Ajoute le serveur à la liste des favoris (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Retire le serveur de la liste des favoris (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Ajoute le serveur à la liste des serveurs masqués (cherchez avec “@hidden” pour l'ouvrir)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Retire le serveur de la liste des serveurs masqués</value>
   </data>
 </root>

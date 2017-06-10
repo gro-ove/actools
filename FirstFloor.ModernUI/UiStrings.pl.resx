@@ -130,8 +130,8 @@
     <value>Zamknij</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Przejdź</value>
-  <alternative>Jedź</alternative></data>
+    <value>Uruchom</value>
+  <alternative>Jedź</alternative><alternative>Przejdź</alternative></data>
   <data name="Home" xml:space="preserve">
     <value>Główna</value>
   <alternative>Home</alternative></data>
@@ -148,8 +148,8 @@
     <value>Błędny odnośnik</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Nie można przejść do {0}, nie można znależć celu ModernFrame '{1}'</value>
-  </data>
+    <value>Nie można przejść do {0}, nie można znaleźć celu ModernFrame '{1}'</value>
+  <alternative>Nie można przejść do {0}, nie można znależć celu ModernFrame '{1}'</alternative></data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>Nie można przejść do {0}, brak określonego źródła</value>
   </data>
@@ -223,8 +223,8 @@
     <value>Page Up</value>
   </data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Srzałka w prawo</value>
-  </data>
+    <value>Strzałka w prawo</value>
+  <alternative>Srzałka w prawo</alternative></data>
   <data name="KeyShift" xml:space="preserve">
     <value>Shift</value>
   </data>
@@ -310,26 +310,26 @@
     <value>Menu kontekstowe</value>
   <alternative>Context Menu</alternative></data>
   <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser Back</value>
-  </data>
+    <value>Cofnij</value>
+  <alternative>Browser Back</alternative></data>
   <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Favorites</value>
-  </data>
+    <value>Ulubione</value>
+  <alternative>Browser Favorites</alternative></data>
   <data name="KeyBrowserForward" xml:space="preserve">
     <value>Browser Forward</value>
   </data>
   <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Home</value>
-  </data>
+    <value>Główna</value>
+  <alternative>Browser Home</alternative></data>
   <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser Refresh</value>
-  </data>
+    <value>Odśwież</value>
+  <alternative>Browser Refresh</alternative></data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser Search</value>
-  </data>
+    <value>Szukaj</value>
+  <alternative>Browser Search</alternative></data>
   <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser Stop</value>
-  </data>
+    <value>Zatrzymaj</value>
+  <alternative>Browser Stop</alternative></data>
   <data name="KeyVolumeDown" xml:space="preserve">
     <value>Zmniejsz głośność</value>
   </data>

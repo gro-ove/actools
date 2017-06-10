@@ -1023,4 +1023,13 @@
   <data name="RaceGrid_You" xml:space="preserve">
     <value>Вы</value>
   </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Легкий</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Трудный</value>
+  </data>
 </root>

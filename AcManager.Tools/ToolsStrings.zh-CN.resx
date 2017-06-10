@@ -1688,4 +1688,7 @@
   <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
     <value>如果你关闭此设定,可以在多人联机设置中重新打开</value>
   </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>找不到标签"{0}"</value>
+  </data>
 </root>

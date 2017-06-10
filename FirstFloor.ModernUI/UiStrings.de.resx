@@ -178,8 +178,8 @@
     <value>Strg (Rechts)</value>
   </data>
   <data name="KeyDownArrow" xml:space="preserve">
-    <value>Pfeil Runter</value>
-  </data>
+    <value>Pfeil Herunter</value>
+  <alternative>Pfeil Runter</alternative></data>
   <data name="KeyEnd" xml:space="preserve">
     <value>Ende</value>
   </data>
@@ -199,11 +199,11 @@
     <value>Nummernblock {0}</value>
   </data>
   <data name="KeyPageDown" xml:space="preserve">
-    <value>Bild runter</value>
-  </data>
+    <value>Bild ab</value>
+  <alternative>Bild runter</alternative></data>
   <data name="KeyPageUp" xml:space="preserve">
-    <value>Bild hoch</value>
-  </data>
+    <value>Bild auf</value>
+  <alternative>Bild hoch</alternative></data>
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Pfeil Rechts</value>
   </data>
@@ -439,29 +439,29 @@
     <value>{0}.</value>
   </data>
   <data name="Time_Month" xml:space="preserve">
-    <value>{0} Monat</value>
-  </data>
+    <value>{0} Monat(e)</value>
+  <alternative>{0} Monat</alternative></data>
   <data name="Time_Week" xml:space="preserve">
-    <value>{0} Woche</value>
-  </data>
+    <value>{0} Woche(n)</value>
+  <alternative>{0} Woche</alternative></data>
   <data name="Time_Day" xml:space="preserve">
-    <value>{0} Tag</value>
-  </data>
+    <value>{0} Tag(e)</value>
+  <alternative>{0} Tag</alternative></data>
   <data name="Time_Hour" xml:space="preserve">
-    <value>{0} Stunde</value>
-  </data>
+    <value>{0} Stunde(n)</value>
+  <alternative>{0} Stunde</alternative></data>
   <data name="Time_Minute" xml:space="preserve">
-    <value>{0} Minute</value>
-  </data>
+    <value>{0} Minute(n)</value>
+  <alternative>{0} Minute</alternative></data>
   <data name="Time_Second" xml:space="preserve">
-    <value>{0} Sekunde</value>
-  </data>
+    <value>{0} Sekunde(n)</value>
+  <alternative>{0} Sekunde</alternative></data>
   <data name="Common_Oops" xml:space="preserve">
     <value>Ups!</value>
   </data>
   <data name="FatalError_Message" xml:space="preserve">
-    <value>App erlitt ein Problem und benötigt einen Neustart. Bitte klicke auf "Problem melden" wenn eine Meldung gesendet werden soll.</value>
-  </data>
+    <value>Programm ist auf ein Problem gestoßen und benötigt einen Neustart. Bitte klicke auf "Problem melden", wenn eine Meldung gesendet werden soll.</value>
+  <alternative>App erlitt ein Problem und benötigt einen Neustart. Bitte klicke auf "Problem melden" wenn eine Meldung gesendet werden soll.</alternative></data>
   <data name="Common_PleaseWait" xml:space="preserve">
     <value>Bitte warten...</value>
   </data>
@@ -518,5 +518,95 @@
   </data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Dateien|*.dds;*.tif;*.tiff|Bild Dateien|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Alle Dateien(*.*)|*.*</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Kopiere[/url] die Details des Fehlers in die Zwischenablage. Versuche [url=cmd://refresh]diese Seite neu zu laden[/url] oder [url=cmd://browseback]gehe zurück[/url].</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Kopiere[/url] die Details des Fehlers in die Zwischenablage. Versuche [url=cmd://restart]das Programm neu zu starten[/url] oder einfach [url=cmd://exit]zu schließen[/url].</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Aus Favoriten entfernen</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Booking abbrechen</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Einladen</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Hauptseite</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>Kann nicht zu {0} navigieren, kann kein ModernFrame target '{1}' finden</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>Kann nicht zu {0} navigieren, keine Quelle angegeben</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Link zum Server teilen, damit deine Freunde schnell am Rennen teilnehmen können (Strg+BildAuf)</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Listen verwalten...</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Nächste Strecke</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>Navigation fehlgeschlagen</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Navigiere Link</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>Operation erfordert UI-Thread</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Passwort einbeziehen</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Server von Favoriten entfernen (Strg+D)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Server von versteckter Serverliste entfernen</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Server zu Favoritenliste hinzufügen (Strg+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Server zur ausgeblendeten Liste hinzufügen (nach @hidden suchen um zu öffnen)</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Starte Lieblings-App 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Starte Lieblings-App 2</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Starte Mail</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>und</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Verbergen</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Vorherige Strecke</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Wiederherstellen</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Zu Favoriten hinzufügen</value>
   </data>
 </root>

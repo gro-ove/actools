@@ -721,8 +721,8 @@
     <value>Адрес</value>
   </data>
   <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
-    <value>Для</value>
-  </data>
+    <value>Цель</value>
+  <alternative>Для</alternative></data>
   <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
     <value>Тип</value>
   </data>
@@ -2237,5 +2237,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Таблица с временами</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>Убедитесь, что требуемый автомобиль и колея установлены и доступны.</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>Невозможно разобрать запрос</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>Пароль:</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Информация о сессии</value>
   </data>
 </root>

@@ -157,8 +157,8 @@
     <value>Aktualisierung fehlgeschlagen</value>
   </data>
   <data name="Shared_CarSetup" xml:space="preserve">
-    <value>Auto Setup</value>
-  </data>
+    <value>Fahrzeug-Setup</value>
+  <alternative>Auto Setup</alternative></data>
   <data name="Shared_ControlsPreset" xml:space="preserve">
     <value>Voreinstellung Steuerung</value>
   </data>
@@ -202,8 +202,8 @@
     <value>Beendet</value>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Serverinformation aktualisieren fehlgeschlagen</value>
-  <alternative>Serverinformation nicht aktualisierbar</alternative></data>
+    <value>Serverinformationen aktualisieren fehlgeschlagen</value>
+  <alternative>Serverinformation nicht aktualisierbar</alternative><alternative>Serverinformation aktualisieren fehlgeschlagen</alternative></data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
     <value>Nicht implementiert</value>
   </data>
@@ -250,8 +250,8 @@
     <value>Wiederholung umbenennen nicht möglich</value>
   </data>
   <data name="AdditionalContent_Car" xml:space="preserve">
-    <value>Auto</value>
-  </data>
+    <value>Fahrzeug</value>
+  <alternative>Auto</alternative></data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>Schriftart</value>
   </data>
@@ -292,8 +292,8 @@
     <value>Benötigte Strecke "{0}" fehlt</value>
   </data>
   <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
-    <value>Benötigtes Auto "{0}" fehlt</value>
-  </data>
+    <value>Benötigtes Fahrzeug "{0}" fehlt</value>
+  <alternative>Benötigtes Auto "{0}" fehlt</alternative></data>
   <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
     <value>Benötigtes Wetter "{0}" fehlt</value>
   </data>
@@ -301,8 +301,8 @@
     <value>Basismodell fehlt</value>
   </data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>Markensymbol fehlt</value>
-  </data>
+    <value>Markenemblem fehlt</value>
+  <alternative>Markensymbol fehlt</alternative></data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
     <value>Upgrade-Symbol fehlt</value>
   </data>
@@ -310,8 +310,8 @@
     <value>Modell (KN5-Datei) fehlt</value>
   </data>
   <data name="AcError_CarIsMissing" xml:space="preserve">
-    <value>Auto "{0}" fehlt</value>
-  </data>
+    <value>Fahrzeug "{0}" fehlt</value>
+  <alternative>Auto "{0}" fehlt</alternative></data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
     <value>Strecke "{0}" fehlt</value>
   </data>
@@ -412,8 +412,8 @@
     <value>ID fehlt</value>
   </data>
   <data name="Common_CarIdIsMissing" xml:space="preserve">
-    <value>Auto-ID fehlt</value>
-  </data>
+    <value>Fahrzeug-ID fehlt</value>
+  <alternative>Auto-ID fehlt</alternative></data>
   <data name="Common_Height" xml:space="preserve">
     <value>Höhe</value>
   </data>
@@ -439,8 +439,8 @@
     <value>Undefinierter Fehler</value>
   </data>
   <data name="ContentInstallation_CarNew" xml:space="preserve">
-    <value>Neues Auto {0}</value>
-  </data>
+    <value>Neues Fahrzeug {0}</value>
+  <alternative>Neues Auto {0}</alternative></data>
   <data name="ContentInstallation_TrackNew" xml:space="preserve">
     <value>Neue Strecke {0}</value>
   </data>
@@ -454,8 +454,8 @@
     <value>Neues Wetter {0}</value>
   </data>
   <data name="ContentInstallation_CarExisting" xml:space="preserve">
-    <value>Neue Version für Auto {0}</value>
-  </data>
+    <value>Neue Version für Fahrzeug {0}</value>
+  <alternative>Neue Version für Auto {0}</alternative></data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
     <value>Neue Version für Strecke {0}</value>
   </data>
@@ -580,11 +580,11 @@
     <value>Antiblockiersystem</value>
   </data>
   <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Automatischer Gasstoß</value>
-  </data>
+    <value>Automatisches Zwischengas</value>
+  <alternative>Automatischer Gasstoß</alternative></data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
-    <value>Synchronisiert Drehzahl automatisch beim Runterschalten</value>
-  </data>
+    <value>Synchronisiert Drehzahl automatisch beim Herunterschalten</value>
+  <alternative>Synchronisiert Drehzahl automatisch beim Runterschalten</alternative></data>
   <data name="Assists_AutoClutch" xml:space="preserve">
     <value>Automatische Kupplung</value>
   </data>
@@ -610,8 +610,8 @@
     <value>Mechanische Schäden</value>
   </data>
   <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
-    <value>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</value>
-  </data>
+    <value>Schadensempfindlicher Motor, Getriebe, Aufhängung, etc.</value>
+  <alternative>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</alternative></data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
     <value>Windschatteneffekt</value>
   </data>
@@ -670,8 +670,8 @@
     <value>Gleiche Gruppe</value>
   </data>
   <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
-    <value>Neues Auto zur Liste hinzufügen</value>
-  </data>
+    <value>Neues Fahrzeug zur Liste hinzufügen</value>
+  <alternative>Neues Auto zur Liste hinzufügen</alternative></data>
   <data name="Drive_GridBuilding" xml:space="preserve">
     <value>Startaufstellung bilden…</value>
   </data>
@@ -691,11 +691,11 @@
     <value>An</value>
   </data>
   <data name="JumpStartPenalty_Pits" xml:space="preserve">
-    <value>Boxen</value>
-  </data>
+    <value>Strafversetzung in die Box</value>
+  <alternative>Boxen</alternative></data>
   <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
-    <value>Durchfahrt</value>
-  </data>
+    <value>Durchfahrtsstrafe</value>
+  <alternative>Durchfahrt</alternative></data>
   <data name="Session_TrackDay" xml:space="preserve">
     <value>Track Day</value>
   </data>
@@ -748,17 +748,17 @@
     <value>Benötigte Fahrzeuglackierung "{1}" oder {0} fehlt</value>
   </data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>Fahrzeuglackierungsbibliothek ({0}/livery.png) fehlt</value>
-  </data>
+    <value>({0}/livery.png) der Fahrzeuglackierung fehlt</value>
+  <alternative>Fahrzeuglackierungsbibliothek ({0}/livery.png) fehlt</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Fahrzeuglackierungsvorschau ({0}/preview.jpg) fehlt</value>
-  </data>
+    <value>Vorschau ({0}/preview.jpg) der Fahrzeuglackierung fehlt</value>
+  <alternative>Fahrzeuglackierungsvorschau ({0}/preview.jpg) fehlt</alternative></data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
     <value>Fahrzeuglackierungen fehlen</value>
   </data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>Fahrzeuglackierungsverzeichnis ist nicht erreichbar</value>
-  </data>
+    <value>Verzeichnis der Fahrzeuglackierung ist nicht erreichbar</value>
+  <alternative>Fahrzeuglackierungsverzeichnis ist nicht erreichbar</alternative></data>
   <data name="AcObject_CannotChangeId" xml:space="preserve">
     <value>ID ändern nicht möglich</value>
   </data>
@@ -769,8 +769,8 @@
     <value>Löschen nicht möglich</value>
   </data>
   <data name="AcObject_CannotRemove" xml:space="preserve">
-    <value>Verschieben von bestehendem Verzeichnis nicht möglich</value>
-  </data>
+    <value>Bestehendes Verzeichnis kann nicht gelöscht werden</value>
+  <alternative>Verschieben von bestehendem Verzeichnis nicht möglich</alternative></data>
   <data name="AcObject_CannotToggle" xml:space="preserve">
     <value>Umschalten nicht möglich</value>
   </data>
@@ -841,8 +841,8 @@
     <value>Minimal</value>
   </data>
   <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
+    <value>Maximal</value>
+  <alternative>Ultra</alternative></data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Sehr hoch</value>
   </data>
@@ -862,8 +862,8 @@
     <value>Löschen der Datei "{0}", um Aktualisierung zu installieren, nicht möglich. Bitte versuchen manuell zu löschen und dann starte "{1}"</value>
   </data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
-    <value>Prozess konnte nicht aktualisiert werden: {0}. Bitte manuel versuchen zu installieren.</value>
-  </data>
+    <value>Prozess konnte nicht aktualisiert werden: {0}. Bitte versuchen, eine neue Version manuell zu installieren.</value>
+  <alternative>Prozess konnte nicht aktualisiert werden: {0}. Bitte manuel versuchen zu installieren.</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Entpackte Version untersützt keine automatische Aktualisierung</value>
   </data>
@@ -1036,11 +1036,11 @@
     <value>Nach hinten stellen</value>
   </data>
   <data name="Controls_NextGear" xml:space="preserve">
-    <value>Raufschalten</value>
-  </data>
+    <value>Heraufschalten</value>
+  <alternative>Raufschalten</alternative></data>
   <data name="Controls_PreviousGear" xml:space="preserve">
-    <value>Runterschalten</value>
-  </data>
+    <value>Herunterschalten</value>
+  <alternative>Runterschalten</alternative></data>
   <data name="Controls_Steering" xml:space="preserve">
     <value>Lenkung</value>
   </data>
@@ -1057,8 +1057,8 @@
     <value>Gas</value>
   </data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
-    <value>XBOX 360 Controller</value>
-  </data>
+    <value>Xbox 360 Controller</value>
+  <alternative>XBOX 360 Controller</alternative></data>
   <data name="CustomShowroom_Lite" xml:space="preserve">
     <value>Einfach</value>
   </data>
@@ -1135,17 +1135,17 @@
     <value>Wolken (content/texture/clouds) könnten fehlen</value>
   </data>
   <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
-    <value>Standard PP Filter (default.ini) fehlt, wird aber benötigt</value>
-  </data>
+    <value>Standard-Nachbearbeitungsfilter (default.ini) fehlt, wird aber benötigt</value>
+  <alternative>Standard PP Filter (default.ini) fehlt, wird aber benötigt</alternative></data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
-    <value>Fahrer Model fehlt wahrscheinlich</value>
-  </data>
+    <value>Fahrermodel fehlt vermutlich</value>
+  <alternative>Fahrer Model fehlt wahrscheinlich</alternative></data>
   <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
     <value>Password ist ungültig</value>
   </data>
   <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
-    <value>PP Filter "{0}" fehlt</value>
-  </data>
+    <value>Nachbearbeitungsfilter "{0}" fehlt</value>
+  <alternative>PP Filter "{0}" fehlt</alternative></data>
   <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
     <value>Shader "{0}" fehlt (kann bei AC Update gelöscht worden sein), Model muss repariert werden</value>
   </data>
@@ -1156,8 +1156,8 @@
     <value>Strecke unterstützt Zeitrennen nicht</value>
   </data>
   <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
-    <value>Reifenobjekte fehlen(WHEEL_LF, WHEEL_LR, …)</value>
-  </data>
+    <value>Reifenobjekte fehlen (WHEEL_LF, WHEEL_LR, …)</value>
+  <alternative>Reifenobjekte fehlen(WHEEL_LF, WHEEL_LR, …)</alternative></data>
   <data name="NotSupported" xml:space="preserve">
     <value>Nicht unterstützt</value>
   </data>
@@ -1186,8 +1186,8 @@
     <value>“[url="http://assetto-db.com/track/{0}"]{0}[/url]”</value>
   </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
-    <value>{0} Runde</value>
-  </data>
+    <value>{0} Runde(n)</value>
+  <alternative>{0} Runde</alternative></data>
   <data name="Period_Month" xml:space="preserve">
     <value>Monat</value>
   </data>
@@ -1204,8 +1204,8 @@
     <value>Woche</value>
   </data>
   <data name="PpFilterObject_CannotSave" xml:space="preserve">
-    <value>PP Filter  speichern fehlgeschlagen</value>
-  </data>
+    <value>Nachbearbeitungsfilter speichern fehlgeschlagen</value>
+  <alternative>PP Filter  speichern fehlgeschlagen</alternative></data>
   <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
     <value>Zufällig</value>
   </data>
@@ -1261,8 +1261,8 @@
     <value>UI Modul</value>
   </data>
   <data name="Shared_PpFilter" xml:space="preserve">
-    <value>PP Filter</value>
-  </data>
+    <value>Nachbearbeitungsfilter</value>
+  <alternative>PP Filter</alternative></data>
   <data name="Solving_Cancelled" xml:space="preserve">
     <value>Abgebrochen</value>
   </data>
@@ -1385,5 +1385,307 @@
   </data>
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5 Model</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Du)</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} auf {1}.</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Adminpasswort:</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Audioeinstellungsvorlage</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Ausgewähltes Fahrzeug besitzt keinen ordnungsgemäßen Sound</value>
+  </data>
+  <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
+    <value>Authorisationsprozess fehlgeschlagen</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Bewölkt</value>
+  </data>
+  <data name="OfficialStarter_UpdateAC" xml:space="preserve">
+    <value>Bitte AC aktualisieren oder den Starter ändern.</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Bitte das Foto ein verkleinern.</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Bitte ein auf dem Server verfügbares Fahrzeug wählen</value>
+  </data>
+  <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
+    <value>Bitte wähle eine Datei im Original- oder einem Unterverzeichnis</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Booking geschlossen</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>Content pack Laden fehlgeschlagen</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Data-Verzeichnis ist nicht verschlüsselt</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Data-Verzeichnis von {0} ist nicht gepackt, Nutzer können es vor Beitreten des Servers bearbeiten und einen unfairen Vorteil erhalten.
+
+Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen, die gepackte Version mit den Clients zu teilen.</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Datei wird analysiert, manche Werte jedoch übersprungen.</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Der Befehl kann nicht ausgeführt werden</value>
+  </data>
+  <data name="Online_CannotParseAddress" xml:space="preserve">
+    <value>Die Adresse kann nicht aufgelöst werden</value>
+  </data>
+  <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
+    <value>Die Originaldatei wird in den Papierkorb verschoben, sofern vorhanden</value>
+  </data>
+  <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
+    <value>Die ungepatchte Originalversion des Startprogramms konnte nicht wieder hergestellt werden. Bitte [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]ersetze es manuell[/url].</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>Drei Flächen per Frame</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Du bist auf diesem Server</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Du hast einen Bookingplatz auf diesem Server</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Du stehst auf der Blacklist dieses Servers</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Ein anderes Fahrzeug wählen.</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Eine der schnellsten Starter, um das Rennen zu starten; funktioniert nicht ohne Internetverbindung oder laufender Steam-Anwendung</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>Eine Fläche per Frame</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Einfach</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Eingabezeile für Adminpasswort anzeigen</value>
+  </data>
+  <data name="Common_UnhandledError_Commentary" xml:space="preserve">
+    <value>Es ist ein unbehandelter Fehler aufgetreten</value>
+  </data>
+  <data name="Installator_RemoveExistingFirst" xml:space="preserve">
+    <value>Existierendes zuerst entfernen</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Extravagant</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Fahrzeuge neu scannen fehlgeschlagen</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Fügt dem originalen Launcher ein spezielles UI-Modul hinzu, welches Befehle ausführt und Rennen startet; nutze dies, wenn du sowohl Content Manager als auch den originalen Launcher gleichzeitig benutzt</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>Fünf Flächen per Frame</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Gehe sicher, dass der Befehl nicht mehr als {0:F1} Sekunden benötigt; nutze "start [app.exe]” statt “[app.exe]”, wenn App im Hintergrund laufen soll.</value>
+  </data>
+  <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
+    <value>Gehe sicher, dass die Dateien überschrieben werden können.</value>
+  </data>
+  <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
+    <value>Gehe sicher, dass die Filter-Datei überschrieben werden kann.</value>
+  </data>
+  <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
+    <value>Gehe sicher, dass die Server-Addresse korrekt und der Server erreichbar ist.</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Gehe sicher, dass die Sounddateien des Ausstellungsraums in keinem anderen Programm geöffnet sind.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Gehe sicher, dass genügend Speicherplatz vorhanden ist und originale Dateien entfernt werden können.</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Gehe sicher, dass genügend Speicherplatz vorhanden ist.</value>
+  </data>
+  <data name="Uploader_RequestFailed" xml:space="preserve">
+    <value>GET Anfrage fehlgeschlagen</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Kann Bild mit Magick.NET nicht laden</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Kann Fahrzeug-Sound nicht ersetzen</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared" xml:space="preserve">
+    <value>Kann gemeinsamen Eintrag nicht erfassen</value>
+  </data>
+  <data name="SharingHelper_NotSupported" xml:space="preserve">
+    <value>Kann gemeinsamen Eintrag nicht erfassen, der Typ “{0}” wird nicht unterstützt</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
+    <value>Kann Sound nicht umschalten</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Kann Startfeld-Modus mit ID “{0}” nicht finden</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>Lua initialisieren nicht möglich</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Meisterschaft</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Mittel</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Modus für Startaufstellung nicht vorhanden</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Nativ</value>
+  </data>
+  <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
+    <value>Neue Datei wird mit ID-basiertem Namen erstellt</value>
+  </data>
+  <data name="Online_ScanningNothingFound" xml:space="preserve">
+    <value>Nichts gefunden</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Offizielle Kunos Methode. Kann langsam und unzuverlässig sein, erfordert aber keine Modifikation</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>Ping um HTTP-Port zu finden...</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Probiert acs.exe direkt auszuführen; funktioniert in den meisten Fällen nicht</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Punkte</value>
+  </data>
+  <data name="DirectLoader_RdChanged" xml:space="preserve">
+    <value>Racedepartement wurde verändert.</value>
+  </data>
+  <data name="DirectLoader_RecursionDetected" xml:space="preserve">
+    <value>Rekursion festgestellt</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Scannt...</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Schnellster Starter, started Rennen direkt ohne Steam; Online funktioniert, Errungenschaften werden jedoch nicht berücksichtigt</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Schwer</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>Script sollte Sortierfunktion zurückgeben</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>Sechs Flächen per Frame</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Server ist voll</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Servernachricht: “{0}”</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Siege</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Solltest du diese Einstellung deaktivieren, kannst du es jederzeit in den Online-Einstellungen wieder aktivieren</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Sortiere:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Sortierung für Kandidaten</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Spieler</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Stammverzeichnis</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Startaufstellungsvorlage</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Starten von RHM fehlgeschlagen</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+    <value>Strecke für Setups nicht vorhanden</value>
+  </data>
+  <data name="Online_ScanningProgress" xml:space="preserve">
+    <value>Suche ({0}/{1}), {2} gefunden…</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Tag "{0}" fehlt</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
+    <value>Timeout überschritten</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>Tricky</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>UI Modul "CM Helper" ist installiert und aktiviert. AssettoCorsa.exe neustarten nicht vergessen!</value>
+  </data>
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
+    <value>Unbehandelter Fehler beim Laden: {0}</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Ungültiges Passwort</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>Vier Flächen per Frame</value>
+  </data>
+  <data name="Solving_RestoreFrom" xml:space="preserve">
+    <value>Von ...{0} wiederherstellen</value>
+  </data>
+  <data name="Presets_FileFilter" xml:space="preserve">
+    <value>Voreinstellungen (*{0})|*{0}</value>
+  </data>
+  <data name="Shared_QuickDrivePreset" xml:space="preserve">
+    <value>Voreinstellungen für Schnellstart</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Wolkenverhangen</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="Weather_ScatteredClouds" xml:space="preserve">
+    <value>Zerstreute Wolken</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>Zwei Flächen per Frame</value>
   </data>
 </root>
