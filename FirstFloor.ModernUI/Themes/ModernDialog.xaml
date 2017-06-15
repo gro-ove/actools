@@ -47,8 +47,9 @@
                 <Border BorderBrush="{DynamicResource WindowBorder}" BorderThickness="1">
                   <c:Cell>
                     <c:Cell.LayoutTransform>
-                      <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0" ScaleX="{x:Static c:DpiAwareWindow.OptionScale}"
-                          ScaleY="{x:Static c:DpiAwareWindow.OptionScale}" />
+                      <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
+                          ScaleX="{Binding Scale, Source={x:Static c:DpiAwareWindow.AppScale}}"
+                          ScaleY="{Binding Scale, Source={x:Static c:DpiAwareWindow.AppScale}}" />
                     </c:Cell.LayoutTransform>
 
                     <!-- window background content -->

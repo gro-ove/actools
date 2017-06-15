@@ -76,6 +76,15 @@
         </mui:SpacingUniformGrid>
       </DockPanel>
 
+      <DockPanel>
+        <Label Content="RaceDepartment proxy:" Background="Transparent">
+          <Label.ToolTip>
+            <mui:BbCodeBlock BbCode="In case you got banned, as me 😢" />
+          </Label.ToolTip>
+        </Label>
+        <mui:BetterTextBox Text="{Binding Holder.RdProxy}" Placeholder="None" />
+      </DockPanel>
+
       <!--cars specific-->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_CarsHeader}" />
 

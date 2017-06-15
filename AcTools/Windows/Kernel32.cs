@@ -29,6 +29,9 @@ namespace AcTools.Windows {
             }
         }
 
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        public static extern int AddDllDirectory(string newDirectory);
+
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeleteFile(string name);

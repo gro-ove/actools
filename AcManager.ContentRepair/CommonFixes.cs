@@ -45,9 +45,11 @@ namespace AcManager.ContentRepair {
             }, cancellation);
         }
 
-        public static Task FixMissingDefaultPpFilter(CancellationToken cancellation) {
-            return Task.Run(() => {
-                var original = CmApiProvider.GetData("static/get/pp_default");
+        public static async Task FixMissingDefaultPpFilter(CancellationToken cancellation) {
+            var original = await CmApiProvider.GetStaticDataAsync("pp_default", cancellation: cancellation);
+            if (cancellation.IsCancellationRequested) return;
+
+            await Task.Run(() => {
                 cancellation.ThrowIfCancellationRequested();
                 if (original == null) throw new InformativeException("Can’t load original filter");
 

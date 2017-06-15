@@ -12,7 +12,9 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ProcessExtension {
-        public static string GetQuotedArgument([NotNull] string argument) {
+        public static string GetQuotedArgument([CanBeNull] string argument) {
+            if (string.IsNullOrEmpty(argument)) return "";
+
             // The argument is processed in reverse character order.
             // Any quotes (except the outer quotes) are escaped with backslash.
             // Any sequences of backslashes preceding a quote (including outer quotes) are doubled in length.
@@ -62,6 +64,14 @@ namespace AcTools.Utils.Helpers {
                 Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "",
                 UseShellExecute = shell
             });
+        }
+
+        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
+
+            startInfo.FileName = filename;
+            startInfo.Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "";
+            return Process.Start(startInfo);
         }
 
         public static bool HasExitedSafe([NotNull] this Process process) {

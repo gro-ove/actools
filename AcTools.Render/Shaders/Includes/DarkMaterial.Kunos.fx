@@ -181,11 +181,30 @@ technique10 Maps {
 	}
 }
 
+//// Skinned maps
+
+float4 ps_SkinnedMaps(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
+	float3 color, normal, maps; float alpha;
+	Unpack_SkinnedMaps(pin, color, alpha, normal, maps);
+
+	float4 refl = CalculateReflection_Maps(pin.PosW, normal, maps.y);
+	float3 lighted = CalculateLight_Maps_Sun(color, normal, pin.PosW, maps.x, maps.y, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+		alpha = alpha + refl.a * (1.0 - alpha);
+	}
+
+	return float4(lighted + refl.rgb * refl.a * maps.z, alpha);
+}
+
 technique10 SkinnedMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_5_0, ps_SkinnedMaps()));
 	}
 }
 

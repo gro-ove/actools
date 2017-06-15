@@ -151,7 +151,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             DeviceContext.ClearDepthStencilView(_outlineDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             DeviceContext.OutputMerger.SetTargets(_outlineDepthBuffer.DepthView);
             DeviceContext.Rasterizer.State = DeviceContextHolder.States.DoubleSidedState;
-            
+
             highlighted.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Outline);
 
             DeviceContext.ClearRenderTargetView(_outlineBuffer.TargetView, Color.Transparent);
@@ -227,7 +227,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             return (from carSlot in CarSlots
-                    where carSlot.CarNode?.RootObject.GetAllChildren().Contains(obj) == true
+                    where carSlot.CarNode?.ContainsNode(obj) == true
                     select carSlot.CarNode?.GetMaterial(obj)).FirstOrDefault();
         }
 
@@ -237,7 +237,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             return (from carSlot in CarSlots
-                    where carSlot.CarNode?.RootObject.GetAllChildren().Contains(obj) == true
+                    where carSlot.CarNode?.ContainsNode(obj) == true
                     select carSlot.CarNode?.GetKn5(obj)).FirstOrDefault();
         }
 

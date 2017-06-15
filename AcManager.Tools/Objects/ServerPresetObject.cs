@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -38,6 +42,7 @@ namespace AcManager.Tools.Objects {
             IniFilename = Path.Combine(Location, "server_cfg.ini");
             EntryListIniFilename = Path.Combine(Location, "entry_list.ini");
             ResultsDirectory = Path.Combine(Location, "results");
+            InitializeWrapperLocations();
         }
 
         public string EntryListIniFilename { get; private set; }
@@ -47,6 +52,7 @@ namespace AcManager.Tools.Objects {
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
             LoadEntryListOrThrow();
+            LoadWrapperParams();
         }
 
         private IniFile _entryListIniObject;
@@ -144,6 +150,9 @@ namespace AcManager.Tools.Objects {
             BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
             MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
 
+            _welcomeMessagePath = null; // thus, forcing loaded message and changed flag to update
+            WelcomeMessagePath = ini["DATA"].GetNonEmpty("WELCOME_PATH");
+
             // At least one weather entry is needed in order to launch the server
             var weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
             if (weather.Count == 0) {
@@ -218,6 +227,23 @@ namespace AcManager.Tools.Objects {
             section.Set("VOTE_DURATION", VoteDuration.TotalSeconds.RoundToInt());
             section.Set("BLACKLIST_MODE", BlacklistMode);
             section.Set("MAX_CONTACTS_PER_KM", MaxCollisionsPerKm);
+
+            if (WelcomeMessageChanged) {
+                SaveWelcomeMessageCommand.Execute();
+            }
+
+            ini["DATA"].Set("WELCOME_PATH", WelcomeMessagePath);
+
+            var welcomeFilename = Path.Combine(ServerPresetsManager.ServerDirectory, "cfg", $"welcome_{Id}.txt");
+            if (!string.IsNullOrWhiteSpace(WelcomeMessage)) {
+                File.WriteAllText(welcomeFilename, WelcomeMessage);
+                section.Set("WELCOME_MESSAGE", string.IsNullOrWhiteSpace(WelcomeMessagePath) ? null : $"cfg/{Path.GetFileName(welcomeFilename)}");
+            } else {
+                if (File.Exists(welcomeFilename)) {
+                    FileUtils.Recycle(welcomeFilename);
+                }
+                section.Remove("WELCOME_MESSAGE");
+            }
         }
 
         public override void Save() {
@@ -228,7 +254,31 @@ namespace AcManager.Tools.Objects {
                 base.Save();
             }
 
+            SaveWrapperParams();
             RemoveError(AcErrorType.Data_IniIsMissing);
         }
+
+        public override bool HandleChangedFile(string filename) {
+            var iniChanged = FileUtils.IsAffected(filename, IniFilename) || FileUtils.IsAffected(filename, EntryListIniFilename);
+            if (iniChanged || FileUtils.IsAffected(filename, WrapperConfigFilename) || FileUtils.IsAffected(filename, WrapperContentFilename)) {
+                if (!Changed || ModernDialog.ShowMessage(iniChanged ?
+                        ToolsStrings.AcObject_ReloadAutomatically_Ini : ToolsStrings.AcObject_ReloadAutomatically_Json,
+                        ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    ReloadIniData();
+                }
+
+                return true;
+            }
+
+            return base.HandleChangedFile(filename);
+        }
+
+        private DelegateCommand _randomizeSkinsCommand;
+
+        public DelegateCommand RandomizeSkinsCommand => _randomizeSkinsCommand ?? (_randomizeSkinsCommand = new DelegateCommand(() => {
+            foreach (var driverEntry in DriverEntries) {
+                driverEntry.RandomSkinCommand.Execute();
+            }
+        }, () => true));
     }
 }

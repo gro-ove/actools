@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        public static bool MoveFocus([CanBeNull] DependencyObject element, FocusNavigationDirection direction = FocusNavigationDirection.Next) {
+        public static bool MoveFocus([CanBeNull] this DependencyObject element, FocusNavigationDirection direction = FocusNavigationDirection.Next) {
             var e = element as UIElement;
             if (e == null) return false;
 
@@ -42,7 +42,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return true;
         }
 
-        public static bool RemoveFocus([CanBeNull] DependencyObject element) {
+        public static bool RemoveFocus([CanBeNull] this DependencyObject element) {
             var parent = element?.GetParents().OfType<IInputElement>().FirstOrDefault(x => x.Focusable);
             if (parent == null) return MoveFocus(element);
 
@@ -57,12 +57,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         e.Handled = true;
                     }
                     break;
-                case Key.Enter: 
+                case Key.Enter:
                     if (MoveFocus(sender as DependencyObject)) {
                         e.Handled = true;
                     }
                     break;
-                case Key.Tab: 
+                case Key.Tab:
                     if (Keyboard.Modifiers == ModifierKeys.Shift && MoveFocus(sender as DependencyObject, FocusNavigationDirection.Previous)) {
                         e.Handled = true;
                     }

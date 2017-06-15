@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,24 +5,38 @@ using System.Web;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
-    internal class AssettoDbLoader : DirectLoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?assetto-db.com/", RegexOptions.IgnoreCase);
+    internal class AssettoDbLoader : RedirectingLoader {
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?assetto-db\.com/", RegexOptions.IgnoreCase);
+        public static bool DownloadTest(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?assetto-db\.com/.+/download\b", RegexOptions.IgnoreCase);
 
         public AssettoDbLoader(string url) : base(url) { }
 
-        public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
-            var downloadPage = await client.DownloadStringTaskAsync(Url);
-            if (cancellation.IsCancellationRequested) return false;
+        protected override async Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation) {
+            var downloadUrl = url;
 
-            var match = Regex.Match(downloadPage, @"href=""(/[^""]+/download)""");
-            if (!match.Success) {
-                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_AssettoDbChanged);
-                return false;
+            if (!DownloadTest(downloadUrl)) {
+                var itemPage = await client.DownloadStringTaskAsync(url);
+                if (cancellation.IsCancellationRequested) return null;
+
+                var downloadUrlMatch = Regex.Match(itemPage, @"href=""(/[^""]+/download)""");
+                if (!downloadUrlMatch.Success) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_AssettoDbChanged);
+                    return null;
+                }
+
+                downloadUrl = "http://assetto-db.com" + HttpUtility.HtmlDecode(downloadUrlMatch.Groups[1].Value);
             }
 
-            Url = "http://assetto-db.com" + HttpUtility.HtmlDecode(match.Groups[1].Value);
-            Logging.Write("Assetto-DB.com download link: " + Url);
-            return true;
+            var downloadPage = await client.DownloadStringTaskAsync(downloadUrl);
+            if (cancellation.IsCancellationRequested) return null;
+
+            var match = Regex.Match(downloadPage, @"\bwindow\.location='([^']+)'");
+            if (!match.Success) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_AssettoDbChanged);
+                return null;
+            }
+
+            return match.Groups[1].Value;
         }
     }
 }

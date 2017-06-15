@@ -6,6 +6,11 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class StringExtension {
+        public static string RandomString(int length){
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[MathUtils.Random(s.Length)]).ToArray());
+        }
+
         [Pure]
         public static int CompareAsVersionTo([CanBeNull] this string a, [CanBeNull] string b) {
             if (a == null) return b == null ? 0 : -1;
@@ -74,7 +79,7 @@ namespace AcTools.Utils.Helpers {
             if (index == -1) throw new Exception("Old value not found");
             return s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length);
         }
-        
+
         [Pure, NotNull]
         public static string Replace([NotNull] this string s, [NotNull] string oldValue, [NotNull] string newValue, StringComparison comparison) {
             var index = s.IndexOf(oldValue, comparison);

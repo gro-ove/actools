@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
@@ -320,7 +321,8 @@ namespace AcManager.Tools.ContentInstallation {
 
         [ItemCanBeNull]
         private async Task<ContentEntryBase> CheckDirectoryNode(DirectoryNode directory, CancellationToken cancellation) {
-            if (directory.Parent?.NameLowerCase == "python" && directory.Parent.Parent?.NameLowerCase == "apps") {
+            if (directory.Parent?.NameLowerCase == "python" && directory.Parent.Parent?.NameLowerCase == "apps" ||
+                    directory.HasSubFile(directory.Name + ".py")) {
                 var id = directory.Name;
                 if (id == null) {
                     // It’s unlikely there will be a car or a track in apps/python directory
@@ -328,7 +330,7 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 // App?
-                var root = directory.Parent.Parent.Parent;
+                var root = directory.Parent?.Parent?.Parent;
                 var gui = root?.GetSubDirectory("content")?.GetSubDirectory("gui")?.GetSubDirectory("icons");
 
                 // Let’s try to guess version
@@ -413,7 +415,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             var uiCarSkin = directory.GetSubFile("ui_skin.json");
-            if (uiCarSkin != null) {
+            if (uiCarSkin != null && CarsManager.Instance != null /* for crawlers only */) {
                 var icon = await (directory.GetSubFile("livery.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                 cancellation.ThrowIfCancellationRequested();
 

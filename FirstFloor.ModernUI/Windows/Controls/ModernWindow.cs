@@ -16,35 +16,44 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow));
 
         public Thickness FrameMargin {
-            get { return (Thickness)GetValue(FrameMarginProperty); }
-            set { SetValue(FrameMarginProperty, value); }
+            get => (Thickness)GetValue(FrameMarginProperty);
+            set => SetValue(FrameMarginProperty, value);
         }
 
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>
-        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object), typeof(ModernWindow));
+        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object),
+                typeof(ModernWindow));
+
         /// <summary>
         /// Identifies the MenuLinkGroups dependency property.
         /// </summary>
-        public static readonly DependencyProperty MenuLinkGroupsProperty = DependencyProperty.Register("MenuLinkGroups", typeof(LinkGroupCollection), typeof(ModernWindow));
+        public static readonly DependencyProperty MenuLinkGroupsProperty = DependencyProperty.Register("MenuLinkGroups", typeof(LinkGroupCollection),
+                typeof(ModernWindow));
+
         /// <summary>
         /// Identifies the TitleLinks dependency property.
         /// </summary>
         public static readonly DependencyProperty TitleLinksProperty = DependencyProperty.Register("TitleLinks", typeof(LinkCollection), typeof(ModernWindow));
+
         /// <summary>
         /// Identifies the IsTitleVisible dependency property.
         /// </summary>
-        public static readonly DependencyProperty IsTitleVisibleProperty = DependencyProperty.Register("IsTitleVisible", typeof(bool), typeof(ModernWindow), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsTitleVisibleProperty = DependencyProperty.Register("IsTitleVisible", typeof(bool), typeof(ModernWindow),
+                new PropertyMetadata(false));
 
         /// <summary>
         /// Identifies the ContentLoader dependency property.
         /// </summary>
-        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader), typeof(ModernWindow), new PropertyMetadata(new DefaultContentLoader()));
+        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader),
+                typeof(ModernWindow), new PropertyMetadata(new DefaultContentLoader()));
+
         /// <summary>
         /// Identifies the LinkNavigator dependency property.
         /// </summary>
-        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow), new PropertyMetadata(new DefaultLinkNavigator()));
+        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow),
+                new PropertyMetadata(new DefaultLinkNavigator()));
 
         public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
 
@@ -198,48 +207,48 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets or sets the background content of this window instance.
         /// </summary>
         public object BackgroundContent {
-            get { return GetValue(BackgroundContentProperty); }
-            set { SetValue(BackgroundContentProperty, value); }
+            get => GetValue(BackgroundContentProperty);
+            set => SetValue(BackgroundContentProperty, value);
         }
 
         /// <summary>
         /// Gets or sets the collection of link groups shown in the window’s menu.
         /// </summary>
         public LinkGroupCollection MenuLinkGroups {
-            get { return (LinkGroupCollection)GetValue(MenuLinkGroupsProperty); }
-            set { SetValue(MenuLinkGroupsProperty, value); }
+            get => (LinkGroupCollection)GetValue(MenuLinkGroupsProperty);
+            set => SetValue(MenuLinkGroupsProperty, value);
         }
 
         /// <summary>
         /// Gets or sets the collection of links that appear in the menu in the title area of the window.
         /// </summary>
         public LinkCollection TitleLinks {
-            get { return (LinkCollection)GetValue(TitleLinksProperty); }
-            set { SetValue(TitleLinksProperty, value); }
+            get => (LinkCollection)GetValue(TitleLinksProperty);
+            set => SetValue(TitleLinksProperty, value);
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the window title is visible in the UI.
         /// </summary>
         public bool IsTitleVisible {
-            get { return (bool)GetValue(IsTitleVisibleProperty); }
-            set { SetValue(IsTitleVisibleProperty, value); }
+            get => (bool)GetValue(IsTitleVisibleProperty);
+            set => SetValue(IsTitleVisibleProperty, value);
         }
 
         public static readonly DependencyProperty DefaultContentSourceProperty = DependencyProperty.Register(nameof(DefaultContentSource), typeof(Uri),
                 typeof(ModernWindow));
 
         public Uri DefaultContentSource {
-            get { return (Uri)GetValue(DefaultContentSourceProperty); }
-            set { SetValue(DefaultContentSourceProperty, value); }
+            get => (Uri)GetValue(DefaultContentSourceProperty);
+            set => SetValue(DefaultContentSourceProperty, value);
         }
 
         /// <summary>
         /// Gets or sets the content loader.
         /// </summary>
         public IContentLoader ContentLoader {
-            get { return (IContentLoader)GetValue(ContentLoaderProperty); }
-            set { SetValue(ContentLoaderProperty, value); }
+            get => (IContentLoader)GetValue(ContentLoaderProperty);
+            set => SetValue(ContentLoaderProperty, value);
         }
 
         /// <summary>
@@ -247,32 +256,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <value>The link navigator.</value>
         public ILinkNavigator LinkNavigator {
-            get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
-            set { SetValue(LinkNavigatorProperty, value); }
+            get => (ILinkNavigator)GetValue(LinkNavigatorProperty);
+            set => SetValue(LinkNavigatorProperty, value);
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
                 typeof(ModernWindow));
 
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         public static readonly DependencyProperty AdditionalContentProperty = DependencyProperty.Register(nameof(AdditionalContent), typeof(object),
                 typeof(ModernWindow));
 
         public object AdditionalContent {
-            get { return GetValue(AdditionalContentProperty); }
-            set { SetValue(AdditionalContentProperty, value); }
+            get => GetValue(AdditionalContentProperty);
+            set => SetValue(AdditionalContentProperty, value);
         }
 
         public static readonly DependencyProperty BackButtonVisibilityProperty = DependencyProperty.Register(nameof(BackButtonVisibility), typeof(Visibility),
                 typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
 
         public Visibility BackButtonVisibility {
-            get { return (Visibility)GetValue(BackButtonVisibilityProperty); }
-            set { SetValue(BackButtonVisibilityProperty, value); }
+            get => (Visibility)GetValue(BackButtonVisibilityProperty);
+            set => SetValue(BackButtonVisibilityProperty, value);
         }
     }
 }

@@ -19,6 +19,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -163,7 +164,10 @@ namespace AcManager.Pages.Settings {
             private DelegateCommand _testCommand;
 
             public DelegateCommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
-                MakeCollage(Directory.GetFiles(@"C:\Users\Carrot\Desktop\Temp\0", "ic_*.png"), @"C:\Users\Carrot\Desktop\Temp\0\comb.png");
+                ModernDialog.ShowMessage(SuggestionLists.CarSkinDriverNamesList.JoinToString("\n"));
+                ModernDialog.ShowMessage(SuggestionLists.CarSkinTeamsList.JoinToString("\n"));
+
+                //MakeCollage(Directory.GetFiles(@"C:\Users\Carrot\Desktop\Temp\0", "ic_*.png"), @"C:\Users\Carrot\Desktop\Temp\0\comb.png");
             }));
         }
     }

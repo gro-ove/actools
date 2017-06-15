@@ -32,4 +32,21 @@ namespace AcManager.Tools.Helpers {
 
         int? IWithId<int?>.Id => IntValue;
     }
+
+    public class SettingEntry<T> : Displayable, IWithId<T> where T : struct {
+        public SettingEntry([LocalizationRequired(false)] T value, string displayName) {
+            DisplayName = displayName;
+            Value = value;
+        }
+
+        public sealed override string DisplayName {
+            get => base.DisplayName;
+            set => base.DisplayName = value;
+        }
+
+        [Localizable(false)]
+        public T Value { get; }
+
+        T IWithId<T>.Id => Value;
+    }
 }

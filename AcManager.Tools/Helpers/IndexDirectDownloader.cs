@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers.Api;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public static class IndexDirectDownloader {
-        public static async Task DownloadCarAsync(string id) {
+        public static async Task DownloadCarAsync([NotNull] string id) {
             try {
                 var entry = await CmApiProvider.GetContentAsync<AcContentEntry>($"car/{id}");
                 if (entry != null) {
@@ -25,13 +26,15 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static async Task DownloadTrackAsync(string id) {
+        public static async Task DownloadTrackAsync([NotNull] string id) {
+            id = id.Replace(@"/", @"-");
+
             try {
                 var entry = await CmApiProvider.GetContentAsync<AcContentEntry>($"track/{id}");
                 if (entry != null) {
                     await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
                         AllowExecutables = false,
-                        DisplayName = entry.UiName,
+                        DisplayName = entry.UiName ?? entry.OriginName,
                         DisplayVersion = entry.UiVersion,
                         InformationUrl = entry.OriginUrl
                     });

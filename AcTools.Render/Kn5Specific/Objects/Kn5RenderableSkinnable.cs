@@ -9,6 +9,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class Kn5RenderableSkinnable : Kn5RenderableFile, INotifyPropertyChanged {
@@ -20,6 +21,35 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 bool asyncOverrideTexturesLoading = false, bool allowSkinnedObjects = false) : base(kn5, matrix, asyncTexturesLoading, allowSkinnedObjects) {
             _overridesDirectory = overridesDirectory;
             _asyncOverrideTexturesLoading = asyncOverrideTexturesLoading;
+        }
+
+        public bool OverrideTexture(DeviceContextHolder device, string textureName, [CanBeNull] byte[] textureBytes) {
+            if (_texturesProvider == null) {
+                InitializeTextures(device);
+                if (_texturesProvider == null) return false;
+            }
+
+            var texture = _texturesProvider.GetTexture(device, textureName);
+            texture.SetProceduralOverride(device, textureBytes);
+            return texture.Exists;
+        }
+
+        public bool OverrideTexture(DeviceContextHolder device, string textureName, [CanBeNull] ShaderResourceView textureView, bool disposeLater) {
+            if (_texturesProvider == null) {
+                InitializeTextures(device);
+                if (_texturesProvider == null) return false;
+            }
+
+            var texture = _texturesProvider?.GetTexture(device, textureName);
+            texture.SetProceduralOverride(device, textureView, disposeLater);
+            return texture.Exists;
+        }
+
+        public void ClearProceduralOverrides() {
+            if (_texturesProvider == null) return;
+            foreach (var texture in _texturesProvider.GetExistingTextures()) {
+                texture.SetProceduralOverride(null, null);
+            }
         }
 
         private bool _liveReload;

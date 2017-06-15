@@ -1,11 +1,10 @@
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class MediaFireLoader : DirectLoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?mediafire\.com/file/", RegexOptions.IgnoreCase);
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?mediafire\.com/file/", RegexOptions.IgnoreCase);
 
         public MediaFireLoader(string url) : base(url) {}
 

@@ -72,7 +72,7 @@ namespace AcManager.CustomShowroom {
                     .Select(x => new ColoredItem(x, Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
                     .FirstOrDefault();
             if (rims != null) yield return rims;
-            
+
             var calipers = new[] { "caliper_colour.dds", "metal_detail_caliper.dds", "Metal_detail_caliper.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
                     .Select(x => new ColoredItem(x, Colors.DarkRed) { DisplayName = "Calipers", Enabled = false })
@@ -120,7 +120,7 @@ namespace AcManager.CustomShowroom {
             }
             return s;
         }
-        
+
         private static Color GetColor([CanBeNull] JToken j, Color? defaultColor = null) {
             return (j?.ToString().ToColor() ?? defaultColor) ?? Colors.White;
         }
@@ -155,7 +155,7 @@ namespace AcManager.CustomShowroom {
             if (j.Type == JTokenType.Object) {
                 var o = (JObject)j;
                 baseParams = GetSourceParams(o);
-                
+
                 if (o["red"] != null) {
                     return new PaintShopSource(
                             GetSource(o["red"], extraData, baseParams),
@@ -450,8 +450,8 @@ namespace AcManager.CustomShowroom {
                             GetColors(e, Color.FromRgb(41, 52, 55)),
                             GetDouble(e, KeyDefaultOpacity, 0.23),
                             e.GetBoolValueOnly(KeyFixedColor) ?? false) {
-                        LiveryColorIds = GetLiveryColorIds(e)
-                    };
+                                LiveryColorIds = GetLiveryColorIds(e)
+                            };
                     break;
                 case TypeLicensePlate:
                     result = new LicensePlate(GetString(e, KeyStyle, "Europe"), GetString(e, KeyTexture, "Plate_D.dds"),
@@ -535,6 +535,7 @@ namespace AcManager.CustomShowroom {
                                                   .Open()
                                                   .ReadAsBytesAndDispose();
                                 });
+
                                 if (i != null) {
                                     result.Add(i);
                                 }
@@ -542,7 +543,6 @@ namespace AcManager.CustomShowroom {
                                 Logging.Error(e);
                             }
                         }
-
                     }
                 }
 
@@ -552,7 +552,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, 
+        private static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
                 bool fallbackToGuess) {
             var carIdLower = carId.ToLowerInvariant();
             if (previousIds.Contains(carIdLower)) return new PaintableItem[0];

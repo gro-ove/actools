@@ -26,7 +26,7 @@ namespace AcManager.Tools.Helpers.Loaders {
     }
 
     public static class FlexibleLoader {
-        internal static ILoader CreateLoader(string uri) {
+        public static ILoader CreateLoader(string uri) {
             if (GoogleDriveLoader.Test(uri)) return new GoogleDriveLoader(uri);
             if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
             if (MediaFireLoader.Test(uri)) return new MediaFireLoader(uri);
@@ -34,6 +34,8 @@ namespace AcManager.Tools.Helpers.Loaders {
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
             if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);
+            if (AdFlyLoader.Test(uri)) return new AdFlyLoader(uri);
+            if (MegaLoader.Test(uri)) return new MegaLoader(uri);
             return new DirectLoader(uri);
         }
 
@@ -193,9 +195,25 @@ namespace AcManager.Tools.Helpers.Loaders {
                 metaInformationCallback?.Invoke(new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version));
 
                 var s = Stopwatch.StartNew();
-                client.DownloadProgressChanged += (sender, args) => {
-                    // ReSharper disable once AccessToDisposedClosure
+                if (loader.UsesClientToDownload) {
+                    client.DownloadProgressChanged += (sender, args) => {
+                        if (s.Elapsed.TotalMilliseconds > 20) {
+                            order.Delay();
+                            s.Restart();
+                        } else {
+                            return;
+                        }
 
+                        var total = args.TotalBytesToReceive;
+                        if (total == -1 && loader.TotalSize != -1) {
+                            total = Math.Max(loader.TotalSize, args.BytesReceived);
+                        }
+
+                        progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
+                    };
+                }
+
+                await loader.DownloadAsync(client, destination, loader.UsesClientToDownload ? null : new Progress<double>(p => {
                     if (s.Elapsed.TotalMilliseconds > 20) {
                         order.Delay();
                         s.Restart();
@@ -203,16 +221,11 @@ namespace AcManager.Tools.Helpers.Loaders {
                         return;
                     }
 
-                    var total = args.TotalBytesToReceive;
-                    if (total == -1 && loader.TotalSize != -1) {
-                        total = Math.Max(loader.TotalSize, args.BytesReceived);
-                    }
-
-                    // ReSharper disable once AccessToDisposedClosure
-                    progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
-                };
-
-                await loader.DownloadAsync(client, destination, cancellation);
+                    var total = loader.TotalSize;
+                    progress?.Report(total == -1 ?
+                            new AsyncProgressEntry("Loading…", p) :
+                            AsyncProgressEntry.CreateDownloading((long)(p * total), total));
+                }), cancellation);
                 cancellation.ThrowIfCancellationRequested();
             }
 

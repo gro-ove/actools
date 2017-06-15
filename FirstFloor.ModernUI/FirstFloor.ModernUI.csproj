@@ -126,6 +126,7 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="ActualUnloadedHelper.cs" />
+    <Compile Include="Windows\AlwaysExecutable.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
     <Compile Include="Windows\Attached\DataGridFix.cs" />
@@ -363,6 +364,7 @@
     <Compile Include="Windows\TaskbarProgress.cs" />
     <Compile Include="Windows\Toast.cs" />
     <Compile Include="Windows\ToastWin8Helper.cs" />
+    <Compile Include="Windows\WindowPlacementStruct.cs" />
     <Compile Include="WrappedCollection.cs" />
   </ItemGroup>
   <ItemGroup>

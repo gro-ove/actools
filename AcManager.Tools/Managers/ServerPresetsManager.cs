@@ -29,12 +29,14 @@ namespace AcManager.Tools.Managers {
             return !WatchedFiles.Contains(inner.ToLowerInvariant());
         }
 
+        public static readonly string ServerDirectory;
         private static readonly string PresetsDirectory;
         private static readonly string DriversFilename;
 
         static ServerPresetsManager() {
-            PresetsDirectory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"server", @"presets");
-            DriversFilename = Path.Combine(AcRootDirectory.Instance.RequireValue, @"server", @"manager", @"driverlist.ini");
+            ServerDirectory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"server");
+            PresetsDirectory = Path.Combine(ServerDirectory, @"presets");
+            DriversFilename = Path.Combine(ServerDirectory, @"manager", @"driverlist.ini");
             Directory.CreateDirectory(PresetsDirectory);
         }
 

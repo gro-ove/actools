@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -38,7 +40,7 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemCanBeNull]
         public static async Task<string> GetStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
             try {
-                var result = await InternalUtils.CmGetDataAsync(url, UserAgent, null, cancellation);
+                var result = await InternalUtils.CmGetDataAsync(url, UserAgent, cancellation: cancellation);
                 if (cancellation.IsCancellationRequested) return null;
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
@@ -79,6 +81,28 @@ namespace AcManager.Tools.Helpers.Api {
         public static Task<byte[]> GetDataAsync(string url, IProgress<double?> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetStaticDataAsync(string id, IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Static", $"{id}.zip"));
+
+            var result = await InternalUtils.CmGetDataAsync($"static/get/{id}", UserAgent,
+                    file.Exists ? file.LastWriteTime : (DateTime?)null, progress, cancellation).ConfigureAwait(false);
+            if (cancellation.IsCancellationRequested) return null;
+
+            if (result.Item1.Length != 0) {
+                Logging.Debug($"Fresh version of {id} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
+                var lastWriteTime = result.Item2 ?? DateTime.Now;
+                await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
+                file.Refresh();
+                file.LastWriteTime = lastWriteTime;
+                return result.Item1;
+            }
+
+            Logging.Debug($"Cached {id} used");
+            return await FileUtils.ReadAllBytesAsync(file.FullName, cancellation).ConfigureAwait(false);
         }
 
         [ItemCanBeNull]

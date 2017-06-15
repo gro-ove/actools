@@ -37,7 +37,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public static int OptionMaxMapSize = 1024;
         public static int OptionMaxPatternSize = 2048;
 
-        // to generate real-time preview, we’re going to use a special shader
+        // to generate real-time preview, weâ€™re going to use a special shader
         [CanBeNull]
         private Dictionary<string, TargetResourceTexture> _paintShopTextures;
 
@@ -128,7 +128,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
 
-            AcToolsLogging.Write("Can’t get bytes: " + source);
+            AcToolsLogging.Write("Canâ€™t get bytes: " + source);
             return null;
         }
 
@@ -292,7 +292,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public Task SaveTextureAsync(string filename, PaintShopSource source) {
             if (source.Custom != true) {
                 if (source.UseInput) {
-                    // we don’t have to save anything here — why waste space and override texture by itself?
+                    // we donâ€™t have to save anything here â€” why waste space and override texture by itself?
                     // source = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(source);
                     return Task.Delay(0);
                 }

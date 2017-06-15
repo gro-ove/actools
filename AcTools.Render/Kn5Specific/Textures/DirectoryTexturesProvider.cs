@@ -201,12 +201,13 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
-            if (_directory == null) return null;
+            var result = new RenderableTexture();
+
+            if (_directory == null) return result;
             var filename = Path.Combine(_directory, key);
 
-            var result = new RenderableTexture { Resource = null };
-
             if (File.Exists(filename)) {
+                result.Exists = true;
                 if (_asyncLoading) {
                     result.LoadAsync(contextHolder, filename).Forget();
                 } else {

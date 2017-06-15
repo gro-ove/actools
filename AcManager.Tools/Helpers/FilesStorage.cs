@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -178,8 +179,8 @@ namespace AcManager.Tools.Helpers {
             Process.Start(contentUserDir);
         }
 
-        public string GetTemporaryFilename([Localizable(false)] string filename) {
-            return GetFilename("Temporary", filename);
+        public string GetTemporaryFilename([Localizable(false)] params string[] filename) {
+            return GetFilename(filename.Prepend("Temporary").ToArray());
         }
 
         private static Regex _unescapeRegex;

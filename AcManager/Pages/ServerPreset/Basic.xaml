@@ -7,6 +7,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <sys:String x:Key="MaximumCapacityMessage" xml:space="preserve">Maximum number of clients is limited by track’s {0} pit</sys:String>
@@ -100,8 +101,20 @@
           <Label Content="Show on lobby" />
         </CheckBox>
         <DockPanel Margin="0 20 0 8">
-          <Label Content="Welcome message:" />
-          <mui:BetterTextBox Placeholder="{x:Static t:ToolsStrings.Common_None}" IsEnabled="False" />
+          <Label Content="Welcome msg file:" />
+          <DockPanel Visibility="{Binding SelectedObject.WelcomeMessageMissing, Converter={StaticResource BooleanToVisibilityConverter}}"
+              DockPanel.Dock="Bottom" Margin="0 0 0 0">
+            <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                Margin="0 0 8 0" VerticalAlignment="Center" />
+            <TextBlock Text="File is missing." VerticalAlignment="Center" TextWrapping="Wrap" />
+          </DockPanel>
+          <Button Content="Change" Command="{Binding ChangeWelcomeMessagePathCommand}" />
+          <mui:PathTrimmingTextBlock Placeholder="{x:Static t:ToolsStrings.Common_None}" Text="{Binding SelectedObject.WelcomeMessagePath}" Margin="0 2 0 0" />
+        </DockPanel>
+        <DockPanel Margin="0 0 0 8">
+          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
+              Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+          <Label Content="Welcome message:" HorizontalAlignment="Left" />
         </DockPanel>
       </StackPanel>
 

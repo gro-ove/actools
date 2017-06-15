@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class PathTrimmingTextBlock : TextBlock {
+    public class PathTrimmingTextBlock : TextBlock, IValueConverter {
         public PathTrimmingTextBlock() {
             Loaded += OnLoaded;
             SizeChanged += OnSizeChanged;
@@ -17,9 +19,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void Update() {
-            var trimmed = GetTrimmedPath(ActualWidth);
-            ToolTip = trimmed == Text ? null : Text;
-            base.Text = trimmed;
+            var text = Text;
+            if (string.IsNullOrEmpty(text)) {
+                ToolTip = null;
+                SetPlaceholder();
+            } else {
+                var trimmed = GetTrimmedPath(ActualWidth);
+                ToolTip = trimmed == text ? null : text;
+                SetValue(TextBlock.TextProperty, trimmed);
+            }
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
@@ -30,6 +38,44 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             Update();
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            var brush = value as SolidColorBrush;
+            if (brush == null) return new SolidColorBrush();
+
+            var color = brush.Color;
+            return new SolidColorBrush(Color.FromArgb((byte)(color.A / 2.7), color.R, color.G, color.B));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
+        }
+
+        protected void SetPlaceholder() {
+            Inlines.Clear();
+            var placeholder = Placeholder;
+            if (!string.IsNullOrEmpty(placeholder)) {
+                var inline = new Run { Text = placeholder };
+                inline.SetBinding(TextElement.ForegroundProperty, new Binding {
+                    Path = new PropertyPath(nameof(Foreground)),
+                    Source = this,
+                    Converter = this
+                });
+                Inlines.Add(inline);
+            }
+        }
+
+        public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
+                typeof(PathTrimmingTextBlock), new PropertyMetadata(OnPlaceholderChanged));
+
+        public string Placeholder {
+            get { return (string)GetValue(PlaceholderProperty); }
+            set { SetValue(PlaceholderProperty, value); }
+        }
+
+        private static void OnPlaceholderChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((PathTrimmingTextBlock)o).Update();
         }
 
         public new static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string),
@@ -53,7 +99,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private List<string> Split(string s, out bool url) {
+        private static List<string> Split(string s, out bool url) {
             url = false;
 
             var p = 0;

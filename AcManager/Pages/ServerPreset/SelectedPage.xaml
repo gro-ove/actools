@@ -1,9 +1,9 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.ServerPreset.SelectedPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-    xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" xmlns:system="clr-namespace:System;assembly=System"
-    mc:Ignorable="d" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager"
+    xmlns:system="clr-namespace:System;assembly=System" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}" Loaded="OnLoaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -11,13 +11,14 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
-
+      <CollectionViewSource x:Key="PackServerPresetsItems" Source="{Binding PackServerPresets}" />
       <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/RunningLog.xaml</system:Uri>
+      <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/EntryList.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <ac:AcObjectBase x:Name="Base" AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
-    <ac:AcObjectBase.ToolBars>
+  <c:AcObjectBase x:Name="Base" AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
+    <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}">
           <Button.ToolTip>Open preset’s folder (Ctrl+F)</Button.ToolTip>
@@ -28,8 +29,19 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone preset (Ctrl+Shift+D)" />
         <Separator />
         <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
-        <Button Content="Pack" Command="{Binding PackCommand}" ToolTip="Pack a new package for quick installation on a remote machine (Ctrl+P)"
-            IsEnabled="False" />
+        <mui:ButtonWithComboBox Content="Pack" ButtonToolTip="Pack a new package for quick launching on a remote machine (Ctrl+P)"
+            Command="{Binding PackCommand}" PreviewMouseDown="OnPackServerButtonMouseDown">
+          <!--<MenuItem Header="Pack For Linux" ToolTip="Pack server for Linux machine" Command="{Binding PackCommand}" CommandParameter="linux" />-->
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+              InputGestureText="Ctrl+Shift+P" Command="{Binding PackOptionsCommand}" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
+            <MenuItem.ItemsSource>
+              <CompositeCollection>
+                <CollectionContainer Collection="{Binding Source={StaticResource PackServerPresetsItems}}" />
+              </CompositeCollection>
+            </MenuItem.ItemsSource>
+          </MenuItem>
+        </mui:ButtonWithComboBox>
         <Button Content="Run" Style="{StaticResource Go.ToolBarButton}" Command="{Binding GoCommand}" ToolTip="Run a new server using this preset (Ctrl+G)"
             Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
         <Button Content="Restart" Style="{StaticResource Go.ToolBarButton}" Command="{Binding RestartCommand}"
@@ -49,8 +61,10 @@
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
             ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+        <Separator x:Name="ExtraButtonsSeparator" />
+        <Button x:Name="RandomizeSkinsButton" Content="Randomize Skins" Command="{Binding SelectedObject.RandomizeSkinsCommand}" />
       </ToolBar>
-    </ac:AcObjectBase.ToolBars>
+    </c:AcObjectBase.ToolBars>
 
     <mui:Cell>
       <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" x:Name="Tab" SaveKey="__serpr.st"
@@ -59,7 +73,7 @@
         <mui:ModernTab.Links>
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
           <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
-          <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
+          <mui:Link DisplayName="Entry List" Source="{StaticResource EntryListUri}" />
           <mui:Link DisplayName="Rules" Source="/Pages/ServerPreset/Assists.xaml" />
           <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
           <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
@@ -80,5 +94,5 @@
         </Border>
       </Border>
     </mui:Cell>
-  </ac:AcObjectBase>
+  </c:AcObjectBase>
 </selected:SelectedAcObjectPage>

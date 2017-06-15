@@ -11,6 +11,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -23,7 +24,7 @@ namespace AcManager.Controls.ViewModels {
         internal RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }
 
-    public class RaceGridEntry : Displayable, IDraggable {
+    public class RaceGridEntry : Displayable, IDraggable, IDraggableCloneable {
         public virtual bool SpecialEntry => false;
 
         public override string DisplayName => Car.DisplayName;
@@ -37,6 +38,12 @@ namespace AcManager.Controls.ViewModels {
                 _exceedsLimit = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool CanBeCloned => !SpecialEntry;
+
+        object IDraggableCloneable.Clone() {
+            return Clone();
         }
 
         private CarObject _car;

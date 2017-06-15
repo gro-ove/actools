@@ -25,6 +25,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public object Draggable { get; }
     }
 
+    public interface IDraggableCloneable {
+        bool CanBeCloned { get; }
+
+        object Clone();
+    }
+
     public static class Draggable {
         public const string SourceFormat = "Data-Source";
 
@@ -245,7 +251,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 }
 
                 using (new DragPreview(element)) {
-                    DragDrop.DoDragDrop(element, data, DragDropEffects.Move);
+                    DragDrop.DoDragDrop(element, data, (draggable as IDraggableCloneable)?.CanBeCloned == true ?
+                            DragDropEffects.Copy | DragDropEffects.Move : DragDropEffects.Move);
                 }
             } finally {
                 _dragging = false;
@@ -419,6 +426,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                       select x).FirstOrDefault();
         }
 
+        public static bool IsCopyAction(this DragEventArgs e) {
+            return (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
+        }
+
+        [ContractAnnotation("item:null => null; item:notnull => notnull")]
+        public static object GetDraggedItem([NotNull] this DragEventArgs e, object item) {
+            return e.IsCopyAction() && (item as IDraggableCloneable)?.CanBeCloned == true ?
+                    ((IDraggableCloneable)item).Clone() : item;
+        }
+
         private static void InnerDrop([CanBeNull] ItemsControl source, [NotNull] ItemsControl destination, [CanBeNull] object item, DragEventArgs e) {
             if (item == null) {
                 e.Effects = DragDropEffects.None;
@@ -449,7 +466,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     return;
                 }
 
-                sourceList?.Remove(item);
+                var draggedItem = e.GetDraggedItem(item);
+                if (ReferenceEquals(draggedItem, item)) {
+                    sourceList?.Remove(item);
+                }
+
                 if (newIndex >= destinationList.Count) {
                     newIndex = -1;
                     method = GetListMethod(destinationList, type, true);
@@ -460,8 +481,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     }
                 }
 
-                method.Invoke(destinationList, newIndex == -1 ? new[] { item } : new[] { newIndex, item });
-                e.Effects = DragDropEffects.Move;
+                method.Invoke(destinationList, newIndex == -1 ? new[] { draggedItem } : new[] { newIndex, draggedItem });
             } catch (Exception ex) {
                 Logging.Debug(ex);
                 e.Effects = DragDropEffects.None;

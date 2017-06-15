@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -10,15 +9,12 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
-using AcManager.Tools;
-using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.AcdFile;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -29,8 +25,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
-using SharpCompress.Common;
-using SharpCompress.Writers;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
@@ -131,9 +126,26 @@ namespace AcManager.Pages.ServerPreset {
                 });
             }
 
+            private DelegateCommand _changeWelcomeMessagePathCommand;
+
+            public DelegateCommand ChangeWelcomeMessagePathCommand => _changeWelcomeMessagePathCommand ?? (_changeWelcomeMessagePathCommand = new DelegateCommand(() => {
+                var dialog = new OpenFileDialog {
+                    Filter = FileDialogFilters.TextFilter,
+                    Title = "Select New Welcome Message",
+                    InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath),
+                    RestoreDirectory = true
+                };
+
+                if (dialog.ShowDialog() == true) {
+                    SelectedObject.WelcomeMessagePath = dialog.FileName;
+                }
+            }));
+
             public override void Unload() {
                 base.Unload();
                 SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
+                _helper.Dispose();
+                PackServerPresets = null;
             }
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -151,66 +163,34 @@ namespace AcManager.Pages.ServerPreset {
                 });
             }
 
-            [Localizable(false)]
-            private static string GetPackedDataFixReadMe(string serverName, IEnumerable<string> notPacked) {
-                return $@"Packed data for server {serverName}
+            private AsyncCommand _packCommand;
 
-    Cars:
-{notPacked.Select(x => $"    - {x};").JoinToString("\n").ApartFromLast(";") + "."}
+            public AsyncCommand PackCommand => _packCommand ?? (_packCommand = new AsyncCommand(() => {
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) {
+                    new PackServerDialog(SelectedObject).ShowDialog();
+                    return Task.Delay(0);
+                }
 
-    Installation:
-    - Find AC's content/cars directory;
-    - Unpack there folders to it.
+                return new PackServerDialog.ViewModel(null, SelectedObject).PackCommand.ExecuteAsync();
+            }));
 
-    Don't forget to make a backup if you already have data packed and it's
-different.";
-            }
+            private DelegateCommand _packOptionsCommand;
+
+            public DelegateCommand PackOptionsCommand => _packOptionsCommand ?? (_packOptionsCommand = new DelegateCommand(() => {
+                new PackServerDialog(SelectedObject).ShowDialog();
+            }));
 
             private AsyncCommand _goCommand;
 
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(async () => {
-                var notPacked = Cars.Where(x => x?.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
-                WaitingDialog waiting = null;
                 try {
-                    if (notPacked.Any() &&
-                            ModernDialog.ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),
-                                    ToolsStrings.ServerPreset_UnpackedDataWarning_Title, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                        waiting = new WaitingDialog();
-
-                        using (var memory = new MemoryStream()) {
-                            using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                var i = 0;
-                                foreach (var car in Cars.Where(x => x.AcdData?.IsPacked == false)) {
-                                    waiting.Report(new AsyncProgressEntry(car.DisplayName, i++, notPacked.Count));
-
-                                    await Task.Delay(50, waiting.CancellationToken);
-                                    if (waiting.CancellationToken.IsCancellationRequested) return;
-
-                                    var dataDirectory = Path.Combine(car.Location, "data");
-                                    var destination = Path.Combine(car.Location, "data.acd");
-                                    Acd.FromDirectory(dataDirectory).Save(destination);
-
-                                    writer.Write(Path.Combine(car.Id, "data.acd"), destination);
-                                }
-
-                                writer.WriteString(@"ReadMe.txt", GetPackedDataFixReadMe(SelectedObject.DisplayName, notPacked));
-                            }
-
-                            var temporary = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
-                                    FileUtils.EnsureFileNameIsValid($@"Fix for {SelectedObject.DisplayName}.zip")));
-                            await FileUtils.WriteAllBytesAsync(temporary, memory.ToArray(), waiting.CancellationToken);
-                            WindowsHelper.ViewFile(temporary);
-                        }
-                    } else {
-                        waiting = new WaitingDialog();
+                    using (var waiting = new WaitingDialog()) {
+                        await PackServerDialog.EnsurePacked(SelectedObject, waiting);
+                        if (waiting.CancellationToken.IsCancellationRequested) return;
+                        await SelectedObject.RunServer(waiting, waiting.CancellationToken);
                     }
-
-                    await SelectedObject.RunServer(waiting, waiting.CancellationToken);
-                } catch (TaskCanceledException) {
-                } catch (Exception e) {
+                } catch (OperationCanceledException) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t run server", e);
-                } finally {
-                    waiting?.Dispose();
                 }
             }, () => SelectedObject.RunServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RunServerCommand));
 
@@ -221,6 +201,26 @@ different.";
                 GoCommand.ExecuteAsync().Forget();
                 return Task.Delay(0);
             }, () => SelectedObject.RestartServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RestartServerCommand));
+
+            private HierarchicalItemsView _packServerPresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public HierarchicalItemsView PackServerPresets {
+                get => _packServerPresets;
+                set {
+                    if (Equals(value, _packServerPresets)) return;
+                    _packServerPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public void InitializePackServerPresets() {
+                if (PackServerPresets == null) {
+                    PackServerPresets = _helper.Create(PackServerDialog.ViewModel.PresetableKeyValue, p => {
+                        new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Forget();
+                    });
+                }
+            }
         }
 
         private string _id;
@@ -294,6 +294,8 @@ different.";
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.RestartCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.PackCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
+                new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
             });
         }
 
@@ -307,7 +309,17 @@ different.";
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
-            IsRunningMessage.Visibility = Tab.SelectedSource == TryFindResource(@"RunningLogUri") as Uri ? Visibility.Collapsed : Visibility.Visible;
+            var source = Tab.SelectedSource;
+            var runningLogTab = source == TryFindResource(@"RunningLogUri") as Uri;
+            var entryListTab = !runningLogTab && source == TryFindResource(@"EntryListUri") as Uri;
+
+            IsRunningMessage.Visibility = runningLogTab ? Visibility.Collapsed : Visibility.Visible;
+            RandomizeSkinsButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
+            ExtraButtonsSeparator.Visibility = RandomizeSkinsButton.Visibility;
+        }
+
+        private void OnPackServerButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializePackServerPresets();
         }
     }
 }

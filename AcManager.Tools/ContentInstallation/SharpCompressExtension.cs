@@ -21,6 +21,12 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        public static void WriteBytes(this IWriter writer, string entryPath, byte[] content) {
+            using (var stream = new MemoryStream(content)) {
+                writer.Write(entryPath, stream);
+            }
+        }
+
         public static void ExtractAsArchiveTo(this Stream stream, string destination, ExtractionOptions options = null) {
             options = options ?? new ExtractionOptions {
                 Overwrite = true,

@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class YandexDiskLoader : DirectLoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://yadi\.sk/d/", RegexOptions.IgnoreCase);
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?yadi\.sk/d/", RegexOptions.IgnoreCase);
 
         public YandexDiskLoader(string url) : base(url) {}
 

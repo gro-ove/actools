@@ -15,7 +15,7 @@
     <mui:ModernTab.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
-        <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories_New.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories.xaml" />
         <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/CarDlcs.xaml" />
         <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
         <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/CarRatings.xaml" />

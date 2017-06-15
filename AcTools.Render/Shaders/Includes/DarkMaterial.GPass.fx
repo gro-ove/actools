@@ -230,11 +230,44 @@ technique10 GPass_Maps {
 	}
 }
 
+//// Skinned maps
+
+PS_OUT ps_GPass_SkinnedMaps(PS_IN pin) {
+    FlatMirrorTest(pin);
+
+	float3 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex).rgb;
+	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+	float mask = diffuseMapValue.a;
+
+	float alpha;
+	float3 normal;
+
+	if (HAS_FLAG(HAS_DETAILS_MAP)) {
+		float4 details = gDetailsMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
+		mapsValue.y *= (details.a * 0.5 + 0.5);
+	}
+
+    float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+    alpha = normalValue.a * mask;
+
+    if (HAS_FLAG(HAS_DETAILS_MAP)) {
+        float blend = gMapsMaterial.DetailsNormalBlend;
+        if (blend > 0.0) {
+            float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
+            normalValue += (detailsNormalValue - 0.5) * blend * (1.0 - mask);
+        }
+    }
+
+    normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
+
+	return GetResult_Maps(GetDepth(pin.PosH), pin.PosW, normal, alpha, mapsValue.r, mapsValue.g, mapsValue.b);
+}
+
 technique10 GPass_SkinnedMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_GPass_Maps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_GPass_SkinnedMaps()));
 	}
 }
 

@@ -36,7 +36,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public readonly byte[] Data;
-        
+
         public PaintShopSourceChannel RedFrom { get; private set; } = PaintShopSourceChannel.Red;
 
         public PaintShopSourceChannel GreenFrom { get; private set; } = PaintShopSourceChannel.Green;
@@ -153,7 +153,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource maskSource);
 
         /// <summary>
-        /// Several colors — for mask, in provided.
+        /// Several colors â€” for mask, in provided.
         /// </summary>
         bool OverrideTextureTint(string textureName, [NotNull] Color[] colors, double alphaAdd, [NotNull] PaintShopSource source,
                 [CanBeNull] PaintShopSource maskSource, [CanBeNull] PaintShopSource overlay);
@@ -171,7 +171,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource maskSource);
 
         /// <summary>
-        /// Several colors — for mask, in provided.
+        /// Several colors â€” for mask, in provided.
         /// </summary>
         Task SaveTextureTintAsync(string filename, [NotNull] Color[] colors, double alphaAdd, [NotNull] PaintShopSource source,
                 [CanBeNull] PaintShopSource maskSource, [CanBeNull] PaintShopSource overlay);

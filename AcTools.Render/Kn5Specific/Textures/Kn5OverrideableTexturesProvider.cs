@@ -288,7 +288,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected async Task UpdateTextureInner(string localName, bool initialDelay) {
             IRenderableTexture texture;
             TryGetTexture(localName, out texture);
-            
+
             var magickMode = texture == null;
             if (MagickOverride && magickMode) {
                 if (!ImageUtils.IsMagickSupported) return;
@@ -357,6 +357,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
+                result.Exists = true;
                 if (AsyncLoading) {
                     result.LoadAsync(contextHolder, data).Forget();
                 } else {

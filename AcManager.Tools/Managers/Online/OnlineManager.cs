@@ -89,7 +89,9 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public static bool IsTrackAvailable(string trackId) {
-            var ids = AvailableTrackIds;
+            return AvailableTrackIds?.Contains(trackId.Replace(@"/", @"-")) == true;
+
+            /*var ids = AvailableTrackIds;
             if (ids == null) return false;
 
             if (Array.IndexOf(ids, trackId) != -1) return true;
@@ -109,7 +111,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Array.IndexOf(ids, c) != -1) return true;
             }
 
-            return false;
+            return false;*/
         }
 
         private void OnAnySkinsCollectionReady(object sender, SkinsCollectionReadyEventArgs e) {

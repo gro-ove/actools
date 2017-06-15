@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
@@ -163,6 +168,125 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged();
                     Changed = true;
                 }
+            }
+        }
+
+        private static bool IsLocalMessage(string filename) {
+            return filename != null && filename.Contains(@"\presets\") && filename.EndsWith(@"\cm_welcome.txt");
+        }
+
+        private IDisposable FromServersDirectory() {
+            var d = Environment.CurrentDirectory;
+            Environment.CurrentDirectory = ServerPresetsManager.ServerDirectory;
+
+            return new ActionAsDisposable(() => {
+                Environment.CurrentDirectory = d;
+            });
+        }
+
+        private string _welcomeMessage;
+        private bool _welcomeMessageLoaded;
+
+        public string WelcomeMessage {
+            get {
+                if (!_welcomeMessageLoaded) {
+                    _welcomeMessageLoaded = true;
+
+                    try {
+                        var welcomeMessagePath = WelcomeMessagePath;
+                        if (!string.IsNullOrWhiteSpace(welcomeMessagePath)) {
+                            using (FromServersDirectory()) {
+                                if (File.Exists(welcomeMessagePath)) {
+                                    _welcomeMessage = File.ReadAllText(welcomeMessagePath);
+                                    WelcomeMessageMissing = false;
+                                } else {
+                                    _welcomeMessage = null;
+                                    WelcomeMessageMissing = true;
+                                }
+                            }
+                        } else {
+                            _welcomeMessage = null;
+                            WelcomeMessageMissing = false;
+                        }
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t open welcome message file", e);
+                        _welcomeMessage = null;
+                        WelcomeMessageMissing = false;
+                    }
+                }
+
+                return _welcomeMessage;
+            }
+            set {
+                if (Equals(value, _welcomeMessage)) return;
+                _welcomeMessage = value;
+                OnPropertyChanged();
+                WelcomeMessageChanged = true;
+            }
+        }
+
+        private bool _welcomeMessageChanged;
+
+        public bool WelcomeMessageChanged {
+            get { return _welcomeMessageChanged; }
+            set {
+                if (Equals(value, _welcomeMessageChanged)) return;
+                _welcomeMessageChanged = value;
+                OnPropertyChanged();
+                Changed = true;
+            }
+        }
+
+        private DelegateCommand _saveWelcomeMessageCommand;
+
+        public DelegateCommand SaveWelcomeMessageCommand => _saveWelcomeMessageCommand ?? (_saveWelcomeMessageCommand = new DelegateCommand(() => {
+            using (FromServersDirectory()) {
+                if (_welcomeMessagePath == null || !IsLocalMessage(_welcomeMessagePath) && !Directory.Exists(Path.GetDirectoryName(_welcomeMessagePath))) {
+                    _welcomeMessagePath = $@"{Location}\cm_welcome.txt";
+                    OnPropertyChanged(nameof(WelcomeMessagePath));
+                }
+
+                try {
+                    File.WriteAllText(_welcomeMessagePath, WelcomeMessage);
+                    WelcomeMessageChanged = false;
+                    WelcomeMessageMissing = false;
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t save welcome message file", e);
+                }
+            }
+        }, () => _welcomeMessageChanged));
+
+        private string _welcomeMessagePath;
+
+        [CanBeNull]
+        public string WelcomeMessagePath {
+            get { return _welcomeMessagePath; }
+            set {
+                if (string.IsNullOrWhiteSpace(value)) value = null;
+                if (IsLocalMessage(value)) {
+                    value = $@"{Location}\cm_welcome.txt";
+                }
+
+                if (Equals(value, _welcomeMessagePath)) return;
+                _welcomeMessagePath = value;
+                OnPropertyChanged();
+
+                _welcomeMessageLoaded = false;
+                OnPropertyChanged(nameof(WelcomeMessage));
+
+                WelcomeMessageChanged = false;
+                Changed = true;
+            }
+        }
+
+        private bool _welcomeMessageMissing;
+
+        public bool WelcomeMessageMissing {
+            get { return _welcomeMessageMissing; }
+            set {
+                if (Equals(value, _welcomeMessageMissing)) return;
+                _welcomeMessageMissing = value;
+                OnPropertyChanged();
             }
         }
 
@@ -504,6 +628,13 @@ namespace AcManager.Tools.Objects {
                     break;
                 case nameof(ServerPresetDriverEntry.Deleted):
                     DriverEntries.Remove((ServerPresetDriverEntry)sender);
+                    return;
+                case nameof(ServerPresetDriverEntry.Cloned):
+                    var en = (ServerPresetDriverEntry)sender;
+                    if (en.Cloned) {
+                        en.Cloned = false;
+                        DriverEntries.Insert(DriverEntries.IndexOf(en) + 1, en.Clone());
+                    }
                     return;
             }
 

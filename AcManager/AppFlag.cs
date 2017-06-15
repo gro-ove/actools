@@ -93,7 +93,7 @@ namespace AcManager {
         /// </summary>
         [FlagDefaultValue("10MB")]
         ImagesCacheLimit,
-        
+
         /// <summary>
         /// Images loaded from cache will be highlighted. For debugging purposes.
         /// Example: --images-mask-cached.
@@ -157,7 +157,7 @@ namespace AcManager {
         DisableValuesCompression,
 
         /// <summary>
-        /// Changes path to data directory (somewhere in AppData\Local by default). 
+        /// Changes path to data directory (somewhere in AppData\Local by default).
         /// Folder will be created if missing.
         /// Example: --storage-location=LOCATION.
         /// </summary>
@@ -170,7 +170,7 @@ namespace AcManager {
         OfflineMode,
 
         /// <summary>
-        /// For internal use. 
+        /// For internal use.
         /// Example: --test-if-acd-available.
         /// </summary>
         TestIfAcdAvailable,
@@ -307,17 +307,11 @@ namespace AcManager {
         Proxy,
 
         /// <summary>
-        /// Ignore system (or custom) proxy settings (from IE). Disabled by default, could work faster if 
+        /// Ignore system (or custom) proxy settings (from IE). Disabled by default, could work faster if
         /// enabled.
         /// Example: --no-proxy.
         /// </summary>
         NoProxy,
-
-        /// <summary>
-        /// When started using command line args, don’t show main window.
-        /// Example: --lite-startup-mode-supported.
-        /// </summary>
-        LiteStartupModeSupported,
 
         /// <summary>
         /// Nothing to see here, just some thing with the names.

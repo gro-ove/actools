@@ -10,6 +10,7 @@ using Debug = System.Diagnostics.Debug;
 namespace AcTools.Render.Kn5Specific.Textures {
     public class RenderableTexture : IRenderableTexture {
         public string Name { get; }
+        public bool Exists { get; set; }
 
         public bool IsDisposed { get; private set; }
 

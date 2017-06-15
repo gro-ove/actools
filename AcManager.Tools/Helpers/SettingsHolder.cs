@@ -1446,6 +1446,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _rdProxy;
+
+            public string RdProxy {
+                get { return _rdProxy ?? (_rdProxy = ValuesStorage.GetString("Settings.ContentSettings.RdProxy", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _rdProxy)) return;
+                    _rdProxy = value;
+                    ValuesStorage.Set("Settings.ContentSettings.RdProxy", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _fontIconCharacter;
 
             public string FontIconCharacter {
@@ -1700,7 +1713,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CustomShowroomPreviews {
                 get => _customShowroomPreviews ??
-                        (_customShowroomPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomPreviews", false)).Value;
+                        (_customShowroomPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomPreviews", true)).Value;
                 set {
                     if (Equals(value, _customShowroomPreviews)) return;
                     _customShowroomPreviews = value;

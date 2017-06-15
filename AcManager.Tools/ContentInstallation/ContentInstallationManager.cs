@@ -89,7 +89,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var request = killer.Victim;
                     request.Method = "HEAD";
                     using (var response = await request.GetResponseAsync()) {
-                        return (response as HttpWebResponse)?.StatusCode == HttpStatusCode.OK ? url : null;
+                        return (response as HttpWebResponse)?.StatusCode == HttpStatusCode.OK ? url.Replace(@":80/", @"/") : null;
                     }
                 }
             } catch (Exception) {

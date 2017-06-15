@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = AcSettingsHolder.Controls.GetKeyboardInputButton(section.GetInt("KEY", -1));
         }
 
-        [DllImport(@"user32.dll")]
+        [DllImport("user32.dll")]
         private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
         // FOR GOD’S SAKE KUNOS!

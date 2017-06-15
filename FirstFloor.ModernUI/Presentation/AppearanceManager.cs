@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
@@ -71,10 +72,26 @@ namespace FirstFloor.ModernUI.Presentation {
             SetTheme(new ResourceDictionary { Source = source });
         }
 
-        public bool IdealFormattingMode {
-            get { return Equals(Application.Current.Resources[KeyFormattingMode] as TextFormattingMode?, TextFormattingMode.Ideal); }
+        private bool? _idealFormattingMode;
+        private bool _idealFormattingModeSet;
+
+        public bool? IdealFormattingMode {
+            get => _idealFormattingMode;
             set {
-                Application.Current.Resources[KeyFormattingMode] = value ? TextFormattingMode.Ideal : TextFormattingMode.Display;
+                if (_idealFormattingModeSet && Equals(_idealFormattingMode, value)) return;
+                _idealFormattingModeSet = true;
+                _idealFormattingMode = value;
+
+                if (value.HasValue) {
+                    Application.Current.Resources[KeyFormattingMode] = value.Value ? TextFormattingMode.Ideal : TextFormattingMode.Display;
+                } else {
+                    Application.Current.Resources.Remove(KeyFormattingMode);
+                }
+
+                foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
+                    window.SetDpiMultiplier();
+                }
+
                 OnPropertyChanged(nameof(IdealFormattingMode));
             }
         }

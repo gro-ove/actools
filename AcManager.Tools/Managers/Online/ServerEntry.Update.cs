@@ -354,6 +354,7 @@ namespace AcManager.Tools.Managers.Online {
                 UpdateProgress = AsyncProgressEntry.Ready;
                 Status = !SettingsHolder.Online.LoadServersWithMissingContent && resultStatus == ServerStatus.MissingContent ?
                         ServerStatus.Error : resultStatus;
+                UpdateMissingContent();
                 UpdateErrorsList();
                 AvailableUpdate();
                 _updating = false;

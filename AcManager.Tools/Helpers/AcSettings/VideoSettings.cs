@@ -28,7 +28,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             public double Volume => Width * Height * Framerate;
 
             public int Width {
-                get { return _width; }
+                get => _width;
                 set {
                     value = value.Clamp(0, 131072);
                     if (value == _width) return;
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public int Height {
-                get { return _height; }
+                get => _height;
                 set {
                     value = value.Clamp(0, 131072);
                     if (value == _height) return;
@@ -48,7 +48,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public double Framerate {
-                get { return _framerate; }
+                get => _framerate;
                 set {
                     if (Equals(value, _framerate)) return;
                     _framerate = value;
@@ -201,7 +201,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private ResolutionEntry[] _resolutions;
 
         public ResolutionEntry[] Resolutions {
-            get { return _resolutions; }
+            get => _resolutions;
             set {
                 if (ReferenceEquals(value, _resolutions)) return;
                 _resolutions = value;
@@ -210,38 +210,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private static bool _acVideoModesInitialized;
-
-        public static bool InitializeAcVideoModes() {
-            if (!_acVideoModesInitialized) {
-                if (!AcRootDirectory.Instance.IsReady) return false;
-
-                var libDirectory = Kernel32.GetDllDirectory();
-                Logging.Debug($"Libs directory: {libDirectory}");
-
-                if (libDirectory == null) {
-                    Kernel32.SetDllDirectory(AcRootDirectory.Instance.Value);
-                } else {
-                    var lib = new FileInfo(Path.Combine(AcRootDirectory.Instance.RequireValue, "acVideoModes.dll"));
-                    var destination = new FileInfo(Path.Combine(libDirectory, lib.Name));
-                    if (lib.Exists && (!destination.Exists || lib.LastWriteTime > destination.LastWriteTime)) {
-                        lib.CopyTo(destination.FullName, true);
-                        Logging.Debug("Lib copied");
-                    }
-                }
-
-                _acVideoModesInitialized = true;
-            }
-
-            return true;
-        }
+        private static string AcVideoModesLibrary => Path.Combine(AcRootDirectory.Instance.RequireValue, "acVideoModes.dll");
 
         public static IReadOnlyList<ResolutionEntry> GetResolutions() {
-            if (InitializeAcVideoModes()) {
+            if (File.Exists(AcVideoModesLibrary)) {
                 try {
                     return AcVideoModes.GetResolutionEntries().ToList();
                 } catch (Exception e) {
-                    NonfatalError.Notify(ToolsStrings.AcSettings_CannotGetResolutions, e);
+                    NonfatalError.NotifyBackground(ToolsStrings.AcSettings_CannotGetResolutions, e);
                 }
             }
 
@@ -261,7 +237,18 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 public readonly float Refresh;
             }
 
+            private static bool _initialized;
+
             public static IReadOnlyList<ResolutionEntry> GetResolutionEntries() {
+                if (!_initialized) {
+                    _initialized = true;
+                    Kernel32.LoadLibrary(AcVideoModesLibrary);
+                }
+
+                return GetResolutionEntriesInner();
+            }
+
+            private static IReadOnlyList<ResolutionEntry> GetResolutionEntriesInner() {
                 var mode = new VideoMode();
                 return Enumerable.Range(0, acInitVideoModes())
                                  .Select(i => {
@@ -298,7 +285,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         [CanBeNull]
         public ResolutionEntry Resolution {
-            get { return _resolution; }
+            get => _resolution;
             set {
                 if (!Resolutions.Contains(value)) value = GetPreferredResolution();
                 if (ReferenceEquals(value, _resolution)) return;
@@ -317,7 +304,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _cameraMode;
 
         public SettingEntry CameraMode {
-            get { return _cameraMode; }
+            get => _cameraMode;
             set {
                 if (!CameraModes.Contains(value)) value = CameraModes[0];
                 if (Equals(value, _cameraMode)) return;
@@ -329,7 +316,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _anisotropicLevel;
 
         public SettingEntry AnisotropicLevel {
-            get { return _anisotropicLevel; }
+            get => _anisotropicLevel;
             set {
                 if (!AnisotropicLevels.Contains(value)) value = AnisotropicLevels[0];
                 if (Equals(value, _anisotropicLevel)) return;
@@ -341,7 +328,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _antiAliasingLevel;
 
         public SettingEntry AntiAliasingLevel {
-            get { return _antiAliasingLevel; }
+            get => _antiAliasingLevel;
             set {
                 if (!AntiAliasingLevels.Contains(value)) value = AntiAliasingLevels[0];
                 if (Equals(value, _antiAliasingLevel)) return;
@@ -353,7 +340,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _fullscreen;
 
         public bool Fullscreen {
-            get { return _fullscreen; }
+            get => _fullscreen;
             set {
                 if (Equals(value, _fullscreen)) return;
                 _fullscreen = value;
@@ -370,7 +357,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _verticalSyncronization;
 
         public bool VerticalSyncronization {
-            get { return _verticalSyncronization; }
+            get => _verticalSyncronization;
             set {
                 if (Equals(value, _verticalSyncronization)) return;
                 _verticalSyncronization = value;
@@ -381,7 +368,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _framerateLimitEnabled;
 
         public bool FramerateLimitEnabled {
-            get { return _framerateLimitEnabled; }
+            get => _framerateLimitEnabled;
             set {
                 if (Equals(value, _framerateLimitEnabled)) return;
                 _framerateLimitEnabled = value;
@@ -392,7 +379,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _framerateLimit;
 
         public int FramerateLimit {
-            get { return _framerateLimit; }
+            get => _framerateLimit;
             set {
                 value = value.Clamp(30, 240);
                 if (Equals(value, _framerateLimit)) return;
@@ -408,7 +395,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _shadowMapSize;
 
         public SettingEntry ShadowMapSize {
-            get { return _shadowMapSize; }
+            get => _shadowMapSize;
             set {
                 if (!ShadowMapSizes.Contains(value)) value = ShadowMapSizes[0];
                 if (Equals(value, _shadowMapSize)) return;
@@ -420,7 +407,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _worldDetail;
 
         public SettingEntry WorldDetail {
-            get { return _worldDetail; }
+            get => _worldDetail;
             set {
                 if (!WorldDetailLevels.Contains(value)) value = WorldDetailLevels[0];
                 if (Equals(value, _worldDetail)) return;
@@ -432,7 +419,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _smokeInMirrors;
 
         public bool SmokeInMirrors {
-            get { return _smokeInMirrors; }
+            get => _smokeInMirrors;
             set {
                 if (Equals(value, _smokeInMirrors)) return;
                 _smokeInMirrors = value;
@@ -443,7 +430,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _smokeLevel;
 
         public SettingEntry SmokeLevel {
-            get { return _smokeLevel; }
+            get => _smokeLevel;
             set {
                 if (!SmokeLevels.Contains(value)) value = SmokeLevels[0];
                 if (Equals(value, _smokeLevel)) return;
@@ -457,7 +444,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _postProcessing;
 
         public bool PostProcessing {
-            get { return _postProcessing; }
+            get => _postProcessing;
             set {
                 if (Equals(value, _postProcessing)) return;
                 _postProcessing = value;
@@ -469,7 +456,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         [CanBeNull]
         public string PostProcessingFilter {
-            get { return _postProcessingFilter; }
+            get => _postProcessingFilter;
             set {
                 if (Equals(value, _postProcessingFilter)) return;
                 _postProcessingFilter = value;
@@ -503,7 +490,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _postProcessingQuality;
 
         public SettingEntry PostProcessingQuality {
-            get { return _postProcessingQuality; }
+            get => _postProcessingQuality;
             set {
                 if (!PostProcessingQualities.Contains(value)) value = PostProcessingQualities[0];
                 if (Equals(value, _postProcessingQuality)) return;
@@ -515,7 +502,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _glareQuality;
 
         public SettingEntry GlareQuality {
-            get { return _glareQuality; }
+            get => _glareQuality;
             set {
                 if (!GlareQualities.Contains(value)) value = GlareQualities[0];
                 if (Equals(value, _glareQuality)) return;
@@ -527,7 +514,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _depthOfFieldQuality;
 
         public SettingEntry DepthOfFieldQuality {
-            get { return _depthOfFieldQuality; }
+            get => _depthOfFieldQuality;
             set {
                 if (!DepthOfFieldQualities.Contains(value)) value = DepthOfFieldQualities[0];
                 if (Equals(value, _depthOfFieldQuality)) return;
@@ -539,7 +526,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _raysOfGod;
 
         public bool RaysOfGod {
-            get { return _raysOfGod; }
+            get => _raysOfGod;
             set {
                 if (Equals(value, _raysOfGod)) return;
                 _raysOfGod = value;
@@ -550,7 +537,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _heatShimmering;
 
         public bool HeatShimmering {
-            get { return _heatShimmering; }
+            get => _heatShimmering;
             set {
                 if (Equals(value, _heatShimmering)) return;
                 _heatShimmering = value;
@@ -561,7 +548,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _colorSaturation;
 
         public int ColorSaturation {
-            get { return _colorSaturation; }
+            get => _colorSaturation;
             set {
                 value = value.Clamp(0, 400);
                 if (Equals(value, _colorSaturation)) return;
@@ -573,7 +560,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _fxaa;
 
         public bool Fxaa {
-            get { return _fxaa; }
+            get => _fxaa;
             set {
                 if (Equals(value, _fxaa)) return;
                 _fxaa = value;
@@ -584,7 +571,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _motionBlur;
 
         public int MotionBlur {
-            get { return _motionBlur; }
+            get => _motionBlur;
             set {
                 value = value.Clamp(0, 12);
                 if (Equals(value, _motionBlur)) return;
@@ -598,7 +585,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _mirrorResolution;
 
         public SettingEntry MirrorResolution {
-            get { return _mirrorResolution; }
+            get => _mirrorResolution;
             set {
                 if (!MirrorResolutions.Contains(value)) value = MirrorResolutions[0];
                 if (Equals(value, _mirrorResolution)) return;
@@ -610,7 +597,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _mirrorHighQuality;
 
         public bool MirrorHighQuality {
-            get { return _mirrorHighQuality; }
+            get => _mirrorHighQuality;
             set {
                 if (Equals(value, _mirrorHighQuality)) return;
                 _mirrorHighQuality = value;
@@ -621,7 +608,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _cubemapResolution;
 
         public SettingEntry CubemapResolution {
-            get { return _cubemapResolution; }
+            get => _cubemapResolution;
             set {
                 if (!CubemapResolutions.Contains(value)) value = CubemapResolutions[0];
                 if (Equals(value, _cubemapResolution)) return;
@@ -633,7 +620,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _cubemapRenderingFrequency;
 
         public SettingEntry CubemapRenderingFrequency {
-            get { return _cubemapRenderingFrequency; }
+            get => _cubemapRenderingFrequency;
             set {
                 if (!CubemapRenderingFrequencies.Contains(value)) value = CubemapRenderingFrequencies[0];
                 if (Equals(value, _cubemapRenderingFrequency)) return;
@@ -645,7 +632,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _cubemapDistance;
 
         public int CubemapDistance {
-            get { return _cubemapDistance; }
+            get => _cubemapDistance;
             set {
                 value = value.Clamp(0, 10000);
                 if (Equals(value, _cubemapDistance)) return;
@@ -659,7 +646,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _hideSteeringWheel;
 
         public bool HideSteeringWheel {
-            get { return _hideSteeringWheel; }
+            get => _hideSteeringWheel;
             set {
                 if (Equals(value, _hideSteeringWheel)) return;
                 _hideSteeringWheel = value;
@@ -670,7 +657,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _hideArms;
 
         public bool HideArms {
-            get { return _hideArms; }
+            get => _hideArms;
             set {
                 if (Equals(value, _hideArms)) return;
                 _hideArms = value;
@@ -681,7 +668,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _lockSteeringWheel;
 
         public bool LockSteeringWheel {
-            get { return _lockSteeringWheel; }
+            get => _lockSteeringWheel;
             set {
                 if (Equals(value, _lockSteeringWheel)) return;
                 _lockSteeringWheel = value;

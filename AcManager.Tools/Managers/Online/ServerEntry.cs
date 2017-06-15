@@ -53,7 +53,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private void UpdateMissingContent() {
-            if (!IsFullyLoaded || Cars == null) {
+            if (Cars == null) {
                 _missingCarsError = null;
             } else {
                 var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
@@ -62,7 +62,7 @@ namespace AcManager.Tools.Managers.Online {
                         : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString())) : null;
             }
 
-            if (!IsFullyLoaded || Track != null) {
+            if (TrackId == null || Track != null) {
                 _missingTrackError = null;
             } else {
                 _missingTrackError = string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));

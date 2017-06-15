@@ -90,6 +90,21 @@ namespace AcManager.Controls {
                 TChild child, Action<TChild> ) where TParent : FrameworkElement {
             return condition.Add(getChild, (child, b) => child.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
         }*/
+
+        public static SizeRelatedCondition<TParent, bool> AddInverted<TParent>(this SizeRelatedCondition<TParent, bool> condition,
+                FrameworkElement child) where TParent : FrameworkElement {
+            return condition.Add(b => child.Visibility = b ? Visibility.Collapsed : Visibility.Visible);
+        }
+
+        public static SizeRelatedCondition<TParent, bool> Add<TParent>(this SizeRelatedCondition<TParent, bool> condition,
+                FrameworkElement child) where TParent : FrameworkElement {
+            return condition.Add(b => child.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
+        }
+
+        public static SizeRelatedCondition<TParent, bool> Add<TParent>(this SizeRelatedCondition<TParent, bool> condition,
+                DataGridColumn child) where TParent : FrameworkElement {
+            return condition.Add(b => child.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
+        }
     }
 
     public abstract class SizeRelatedCondition {
@@ -178,7 +193,7 @@ namespace AcManager.Controls {
         public SizeRelatedCondition<TParent, TValue> Add<TChild>(Func<TParent, TChild> getChild, Action<TChild, TValue> applyFn) {
             var h = new ChildHolder<TChild>(getChild, applyFn);
 
-            if (_parent.IsInitialized) {
+            if (_parent.IsLoaded) {
                 if (!_stateSet) {
                     _stateSet = true;
                     _state = _condition(_parent);
@@ -186,16 +201,16 @@ namespace AcManager.Controls {
 
                 h.Update(_parent);
                 h.Apply(_state);
-                _children.Add(h);
             }
 
+            _children.Add(h);
             return this;
         }
 
         public SizeRelatedCondition<TParent, TValue> Add(Action<TValue> applyFn) {
             var h = new ChildHolderEmpty(applyFn);
 
-            if (_parent.IsInitialized) {
+            if (_parent.IsLoaded) {
                 if (!_stateSet) {
                     _stateSet = true;
                     _state = _condition(_parent);
@@ -203,9 +218,9 @@ namespace AcManager.Controls {
 
                 h.Update(_parent);
                 h.Apply(_state);
-                _children.Add(h);
             }
 
+            _children.Add(h);
             return this;
         }
 

@@ -17,6 +17,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
+                result.Exists = true;
                 if (AsyncLoading) {
                     result.LoadAsync(contextHolder, data).ContinueWith(t => {
                         contextHolder.RaiseTexturesUpdated();

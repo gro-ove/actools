@@ -34,11 +34,11 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.1374")]
-[assembly: AssemblyFileVersion("1.0.1.1374")]
+[assembly: AssemblyVersion("1.0.1.1375")]
+[assembly: AssemblyFileVersion("1.0.1.1375")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.ContentRepair")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 17/06/01 22:44:46
+// Modified at: 17/06/15 02:04:10

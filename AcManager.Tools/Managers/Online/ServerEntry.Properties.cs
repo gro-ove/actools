@@ -452,7 +452,7 @@ namespace AcManager.Tools.Managers.Online {
                 _addToRecentCommand?.RaiseCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {
-                    HasErrors = value == ServerStatus.Error || value == ServerStatus.Unloaded || value == ServerStatus.MissingContent;
+                    HasErrors = value == ServerStatus.Error || value == ServerStatus.Unloaded;
                 }
             }
         }

@@ -1,9 +1,10 @@
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AcManager.Tools.Helpers.Loaders {
-    internal class DirectLoader : ILoader {
+    public class DirectLoader : ILoader {
         protected string Url;
 
         public virtual long TotalSize { get; protected set; } = -1L;
@@ -24,6 +25,12 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public virtual Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             return Task.FromResult(true);
+        }
+
+        public bool UsesClientToDownload => true;
+
+        public Task DownloadAsync(CookieAwareWebClient client, string destination, IProgress<double> progress, CancellationToken cancellation) {
+            return DownloadAsync(client, destination, cancellation);
         }
 
         public virtual async Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {

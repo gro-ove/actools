@@ -142,7 +142,7 @@ namespace AcManager.UserControls {
         private CarObject _selectedCar;
 
         public CarObject SelectedCar {
-            get { return _selectedCar; }
+            get => _selectedCar;
             set {
                 if (Equals(value, _selectedCar) || value == null) return;
                 _selectedCar = value;
@@ -178,7 +178,7 @@ namespace AcManager.UserControls {
 
             var newIndex = ((ItemsControl)sender).GetMouseItemIndex();
             if (raceGridEntry != null) {
-                Model.InsertEntry(newIndex, raceGridEntry);
+                Model.InsertEntry(newIndex, e.IsCopyAction() ? raceGridEntry.Clone() : raceGridEntry);
             } else {
                 Model.InsertEntry(newIndex, carObject);
             }

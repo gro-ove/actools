@@ -148,8 +148,14 @@ namespace AcManager.Pages.Windows {
 
             var app = Application.Current;
             if (app == null) return;
-            foreach (var dialog in app.Windows.OfType<ModernDialog>().Where(x => x.Owner == null)) {
-                dialog.Owner = this;
+
+            foreach (var dialog in app.Windows.OfType<ModernDialog>().ToList()) {
+                if (dialog.Owner != null) continue;
+                try {
+                    dialog.Owner = this;
+                } catch (Exception ex) {
+                    Logging.Warning(ex.Message);
+                }
             }
         }
 

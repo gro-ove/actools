@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Steamworks;
@@ -45,10 +46,10 @@ namespace AcManager.Tools.Starters {
             }
 
             if (!initialized) {
-                Logging.Debug("Still not initialized…");
+                Logging.Debug("Still not initializedâ€¦");
 
                 if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
-                    MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("Steam canâ€™t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 }
 
                 Environment.Exit(0);
@@ -59,7 +60,7 @@ namespace AcManager.Tools.Starters {
         }
 
         private static bool AreFilesSame(string a, string b) {
-            // because of symlinks… not that it’s a common case, but for me, it is
+            // because of symlinksâ€¦ not that itâ€™s a common case, but for me, it is
             if (!string.Equals(Path.GetFileName(a), Path.GetFileName(b), StringComparison.OrdinalIgnoreCase)) return false;
 
             var ai = new FileInfo(a);
@@ -80,17 +81,11 @@ namespace AcManager.Tools.Starters {
             }
         }
 
-        [DllImport("Kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string path);
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        private static extern int AddDllDirectory(string newDirectory);
-
         private static void InitializeLibraries() {
             // Environment.SetEnvironmentVariable("PATH", $"{Environment.GetEnvironmentVariable("PATH")};{_dllsPath}");
-            //LoadLibrary(Path.Combine(_dllsPath, "CSteamworks.dll"));
-            //LoadLibrary(Path.Combine(_dllsPath, "steam_api.dll"));
-            AddDllDirectory(_dllsPath);
+            // LoadLibrary(Path.Combine(_dllsPath, "CSteamworks.dll"));
+            // LoadLibrary(Path.Combine(_dllsPath, "steam_api.dll"));
+            Kernel32.AddDllDirectory(_dllsPath);
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
@@ -98,9 +93,9 @@ namespace AcManager.Tools.Starters {
         public static bool Initialize(string acRoot) {
             _acRoot = acRoot;
             _dllsPath = Path.Combine(_acRoot, "launcher", "support");
-            
+
             if (!IsAvailable) {
-                Logging.Debug("Wrong location, SteamStarter won’t work");
+                Logging.Debug("Wrong location, SteamStarter wonâ€™t work");
                 return false;
             }
 

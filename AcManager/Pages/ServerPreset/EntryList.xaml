@@ -39,7 +39,7 @@
             <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
           </DataTrigger>
         </DataTemplate.Triggers>
-        <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
+        <DockPanel PreviewMouseLeftButtonDown="OnOpponentCellClick" Background="Transparent">
           <!--<mui:BetterComboBox ItemsSource="{Binding Car.SkinsEnabledWrappersList}" SelectedItem="{Binding CarSkinWrapper, Mode=TwoWay}"
                             IsEditable="False" Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}"
                             Style="{StaticResource BetterComboBox.Borderless.White}" PreviewMouseDown="OpponentSkinCell_OnMouseDown">
@@ -105,30 +105,45 @@
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.GuidDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Guid, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Guid, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Any"
             Style="{StaticResource Borderless.White}" />
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding DriverName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding DriverName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Client-defined"
             Style="{StaticResource Borderless.White}" />
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding TeamName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding TeamName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="None"
             Style="{StaticResource Borderless.White}" />
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.BallastDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Auto" Minimum="0" Maximum="500"
-            Mode="Number" Style="{StaticResource Borderless.White}" />
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Right" Text=" kg" />
+          <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="None" Minimum="0" Maximum="100"
+              Mode="IntegerOrLabel" ModeLabel="None" Style="{StaticResource Borderless.White}" TextAlignment="Right" />
+        </DockPanel>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Detailed.RestrictorDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Right" Text="%" />
+          <mui:BetterTextBox x:Name="TextBox" Text="{Binding Restrictor, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="None" Minimum="0"
+              Maximum="100" Mode="IntegerOrLabel" ModeLabel="None" Style="{StaticResource Borderless.White}" TextAlignment="Right" />
+        </DockPanel>
       </DataTemplate>
     </ResourceDictionary>
   </UserControl.Resources>
 
   <DockPanel>
-    <DockPanel DockPanel.Dock="Right" Width="200" Margin="20 0 0 0"
-        Visibility="{Binding ActualWidth, ElementName=This, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
+    <DockPanel x:Name="SavedDriversPanel" DockPanel.Dock="Right" Width="200" Margin="20 0 0 0">
+      <DockPanel DockPanel.Dock="Bottom" Margin="0 8 0 8">
+        <TextBlock Text="To load stored entry, simply drag’n’drop it to the table." Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
+            HorizontalAlignment="Left" />
+      </DockPanel>
+
       <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Known drivers:" DockPanel.Dock="Top" />
 
       <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers, Source={x:Static t:ServerPresetsManager.Instance}}"
@@ -152,6 +167,10 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+    </DockPanel>
+    <DockPanel x:Name="SomethingMightBeHiddenPanel" DockPanel.Dock="Bottom" Margin="0 8 0 8">
+      <TextBlock Text="Some colums are hidden. Make window wider to see them." Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
+          HorizontalAlignment="Left" />
     </DockPanel>
 
     <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top" Margin="0 0 20 4">
@@ -221,8 +240,11 @@
       <DataGrid.RowDetailsTemplate>
         <DataTemplate>
           <Border Background="Transparent" Padding="20 4">
-            <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal">
+            <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal"
+                d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
+              <Button Content="Random Skin" Padding="4 2" Command="{Binding RandomSkinCommand}" />
               <Button Content="Store" Padding="4 2" Command="{Binding StoreCommand}" />
+              <Button Content="Clone" Padding="4 2" Command="{Binding CloneCommand}" />
               <Button Content="Delete" Padding="4 2" Command="{Binding DeleteCommand}" />
             </mui:SpacingStackPanel>
           </Border>
@@ -236,8 +258,12 @@
         <DataGridTemplateColumn Width="140" Header="GUID" SortMemberPath="Name" CellTemplate="{StaticResource Detailed.GuidDataTemplate}" />
         <DataGridTemplateColumn Width="140*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"
             CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-        <DataGridTemplateColumn Width="100*" Header="Team" SortMemberPath="Nationality" CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-        <DataGridTemplateColumn Width="80" Header="Ballast" SortMemberPath="AiLevel" CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
+        <DataGridTemplateColumn x:Name="TeamColumn" Width="100*" Header="Team" SortMemberPath="Nationality"
+            CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
+        <DataGridTemplateColumn x:Name="BallastColumn" Width="100" Header="Ballast" SortMemberPath="Ballast"
+            CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
+        <DataGridTemplateColumn x:Name="RestrictorColumn" Width="100" Header="Restrictor" SortMemberPath="Restrictor"
+            CellTemplate="{StaticResource Detailed.RestrictorDataTemplate}" />
       </DataGrid.Columns>
     </DataGrid>
   </DockPanel>

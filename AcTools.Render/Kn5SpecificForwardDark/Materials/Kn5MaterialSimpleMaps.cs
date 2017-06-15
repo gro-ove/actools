@@ -44,6 +44,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 Flags |= EffectDarkMaterial.UseNormalAlphaAsAlpha;
             }
 
+            if (Kn5Material.ShaderName == "ksSkinnedMesh") {
+                Flags |= EffectDarkMaterial.UseNormalAlphaAsAlpha;
+            }
+
             _material = new EffectDarkMaterial.MapsMaterial {
                 DetailsUvMultiplier = Kn5Material.GetPropertyValueAByName("detailUVMultiplier"),
                 DetailsNormalBlend = _txDetailsNormal == null ? 0f : Kn5Material.GetPropertyValueAByName("detailNormalBlend"),
@@ -62,7 +66,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (_hasNormalMap && !Effect.FxNormalMap.SetResource(_txNormal)) {
                 Effect.FxNormalMap.SetResource(contextHolder.GetFlatNmTexture());
             }
-            
+
             Effect.FxDetailsMap.SetResource(_txDetails);
             Effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
             Effect.FxMapsMap.SetResource(_txMaps);
@@ -80,7 +84,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
     public class Kn5MaterialSimpleSkinnedMaps : Kn5MaterialSimpleMaps, ISkinnedMaterial {
         public Kn5MaterialSimpleSkinnedMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
-        
+
         protected override void SetInputLayout(IDeviceContextHolder contextHolder) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTGW4B;
         }

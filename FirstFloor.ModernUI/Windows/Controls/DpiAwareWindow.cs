@@ -3,12 +3,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using Microsoft.Win32;
 using Application = System.Windows.Application;
@@ -16,22 +16,74 @@ using Application = System.Windows.Application;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public class AppScaleProperty : NotifyPropertyChanged {
+        private readonly Busy _busy = new Busy();
+
+        private bool _scaleLoaded;
+        private double _scale;
+
+        private void EnsureLoaded() {
+            if (!_scaleLoaded) {
+                _scaleLoaded = true;
+                _scale = _delayed = ValuesStorage.GetDouble("__uiScale_2", 1d);
+            }
+
+            if (_scale < 0.1 || _scale > 4d || double.IsNaN(_scale) || double.IsInfinity(_scale)) {
+                _scale = _delayed = 1d;
+            }
+        }
+
+        public double Scale {
+            get {
+                EnsureLoaded();
+                return _scale;
+            }
+            set {
+                EnsureLoaded();
+                value = Math.Min(Math.Max(value, 0.2), 10d);
+                if (Equals(value, _scale)) return;
+                var delta = value / _scale;
+                _scale = value;
+                _delayed = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Delayed));
+                ValuesStorage.Set("__uiScale_2", value);
+
+                foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
+                    window.UpdateSizeLimits();
+                    window.Width *= delta;
+                    window.Height *= delta;
+                }
+            }
+        }
+
+        private double _delayed;
+
+        public double Delayed {
+            get {
+                EnsureLoaded();
+                return _delayed;
+            }
+            set {
+                EnsureLoaded();
+                if (Equals(value, _delayed)) return;
+                _delayed = value;
+                OnPropertyChanged(nameof(Delayed));
+                _busy.DoDelay(() => Scale = _delayed, 500);
+            }
+        }
+    }
+
     /// <summary>
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
     public abstract class DpiAwareWindow : Window {
-        private static double? _optionScale;
+        private const double BaseDpi = 96d;
+        public static readonly AppScaleProperty AppScale = new AppScaleProperty();
 
         public static double OptionScale {
-            get {
-                if (!_optionScale.HasValue) throw new Exception("Set OptionScale first");
-                return _optionScale.Value;
-            }
-            set {
-                if (Equals(_optionScale, value)) return;
-                if (_optionScale.HasValue) throw new Exception("OptionScale already has been set");
-                _optionScale = value;
-            }
+            get => AppScale.Scale;
+            set => AppScale.Scale = value;
         }
 
         /// <summary>
@@ -50,6 +102,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             LocationChanged += OnLocationChanged;
             SizeChanged += OnSizeChanged;
             StateChanged += OnStateChanged;
+            Loaded += OnLoaded;
 
             // WM_DPICHANGED is not send when window is minimized, do listen to global display setting changes
             SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
@@ -65,7 +118,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             foreach (var gesture in NavigationCommands.BrowseBack.InputGestures.OfType<KeyGesture>()
-                                                      .Where(x => x?.Key == Key.Back && x.Modifiers == ModifierKeys.None)
+                                                      .Where(x => x.Key == Key.Back && x.Modifiers == ModifierKeys.None)
                                                       .ToList()) {
                 NavigationCommands.BrowseBack.InputGestures.Remove(gesture);
             }
@@ -127,9 +180,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        protected override void OnInitialized(EventArgs e) {
-            base.OnInitialized(e);
+        public double OriginalMinWidth, OriginalMinHeight, OriginalMaxWidth, OriginalMaxHeight;
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            OriginalMinWidth = MinWidth;
+            OriginalMinHeight = MinHeight;
+            OriginalMaxWidth = MaxWidth;
+            OriginalMaxHeight = MaxHeight;
+            SetDpiMultiplier();
+            UpdateSizeLimits();
             LoadLocationAndSize();
+        }
+
+        public static readonly DependencyPropertyKey IconPathThicknessPropertyKey = DependencyProperty.RegisterReadOnly(nameof(IconPathThickness), typeof(double),
+                typeof(DpiAwareWindow), new PropertyMetadata(1d));
+
+        public static readonly DependencyProperty IconPathThicknessProperty = IconPathThicknessPropertyKey.DependencyProperty;
+
+        public double IconPathThickness => (double)GetValue(IconPathThicknessProperty);
+
+        public void SetDpiMultiplier() {
+            var multiplier = GetDpiMultiplier() * OptionScale;
+            if (AppearanceManager.Current.IdealFormattingMode == null) {
+                Resources[AppearanceManager.KeyFormattingMode] = multiplier == 1d ? TextFormattingMode.Display : TextFormattingMode.Ideal;
+            } else {
+                Resources.Remove(AppearanceManager.KeyFormattingMode);
+            }
+
+            SetValue(IconPathThicknessPropertyKey, 1d / multiplier);
+        }
+
+        internal void UpdateSizeLimits() {
+            if (!IsLoaded) return;
+
+            try {
+                MinWidth = OriginalMinWidth * OptionScale;
+                MinHeight = OriginalMinHeight * OptionScale;
+                MaxWidth = OriginalMaxWidth * OptionScale;
+                MaxHeight = OriginalMaxHeight * OptionScale;
+                SetDpiMultiplier();
+            } catch (Exception e) {
+                Logging.Warning(e);
+                MinWidth = 100;
+                MinHeight = 100;
+                MaxWidth = 99999;
+                MaxHeight = 99999;
+            }
         }
 
         protected override void OnLocationChanged(EventArgs e) {
@@ -179,7 +275,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetValue(ActualRightPropertyKey, ActualLeft + ActualWidth);
         }
 
-        protected virtual void OnLocationChanged(object sender, EventArgs e) {
+        protected void OnLocationChanged(object sender, EventArgs e) {
             UpdateActualLocation();
             SaveLocationAndSize();
         }
@@ -192,14 +288,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         [DllImport(@"user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetWindowRect(IntPtr hWnd, out Win32Rect lpWindowRect);
-        
+
         private Win32Rect GetWindowRectangle() {
             Win32Rect rect;
             GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
             return rect;
         }
 
-        protected virtual void OnStateChanged(object sender, EventArgs e) {
+        protected void OnStateChanged(object sender, EventArgs e) {
             UpdateActualLocation();
             SaveLocationAndSize();
         }
@@ -236,12 +332,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // calculate the DPI used by WPF; this is the same as the system DPI
             var matrix = _source.CompositionTarget.TransformToDevice;
-            DpiInformation = new DpiInformation(96D * matrix.M11, 96D * matrix.M22);
+            DpiInformation = new DpiInformation(BaseDpi * matrix.M11, BaseDpi * matrix.M22);
 
-            if (!_isPerMonitorDpiAware) return;
-            _source.AddHook(WndProc);
+            if (_isPerMonitorDpiAware) {
+                _source.AddHook(WndProc);
+            }
+
             RefreshMonitorDpi();
         }
+
+        private readonly Busy _busy = new Busy();
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
             if (msg != NativeMethods.WM_DPICHANGED || _source?.CompositionTarget == null) {
@@ -255,17 +355,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var matrix = _source.CompositionTarget.TransformFromDevice;
             var ul = matrix.Transform(new Vector(newDisplayRect.Left, newDisplayRect.Top));
             var hw = matrix.Transform(new Vector(newDisplayRect.Right - newDisplayRect.Left, newDisplayRect.Bottom - newDisplayRect.Top));
-            Left = ul.X;
-            Top = ul.Y;
-            UpdateWindowSize(hw.X, hw.Y);
-
-            // Remember the current DPI settings.
-            var oldDpiX = DpiInformation.MonitorDpiX;
-            var oldDpiY = DpiInformation.MonitorDpiY;
 
             // Get the new DPI settings from wParam
             var dpiX = (double)(wParam.ToInt32() >> 16);
             var dpiY = (double)(wParam.ToInt32() & 0x0000FFFF);
+
+            _busy.DoDelayAfterwards(() => {
+                Left = ul.X;
+                Top = ul.Y;
+                UpdateWindowSize(hw.X, hw.Y, dpiX);
+            }, 100);
+
+            // Remember the current DPI settings.
+            var oldDpiX = DpiInformation.MonitorDpiX;
+            var oldDpiY = DpiInformation.MonitorDpiY;
 
             if (oldDpiX != dpiX || oldDpiY != dpiY) {
                 DpiInformation.UpdateMonitorDpi(dpiX, dpiY);
@@ -295,7 +398,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return !double.IsNaN(value) && !double.IsInfinity(value);
         }
 
-        private void UpdateWindowSize(double width, double height) {
+        private double _dpi = BaseDpi;
+
+        public bool IsDpiUnusual() {
+            return _dpi != BaseDpi;
+        }
+
+        public double GetDpiMultiplier() {
+            return _dpi / BaseDpi;
+        }
+
+        private void UpdateWindowSize(double width, double height, double dpi) {
+            _dpi = dpi;
+            SetDpiMultiplier();
+
             // determine relative scalex and scaley
             var relScaleX = width / Width;
             var relScaleY = height / Height;
@@ -358,7 +474,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var dpiVector = DpiInformation.UpdateMonitorDpi(xDpi, yDpi);
 
             // update Width and Height based on the current DPI of the monitor
-            UpdateWindowSize(Width * dpiVector.X, Height * dpiVector.Y);
+            UpdateWindowSize(Width * dpiVector.X, Height * dpiVector.Y, xDpi);
 
             // update graphics and text based on the current DPI of the monitor
             UpdateLayoutTransform();
@@ -368,7 +484,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Raises the <see cref="E:DpiChanged" /> event.
         /// </summary>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        protected virtual void OnDpiChanged(EventArgs e) {
+        protected void OnDpiChanged(EventArgs e) {
             DpiChanged?.Invoke(this, e);
         }
 
@@ -376,8 +492,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DpiAwareWindow));
 
         public bool IsDimmed {
-            get { return (bool)GetValue(IsDimmedProperty); }
-            set { SetValue(IsDimmedProperty, value); }
+            get => (bool)GetValue(IsDimmedProperty);
+            set => SetValue(IsDimmedProperty, value);
         }
 
         public static void OnFatalError(Exception e) {
@@ -410,7 +526,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _nativeEnabled;
 
         public bool NativeEnabled {
-            get { return _nativeEnabled; }
+            get => _nativeEnabled;
             set {
                 if (Equals(value, _nativeEnabled)) return;
                 _nativeEnabled = value;
@@ -425,8 +541,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DpiAwareWindow), new PropertyMetadata(OnLocationAndSizeKeyChanged));
 
         public string LocationAndSizeKey {
-            get { return (string)GetValue(LocationAndSizeKeyProperty); }
-            set { SetValue(LocationAndSizeKeyProperty, value); }
+            get => (string)GetValue(LocationAndSizeKeyProperty);
+            set => SetValue(LocationAndSizeKeyProperty, value);
         }
 
         private static void OnLocationAndSizeKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -454,39 +570,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var key = LocationAndSizeKey;
             if (key == null) return;
 
-            RescaleIfNeeded();
-
-            var locationKey = key + @".l";
-            var sizeKey = key + @".s";
-            var maximizedKey = key + @".m";
-
-            var area = Screen.PrimaryScreen.WorkingArea;
-            var location = ValuesStorage.GetPoint(locationKey, new Point(Left, Top));
-            var size = ValuesStorage.GetPoint(sizeKey, new Point(Width, Height));
-
-            Left = Math.Min(Math.Max(location.X, 0), area.Width - 200);
-            Top = Math.Min(Math.Max(location.Y, 0), area.Height - 200);
-            if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {
-                Width = Math.Min(Math.Max(size.X, MinWidth), area.Width);
-                Height = Math.Min(Math.Max(size.Y, MinHeight), area.Height);
-                WindowState = ValuesStorage.GetBool(maximizedKey) ? WindowState.Maximized : WindowState.Normal;
+            try {
+                RescaleIfNeeded();
+                this.SetPlacement(ValuesStorage.GetString(key));
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
         }
 
         private void SaveLocationAndSize() {
             var key = LocationAndSizeKey;
-            if (key == null || WindowState == WindowState.Minimized) return;
+            if (key == null || WindowState == WindowState.Minimized || !IsLoaded) return;
 
-            RescaleIfNeeded();
-
-            var locationKey = key + @".l";
-            var sizeKey = key + @".s";
-            var maximizedKey = key + @".m";
-
-            ValuesStorage.Set(locationKey, new Point(Left, Top));
-            if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {
-                ValuesStorage.Set(sizeKey, new Point(Width, Height));
-                ValuesStorage.Set(maximizedKey, WindowState == WindowState.Maximized);
+            try {
+                RescaleIfNeeded();
+                ValuesStorage.Set(key, this.GetPlacement());
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
         }
 

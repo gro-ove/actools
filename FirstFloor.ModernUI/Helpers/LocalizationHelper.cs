@@ -152,6 +152,54 @@ namespace FirstFloor.ModernUI.Helpers {
             return $@"{readable.ToString($@"F{round}")} {suffix}";
         }
 
+        public static bool TryParseReadableSize(string size, [CanBeNull] string defaultPostfix, out long bytes) {
+            var split = -1;
+
+            for (var i = 0; i < size.Length; i++) {
+                if (size[i] >= 'a' && size[i] <= 'z' || size[i] >= 'A' && size[i] <= 'Z') {
+                    split = i;
+                    break;
+                }
+            }
+
+            if (split == -1) {
+                return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
+            }
+
+            double val;
+            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) {
+                bytes = 0;
+                return false;
+            }
+
+            var postfix = size.Substring(split).Trim().ToLower();
+            if (defaultPostfix != null && string.IsNullOrWhiteSpace(postfix)) {
+                postfix = defaultPostfix;
+            }
+
+            if (postfix == "b" || postfix == UiStrings.LocalizationHelper_ReadableSize_B.ToLower()) {
+                bytes = (long)val;
+            } else if (postfix == "kb" || postfix == UiStrings.LocalizationHelper_ReadableSize_KB.ToLower()) {
+                bytes = (long)(1024 * val);
+            } else if (postfix == "mb" || postfix == UiStrings.LocalizationHelper_ReadableSize_MB.ToLower()) {
+                bytes = (long)(1048576 * val);
+            } else if (postfix == "gb" || postfix == UiStrings.LocalizationHelper_ReadableSize_GB.ToLower()) {
+                bytes = (long)(1073741824 * val);
+            } else if (postfix == "tb" || postfix == UiStrings.LocalizationHelper_ReadableSize_TB.ToLower()) {
+                bytes = (long)(1099511627776 * val);
+            } else if (postfix == "pb" || postfix == UiStrings.LocalizationHelper_ReadableSize_PB.ToLower()) {
+                bytes = (long)(1099511627776 * val);
+            } else if (postfix == "eb" || postfix == UiStrings.LocalizationHelper_ReadableSize_EB.ToLower()) {
+                bytes = (long)(1099511627776 * val);
+            } else {
+                MessageBox.Show($"Unknown postfix: {postfix}");
+                bytes = (long)val;
+                return false;
+            }
+
+            return true;
+        }
+
         public static string ToTitle(this string s) {
             return Titling.Convert(s);
         }

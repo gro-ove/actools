@@ -30,7 +30,7 @@ namespace AcManager.Tools.Managers {
 
         [NotNull]
         public string Guid {
-            get { return _guid; }
+            get => _guid;
             set {
                 value = value.Trim();
                 if (value == _guid) return;
@@ -44,7 +44,7 @@ namespace AcManager.Tools.Managers {
 
         [NotNull]
         public string DriverName {
-            get { return _driverName; }
+            get => _driverName;
             set {
                 value = value.Trim();
                 if (value == _driverName) return;
@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers {
 
         [CanBeNull]
         public string TeamName {
-            get { return _teamName; }
+            get => _teamName;
             set {
                 if (value == _teamName) return;
                 _teamName = value;
@@ -129,7 +129,7 @@ namespace AcManager.Tools.Managers {
         public override int GetHashCode() {
             unchecked {
                 var hashCode = Guid.GetHashCode();
-                hashCode = (hashCode * 397) ^ (DriverName?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ DriverName.GetHashCode();
                 hashCode = (hashCode * 397) ^ (TeamName?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ Skins.Aggregate(0, (current, skin) => current ^ skin.GetHashCode()).GetHashCode();
                 return hashCode;
@@ -153,7 +153,7 @@ namespace AcManager.Tools.Managers {
         private bool _deleted;
 
         public bool Deleted {
-            get { return _deleted; }
+            get => _deleted;
             set {
                 if (Equals(value, _deleted)) return;
                 _deleted = value;

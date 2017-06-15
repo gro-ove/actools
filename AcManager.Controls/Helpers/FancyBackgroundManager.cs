@@ -70,7 +70,7 @@ namespace AcManager.Controls.Helpers {
         private bool _enabled;
 
         public bool Enabled {
-            get { return _enabled; }
+            get => _enabled;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;
@@ -85,7 +85,7 @@ namespace AcManager.Controls.Helpers {
         private readonly string _cachedFilename = FilesStorage.Instance.GetTemporaryFilename("Background.jpg");
 
         public string BackgroundFilename {
-            get { return _backgroundFilename; }
+            get => _backgroundFilename;
             private set {
                 if (Equals(value, _backgroundFilename)) return;
 
@@ -100,7 +100,7 @@ namespace AcManager.Controls.Helpers {
                     } catch (Exception e) {
                         Logging.Warning($"Can’t copy background image '{value ?? @"NULL"}': {e}");
                     }
-                } else { 
+                } else {
                     Logging.Warning($"Background image '{value ?? @"NULL"}' is missing");
                     value = null;
                 }

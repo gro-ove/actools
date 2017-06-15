@@ -1,0 +1,165 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+using AcManager.Tools.Helpers;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using AcTools.Windows;
+using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
+
+namespace AcManager.Pages.Dialogs {
+    public partial class PackServerDialog {
+        public partial class ViewModel {
+            private async Task<string> PackIntoSingleAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                var result = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
+                        FileUtils.EnsureFileNameIsValid($@"Packed {Server.DisplayName}.exe")));
+                var list = Server.PackServerData(IncludeExecutable, false).ToList();
+                var temporary = FilesStorage.Instance.GetTemporaryFilename("EVB Package");
+                Directory.CreateDirectory(temporary);
+
+                try {
+                    var executable = list.First(x => x.Key.EndsWith(@".exe"));
+
+                    // Building XML with params
+                    var doc = new XmlDocument();
+                    doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-16", null));
+
+                    var uniqueName = $@"__ROOT_TAG_UNIQUE_NAME_{StringExtension.RandomString(16)}";
+                    var rootTag = (XmlElement)doc.AppendChild(doc.CreateElement(uniqueName));
+
+                    // <InputFile>, <OutputFile>
+                    rootTag.AppendChild(doc.CreateElement("InputFile")).InnerText = executable.GetFilename(temporary) ??
+                            throw new Exception("Main executable not in the list");
+                    rootTag.AppendChild(doc.CreateElement("OutputFile")).InnerText = result;
+
+                    // <Files>
+                    var filesTag = (XmlElement)rootTag.AppendChild(doc.CreateElement("Files"));
+                    filesTag.AppendChild(doc.CreateElement("Enabled")).InnerText = "true";
+                    filesTag.AppendChild(doc.CreateElement("DeleteExtractedOnExit")).InnerText = "true";
+                    filesTag.AppendChild(doc.CreateElement("CompressFiles")).InnerText = "true";
+
+                    // A bit of mess for directories
+                    XmlElement CreateDirectory(XmlElement parent, string name) {
+                        var element = (XmlElement)parent.AppendChild(doc.CreateElement("File"));
+                        element.AppendChild(doc.CreateElement("Type")).InnerText = "3";
+                        element.AppendChild(doc.CreateElement("Name")).InnerText = name;
+                        element.AppendChild(doc.CreateElement("Action")).InnerText = "0";
+                        element.AppendChild(doc.CreateElement("OverwriteDateTime")).InnerText = "false";
+                        element.AppendChild(doc.CreateElement("OverwriteAttributes")).InnerText = "false";
+                        return (XmlElement)element.AppendChild(doc.CreateElement("Files"));
+                    }
+
+                    void CreateFile(XmlElement parent, string name, string filename) {
+                        var element = (XmlElement)parent.AppendChild(doc.CreateElement("File"));
+                        element.AppendChild(doc.CreateElement("Type")).InnerText = "2";
+                        element.AppendChild(doc.CreateElement("Name")).InnerText = name;
+                        element.AppendChild(doc.CreateElement("File")).InnerText = filename;
+                        element.AppendChild(doc.CreateElement("ActiveX")).InnerText = "false";
+                        element.AppendChild(doc.CreateElement("ActiveXInstall")).InnerText = "false";
+                        element.AppendChild(doc.CreateElement("Action")).InnerText = "0";
+                        element.AppendChild(doc.CreateElement("OverwriteDateTime")).InnerText = "false";
+                        element.AppendChild(doc.CreateElement("OverwriteAttributes")).InnerText = "false";
+                        element.AppendChild(doc.CreateElement("PassCommandLine")).InnerText = "false";
+                    }
+
+                    var directories = new Dictionary<string, XmlElement>();
+                    var directoriesRoot = (XmlElement)filesTag.AppendChild(doc.CreateElement("Files"));
+                    directories[""] = CreateDirectory(directoriesRoot, "%DEFAULT FOLDER%");
+
+                    XmlElement GetDirectoryOf(string name) {
+                        var directoryName = Path.GetDirectoryName(name) ?? "";
+                        if (!directories.TryGetValue(directoryName, out XmlElement directory)) {
+                            directory = CreateDirectory(GetDirectoryOf(directoryName), Path.GetFileName(directoryName));
+                            directories[directoryName] = directory;
+                        }
+
+                        return directory;
+                    }
+
+                    foreach (var entry in list) {
+                        CreateFile(GetDirectoryOf(entry.Key), Path.GetFileName(entry.Key), entry.GetFilename(temporary));
+                    }
+
+                    // <Registries>
+                    var registriesTag = (XmlElement)rootTag.AppendChild(doc.CreateElement("Registries"));
+                    registriesTag.AppendChild(doc.CreateElement("Enabled")).InnerText = "false";
+
+                    // <Packaging>
+                    var packagingTag = (XmlElement)rootTag.AppendChild(doc.CreateElement("Packaging"));
+                    packagingTag.AppendChild(doc.CreateElement("Enabled")).InnerText = "false";
+
+                    // <Options>
+                    var optionsTag = (XmlElement)rootTag.AppendChild(doc.CreateElement("Options"));
+                    optionsTag.AppendChild(doc.CreateElement("ShareVirtualSystem")).InnerText = "true";
+                    optionsTag.AppendChild(doc.CreateElement("MapExecutableWithTemporaryFile")).InnerText = "false";
+                    optionsTag.AppendChild(doc.CreateElement("AllowRunningOfVirtualExeFiles")).InnerText = "true";
+
+                    // EVB-file
+                    var manifest = FileUtils.GetTempFileName(temporary, ".evb");
+                    await FileUtils.WriteAllBytesAsync(manifest, Encoding.Unicode.GetBytes(doc.OuterXml.Replace(uniqueName, "")));
+
+                    // Processing
+                    var evb = Shell32.FindExecutable(manifest);
+                    if (Path.GetFileName(evb)?.Contains("enigma", StringComparison.OrdinalIgnoreCase) != true || !File.Exists(evb)) {
+                        throw new InformativeException("Enigma Virtual Box not found",
+                                "Please, make sure it’s installed and .EVB-files are associated with its “enigmavbconsole.exe” executable.");
+                    }
+
+                    var process = ProcessExtension.Start(evb, new[] { manifest }, new ProcessStartInfo {
+                        CreateNoWindow = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false
+                    });
+
+                    process.Start();
+
+                    var error = new StringBuilder();
+                    var output = new StringBuilder();
+                    process.ErrorDataReceived += (sender, args) => {
+                        if (args.Data != null) {
+                            error.Append(args.Data);
+                            error.Append('\n');
+                        }
+                    };
+                    process.OutputDataReceived += (sender, args) => {
+                        if (args.Data != null) {
+                            output.Append(args.Data);
+                            error.Append('\n');
+                        }
+                    };
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    await process.WaitForExitAsync(cancellation);
+                    if (!process.HasExitedSafe()) {
+                        process.Kill();
+                    }
+
+                    Logging.Debug("STDOUT: " + output);
+                    Logging.Debug("STDERR: " + error);
+
+                    if (process.ExitCode != 0 && !File.Exists(result)) {
+                        throw new Exception($@"Exit code={process.ExitCode}");
+                    }
+
+                    return result;
+                } finally {
+                    try {
+                        list.DisposeEverything();
+                        Directory.Delete(temporary, true);
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }
+            }
+        }
+    }
+}

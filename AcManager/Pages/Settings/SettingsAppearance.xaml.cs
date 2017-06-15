@@ -1,17 +1,35 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
+using AcTools;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Media;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsAppearance {
         public SettingsAppearance() {
             InitializeComponent();
             DataContext = new ViewModel();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            var thumb = ScaleSlider.FindVisualChild<Thumb>();
+            if (thumb != null) {
+                thumb.DragCompleted += (s, a) => ScaleSlider.RemoveFocus();
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -25,7 +43,8 @@ namespace AcManager.Pages.Settings {
 
             internal ViewModel() {
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
-                TextFormatting = AppAppearanceManager.IdealFormattingMode ? TextFormattings[1] : TextFormattings[0];
+                TextFormatting = AppAppearanceManager.IdealFormattingMode == null ? TextFormattings[0] :
+                        AppAppearanceManager.IdealFormattingMode.Value ? TextFormattings[2] : TextFormattings[1];
 
                 if (!_originalScalingMode.HasValue) {
                     _originalScalingMode = BitmapScaling.Value;
@@ -39,7 +58,7 @@ namespace AcManager.Pages.Settings {
             private bool _bitmapScalingRestartRequired;
 
             public bool BitmapScalingRestartRequired {
-                get { return _bitmapScalingRestartRequired; }
+                get => _bitmapScalingRestartRequired;
                 set {
                     if (Equals(value, _bitmapScalingRestartRequired)) return;
                     _bitmapScalingRestartRequired = value;
@@ -56,7 +75,7 @@ namespace AcManager.Pages.Settings {
             private BitmapScalingEntry _bitmapScaling;
 
             public BitmapScalingEntry BitmapScaling {
-                get { return _bitmapScaling; }
+                get => _bitmapScaling;
                 set {
                     if (Equals(value, _bitmapScaling)) return;
                     _bitmapScaling = value;
@@ -78,19 +97,42 @@ namespace AcManager.Pages.Settings {
             private Displayable _textFormatting;
 
             public Displayable TextFormatting {
-                get { return _textFormatting; }
+                get => _textFormatting;
                 set {
                     if (Equals(value, _textFormatting)) return;
                     _textFormatting = value;
                     OnPropertyChanged();
-                    AppAppearanceManager.IdealFormattingMode = value == TextFormattings[1];
+                    AppAppearanceManager.IdealFormattingMode = value == TextFormattings[0] ? (bool?)null :
+                            value == TextFormattings[2];
                 }
             }
 
             public Displayable[] TextFormattings { get; } = {
+                new Displayable { DisplayName = string.Format(Tools.ToolsStrings.Common_Recommended, "Auto") },
                 new Displayable { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Subpixel },
                 new Displayable { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Ideal },
             };
+
+            private DelegateCommand _changeBackgroundImageCommand;
+
+            public DelegateCommand ChangeBackgroundImageCommand => _changeBackgroundImageCommand ?? (_changeBackgroundImageCommand = new DelegateCommand(() => {
+                var dialog = new OpenFileDialog {
+                    Filter = FileDialogFilters.ImagesFilter,
+                    Title = "Select Image For Background",
+                    InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? FileUtils.GetDocumentsScreensDirectory(),
+                    RestoreDirectory = true
+                };
+
+                if (dialog.ShowDialog() == true) {
+                    AppAppearanceManager.BackgroundFilename = dialog.FileName;
+                }
+            }));
+
+            private DelegateCommand _resetBackgroundImageCommand;
+
+            public DelegateCommand ResetBackgroundImageCommand => _resetBackgroundImageCommand ?? (_resetBackgroundImageCommand = new DelegateCommand(() => {
+                AppAppearanceManager.BackgroundFilename = null;
+            }));
         }
     }
 }

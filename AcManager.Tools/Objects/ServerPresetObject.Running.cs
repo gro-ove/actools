@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -17,6 +22,110 @@ using Microsoft.VisualBasic.Logging;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
+        private static readonly string[] TrackDataToKeep = {
+            @"surfaces.ini", @"drs_zones.ini"
+        };
+
+        public class PackedEntry : IDisposable {
+            public readonly string Key;
+
+            private string _filename;
+            private bool _temporaryFilename;
+            private readonly byte[] _content;
+
+            private PackedEntry(string key, string filename, byte[] content) {
+                Key = key;
+                _filename = filename;
+                _content = content;
+            }
+
+            [CanBeNull]
+            public string GetFilename(string temporaryDirectory) {
+                if (_filename == null) {
+                    if (_content == null) return null;
+
+                    _filename = FileUtils.GetTempFileName(temporaryDirectory, Path.GetExtension(Key));
+                    _temporaryFilename = true;
+                    File.WriteAllBytes(_filename, _content);
+                }
+
+                return _filename;
+            }
+
+            [CanBeNull]
+            public byte[] GetContent() {
+                return _content ?? (_filename != null && File.Exists(_filename) ? File.ReadAllBytes(_filename) : null);
+            }
+
+            public static PackedEntry FromFile(string key, string filename) {
+                return new PackedEntry(key, filename, null);
+            }
+
+            public static PackedEntry FromContent(string key, string content) {
+                return new PackedEntry(key, null, Encoding.UTF8.GetBytes(content));
+            }
+
+            public static PackedEntry FromContent(string key, byte[] content) {
+                return new PackedEntry(key, null, content);
+            }
+
+            public void Dispose() {
+                if (_temporaryFilename) {
+                    File.Delete(_filename);
+                    _filename = null;
+                }
+            }
+        }
+
+        public IEnumerable<PackedEntry> PackServerData(bool saveExecutable, bool linuxMode) {
+            // Executable
+            if (saveExecutable) {
+                var serverDirectory = ServerPresetsManager.ServerDirectory;
+                yield return PackedEntry.FromFile(
+                        linuxMode ? "acServer" : "acServer.exe",
+                        Path.Combine(serverDirectory, linuxMode ? "acServer" : "acServer.exe"));
+            }
+
+            // Welcome message
+            if (!string.IsNullOrEmpty(WelcomeMessage)) {
+                yield return PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage);
+            }
+
+            // Main config file
+            var serverCfg = IniObject?.Clone() ?? new IniFile();
+            SaveData(serverCfg);
+
+            if (!string.IsNullOrEmpty(WelcomeMessage)) {
+                serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
+            }
+
+            yield return PackedEntry.FromContent("cfg/server_cfg.ini", serverCfg.Stringify());
+
+            // Entry list
+            var entryList = EntryListIniObject?.Clone() ?? new IniFile();
+            entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+            yield return PackedEntry.FromContent("cfg/entry_list.ini", serverCfg.Stringify());
+
+            // Cars
+            var root = AcRootDirectory.Instance.RequireValue;
+            for (var i = 0; i < CarIds.Length; i++) {
+                var carId = CarIds[i];
+                var packedData = Path.Combine(FileUtils.GetCarDirectory(root, carId), "data.acd");
+                if (File.Exists(packedData)) {
+                    yield return PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData);
+                }
+            }
+
+            // Track
+            var localPath = TrackLayoutId != null ? Path.Combine(TrackId, TrackLayoutId) : TrackId;
+            foreach (var file in TrackDataToKeep) {
+                var actualData = Path.Combine(FileUtils.GetTracksDirectory(root), localPath, @"data", file);
+                if (File.Exists(actualData)) {
+                    yield return PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData);
+                }
+            }
+        }
+
         private static void PrepareCar([NotNull] string carId) {
             var root = AcRootDirectory.Instance.RequireValue;
             var actualData = new FileInfo(Path.Combine(FileUtils.GetCarDirectory(root, carId), "data.acd"));
@@ -30,11 +139,9 @@ namespace AcManager.Tools.Objects {
 
         private static void PrepareTrack([NotNull] string trackId, [CanBeNull] string configurationId) {
             var root = AcRootDirectory.Instance.RequireValue;
+            var localPath = configurationId != null ? Path.Combine(trackId, configurationId) : trackId;
 
-            foreach (var file in new[] {
-                @"surfaces.ini", @"drs_zones.ini"
-            }) {
-                var localPath = configurationId != null ? Path.Combine(trackId, configurationId) : trackId;
+            foreach (var file in TrackDataToKeep) {
                 var actualData = new FileInfo(Path.Combine(FileUtils.GetTracksDirectory(root), localPath, @"data", file));
                 var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", localPath, @"data", file));
 
@@ -102,6 +209,21 @@ namespace AcManager.Tools.Objects {
                 await PrepareServer(progress, cancellation);
             }
 
+            var welcomeMessageLocal = IniObject?["SERVER"].GetNonEmpty("WELCOME_MESSAGE");
+            var welcomeMessageFilename = WelcomeMessagePath;
+            if (welcomeMessageLocal != null && welcomeMessageFilename != null && File.Exists(welcomeMessageFilename)) {
+                using (FromServersDirectory()) {
+                    var local = new FileInfo(welcomeMessageLocal);
+                    if (!local.Exists || new FileInfo(welcomeMessageFilename).LastWriteTime > local.LastWriteTime) {
+                        try {
+                            File.Copy(welcomeMessageFilename, welcomeMessageLocal, true);
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    }
+                }
+            }
+
             var log = new BetterObservableCollection<string>();
             RunningLog = log;
             try {
@@ -121,7 +243,7 @@ namespace AcManager.Tools.Objects {
                     ChildProcessTracker.AddProcess(process);
 
                     progress?.Report(AsyncProgressEntry.Finished);
-                    
+
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                     process.OutputDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add(args.Data));

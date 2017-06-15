@@ -60,6 +60,9 @@
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="MegaApiClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
       <HintPath>..\Packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
@@ -277,6 +280,7 @@
     <Compile Include="Helpers\IUserPresetable.cs" />
     <Compile Include="Helpers\LimitedSpace.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
+    <Compile Include="Helpers\Loaders\AdFlyLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />
     <Compile Include="Helpers\Loaders\DropboxLoader.cs" />
@@ -284,8 +288,10 @@
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
     <Compile Include="Helpers\Loaders\MediaFireLoader.cs" />
+    <Compile Include="Helpers\Loaders\MegaLoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
+    <Compile Include="Helpers\Loaders\RedirectingLoader.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
     <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />

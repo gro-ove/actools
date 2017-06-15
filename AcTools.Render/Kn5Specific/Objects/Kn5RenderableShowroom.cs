@@ -15,7 +15,7 @@ using Device = SlimDX.Direct3D11.Device;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     /// <summary>
-    /// This thing is quite different — here, textures are loaded directly from the file to videomemory,
+    /// This thing is quite different â€” here, textures are loaded directly from the file to videomemory,
     /// without passing thought RAM. Well, hopefully. Only for those showrooms with 200+ MB textures.
     /// </summary>
     public class Kn5RenderableShowroom : Kn5RenderableFile {
@@ -42,7 +42,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                     // FromStream simply reads Stream to byte[] underneath, so we could just do it here in
                     // a more controlled manner
-                    
+
                     try {
                         lock (_device) {
                             if (OptionLoadView) {
@@ -55,7 +55,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                             }
                         }
                     } catch (SEHException e) {
-                        AcToolsLogging.NonFatalErrorNotify("Can’t load texture", "Try again?", e);
+                        AcToolsLogging.NonFatalErrorNotify("Canâ€™t load texture", "Try again?", e);
                     }
                 });
 
@@ -64,7 +64,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
                 lock (contextHolder.Device) {
-                    return new RenderableTexture(key) { Resource = _ready.GetValueOrDefault(key)?.Item2 };
+                    var t = _ready.GetValueOrDefault(key)?.Item2;
+                    return new RenderableTexture(key) {
+                        Resource = t,
+                        Exists = t != null
+                    };
                 }
             }
 
@@ -104,8 +108,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public override void Dispose() {
             base.Dispose();
 
-            // At this point, theoretically, TextureLoader could already be disposed. But it’s safe
-            // to dispose it twice — in case InitializeTextures() wasn’t called yet.
+            // At this point, theoretically, TextureLoader could already be disposed. But itâ€™s safe
+            // to dispose it twice â€” in case InitializeTextures() wasnâ€™t called yet.
             DisposeHelper.Dispose(ref _loader);
         }
 

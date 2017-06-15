@@ -50,6 +50,20 @@ namespace FirstFloor.ModernUI.Helpers {
             });
         }
 
+        public void DoDelayAfterwards(Action a, int millisecondsDelay) {
+            Do(async () => {
+                a();
+                await Task.Delay(millisecondsDelay);
+            });
+        }
+
+        public Task DoDelayAfterwards(Action a, TimeSpan delay) {
+            return DoAsync(async () => {
+                a();
+                await Task.Delay(delay);
+            });
+        }
+
         public async Task DoAsync(Func<Task> a) {
             if (Is) return;
             using (Set()) {

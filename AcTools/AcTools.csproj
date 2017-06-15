@@ -242,6 +242,7 @@
     <Compile Include="Windows\Input\WindowsInputMessageDispatcher.cs" />
     <Compile Include="Utils\JunctionPoint.cs" />
     <Compile Include="Windows\Kernel32.cs" />
+    <Compile Include="Windows\Shell32.cs" />
     <Compile Include="Windows\User32.cs" />
   </ItemGroup>
   <ItemGroup>

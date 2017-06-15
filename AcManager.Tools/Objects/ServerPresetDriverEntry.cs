@@ -2,14 +2,16 @@
 using System.Linq;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class ServerPresetDriverEntry : NotifyPropertyChanged, IDraggable {
+    public class ServerPresetDriverEntry : NotifyPropertyChanged, IDraggable, IDraggableCloneable {
         private static readonly string DefaultCarId = "abarth500";
 
         public ServerPresetDriverEntry(IniFileSection section) {
@@ -21,6 +23,19 @@ namespace AcManager.Tools.Objects {
             TeamName = section.GetNonEmpty("TEAM");
             Guid = section.GetNonEmpty("GUID");
             Ballast = section.GetDouble("BALLAST", 0d);
+            Restrictor = section.GetDouble("RESTRICTOR", 0d);
+        }
+
+        bool IDraggableCloneable.CanBeCloned => true;
+
+        object IDraggableCloneable.Clone() {
+            return Clone();
+        }
+
+        public ServerPresetDriverEntry Clone() {
+            var s = new IniFileSection();
+            SaveTo(s);
+            return new ServerPresetDriverEntry(s);
         }
 
         public void SaveTo(IniFileSection section) {
@@ -31,6 +46,7 @@ namespace AcManager.Tools.Objects {
             section.Set("TEAM", TeamName);
             section.Set("GUID", Guid);
             section.Set("BALLAST", Ballast);
+            section.Set("RESTRICTOR", Restrictor);
         }
 
         public ServerPresetDriverEntry([NotNull] CarObject car) {
@@ -53,7 +69,7 @@ namespace AcManager.Tools.Objects {
 
         [NotNull]
         public string CarId {
-            get { return _carId; }
+            get => _carId;
             set {
                 if (value == _carId) return;
                 _carId = value;
@@ -88,7 +104,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string CarSkinId {
-            get { return _carSkinId; }
+            get => _carSkinId;
             set {
                 if (value == _carSkinId) return;
                 _carSkinId = value;
@@ -111,13 +127,13 @@ namespace AcManager.Tools.Objects {
                 }
                 return _carSkinObject;
             }
-            set { CarSkinId = value?.Id; }
+            set => CarSkinId = value?.Id;
         }
 
         private bool _spectatorMode;
 
         public bool SpectatorMode {
-            get { return _spectatorMode; }
+            get => _spectatorMode;
             set {
                 if (value == _spectatorMode) return;
                 _spectatorMode = value;
@@ -126,10 +142,10 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _driverName;
-        
+
         [CanBeNull]
         public string DriverName {
-            get { return _driverName; }
+            get => _driverName;
             set {
                 if (value == _driverName) return;
                 _driverName = value;
@@ -142,7 +158,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string TeamName {
-            get { return _teamName; }
+            get => _teamName;
             set {
                 if (value == _teamName) return;
                 _teamName = value;
@@ -154,7 +170,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Guid {
-            get { return _guid; }
+            get => _guid;
             set {
                 if (value == _guid) return;
                 _guid = value;
@@ -166,10 +182,21 @@ namespace AcManager.Tools.Objects {
         private double _ballast;
 
         public double Ballast {
-            get { return _ballast; }
+            get => _ballast;
             set {
                 if (Equals(value, _ballast)) return;
                 _ballast = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _restrictor;
+
+        public double Restrictor {
+            get => _restrictor;
+            set {
+                if (Equals(value, _restrictor)) return;
+                _restrictor = value;
                 OnPropertyChanged();
             }
         }
@@ -178,7 +205,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string CarSetup {
-            get { return _carSetup; }
+            get => _carSetup;
             set {
                 if (value == _carSetup) return;
                 _carSetup = value;
@@ -186,10 +213,16 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private DelegateCommand _randomSkinCommand;
+
+        public DelegateCommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
+            CarSkinId = CarObject?.SkinsManager.EnabledOnly.RandomElementOrDefault()?.Id ?? CarSkinId;
+        }));
+
         private bool _deleted;
 
         public bool Deleted {
-            get { return _deleted; }
+            get => _deleted;
             set {
                 if (Equals(value, _deleted)) return;
                 _deleted = value;
@@ -201,6 +234,23 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
             Deleted = true;
+        }));
+
+        private bool _cloned;
+
+        public bool Cloned {
+            get => _cloned;
+            set {
+                if (Equals(value, _cloned)) return;
+                _cloned = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DelegateCommand _cloneCommand;
+
+        public DelegateCommand CloneCommand => _cloneCommand ?? (_cloneCommand = new DelegateCommand(() => {
+            Cloned = true;
         }));
 
         private DelegateCommand _storeCommand;

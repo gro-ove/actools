@@ -1,94 +1,141 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsAppearance" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsAppearance+ViewModel}">
-    <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-    </UserControl.Resources>
-    <ScrollViewer mui:SaveScroll.Key="SettingsAppearance">
-        <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-            <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}"
-                    Margin="0 0 0 16">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle Width="40" Height="40" Margin="2">
-                            <Rectangle.Fill>
-                                <SolidColorBrush x:Name="Brush" Color="{Binding}" />
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsAppearance+ViewModel}" Loaded="OnLoaded">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="SettingsAppearance">
+    <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
+      <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}"
+          Margin="0 0 0 16">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Rectangle Width="40" Height="40" Margin="2">
+              <Rectangle.Fill>
+                <SolidColorBrush x:Name="Brush" Color="{Binding}" />
+              </Rectangle.Fill>
+            </Rectangle>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
 
-            <DockPanel>
-                <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
-                <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
-            </DockPanel>
+      <DockPanel>
+        <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
+        <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
+      </DockPanel>
 
-            <DockPanel mui:LimitedService.Limited="True">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_ThemeLabel}" />
-                <mui:HierarchicalComboBox ItemsSource="{Binding AppAppearanceManager.Themes}"
-                        SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
-            </DockPanel>
-            <mui:BetterTextBox Text="{Binding AppAppearanceManager.ThemeError, Mode=OneWay}" Margin="136 0 0 8" FontWeight="Bold"
-                    Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Borderless}" IsReadOnly="True"
-                    Visibility="{Binding AppAppearanceManager.ThemeError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+      <DockPanel mui:LimitedService.Limited="True">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_ThemeLabel}" />
+        <mui:HierarchicalComboBox ItemsSource="{Binding AppAppearanceManager.Themes}" SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
+      </DockPanel>
+      <mui:BetterTextBox Text="{Binding AppAppearanceManager.ThemeError, Mode=OneWay}" Margin="136 0 0 8" FontWeight="Bold"
+          Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Borderless}" IsReadOnly="True"
+          Visibility="{Binding AppAppearanceManager.ThemeError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
-            </CheckBox>
+      <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
+      </CheckBox>
 
-            <DockPanel>
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_TextRenderingLabel}" />
-                <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
+      <DockPanel>
+        <mui:ValueLabel Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource PercentageConverter}}"
+            mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />
+        <Slider x:Name="ScaleSlider" Minimum="0.5" Maximum="2" TickFrequency="0.25" TickPlacement="BottomRight"
+            Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01,
+                UpdateSourceTrigger=LostFocus}" />
+      </DockPanel>
 
-            <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_ImageScalingLabel}" />
-                <Button Visibility="{Binding BitmapScalingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" />
-                <ComboBox ItemsSource="{Binding BitmapScalings}" SelectedItem="{Binding BitmapScaling, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
+      <DockPanel>
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_TextRenderingLabel}" />
+        <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_PopupToolbars_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_PopupToolbars}" />
-            </CheckBox>
+      <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_ImageScalingLabel}" />
+        <Button Visibility="{Binding BitmapScalingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding RestartCommand}"
+            Content="{x:Static g:AppStrings.Common_Restart}" />
+        <ComboBox ItemsSource="{Binding BitmapScalings}" SelectedItem="{Binding BitmapScaling, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
-            </CheckBox>
+      <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_PopupToolbars_Tooltip}">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_PopupToolbars}" />
+      </CheckBox>
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}"
-                    ToolTip="With this option disabled, you can drag them by close button" mui:NewMarkService.New="True">
-                <Label Content="Show draggable areas next to search boxes" />
-            </CheckBox>
+      <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes_Tooltip}">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
+      </CheckBox>
 
-            <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_DynamicBackground}" />
-            </CheckBox>
+      <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="With this option disabled, you can drag them by close button">
+        <Label Content="Show draggable areas next to search boxes" />
+      </CheckBox>
 
-            <DockPanel>
-                <Label Content="{x:Static g:AppStrings.Settings_Appearance_TransitionAnimationLabel}" />
-                <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" />
-            </DockPanel>
+      <CheckBox IsChecked="{Binding AppAppearanceManager.ForceMenuAtTopInFullscreenMode}" ToolTip="Might make dragging fullscreen window more complicated"
+          mui:NewMarkService.New="True">
+        <Label Content="Stick main menu at the top in fullscreen mode" />
+      </CheckBox>
 
-            <!--interface-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
+      <DockPanel>
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_TransitionAnimationLabel}" />
+        <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
+            DisplayMemberPath="DisplayName" />
+      </DockPanel>
 
-            <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
-                <Label Content="Fast-access buttons over car and track in Quick Drive" />
-            </CheckBox>
-            
-            <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}">
-                <Label Content="Open skins and setups lists in new window" />
-            </CheckBox>
-        </StackPanel>
-    </ScrollViewer>
+      <!--bg-->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Background:" />
+
+      <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
+        <Label Content="{x:Static g:AppStrings.Settings_Appearance_DynamicBackground}" />
+      </CheckBox>
+
+      <DockPanel IsEnabled="{Binding FancyBackgroundManager.Enabled, Converter={StaticResource InvertBooleanConverter}}">
+        <Label Content="Background:" />
+        <Button Command="{Binding ResetBackgroundImageCommand}" Content="Reset"
+            Visibility="{Binding AppAppearanceManager.BackgroundFilename, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Command="{Binding ChangeBackgroundImageCommand}" Content="Change" />
+        <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}" Placeholder="Theme-defined" />
+      </DockPanel>
+
+      <DockPanel>
+        <DockPanel.IsEnabled>
+          <MultiBinding Converter="{StaticResource AndConverter}">
+            <Binding Path="AppAppearanceManager.BackgroundFilename" Converter="{StaticResource NullToBooleanConverter}" ConverterParameter="inverse" />
+            <Binding Path="FancyBackgroundManager.Enabled" Converter="{StaticResource InvertBooleanConverter}" />
+          </MultiBinding>
+        </DockPanel.IsEnabled>
+        <mui:ValueLabel Value="{Binding AppAppearanceManager.BackgroundOpacity, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Minimum="0"
+            mui:BetterTextBox.Maximum="1" Content="Opacity" Postfix="%" />
+        <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight"
+            Value="{Binding AppAppearanceManager.BackgroundOpacity, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+      </DockPanel>
+
+      <DockPanel>
+        <DockPanel.IsEnabled>
+          <MultiBinding Converter="{StaticResource AndConverter}">
+            <Binding Path="AppAppearanceManager.BackgroundFilename" Converter="{StaticResource NullToBooleanConverter}" ConverterParameter="inverse" />
+            <Binding Path="FancyBackgroundManager.Enabled" Converter="{StaticResource InvertBooleanConverter}" />
+          </MultiBinding>
+        </DockPanel.IsEnabled>
+        <Label Content="Placement:" />
+        <ComboBox ItemsSource="{Binding AppAppearanceManager.StretchModes}" SelectedItem="{Binding AppAppearanceManager.BackgroundStretchMode, Mode=TwoWay}"
+            DisplayMemberPath="DisplayName" />
+      </DockPanel>
+
+      <!--interface-->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
+
+      <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
+        <Label Content="Fast-access buttons over car and track in Quick Drive" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}">
+        <Label Content="Open skins and setups lists in new window" />
+      </CheckBox>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

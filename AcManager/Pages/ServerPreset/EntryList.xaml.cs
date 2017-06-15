@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
@@ -38,9 +39,17 @@ namespace AcManager.Pages.ServerPreset {
     public partial class EntryList : INotifyPropertyChanged {
         public EntryList() {
             InitializeComponent();
+            this.AddWidthCondition(720)
+                .Add(SavedDriversPanel);
+            this.AddWidthCondition(960)
+                .Add(BallastColumn)
+                .Add(RestrictorColumn)
+                .AddInverted(SomethingMightBeHiddenPanel);
+            this.AddWidthCondition(1080)
+                .Add(TeamColumn);
         }
 
-        private void OpponentSkin_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnOpponentSkinClick(object sender, MouseButtonEventArgs e) {
             var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
             if (entry?.SpecialEntry != false) return;
 
@@ -78,9 +87,9 @@ namespace AcManager.Pages.ServerPreset {
             // DetailsPopup.StaysOpen = false;
         }
 
-        private void OpponentSkinCell_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnOpponentCellClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2) {
-                OpponentSkin_OnMouseLeftButtonDown(sender, e);
+                OnOpponentSkinClick(sender, e);
             }
         }
 

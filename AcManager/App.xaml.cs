@@ -183,7 +183,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SseLogging, ref SseStarter.OptionLogging);
 
             FancyBackgroundManager.Initialize();
-            DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+            if (AppArguments.Has(AppFlag.UiScale)) {
+                DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+            }
 
             if (!AppKeyHolder.IsAllRight) {
                 AppAppearanceManager.OptionCustomThemes = false;
@@ -191,8 +193,8 @@ namespace AcManager {
                 AppArguments.Set(AppFlag.CustomThemes, ref AppAppearanceManager.OptionCustomThemes);
             }
 
-            AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
-                    !Equals(DpiAwareWindow.OptionScale, 1d));
+            /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
+                    !Equals(DpiAwareWindow.OptionScale, 1d));*/
             AppAppearanceManager.Initialize();
 
             AcObjectsUriManager.Register(new UriProvider());

@@ -468,6 +468,7 @@ namespace AcManager.Pages.Drive {
                 case nameof(ServerEntry.Status):
                     UpdateCarsView();
                     ResizingStuff();
+                    CommandManager.InvalidateRequerySuggested();
                     break;
                 case nameof(ServerEntry.AssistsInformation):
                     Model.Assists.ServerAssists = Model.Entry.AssistsInformation;

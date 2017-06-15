@@ -1,10 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Wrapped" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:t="http://acstuff.ru/app/tools"
-    mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -14,7 +12,61 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <Grid>
+  <StackPanel Style="{StaticResource SettingsPanel}"><!--
+    <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
+      <Run Text="AC Server Wrapper" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
+                                          BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
+                                          CommandParameter="https://github.com/gro-ove/ac-server-wrapper">[?]</Hyperlink><Run Text=":" />
+    </TextBlock>-->
+
+    <c:MessageBlock CloseKey="ac-server-wrapper" Margin="0 0 0 8">
+      <mui:BbCodeBlock
+          BbCode="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url]." />
+    </c:MessageBlock>
+
+    <CheckBox IsChecked="{Binding SelectedObject.WrapperUsed}" ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
+      <Label Content="Use AC Server Wrapper" />
+    </CheckBox>
+
+    <DockPanel>
+      <Label Content="Wrapper port:" />
+      <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+          Maximum="65535" />
+    </DockPanel>
+
+    <DockPanel>
+      <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WrapperDescription}" AcceptsReturn="True" TextWrapping="Wrap"
+          Placeholder="None" Height="120" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+      <Label Content="Server description:" HorizontalAlignment="Left" />
+    </DockPanel>
+
+    <CheckBox IsChecked="{Binding SelectedObject.WrapperPublishPasswordChecksum}"
+        ToolTip="Your password won’t leak, but this way, users will be able to check if password is correct before connecting">
+      <Label Content="Publish passwords’ checksums" />
+    </CheckBox>
+
+    <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading missing content" />
+
+    <CheckBox IsChecked="{Binding SelectedObject.WrapperDownloadPasswordOnly}" ToolTip="Do not allow to download missing content if password is invalid"
+        Background="Transparent">
+      <Label Content="Allow downloading only with correct password" />
+    </CheckBox>
+
+    <DockPanel ToolTip="Set some limit if you want for clients downloading content from the server to not take all bandwidth" Background="Transparent">
+      <mui:ValueLabel Padding="8 0 0 0" Value="{Binding SelectedObject.DisplayWrapperDownloadSpeedLimit}" Background="Transparent" Content="Speed limit" />
+      <Slider Minimum="0" Maximum="1" TickPlacement="BottomRight" TickFrequency="0.1">
+        <Slider.Value>
+          <Binding Path="SelectedObject.WrapperDownloadSpeedLimit">
+            <Binding.Converter>
+              <mui:LogarithmicScale Minimum="0" Middle="2097152" Maximum="10485760" />
+            </Binding.Converter>
+          </Binding>
+        </Slider.Value>
+      </Slider>
+    </DockPanel>
+  </StackPanel>
+
+  <!--<Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="200" />
       <ColumnDefinition Width="9" />
@@ -78,5 +130,5 @@
         </mui:BooleanSwitch>
       </DockPanel>
     </StackPanel>
-  </Grid>
+  </Grid>-->
 </UserControl>

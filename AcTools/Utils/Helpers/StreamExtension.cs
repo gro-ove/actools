@@ -22,6 +22,22 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
+        public static async Task<byte[]> ReadAsBytesAsync([NotNull] this Stream s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+            using (var m = new MemoryStream()) {
+                await s.CopyToAsync(m);
+                return m.ToArray();
+            }
+        }
+
+        [NotNull]
+        public static async Task<byte[]> ReadAsBytesAndDisposeAsync([NotNull] this Stream s) {
+            using (s) {
+                return await ReadAsBytesAsync(s);
+            }
+        }
+
+        [NotNull]
         public static void WriteBytes([NotNull] this Stream s, byte[] data) {
             if (s == null) throw new ArgumentNullException(nameof(s));
             s.Write(data, 0, data.Length);

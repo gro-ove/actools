@@ -105,7 +105,7 @@ namespace FirstFloor.ModernUI.Commands {
 
         private bool ConvertXamlCompatible([NotNull] object parameter, out T result) {
             if (typeof(T) == typeof(string)) {
-                /* we don’t need to check on null or if it’s already a string — those
+                /* we donâ€™t need to check on null or if itâ€™s already a string â€” those
                  * cases would be solved before, by Convert() */
                 result = (T)(object)parameter.ToString();
                 return true;

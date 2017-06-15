@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -13,18 +15,22 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
         public static bool OptionCustomThemes = true;
-        public static bool OptionIdealFormattingModeDefaultValue = false;
 
         public const string KeyTheme = "appearance_theme";
         public const string KeyAccentColor = "appearance_accentColor";
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
-        public const string KeyIdealFormattingMode = "appearance_idealFormattingMode";
+        public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
         public const string KeySmallFont = "appearance_smallFont";
+        public const string KeyForceMenuAtTopInFullscreenMode = "appearance_forceMenuAtTopInFullscreenMode";
+        public const string KeyBackgroundImage = "appearance_backgroundImage";
+        public const string KeyBackgroundOpacity = "appearance_backgroundImageOpacity";
+        public const string KeyBackgroundStretch = "appearance_backgroundImageStretch";
         public const string KeyBitmapScaling = "appearance_bitmapScaling";
         public const string KeyPopupToolBars = "appearance_popupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
@@ -46,7 +52,7 @@ namespace AcManager.Controls.Presentation {
         private string _themeError;
 
         public string ThemeError {
-            get { return _themeError; }
+            get => _themeError;
             internal set {
                 if (Equals(value, _themeError)) return;
                 _themeError = value;
@@ -134,7 +140,7 @@ namespace AcManager.Controls.Presentation {
 
         private bool _loading;
 
-        private AppAppearanceManager() {}
+        private AppAppearanceManager() { }
 
         private void InnerInitialize() {
             AppearanceManager.Current.Initialize();
@@ -150,13 +156,19 @@ namespace AcManager.Controls.Presentation {
                 if (AccentColor.A == 0) AccentColor = AccentColors.First();
 
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
-                IdealFormattingMode = ValuesStorage.GetBool(KeyIdealFormattingMode, OptionIdealFormattingModeDefaultValue);
+                BackgroundFilename = ValuesStorage.GetString(KeyBackgroundImage);
+                BackgroundOpacity = ValuesStorage.GetDouble(KeyBackgroundOpacity, 0.2);
+                BackgroundStretch = ValuesStorage.GetEnum(KeyBackgroundStretch, Stretch.UniformToFill);
+                IdealFormattingMode = ValuesStorage.GetBoolNullable(KeyIdealFormattingMode);
+                ForceMenuAtTopInFullscreenMode = ValuesStorage.GetBool(KeyForceMenuAtTopInFullscreenMode);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
                 BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
                 PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
+
+                UpdateBackgroundImageBrush().Forget();
             } finally {
                 _loading = false;
             }
@@ -166,11 +178,108 @@ namespace AcManager.Controls.Presentation {
             SelectedTheme?.Apply();
         }
 
+        #region Background
+        private async Task UpdateBackgroundImageBrush() {
+            var image = _backgroundFilename == null ? BetterImage.BitmapEntry.Empty : await BetterImage.LoadBitmapSourceAsync(_backgroundFilename);
+
+            ImageBrush brush;
+            if (image.BitmapSource == null) {
+                brush = null;
+            } else {
+                brush = new ImageBrush {
+                    ImageSource = image.BitmapSource,
+                    Opacity = _backgroundOpacity,
+                    Stretch = _backgroundStretch,
+                    AlignmentX = AlignmentX.Center,
+                    AlignmentY = AlignmentY.Center
+                };
+
+                if (_backgroundStretch == Stretch.None) {
+                    brush.TileMode = TileMode.Tile;
+                    brush.Viewport = new Rect(0, 0, image.Width, image.Height);
+                    brush.ViewportUnits = BrushMappingMode.Absolute;
+                }
+
+                brush.Freeze();
+            }
+
+            Application.Current.Resources["WindowBackgroundContentBrush"] = brush;
+        }
+
+        private string _backgroundFilename;
+
+        [CanBeNull]
+        public string BackgroundFilename {
+            get => _backgroundFilename;
+            set {
+                if (_loading) {
+                    _backgroundFilename = value;
+                    return;
+                }
+
+                if (Equals(value, _backgroundFilename)) return;
+                _backgroundFilename = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyBackgroundImage, value);
+                UpdateBackgroundImageBrush().Forget();
+            }
+        }
+
+        private double _backgroundOpacity = 0.2;
+
+        public double BackgroundOpacity {
+            get => _backgroundOpacity;
+            set {
+                if (_loading) {
+                    _backgroundOpacity = value;
+                    return;
+                }
+
+                if (Equals(value, _backgroundOpacity)) return;
+                _backgroundOpacity = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyBackgroundOpacity, value);
+                UpdateBackgroundImageBrush().Forget();
+            }
+        }
+
+        public SettingEntry<Stretch>[] StretchModes { get; } = {
+            new SettingEntry<Stretch>(Stretch.UniformToFill, "Fill"),
+            new SettingEntry<Stretch>(Stretch.None, "Tile"),
+            new SettingEntry<Stretch>(Stretch.Uniform, "Fit"),
+            new SettingEntry<Stretch>(Stretch.Fill, "Stretch"),
+        };
+
+        public SettingEntry<Stretch> BackgroundStretchMode {
+            get => StretchModes.GetByIdOrDefault(BackgroundStretch);
+            set => BackgroundStretch = value.Value;
+        }
+
+        private Stretch _backgroundStretch;
+
+        public Stretch BackgroundStretch {
+            get => _backgroundStretch;
+            set {
+                if (_loading) {
+                    _backgroundStretch = value;
+                    return;
+                }
+
+                if (Equals(value, _backgroundStretch)) return;
+                _backgroundStretch = value;
+                ValuesStorage.SetEnum(KeyBackgroundStretch, value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BackgroundStretchMode));
+                UpdateBackgroundImageBrush().Forget();
+            }
+        }
+        #endregion
+
         #region Bitmap scaling
         private BitmapScalingMode _bitmapScalingMode;
 
         public BitmapScalingMode BitmapScalingMode {
-            get { return _bitmapScalingMode; }
+            get => _bitmapScalingMode;
             set {
                 if (_loading) {
                     _bitmapScalingMode = value;
@@ -187,10 +296,13 @@ namespace AcManager.Controls.Presentation {
         #endregion
 
         #region Font sizes
-        private bool _idealFormattingMode;
+        private bool? _idealFormattingMode;
 
-        public bool IdealFormattingMode {
-            get { return _idealFormattingMode; }
+        /// <summary>
+        /// Null for automatic mode.
+        /// </summary>
+        public bool? IdealFormattingMode {
+            get => _idealFormattingMode;
             set {
                 if (_loading) {
                     _idealFormattingMode = value;
@@ -202,14 +314,39 @@ namespace AcManager.Controls.Presentation {
                 _idealFormattingMode = value;
                 OnPropertyChanged();
                 AppearanceManager.Current.IdealFormattingMode = value;
-                ValuesStorage.Set(KeyIdealFormattingMode, value);
+                if (value.HasValue) {
+                    ValuesStorage.Set(KeyIdealFormattingMode, value.Value);
+                } else {
+                    ValuesStorage.Remove(KeyIdealFormattingMode);
+                }
+            }
+        }
+
+        private bool _forceMenuAtTopInFullscreenMode;
+
+        public bool ForceMenuAtTopInFullscreenMode {
+            get => _forceMenuAtTopInFullscreenMode;
+            set {
+                if (_loading) {
+                    _forceMenuAtTopInFullscreenMode = value;
+                    Application.Current.Resources["LayoutRootFullscreenMargin"] = value ?
+                            new Thickness(7d) : new Thickness(7d, 35d, 7d, 7d);
+                    return;
+                }
+
+                if (Equals(value, _forceMenuAtTopInFullscreenMode)) return;
+                _forceMenuAtTopInFullscreenMode = value;
+                OnPropertyChanged();
+                Application.Current.Resources["LayoutRootFullscreenMargin"] = value ?
+                        new Thickness(7d) : new Thickness(7d, 35d, 7d, 7d);
+                ValuesStorage.Set(KeyForceMenuAtTopInFullscreenMode, value);
             }
         }
 
         private bool _smallFont;
 
         public bool SmallFont {
-            get { return _smallFont; }
+            get => _smallFont;
             set {
                 if (_loading) {
                     _smallFont = value;
@@ -228,7 +365,7 @@ namespace AcManager.Controls.Presentation {
         private bool _largeSubMenuFont;
 
         public bool LargeSubMenuFont {
-            get { return _largeSubMenuFont; }
+            get => _largeSubMenuFont;
             set {
                 if (_loading) {
                     _largeSubMenuFont = value;
@@ -247,7 +384,7 @@ namespace AcManager.Controls.Presentation {
         private bool _showSubMenuDraggableIcons;
 
         public bool ShowSubMenuDraggableIcons {
-            get { return _showSubMenuDraggableIcons; }
+            get => _showSubMenuDraggableIcons;
             set {
                 if (_loading) {
                     _showSubMenuDraggableIcons = value;
@@ -263,7 +400,7 @@ namespace AcManager.Controls.Presentation {
             }
         }
         #endregion
-        
+
         #region Theme and color
         public Color[] AccentColors { get; } = {
             Color.FromRgb(0xa2, 0x00, 0x25), // nordschleife special
@@ -275,13 +412,13 @@ namespace AcManager.Controls.Presentation {
             Color.FromRgb(0xff, 0x45, 0x00), // orange red
             Color.FromRgb(0xe5, 0x14, 0x00), // red
             Color.FromRgb(0xff, 0x00, 0x97), // magenta
-            Color.FromRgb(0xa2, 0x00, 0xff), // purple            
+            Color.FromRgb(0xa2, 0x00, 0xff), // purple
         };
 
         private Color _accentColor;
 
         public Color AccentColor {
-            get { return _accentColor; }
+            get => _accentColor;
             set {
                 if (_loading) {
                     _accentColor = value;
@@ -300,7 +437,7 @@ namespace AcManager.Controls.Presentation {
         private string _accentDisplayColor;
 
         public string AccentDisplayColor {
-            get { return _accentDisplayColor; }
+            get => _accentDisplayColor;
             set {
                 if (_loading) {
                     _accentDisplayColor = value;
@@ -326,9 +463,7 @@ namespace AcManager.Controls.Presentation {
         private void InitializeThemesList() {
             if (OptionCustomThemes) {
                 UpdateThemesList();
-                FilesStorage.Instance.Watcher(FilesStorage.Instance.GetDirectory("Themes")).Update += (sender, args) => {
-                    UpdateThemesList();
-                };
+                FilesStorage.Instance.Watcher(FilesStorage.Instance.GetDirectory("Themes")).Update += (sender, args) => { UpdateThemesList(); };
             } else {
                 Themes.ReplaceEverythingBy(BuiltInThemes);
             }
@@ -346,7 +481,7 @@ namespace AcManager.Controls.Presentation {
         private ThemeLink _selectedTheme;
 
         public ThemeLink SelectedTheme {
-            get { return _selectedTheme; }
+            get => _selectedTheme;
             set {
                 if (value == null || Equals(value, _selectedTheme)) return;
                 if (value.Apply()) {
@@ -359,12 +494,12 @@ namespace AcManager.Controls.Presentation {
             }
         }
         #endregion
-        
+
         #region Toolbars
         private bool? _popupToolBars;
 
         public bool PopupToolBars {
-            get { return _popupToolBars ?? false; }
+            get => _popupToolBars ?? false;
             set {
                 if (_loading) {
                     AppearanceManager.Current.PopupToolBars = value;
@@ -380,9 +515,8 @@ namespace AcManager.Controls.Presentation {
             }
         }
         #endregion
-        
-        #region Transitions
 
+        #region Transitions
         public class FrameAnimationEntry {
             public string DisplayName { get; }
 
@@ -405,7 +539,7 @@ namespace AcManager.Controls.Presentation {
         private FrameAnimationEntry _frameAnimation;
 
         public FrameAnimationEntry FrameAnimation {
-            get { return _frameAnimation; }
+            get => _frameAnimation;
             set {
                 if (value == null) return;
 

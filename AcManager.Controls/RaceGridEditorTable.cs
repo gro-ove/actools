@@ -1,10 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Controls {
@@ -23,8 +22,8 @@ namespace AcManager.Controls {
         private RaceGridViewModel _model;
 
         public RaceGridViewModel Model {
-            get { return _model; }
-            set { SetValue(ModelProperty, value); }
+            get => _model;
+            set => SetValue(ModelProperty, value);
         }
 
         public static readonly DependencyProperty CloseCommandProperty = DependencyProperty.Register(nameof(CloseCommand), typeof(ICommand),
@@ -35,8 +34,8 @@ namespace AcManager.Controls {
         private ICommand _closeCommand;
 
         public ICommand CloseCommand {
-            get { return _closeCommand; }
-            set { SetValue(CloseCommandProperty, value); }
+            get => _closeCommand;
+            set => SetValue(CloseCommandProperty, value);
         }
 
         public static readonly DependencyProperty AddOpponentCommandProperty = DependencyProperty.Register(nameof(AddOpponentCommand), typeof(ICommand),
@@ -44,11 +43,11 @@ namespace AcManager.Controls {
                     ((RaceGridEditorTable)o)._addOpponentCommand = (ICommand)e.NewValue;
                 }));
 
-        private ICommand _addOpponentCommand = null;
+        private ICommand _addOpponentCommand;
 
         public ICommand AddOpponentCommand {
-            get { return _addOpponentCommand; }
-            set { SetValue(AddOpponentCommandProperty, value); }
+            get => _addOpponentCommand;
+            set => SetValue(AddOpponentCommandProperty, value);
         }
 
         private DataGrid _dataGrid;
@@ -60,7 +59,7 @@ namespace AcManager.Controls {
                 this.AddWidthCondition(740).Add(t => GetTemplateChild(@"PART_BallastColumn") as DataGridColumn),
                 this.AddWidthCondition(840).Add(t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn),
                 this.AddWidthCondition(980).Add(t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn),
-                
+
                 this.AddSizeCondition(p => p.ActualWidth >= 740 && p._model.PlayerCar != null).Add(
                         t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement),
                 this.AddSizeCondition(p => p.ActualWidth >= 840 && p._model.PlayerCar != null).Add(
@@ -101,7 +100,7 @@ namespace AcManager.Controls {
 
             var newIndex = ((ItemsControl)sender).GetMouseItemIndex();
             if (raceGridEntry != null) {
-                Model.InsertEntry(newIndex, raceGridEntry);
+                Model.InsertEntry(newIndex, e.IsCopyAction() ? raceGridEntry.Clone() : raceGridEntry);
             } else {
                 Model.InsertEntry(newIndex, carObject);
             }

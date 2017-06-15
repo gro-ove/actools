@@ -35,8 +35,9 @@
               <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                 <mui:Cell>
                   <mui:Cell.LayoutTransform>
-                    <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0" ScaleX="{x:Static mui:DpiAwareWindow.OptionScale}"
-                        ScaleY="{x:Static mui:DpiAwareWindow.OptionScale}" />
+                    <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
+                        ScaleX="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}}"
+                        ScaleY="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}}" />
                   </mui:Cell.LayoutTransform>
 
                   <!-- window background content -->
@@ -112,26 +113,32 @@
                       <Button Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Minimize}"
                           Style="{StaticResource SystemButton}" RenderOptions.EdgeMode="Aliased">
                         <Path Data="M0,5 L9,5 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-                            Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" StrokeThickness="1" />
+                            Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                            StrokeThickness="{TemplateBinding IconPathThickness}" />
                       </Button>
                       <mui:Cell>
                         <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
                             ToolTip="{x:Static mui:UiStrings.Restore}" Style="{StaticResource SystemButton}" Visibility="Collapsed"
                             RenderOptions.EdgeMode="Aliased">
-                          <Path Data="M0,2 L7,2 L7,9 L0,9 L0,1 M2,2 L2,0 L9,0 L9,7 L7,7" Width="10" Height="10" VerticalAlignment="Center"
-                              HorizontalAlignment="Center" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" StrokeThickness="1" />
+                          <Path Data="M0,2 L7,2 L7,9 L0,9 L0,1.5 M2,2 L2,0 L9,0 L9,7 L7,7" Width="10" Height="10" VerticalAlignment="Center"
+                              HorizontalAlignment="Center" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                              StrokeThickness="{TemplateBinding IconPathThickness}" />
                         </Button>
                         <Button x:Name="Maximize" Command="{Binding Source={x:Static SystemCommands.MaximizeWindowCommand}}"
-                            ToolTip="{x:Static mui:UiStrings.Maximize}" Style="{StaticResource SystemButton}" SnapsToDevicePixels="True"
-                            RenderOptions.EdgeMode="Aliased">
-                          <Path Data="M0,0 L9,0 L9,9 L0,9 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-                              Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" StrokeThickness="1" />
+                            ToolTip="{x:Static mui:UiStrings.Maximize}" Style="{StaticResource SystemButton}" SnapsToDevicePixels="True">
+                          <Rectangle Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                              StrokeThickness="{TemplateBinding IconPathThickness}" SnapsToDevicePixels="True" Width="10" Height="10"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Button>
                       </mui:Cell>
                       <Button Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Close}"
-                          Style="{StaticResource SystemCloseButton}" RenderOptions.EdgeMode="Aliased">
-                        <Path Data="M0,0 L9,9 M9,0 L0,9 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1"
-                            Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                          Style="{StaticResource SystemCloseButton}">
+                        <mui:Cell Width="10" Height="10" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
+                          <Line X1="-5.01" X2="14.99" Y1="-5.01" Y2="14.99" StrokeThickness="{TemplateBinding IconPathThickness}"
+                              Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+                          <Line X1="-5.01" X2="14.99" Y1="14.99" Y2="-5.01" StrokeThickness="{TemplateBinding IconPathThickness}"
+                              Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+                        </mui:Cell>
                       </Button>
                     </StackPanel>
 
@@ -199,7 +206,8 @@
 
                         <!-- main menu -->
                         <mui:ModernMenu LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu" SaveKey="{TemplateBinding SaveKey}"
-                            DefaultSource="{TemplateBinding DefaultContentSource}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" />
+                            DefaultSource="{TemplateBinding DefaultContentSource}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+                            WindowChrome.IsHitTestVisibleInChrome="True" />
                       </DockPanel>
 
                       <!-- content frame -->
@@ -237,7 +245,7 @@
             <Trigger Property="WindowState" Value="Maximized">
               <Setter TargetName="Maximize" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="Restore" Property="Visibility" Value="Visible" />
-              <Setter TargetName="LayoutRoot" Property="Margin" Value="7" />
+              <Setter TargetName="LayoutRoot" Property="Margin" Value="{DynamicResource LayoutRootFullscreenMargin}" />
               <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="PART_TitleBar" Property="Margin" Value="0 7 7 0" />
             </Trigger>
