@@ -95,7 +95,7 @@ namespace StringBasedFilter.Parsing {
 
                 switch (splitted.ComparingOperation) {
                     case FilterComparingOperation.IsSame:
-                        testEntry = CreateTestEntry(splitted.PropertyValue, true, false);
+                        testEntry = CreateTestEntry(splitted.PropertyValue, filterParams.RegexFactory, true, false);
                         break;
                     case FilterComparingOperation.IsTrue:
                         testEntry = filterParams.BooleanTestFactory(true);
@@ -116,7 +116,7 @@ namespace StringBasedFilter.Parsing {
                 }
             } else {
                 keyName = null;
-                testEntry = CreateTestEntry(value, false, filterParams.StrictMode);
+                testEntry = CreateTestEntry(value, filterParams.RegexFactory, filterParams.FullMatchMode, filterParams.StrictMode);
             }
 
             return new FilterTreeNodeValue(keyName, testEntry);
@@ -127,7 +127,7 @@ namespace StringBasedFilter.Parsing {
             _testEntry = testEntry;
         }
 
-        private static ITestEntry CreateTestEntry(string value, bool wholeMatch, bool strictMode) {
+        private static ITestEntry CreateTestEntry(string value, RegexFactory regexFactory, bool wholeMatch, bool strictMode) {
             if (value.Length > 1) {
                 if (value[0] == '"' && value[value.Length - 1] == '"') {
                     return new StringTestEntry(value.Substring(1, value.Length - 2), wholeMatch, true);
@@ -144,7 +144,7 @@ namespace StringBasedFilter.Parsing {
             }
 
             if (value.Contains("*") || value.Contains("?")) {
-                return new RegexTestEntry(RegexFromQuery.Create(value, wholeMatch, strictMode));
+                return new RegexTestEntry(regexFactory(value, wholeMatch, strictMode));
             }
 
             return new StringTestEntry(value, wholeMatch, strictMode);

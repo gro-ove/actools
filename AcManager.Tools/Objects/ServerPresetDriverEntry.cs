@@ -57,7 +57,7 @@ namespace AcManager.Tools.Objects {
             CarSkinId = car.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
         }
 
-        public ServerPresetDriverEntry(ServerSavedDriver saved) {
+        public ServerPresetDriverEntry([NotNull] ServerSavedDriver saved) {
             CarId = saved.GetCarId() ?? DefaultCarId;
             CarSkinId = saved.GetSkinId(CarId) ?? CarObject?.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
             DriverName = saved.DriverName;
@@ -209,6 +209,17 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _carSetup) return;
                 _carSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _index;
+
+        public int Index {
+            get { return _index; }
+            set {
+                if (value == _index) return;
+                _index = value;
                 OnPropertyChanged();
             }
         }

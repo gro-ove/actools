@@ -2,8 +2,8 @@
 using AcManager.Tools.Objects;
 
 namespace AcManager.Pages.ServerPreset {
-    public partial class Conditions {
-        public Conditions() {
+    public partial class ServerPresetConditions {
+        public ServerPresetConditions() {
             InitializeComponent();
         }
 

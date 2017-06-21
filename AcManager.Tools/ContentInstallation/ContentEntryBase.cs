@@ -386,6 +386,10 @@ namespace AcManager.Tools.ContentInstallation {
             return result;
         }
 
+        public static IEnumerable<string> GetLayoutModelsNames(IniFile file) {
+            return file.GetSections("MODEL").Select(x => x.GetNonEmpty("FILE")).NonNull();
+        }
+
         public static IEnumerable<string> GetModelsNames(IniFile file) {
             return file.GetSections("MODEL").Concat(file.GetSections("DYNAMIC_OBJECT")).Select(x => x.GetNonEmpty("FILE")).NonNull();
         }

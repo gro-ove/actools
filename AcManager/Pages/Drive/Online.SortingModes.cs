@@ -35,12 +35,12 @@ namespace AcManager.Pages.Drive {
 
         public class SortingFavourites : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                if (x.IsFavourited ^ y.IsFavourited) return x.IsFavourited ? -1 : 1;
+                if (x.IsFavourite ^ y.IsFavourite) return x.IsFavourite ? -1 : 1;
                 return string.Compare(x.DisplayName, y.DisplayName, StringComparison.CurrentCultureIgnoreCase);
             }
 
             public override bool IsAffectedBy(string propertyName) {
-                return propertyName == nameof(ServerEntry.DisplayName) || propertyName == nameof(ServerEntry.IsFavourited);
+                return propertyName == nameof(ServerEntry.DisplayName) || propertyName == nameof(ServerEntry.IsFavourite);
             }
         }
 

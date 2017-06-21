@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.IO.Compression;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcTools.DataFile;
@@ -18,7 +20,9 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Steamworks;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
@@ -77,34 +81,77 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public IEnumerable<PackedEntry> PackServerData(bool saveExecutable, bool linuxMode) {
+        [ItemCanBeNull]
+        public async Task<List<PackedEntry>> PackServerData(bool saveExecutable, bool linuxMode, bool evbMode, CancellationToken cancellation) {
+            var result = new List<PackedEntry>();
+
+            // Wrapper
+            if (WrapperUsed) {
+                if (saveExecutable) {
+                    if (linuxMode) {
+                        throw new InformativeException("Can’t pack server", "Linux mode with wrapper not supported yet.");
+                    }
+
+                    var wrapper = await LoadWinWrapper(cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
+
+                    if (wrapper == null) {
+                        throw new InformativeException("Can’t pack server", "Can’t load server wrapper.");
+                    }
+
+                    // Actual wrapper, compiled to a single exe-file
+                    result.Add(PackedEntry.FromFile(
+                            linuxMode ? "acServerWrapper" : "acServerWrapper.exe",
+                            wrapper));
+
+                    // For EVB
+                    if (evbMode) {
+                        result.Add(PackedEntry.FromContent("arguments.json", new JArray {
+                            "--copy-executable-to=acServer_tmp.exe",
+                        }.ToString(Formatting.Indented)));
+                    }
+                }
+
+                // Params
+                var wrapperParams = _wrapperParamsJson?.DeepClone() as JObject;
+                SetWrapperParams(ref wrapperParams);
+                result.Add(PackedEntry.FromContent("cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
+
+                // Content
+                result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", "{}"));
+            }
+
             // Executable
             if (saveExecutable) {
                 var serverDirectory = ServerPresetsManager.ServerDirectory;
-                yield return PackedEntry.FromFile(
+                result.Add(PackedEntry.FromFile(
                         linuxMode ? "acServer" : "acServer.exe",
-                        Path.Combine(serverDirectory, linuxMode ? "acServer" : "acServer.exe"));
+                        Path.Combine(serverDirectory, linuxMode ? "acServer" : "acServer.exe")));
             }
 
             // Welcome message
             if (!string.IsNullOrEmpty(WelcomeMessage)) {
-                yield return PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage);
+                result.Add(PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage));
             }
 
             // Main config file
-            var serverCfg = IniObject?.Clone() ?? new IniFile();
+            var serverCfg = IniObject?.Clone() ?? new IniFile(IniFileMode.ValuesWithSemicolons);
             SaveData(serverCfg);
 
             if (!string.IsNullOrEmpty(WelcomeMessage)) {
                 serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
             }
 
-            yield return PackedEntry.FromContent("cfg/server_cfg.ini", serverCfg.Stringify());
+            if (WrapperUsed) {
+                serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
+            }
+
+            result.Add(PackedEntry.FromContent("cfg/server_cfg.ini", serverCfg.Stringify()));
 
             // Entry list
             var entryList = EntryListIniObject?.Clone() ?? new IniFile();
             entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
-            yield return PackedEntry.FromContent("cfg/entry_list.ini", serverCfg.Stringify());
+            result.Add(PackedEntry.FromContent("cfg/entry_list.ini", entryList.Stringify()));
 
             // Cars
             var root = AcRootDirectory.Instance.RequireValue;
@@ -112,7 +159,7 @@ namespace AcManager.Tools.Objects {
                 var carId = CarIds[i];
                 var packedData = Path.Combine(FileUtils.GetCarDirectory(root, carId), "data.acd");
                 if (File.Exists(packedData)) {
-                    yield return PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData);
+                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData));
                 }
             }
 
@@ -121,9 +168,17 @@ namespace AcManager.Tools.Objects {
             foreach (var file in TrackDataToKeep) {
                 var actualData = Path.Combine(FileUtils.GetTracksDirectory(root), localPath, @"data", file);
                 if (File.Exists(actualData)) {
-                    yield return PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData);
+                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
                 }
             }
+
+            // System
+            var systemSurfaces = Path.Combine(ServerPresetsManager.ServerDirectory, "system", "data", "surfaces.ini");
+            if (File.Exists(systemSurfaces)) {
+                result.Add(PackedEntry.FromFile("system/data/surfaces.ini", systemSurfaces));
+            }
+
+            return result;
         }
 
         private static void PrepareCar([NotNull] string carId) {
@@ -180,6 +235,17 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private string _inviteCommand;
+
+        public string InviteCommand {
+            get { return _inviteCommand; }
+            set {
+                if (Equals(value, _inviteCommand)) return;
+                _inviteCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Start server (all stdout stuff will end up in RunningLog).
         /// </summary>
@@ -205,6 +271,10 @@ namespace AcManager.Tools.Objects {
                 throw new InformativeException("Can’t run server", "Server’s executable not found.");
             }
 
+            if (SettingsHolder.Online.ServerPresetsAutoSave) {
+                SaveCommand.Execute();
+            }
+
             if (SettingsHolder.Online.ServerPresetsUpdateDataAutomatically) {
                 await PrepareServer(progress, cancellation);
             }
@@ -226,6 +296,97 @@ namespace AcManager.Tools.Objects {
 
             var log = new BetterObservableCollection<string>();
             RunningLog = log;
+
+            // await
+
+            if (WrapperUsed) {
+                await RunWrapper(serverExecutable, log, progress, cancellation);
+            } else {
+                await RunAcServer(serverExecutable, log, progress, cancellation);
+            }
+        }
+
+        [ItemCanBeNull]
+        private async Task<string> LoadWinWrapper(CancellationToken cancellation) {
+            var wrapperFilename = FilesStorage.Instance.GetFilename("Server Wrapper", "AcServerWrapper.exe");
+
+            var data = await CmApiProvider.GetStaticDataAsync("ac_server_wrapper");
+            if (cancellation.IsCancellationRequested || data == null) return null;
+
+            if (data.Item2) {
+                // Freshly loaded
+                var wrapperBytes = await FileUtils.ReadAllBytesAsync(data.Item1);
+                if (cancellation.IsCancellationRequested) return null;
+
+                await Task.Run(() => {
+                    using (var stream = new MemoryStream(wrapperBytes, false))
+                    using (var archive = new ZipArchive(stream)){
+                        try {
+                            File.WriteAllBytes(wrapperFilename, archive.GetEntry("acServerWrapper.exe").Open().ReadAsBytesAndDispose());
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    }
+                });
+            }
+
+            return File.Exists(wrapperFilename) ? wrapperFilename : null;
+        }
+
+        private async Task RunWrapper(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            progress.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
+            var wrapperFilename = await LoadWinWrapper(cancellation);
+            if (cancellation.IsCancellationRequested) return;
+
+            if (wrapperFilename == null) {
+                throw new InformativeException("Can’t run server", "Can’t load server wrapper.");
+            }
+
+            try {
+                using (var process = ProcessExtension.Start(wrapperFilename, new[] {
+                    "-e", serverExecutable, $"presets/{Id}"
+                }, new ProcessStartInfo {
+                    UseShellExecute = false,
+                    WorkingDirectory = Path.GetDirectoryName(serverExecutable) ?? "",
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding =  Encoding.UTF8,
+                })) {
+                    process.Start();
+                    SetRunning(process);
+                    ChildProcessTracker.AddProcess(process);
+
+                    progress?.Report(AsyncProgressEntry.Finished);
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    process.OutputDataReceived += (sender, args) => {
+                        if (!string.IsNullOrWhiteSpace(args.Data)) {
+                            ActionExtension.InvokeInMainThread(() => log.Add(Regex.Replace(args.Data, @"\b(WARNING: .+)", @"[color=#ff8800]$1[/color]")));
+                        }
+                    };
+
+                    process.ErrorDataReceived += (sender, args) => {
+                        if (!string.IsNullOrWhiteSpace(args.Data)) {
+                            ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
+                        }
+                    };
+
+                    await process.WaitForExitAsync(cancellation);
+                    if (!process.HasExitedSafe()) {
+                        process.Kill();
+                    }
+
+                    log.Add($@"[CM] Stopped: {process.ExitCode}");
+                }
+            } finally {
+                SetRunning(null);
+            }
+        }
+
+        private async Task RunAcServer(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             try {
                 using (var process = new Process {
                     StartInfo = {
@@ -236,6 +397,8 @@ namespace AcManager.Tools.Objects {
                         RedirectStandardOutput = true,
                         CreateNoWindow = true,
                         RedirectStandardError = true,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding =  Encoding.UTF8,
                     }
                 }) {
                     process.Start();

@@ -13,14 +13,18 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class PackServerDialog {
         public partial class ViewModel {
+            [ItemCanBeNull]
             private async Task<string> PackIntoSingleAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 var result = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
                         FileUtils.EnsureFileNameIsValid($@"Packed {Server.DisplayName}.exe")));
-                var list = Server.PackServerData(IncludeExecutable, false).ToList();
+                var list = await Server.PackServerData(IncludeExecutable, false, true, cancellation);
+                if (list == null || cancellation.IsCancellationRequested) return null;
+
                 var temporary = FilesStorage.Instance.GetTemporaryFilename("EVB Package");
                 Directory.CreateDirectory(temporary);
 
@@ -83,7 +87,7 @@ namespace AcManager.Pages.Dialogs {
                         return directory;
                     }
 
-                    foreach (var entry in list) {
+                    foreach (var entry in list.ApartFrom(executable)) {
                         CreateFile(GetDirectoryOf(entry.Key), Path.GetFileName(entry.Key), entry.GetFilename(temporary));
                     }
 
@@ -153,8 +157,8 @@ namespace AcManager.Pages.Dialogs {
                     return result;
                 } finally {
                     try {
-                        list.DisposeEverything();
-                        Directory.Delete(temporary, true);
+                        //list.DisposeEverything();
+                        //Directory.Delete(temporary, true);
                     } catch (Exception e) {
                         Logging.Warning(e);
                     }

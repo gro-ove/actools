@@ -29,7 +29,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override UIElement GetChild() {
-            return Value ? True : False;
+            if (Value) {
+                if (CollapseOnFalse) Visibility = Visibility.Visible;
+                return True;
+            }
+
+            if (CollapseOnFalse) Visibility = Visibility.Collapsed;
+            return False;
+        }
+
+        public static readonly DependencyProperty CollapseOnFalseProperty = DependencyProperty.Register(nameof(CollapseOnFalse), typeof(bool),
+                typeof(BooleanSwitch), new PropertyMetadata(false, (o, e) => {
+                    var b = ((BooleanSwitch)o);
+                    b._collapseOnFalse = (bool)e.NewValue;
+                    if (b._collapseOnFalse && !b.Value) {
+                        b.Visibility = Visibility.Collapsed;
+                    }
+                }));
+
+        private bool _collapseOnFalse;
+
+        public bool CollapseOnFalse {
+            get { return _collapseOnFalse; }
+            set { SetValue(CollapseOnFalseProperty, value); }
         }
     }
 }

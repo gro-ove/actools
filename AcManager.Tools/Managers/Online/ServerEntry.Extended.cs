@@ -385,6 +385,14 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string GetRequiredCarVersion(string carId) {
+            return _missingContentReferences?["cars"]?[carId]?.GetStringValueOnly("version");
+        }
+
+        private string GetRequiredTrackVersion() {
+            return _missingContentReferences?["track"]?.GetStringValueOnly("version");
+        }
+
         private ServerStatus? UpdateMissingContentExtended(bool alreadyMissingSomething) {
             _updateMissingExtendedErrors.Clear();
             _carVersionIsWrong = false;

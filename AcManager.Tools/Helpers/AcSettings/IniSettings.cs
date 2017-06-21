@@ -71,7 +71,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             OnFileChanged(e.FullPath);
         }
 
-        protected void Replace(IniFile ini, bool backup = false) {
+        protected virtual void Replace(IniFile ini, bool backup = false) {
             IsSaving = false;
             IgnoreChangesForAWhile();
             ini.Save(Filename, backup);

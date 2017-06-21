@@ -22,12 +22,14 @@ using AcManager.Internal;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
 using AcManager.Plugins;
 using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
@@ -123,6 +125,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SkinsLoadingConcurrency, ref CarObject.OptionSkinsLoadingConcurrency);
             AppArguments.Set(AppFlag.KunosCareerIgnoreSkippedEvents, ref KunosCareerEventsManager.OptionIgnoreSkippedEvents);
             AppArguments.Set(AppFlag.IgnoreMissingSkinsInKunosEvents, ref KunosEventObjectBase.OptionIgnoreMissingSkins);
+
+            AppArguments.Set(AppFlag.CanPack, ref AcCommonObject.OptionCanBePackedFilter);
+            AppArguments.Set(AppFlag.CanPackCars, ref CarObject.OptionCanBePackedFilter);
 
             AppArguments.Set(AppFlag.ForceToastFallbackMode, ref Toast.OptionFallbackMode);
 
@@ -267,15 +272,17 @@ namespace AcManager {
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/car"), new DelegateCommand<string>(id => {
-                IndexDirectDownloader.DownloadCarAsync(id).Forget();
+                var s = id.Split('|');
+                IndexDirectDownloader.DownloadCarAsync(s[0], s.ElementAtOrDefault(1)).Forget();
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/track"), new DelegateCommand<string>(id => {
-                IndexDirectDownloader.DownloadTrackAsync(id).Forget();
+                var s = id.Split('|');
+                IndexDirectDownloader.DownloadTrackAsync(s[0], s.ElementAtOrDefault(1)).Forget();
             }));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
-                if (args.Uri.Scheme == "acmanager") {
+                if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
                     ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }).Forget();
                     args.Cancel = true;
                 }
@@ -290,6 +297,7 @@ namespace AcManager {
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
+            CarBlock.CarSetupsView = new CarSetupsView();
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
             if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {
@@ -354,6 +362,12 @@ namespace AcManager {
             } else {
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
                 StartupUri = new Uri(@"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+            }
+        }
+
+        private class CarSetupsView : ICarSetupsView {
+            public void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None,  bool forceNewWindow = false) {
+                CarSetupsListPage.Open(car, forceRemoteSource, forceNewWindow);
             }
         }
 

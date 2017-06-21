@@ -536,4 +536,8 @@
 
         <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
     </Style>
+
+    <Style x:Key="NumberCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
 </ResourceDictionary>

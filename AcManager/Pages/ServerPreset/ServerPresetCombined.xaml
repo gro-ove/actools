@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetCombined" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d">
+  <ScrollViewer mui:SaveScroll.Key="ServerPresetCombined">
+    <StackPanel>
+      <local:ServerPresetBasic />
+
+      <TextBlock Style="{StaticResource Heading1}" Text="Assists and rules" Margin="20 12 0 8" />
+      <local:ServerPresetAssists />
+
+      <TextBlock Style="{StaticResource Heading1}" Text="Sessions" Margin="20 12 0 8" />
+      <local:ServerPresetSessions />
+
+      <TextBlock Style="{StaticResource Heading1}" Text="Conditions" Margin="20 32 0 8" />
+      <local:ServerPresetConditions />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

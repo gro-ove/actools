@@ -52,6 +52,26 @@ namespace AcTools.Utils.Helpers {
             return defaultValue;
         }
 
+        public static void DragAndDrop<T>(this IList<T> target, int index, T obj, IList<T> source = null) {
+            source?.Remove(obj);
+
+            var oldIndex = target.IndexOf(obj);
+            if (oldIndex != -1) {
+                if (index == oldIndex) return;
+
+                target.RemoveAt(oldIndex);
+                /*if (oldIndex < index) {
+                    index--;
+                }*/
+            }
+
+            if (index == -1) {
+                target.Add(obj);
+            } else {
+                target.Insert(index, obj);
+            }
+        }
+
         [CanBeNull]
         public static T MaxOr<T>([NotNull] this IEnumerable<T> source, T defaultValue) where T : IComparable<T> {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -569,6 +589,12 @@ namespace AcTools.Utils.Helpers {
         public static IEnumerable<T> Prepend<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return additionalItems.Concat(source);
+        }
+
+        [Pure]
+        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, object item) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.Where(x => !ReferenceEquals(x, item));
         }
 
         [Pure]

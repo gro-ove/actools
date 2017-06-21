@@ -12,10 +12,6 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <Style x:Key="NumberCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
-        <Setter Property="HorizontalAlignment" Value="Right" />
-      </Style>
-
       <Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource NumberCellStyle}">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource Error}" />
         <Style.Triggers>

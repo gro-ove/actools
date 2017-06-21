@@ -136,8 +136,9 @@
     <Compile Include="AcManagersNew\IgnoringHolder.cs" />
     <Compile Include="AcManagersNew\IIgnorer.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject.Pack.cs" />
     <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />
-    <Compile Include="AcObjectsNew\AcCommonObject_Commands.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject.Commands.cs" />
     <Compile Include="AcObjectsNew\AcIniObject.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew.Commands.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew.Tags.cs" />
@@ -147,7 +148,7 @@
     <Compile Include="AcObjectsNew\AcPlaceholderNew.cs" />
     <Compile Include="AcObjectsNew\IAcObjectNew.cs" />
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
-    <Compile Include="AcObjectsNew\AcCommonObject_Errors.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject.Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
     <Compile Include="BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -190,7 +191,7 @@
     <Compile Include="Filters\SpecialEventObjectTester.cs" />
     <Compile Include="Filters\WeatherObjectTester.cs" />
     <Compile Include="Filters\ShowroomObjectTester.cs" />
-    <Compile Include="Filters\TrackBaseObjectTester.cs" />
+    <Compile Include="Filters\TrackObjectBaseTester.cs" />
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
@@ -211,6 +212,9 @@
     <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\Api\ApiCacheThing.cs" />
+    <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
+    <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\IndexDirectDownloader.cs" />
     <Compile Include="Helpers\AcContext.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />

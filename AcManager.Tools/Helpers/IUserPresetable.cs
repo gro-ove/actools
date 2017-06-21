@@ -19,6 +19,10 @@ namespace AcManager.Tools.Helpers {
         void ImportFromPresetData([NotNull] string data);
     }
 
+    public interface IPresetsPreviewProvider {
+        object GetPreview(string serializedData);
+    }
+
     public interface IUserPresetableDefaultPreset {
         [CanBeNull]
         string DefaultPreset { get; }

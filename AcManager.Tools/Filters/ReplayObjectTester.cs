@@ -60,7 +60,7 @@ namespace AcManager.Tools.Filters {
                     return obj.CarSkin != null && filter.Test(CarSkinObjectTester.Instance, obj.CarSkin);
 
                 case "track":
-                    return obj.Track != null && filter.Test(TrackBaseObjectTester.Instance, obj.Track);
+                    return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
 
                 case "weather":
                     return obj.Weather != null && filter.Test(WeatherObjectTester.Instance, obj.Weather);

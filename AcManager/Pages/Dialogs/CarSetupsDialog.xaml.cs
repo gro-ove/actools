@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Pages.Lists;
+using AcManager.Tools.Managers;
 using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -20,22 +23,32 @@ namespace AcManager.Pages.Dialogs {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        private CarSetupsDialog([NotNull] CarObject car) {
+        private CarSetupsDialog([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None) {
             if (car == null) throw new ArgumentNullException(nameof(car));
 
             DataContext = new ViewModel(car);
-
             DefaultContentSource = Model.ListUri;
-            MenuLinkGroups.Add(new LinkGroupFilterable {
-                DisplayName = AppStrings.Main_Setups,
-                Source = Model.ListUri
-            });
 
+            var linkGroup = new LinkGroupFilterable {
+                DisplayName = AppStrings.Main_Setups,
+                Source = Model.ListUri,
+                AddAllLink = true
+            };
+
+            foreach (var link in CarSetupsListPage.GetRemoteLinks(car.Id)) {
+                linkGroup.FixedLinks.Add(link);
+            }
+
+            if (forceRemoteSource != CarSetupsRemoteSource.None) {
+                ValuesStorage.Set("CarSetupsDialog_link", CarSetupsListPage.GetRemoteSourceUri(car.Id, forceRemoteSource));
+            }
+
+            MenuLinkGroups.Add(linkGroup);
             InitializeComponent();
         }
 
-        public static void Show([NotNull] CarObject car) {
-            new CarSetupsDialog(car) {
+        public static void Show([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None) {
+            new CarSetupsDialog(car, forceRemoteSource) {
                 ShowInTaskbar = false
             }.ShowDialogWithoutBlocking();
         }

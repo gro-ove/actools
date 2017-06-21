@@ -192,8 +192,8 @@ namespace AcManager.Tools.Objects {
             section.Set("CLIENT_SEND_INTERVAL_HZ", SendIntervalHz);
             section.Set("NUM_THREADS", Threads);
 
-            section.Set("TRACK", TrackId);
-            section.Set("CONFIG_TRACK", TrackLayoutId);
+            section.Set("TRACK", TrackId ?? "");
+            section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');
 
             section.SetIntEnum("ABS_ALLOWED", Abs);
@@ -232,12 +232,12 @@ namespace AcManager.Tools.Objects {
                 SaveWelcomeMessageCommand.Execute();
             }
 
-            ini["DATA"].Set("WELCOME_PATH", WelcomeMessagePath);
+            ini["DATA"].Set("WELCOME_PATH", WelcomeMessagePath ?? "");
 
             var welcomeFilename = Path.Combine(ServerPresetsManager.ServerDirectory, "cfg", $"welcome_{Id}.txt");
             if (!string.IsNullOrWhiteSpace(WelcomeMessage)) {
                 File.WriteAllText(welcomeFilename, WelcomeMessage);
-                section.Set("WELCOME_MESSAGE", string.IsNullOrWhiteSpace(WelcomeMessagePath) ? null : $"cfg/{Path.GetFileName(welcomeFilename)}");
+                section.Set("WELCOME_MESSAGE", string.IsNullOrWhiteSpace(WelcomeMessagePath) ? "" : $"cfg/{Path.GetFileName(welcomeFilename)}");
             } else {
                 if (File.Exists(welcomeFilename)) {
                     FileUtils.Recycle(welcomeFilename);
@@ -264,7 +264,9 @@ namespace AcManager.Tools.Objects {
                 if (!Changed || ModernDialog.ShowMessage(iniChanged ?
                         ToolsStrings.AcObject_ReloadAutomatically_Ini : ToolsStrings.AcObject_ReloadAutomatically_Json,
                         ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                    ReloadIniData();
+                    ClearErrors(AcErrorCategory.Data);
+                    LoadOrThrow();
+                    Changed = false;
                 }
 
                 return true;
@@ -279,6 +281,12 @@ namespace AcManager.Tools.Objects {
             foreach (var driverEntry in DriverEntries) {
                 driverEntry.RandomSkinCommand.Execute();
             }
-        }, () => true));
+        }));
+
+        private DelegateCommand _deleteAllEntriesCommand;
+
+        public DelegateCommand DeleteAllEntriesCommand => _deleteAllEntriesCommand ?? (_deleteAllEntriesCommand = new DelegateCommand(() => {
+            DriverEntries.Clear();
+        }));
     }
 }

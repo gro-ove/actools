@@ -28,7 +28,7 @@ namespace AcManager.Tools.Helpers.Api.Rsr {
                     var result = await client.DownloadDataTaskAsync(GetUrl(eventId));
                     if (cancellation.IsCancellationRequested) return null;
 
-
+                    // WHAT IS THAT?
 
                     return null;
                 }

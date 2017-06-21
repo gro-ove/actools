@@ -34,7 +34,7 @@ namespace AcManager.Tools.Managers.Directories {
 
     public static class AcDirectoriesExtension {
         public static string GetMainDirectory(this IAcDirectories directories) {
-            return Path.GetFileName(directories.GetLocation(@"_", true));
+            return Path.GetDirectoryName(directories.GetLocation(@"_", true));
         }
 
         public static IEnumerable<string> GetContentDirectories(this IAcDirectories directories) {

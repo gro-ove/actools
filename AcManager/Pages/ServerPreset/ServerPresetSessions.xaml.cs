@@ -2,8 +2,8 @@
 using AcTools.Utils;
 
 namespace AcManager.Pages.ServerPreset {
-    public partial class Sessions {
-        public Sessions() {
+    public partial class ServerPresetSessions {
+        public ServerPresetSessions() {
             InitializeComponent();
             this.AddSizeCondition(x => x.ActualWidth < 500 ? 1 : x.ActualWidth < 1200 ? 2 : 4)
                 .Add(b => ColumnsGrid.Columns = b.Clamp(1, 2));

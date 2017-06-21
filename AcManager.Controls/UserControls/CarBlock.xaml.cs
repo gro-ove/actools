@@ -8,6 +8,7 @@ using System.Windows.Markup;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using JetBrains.Annotations;
@@ -21,10 +22,17 @@ namespace AcManager.Controls.UserControls {
         string PresetableKeyValue { get; }
     }
 
+    public interface ICarSetupsView {
+        void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false);
+    }
+
     [ContentProperty(nameof(PreviewContent))]
     public partial class CarBlock {
         [CanBeNull]
         public static ICustomShowroomWrapper CustomShowroomWrapper { get; set; }
+
+        [CanBeNull]
+        public static ICarSetupsView CarSetupsView { get; set; }
 
         public CarBlock() {
             InitializeComponent();
@@ -164,6 +172,10 @@ namespace AcManager.Controls.UserControls {
 
         private void OnShowroomButtonClick(object sender, EventArgs e) {
             OnShowroomButtonClick(Car, SelectedSkin);
+        }
+
+        private void OnTsmSetupsButtonClick(object sender, RoutedEventArgs e) {
+            CarSetupsView?.Open(Car, CarSetupsRemoteSource.TheSetupMarket);
         }
     }
 }

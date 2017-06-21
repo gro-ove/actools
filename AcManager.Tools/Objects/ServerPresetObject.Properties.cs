@@ -606,7 +606,15 @@ namespace AcManager.Tools.Objects {
                 if (_driverEntries != null) {
                     _driverEntries.CollectionChanged += OnDriverEntriesCollectionChanged;
                     _driverEntries.ItemPropertyChanged += OnDriverEntryPropertyChanged;
+                    UpdateIndexes();
                 }
+            }
+        }
+
+        private void UpdateIndexes() {
+            if (_driverEntries == null) return;
+            for (var i = 0; i < _driverEntries.Count; i++) {
+                _driverEntries[i].Index = i + 1;
             }
         }
 
@@ -616,10 +624,14 @@ namespace AcManager.Tools.Objects {
 
         private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
             UpdateCarIds();
+            UpdateIndexes();
+
             if (Loaded) {
                 Changed = true;
             }
         }
+
+        public event PropertyChangedEventHandler DriverEntryPropertyChanged;
 
         private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
@@ -637,6 +649,8 @@ namespace AcManager.Tools.Objects {
                     }
                     return;
             }
+
+            DriverEntryPropertyChanged?.Invoke(sender, e);
 
             if (Loaded) {
                 Changed = true;
@@ -743,7 +757,10 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public event EventHandler WeatherCollectionChanged;
+
         private void OnWeatherCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+            WeatherCollectionChanged?.Invoke(this, EventArgs.Empty);
             UpdateWeatherIndexes();
             if (Loaded) {
                 Changed = true;

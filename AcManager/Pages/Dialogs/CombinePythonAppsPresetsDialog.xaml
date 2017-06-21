@@ -1,0 +1,47 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CombinePythonAppsPresetsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" Title="Combine App Presets" x:Name="This"
+    d:DataContext="{d:DesignInstance dialogs:CombinePythonAppsPresetsDialog+ViewModel}" Width="800" SizeToContent="Manual" MinHeight="320" Height="640"
+    MaxHeight="99999" MaxWidth="99999" LocationAndSizeKey="CombinePythonAppsPresetsDialog1" ResizeMode="CanResizeWithGrip">
+  <mui:ModernDialog.Resources>
+    <DataTemplate x:Key="SelectedContentTemplate">
+      <TextBlock x:Name="TextBlock" Text="{Binding}" />
+      <DataTemplate.Triggers>
+        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+          <Setter TargetName="TextBlock" Property="Text" Value="Empty" />
+          <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
+        </DataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+  </mui:ModernDialog.Resources>
+  <ScrollViewer>
+    <ItemsControl ItemsSource="{Binding Entries}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <mui:SpacingStackPanel Spacing="12" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <DockPanel>
+            <RadioButton IsChecked="{Binding IsSelected}" DockPanel.Dock="Left" Margin="0 0 4 0" VerticalAlignment="Top"
+                ToolTip="Pick a desktop enabled by default" />
+            <TextBlock Style="{StaticResource Label}" Width="100" DockPanel.Dock="Left" Text="{Binding DisplayName, StringFormat='{}{0}:'}"
+                VerticalAlignment="Top" Margin="0 2 0 0" />
+            <ListBox ItemsSource="{Binding Desktops}" SelectedItem="{Binding PresetDesktopToUse}" ItemContainerStyle="{StaticResource RadioBoxListItem}"
+                DockPanel.Dock="Bottom" Margin="0 4 0 0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <mui:PlaceholderTextBlock Text="{Binding DisplayName}" Placeholder="Empty" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.AppPresets, ElementName=This}" SelectedItem="{Binding Preset}"
+                SelectedContent="{StaticResource SelectedContentTemplate}" FixedMode="False" />
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </ScrollViewer>
+</mui:ModernDialog>

@@ -183,6 +183,10 @@ namespace AcManager.Tools.Helpers {
             return GetFilename(filename.Prepend("Temporary").ToArray());
         }
 
+        public string GetTemporaryDirectory([Localizable(false)] params string[] filename) {
+            return GetDirectory(filename.Prepend("Temporary").ToArray());
+        }
+
         private static Regex _unescapeRegex;
 
         private static string UnescapeString(string filename) {

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.EntryList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetEntryList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager"
@@ -140,14 +140,20 @@
   <DockPanel>
     <DockPanel x:Name="SavedDriversPanel" DockPanel.Dock="Right" Width="200" Margin="20 0 0 0">
       <DockPanel DockPanel.Dock="Bottom" Margin="0 8 0 8">
-        <TextBlock Text="To load stored entry, simply drag’n’drop it to the table." Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
-            HorizontalAlignment="Left" />
+        <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left"
+            Text="To load stored entry, simply drag’n’drop it to the table. Hold Shift while dragging to force add a new entry instead of loading params to existing one. Same with cars." />
       </DockPanel>
 
       <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Known drivers:" DockPanel.Dock="Top" />
 
-      <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers, Source={x:Static t:ServerPresetsManager.Instance}}"
-          Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True" Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp">
+      <DockPanel DockPanel.Dock="Top" Margin="0 0 0 4">
+        <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
+        <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" SaveKey="_knownDriversSearch" Text="{Binding SavedDriversFilter}"
+            Placeholder="*" />
+      </DockPanel>
+
+      <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
+          Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <mui:SpacingStackPanel Spacing="2" TextBlock.FontWeight="Normal" Height="52" Background="Transparent"
@@ -233,10 +239,10 @@
     </c:ModernPopup>
 
     <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite.VisibleDetails}" mui:Draggable.Enabled="True"
-        MinRowHeight="20" CanUserSortColumns="False">
-      <mui:Draggable.DestinationConverter>
+        MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop"><!-- TODO: SelectionMode="Extended"-->
+      <!--<mui:Draggable.DestinationConverter>
         <l:ServerPresetDriverEntryDraggableConverter />
-      </mui:Draggable.DestinationConverter>
+      </mui:Draggable.DestinationConverter>-->
       <DataGrid.RowDetailsTemplate>
         <DataTemplate>
           <Border Background="Transparent" Padding="20 4">
@@ -251,6 +257,14 @@
         </DataTemplate>
       </DataGrid.RowDetailsTemplate>
       <DataGrid.Columns>
+        <DataGridTemplateColumn Width="40" Header="" CellStyle="{StaticResource NumberCellStyle}"
+            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate DataType="{x:Type t:ServerPresetDriverEntry}">
+              <TextBlock x:Name="TextBlock" Text="{Binding Index}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
         <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
             CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
         <DataGridTemplateColumn Width="200*" Header="{x:Static c:ControlsStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"

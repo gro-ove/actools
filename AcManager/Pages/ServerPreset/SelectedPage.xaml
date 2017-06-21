@@ -12,8 +12,8 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <CollectionViewSource x:Key="PackServerPresetsItems" Source="{Binding PackServerPresets}" />
-      <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/RunningLog.xaml</system:Uri>
-      <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/EntryList.xaml</system:Uri>
+      <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/ServerPresetRunningLog.xaml</system:Uri>
+      <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/ServerPresetEntryList.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -63,21 +63,23 @@
             ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
         <Separator x:Name="ExtraButtonsSeparator" />
         <Button x:Name="RandomizeSkinsButton" Content="Randomize Skins" Command="{Binding SelectedObject.RandomizeSkinsCommand}" />
+        <Button x:Name="RemoveEntriesButton" Content="Delete All Entries" Command="{Binding SelectedObject.DeleteAllEntriesCommand}" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
     <mui:Cell>
-      <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" x:Name="Tab" SaveKey="__serpr.st"
-          mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml"
+      <mui:ModernTab x:Name="Tab" Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" SaveKey="__serpr.st"
+          mui:ModernFrame.TopSource="/Pages/ServerPreset/ServerPresetBasic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/ServerPresetBasic.xaml"
           SavePolicy="Strict">
         <mui:ModernTab.Links>
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
-          <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
+          <mui:Link x:Name="MainBasicLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetBasic.xaml" />
+          <mui:Link x:Name="MainCombinedLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetCombined.xaml" />
           <mui:Link DisplayName="Entry List" Source="{StaticResource EntryListUri}" />
-          <mui:Link DisplayName="Rules" Source="/Pages/ServerPreset/Assists.xaml" />
-          <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
-          <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
-          <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/Wrapped.xaml" />
+          <mui:Link x:Name="AssistsLink" DisplayName="Rules" Source="/Pages/ServerPreset/ServerPresetAssists.xaml" />
+          <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
+          <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />
+          <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/ServerPresetWrapped.xaml" />
         </mui:ModernTab.Links>
       </mui:ModernTab>
 

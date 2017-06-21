@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers.Api;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -126,6 +127,22 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private JObject _wrapperContentJObject;
+
+        [CanBeNull]
+        public JObject WrapperContentJObject {
+            get { return _wrapperContentJObject; }
+            set {
+                if (Equals(value, _wrapperContentJObject)) return;
+                _wrapperContentJObject = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         public string WrapperConfigFilename { get; private set; }
         public string WrapperContentDirectory { get; private set; }
         public string WrapperContentFilename { get; private set; }
@@ -138,30 +155,69 @@ namespace AcManager.Tools.Objects {
 
         private JObject _wrapperParamsJson;
 
+        [ContractAnnotation("destination:null => destination:notnull; destination:notnull => destination:notnull")]
+        private void SetWrapperParams(ref JObject destination) {
+            destination = destination ?? new JObject();
+            destination["enabled"] = WrapperUsed;
+            destination["port"] = WrapperPort;
+            destination["downloadSpeedLimit"] = WrapperDownloadSpeedLimit;
+            destination["verboseLog"] = WrapperVerboseLog;
+            destination["description"] = WrapperDescription;
+            destination["downloadPasswordOnly"] = WrapperDownloadPasswordOnly;
+            destination["publishPasswordChecksum"] = WrapperPublishPasswordChecksum;
+        }
+
         public void SaveWrapperParams() {
-            _wrapperParamsJson = _wrapperParamsJson ?? new JObject();
-            _wrapperParamsJson["enabled"] = WrapperUsed;
-            _wrapperParamsJson["downloadSpeedLimit"] = WrapperDownloadSpeedLimit;
-            _wrapperParamsJson["verboseLog"] = WrapperVerboseLog;
-            _wrapperParamsJson["description"] = WrapperDescription;
-            _wrapperParamsJson["downloadPasswordOnly"] = WrapperDownloadPasswordOnly;
-            _wrapperParamsJson["publishPasswordChecksum"] = WrapperPublishPasswordChecksum;
+            SetWrapperParams(ref _wrapperParamsJson);
 
             try {
-                File.WriteAllText(WrapperConfigFilename, _wrapperParamsJson.ToString(Formatting.Indented));
-            }catch (Exception e) {
+                if (WrapperUsed || _wrapperLoaded) {
+                    File.WriteAllText(WrapperConfigFilename, _wrapperParamsJson.ToString(Formatting.Indented));
+                }else if (File.Exists(WrapperConfigFilename)) {
+                    File.Delete(WrapperConfigFilename);
+                }
+            } catch (Exception e) {
                 NonfatalError.Notify("Can’t save server wrapper params", e);
+            }
+
+            try {
+                var jObj = WrapperContentJObject ?? new JObject();
+                if (jObj.Count > 0) {
+                    FileUtils.EnsureFileDirectoryExists(WrapperContentFilename);
+                    File.WriteAllText(WrapperContentFilename, jObj.ToString(Formatting.Indented));
+                } else if (File.Exists(WrapperContentFilename)) {
+                    File.Delete(WrapperContentFilename);
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t save server wrapper content description", e);
             }
         }
 
+        private bool _wrapperLoaded;
+
         public void LoadWrapperParams() {
             try {
-                _wrapperParamsJson = File.Exists(WrapperConfigFilename) ?
-                        JsonExtension.Parse(File.ReadAllText(WrapperConfigFilename)) : null;
+                if (File.Exists(WrapperConfigFilename)) {
+                    _wrapperParamsJson = JsonExtension.Parse(File.ReadAllText(WrapperConfigFilename));
+                    _wrapperLoaded = true;
+                } else {
+                    _wrapperParamsJson = null;
+                    _wrapperLoaded = false;
+                }
             } catch (Exception e) {
                 _wrapperParamsJson = null;
+                _wrapperLoaded = false;
                 Logging.Warning(e);
                 AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(WrapperConfigFilename));
+            }
+
+            try {
+                WrapperContentJObject = File.Exists(WrapperContentFilename) ?
+                        JsonExtension.Parse(File.ReadAllText(WrapperContentFilename)) : null;
+            } catch (Exception e) {
+                WrapperContentJObject = null;
+                Logging.Warning(e);
+                AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(WrapperContentFilename));
             }
 
             WrapperUsed = _wrapperParamsJson?.GetBoolValueOnly("enabled", true) ?? false;

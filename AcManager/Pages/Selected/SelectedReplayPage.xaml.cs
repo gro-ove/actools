@@ -162,7 +162,7 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.EditableCategory = null;
 
                 await Task.Delay(10);
-                SelectedObject.SaveCommand.Execute(null);
+                SelectedObject.SaveCommand.Execute();
             }, () => SelectedObject.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave))
                     .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory))
                     .ListenOnWeak(AcSettingsHolder.Replay, nameof(AcSettingsHolder.Replay.Autosave));

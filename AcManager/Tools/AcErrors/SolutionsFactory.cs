@@ -15,11 +15,13 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.AcErrors {
     public class SolutionsFactory : ISolutionsFactory {
-        IEnumerable<ISolution> ISolutionsFactory.GetSolutions(AcError error) {
+        [ItemCanBeNull]
+        async Task<IEnumerable<ISolution>> ISolutionsFactory.GetSolutionsAsync(AcError error) {
             switch (error.Type) {
                 case AcErrorType.Load_Base:
                     return null;
@@ -265,7 +267,7 @@ namespace AcManager.Tools.AcErrors {
                     };
 
                 case AcErrorType.CarSetup_TrackIsMissing:
-                    return new[] {
+                    return new [] {
                         new Solution(
                                 AppStrings.Solution_FindTrack,
                                 AppStrings.Solution_FindTrack_Details,
@@ -282,7 +284,7 @@ namespace AcManager.Tools.AcErrors {
                                 e => {
                                     ((CarSetupObject)e.Target).TrackId = null;
                                 })
-                    };
+                    }.Prepend(await Solve.TryToFindMissingTrackAsync(((CarSetupObject)error.Target).TrackId)).NonNull();
 
                 case AcErrorType.CarSkin_PreviewIsMissing:
                     return new ISolution[] {
@@ -334,15 +336,44 @@ namespace AcManager.Tools.AcErrors {
 
 
                 case AcErrorType.Replay_TrackIsMissing:
-                case AcErrorType.Replay_CarIsMissing:
-                    return new[] {
-                        new MultiSolution(
-                                AppStrings.Solution_RemoveReplay,
-                                AppStrings.Solution_RemoveReplay_Details,
+                    return new [] {
+                        new Solution(
+                                AppStrings.Solution_FindTrack,
+                                AppStrings.Solution_FindTrack_Details,
                                 e => {
-                                    e.Target.DeleteCommand.Execute(null);
+                                    var trackId = ((ReplayObject)e.Target).TrackId;
+                                    if (trackId != null) {
+                                        WindowsHelper.ViewInBrowser(
+                                                SettingsHolder.Content.MissingContentSearch.GetUri(trackId, SettingsHolder.MissingContentType.Track));
+                                    }
+                                }),
+                        new MultiSolution(
+                                AppStrings.Solution_MakeGeneric,
+                                AppStrings.Solution_MakeGeneric_Details,
+                                e => {
+                                    ((ReplayObject)e.Target).TrackId = null;
                                 })
-                    };
+                    }.Prepend(await Solve.TryToFindMissingTrackAsync(((ReplayObject)error.Target).TrackId)).NonNull();
+
+                case AcErrorType.Replay_CarIsMissing:
+                    return new [] {
+                        new Solution(
+                                AppStrings.Solution_FindTrack,
+                                AppStrings.Solution_FindTrack_Details,
+                                e => {
+                                    var trackId = ((ReplayObject)e.Target).CarId;
+                                    if (trackId != null) {
+                                        WindowsHelper.ViewInBrowser(
+                                                SettingsHolder.Content.MissingContentSearch.GetUri(trackId, SettingsHolder.MissingContentType.Car));
+                                    }
+                                }),
+                        new MultiSolution(
+                                AppStrings.Solution_MakeGeneric,
+                                AppStrings.Solution_MakeGeneric_Details,
+                                e => {
+                                    ((ReplayObject)e.Target).CarId = null;
+                                })
+                    }.Prepend(await Solve.TryToFindMissingCarAsync(((ReplayObject)error.Target).CarId)).NonNull();
 
                 /*case AcErrorType.Replay_WeatherIsMissing:
                     return new ISolution[] {

@@ -11,7 +11,6 @@ using System.Text;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using SlimDX.DirectInput;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Local

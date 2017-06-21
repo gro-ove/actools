@@ -75,6 +75,21 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         }
     }
 
+    public class InvertConverter : JsonConverter {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer){
+            writer.WriteValue((int)value);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer){
+            if (reader.Value is bool) return (bool)reader.Value ? -1 : 0;
+            return int.TryParse(reader.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out int r) ? r : 0;
+        }
+
+        public override bool CanConvert(Type objectType){
+            return objectType == typeof(bool) || objectType == typeof(int);
+        }
+    }
+
     [Localizable(false)]
     public class ServerInformationComplete : ServerInformation {
         /// <summary>
@@ -127,6 +142,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [JsonProperty(PropertyName = "extra")]
         public bool Extra { get; set; }
+
+        [JsonProperty(PropertyName = "inverted"), JsonConverter(typeof(InvertConverter))]
+        public int Inverted { get; set; }
 
         [JsonProperty(PropertyName = "pickup")]
         public bool PickUp { get; set; }
@@ -239,6 +257,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                         case "lastupdate":
                             entry.LastUpdate = long.Parse(reader.Value.ToString(), CultureInfo.InvariantCulture);
                             return true;
+                        case "inverted":
+                            entry.Inverted = int.Parse(reader.Value.ToString(), CultureInfo.InvariantCulture);
+                            return true;
                     }
                     break;
 
@@ -255,6 +276,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                             return true;
                         case "extra":
                             entry.Extra = bool.Parse(reader.Value.ToString());
+                            return true;
+                        case "inverted":
+                            entry.Inverted = bool.Parse(reader.Value.ToString()) ? -1 : 0;
                             return true;
                         case "l":
 #pragma warning disable 612

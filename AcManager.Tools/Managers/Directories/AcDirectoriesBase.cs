@@ -116,7 +116,7 @@ So, please, open “{disabledDirectory}” and either remove or rename {sameIds.
 
             var disabledDirectory = DisabledDirectory;
             if (disabledDirectory != null) {
-                id = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(disabledDirectory, id), postfix, forcePostfix, startFrom));
+                id = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(disabledDirectory, id), postfix, false, startFrom));
             }
 
             return id;

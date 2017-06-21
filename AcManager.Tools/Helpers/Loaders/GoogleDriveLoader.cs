@@ -13,13 +13,19 @@ namespace AcManager.Tools.Helpers.Loaders {
         public static bool Test(string url) => Regex.IsMatch(url, @"^https?://drive\.google\.com/", RegexOptions.IgnoreCase);
 
         private static string PrepareUrl(string url) {
-            var googleDriveMatch = Regex.Match(url, @"://drive\.google\.com/file/d/(\w+)", RegexOptions.IgnoreCase);
-            return googleDriveMatch.Success ? "https://drive.google.com/uc?export=download&id=" + googleDriveMatch.Groups[1].Value : url;
+            var openMatch = Regex.Match(url, @"://drive\.google\.com/open\b.*\bid=([\w-]+)", RegexOptions.IgnoreCase);
+            if (openMatch.Success) {
+                return "https://drive.google.com/uc?export=download&id=" + openMatch.Groups[1].Value;
+            }
+
+            var dMatch = Regex.Match(url, @"://drive\.google\.com/file/d/([\w-]+)", RegexOptions.IgnoreCase);
+            return dMatch.Success ? "https://drive.google.com/uc?export=download&id=" + dMatch.Groups[1].Value : url;
         }
 
         public GoogleDriveLoader(string url) : base(PrepareUrl(url)) {}
 
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
+            Logging.Debug(Url);
             if (!Url.Contains("://drive.google.com/uc?", StringComparison.OrdinalIgnoreCase)) return true;
 
             // TODO: drop if page is bigger than, let’s say, 1MB

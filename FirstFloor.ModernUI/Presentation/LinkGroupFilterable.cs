@@ -28,6 +28,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private bool _initialized;
+        private Uri _selectLater;
 
         public override void Initialize() {
             if (_initialized) return;
@@ -59,7 +60,18 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private void LoadSelected() {
             var source = ValuesStorage.GetString(KeySelected);
-            SetSelected(Links.FirstOrDefault(x => x.DisplayName == source) ?? Links.FirstOrDefault(), false);
+            SetSelected((_selectLater == null ?
+                    Links.FirstOrDefault(x => x.DisplayName == source) :
+                    Links.FirstOrDefault(x => x.Source == _selectLater)) ?? Links.FirstOrDefault(), false);
+            _selectLater = null;
+        }
+
+        public void SetSelected(Uri uri) {
+            if (_initialized) {
+                SetSelected(Links.FirstOrDefault(x => x.Source == uri) ?? Links.FirstOrDefault(), false);
+            } else {
+                _selectLater = uri;
+            }
         }
 
         private void SetSelected(Link value, bool save) {
@@ -71,7 +83,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
             _selectedLink = value;
             OnPropertyChanged(nameof(SelectedLink));
-            
+
             if (save && value?.Source != null) {
                 ValuesStorage.Set(KeySelected, value.DisplayName);
             }

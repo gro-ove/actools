@@ -21,6 +21,15 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        public static void AddZipDescription(this Stream stream, string description) {
+            stream.Seek(-2, SeekOrigin.End);
+
+            var bytes = Encoding.GetEncoding(1252).GetBytes(description);
+            var length = Math.Min((ushort)bytes.Length, ushort.MaxValue);
+            stream.Write(BitConverter.GetBytes(length), 0, 2);
+            stream.Write(bytes, 0, length);
+        }
+
         public static void WriteBytes(this IWriter writer, string entryPath, byte[] content) {
             using (var stream = new MemoryStream(content)) {
                 writer.Write(entryPath, stream);

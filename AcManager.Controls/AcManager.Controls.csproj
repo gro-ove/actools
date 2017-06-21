@@ -170,7 +170,6 @@
     <Compile Include="Helpers\CommonCommands.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
-    <Compile Include="IPresetsPreviewProvider.cs" />
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
     <Compile Include="MessageBlock.cs" />
     <Compile Include="OnlineItem.cs" />

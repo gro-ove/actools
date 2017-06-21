@@ -80,7 +80,7 @@ namespace AcManager {
         public static bool Has(AppFlag flag) {
             return _args != null && _args.ContainsKey(flag);
         }
-        
+
         [CanBeNull]
         public static string Get(AppFlag flag) {
             return _args != null && _args.ContainsKey(flag) ? _args[flag] : FlagDefaultValueAttribute.GetValue(flag);
@@ -104,7 +104,7 @@ namespace AcManager {
                 }
                 return;
             }
-            
+
             if (value == "1" ||
                     string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase) ||
@@ -196,7 +196,7 @@ namespace AcManager {
         }
 
         private static bool TryParse(string value, ref TimeSpan timeSpan) {
-            var p = value.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            var p = value.Split(new[] { ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             try {
                 double result;
@@ -218,7 +218,7 @@ namespace AcManager {
                                 double.Parse(p[2], CultureInfo.InvariantCulture)) * 60 + double.Parse(p[3], CultureInfo.InvariantCulture);
                         break;
                 }
-                
+
                 timeSpan = TimeSpan.FromSeconds(result);
                 return true;
             } catch (Exception) {

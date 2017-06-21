@@ -151,7 +151,7 @@ namespace AcManager.Tools.Managers.Online {
         private static FileBasedOnlineSources _instance;
 
         public static FileBasedOnlineSources Instance => _instance ?? (_instance = new FileBasedOnlineSources());
-        
+
         private const string Extension = ".txt";
 
         private FileBasedOnlineSources() : base(FilesStorage.Instance.GetDirectory("Online Servers")) {}
@@ -211,7 +211,7 @@ namespace AcManager.Tools.Managers.Online {
         public IOnlineSource GetSource([NotNull] string key) {
             return GetInternalSource(key);
         }
-        
+
         [NotNull]
         private Source GetInternalSource([NotNull] string key) {
             Source source;
@@ -277,7 +277,7 @@ namespace AcManager.Tools.Managers.Online {
                 source.Value.CheckIfChanged();
                 changed = true;
             }
-        
+
             if (changed) {
                 RaiseUpdated();
             }
@@ -441,7 +441,7 @@ namespace AcManager.Tools.Managers.Online {
                     File.WriteAllText(Filename, list.JoinToString('\n'));
                     _lastDateTime = new FileInfo(Filename).LastWriteTime;
                 } catch(Exception e) {
-                    NonfatalError.Notify("Can’t save list information", e);
+                    NonfatalError.Notify("Canâ€™t save list information", e);
                 }
             }
 
@@ -589,7 +589,7 @@ namespace AcManager.Tools.Managers.Online {
                 File.Move(Path.Combine(Instance.RootDirectory, key + Extension), Path.Combine(Instance.RootDirectory, newName + Extension));
                 Instance.Rescan();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t rename list", e);
+                NonfatalError.Notify("Canâ€™t rename list", e);
             }
         }
 
@@ -597,7 +597,7 @@ namespace AcManager.Tools.Managers.Online {
             try {
                 FileUtils.Recycle(Path.Combine(Instance.RootDirectory, key + Extension));
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t remove list", e);
+                NonfatalError.Notify("Canâ€™t remove list", e);
             }
         }
 
@@ -605,7 +605,7 @@ namespace AcManager.Tools.Managers.Online {
             try {
                 File.WriteAllText(Path.Combine(Instance.RootDirectory, name + Extension), "");
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t create list", e);
+                NonfatalError.Notify("Canâ€™t create list", e);
             }
         }
 

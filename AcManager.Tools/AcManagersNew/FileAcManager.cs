@@ -24,7 +24,6 @@ namespace AcManager.Tools.AcManagersNew {
     /// <typeparam name="T"></typeparam>
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {
         protected FileAcManager() {
-            SettingsHolder.Content.PropertyChanged += Content_PropertyChanged;
             Superintendent.Instance.Closing += Superintendent_Closing;
             Superintendent.Instance.SavingAll += SuperintendentSavingAll;
         }
@@ -39,14 +38,6 @@ namespace AcManager.Tools.AcManagersNew {
             foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
                 Logging.Debug(item);
                 e.Add(item.DisplayName);
-            }
-        }
-
-        private void Content_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;
-            if (!IsScanned) return;
-            foreach (var entry in LoadedOnly) {
-                entry.CheckIfNew();
             }
         }
 
@@ -149,7 +140,7 @@ namespace AcManager.Tools.AcManagersNew {
                 throw new ArgumentNullException(nameof(oldId));
             }
 
-            if (GetWrapperById(newId) != null) {
+            if (GetWrapperById(newId)?.Value.Enabled == newEnabled) {
                 throw new ToggleException("Object with the same ID already exists.");
             }
 

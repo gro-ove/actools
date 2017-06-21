@@ -274,12 +274,12 @@ namespace AcManager.Tools.Managers.Online {
         #endregion
 
         #region Lists-related
-        private bool _isFavourited;
+        private bool _isFavourite;
 
-        public bool IsFavourited {
-            get { return _isFavourited; }
+        public bool IsFavourite {
+            get { return _isFavourite; }
             set {
-                if (Equals(value, _isFavourited)) return;
+                if (Equals(value, _isFavourite)) return;
                 // SetIsFavorited(value);
 
                 if (value) {
@@ -295,15 +295,15 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <param name="value">New value.</param>
         private void SetIsFavourited(bool value) {
-            if (Equals(value, _isFavourited)) return;
-            _isFavourited = value;
-            OnPropertyChanged(nameof(IsFavourited));
+            if (Equals(value, _isFavourite)) return;
+            _isFavourite = value;
+            OnPropertyChanged(nameof(IsFavourite));
         }
 
-        private DelegateCommand _toggleFavoritedCommand;
+        private DelegateCommand _toggleFavoriteCommand;
 
-        public DelegateCommand ToggleFavouritedCommand => _toggleFavoritedCommand ?? (_toggleFavoritedCommand = new DelegateCommand(() => {
-            IsFavourited = !IsFavourited;
+        public DelegateCommand ToggleFavouriteCommand => _toggleFavoriteCommand ?? (_toggleFavoriteCommand = new DelegateCommand(() => {
+            IsFavourite = !IsFavourite;
         }));
 
         private bool _isExcluded;

@@ -1,8 +1,10 @@
 ﻿using System.Windows.Input;
 using AcManager.Tools.AcObjectsNew;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public interface ISelectedAcObjectViewModel {
+        [NotNull]
         AcCommonObject SelectedAcObject { get; }
 
         void Load();

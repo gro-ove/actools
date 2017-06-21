@@ -179,6 +179,7 @@ namespace AcManager.Pages.Dialogs {
             public BetterObservableCollection<ListEntry> Entries { get; }
 
             public ViewModel() {
+                OnlineManager.EnsureInitialized();
                 Entries = new BetterObservableCollection<ListEntry>(
                         FileBasedOnlineSources.Instance.GetBuiltInSources().Select(x => new ListEntry(x, true)).Concat(
                                 FileBasedOnlineSources.Instance.GetUserSources().Select(x => new ListEntry(x, false))));

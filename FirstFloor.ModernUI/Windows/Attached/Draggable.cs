@@ -430,6 +430,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
         }
 
+        public static bool IsSpecificAction(this DragEventArgs e) {
+            return (e.KeyStates & DragDropKeyStates.ShiftKey) != 0;
+        }
+
         [ContractAnnotation("item:null => null; item:notnull => notnull")]
         public static object GetDraggedItem([NotNull] this DragEventArgs e, object item) {
             return e.IsCopyAction() && (item as IDraggableCloneable)?.CanBeCloned == true ?

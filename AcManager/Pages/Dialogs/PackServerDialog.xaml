@@ -29,7 +29,7 @@
                                 CommandParameter="https://github.com/gro-ove/ac-server-wrapper">[?]</Hyperlink><Run Text=":" />
     </TextBlock>
 
-    <c:PropertiesGrid VerticalSpacing="8" Columns="2" VerticalAlignment="Top" WithoutMarginForEmptyLabels="True">
+    <!--<c:PropertiesGrid VerticalSpacing="8" Columns="2" VerticalAlignment="Top" WithoutMarginForEmptyLabels="True">
       <CheckBox IsChecked="{Binding IncludeWrapper}" VerticalAlignment="Center" Margin="0 -2 0 2">
         <Label Content="Include wrapper" />
       </CheckBox>
@@ -37,7 +37,7 @@
       <CheckBox IsChecked="{Binding IncludeWrapperNodeJs}" VerticalAlignment="Center" Margin="0 -2 0 2">
         <Label Content="Include Node.JS" />
       </CheckBox>
-    </c:PropertiesGrid>
+    </c:PropertiesGrid>-->
   </mui:SpacingStackPanel>
 
   <mui:ModernDialog.ButtonsRowContent>

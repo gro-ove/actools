@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class AlphanumComparatorFast : IComparer {
@@ -8,7 +9,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return Compare(x, y);
         }
 
-        public static int Compare(string x, string y) {
+        public static int Compare([CanBeNull] string x, [CanBeNull] string y) {
+            if (x == null) return y == null ? 0 : 1;
+            if (y == null) return -1;
+
             var len1 = x.Length;
             var len2 = y.Length;
             var marker1 = 0;

@@ -39,79 +39,18 @@ namespace AcManager.Tools.Managers.Online {
             TracksManager.Instance.WrappersList.CollectionReady += OnTracksListCollectionReady;
             TracksManager.Instance.WrappersList.ItemPropertyChanged += OnTrackPropertyChanged;
             WeatherManager.Instance.WrappersList.CollectionReady += OnWeatherListCollectionReady;
-            SettingsHolder.Content.PropertyChanged += OnContentPropertyChanged;
-
-            LoadAvailableIds().Forget();
+            IndexDirectDownloader.AvailableIdsLoaded += OnAvailableIdsLoaded;
+            IndexDirectDownloader.LoadAvailableIdsAsync();
         }
 
-        private void OnContentPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
-            if (propertyChangedEventArgs.PropertyName == nameof(SettingsHolder.ContentSettings.MissingContentIndexCheck)) {
-                if (_availableIdsLoaded) {
-                    UpdateMissing();
-                } else {
-                    LoadAvailableIds().Forget();
-                }
-            }
+        private void OnAvailableIdsLoaded(object sender, EventArgs eventArgs) {
+            UpdateMissing();
         }
 
         private void UpdateMissing() {
             foreach (var entry in List) {
                 entry.UpdateMissing();
             }
-        }
-
-        private static bool _availableIdsLoaded;
-
-        private static async Task LoadAvailableIds() {
-            if (_availableIdsLoaded) return;
-            _availableIdsLoaded = true;
-
-            try {
-                var ids = await CmApiProvider.GetContentAsync<Dictionary<string, string[]>>();
-                if (ids == null) {
-                    Logging.Warning("Can’t load lists of available-to-download IDs");
-                    return;
-                }
-
-                AvailableCarIds = ids.GetValueOrDefault("cars");
-                AvailableTrackIds = ids.GetValueOrDefault("tracks");
-                _instance?.UpdateMissing();
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
-        }
-
-        private static string[] AvailableCarIds { get; set; }
-        private static string[] AvailableTrackIds { get; set; }
-
-        public static bool IsCarAvailable(string carId) {
-            return AvailableCarIds?.Contains(carId) == true;
-        }
-
-        public static bool IsTrackAvailable(string trackId) {
-            return AvailableTrackIds?.Contains(trackId.Replace(@"/", @"-")) == true;
-
-            /*var ids = AvailableTrackIds;
-            if (ids == null) return false;
-
-            if (Array.IndexOf(ids, trackId) != -1) return true;
-
-            var i = trackId.IndexOf('/');
-            if (i == -1) return false;
-
-            var c = trackId.Substring(0, i);
-            if (Array.IndexOf(ids, c) != -1) return true;
-
-            for (var j = 0; j < 100; j++) {
-                var k = trackId.IndexOf('-', i + 1);
-                if (k == -1) return false;
-
-                i = k;
-                c = trackId.Substring(0, i).Replace('/', '-');
-                if (Array.IndexOf(ids, c) != -1) return true;
-            }
-
-            return false;*/
         }
 
         private void OnAnySkinsCollectionReady(object sender, SkinsCollectionReadyEventArgs e) {

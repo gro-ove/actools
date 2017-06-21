@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -51,7 +53,14 @@ namespace AcManager.Tools.ContentInstallation {
             public FileNodeBase(string key, DirectoryNode parent) {
                 // ReSharper disable once VirtualMemberCallInConstructor
                 Key = parent == null ? null : key;
-                Name = Path.GetFileName(key);
+
+                try {
+                    Name = Path.GetFileName(key);
+                } catch (ArgumentException e) {
+                    Logging.Warning(e);
+                    throw new Exception($"Unsupported key: “{key}”");
+                }
+
                 NameLowerCase = Name?.ToLowerInvariant();
                 Parent = parent;
             }
@@ -197,7 +206,7 @@ namespace AcManager.Tools.ContentInstallation {
             // INI-files with modes
             var iniTrack = uiTrack == null ? null : directory.GetSubFile("models.ini");
             var iniTrackSubs = new List<FileNode>();
-            for (var i = 0; i < uiTrackSubs.Count; i++) {
+            for (var i = uiTrackSubs.Count - 1; i >= 0; i--) {
                 var layoutName = uiTrackSubs[i].Parent.NameLowerCase;
                 var models = directory.GetSubFile($"models_{layoutName}.ini");
                 if (models == null) {
@@ -230,19 +239,58 @@ namespace AcManager.Tools.ContentInstallation {
             if (trackId == null) {
                 Logging.Write("Directory’s name is null, let’s try to guess track’s ID");
 
-                if (directory.Files.Any(x => uiTrack != null ? x.NameLowerCase == "models.ini" :
-                        layoutLowerCaseIds.Any(y => x.NameLowerCase == $"models_{y}.ini"))) {
+                if (iniTrack != null || iniTrackSubs.Count > 0) {
                     // Looks like KN5 are referenced via ini-files, we can’t rely on KN5 name to determine
                     // missing track ID
-                    Logging.Write("Can’t determine ID because of ini-files");
-                    return null;
-                }
 
-                trackId = directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).OrderByDescending(x => x.Size)
-                                   .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
-                if (trackId == null) {
-                    Logging.Write("Can’t determine ID");
-                    return null;
+                    // UPD: Let’s try anyway, by looking for the biggest referenced KN5-file with an unusual name
+                    Logging.Debug("CAN’T FOUND PROPER TRACK ID NOWHERE! LET’S TRY TO GUESS…");
+
+                    bool IsNameUnusual(string name) {
+                        var n = name.ToLowerInvariant().ApartFromLast(".kn5");
+
+                        if (n.Length < 5) {
+                            // Could be some sort of shortening.
+                            return false;
+                        }
+
+                        if (n.Contains(" ")) {
+                            // It might be the right name, but it’s unlikely.
+                            return false;
+                        }
+
+                        if (double.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out double v)) {
+                            // Numbers: 0.kn5, 10.kn5, …
+                            // Kunos name their extra files like that.
+                            return false;
+                        }
+
+                        var marks = "drift|circuit|sprint|race|trackday|full|layout|start|trees|grass|normal|reverse|chicane|oval|wet|dtm|gp|pit";
+                        if (Regex.IsMatch(n, $@"^(?:{marks})(?![a-z])|(?<![a-z])(?:{marks})$")) {
+                            // Might look like some extra layouts.
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    var potentialId = (await iniTrackSubs.Prepend(iniTrack).NonNull().Select(x => x.Info.ReadAsync()).WhenAll())
+                            .SelectMany(x => TrackContentEntry.GetLayoutModelsNames(IniFile.Parse(x.ToUtf8String())).ToList())
+                            .Distinct().Where(IsNameUnusual).OrderByDescending(x => directory.GetSubFile(x)?.Info.Size)
+                            .FirstOrDefault()?.ToLowerInvariant().ApartFromLast(".kn5");
+                    if (potentialId != null) {
+                        trackId = potentialId;
+                    } else {
+                        Logging.Write("Can’t determine ID because of ini-files");
+                        return null;
+                    }
+                } else {
+                    trackId = directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).OrderByDescending(x => x.Size)
+                                       .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
+                    if (trackId == null) {
+                        Logging.Write("Can’t determine ID");
+                        return null;
+                    }
                 }
 
                 Logging.Write("Guessed ID: " + trackId);

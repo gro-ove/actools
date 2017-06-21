@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using AcManager.Tools.AcErrors;
@@ -86,7 +87,7 @@ namespace AcManager.Tools.Objects {
                 CheckLivery();
                 return true;
             }
-            
+
             return true;
         }
 
@@ -168,7 +169,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private int? _priority;
-        
+
         public int? Priority {
             get { return _priority; }
             set {
@@ -187,6 +188,11 @@ namespace AcManager.Tools.Objects {
             Team = json.GetStringValueOnly("team")?.Trim();
             SkinNumber = json.GetStringValueOnly("number")?.Trim();
             Priority = json.GetIntValueOnly("priority");
+
+            var carSkins = DataProvider.Instance.KunosSkins.GetValueOrDefault(CarId);
+            if (carSkins != null && Array.IndexOf(carSkins, Id) != -1) {
+                Author = AuthorKunos;
+            }
         }
 
         private void SaveSkinRelated(JObject json) {

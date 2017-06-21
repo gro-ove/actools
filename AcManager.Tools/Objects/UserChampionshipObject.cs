@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
         string Difficulty { get; }
     }
 
-    public class UserChampionshipObject : AcCommonSingleFileObject, IAcObjectAuthorInformation, IUserChampionshipInformation, IComparer {
+    public class UserChampionshipObject : AcCommonSingleFileObject, IAcObjectFullAuthorshipInformation, IUserChampionshipInformation, IComparer {
         public const string FileExtension = ".champ";
         public const string FileDataExtension = ".champ.json";
         public const string FilePreviewExtension = ".champ.jpg";

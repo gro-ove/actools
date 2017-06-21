@@ -49,9 +49,9 @@
             Command="{Binding Entry.RefreshCommand}" />
         <Separator />
 
-        <mui:ButtonWithComboBox x:Name="ListsButton" Command="{Binding Entry.ToggleFavouritedCommand}" PreviewMouseDown="ListsButton_OnPreviewMouseDown">
+        <mui:ButtonWithComboBox x:Name="ListsButton" Command="{Binding Entry.ToggleFavouriteCommand}" PreviewMouseDown="ListsButton_OnPreviewMouseDown">
           <mui:ButtonWithComboBox.Content>
-            <mui:BooleanSwitch Value="{Binding Entry.IsFavourited}">
+            <mui:BooleanSwitch Value="{Binding Entry.IsFavourite}">
               <mui:BooleanSwitch.True>
                 <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unfavourite}" />
               </mui:BooleanSwitch.True>
@@ -62,7 +62,7 @@
           </mui:ButtonWithComboBox.Content>
           <mui:ButtonWithComboBox.ButtonToolTip>
             <ToolTip>
-              <mui:BooleanSwitch Value="{Binding Entry.IsFavourited}">
+              <mui:BooleanSwitch Value="{Binding Entry.IsFavourite}">
                 <mui:BooleanSwitch.True>
                   <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unfavourite_Tooltip}" />
                 </mui:BooleanSwitch.True>
@@ -200,7 +200,7 @@
         <!--IP, port-->
         <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" VerticalAlignment="Center" Text="{Binding Id, Mode=OneWay}" />
       </DockPanel>
-      <c:FavouriteButton DockPanel.Dock="Right" Margin="4 0 0 0" IsChecked="{Binding IsFavourited, Mode=TwoWay}" />
+      <c:FavouriteButton DockPanel.Dock="Right" Margin="4 0 0 0" IsChecked="{Binding IsFavourite, Mode=TwoWay}" />
       <TextBox x:Name="Title" Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
     </DockPanel>
 
@@ -481,7 +481,7 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type t:ServerEntry+Session}">
                     <DockPanel>
-                      <TextBlock DockPanel.Dock="Left" Width="200" x:Name="TypeText" Text="{Binding DisplayType}" />
+                      <TextBlock DockPanel.Dock="Left" Width="100" x:Name="TypeText" Text="{Binding DisplayType}" />
                       <TextBlock x:Name="DurationText" Text="{Binding DisplayDuration}" />
                     </DockPanel>
 

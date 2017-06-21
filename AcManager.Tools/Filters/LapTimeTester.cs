@@ -47,7 +47,7 @@ namespace AcManager.Tools.Filters {
                     return obj.Car != null && filter.Test(CarObjectTester.Instance, obj.Car);
 
                 case "track":
-                    return obj.Track != null && filter.Test(TrackBaseObjectTester.Instance, obj.Track);
+                    return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
             }
 
             return false;

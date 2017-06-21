@@ -6,13 +6,14 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject : AcObjectNew {
-        public const string AuthorKunos = "Kunos";
+        public static readonly string AuthorKunos = "Kunos";
 
         public readonly IFileAcManager FileAcManager;
 
@@ -22,36 +23,6 @@ namespace AcManager.Tools.AcObjectsNew {
         protected AcCommonObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             FileAcManager = manager;
-
-            var typeName = GetType().Name;
-            _isFavouriteKey = $"{typeName}:{id}:favourite";
-            _ratingKey = $"{typeName}:{id}:rating";
-        }
-
-        public static void MoveRatings(Type type, string oldId, string newId, bool keepOld) {
-            var typeName = type.Name;
-            var isFavouriteOldKey = $"{typeName}:{oldId}:favourite";
-            var ratingOldKey = $"{typeName}:{oldId}:rating";
-            var isFavouriteNewKey = $"{typeName}:{newId}:favourite";
-            var ratingNewKey = $"{typeName}:{newId}:rating";
-
-            if (RatingsStorage.Contains(isFavouriteOldKey)) {
-                RatingsStorage.SetString(isFavouriteNewKey, RatingsStorage.GetString(isFavouriteOldKey));
-                if (!keepOld) {
-                    RatingsStorage.Remove(isFavouriteOldKey);
-                }
-            }
-
-            if (RatingsStorage.Contains(ratingOldKey)) {
-                RatingsStorage.SetString(ratingNewKey, RatingsStorage.GetString(ratingOldKey));
-                if (!keepOld) {
-                    RatingsStorage.Remove(ratingOldKey);
-                }
-            }
-        }
-
-        public static void MoveRatings<T>(string oldId, string newId, bool keepOld) {
-            MoveRatings(typeof(T), oldId, newId, keepOld);
         }
 
         [NotNull]
@@ -73,33 +44,10 @@ namespace AcManager.Tools.AcObjectsNew {
             Location = GetLocation();
         }
 
-        private bool _isNew;
-
-        public bool IsNew {
-            get => _isNew;
-            set {
-                if (Equals(value, _isNew)) return;
-                _isNew = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public double AgeInDays => (DateTime.Now - CreationDateTime).TotalDays;
-
         public override void Reload() {
             ClearErrors();
             LoadOrThrow();
             Changed = false;
-        }
-
-        public DateTime CreationDateTime { get; private set; }
-
-        public void CheckIfNew() {
-            try {
-                IsNew = DateTime.Now - CreationDateTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
-            } catch (Exception) {
-                IsNew = false;
-            }
         }
 
         protected bool Loaded { get; private set; }
@@ -196,59 +144,6 @@ namespace AcManager.Tools.AcObjectsNew {
                 }
             }
         }
-
-        #region Rating
-        private static Storage _ratingsStorage;
-
-        private static Storage RatingsStorage
-            => _ratingsStorage ?? (_ratingsStorage = new Storage(FilesStorage.Instance.GetFilename("Progress", "Ratings.data")));
-
-        private readonly string _isFavouriteKey;
-        private bool? _isFavourite;
-
-        public bool IsFavourite {
-            get => _isFavourite ?? (_isFavourite = RatingsStorage.GetBool(_isFavouriteKey)).Value;
-            set {
-                if (Equals(value, _isFavourite)) return;
-                _isFavourite = value;
-
-                if (value) {
-                    RatingsStorage.Set(_isFavouriteKey, true);
-                } else {
-                    RatingsStorage.Remove(_isFavouriteKey);
-                }
-
-                OnPropertyChanged();
-            }
-        }
-
-        private readonly string _ratingKey;
-        private bool _ratingLoaded;
-        private double? _rating;
-
-        public double? Rating {
-            get {
-                if (!_ratingLoaded) {
-                    _ratingLoaded = true;
-                    _rating = RatingsStorage.GetDoubleNullable(_ratingKey);
-                }
-                return _rating;
-            }
-            set {
-                if (Equals(value, _rating)) return;
-                _rating = value;
-                _ratingLoaded = true;
-
-                if (value.HasValue) {
-                    RatingsStorage.Set(_ratingKey, value.Value);
-                } else {
-                    RatingsStorage.Remove(_ratingKey);
-                }
-
-                OnPropertyChanged();
-            }
-        }
-        #endregion
 
         public abstract void Save();
 

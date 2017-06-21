@@ -13,6 +13,7 @@ using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.UserControls;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
@@ -36,8 +37,8 @@ namespace AcManager.Pages.ServerPreset {
         }
     }
 
-    public partial class EntryList : INotifyPropertyChanged {
-        public EntryList() {
+    public partial class ServerPresetEntryList : INotifyPropertyChanged {
+        public ServerPresetEntryList() {
             InitializeComponent();
             this.AddWidthCondition(720)
                 .Add(SavedDriversPanel);
@@ -47,6 +48,40 @@ namespace AcManager.Pages.ServerPreset {
                 .AddInverted(SomethingMightBeHiddenPanel);
             this.AddWidthCondition(1080)
                 .Add(TeamColumn);
+        }
+
+        private void OnDrop(object sender, DragEventArgs e) {
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject ??
+                    (e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry)?.Car;
+            var driverEntry = e.Data.GetData(ServerPresetDriverEntry.DraggableFormat) as ServerPresetDriverEntry;
+            var savedDriver = e.Data.GetData(ServerSavedDriver.DraggableFormat) as ServerSavedDriver;
+
+            if (carObject == null && driverEntry == null && savedDriver == null || Model == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            var newIndex = ((ItemsControl)sender).GetMouseItemIndex();
+            var list = Model.SelectedObject.DriverEntries;
+
+            if (driverEntry != null) {
+                list.DragAndDrop(newIndex, e.IsCopyAction() ? driverEntry.Clone() : driverEntry);
+            } else if (carObject != null) {
+                if (e.IsCopyAction() || e.IsSpecificAction() || newIndex == -1) {
+                    list.DragAndDrop(newIndex, new ServerPresetDriverEntry(carObject));
+                } else {
+                    list[newIndex].CarId = carObject.Id;
+                    list[newIndex].CarSkinId = carObject.SelectedSkin?.Id;
+                }
+            } else {
+                if (e.IsCopyAction() || e.IsSpecificAction() || newIndex == -1) {
+                    list.DragAndDrop(newIndex, new ServerPresetDriverEntry(savedDriver));
+                } else {
+                    savedDriver.CopyTo(list[newIndex]);
+                }
+            }
+
+            e.Effects = DragDropEffects.Move;
         }
 
         private void OnOpponentSkinClick(object sender, MouseButtonEventArgs e) {

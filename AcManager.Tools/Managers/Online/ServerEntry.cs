@@ -16,6 +16,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry : Displayable, IWithId {
+        public static bool OptionIgnoreIndexIfServerProvidesSpecificVersion = true;
+
         public ServerEntry([NotNull] ServerInformation information) {
             if (information == null) throw new ArgumentNullException(nameof(information));
 
@@ -169,7 +171,8 @@ namespace AcManager.Tools.Managers.Online {
                     IsActive = x == information.Session,
                     Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
                     Type = (Game.SessionType)x,
-                    RaceMode = RaceMode
+                    RaceMode = RaceMode,
+                    Inverted = information.Inverted
                 }).ToList();
 
                 if (Sessions == null || !Sessions.SequenceEqual(sessions)) {
@@ -181,19 +184,20 @@ namespace AcManager.Tools.Managers.Online {
             return result;
         }
 
-        private static string IdToBb(string id, bool car = true) {
+        private string IdToBb(string id, bool car = true) {
             if (!car) {
                 id = Regex.Replace(id, @"-([^-]+)$", "/$1");
             }
 
+            var version = car ? GetRequiredCarVersion(id) : GetRequiredTrackVersion();
             var url = $"cmd://findmissing/{(car ? "car" : "track")}?param={id}";
             var basePiece = $@"[url={BbCodeBlock.EncodeAttribute(url)}]{id}[/url]";
-            if (!SettingsHolder.Content.MissingContentIndexCheck ||
-                    car ? !OnlineManager.IsCarAvailable(id) : !OnlineManager.IsTrackAvailable(id)) {
+            if (OptionIgnoreIndexIfServerProvidesSpecificVersion && version != null ||
+                    (car ? !IndexDirectDownloader.IsCarAvailable(id) : !IndexDirectDownloader.IsTrackAvailable(id))) {
                 return string.Format("“{0}”", basePiece);
             }
 
-            var downloadUrl = $"cmd://downloadmissing/{(car ? "car" : "track")}?param={id}";
+            var downloadUrl = $"cmd://downloadmissing/{(car ? "car" : "track")}?param={(string.IsNullOrWhiteSpace(version) ? id : $@"{id}|{version}")}";
             return string.Format("“{0}” ({1})",
                     basePiece,
                     $@"[url={BbCodeBlock.EncodeAttribute(downloadUrl)}]download[/url]");

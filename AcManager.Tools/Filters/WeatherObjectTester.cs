@@ -1,9 +1,10 @@
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class WeatherObjectTester : ITester<WeatherObject> {
-        public static WeatherObjectTester Instance = new WeatherObjectTester();
+        public static readonly WeatherObjectTester Instance = new WeatherObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {

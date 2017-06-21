@@ -2,8 +2,8 @@ using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
-    public class TrackBaseObjectTester : ITester<TrackObjectBase> {
-        public static readonly TrackBaseObjectTester Instance = new TrackBaseObjectTester();
+    public class TrackObjectBaseTester : ITester<TrackObjectBase> {
+        public static readonly TrackObjectBaseTester Instance = new TrackObjectBaseTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {

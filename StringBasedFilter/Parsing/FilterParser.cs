@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using StringBasedFilter.TestEntries;
+using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.Parsing {
     public enum FilterComparingOperation {
@@ -42,6 +43,9 @@ namespace StringBasedFilter.Parsing {
         }
     }
 
+    [NotNull]
+    public delegate Regex RegexFactory(string query, bool wholeMatch, bool strictMode);
+
     [CanBeNull]
     public delegate FilterPropertyValue ValueSplitFunc([NotNull] string value);
 
@@ -58,6 +62,7 @@ namespace StringBasedFilter.Parsing {
         public static readonly FilterParams Defaults = new FilterParams();
 
         public bool StrictMode { get; set; }
+        public bool FullMatchMode { get; set; }
 
         /// <summary>
         /// Converts input value before splitting if needed. Can be null.
@@ -72,7 +77,10 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         [NotNull]
         public ValueSplitFunc ValueSplitFunc { get; set; } = DefaultValueSplitFunc.Default;
-        
+
+        [NotNull]
+        public RegexFactory RegexFactory { get; set; } = RegexFromQuery.Create;
+
         /// <summary>
         /// Default factory for boolean testers, override to make auto-conversion more strict/flexible.
         /// </summary>

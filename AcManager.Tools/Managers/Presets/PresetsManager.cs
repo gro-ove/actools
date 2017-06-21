@@ -68,7 +68,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         public static event EventHandler<PresetSavedEventArgs> PresetSaved;
 
-        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] string category, [CanBeNull] string data, [CanBeNull] string filename) {
+        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] string category, [CanBeNull] string data, [CanBeNull] ref string filename) {
             if (data == null) {
                 return false;
             }
@@ -108,6 +108,10 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             return true;
+        }
+
+        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] string category, [CanBeNull] string data, [CanBeNull] string filename) {
+            return SavePresetUsingDialog(key, category, data, ref filename);
         }
     }
 

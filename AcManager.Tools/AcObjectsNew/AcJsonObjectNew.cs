@@ -21,11 +21,10 @@ namespace AcManager.Tools.AcObjectsNew {
 
     public interface IAcObjectAuthorInformation {
         [CanBeNull]
-        string Author { get; set; }
+        string Author { get; }
+    }
 
-        [CanBeNull]
-        string Version { get; set; }
-
+    public interface IAcObjectFullAuthorshipInformation : IAcObjectVersionInformation, IAcObjectAuthorInformation {
         [CanBeNull]
         string Url { get; set; }
 
@@ -34,7 +33,7 @@ namespace AcManager.Tools.AcObjectsNew {
     }
 
     public static class AcObjectAuthorInformationExtension {
-        public static string GetVersionInfoDisplay([NotNull] this IAcObjectAuthorInformation obj) {
+        public static string GetVersionInfoDisplay([NotNull] this IAcObjectFullAuthorshipInformation obj) {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
 
             if (obj.Version == null && obj.Author == null) {
@@ -47,7 +46,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
     }
 
-    public abstract partial class AcJsonObjectNew : AcCommonObject, IAcObjectAuthorInformation, IAcObjectVersionInformation {
+    public abstract partial class AcJsonObjectNew : AcCommonObject, IAcObjectFullAuthorshipInformation {
         protected AcJsonObjectNew(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             Tags = new TagsCollection();

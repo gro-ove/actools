@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
@@ -83,26 +84,52 @@ namespace AcManager.Tools.Helpers.Api {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
         }
 
+        private static readonly List<string> JustLoadedStaticData = new List<string>();
+
+        /// <summary>
+        /// Load piece of static data, either from CM API, or from cache.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="progress"></param>
+        /// <param name="cancellation"></param>
+        /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<byte[]> GetStaticDataAsync(string id, IProgress<double?> progress = null,
+        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, IProgress<double?> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Static", $"{id}.zip"));
+
+            if (JustLoadedStaticData.Contains(id) && file.Exists) {
+                return Tuple.Create(file.FullName, false);
+            }
 
             var result = await InternalUtils.CmGetDataAsync($"static/get/{id}", UserAgent,
                     file.Exists ? file.LastWriteTime : (DateTime?)null, progress, cancellation).ConfigureAwait(false);
             if (cancellation.IsCancellationRequested) return null;
 
-            if (result.Item1.Length != 0) {
+            if (result != null && result.Item1.Length != 0) {
                 Logging.Debug($"Fresh version of {id} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
                 var lastWriteTime = result.Item2 ?? DateTime.Now;
                 await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
                 file.Refresh();
                 file.LastWriteTime = lastWriteTime;
-                return result.Item1;
+                JustLoadedStaticData.Add(id);
+                return Tuple.Create(file.FullName, true);
+            }
+
+            if (!file.Exists) {
+                return null;
             }
 
             Logging.Debug($"Cached {id} used");
-            return await FileUtils.ReadAllBytesAsync(file.FullName, cancellation).ConfigureAwait(false);
+            JustLoadedStaticData.Add(id);
+            return Tuple.Create(file.FullName, false);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetStaticDataBytesAsync(string id, IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var t = await GetStaticDataAsync(id, progress, cancellation);
+            return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
         }
 
         [ItemCanBeNull]

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Basic" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetBasic" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
@@ -34,8 +34,7 @@
       </StackPanel>
 
       <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
-        <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch">
+        <Button Padding="0" Width="160" Height="120" IsHitTestVisible="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
           <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
             <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
             <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Cars[0].DisplayName}"
@@ -113,7 +112,7 @@
         </DockPanel>
         <DockPanel Margin="0 0 0 8">
           <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
-              Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+              Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
           <Label Content="Welcome message:" HorizontalAlignment="Left" />
         </DockPanel>
       </StackPanel>

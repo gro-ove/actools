@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsIntegrated" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsIntegrated+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="SettingsIntegrated">
+    <StackPanel Style="{StaticResource SettingsPanel}">
+      <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+
+      <c:MessageBlock Margin="0 0 0 8">
+        <mui:BbCodeBlock>
+          <mui:BbCodeBlock.BbCode>Get access to hundreds of various setups with [url="http://thesetupmarket.com/"]The Setup Market[/url]. And if you want to quickly install setups from browser, use [url="/Pages/About/ImportantTipsPage.xaml?Key=extension|_top"]the extension[/url].</mui:BbCodeBlock.BbCode>
+        </mui:BbCodeBlock>
+      </c:MessageBlock>
+
+      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketTab}">
+        <Label Content="Add The Setup Market tab in Setups Manager" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCounter}" IsEnabled="{Binding Integrated.TheSetupMarketTab}"
+          ToolTip="Add available setups counter to Content/Cars section or to cars selection dialog (make it wider to see it)">
+        <Label Content="Add available setups counter" />
+      </CheckBox>
+
+      <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+      <CheckBox IsChecked="{Binding Live.RsrEnabled}">
+        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
+      </CheckBox>
+
+      <StackPanel IsEnabled="{Binding Live.RsrEnabled}">
+        <CheckBox IsChecked="{Binding Live.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        </CheckBox>
+
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrNameLabel}" />
+          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Live.RsrDifferentPlayerName}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrName_Tooltip}"
+              VerticalAlignment="Center" />
+          <mui:BetterTextBox Text="{Binding Live.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding Live.RsrDifferentPlayerName}" />
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding Live.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp}" />
+        </CheckBox>
+      </StackPanel>
+
+      <TextBlock Text="SRS:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+      <CheckBox IsChecked="{Binding Live.SrsEnabled}">
+        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
+      </CheckBox>
+
+      <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
+        <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
+        </CheckBox>
+
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
+          <mui:BetterTextBox Text="{Binding Live.SrsAutoMask}" Placeholder="?" />
+        </DockPanel>
+      </StackPanel>
+
+      <!--sidekick-->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
+      <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
+        <Label Content="Extend Sidekick’s tyres information if needed" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingKunos}">
+        <Label Content="Update entries for Kunos cars if different" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
+        <Label Content="Update entries for mods if different" />
+      </CheckBox>
+
+      <!--real head motion-->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+        <Run Text="Real Head Motion:" />
+        <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink>-->
+      </TextBlock>
+
+      <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
+        <Label Content="RHM integration" />
+      </CheckBox>
+
+      <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+        <Label Content="RHM location:" />
+        <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
+        <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
+        <Label Content="Keep alive for:" />
+        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
+            DisplayMemberPath="DisplayName" />
+      </DockPanel>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

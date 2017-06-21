@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -94,6 +95,21 @@ namespace AcManager.Tools.Data {
                     Logging.Warning("Cannot load KunosContent.json");
                 }
                 return _kunosContent;
+            }
+        }
+
+        private Dictionary<string, string[]> _kunosSkins;
+        private readonly object _kunosSkinsSync = new object();
+
+        public IReadOnlyDictionary<string, string[]> KunosSkins {
+            get {
+                if (_kunosSkins != null) return _kunosSkins;
+
+                lock (_kunosSkinsSync) {
+                    _kunosSkins = FilesStorage.Instance.LoadJsonContentFile<Dictionary<string, string[]>>(ContentCategory.Miscellaneous,
+                            "KunosSkins.json") ?? new Dictionary<string, string[]>();
+                    return _kunosSkins;
+                }
             }
         }
 

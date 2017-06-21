@@ -111,12 +111,28 @@ namespace AcTools.AcdFile {
                 }
             }
         }
-        
+
         public void Save([NotNull] string filename) {
             if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
 
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename)) {
+                foreach (var entry in _entries.Values) {
+                    writer.Write(entry);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filename only used for encryption here!
+        /// </summary>
+        /// <param name="filename">Only used for encryption here!</param>
+        /// <param name="outputStream">Stream to save data</param>
+        public void Save([NotNull] string filename, Stream outputStream) {
+            if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
+
+            EnsureFullyLoaded();
+            using (var writer = new AcdWriter(filename, outputStream)) {
                 foreach (var entry in _entries.Values) {
                     writer.Write(entry);
                 }

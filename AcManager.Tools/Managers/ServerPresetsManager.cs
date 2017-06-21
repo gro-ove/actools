@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -12,6 +13,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Tools.Managers {
     public class ServerPresetsManager : AcManagerNew<ServerPresetObject>, IDisposable, ICreatingManager {
@@ -20,7 +22,7 @@ namespace AcManager.Tools.Managers {
         public static ServerPresetsManager Instance => _instance ?? (_instance = new ServerPresetsManager());
 
         private static readonly string[] WatchedFiles = {
-            @"server_cfg.ini", @"entry_list.ini"
+            @"server_cfg.ini", @"entry_list.ini", @"cm_wrapper_params.json", @"cm_content\content.json"
         };
 
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
@@ -129,8 +131,10 @@ namespace AcManager.Tools.Managers {
             if (saved != null) {
                 saved.Extend(entry);
                 SaveDriversLater().Forget();
+                Toast.Show("Saved Driver Extended", "Driver with this GUID already saved. New skin ID has been added");
             } else {
                 SavedDrivers.Add(new ServerSavedDriver(entry));
+                Toast.Show("Driver Saved", "New saved driver entry added");
             }
         }
 
@@ -147,7 +151,7 @@ namespace AcManager.Tools.Managers {
 
             var directory = Directories.GetLocation(id, true);
             if (Directory.Exists(directory)) {
-                throw new InformativeException("Can’t add a new object", "This ID is already taken.");
+                throw new InformativeException("Can’t add a new object", $"ID “{id}” is already taken.");
             }
 
             using (IgnoreChanges()) {

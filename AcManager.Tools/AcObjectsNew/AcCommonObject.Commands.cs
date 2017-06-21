@@ -64,8 +64,8 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private CommandBase _saveCommand;
+        private DelegateCommand _saveCommand;
 
-        public virtual ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => Changed));
+        public virtual DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => Changed));
     }
 }

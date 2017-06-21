@@ -400,7 +400,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
 
                     case "track":
                         var track = obj.TrackId == null ? null : TracksManager.Instance.GetLayoutById(obj.TrackId);
-                        return track != null && filter.Test(TrackBaseObjectTester.Instance, track);
+                        return track != null && filter.Test(TrackObjectBaseTester.Instance, track);
                 }
 
                 return false;

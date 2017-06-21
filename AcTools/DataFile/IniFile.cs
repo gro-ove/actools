@@ -111,7 +111,7 @@ namespace AcTools.DataFile {
             started = -1;
         }
 
-        protected override void ParseString(string data) {
+        protected override void ParseString([NotNull] string data) {
             if (IniFileMode == IniFileMode.ValuesWithSemicolons) {
                 ParseStringWithSemicolons(data);
                 return;
@@ -301,7 +301,7 @@ namespace AcTools.DataFile {
                         while (commentStartIndex <= i && char.IsWhiteSpace(data[commentStartIndex])) {
                             commentStartIndex++;
                         }
-                        
+
                         var commentLength = i - commentStartIndex;
                         if (currentSection != null && commentLength > 0) {
                             if (previousKey != null) {
@@ -326,13 +326,13 @@ namespace AcTools.DataFile {
             ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
         }
 
-        public static IniFile Parse(string text) {
+        public static IniFile Parse([NotNull] string text) {
             var result = new IniFile();
             result.ParseString(text);
             return result;
         }
 
-        public static IniFile Parse(string text, IniFileMode mode) {
+        public static IniFile Parse([NotNull] string text, IniFileMode mode) {
             var result = new IniFile(mode);
             result.ParseString(text);
             return result;
@@ -709,7 +709,7 @@ namespace AcTools.DataFile {
 
         public IniFile Clone() {
             // TODO: optimization
-            return Parse(Stringify());
+            return Parse(Stringify(), _iniFileMode);
         }
     }
 

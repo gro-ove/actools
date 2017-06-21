@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using AcManager.Controls.Helpers;
 using AcManager.Tools;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
@@ -134,18 +135,7 @@ namespace AcManager.Controls {
 
         #region Constants and other non-changeable values
         private static bool IsKunosWeather(WeatherObject o) {
-            switch (o.Id) {
-                case "1_heavy_fog":
-                case "2_light_fog":
-                case "3_clear":
-                case "4_mid_clear":
-                case "5_light_clouds":
-                case "6_mid_clouds":
-                case "7_heavy_clouds":
-                    return true;
-                default:
-                    return false;
-            }
+            return o.Author == AcCommonObject.AuthorKunos;
         }
 
         private static bool IsGbwWeather(WeatherObject o) {

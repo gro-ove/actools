@@ -20,7 +20,7 @@
             </mui:Cell>
             <ContentPresenter Content="{Binding PreviewContent}" />
         </Grid>
-        
+
         <!-- data section -->
         <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Track}" Margin="0 8 -8 0"
                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True"
@@ -31,12 +31,12 @@
 
                 <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
-                    <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                    <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" VerticalSpacing="4">
                         <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding MainTrackObject.Rating}" HorizontalAlignment="Left" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                                 Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
                     </c:PropertiesGrid>
-                    <c:BestLapsList TrackId="{Binding IdWithLayout}" Margin="0 4 0 0" Limit="5" />
+                    <c:BestLapsList TrackId="{Binding IdWithLayout}" Margin="0 4 0 0" Limit="10" />
                 </StackPanel>
 
                 <StackPanel>

@@ -30,7 +30,7 @@ namespace AcManager.Pages.Selected {
 
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-                var obj = values.FirstOrDefault() as IAcObjectAuthorInformation;
+                var obj = values.FirstOrDefault() as IAcObjectFullAuthorshipInformation;
                 if (obj == null || obj.Author != null || obj.Url == null && obj.Version == null) {
                     return ControlsStrings.AcObject_AuthorLabel;
                 }

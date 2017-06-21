@@ -43,6 +43,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public static IniFile Combine([ItemNotNull] IEnumerable<IniFile> ini) {
+            var list = ini.ToList();
+            var result = new IniFile();
+            foreach (var k in list.SelectMany(x => x.Where(y => y.Value.ContainsKey("ACTIVE")).Select(y => y.Key)).Distinct()) {
+                result[k].Set("ACTIVE", list.Any(x => x[k].GetBool("ACTIVE", false)));
+            }
+            return result;
+        }
+
         protected override void InvokeChanged() {
             AcSettingsHolder.AppsPresetChanged();
         }

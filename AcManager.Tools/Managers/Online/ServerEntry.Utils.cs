@@ -8,15 +8,16 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
+        public static readonly string ExtendedSeparator = "ℹ";
+
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
         private static readonly Regex SortingCheatsRegex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
-            const string mark = "ℹ";
-            var specialIndex = name.IndexOf(mark, StringComparison.InvariantCulture);
+            var specialIndex = name.IndexOf(ExtendedSeparator, StringComparison.InvariantCulture);
             if (specialIndex != -1) {
-                extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + mark.Length));
+                extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + ExtendedSeparator.Length));
                 name = name.Substring(0, specialIndex).Trim();
             } else {
                 extPort = null;

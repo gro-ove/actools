@@ -136,7 +136,7 @@ namespace AcManager.Tools.ContentInstallation {
 
             var m = RegexParseLine.Match(line);
             return m.Success ? m.Groups[1].Value.StartsWith("D") ? null : new SevenZipEntry {
-                Key = m.Groups[3].Value,
+                Key = m.Groups[3].Value.Trim(),
                 Size = FlexibleParser.TryParseLong(m.Groups[2].Value) ?? 0L
             } : null;
         }

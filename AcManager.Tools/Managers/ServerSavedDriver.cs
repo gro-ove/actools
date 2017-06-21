@@ -9,10 +9,11 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
-    public sealed class ServerSavedDriver : NotifyPropertyErrorsChanged, IDraggable {
+    public sealed class ServerSavedDriver : NotifyPropertyErrorsChanged, IDraggable, IDraggableCloneable {
         public override IEnumerable GetErrors(string propertyName) {
             switch (propertyName) {
                 case nameof(Guid):
@@ -80,6 +81,10 @@ namespace AcManager.Tools.Managers {
             return Skins.FirstOrDefault(x => string.Equals(x.Key, carId, StringComparison.OrdinalIgnoreCase)).Value;
         }
 
+        private ServerSavedDriver() {
+            Skins = new Dictionary<string, string>();
+        }
+
         private ServerSavedDriver(KeyValuePair<string, IniFileSection> pair) {
             Guid = pair.Key.ApartFromFirst(@"D");
             DriverName = pair.Value.GetNonEmpty("DRIVERNAME") ?? "Unnamed";
@@ -94,6 +99,16 @@ namespace AcManager.Tools.Managers {
             foreach (var pair in Skins) {
                 section.Set(pair.Key.ToUpperInvariant(), pair.Value);
             }
+        }
+
+        public bool CanBeCloned => true;
+
+        public object Clone() {
+            return new ServerSavedDriver {
+                Guid = Guid,
+                DriverName = DriverName,
+                TeamName = TeamName
+            };
         }
 
         internal ServerSavedDriver(ServerPresetDriverEntry driverEntry) {
@@ -170,5 +185,11 @@ namespace AcManager.Tools.Managers {
         public const string DraggableFormat = "Data-ServerSavedDriver";
 
         string IDraggable.DraggableFormat => DraggableFormat;
+
+        public void CopyTo(ServerPresetDriverEntry target) {
+            target.DriverName = DriverName;
+            target.TeamName = TeamName;
+            target.Guid = Guid;
+        }
     }
 }

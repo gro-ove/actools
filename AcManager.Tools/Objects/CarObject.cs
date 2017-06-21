@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,18 +12,28 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
+using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
+using AcTools.AcdFile;
+using AcTools.DataFile;
+using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
+using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
+using SharpCompress.Writers;
+using StringBasedFilter;
 
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
@@ -105,7 +117,7 @@ namespace AcManager.Tools.Objects {
 
         public override void PastLoad() {
             base.PastLoad();
-            
+
             _errors.CollectionChanged += CarObject_CollectionChanged;
             _errors.Add(InnerErrors);
 
@@ -158,7 +170,7 @@ namespace AcManager.Tools.Objects {
 
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
-            
+
             if (FileUtils.IsAffected(filename, LogoIcon)) {
                 OnImageChangedValue(LogoIcon);
             } else if (FileUtils.IsAffected(filename, BrandBadge)) {
@@ -253,7 +265,7 @@ namespace AcManager.Tools.Objects {
 
                 if (Equals(value, _brand)) return;
                 _brand = value;
-                
+
                 ErrorIf(string.IsNullOrEmpty(value) && HasData, AcErrorType.Data_CarBrandIsMissing);
 
                 if (Loaded) {
@@ -406,7 +418,7 @@ namespace AcManager.Tools.Objects {
         public double GetSpecsPwRatioValue() {
             double value;
             if (!FlexibleParser.TryParseDouble(_specsPwRatio, out value)) return double.NaN;
-            
+
             if (SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio)) {
                 value = 1 / value;
             }
@@ -447,7 +459,7 @@ namespace AcManager.Tools.Objects {
 
                     result.Append(FixSpec(val).Replace(' ', ' '));
                 }
-                
+
                 return result.Length > 0 ? result.ToString() : null;
             }
         }
@@ -495,6 +507,59 @@ namespace AcManager.Tools.Objects {
         public string UpgradeIcon { get; private set; }
 
         public string SkinsDirectory { get; private set; }
+        #endregion
+
+        #region Packing
+        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`";
+
+        private static readonly Lazy<IFilter<CarObject>> CanBePackedFilterObj = new Lazy<IFilter<CarObject>>(() =>
+                Filter.Create(CarObjectTester.Instance, OptionCanBePackedFilter));
+
+        public override bool CanBePacked() {
+            return CanBePackedFilterObj.Value.Test(this);
+        }
+
+        private class CarPacker : AcCommonObjectPacker<CarObject> {
+            protected override void PackOverride(CarObject t) {
+                Add("body_shadow.png", "tyre_0_shadow.png", "tyre_1_shadow.png", "tyre_2_shadow.png", "tyre_3_shadow.png",
+                        "collider.kn5", "driver_base_pos.knh", "logo.png");
+                Add("animations/*.ksanim");
+                Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
+                Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
+                Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");
+
+                var textureNames = Kn5.FromFile(FileUtils.GetMainCarFilename(t.Location, t.AcdData),
+                        SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
+                Add(textureNames.Select(x => $"skins/*/{x}"));
+                Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
+
+                if (!Add("data.acd")) {
+                    var dataDirectory = Path.Combine(t.Location, "data");
+                    var acd = Acd.FromDirectory(dataDirectory);
+                    using (var s = new MemoryStream()) {
+                        acd.Save(dataDirectory, s);
+                        AddBytes("data.acd", s.ToArray());
+                    }
+                }
+
+                var data = DataWrapper.FromCarDirectory(t.Location);
+                Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
+            }
+
+            protected override PackedDescription GetDescriptionOverride(CarObject t) {
+                return new PackedDescription(t.Id, t.Name,
+                    new Dictionary<string, string> {
+                        ["Version"] = t.Version,
+                        ["Made by"] = t.Author,
+                        ["Webpage"] = t.Url,
+                        ["Packed at"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz"),
+                    }, CarsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new CarPacker();
+        }
         #endregion
 
         #region Loading

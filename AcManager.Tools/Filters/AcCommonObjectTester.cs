@@ -10,31 +10,10 @@ namespace AcManager.Tools.Filters {
                 case "y":
                 case "year":
                     return nameof(AcCommonObject.Year);
-                    
-                case "new":
-                    return nameof(AcCommonObject.IsNew);
-
-                case "age":
-                    return nameof(AcCommonObject.AgeInDays);
-
-                case "date":
-                    return nameof(AcCommonObject.CreationDateTime);
 
                 case "errors":
                 case "haserrors":
                     return nameof(AcCommonObject.HasErrors);
-                    
-                case "rate":
-                case "rated":
-                case "rating":
-                    return nameof(AcCommonObject.Rating);
-
-                case "fav":
-                case "favorite":
-                case "favourite":
-                case "favorited":
-                case "favourited":
-                    return nameof(AcCommonObject.IsFavourite);
 
                 case "changed":
                     return nameof(AcCommonObject.Changed);
@@ -57,30 +36,9 @@ namespace AcManager.Tools.Filters {
                 case "year":
                     return obj.Year.HasValue && value.Test(obj.Year.Value);
 
-                case "new":
-                    return value.Test(obj.IsNew);
-
-                case "age":
-                    return value.Test(obj.AgeInDays);
-
-                case "date":
-                    return value.Test(obj.CreationDateTime);
-
                 case "errors":
                 case "haserrors":
                     return value.Test(obj.HasErrors);
-
-                case "rate":
-                case "rated":
-                case "rating":
-                    return value.Test(obj.Rating ?? 0d);
-
-                case "fav":
-                case "favorite":
-                case "favourite":
-                case "favorited":
-                case "favourited":
-                    return value.Test(obj.IsFavourite);
 
                 case "changed":
                     return value.Test(obj.Changed);

@@ -1,0 +1,13 @@
+﻿sid: ni6swcdi
+id: extension
+
+If you want to install setups or new content directly from your browser, I’ve just made an extension! For sites like RaceDepartment, AC Club or Assetto-DB, it will add quick car, track, skin or app installation buttons, and for sites like RSR Live Timing or The Setup Market, buttons to install setups in a couple of clicks. Also, it allows to quickly start a race from RSR website as well.
+
+ [img="http://i.imgur.com/nLDeGRS.png|240"]Example[/img]
+
+[b]Links:[/b]
+• [url="https://chrome.google.com/webstore/detail/oeobjfofgcnppddidihknmjhnddfilbo"]Chrome Web Store[/url];
+• [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox Add-ons[/url];
+• [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]Greasy Fork repository[/url];
+ [i]This one will work almost everywhere. Click “?” to see [url="https://greasyfork.org/en/help/installing-user-scripts"]how to install it[/url].[/i]
+• [url="https://github.com/gro-ove/actools-cm-download-extension/"]Source code (MIT license)[/url].

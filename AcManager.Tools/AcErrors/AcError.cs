@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
@@ -82,9 +83,9 @@ namespace AcManager.Tools.AcErrors {
             _factory = factory;
         }
 
-        [NotNull]
-        public IEnumerable<ISolution> GetSolutions() {
-            return _factory?.GetSolutions(this) ?? new ISolution[0];
+        [ItemNotNull]
+        public Task<IEnumerable<ISolution>> GetSolutionsAsync() {
+            return _factory == null ? Task.FromResult((IEnumerable<ISolution>)new ISolution[0]) : _factory.GetSolutionsAsync(this);
         }
         #endregion
     }

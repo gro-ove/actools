@@ -213,9 +213,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 // perform navigation using the link navigator
                 LinkNavigator.Navigate(e.Uri, this, e.Target);
-            } catch (Exception error) {
+            } catch (Exception ex) {
                 // display navigation failures
-                ModernDialog.ShowMessage(error.Message, UiStrings.NavigationFailed, MessageBoxButton.OK);
+                Logging.Warning(ex);
+                ModernDialog.ShowMessage(ex.Message, UiStrings.NavigationFailed, MessageBoxButton.OK);
             }
         }
     }
@@ -294,9 +295,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 // perform navigation using the link navigator
                 LinkNavigator.Navigate(e.Uri, this, e.Target);
-            } catch (Exception error) {
+            } catch (Exception ex) {
                 // display navigation failures
-                ModernDialog.ShowMessage(error.Message, UiStrings.NavigationFailed, MessageBoxButton.OK);
+                Logging.Warning(ex);
+                ModernDialog.ShowMessage(ex.Message, UiStrings.NavigationFailed, MessageBoxButton.OK);
             }
         }
 

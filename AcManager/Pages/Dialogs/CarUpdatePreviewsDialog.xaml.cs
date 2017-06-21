@@ -369,7 +369,7 @@ namespace AcManager.Pages.Dialogs {
                 dialog.Report(ControlsStrings.Common_Downloading);
 
                 var destination = FileUtils.GetShowroomsDirectory(AcRootDirectory.Instance.Value);
-                var data = await CmApiProvider.GetStaticDataAsync(showroomId, dialog, dialog.CancellationToken);
+                var data = await CmApiProvider.GetStaticDataBytesAsync(showroomId, dialog, dialog.CancellationToken);
 
                 if (data == null) {
                     dialog.Close();

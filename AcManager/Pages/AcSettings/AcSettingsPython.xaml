@@ -1,156 +1,213 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsPython" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:o="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-        mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acset:AcSettingsPython+ViewModel}" Unloaded="OnUnloaded">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+    xmlns:o="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsPython+ViewModel}" Unloaded="OnUnloaded">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
 
-        <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0" Grid.ColumnSpan="2">
-            <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}">
-                <Label Content="Keep developer apps flag with apps presets" />
-            </CheckBox>
+    <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0" Grid.ColumnSpan="2">
+      <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}">
+        <Label Content="Keep developer apps flag with apps presets" />
+      </CheckBox>
 
-            <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
-            </CheckBox>
-        </StackPanel>
+      <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}">
+        <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
+      </CheckBox>
+    </StackPanel>
 
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-            <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.CanContentScroll="True" SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Enabled}" Value="False">
-                                <Setter Property="IsEnabled" Value="False" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="o:PythonAppObject">
-                        <DockPanel IsEnabled="{Binding Enabled}">
-                            <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
-                                    Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
-                            <TextBlock Text="{Binding DisplayName}" />
-                        </DockPanel>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </StackPanel>
+    <StackPanel Grid.Column="0" Grid.Row="1">
+      <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
+      <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+          ScrollViewer.CanContentScroll="True" SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Enabled}" Value="False">
+                <Setter Property="IsEnabled" Value="False" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="o:PythonAppObject">
+            <DockPanel IsEnabled="{Binding Enabled}">
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
+              <TextBlock Text="{Binding DisplayName}" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </StackPanel>
 
-        <DockPanel Grid.Column="1" Grid.Row="1">
-            <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
-                <Label Margin="0 0 0 8" Content="Scale apps:" DockPanel.Dock="Top" />
-                <DockPanel>
-                    <Button Content="Set Scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-                    <Button Content="Multiply Scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-                    <mui:ValueLabel Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Integer" Postfix="%"
-                            Content="Value" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            TickFrequency="20" TickPlacement="BottomRight" />
-                </DockPanel>
-                <c:MessageBlock CloseKey="only-ac-apps" Margin="0 8 0 0">
-                    <TextBlock>
-                        <TextBlock.Text>Sadly, scaling works only for Kunos apps. At least for now.</TextBlock.Text>
-                    </TextBlock>
-                </c:MessageBlock>
-            </mui:SpacingStackPanel>
-
-            <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" DockPanel.Dock="Top" />
-            <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False"
-                    EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static c:ControlsStrings.TableHeader_X}" SortMemberPath="PosX"
-                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
-                                        TextAlignment="Right" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static c:ControlsStrings.TableHeader_Y}" SortMemberPath="PosY"
-                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
-                                        TextAlignment="Right" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="80" Header="Scale" SortMemberPath="Scale" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <DockPanel>
-                                    <TextBlock Text="%" DockPanel.Dock="Right" Margin="2 0 0 0" />
-                                    <mui:BetterTextBox Text="{Binding Scale}" Mode="Integer" Placeholder="100" Style="{StaticResource Borderless.White}"
-                                            TextAlignment="Right" />
-                                </DockPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static c:ControlsStrings.TableHeader_Visible}" SortMemberPath="IsVisible"
-                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static c:ControlsStrings.TableHeader_Locked}" SortMemberPath="IsBlocked"
-                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+    <DockPanel Grid.Column="1" Grid.Row="1">
+      <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
+        <Label Margin="0 0 0 8" Content="Scale apps:" DockPanel.Dock="Top" />
+        <DockPanel>
+          <Button Content="Set Scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <Button Content="Multiply Scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <mui:ValueLabel Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Integer" Postfix="%"
+              Content="Value" DockPanel.Dock="Top" Margin="0 0 0 4" />
+          <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+              TickFrequency="20" TickPlacement="BottomRight" />
         </DockPanel>
+        <c:MessageBlock CloseKey="only-ac-apps" Margin="0 8 0 0">
+          <TextBlock>
+            <TextBlock.Text>Sadly, scaling works only for Kunos apps. At least for now.</TextBlock.Text>
+          </TextBlock>
+        </c:MessageBlock>
+      </mui:SpacingStackPanel>
 
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
-            <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
-        </StackPanel>
-    </Grid>
+      <DockPanel Margin="0 0 20 8" DockPanel.Dock="Top">
+        <mui:ValueLabel Value="{Binding Forms.SelectedDesktop}" mui:BetterTextBox.Mode="Integer" Content="Selected desktop" DockPanel.Dock="Left"
+            Margin="0 0 20 0" Padding="0" Width="200" />
+        <Slider Minimum="1" Maximum="4" Value="{Binding Forms.SelectedDesktop}" TickFrequency="1" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" ContentStringFormat="{}{0} (per desktop)" DockPanel.Dock="Top" />
+      <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False" EnableColumnVirtualization="True"
+          VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type t:AcFormEntry}">
+                <TextBlock Text="{Binding DisplayName}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn x:Name="PositionColumn" Width="540" Header="Position" CanUserSort="False"
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type t:AcFormEntry}">
+                <mui:BooleanSwitch Value="{Binding AnyVisible}">
+                  <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <mui:SpacingStackPanel Orientation="Horizontal" Spacing="20" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                          <TextBlock Text="X:" />
+                          <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
+                              TextAlignment="Right" Width="40" />
+                          <TextBlock Text=", Y:" />
+                          <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
+                              TextAlignment="Right" Width="40" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </mui:BooleanSwitch>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn x:Name="ScaleColumn" Width="160" Header="Scale" SortMemberPath="First.Scale"
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type t:AcFormEntry}">
+                <mui:BooleanSwitch Value="{Binding AnyVisible}">
+                  <DockPanel>
+                    <TextBlock Text="%" DockPanel.Dock="Right" Margin="2 0 0 0" />
+                    <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <mui:BetterTextBox Text="{Binding Scale}" Mode="Integer" Placeholder="100" Style="{StaticResource Borderless.White}"
+                              TextAlignment="Right" Width="32"
+                              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </DockPanel>
+                </mui:BooleanSwitch>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn Width="108" SortMemberPath="First.IsVisible" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+              Header="{x:Static c:ControlsStrings.TableHeader_Visible}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type t:AcFormEntry}">
+                <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn x:Name="BlockedColumn" Width="108" SortMemberPath="First.IsBlocked"
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" Header="{x:Static c:ControlsStrings.TableHeader_Locked}">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type t:AcFormEntry}">
+                <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </DockPanel>
+
+    <mui:SpacingStackPanel Spacing="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"
+        Margin="0 20 20 20">
+      <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
+      <Button Content="Combine Presets To Multi-Desktop Preset" Command="{Binding CombinePresetsCommand}"
+          ToolTip="Use it if you want to switch between several presets during the race. But keep in mind that all used apps will be enabled and loaded." />
+    </mui:SpacingStackPanel>
+  </Grid>
 </UserControl>

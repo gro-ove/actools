@@ -36,6 +36,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             foreach (var i in Enumerable.Range(0, 9)) {
                 InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
+                InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchSection(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Alt)));
             }
         }
 
@@ -106,9 +107,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_subMenuListBox == null) return;
             var count = _subMenuListBox.Items.Count - (SelectedLinkGroup is LinkGroupFilterable ? 1 : 0);
             _subMenuListBox.SelectedIndex = index >= count ? cycle ? 0 : count - 1 :
-                    index < 0 ? cycle ? count - 1 : 0 :
-                            index;
+                    index < 0 ? cycle ? count - 1 : 0 : index;
             _subMenuListBox.Focus();
+        }
+
+        private void SwitchSection(int index, bool cycle) {
+            if (_subMenuListBox == null) return;
+            var count = VisibleLinkGroups.Count;
+            var group = VisibleLinkGroups.ElementAtOrDefault(index >= count ? cycle ? 0 : count - 1 :
+                    index < 0 ? cycle ? count - 1 : 0 : index);
+            if ((group as LinkGroupFilterable)?.IsEnabled == false) return;
+            SelectedLink = group?.SelectedLink ?? SelectedLink;
         }
 
         private void NextTab() {

@@ -617,7 +617,7 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
-                if (e.PropertyName == nameof(ServerEntry.IsFavourited) || e.PropertyName == nameof(ServerEntry.ReferencesString)) {
+                if (e.PropertyName == nameof(ServerEntry.IsFavourite) || e.PropertyName == nameof(ServerEntry.ReferencesString)) {
                     return;
                 }
 

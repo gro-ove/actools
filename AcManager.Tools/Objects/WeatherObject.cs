@@ -17,7 +17,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class WeatherObject : AcIniObject {
+    public class WeatherObject : AcIniObject, IAcObjectAuthorInformation {
         public WeatherObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {}
 
@@ -25,7 +25,7 @@ namespace AcManager.Tools.Objects {
 
         public WeatherType Type {
             get { return _type; }
-            set { 
+            set {
                 if (Equals(_type, value)) return;
                 _type = value;
                 if (Loaded) {
@@ -85,7 +85,7 @@ namespace AcManager.Tools.Objects {
 
         public double TemperatureCoefficient {
             get { return _temperatureCoefficient; }
-            set { 
+            set {
                 if (Equals(_temperatureCoefficient, value)) return;
                 _temperatureCoefficient = value;
                 if (Loaded) {
@@ -138,7 +138,7 @@ namespace AcManager.Tools.Objects {
                 if (l.Contains(@"mid")) return WeatherType.FewClouds;
                 return WeatherType.Clear;
             }
-            
+
             return WeatherType.None;
         }
 
@@ -163,6 +163,32 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private string _author;
+
+        public string Author {
+            get { return _author; }
+            set {
+                if (value == _author) return;
+                _author = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private static bool IsKunosWeather(string o) {
+            switch (o) {
+                case "1_heavy_fog":
+                case "2_light_fog":
+                case "3_clear":
+                case "4_mid_clear":
+                case "5_light_clouds":
+                case "6_mid_clouds":
+                case "7_heavy_clouds":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         protected override void LoadData(IniFile ini) {
             Name = ini["LAUNCHER"].GetPossiblyEmpty("NAME");
             TemperatureCoefficient = ini["LAUNCHER"].GetDouble("TEMPERATURE_COEFF", 0d);
@@ -177,6 +203,11 @@ namespace AcManager.Tools.Objects {
             TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
             TimeDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TIME_DIAPASON");
             DisableShadows = ini["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
+            Author = ini["__LAUNCHER_CM"].GetNonEmpty("AUTHOR");
+
+            if (Author == null && IsKunosWeather(Id)) {
+                Author = AuthorKunos;
+            }
 
             Type = type ?? TryToDetectWeatherTypeById(Id);
 
@@ -193,6 +224,7 @@ namespace AcManager.Tools.Objects {
             ini["__LAUNCHER_CM"].SetOrRemove("TEMPERATURE_DIAPASON", TemperatureDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("TIME_DIAPASON", TimeDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("DISABLE_SHADOWS", DisableShadows);
+            ini["__LAUNCHER_CM"].SetOrRemove("AUTHOR", Author);
 
             if (_loadedExtended) {
                 SaveExtended(ini);

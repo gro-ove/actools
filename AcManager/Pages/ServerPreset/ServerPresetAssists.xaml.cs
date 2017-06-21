@@ -6,8 +6,8 @@ using AcManager.Tools;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.ServerPreset {
-    public partial class Assists {
-        public Assists() {
+    public partial class ServerPresetAssists {
+        public ServerPresetAssists() {
             InitializeComponent();
         }
 

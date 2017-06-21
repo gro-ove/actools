@@ -12,7 +12,9 @@ using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
+using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -26,6 +28,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Microsoft.Win32;
+using StringBasedFilter;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
@@ -69,11 +72,13 @@ namespace AcManager.Pages.ServerPreset {
 
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
 
-        public class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
+        public partial class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
             private readonly Busy _busy = new Busy();
 
+            [CanBeNull]
             private TrackObjectBase _track;
 
+            [CanBeNull]
             public TrackObjectBase Track {
                 get => _track;
                 set {
@@ -81,14 +86,10 @@ namespace AcManager.Pages.ServerPreset {
                     _track = value;
                     OnPropertyChanged();
 
-                    if (value == null) {
-                        throw new NullReferenceException("New track selected is null");
-                    }
-
                     _busy.Do(() => {
-                        SelectedObject.TrackId = _track.MainTrackObject.Id;
-                        SelectedObject.TrackLayoutId = _track.LayoutId;
-                        MaximumCapacity = _track.SpecsPitboxesValue;
+                        SelectedObject.TrackId = _track?.MainTrackObject.Id;
+                        SelectedObject.TrackLayoutId = _track?.LayoutId;
+                        MaximumCapacity = _track?.SpecsPitboxesValue ?? 0;
                     });
                 }
             }
@@ -114,10 +115,148 @@ namespace AcManager.Pages.ServerPreset {
 
             public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
                 SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
+                SelectedObject.DriverEntryPropertyChanged += OnDriverEntryPropertyChanged;
+                SelectedObject.WeatherCollectionChanged += OnWeatherCollectionChanged;
 
                 Track = track;
                 Cars = new BetterObservableCollection<CarObject>(cars);
                 Cars.CollectionChanged += OnCarsCollectionChanged;
+
+                InitializeWrapperContent();
+                UpdateWrapperContentCars();
+                UpdateWrapperContentTracks();
+                UpdateWrapperContentWeather();
+                UpdateWrapperContentState();
+            }
+
+            public override void Unload() {
+                base.Unload();
+                SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
+                SelectedObject.DriverEntryPropertyChanged -= OnDriverEntryPropertyChanged;
+                SelectedObject.WeatherCollectionChanged -= OnWeatherCollectionChanged;
+                _helper.Dispose();
+                PackServerPresets = null;
+            }
+
+            private void OnWeatherCollectionChanged(object sender, EventArgs eventArgs) {
+                UpdateWrapperContentWeather();
+            }
+
+            private BetterListCollectionView _savedDrivers;
+
+            public BetterListCollectionView SavedDrivers {
+                get {
+                    if (_savedDrivers == null) {
+                        if (!_savedDriversFilterSet) {
+                            SavedDriversFilter = ValuesStorage.GetString(KeySavedDriversFilter);
+                        }
+
+                        _savedDrivers = new BetterListCollectionView(ServerPresetsManager.Instance.SavedDrivers);
+                        using (_savedDrivers.DeferRefresh()) {
+                            _savedDrivers.SortDescriptions.Add(new SortDescription(nameof(ServerSavedDriver.DriverName), ListSortDirection.Ascending));
+                            _savedDrivers.Filter = SavedDriversFilterFn;
+                        }
+                    }
+
+                    return _savedDrivers;
+                }
+            }
+
+            private bool SavedDriversFilterFn(object o) {
+                var d = o as ServerSavedDriver;
+                if (d == null) return false;
+                return _savedDriversFilterObj?.Test(d) != false;
+            }
+
+            private IFilter<ServerSavedDriver> _savedDriversFilterObj;
+
+            private class SavedDriverTester : IParentTester<ServerSavedDriver> {
+                public static readonly SavedDriverTester Instance = new SavedDriverTester();
+
+                public string ParameterFromKey(string key) {
+                    switch (key) {
+                        case "n":
+                        case "name":
+                        case "driver":
+                            return nameof(ServerSavedDriver.DriverName);
+
+                        case "t":
+                        case "team":
+                            return nameof(ServerSavedDriver.TeamName);
+
+                        case "g":
+                        case "id":
+                        case "guid":
+                            return nameof(ServerSavedDriver.Guid);
+                    }
+
+                    return null;
+                }
+
+                public bool Test(ServerSavedDriver obj, string key, ITestEntry value) {
+                    if (key == null) {
+                        return value.Test(obj.DriverName) || value.Test(obj.Guid) || value.Test(obj.TeamName);
+                    }
+
+                    switch (key) {
+                        case "n":
+                        case "name":
+                        case "driver":
+                            return value.Test(obj.DriverName);
+
+                        case "t":
+                        case "team":
+                            return value.Test(obj.TeamName);
+
+                        case "g":
+                        case "id":
+                        case "guid":
+                            return value.Test(obj.Guid);
+
+                        case "car":
+                            var id = obj.GetCarId();
+                            if (id == null) return false;
+                            if (value.Test(id)) return true;
+
+                            var c = CarsManager.Instance.GetById(id);
+                            return c != null && value.Test(c.DisplayName);
+                    }
+
+                    return false;
+                }
+
+                public bool TestChild(ServerSavedDriver obj, string key, IFilter filter) {
+                    switch (key) {
+                        case null:
+                        case "car":
+                            var id = obj.GetCarId();
+                            if (id == null) return false;
+
+                            var c = CarsManager.Instance.GetById(id);
+                            return c != null && filter.Test(CarObjectTester.Instance, c);
+                    }
+
+                    return false;
+                }
+            }
+
+            private static readonly string KeySavedDriversFilter = "__SavedDriversFilterValue";
+            private bool _savedDriversFilterSet;
+            private string _savedDriversFilter;
+
+            public string SavedDriversFilter {
+                get { return _savedDriversFilter; }
+                set {
+                    if (Equals(value, _savedDriversFilter)) return;
+                    _savedDriversFilter = value;
+                    _savedDriversFilterSet = true;
+                    OnPropertyChanged();
+
+                    _savedDriversFilterObj = Filter.Create(SavedDriverTester.Instance, value);
+                    _savedDrivers?.Refresh();
+
+                    ValuesStorage.Set(KeySavedDriversFilter, value);
+                }
             }
 
             private void OnCarsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -141,26 +280,39 @@ namespace AcManager.Pages.ServerPreset {
                 }
             }));
 
-            public override void Unload() {
-                base.Unload();
-                SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
-                _helper.Dispose();
-                PackServerPresets = null;
+            private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(SelectedObject.TrackId):
+                    case nameof(SelectedObject.TrackLayoutId):
+                        _busy.Do(() => {
+                            Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId);
+                        });
+                        UpdateWrapperContentTracks();
+                        break;
+
+                    case nameof(SelectedObject.CarIds):
+                        _busy.Do(() => {
+                            Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
+                        });
+                        break;
+
+                    case nameof(SelectedObject.DriverEntries):
+                        UpdateWrapperContentCars();
+                        break;
+
+                    case nameof(SelectedObject.WrapperContentJObject):
+                        UpdateWrapperContentState();
+                        break;
+                }
             }
 
-            private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                _busy.Do(() => {
-                    switch (e.PropertyName) {
-                        case nameof(SelectedObject.TrackId):
-                        case nameof(SelectedObject.TrackLayoutId):
-                            Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId);
-                            break;
-
-                        case nameof(SelectedObject.CarIds):
-                            Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
-                            break;
-                    }
-                });
+            private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(ServerPresetDriverEntry.CarId):
+                    case nameof(ServerPresetDriverEntry.CarSkinId):
+                        UpdateWrapperContentCars();
+                        break;
+                }
             }
 
             private AsyncCommand _packCommand;
@@ -257,6 +409,15 @@ namespace AcManager.Pages.ServerPreset {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
+            if (SettingsHolder.Online.ServerPresetsFitInFewerTabs) {
+                Tab.Links.Remove(MainBasicLink);
+                Tab.Links.Remove(AssistsLink);
+                Tab.Links.Remove(ConditionsLink);
+                Tab.Links.Remove(SessionsLink);
+            } else {
+                Tab.Links.Remove(MainCombinedLink);
+            }
+
             SetModel();
             InitializeComponent();
 
@@ -295,8 +456,14 @@ namespace AcManager.Pages.ServerPreset {
                 new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.RestartCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.PackCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
-                new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift))
             });
+
+            foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() => {
+                Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink).ElementAtOrDefault(i)?.Source ?? Tab.SelectedSource;
+            }), new KeyGesture(Key.F1 + i, ModifierKeys.Alt)))) {
+                InputBindings.Add(binding);
+            }
         }
 
         private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -315,6 +482,7 @@ namespace AcManager.Pages.ServerPreset {
 
             IsRunningMessage.Visibility = runningLogTab ? Visibility.Collapsed : Visibility.Visible;
             RandomizeSkinsButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
+            RemoveEntriesButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
             ExtraButtonsSeparator.Visibility = RandomizeSkinsButton.Visibility;
         }
 

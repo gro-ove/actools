@@ -5,6 +5,18 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Filter specifying what content CM can pack and share. Default value: kunos-.
+        /// Example: --can-pack=kunos-&!private
+        /// </summary>
+        CanPack,
+
+        /// <summary>
+        /// Filter specifying which cars CM can pack and share. Default value: kunos-&!id:`^ad_`.
+        /// Example: --can-pack-cars=kunos-|dlc-
+        /// </summary>
+        CanPackCars,
+
+        /// <summary>
         /// Threshold for finding similar data. Default value: 0.95 (95%).
         /// Example: --similar-threshold=0.9.
         /// </summary>

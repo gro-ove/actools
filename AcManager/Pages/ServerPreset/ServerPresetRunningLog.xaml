@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.RunningLog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetRunningLog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
@@ -14,7 +14,7 @@
   <ListBox ItemsSource="{Binding SelectedObject.RunningLog}" Style="{StaticResource VirtualizingListBox}" TextBlock.FontSize="11">
     <ListBox.ItemTemplate>
       <DataTemplate>
-        <mui:SelectableBbCodeBlock BbCode="{Binding Mode=OneWay}" FontWeight="Normal" />
+        <mui:SelectableBbCodeBlock BbCode="{Binding Mode=OneWay}" FontWeight="Normal" FontFamily="{StaticResource MonospaceFont}" />
       </DataTemplate>
     </ListBox.ItemTemplate>
   </ListBox>

@@ -1,6 +1,6 @@
 ﻿namespace AcManager.Pages.ServerPreset {
-    public partial class RunningLog {
-        public RunningLog() {
+    public partial class ServerPresetRunningLog {
+        public ServerPresetRunningLog() {
             InitializeComponent();
         }
     }

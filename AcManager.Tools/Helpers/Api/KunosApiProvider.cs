@@ -251,8 +251,16 @@ namespace AcManager.Tools.Helpers.Api {
             while (ServerUri != null) {
                 var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={steamId}";
                 try {
-                    var result = JsonConvert.DeserializeObject<ServerInformationComplete>(
-                            (await LoadAsync(requestUri, null, OptionWebRequestTimeout).ConfigureAwait(false)).Data);
+                    var s = (await LoadAsync(requestUri, null, OptionWebRequestTimeout).ConfigureAwait(false)).Data;
+
+                    ServerInformationComplete result;
+                    try {
+                        result = JsonConvert.DeserializeObject<ServerInformationComplete>(s);
+                    } catch (JsonReaderException) {
+                        Logging.Warning(s);
+                        throw;
+                    }
+
                     if (result.Ip == string.Empty) {
                         result.Ip = ip;
                     }

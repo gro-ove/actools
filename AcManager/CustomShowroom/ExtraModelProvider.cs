@@ -2,10 +2,8 @@
 using System.IO.Compression;
 using System.Threading.Tasks;
 using AcManager.Controls;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 
@@ -25,7 +23,7 @@ namespace AcManager.CustomShowroom {
             using (var dialog = new WaitingDialog()) {
                 dialog.Report(ControlsStrings.Common_Downloading);
 
-                var data = await CmApiProvider.GetStaticDataAsync("cs_crew", dialog, dialog.CancellationToken);
+                var data = await CmApiProvider.GetStaticDataBytesAsync("cs_crew", dialog, dialog.CancellationToken);
                 if (data == null) return null;
 
                 return await Task.Run(() => {

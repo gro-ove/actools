@@ -259,7 +259,7 @@ namespace AcManager.Tools.Filters {
                     return obj.Cars?.Any(x => x.CarObject != null && filter.Test(CarObjectTester.Instance, x.CarObject)) == true;
 
                 case "track":
-                    return obj.Track != null && filter.Test(TrackBaseObjectTester.Instance, obj.Track);
+                    return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
 
                 case "a":
                 case "available":

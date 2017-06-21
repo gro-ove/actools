@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
@@ -8,6 +9,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -57,13 +59,22 @@ namespace AcManager.Pages.Dialogs {
             _instance = new WeakReference<SelectTrackDialog>(this);
 
             DataContext = new ViewModel(selectedTrackConfiguration);
+            InputBindings.AddRange(new[] {
+                new InputBinding(ToggleFavouriteCommand, new KeyGesture(Key.B, ModifierKeys.Control))
+            });
             InitializeComponent();
-            
+
             Model.PropertyChanged += Model_PropertyChanged;
             BackgroundImage0.Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
 
             Buttons = new[] { OkButton, CancelButton };
         }
+
+        private DelegateCommand _toggleFavouriteCommand;
+
+        public DelegateCommand ToggleFavouriteCommand => _toggleFavouriteCommand ?? (_toggleFavouriteCommand = new DelegateCommand(() => {
+            Model.SelectedTrack.IsFavourite = !Model.SelectedTrack.IsFavourite;
+        }, () => Model.SelectedTrack != null));
 
         /// <summary>
         /// Returns null only when there is no tracks in the list at all and argument is null
@@ -80,7 +91,7 @@ namespace AcManager.Pages.Dialogs {
             dialog.ShowDialog();
             return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
         }
-        
+
         [ContractAnnotation(@"=> track:null, false; => track:notnull, true")]
         public static bool Show([CanBeNull] ref TrackObjectBase track) {
             if (track == null) {

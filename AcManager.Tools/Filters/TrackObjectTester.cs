@@ -15,7 +15,7 @@ namespace AcManager.Tools.Filters {
         }
 
         public static string InheritingParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? TrackBaseObjectTester.InheritingParameterFromKey(key);
+            return InnerParameterFromKey(key) ?? TrackObjectBaseTester.InheritingParameterFromKey(key);
         }
 
         public string ParameterFromKey(string key) {
@@ -28,7 +28,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.MultiLayouts?.Count ?? 1);
             }
 
-            return TrackBaseObjectTester.Instance.Test(obj, key, value);
+            return TrackObjectBaseTester.Instance.Test(obj, key, value);
         }
     }
 }

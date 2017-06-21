@@ -315,6 +315,9 @@
     <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
       <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CombinePythonAppsPresetsDialog.xaml.cs">
+      <DependentUpon>CombinePythonAppsPresetsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\PackServerDialog.Evb.cs" />
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
@@ -372,8 +375,12 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Grid.xaml.cs">
       <DependentUpon>LapTimes_Grid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Selected\CarSetupValues.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedRemoteCarSetupPage.xaml.cs">
+      <DependentUpon>SelectedRemoteCarSetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
@@ -468,29 +475,33 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\RunningLog.xaml.cs">
-      <DependentUpon>RunningLog.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetRunningLog.xaml.cs">
+      <DependentUpon>ServerPresetRunningLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\EntryList.xaml.cs">
-      <DependentUpon>EntryList.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetEntryList.xaml.cs">
+      <DependentUpon>ServerPresetEntryList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\Conditions.xaml.cs">
-      <DependentUpon>Conditions.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetConditions.xaml.cs">
+      <DependentUpon>ServerPresetConditions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\Sessions.xaml.cs">
-      <DependentUpon>Sessions.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\SelectedPage.Wrapper.cs" />
+    <Compile Include="Pages\ServerPreset\ServerPresetCombined.xaml.cs">
+      <DependentUpon>ServerPresetCombined.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\Assists.xaml.cs">
-      <DependentUpon>Assists.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetSessions.xaml.cs">
+      <DependentUpon>ServerPresetSessions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\Basic.xaml.cs">
-      <DependentUpon>Basic.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetAssists.xaml.cs">
+      <DependentUpon>ServerPresetAssists.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\ServerPresetBasic.xaml.cs">
+      <DependentUpon>ServerPresetBasic.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ServerPreset\SelectedPage.xaml.cs">
       <DependentUpon>SelectedPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\Wrapped.xaml.cs">
-      <DependentUpon>Wrapped.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetWrapped.xaml.cs">
+      <DependentUpon>ServerPresetWrapped.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsLapTimes.xaml.cs">
       <DependentUpon>SettingsLapTimes.xaml</DependentUpon>
@@ -512,6 +523,9 @@
     </Compile>
     <Compile Include="Pages\ContentTools\CarAnalyzer.xaml.cs">
       <DependentUpon>CarAnalyzer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
+      <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
@@ -771,6 +785,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\CombinePythonAppsPresetsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Dialogs\GameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -856,6 +874,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Selected\SelectedCarPage_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\SelectedRemoteCarSetupPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1079,27 +1101,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\RunningLog.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\EntryList.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetRunningLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\Conditions.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetEntryList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\Sessions.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetConditions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\Assists.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetCombined.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ServerPreset\ServerPresetSessions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\Basic.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetAssists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\ServerPresetBasic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1111,7 +1141,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\Wrapped.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetWrapped.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1164,6 +1194,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ContentTools\CarAnalyzer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings\SettingsIntegrated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1376,6 +1410,7 @@
     <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="About\ImportantTips\Browser Extension.txt" />
     <None Include="About\ImportantTips\Python Apps Versions.txt" />
     <Content Include="About\Licenses\7ZipExtra\License.txt" />
     <None Include="About\Licenses\AdornedControl\LICENSE" />

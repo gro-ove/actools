@@ -52,6 +52,10 @@ namespace AcManager.Tools {
                 case nameof(CarSetupObject):
                     return UriExtension.Create("/Pages/Selected/SelectedCarSetupPage.xaml?Id={0}&CarId={1}", obj.Id, ((CarSetupObject)obj).CarId);
 
+                case nameof(RemoteCarSetupObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedRemoteCarSetupPage.xaml?Id={0}&CarId={1}&RemoteSource={2}", obj.Id,
+                            ((RemoteCarSetupObject)obj).CarId, ((RemoteCarSetupObject)obj).Source);
+
                 case nameof(ServerPresetObject):
                     return UriExtension.Create("/Pages/ServerPreset/SelectedPage.xaml?Id={0}", obj.Id);
             }

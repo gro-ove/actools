@@ -181,8 +181,10 @@ namespace AcTools.Kn5File {
             using (var reader = new Kn5Reader(filename)) {
                 kn5.FromFile_Header(reader);
                 kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
-                kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
-                kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                if (nodeLoader != SkippingNodeLoader.Instance || materialLoader != SkippingMaterialLoader.Instance) {
+                    kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
+                    kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                }
             }
 
             return kn5;
@@ -195,8 +197,10 @@ namespace AcTools.Kn5File {
             using (var reader = new Kn5Reader(entry)) {
                 kn5.FromFile_Header(reader);
                 kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
-                kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
-                kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                if (nodeLoader != SkippingNodeLoader.Instance || materialLoader != SkippingMaterialLoader.Instance) {
+                    kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
+                    kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                }
             }
 
             return kn5;

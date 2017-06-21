@@ -85,6 +85,14 @@ namespace AcManager.Controls {
             set { SetValue(AcObjectProperty, value); }
         }
 
+        public static readonly DependencyProperty IsNameReadOnlyProperty = DependencyProperty.Register(nameof(IsNameReadOnly), typeof(bool),
+                typeof(AcObjectBase), new PropertyMetadata(false));
+
+        public bool IsNameReadOnly {
+            get { return (bool)GetValue(IsNameReadOnlyProperty); }
+            set { SetValue(IsNameReadOnlyProperty, value); }
+        }
+
         public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
                 typeof(AcObjectBase));
 

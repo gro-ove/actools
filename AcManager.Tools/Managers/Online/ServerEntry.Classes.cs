@@ -31,6 +31,8 @@ namespace AcManager.Tools.Managers.Online {
 
             public RaceMode RaceMode { get; set; }
 
+            public int Inverted { get; set; }
+
             public string DisplayType => Type.GetDescription() ?? Type.ToString();
 
             private string _displayTypeShort;
@@ -45,6 +47,10 @@ namespace AcManager.Tools.Managers.Online {
                         case RaceMode.Timed:
                             return Duration.ToReadableTime();
                         case RaceMode.TimedExtra:
+                            if (Inverted != 0) {
+                                return $"{Duration.ToReadableTime()} (plus lap, plus inverted grid race)";
+                            }
+
                             return $"{Duration.ToReadableTime()} (plus lap)";
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -53,7 +59,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             protected bool Equals(Session other) {
-                return IsActive == other.IsActive && Duration == other.Duration && Type == other.Type;
+                return IsActive == other.IsActive && Duration == other.Duration && Type == other.Type && Inverted == other.Inverted;
             }
 
             public override bool Equals(object obj) {
@@ -68,6 +74,7 @@ namespace AcManager.Tools.Managers.Online {
                     var hashCode = IsActive.GetHashCode();
                     hashCode = (hashCode * 397) ^ Duration.GetHashCode();
                     hashCode = (hashCode * 397) ^ (int)Type;
+                    hashCode = (hashCode * 397) ^ Inverted;
                     return hashCode;
                 }
             }

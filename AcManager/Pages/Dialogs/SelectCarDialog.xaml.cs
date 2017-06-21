@@ -118,7 +118,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             _previousTunableParent = parent;
-            
+
             var children = parent.Children.Where(x => x.Enabled).ToList();
             HasChildren = children.Any();
             if (!HasChildren) {
@@ -149,7 +149,7 @@ namespace AcManager.Pages.Dialogs {
 
         public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
             if (_selectedCar.Value == null) return;
-            CarSetupsListPage.Open(_selectedCar.Value, true);
+            CarSetupsListPage.Open(_selectedCar.Value, CarSetupsRemoteSource.None, true);
         }));
 
         public static Uri FavouritesUri() {
@@ -196,6 +196,7 @@ namespace AcManager.Pages.Dialogs {
 
             DataContext = this;
             InputBindings.AddRange(new[] {
+                new InputBinding(ToggleFavouriteCommand, new KeyGesture(Key.B, ModifierKeys.Control)),
                 new InputBinding(OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
@@ -335,6 +336,12 @@ namespace AcManager.Pages.Dialogs {
                 SelectedCar = _list.SelectedItem as CarObject;
             }
         }
+
+        private DelegateCommand _toggleFavouriteCommand;
+
+        public DelegateCommand ToggleFavouriteCommand => _toggleFavouriteCommand ?? (_toggleFavouriteCommand = new DelegateCommand(() => {
+            SelectedCar.IsFavourite = !SelectedCar.IsFavourite;
+        }, () => SelectedCar != null));
 
         private CommandBase _openInShowroomCommand;
 

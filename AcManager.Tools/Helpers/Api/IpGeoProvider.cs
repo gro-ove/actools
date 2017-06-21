@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
     public class IpGeoEntry {
+        [JsonProperty(@"ip")]
+        public string Ip;
+
         [JsonProperty(@"city")]
         public string City;
 

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
+using FirstFloor.ModernUI.Commands;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -51,9 +52,9 @@ namespace AcManager.Tools.Objects {
 
         public override ICommand DeleteCommand => MainTrackObject.DeleteCommand;
 
-        public override ICommand SaveCommand => MainTrackObject.SaveCommand;
-
         public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
+
+        public override DelegateCommand SaveCommand => MainTrackObject.SaveCommand;
 
         public override string LayoutDataDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
     }

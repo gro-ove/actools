@@ -11,10 +11,12 @@ using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using StringBasedFilter;
 
 // ReSharper disable RedundantArgumentDefaultValue
@@ -381,6 +383,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _serverPresetsAutoSave;
+
+            public bool ServerPresetsAutoSave {
+                get => _serverPresetsAutoSave ??
+                        (_serverPresetsAutoSave = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsAutoSave", true)).Value;
+                set {
+                    if (Equals(value, _serverPresetsAutoSave)) return;
+                    _serverPresetsAutoSave = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsAutoSave", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _serverPresetsUpdateDataAutomatically;
 
             public bool ServerPresetsUpdateDataAutomatically {
@@ -391,6 +406,21 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _serverPresetsUpdateDataAutomatically)) return;
                     _serverPresetsUpdateDataAutomatically = value;
                     ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _serverPresetsFitInFewerTabs;
+
+            public bool ServerPresetsFitInFewerTabs {
+                get {
+                    return _serverPresetsFitInFewerTabs ??
+                            (_serverPresetsFitInFewerTabs = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", false)).Value;
+                }
+                set {
+                    if (Equals(value, _serverPresetsFitInFewerTabs)) return;
+                    _serverPresetsFitInFewerTabs = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", value);
                     OnPropertyChanged();
                 }
             }
@@ -1275,6 +1305,19 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private DelegateCommand _selectRhmLocationCommand;
+
+            public DelegateCommand SelectRhmLocationCommand => _selectRhmLocationCommand ?? (_selectRhmLocationCommand = new DelegateCommand(() => {
+                var dialog = new OpenFileDialog {
+                    Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
+                    Title = "Select Real Head Motion Application"
+                };
+
+                if (dialog.ShowDialog() == true) {
+                    Drive.RhmLocation = dialog.FileName;
+                }
+            }));
         }
 
         private static DriveSettings _drive;
@@ -1292,6 +1335,21 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _newLayout)) return;
                     _newLayout = value;
                     ValuesStorage.Set("Settings.ContentSettings.NewLayout", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _mentionCmInPackedContent;
+
+            public bool MentionCmInPackedContent {
+                get {
+                    return _mentionCmInPackedContent ??
+                            (_mentionCmInPackedContent = ValuesStorage.GetBool("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
+                }
+                set {
+                    if (Equals(value, _mentionCmInPackedContent)) return;
+                    _mentionCmInPackedContent = value;
+                    ValuesStorage.Set("Settings.ContentSettings.MentionCmInPackedContent", value);
                     OnPropertyChanged();
                 }
             }
@@ -1423,7 +1481,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdLogin;
 
             public string RdLogin {
-                get { return _rdLogin ?? (_rdLogin = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdLogin", "")); }
+                get => _rdLogin ?? (_rdLogin = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdLogin", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdLogin)) return;
@@ -1436,7 +1494,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdPassword;
 
             public string RdPassword {
-                get { return _rdPassword ?? (_rdPassword = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdPassword", "")); }
+                get => _rdPassword ?? (_rdPassword = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdPassword", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdPassword)) return;
@@ -1449,7 +1507,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdProxy;
 
             public string RdProxy {
-                get { return _rdProxy ?? (_rdProxy = ValuesStorage.GetString("Settings.ContentSettings.RdProxy", "")); }
+                get => _rdProxy ?? (_rdProxy = ValuesStorage.GetString("Settings.ContentSettings.RdProxy", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdProxy)) return;
@@ -1594,21 +1652,6 @@ namespace AcManager.Tools.Helpers {
                 new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
                 new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true)
             });
-
-            private bool? _missingContentIndexCheck;
-
-            public bool MissingContentIndexCheck {
-                get {
-                    return _missingContentIndexCheck ??
-                            (_missingContentIndexCheck = ValuesStorage.GetBool("Settings.ContentSettings.MissingContentIndexCheck", true)).Value;
-                }
-                set {
-                    if (Equals(value, _missingContentIndexCheck)) return;
-                    _missingContentIndexCheck = value;
-                    ValuesStorage.Set("Settings.ContentSettings.MissingContentIndexCheck", value);
-                    OnPropertyChanged();
-                }
-            }
 
             private MissingContentSearchEntry _missingContentSearch;
 
@@ -2090,5 +2133,41 @@ namespace AcManager.Tools.Helpers {
         private static InterfaceSettings _interface;
 
         public static InterfaceSettings Interface => _interface ?? (_interface = new InterfaceSettings());
+
+        public class IntegratedSettings : NotifyPropertyChanged {
+            internal IntegratedSettings() { }
+
+            private bool? _theSetupMarketTab;
+
+            public bool TheSetupMarketTab {
+                get { return _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value; }
+                set {
+                    if (Equals(value, _theSetupMarketTab)) return;
+                    _theSetupMarketTab = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketTab", value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(TheSetupMarketCounter));
+                }
+            }
+
+            private bool? _theSetupMarketCounter;
+
+            public bool TheSetupMarketCounter {
+                get {
+                    return TheSetupMarketTab && (_theSetupMarketCounter ??
+                            (_theSetupMarketCounter = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
+                }
+                set {
+                    if (Equals(value, _theSetupMarketCounter)) return;
+                    _theSetupMarketCounter = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCounter", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static IntegratedSettings _integrated;
+
+        public static IntegratedSettings Integrated => _integrated ?? (_integrated = new IntegratedSettings());
     }
 }

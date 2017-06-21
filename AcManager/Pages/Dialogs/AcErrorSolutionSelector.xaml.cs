@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcErrors.Solutions;
@@ -35,7 +36,18 @@ namespace AcManager.Pages.Dialogs {
             return new IAcError[0];
         }
 
-        public AcErrorSolutionSelector(AcError acError) {
+        public static async Task<AcErrorSolutionSelector> Create(AcError acError) {
+            IReadOnlyList<ISolution> solutions;
+            if (acError.BaseException == null) {
+                solutions = (await acError.GetSolutionsAsync()).ToList();
+            } else {
+                solutions = null;
+            }
+
+            return new AcErrorSolutionSelector(acError, solutions);
+        }
+
+        private AcErrorSolutionSelector(AcError acError, IReadOnlyList<ISolution> solutions) {
             InitializeComponent();
             DataContext = this;
 
@@ -45,7 +57,7 @@ namespace AcManager.Pages.Dialogs {
             if (acError.BaseException != null) {
                 ErrorMessage = string.Format(AppStrings.AcError_StackTrace, acError.BaseException);
             } else {
-                Solutions = acError.GetSolutions().ToList();
+                Solutions = solutions;
                 if (Solutions.Count == 0) {
                     ErrorMessage = AppStrings.AcError_SolutionsNotFound;
                 } else {
@@ -163,7 +175,7 @@ namespace AcManager.Pages.Dialogs {
                     Close();
                 }
             }
-            
+
             Close();
         }, () => SelectedSolution != null));
 

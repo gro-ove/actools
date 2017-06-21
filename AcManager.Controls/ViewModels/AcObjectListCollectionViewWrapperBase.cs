@@ -15,7 +15,12 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
-    public abstract class AcObjectListCollectionViewWrapperBase<T> : NotifyPropertyChanged, IComparer where T : AcObjectNew {
+    public interface IAcObjectListCollectionViewWrapper {
+        void Load();
+        void Unload();
+    }
+
+    public abstract class AcObjectListCollectionViewWrapperBase<T> : NotifyPropertyChanged, IAcObjectListCollectionViewWrapper, IComparer where T : AcObjectNew {
         [NotNull]
         private readonly IAcManagerNew _manager;
 

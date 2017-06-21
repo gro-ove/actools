@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
@@ -31,7 +33,7 @@ namespace AcManager.Pages.AcSettings {
             private double _scaleValue = 1d;
 
             public double ScaleValue {
-                get { return _scaleValue; }
+                get => _scaleValue;
                 set {
                     value = value.Clamp(0d, 100d);
                     if (Equals(value, _scaleValue)) return;
@@ -44,7 +46,7 @@ namespace AcManager.Pages.AcSettings {
 
             public DelegateCommand SetScaleCommand => _setScaleCommand ?? (_setScaleCommand = new DelegateCommand(() => {
                 foreach (var entry in Forms.Entries) {
-                    entry.Scale = Math.Max((100 * ScaleValue).RoundToInt(), 1);
+                    entry.SetScale(Math.Max((100 * ScaleValue).RoundToInt(), 1));
                 }
             }));
 
@@ -52,8 +54,14 @@ namespace AcManager.Pages.AcSettings {
 
             public DelegateCommand MultiplyScaleCommand => _multiplyScaleCommand ?? (_multiplyScaleCommand = new DelegateCommand(() => {
                 foreach (var entry in Forms.Entries) {
-                    entry.Scale = Math.Max((entry.Scale * ScaleValue).RoundToInt(), 1);
+                    entry.SetScale(Math.Max((entry.Desktops[0].Scale * ScaleValue).RoundToInt(), 1));
                 }
+            }));
+
+            private DelegateCommand _combinePresetsCommand;
+
+            public DelegateCommand CombinePresetsCommand => _combinePresetsCommand ?? (_combinePresetsCommand = new DelegateCommand(() => {
+                new CombinePythonAppsPresetsDialog().ShowDialog();
             }));
         }
 
@@ -77,6 +85,10 @@ namespace AcManager.Pages.AcSettings {
 
             UpdateListBox();
             Model.Python.PropertyChanged += Python_PropertyChanged;
+
+            this.AddWidthCondition(600).Add(BlockedColumn);
+            this.AddWidthCondition(760).Add(ScaleColumn);
+            this.AddWidthCondition(1300).Add(PositionColumn);
         }
 
         private void UpdateListBox() {

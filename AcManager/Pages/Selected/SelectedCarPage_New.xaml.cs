@@ -203,7 +203,7 @@ namespace AcManager.Pages.Selected {
 
             #region Presets
             public HierarchicalItemsView ShowroomPresets {
-                get { return _showroomPresets; }
+                get => _showroomPresets;
                 set {
                     if (Equals(value, _showroomPresets)) return;
                     _showroomPresets = value;
@@ -212,7 +212,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView CustomShowroomPresets {
-                get { return _customShowroomPresets; }
+                get => _customShowroomPresets;
                 set {
                     if (Equals(value, _customShowroomPresets)) return;
                     _customShowroomPresets = value;
@@ -221,7 +221,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView UpdatePreviewsPresets {
-                get { return _updatePreviewsPresets; }
+                get => _updatePreviewsPresets;
                 set {
                     if (Equals(value, _updatePreviewsPresets)) return;
                     _updatePreviewsPresets = value;
@@ -230,7 +230,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView QuickDrivePresets {
-                get { return _quickDrivePresets; }
+                get => _quickDrivePresets;
                 set {
                     if (Equals(value, _quickDrivePresets)) return;
                     _quickDrivePresets = value;
@@ -364,7 +364,7 @@ namespace AcManager.Pages.Selected {
             private bool _recalculatePwRatioAutomatically = ValuesStorage.GetBool(KeyRecalculatePwRatioAutomatically, true);
 
             public bool RecalculatePwRatioAutomatically {
-                get { return _recalculatePwRatioAutomatically; }
+                get => _recalculatePwRatioAutomatically;
                 set {
                     if (Equals(value, _recalculatePwRatioAutomatically)) return;
                     _recalculatePwRatioAutomatically = value;
@@ -782,7 +782,7 @@ namespace AcManager.Pages.Selected {
         private bool _extendedMode;
 
         public bool ExtendedMode {
-            get { return _extendedMode; }
+            get => _extendedMode;
             set {
                 if (Equals(value, _extendedMode)) return;
                 _extendedMode = value;
@@ -835,6 +835,10 @@ namespace AcManager.Pages.Selected {
                         $"Most likely, sound is not from {obj.SoundDonor?.DisplayName ?? obj.SoundDonorId}, but instead it’s based on Kunos sample soundbank and its author forgot to change GUIDs before compiling it. Usually it’s not a problem, but in a race with two different cars having same GUIDs, one of them will use sound of another one.\n\nIf you’re the author, please, consider [url=\"https://www.youtube.com/watch?v=BdKsHBn8wh4\"]fixing it[/url].",
                         ToolsStrings.Common_Warning, MessageBoxButton.OK);
             }
+        }
+
+        private void OnTsmSetupsButtonClick(object sender, RoutedEventArgs e) {
+            CarSetupsListPage.Open(_object, CarSetupsRemoteSource.TheSetupMarket);
         }
     }
 }

@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class CarSetupsManager : AcManagerNew<CarSetupObject> {
@@ -57,6 +62,64 @@ namespace AcManager.Tools.Managers {
 
         protected override CarSetupObject CreateAcObject(string id, bool enabled) {
             return new CarSetupObject(CarId, this, id, enabled);
+        }
+    }
+
+    public enum CarSetupsRemoteSource {
+        None = 0,
+        TheSetupMarket
+    }
+
+    public class RemoteSetupsManager : BaseAcManager<RemoteCarSetupObject> {
+        private static readonly List<Tuple<CarSetupsRemoteSource, string, WeakReference<RemoteSetupsManager>>> Instances =
+                new List<Tuple<CarSetupsRemoteSource, string, WeakReference<RemoteSetupsManager>>>();
+
+        private static void Purge() {
+            for (var i = Instances.Count - 1; i >= 0; i--) {
+                if (!Instances[i].Item3.TryGetTarget(out RemoteSetupsManager _)) {
+                    Instances.RemoveAt(i);
+                }
+            }
+        }
+
+        private readonly List<RemoteSetupInformation> _data;
+
+        public CarSetupsRemoteSource Source { get; }
+        public string CarId { get; }
+
+        protected RemoteSetupsManager(CarSetupsRemoteSource source, string carId, List<RemoteSetupInformation> data) {
+            _data = data;
+            Source = source;
+            CarId = carId;
+
+            Purge();
+            Instances.Add(Tuple.Create(source, carId, new WeakReference<RemoteSetupsManager>(this)));
+        }
+
+        [CanBeNull]
+        public static RemoteSetupsManager GetManager(CarSetupsRemoteSource source, string carId) {
+            Purge();
+            var reference = Instances.FirstOrDefault(x => x?.Item1 == source && x.Item2 == carId)?.Item3;
+            return reference == null ? null : reference.TryGetTarget(out RemoteSetupsManager result) ? result : null;
+        }
+
+        protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            foreach (var d in _data) {
+                var o = new RemoteCarSetupObject(this, d);
+                o.Load();
+                o.PastLoad();
+                yield return o;
+            }
+        }
+    }
+
+    public class TheSetupMarketAsManager : RemoteSetupsManager {
+        private TheSetupMarketAsManager(string carId, List<RemoteSetupInformation> data) : base(CarSetupsRemoteSource.TheSetupMarket, carId, data) { }
+
+        [ItemCanBeNull]
+        public static async Task<TheSetupMarketAsManager> CreateAsync(CarObject car) {
+            var data = await TheSetupMarketApiProvider.GetAvailableSetups(car.Id);
+            return data == null ? null : new TheSetupMarketAsManager(car.Id, data);
         }
     }
 }

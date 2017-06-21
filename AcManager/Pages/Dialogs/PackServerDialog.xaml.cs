@@ -51,7 +51,7 @@ namespace AcManager.Pages.Dialogs {
             private class SaveableData {
                 public PackMode Mode = PackMode.Windows;
                 public bool IncludeExecutable = true;
-                public bool PackIntoSingle = false;
+                public bool PackIntoSingle;
             }
 
             private void SaveLater() {
@@ -157,6 +157,7 @@ namespace AcManager.Pages.Dialogs {
             #endregion
 
             #region Actions
+            [ItemCanBeNull]
             private async Task<string> PackAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 var linuxMode = Mode == PackMode.Linux;
 
@@ -168,8 +169,10 @@ namespace AcManager.Pages.Dialogs {
                 var result = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
                         FileUtils.EnsureFileNameIsValid($@"Packed {Server.DisplayName}.{(linuxMode ? "tar.gz" : "zip")}")));
 
+                var list = await Server.PackServerData(IncludeExecutable, linuxMode, false, cancellation);
+                if (cancellation.IsCancellationRequested || list == null) return null;
+
                 await Task.Run(() => {
-                    var list = Server.PackServerData(IncludeExecutable, linuxMode).ToList();
                     try {
                         using (var memory = new MemoryStream()) {
                             using (var writer = WriterFactory.Open(memory,
@@ -177,12 +180,14 @@ namespace AcManager.Pages.Dialogs {
                                     linuxMode ? CompressionType.None : CompressionType.Deflate)) {
                                 for (var i = 0; i < list.Count; i++) {
                                     var e = list[i];
-                                    progress.Report(new AsyncProgressEntry(e.Key, i++, list.Count));
+                                    progress.Report(new AsyncProgressEntry(e.Key, i, list.Count));
                                     if (cancellation.IsCancellationRequested) return;
 
                                     var data = e.GetContent();
                                     if (data != null) {
                                         writer.WriteBytes(e.Key, data);
+                                    } else {
+                                        throw new InformativeException("Can’t pack server", $"File “{e.Key}” not found.");
                                     }
                                 }
                             }
@@ -219,7 +224,7 @@ namespace AcManager.Pages.Dialogs {
                         if (waiting.CancellationToken.IsCancellationRequested) return;
 
                         var result = await PackAsync(waiting, waiting.CancellationToken);
-                        if (waiting.CancellationToken.IsCancellationRequested) return;
+                        if (waiting.CancellationToken.IsCancellationRequested || result == null) return;
 
                         WindowsHelper.ViewFile(result);
                     }
@@ -259,7 +264,7 @@ different.";
                                   .Where(x => x?.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
 
             if (notPacked.Any() &&
-                    ModernDialog.ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),
+                    ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),
                             ToolsStrings.ServerPreset_UnpackedDataWarning_Title, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                 using (var memory = new MemoryStream()) {
                     using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {

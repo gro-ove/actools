@@ -1,492 +1,456 @@
 ﻿<sel:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarPage_New" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-        xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}" SizeChanged="OnSizeChanged">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
-            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
-            <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
+    mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}" SizeChanged="OnSizeChanged">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
+      <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
+      <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
 
-            <ItemsPanelTemplate x:Key="CompactSkinsPanel">
-                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" CacheLength="8,8"
-                        CacheLengthUnit="Item" />
-            </ItemsPanelTemplate>
-            <ItemsPanelTemplate x:Key="ExtendedSkinsPanel">
-                <WrapPanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-        </ResourceDictionary>
-    </UserControl.Resources>
+      <ItemsPanelTemplate x:Key="CompactSkinsPanel">
+        <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" CacheLength="8,8"
+            CacheLengthUnit="Item" />
+      </ItemsPanelTemplate>
+      <ItemsPanelTemplate x:Key="ExtendedSkinsPanel">
+        <WrapPanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" />
+      </ItemsPanelTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
-        <c:AcObjectBase.ToolBars>
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Folder_CarTooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
-                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
-                <Separator />
-                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
-                        Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="OnShowroomButtonMouseDown">
-                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
-                            InputGestureText="Ctrl+Shift+H" Command="{Binding OpenInShowroomOptionsCommand}" />
-                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
-                        <MenuItem.ItemsSource>
-                            <CompositeCollection>
-                                <CollectionContainer Collection="{Binding Source={StaticResource ShowroomPresetsItems}}" />
-                            </CompositeCollection>
-                        </MenuItem.ItemsSource>
-                    </MenuItem>
-                </mui:ButtonWithComboBox>
-                <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)"
-                        Command="{Binding OpenInCustomShowroomCommand}" PreviewMouseDown="OnCustomShowroomButtonMouseDown"
-                        MenuItems="{Binding CustomShowroomPresets}" />
-                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
-                        Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown"
-                        Style="{StaticResource Go.ToolBarButtonWithComboBox}">
-                    <mui:ButtonWithComboBox.MenuItems>
-                        <CompositeCollection>
-                            <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
-                        </CompositeCollection>
-                    </mui:ButtonWithComboBox.MenuItems>
-                </mui:ButtonWithComboBox>
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_CarSkins_Tooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_CarSetups}" Command="{Binding ManageSetupsCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_CarSetups_Tooltip}" />
-            </ToolBar>
-            <ToolBar Band="0" BandIndex="0">
-                <Button Content="Analyze" Command="{Binding CarAnalyzerCommand}">
-                    <Button.ToolTip>Check for some common issues and fix them immediately (Alt+A)</Button.ToolTip>
-                </Button>
-                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}">
-                    <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
-                </Button>
-            </ToolBar>
-            <ToolBar Band="1" BandIndex="1">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}"
-                        mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.AccidentallyRemoved}}"
-                        mui:FancyHintsService.HorizontalAlignment="Center" mui:FancyHintsService.VerticalAlignment="Bottom" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />
-                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreviews}" Command="{Binding UpdatePreviewsCommand}"
-                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="OnUpdatePreviewsButtonMouseDown">
-                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}"
-                            ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}" InputGestureText="Ctrl+Alt+P"
-                            Command="{Binding UpdatePreviewsManuallyCommand}"
-                            Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsOptions_Tooltip}"
-                            InputGestureText="Ctrl+Shift+P" Command="{Binding UpdatePreviewsOptionsCommand}" />
-                    <Separator />
-                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
-                        <MenuItem.ItemsSource>
-                            <CompositeCollection>
-                                <CollectionContainer Collection="{Binding Source={StaticResource UpdatePreviewsPresetsItems}}" />
-                            </CompositeCollection>
-                        </MenuItem.ItemsSource>
-                    </MenuItem>
-                </mui:ButtonWithComboBox>
-            </ToolBar>
-            <ToolBar Band="1" BandIndex="1">
-                <Button Content="{x:Static g:AppStrings.Toolbar_PackData}" Command="{Binding PackDataCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
-                        Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
-            </ToolBar>
-        </c:AcObjectBase.ToolBars>
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
+    <c:AcObjectBase.ToolBars>
+      <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Folder_CarTooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+            Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+        <Separator />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+            Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="OnShowroomButtonMouseDown">
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+              InputGestureText="Ctrl+Shift+H" Command="{Binding OpenInShowroomOptionsCommand}" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
+            <MenuItem.ItemsSource>
+              <CompositeCollection>
+                <CollectionContainer Collection="{Binding Source={StaticResource ShowroomPresetsItems}}" />
+              </CompositeCollection>
+            </MenuItem.ItemsSource>
+          </MenuItem>
+        </mui:ButtonWithComboBox>
+        <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
+            PreviewMouseDown="OnCustomShowroomButtonMouseDown" MenuItems="{Binding CustomShowroomPresets}" />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
+            Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.MenuItems>
+            <CompositeCollection>
+              <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+            </CompositeCollection>
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_CarSkins_Tooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_CarSetups}" Command="{Binding ManageSetupsCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_CarSetups_Tooltip}" />
+      </ToolBar>
+      <ToolBar Band="0" BandIndex="0">
+        <Button Content="Analyze" Command="{Binding CarAnalyzerCommand}">
+          <Button.ToolTip>Check for some common issues and fix them immediately (Alt+A)</Button.ToolTip>
+        </Button>
+        <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}">
+          <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
+        </Button>
+      </ToolBar>
+      <ToolBar Band="0" BandIndex="0"
+          Visibility="{Binding SelectedObject.PackCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Button Content="Pack Car" Command="{Binding SelectedObject.PackCommand}" ToolTip="Pack important files for easy distribution" />
+      </ToolBar>
+      <ToolBar Band="1" BandIndex="1">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}"
+            mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.AccidentallyRemoved}}" mui:FancyHintsService.HorizontalAlignment="Center"
+            mui:FancyHintsService.VerticalAlignment="Bottom" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreviews}" Command="{Binding UpdatePreviewsCommand}"
+            ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="OnUpdatePreviewsButtonMouseDown">
+          <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}"
+              InputGestureText="Ctrl+Alt+P" Command="{Binding UpdatePreviewsManuallyCommand}"
+              Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsOptions_Tooltip}"
+              InputGestureText="Ctrl+Shift+P" Command="{Binding UpdatePreviewsOptionsCommand}" />
+          <Separator />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
+            <MenuItem.ItemsSource>
+              <CompositeCollection>
+                <CollectionContainer Collection="{Binding Source={StaticResource UpdatePreviewsPresetsItems}}" />
+              </CompositeCollection>
+            </MenuItem.ItemsSource>
+          </MenuItem>
+        </mui:ButtonWithComboBox>
+      </ToolBar>
+      <ToolBar Band="1" BandIndex="1">
+        <Button Content="{x:Static g:AppStrings.Toolbar_PackData}" Command="{Binding PackDataCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
+            Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
+      </ToolBar>
+    </c:AcObjectBase.ToolBars>
 
-        <StackPanel>
-            <Grid Margin="0 0 0 12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" MaxWidth="800" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+    <StackPanel>
+      <Grid Margin="0 0 0 12">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="2*" MaxWidth="800" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
 
-                <mui:Cell MaxWidth="800">
-                    <mui:BetterImage x:Name="SelectedSkinPreviewImage" Filename="{Binding SelectedObject.SelectedSkin.PreviewImage}"
-                            PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="OnSkinRightClick"
-                            Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
-                            MaxWidth="800" />
-                    <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
-                        <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}"
-                                ScrollViewer.VerticalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
-                                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel"
-                                VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item"
-                                mui:FancyScrollHelper.InvertLocation="True" mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
-                            <i:Interaction.Behaviors>
-                                <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
-                            </i:Interaction.Behaviors>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type t:AcItemWrapper}">
-                                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                                    <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
-                                            ClearOnChange="True" PreviewMouseRightButtonUp="OnSkinRightClick" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Border>
-                    <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64"
-                            PreviewMouseLeftButtonUp="OnUpgradeIconClick" Filename="{Binding SelectedObject.UpgradeIcon}"
-                            Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </mui:Cell>
+        <mui:Cell MaxWidth="800">
+          <mui:BetterImage x:Name="SelectedSkinPreviewImage" Filename="{Binding SelectedObject.SelectedSkin.PreviewImage}"
+              PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="OnSkinRightClick"
+              Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
+              MaxWidth="800" />
+          <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
+            <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsContainerVirtualizable="True"
+                VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScrollHelper.InvertLocation="True"
+                mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
+              <i:Interaction.Behaviors>
+                <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
+              </i:Interaction.Behaviors>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type t:AcItemWrapper}">
+                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                  <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32" ClearOnChange="True"
+                      PreviewMouseRightButtonUp="OnSkinRightClick" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+          <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64"
+              PreviewMouseLeftButtonUp="OnUpgradeIconClick" Filename="{Binding SelectedObject.UpgradeIcon}"
+              Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </mui:Cell>
 
-                <!-- description -->
-                <DockPanel Grid.Column="1" Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}}" Margin="20 0 0 0">
-                    <c:RatingBar Rating="{Binding SelectedObject.Rating}" DockPanel.Dock="Bottom" Margin="0 12 0 0" HorizontalAlignment="Center" />
-                    <Border DockPanel.Dock="Top" x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" MaxHeight="180" Visibility="Collapsed" />
-                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
-                </DockPanel>
-            </Grid>
+        <!-- description -->
+        <DockPanel Grid.Column="1" Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}}" Margin="20 0 0 0">
+          <c:RatingBar Rating="{Binding SelectedObject.Rating}" DockPanel.Dock="Bottom" Margin="0 12 0 0" HorizontalAlignment="Center" />
+          <Border DockPanel.Dock="Top" x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" MaxHeight="180" Visibility="Collapsed" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
+        </DockPanel>
+      </Grid>
 
-            <!-- data section -->
-            <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
-                        mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12">
-                    <mui:TagsList.ItemContextMenu>
-                        <mui:InheritingContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Path=FilterTagCommand}" CommandParameter="{Binding}" />
-                        </mui:InheritingContextMenu>
-                    </mui:TagsList.ItemContextMenu>
-                    <FrameworkElement.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUp}" Command="{Binding Path=SelectedObject.TagsCleanUpCommand}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Tags_Sort}" Command="{Binding Path=SelectedObject.TagsSortCommand}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUpAndSort}" Command="{Binding Path=SelectedObject.TagsCleanUpAndSortCommand}"
-                                    InputGestureText="Ctrl+Alt+T" />
-                        </ContextMenu>
-                    </FrameworkElement.ContextMenu>
-                </mui:TagsList>
+      <!-- data section -->
+      <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <!-- tags -->
+        <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
+            mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12">
+          <mui:TagsList.ItemContextMenu>
+            <mui:InheritingContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Path=FilterTagCommand}" CommandParameter="{Binding}" />
+            </mui:InheritingContextMenu>
+          </mui:TagsList.ItemContextMenu>
+          <FrameworkElement.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUp}" Command="{Binding Path=SelectedObject.TagsCleanUpCommand}" />
+              <MenuItem Header="{x:Static g:AppStrings.Tags_Sort}" Command="{Binding Path=SelectedObject.TagsSortCommand}" />
+              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUpAndSort}" Command="{Binding Path=SelectedObject.TagsCleanUpAndSortCommand}"
+                  InputGestureText="Ctrl+Alt+T" />
+            </ContextMenu>
+          </FrameworkElement.ContextMenu>
+        </mui:TagsList>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*" MaxWidth="360" />
-                        <ColumnDefinition Width="1*" MinWidth="220" MaxWidth="800" />
-                    </Grid.ColumnDefinitions>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" MaxWidth="360" />
+            <ColumnDefinition Width="1*" MinWidth="220" MaxWidth="800" />
+          </Grid.ColumnDefinitions>
 
-                    <DockPanel VerticalAlignment="Top">
-                        <graphs:CarGraphViewer DockPanel.Dock="Bottom" SourceTorque="{Binding SelectedObject.SpecsTorqueCurve}"
-                                SourcePower="{Binding SelectedObject.SpecsPowerCurve}" Height="200" />
-                        <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick" />
-                        <TextBlock Style="{StaticResource Label}" Text="Power graph:" />
-                    </DockPanel>
+          <DockPanel VerticalAlignment="Top">
+            <graphs:CarGraphViewer DockPanel.Dock="Bottom" SourceTorque="{Binding SelectedObject.SpecsTorqueCurve}"
+                SourcePower="{Binding SelectedObject.SpecsPowerCurve}" Height="200" />
+            <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick" />
+            <TextBlock Style="{StaticResource Label}" Text="Power graph:" />
+          </DockPanel>
 
-                    <mui:SpacingUniformGrid Grid.Column="1" Rows="1" HorizontalSpacing="20" Margin="20 0 0 0">
-                        <mui:SpacingStackPanel Spacing="20">
-                            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
-                                <mui:BbCodeBlock c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
-                                        Text="{Binding SelectedObject.ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}"
-                                        MouseDown="OnParentBlockClick" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
-                                    <FrameworkElement.ToolTip>
-                                        <mui:ReferenceSwitch Value="{Binding SelectedObject.Parent}">
-                                            <mui:ReferenceSwitch.Null>
-                                                <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
-                                            </mui:ReferenceSwitch.Null>
-                                            <mui:ReferenceSwitch.NonNull>
-                                                <StackPanel Margin="4 8">
-                                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}"
-                                                            Margin="0 0 0 4" />
-                                                    <c:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
-                                                            MaxHeight="320" />
-                                                </StackPanel>
-                                            </mui:ReferenceSwitch.NonNull>
-                                        </mui:ReferenceSwitch>
-                                    </FrameworkElement.ToolTip>
-                                </mui:BbCodeBlock>
-
-                                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}"
-                                        Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}"
-                                        ItemsSource="{x:Static t:SuggestionLists.CarBrandsListView}" Style="{StaticResource BetterComboBox.Borderless}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="brand" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                </mui:BetterComboBox>
-
-                                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_ContryLabel}"
-                                        Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
-                                        ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" Style="{StaticResource BetterComboBox.Borderless}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="country" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                </mui:BetterComboBox>
-
-                                <Border c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_YearLabel}"
-                                        ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="year" />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="decade" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer" Minimum="1900" Maximum="2100"
-                                            Style="{StaticResource Borderless}" Placeholder="?" />
-                                </Border>
-
-                                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarClassLabel}"
-                                        Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}"
-                                        ItemsSource="{x:Static t:SuggestionLists.CarClassesListView}" Style="{StaticResource BetterComboBox.Borderless}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
-                                    <FrameworkElement.ToolTip>Car class (such as “race” or “street”) in lowercase</FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="class" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                </mui:BetterComboBox>
-
-                                <mui:Cell ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <c:PropertiesGrid.Label>
-                                        <MultiBinding Converter="{x:Static sel:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
-                                            <Binding Path="SelectedObject" />
-                                            <Binding Path="SelectedObject.VersionInfoDisplay" />
-                                        </MultiBinding>
-                                    </c:PropertiesGrid.Label>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="author" />
-                                            <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
-                                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                                    <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
-                                </mui:Cell>
-                            </c:PropertiesGrid>
-
-                            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
-                                <!--power-->
-                                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PowerLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Power_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="power"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPower}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="power" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsBhp}" Style="{StaticResource Borderless}" Mode="Integer"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" />
-                                </Border>
-
-                                <!--torque-->
-                                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_TorqueLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Torque_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="torque"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTorque}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="torque" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsTorque}" Style="{StaticResource Borderless}" Mode="Integer"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}" />
-                                </Border>
-
-                                <!--weight-->
-                                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_WeightLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Weight_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding RecalculateWeightCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}" />
-                                            <Separator />
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="weight"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeight}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="weight" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsWeight}" Style="{StaticResource Borderless}" Mode="Integer"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}" />
-                                </Border>
-
-                                <!--max speed-->
-                                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_MaxSpeed_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="topspeed"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTopSpeed}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="topspeed" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsTopSpeed}" Style="{StaticResource Borderless}" Mode="Integer"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" />
-                                </Border>
-
-                                <!--acceleration-->
-                                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Acceleration_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="acceleration"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByAcceleration}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="acceleration" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsAcceleration}" Style="{StaticResource Borderless}" Mode="Number"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
-                                </Border>
-
-                                <!--pw ratio-->
-                                <DockPanel c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}"
-                                        mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                    <FrameworkElement.ToolTip>
-                                        <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
-                                                ContentStringFormat="{x:Static g:AppStrings.CarSpecs_PwRatio_Tooltip}" />
-                                    </FrameworkElement.ToolTip>
-                                    <mui:ContextMenuButton DockPanel.Dock="Right">
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding RecalculatePwRatioCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}"
-                                                    InputGestureText="Alt+W" />
-                                            <MenuItem IsCheckable="True" IsChecked="{Binding RecalculatePwRatioAutomatically}"
-                                                    Header="{Binding Source={x:Static g:AppStrings.CarSpecs_AutomaticallyRecalculatePwRatio}, Converter={StaticResource ToTitleConverter}}" />
-                                            <Separator />
-                                            <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="pwratio"
-                                                    Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
-                                            <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"
-                                                    InputGestureText="Alt+F" />
-                                            <Separator />
-                                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="pwratio" />
-                                        </ContextMenu>
-                                    </mui:ContextMenuButton>
-                                    <mui:BetterTextBox Text="{Binding SelectedObject.SpecsPwRatio}" Style="{StaticResource Borderless}" Mode="Number"
-                                            Placeholder="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
-                                            IsEnabled="{Binding RecalculatePwRatioAutomatically, Converter={StaticResource InvertBooleanConverter}}" />
-                                </DockPanel>
-                            </c:PropertiesGrid>
-
-                            <c:MessageBlock CloseKey="carpagemsg">
-                                <mui:BbCodeBlock>
-                                    <mui:BbCodeBlock.BbCode>[i]Did you know?[/i] You can right-click on a property to filter cars by it.</mui:BbCodeBlock.BbCode>
-                                </mui:BbCodeBlock>
-                            </c:MessageBlock>
-                        </mui:SpacingStackPanel>
-
-                        <StackPanel
-                                Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
-                            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
-                                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
-                                        Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="driven" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                </mui:PlaceholderTextBlock>
-
-                                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
-                                        Text="{Binding SelectedObject.MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
-                                        Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
-                                    <FrameworkElement.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Filter By Similar Max Speed Achieved" Command="{Binding Path=FilterCommand}"
-                                                    CommandParameter="topspeedachieved" />
-                                        </ContextMenu>
-                                    </FrameworkElement.ContextMenu>
-                                </mui:PlaceholderTextBlock>
-
-                                <DockPanel c:PropertiesGrid.Label="Sound:" Background="Transparent" PreviewMouseLeftButtonUp="OnSoundBlockClick"
-                                        Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
-                                            Stretch="Uniform" Margin="2 2 4 0" VerticalAlignment="Center"
-                                            Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static sel:SelectedCarPage_New.TatuusId}}" />
-                                    <mui:ReferenceSwitch Value="{Binding SelectedObject.SoundDonor}">
-                                        <mui:ReferenceSwitch.Null>
-                                            <TextBlock Text="{Binding SelectedObject.SoundDonorId}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                                        </mui:ReferenceSwitch.Null>
-                                        <mui:ReferenceSwitch.NonNull>
-                                            <TextBlock Text="{Binding SelectedObject.SoundDonor.DisplayName}" TextWrapping="NoWrap"
-                                                    TextTrimming="CharacterEllipsis" />
-                                        </mui:ReferenceSwitch.NonNull>
-                                    </mui:ReferenceSwitch>
-                                </DockPanel>
-                            </c:PropertiesGrid>
-
-                            <c:BestLapsList CarId="{Binding SelectedObject.Id}" Margin="0 20 0 0" />
+          <mui:SpacingUniformGrid Grid.Column="1" Rows="1" HorizontalSpacing="20" Margin="20 0 0 0">
+            <mui:SpacingStackPanel Spacing="20">
+              <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                <mui:BbCodeBlock c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
+                    Text="{Binding SelectedObject.ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" MouseDown="OnParentBlockClick"
+                    TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                  <FrameworkElement.ToolTip>
+                    <mui:ReferenceSwitch Value="{Binding SelectedObject.Parent}">
+                      <mui:ReferenceSwitch.Null>
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
+                      </mui:ReferenceSwitch.Null>
+                      <mui:ReferenceSwitch.NonNull>
+                        <StackPanel Margin="4 8">
+                          <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}" Margin="0 0 0 4" />
+                          <c:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                         </StackPanel>
-                    </mui:SpacingUniformGrid>
-                </Grid>
+                      </mui:ReferenceSwitch.NonNull>
+                    </mui:ReferenceSwitch>
+                  </FrameworkElement.ToolTip>
+                </mui:BbCodeBlock>
+
+                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}"
+                    Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}" ItemsSource="{x:Static t:SuggestionLists.CarBrandsListView}"
+                    Style="{StaticResource BetterComboBox.Borderless}" mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Path=FilterCommand}" CommandParameter="brand" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </mui:BetterComboBox>
+
+                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_ContryLabel}"
+                    Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}" ItemsSource="{x:Static t:SuggestionLists.CountriesListView}"
+                    Style="{StaticResource BetterComboBox.Borderless}" mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Path=FilterCommand}" CommandParameter="country" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </mui:BetterComboBox>
+
+                <Border c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_YearLabel}"
+                    ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Path=FilterCommand}" CommandParameter="year" />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Path=FilterCommand}" CommandParameter="decade" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer" Minimum="1900" Maximum="2100"
+                      Style="{StaticResource Borderless}" Placeholder="?" />
+                </Border>
+
+                <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarClassLabel}"
+                    Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}" ItemsSource="{x:Static t:SuggestionLists.CarClassesListView}"
+                    Style="{StaticResource BetterComboBox.Borderless}" mui:ContextMenuAdvancement.PropagateToChildren="True" Placeholder="?">
+                  <FrameworkElement.ToolTip>Car class (such as “race” or “street”) in lowercase</FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Path=FilterCommand}" CommandParameter="class" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </mui:BetterComboBox>
+
+                <mui:Cell ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <c:PropertiesGrid.Label>
+                    <MultiBinding Converter="{x:Static sel:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
+                      <Binding Path="SelectedObject" />
+                      <Binding Path="SelectedObject.VersionInfoDisplay" />
+                    </MultiBinding>
+                  </c:PropertiesGrid.Label>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
+                      <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
+                      TextTrimming="CharacterEllipsis" />
+                  <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
+                </mui:Cell>
+              </c:PropertiesGrid>
+
+              <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                <!--power-->
+                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PowerLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Power_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="power" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByPower}" Command="{Binding Path=FilterCommand}" CommandParameter="power" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsBhp}" Style="{StaticResource Borderless}" Mode="Integer"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" />
+                </Border>
+
+                <!--torque-->
+                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_TorqueLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Torque_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="torque" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByTorque}" Command="{Binding Path=FilterCommand}" CommandParameter="torque" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsTorque}" Style="{StaticResource Borderless}" Mode="Integer"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}" />
+                </Border>
+
+                <!--weight-->
+                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_WeightLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Weight_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Command="{Binding RecalculateWeightCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}" />
+                      <Separator />
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="weight" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeight}" Command="{Binding Path=FilterCommand}" CommandParameter="weight" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsWeight}" Style="{StaticResource Borderless}" Mode="Integer"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}" />
+                </Border>
+
+                <!--max speed-->
+                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_MaxSpeed_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="topspeed" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByTopSpeed}" Command="{Binding Path=FilterCommand}" CommandParameter="topspeed" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsTopSpeed}" Style="{StaticResource Borderless}" Mode="Integer"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" />
+                </Border>
+
+                <!--acceleration-->
+                <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Acceleration_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="acceleration" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByAcceleration}" Command="{Binding Path=FilterCommand}" CommandParameter="acceleration" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsAcceleration}" Style="{StaticResource Borderless}" Mode="Number"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
+                </Border>
+
+                <!--pw ratio-->
+                <DockPanel c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <FrameworkElement.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
+                        ContentStringFormat="{x:Static g:AppStrings.CarSpecs_PwRatio_Tooltip}" />
+                  </FrameworkElement.ToolTip>
+                  <mui:ContextMenuButton DockPanel.Dock="Right">
+                    <ContextMenu>
+                      <MenuItem Command="{Binding RecalculatePwRatioCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}" InputGestureText="Alt+W" />
+                      <MenuItem IsCheckable="True" IsChecked="{Binding RecalculatePwRatioAutomatically}"
+                          Header="{Binding Source={x:Static g:AppStrings.CarSpecs_AutomaticallyRecalculatePwRatio}, Converter={StaticResource ToTitleConverter}}" />
+                      <Separator />
+                      <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="pwratio" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
+                      <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
+                      <Separator />
+                      <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}" Command="{Binding Path=FilterCommand}" CommandParameter="pwratio" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
+                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsPwRatio}" Style="{StaticResource Borderless}" Mode="Number"
+                      Placeholder="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
+                      IsEnabled="{Binding RecalculatePwRatioAutomatically, Converter={StaticResource InvertBooleanConverter}}" />
+                </DockPanel>
+              </c:PropertiesGrid>
+
+              <c:MessageBlock CloseKey="carpagemsg">
+                <mui:BbCodeBlock>
+                  <mui:BbCodeBlock.BbCode>[i]Did you know?[/i] You can right-click on a property to filter cars by it.</mui:BbCodeBlock.BbCode>
+                </mui:BbCodeBlock>
+              </c:MessageBlock>
+            </mui:SpacingStackPanel>
+
+            <StackPanel
+                Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
+              <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
+                <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
+                    c:PropertiesGrid.Label="Setups on TSM:">
+                  <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
+                    <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 0 0" Click="OnTsmSetupsButtonClick" />
+                    <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding SelectedObject.TsmSetupsCount}" />
+                  </DockPanel>
+                </mui:BooleanSwitch>
+
+                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
+                    Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </mui:PlaceholderTextBlock>
+
+                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
+                    Text="{Binding SelectedObject.MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
+                    Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Filter By Similar Max Speed Achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </mui:PlaceholderTextBlock>
+
+                <DockPanel c:PropertiesGrid.Label="Sound:" Background="Transparent" PreviewMouseLeftButtonUp="OnSoundBlockClick"
+                    Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                      Margin="2 2 4 0" VerticalAlignment="Center"
+                      Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static sel:SelectedCarPage_New.TatuusId}}" />
+                  <mui:ReferenceSwitch Value="{Binding SelectedObject.SoundDonor}">
+                    <mui:ReferenceSwitch.Null>
+                      <TextBlock Text="{Binding SelectedObject.SoundDonorId}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    </mui:ReferenceSwitch.Null>
+                    <mui:ReferenceSwitch.NonNull>
+                      <TextBlock Text="{Binding SelectedObject.SoundDonor.DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    </mui:ReferenceSwitch.NonNull>
+                  </mui:ReferenceSwitch>
+                </DockPanel>
+              </c:PropertiesGrid>
+
+              <c:BestLapsList CarId="{Binding SelectedObject.Id}" Margin="0 20 0 0" />
             </StackPanel>
-        </StackPanel>
-    </c:AcObjectBase>
+          </mui:SpacingUniformGrid>
+        </Grid>
+      </StackPanel>
+    </StackPanel>
+  </c:AcObjectBase>
 </sel:SelectedAcJsonObjectPage>
-
-
-

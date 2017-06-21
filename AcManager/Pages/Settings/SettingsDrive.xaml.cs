@@ -38,19 +38,6 @@ namespace AcManager.Pages.Settings {
                     (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri(o, UriKind.RelativeOrAbsolute));
                 }
             }));
-
-            private DelegateCommand _selectRhmLocationCommand;
-
-            public DelegateCommand SelectRhmLocationCommand => _selectRhmLocationCommand ?? (_selectRhmLocationCommand = new DelegateCommand(() => {
-                var dialog = new OpenFileDialog {
-                    Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
-                    Title = "Select Real Head Motion Application"
-                };
-
-                if (dialog.ShowDialog() == true) {
-                    Drive.RhmLocation = dialog.FileName;
-                }
-            }));
         }
     }
 }

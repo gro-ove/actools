@@ -47,7 +47,7 @@ namespace AcManager.Tools.GameProperties {
             } else {
                 var playerName = settings.PlayerName;
                 if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDifferentPlayerName &&
-                        AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId)?.IsVisible == true) {
+                        AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId)?.Desktops.Any((x, i) => x.IsVisible) == true) {
                     playerName = SettingsHolder.Live.RsrPlayerName;
                 }
 

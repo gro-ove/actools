@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Data;
+using AcManager.Tools.Managers.Presets;
+using AcTools.DataFile;
+using AcTools.Utils.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.AcSettings {
@@ -8,7 +14,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #region Apps with presets
         public static readonly string AppsPresetsKey = @"In-Game Apps";
 
-        private class AppsPresetsInner : IUserPresetable {
+        private class AppsPresetsInner : IUserPresetable, IPresetsPreviewProvider {
             private class Saveable {
                 public string PythonData, FormsData;
                 public bool? DevApps;
@@ -35,6 +41,32 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
+            internal static IniFile GetFormsIniFromPresetInner(string data) {
+                var entry = JsonConvert.DeserializeObject<Saveable>(data);
+                return IniFile.Parse(entry.FormsData);
+            }
+
+            internal static string CombineAppPresetsInner(IEnumerable<Tuple<ISavedPresetEntry, int>> presets, int selectedDesktop) {
+                var list = (from input in presets
+                            let s = input.Item1 == null ? null : JsonConvert.DeserializeObject<Saveable>(input.Item1.ReadData())
+                            select s == null ? null : new {
+                                PythonIni = IniFile.Parse(s.PythonData),
+                                FormsIni = IniFile.Parse(s.FormsData),
+                                DevAppsEnabled = s.DevApps ?? false,
+                                UseFormsFrom = input.Item2
+                            }).ToList();
+                if (list.Count != 4) throw new Exception("Should be four sets");
+
+                // combine apps
+                var python = PythonSettings.Combine(list.NonNull().Select(x => x.PythonIni));
+                var forms = FormsSettings.Combine(list.Select(x => x == null ? null : Tuple.Create(x.FormsIni, x.UseFormsFrom)), selectedDesktop);
+                return JsonConvert.SerializeObject(new Saveable {
+                    PythonData = python.Stringify(),
+                    FormsData = forms.Stringify(),
+                    DevApps = list.Any(x => x.DevAppsEnabled)
+                });
+            }
+
             public void ImportFromPresetData(string data) {
                 var entry = JsonConvert.DeserializeObject<Saveable>(data);
                 Python.Import(entry.PythonData);
@@ -42,6 +74,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (SettingsHolder.Drive.SaveDevAppsInAppsPresets && entry.DevApps.HasValue) {
                     System.DeveloperApps = entry.DevApps.Value;
                 }
+            }
+
+            public object GetPreview(string serializedData) {
+                return new TextBlock {
+                    Text = FormsSettings.Load(GetFormsIniFromPresetInner(serializedData)).GetVisibleForms() ?? "Empty"
+                };
             }
         }
 
@@ -51,6 +89,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static AppsPresetsInner _appsPresets;
         public static IUserPresetable AppsPresets => _appsPresets ?? (_appsPresets = new AppsPresetsInner());
+
+        public static IniFile GetFormsIniFromPreset(string appsPresetData) {
+            return AppsPresetsInner.GetFormsIniFromPresetInner(appsPresetData);
+        }
+
+        public static string CombineAppPresets(IEnumerable<Tuple<ISavedPresetEntry, int>> presets, int selectedDesktop) {
+            return AppsPresetsInner.CombineAppPresetsInner(presets, selectedDesktop);
+        }
 
 
         private static FormsSettings _forms;

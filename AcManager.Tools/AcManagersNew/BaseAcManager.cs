@@ -25,7 +25,6 @@ namespace AcManager.Tools.AcManagersNew {
     /// Most base version of AcManager, doesn’t have concept of file (so could be used, for example, for online servers).
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    // TODO: Change everything by eliminating AcWrapper at all. What a stupid idea it was. Although it was an improvement.
     public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader, IEnumerable<T> where T : AcObjectNew {
         [NotNull]
         protected readonly AcWrapperObservableCollection InnerWrappersList;
@@ -63,6 +62,15 @@ namespace AcManager.Tools.AcManagersNew {
             // ReSharper disable once VirtualMemberCallInContructor
             InnerWrappersList = CreateCollection();
             InnerWrappersList.ListenersChanged += WrappersListListenersChanged;
+            SettingsHolder.Content.SubscribeWeak(OnContentSettingChanged);
+        }
+
+        private void OnContentSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;
+            if (!IsScanned) return;
+            foreach (var entry in LoadedOnly) {
+                entry.CheckIfNew();
+            }
         }
 
         /// <summary>

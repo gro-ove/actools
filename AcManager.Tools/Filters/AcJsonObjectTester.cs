@@ -20,12 +20,6 @@ namespace AcManager.Tools.Filters {
                 case "tag":
                     return nameof(AcJsonObjectNew.Tags);
 
-                case "a":
-                case "author":
-                case "k":
-                case "kunos":
-                    return nameof(AcJsonObjectNew.Author);
-
                 case "version":
                     return nameof(AcJsonObjectNew.Version);
 
@@ -61,14 +55,6 @@ namespace AcManager.Tools.Filters {
                 case "t":
                 case "tag":
                     return obj.Tags?.Any(value.Test) == true;
-
-                case "a":
-                case "author":
-                    return value.Test(obj.Author);
-
-                case "k":
-                case "kunos":
-                    return value.Test(obj.Author == AcCommonObject.AuthorKunos);
 
                 case "version":
                     return value.Test(obj.Version);

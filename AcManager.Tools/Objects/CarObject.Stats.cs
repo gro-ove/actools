@@ -1,4 +1,5 @@
-﻿using AcManager.Tools.Profile;
+﻿using AcManager.Tools.Helpers.Api.TheSetupMarket;
+using AcManager.Tools.Profile;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {
@@ -18,6 +19,29 @@ namespace AcManager.Tools.Objects {
         public void RaiseMaxSpeedAchievedChanged() {
             _maxSpeedAchieved = null;
             OnPropertyChanged(nameof(MaxSpeedAchieved));
+        }
+
+        private bool _tsmSetupsCountLoaded;
+        private int? _tsmSetupsCount;
+
+        public int? TsmSetupsCount {
+            get {
+                if (!_tsmSetupsCountLoaded) {
+                    _tsmSetupsCountLoaded = true;
+                    UpdateTsmSetupsCount();
+                }
+
+                return _tsmSetupsCount;
+            }
+            set {
+                if (Equals(value, _tsmSetupsCount)) return;
+                _tsmSetupsCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async void UpdateTsmSetupsCount() {
+            TsmSetupsCount = (await TheSetupMarketApiProvider.GetAvailableSetups(Id))?.Count;
         }
     }
 }

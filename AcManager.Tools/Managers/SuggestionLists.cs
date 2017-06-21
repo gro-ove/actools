@@ -83,7 +83,7 @@ namespace AcManager.Tools.Managers {
                               .Union(TracksManager.Instance)
                               .Union(ShowroomsManager.Instance);
 
-        private static IEnumerable<IAcObjectAuthorInformation> AuthorInformationObjects => CarsManager.Instance.OfType<IAcObjectAuthorInformation>()
+        private static IEnumerable<IAcObjectFullAuthorshipInformation> AuthorInformationObjects => CarsManager.Instance.OfType<IAcObjectFullAuthorshipInformation>()
                               .Union(TracksManager.Instance)
                               .Union(ShowroomsManager.Instance)
                               .Union(UserChampionshipsManager.Instance);

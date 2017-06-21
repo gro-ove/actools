@@ -67,7 +67,7 @@ namespace AcManager.Tools.SemiGui {
             var rsrMode = properties.GetAdditional<RsrMark>() != null;
             var form = AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId);
             if (form != null) {
-                form.IsVisible = rsrMode;
+                form.SetVisibility(rsrMode);
                 AcSettingsHolder.Forms.SaveImmediately();
             }
         }

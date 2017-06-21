@@ -22,7 +22,7 @@ namespace AcTools.Windows {
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
-        
+
         [DllImport("user32.dll")]
         public static extern bool IsZoomed(IntPtr hWnd);
 
