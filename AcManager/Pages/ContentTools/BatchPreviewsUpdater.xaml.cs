@@ -272,7 +272,7 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
-        private void OnListBoxPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnListBoxMouseDown(object sender, MouseButtonEventArgs e) {
             var listBox = (ListBox)sender;
             listBox.SelectionMode = Keyboard.Modifiers == ModifierKeys.None ? SelectionMode.Multiple : SelectionMode.Extended;
         }

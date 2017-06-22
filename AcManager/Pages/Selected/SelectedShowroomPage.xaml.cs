@@ -7,6 +7,7 @@ using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
 using AcManager.Tools;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -56,6 +57,7 @@ namespace AcManager.Pages.Selected {
                                 FixedCameraPosition = @"-1.8,0.8,3",
                                 FixedCameraLookAt = @"0,0.5,0",
                                 FixedCameraFov = 40,
+                                TemporaryDirectory = SettingsHolder.Content.TemporaryFilesLocationValue,
                             });
 
                             if (resultDirectory == null) {

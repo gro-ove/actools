@@ -33,9 +33,6 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 var httpRequest = WebRequest.Create(requestUri);
                 httpRequest.Method = "GET";
-
-                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-
                 using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
                     return response.StatusCode != HttpStatusCode.OK
                             ? null : JsonConvert.DeserializeObject<IpGeoEntry>(response.GetResponseStream()?.ReadAsStringAndDispose());

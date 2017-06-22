@@ -28,7 +28,25 @@ namespace AcManager.Tools.Helpers.Loaders {
             Logging.Debug(Url);
             if (!Url.Contains("://drive.google.com/uc?", StringComparison.OrdinalIgnoreCase)) return true;
 
-            // TODO: drop if page is bigger than, let’s say, 1MB
+            // First of all, let’s see if there is an HTML-file under that link
+            Logging.Debug("HEAD request is coming…");
+            try {
+                using (client.SetMethod("HEAD"))
+                using (client.SetAutoRedirect(false)) {
+                    await client.DownloadStringTaskAsync(Url);
+                    Logging.Debug("Done");
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+
+            // If file is freely available to download, server should redirect user to downloading
+            var location = client.ResponseHeaders?.Get("Location");
+            if (location != null) {
+                Url = location;
+                return true;
+            }
+
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 

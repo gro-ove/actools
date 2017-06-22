@@ -256,6 +256,9 @@ namespace AcManager.Tools.ContentInstallation {
             IProgress<AsyncProgressEntry> progress = this;
             ContentInstallationManager.Instance.UpdateBusyDoingSomething();
 
+            string localFilename = null;
+            var localLoaded = false;
+
             try {
                 using (var cancellation = new CancellationTokenSource()) {
                     CancellationTokenSource = cancellation;
@@ -265,8 +268,6 @@ namespace AcManager.Tools.ContentInstallation {
                         Failed = "Cancelled";
                         return false;
                     }
-
-                    string localFilename;
 
                     // Load remote file if it is remote
                     if (ContentInstallationManager.IsRemoteSource(Source)) {
@@ -285,6 +286,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     },
                                     progress: progress.Subrange(0.001, 0.999, "Downloading ({0})…"),
                                     cancellation: cancellation.Token);
+                            localLoaded = true;
                             if (CheckCancellation()) return false;
                         } catch (OperationCanceledException) {
                             CheckCancellation(true);
@@ -302,6 +304,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
                     } else {
                         localFilename = Source;
+                        localLoaded = false;
                     }
 
                     if (_installationParams.Checksum != null) {
@@ -428,6 +431,14 @@ namespace AcManager.Tools.ContentInstallation {
             } finally {
                 CancellationTokenSource = null;
                 Progress = AsyncProgressEntry.Ready;
+
+                if (localLoaded && localFilename != null) {
+                    try {
+                        File.Delete(localFilename);
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }
             }
         }
 

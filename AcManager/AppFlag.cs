@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Do not waste time checking if HTTPS stuff is valid. Who might want to hack you this way?
+        /// Example: --ignore-https
+        /// </summary>
+        IgnoreHttps,
+
+        /// <summary>
         /// Filter specifying what content CM can pack and share. Default value: kunos-.
         /// Example: --can-pack=kunos-&!private
         /// </summary>

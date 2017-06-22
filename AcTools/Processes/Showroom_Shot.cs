@@ -32,6 +32,9 @@ namespace AcTools.Processes {
                     DisableSweetFx = false,
                     SpecialResolution = false,
                     MaximizeVideoSettings = false;
+
+            [CanBeNull]
+            public string TemporaryDirectory { get; set; }
         }
 
         private static BaseShotter CreateShooter(ShotProperties properties) {
@@ -76,6 +79,7 @@ namespace AcTools.Processes {
             shooter.Fxaa = properties.Fxaa;
             shooter.SpecialResolution = properties.SpecialResolution;
             shooter.MaximizeVideoSettings = properties.MaximizeVideoSettings;
+            shooter.TemporaryDirectory = properties.TemporaryDirectory;
 
             return shooter;
         }

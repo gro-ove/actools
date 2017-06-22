@@ -65,14 +65,16 @@
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading content:" />
 
       <DockPanel>
+        <Label Content="Temporary files location:" />
+        <Button Command="{Binding ChangeTemporaryFilesLocationCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+        <mui:BetterTextBox Text="{Binding Holder.TemporaryFilesLocation}" Placeholder="{Binding DefaultTemporaryFilesLocation}" />
+      </DockPanel>
+
+      <DockPanel>
         <Label Content="Search missing content via:" />
         <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}" SelectedItem="{Binding Holder.MissingContentSearch}"
             DisplayMemberPath="DisplayName" />
       </DockPanel>
-
-      <CheckBox IsChecked="{Binding Holder.MissingContentIndexCheck}" ToolTip="Online indexes of RD, AcClub and Assetto-DB will be used">
-        <Label Content="Look for direct links to missing content" />
-      </CheckBox>
 
       <DockPanel>
         <Label Content="RaceDepartment credentials:" ToolTip="Optional, default will be used if not set" Background="Transparent" />

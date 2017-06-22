@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -206,13 +203,16 @@ namespace AcManager.Tools.Managers.Online {
                 _extendedDataLastModified = Tuple.Create(_extendedDataLastModified.Item1, result.Item2);
             }
 
-            if (result.Item1 == null) {
-                Logging.Debug("Cached information used!");
-            } else {
-                Logging.Debug("New information loaded: " + result.Item2);
+            Logging.Debug(result.Item1 == null ? "Cached information used!" : "New information loaded: " + result.Item2);
+            if (result.Item1 != null) return result.Item1;
+
+            var r = _extendedDataLastModified?.Item1;
+            if (r == null) throw new Exception("Server went mad");
+            if (r.UntilLocal != default(DateTime)) {
+                r.TimeLeft = Math.Max((long)(r.UntilLocal - DateTime.Now).TotalSeconds, 0);
             }
 
-            return result.Item1 ?? _extendedDataLastModified?.Item1 ?? throw new Exception("Server went mad");
+            return r;
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _fromKunosList;
 
         public bool FromKunosList {
-            get { return _fromKunosList; }
+            get => _fromKunosList;
             private set {
                 if (Equals(value, _fromKunosList)) return;
                 _fromKunosList = value;
@@ -251,7 +251,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _fromLan;
 
         public bool FromLan {
-            get { return _fromLan; }
+            get => _fromLan;
             private set {
                 if (Equals(value, _fromLan)) return;
                 _fromLan = value;
@@ -264,7 +264,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _fromMinoratingList;
 
         public bool FromMinoratingList {
-            get { return _fromMinoratingList; }
+            get => _fromMinoratingList;
             private set {
                 if (Equals(value, _fromMinoratingList)) return;
                 _fromMinoratingList = value;
@@ -277,7 +277,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _isFavourite;
 
         public bool IsFavourite {
-            get { return _isFavourite; }
+            get => _isFavourite;
             set {
                 if (Equals(value, _isFavourite)) return;
                 // SetIsFavorited(value);
@@ -309,7 +309,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _isExcluded;
 
         public bool IsExcluded {
-            get { return _isExcluded; }
+            get => _isExcluded;
             set {
                 if (Equals(value, _isExcluded)) return;
                 // SetIsHidden(value);
@@ -341,7 +341,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _wasUsedRecently;
 
         public bool WasUsedRecently {
-            get { return _wasUsedRecently; }
+            get => _wasUsedRecently;
             private set {
                 if (Equals(value, _wasUsedRecently)) return;
                 _wasUsedRecently = value;

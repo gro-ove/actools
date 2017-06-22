@@ -133,9 +133,8 @@
           <TextBlock Text="{Binding SelectedEntry.Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
         </DockPanel>
 
-        <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedEntry.Car.EnabledOnlySkins}" SelectionMode="Extended"
-            Style="{StaticResource VirtualizingListBox}" SelectionChanged="OnSkinsListSelectionChanged" PreviewMouseDown="OnListBoxPreviewMouseDown"
-            MouseUp="OnListBoxMouseUp" MouseLeave="OnListBoxMouseUp" PreviewKeyDown="OnSkinsListKeyDown">
+        <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedEntry.Car.EnabledOnlySkins}" Style="{StaticResource VirtualizingListBox}"
+            SelectionChanged="OnSkinsListSelectionChanged" mui:ListBoxHelper.ProperMultiSelectionMode="True">
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
               <Setter Property="Padding" Value="0" />

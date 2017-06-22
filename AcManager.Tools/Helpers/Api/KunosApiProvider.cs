@@ -53,6 +53,7 @@ namespace AcManager.Tools.Helpers.Api {
             [CanBeNull]
             public string Data;
             public DateTime LastModified;
+            public long ServerTimeStamp;
         }
 
         private static HttpClient _httpClient;
@@ -88,6 +89,17 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private static long GetServerTime(HttpResponseMessage responseMessage) {
+            var headers = responseMessage.Headers;
+            foreach (var header in headers) {
+                if (string.Equals(header.Key, "X-Server-Time", StringComparison.OrdinalIgnoreCase)) {
+                    return long.TryParse(header.Value?.FirstOrDefault(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long result) ? result : 0;
+                }
+            }
+
+            return 0;
+        }
+
         [ItemNotNull]
         private static async Task<LoadedData> LoadAsync(string uri, DateTime? ifModifiedSince, TimeSpan? timeout = null) {
             if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
@@ -106,7 +118,8 @@ namespace AcManager.Tools.Helpers.Api {
 
                     return new LoadedData {
                         Data = await response.Content.ReadAsStringAsync().ConfigureAwait(false),
-                        LastModified = response.Content.Headers.LastModified?.DateTime ?? DateTime.Now
+                        LastModified = response.Content.Headers.LastModified?.DateTime ?? DateTime.Now,
+                        ServerTimeStamp = GetServerTime(response)
                     };
                 }
             } catch (OperationCanceledException) {
@@ -234,9 +247,17 @@ namespace AcManager.Tools.Helpers.Api {
             return result;
         }
 
-        private static ServerInformationExtended PrepareLoadedDirectly(ServerInformationExtended result, string ip) {
+        private static ServerInformationExtended PrepareLoadedDirectly(ServerInformationExtended result, string ip, long serverTime) {
             if (result.Ip != ip) { // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
+            }
+
+            Logging.Debug(result.Until);
+            Logging.Debug(serverTime);
+
+            if (result.Until != 0 && serverTime != 0) {
+                result.UntilLocal = DateTime.Now + TimeSpan.FromMilliseconds(result.Until - serverTime);
+                result.TimeLeft = Math.Max((long)(result.UntilLocal - DateTime.Now).TotalSeconds, 0);
             }
 
             result.LoadedDirectly = true;
@@ -289,7 +310,7 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $@"http://{ip}:{portExt}/api/details?guid={steamId}";
             var loaded = await LoadAsync(requestUri, lastModified, OptionDirectRequestTimeout).ConfigureAwait(false);
             return Tuple.Create(loaded.Data == null ? null :
-                    PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationExtended>(loaded.Data), ip),
+                    PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationExtended>(loaded.Data), ip, loaded.ServerTimeStamp),
                     loaded.LastModified);
         }
 

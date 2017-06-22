@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;
 
@@ -10,7 +11,7 @@ namespace AcManager.Tools.Helpers {
         private const string ClassName = "acmanager";
         private const string AppTitle = "AcTools Content Manager";
 
-        private const string Version = "6";
+        private const string Version = "8";
 
         private const string KeyRegisteredLocation = "CustomUriSchemeHelper.RegisteredLocation";
         private const string KeyRegisteredVersion = "CustomUriSchemeHelper.RegisteredVersion";
@@ -55,12 +56,12 @@ namespace AcManager.Tools.Helpers {
                 }
             }
         }
-        
+
         public static void EnsureRegistered() {
             if (MainExecutingFile.IsInDevelopment) return;
 
-            if (ValuesStorage.GetString(KeyRegisteredLocation) == MainExecutingFile.Location &&
-                ValuesStorage.GetString(KeyRegisteredVersion) == Version) return;
+            // if (ValuesStorage.GetString(KeyRegisteredLocation) == MainExecutingFile.Location &&
+            //     ValuesStorage.GetString(KeyRegisteredVersion) == Version) return;
 
             try {
                 RegisterClass(ClassName, AppTitle, true, 0);
@@ -69,8 +70,6 @@ namespace AcManager.Tools.Helpers {
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
                 ValuesStorage.Set(KeyRegisteredVersion, Version);
-
-                Logging.Write("Registered!");
             } catch (Exception e) {
                 Logging.Warning("Can’t register: " + e);
             }

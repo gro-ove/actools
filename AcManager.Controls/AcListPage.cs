@@ -12,6 +12,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
@@ -55,6 +56,52 @@ namespace AcManager.Controls {
                     _list?.ScrollIntoView(_list.SelectedItem);
                 }
             });
+
+            PreviewMouseRightButtonDown += OnRightMouseDown;
+            PreviewMouseRightButtonUp += OnRightMouseClick;
+        }
+
+        private void OnRightMouseDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+        }
+
+        public static bool GetCheckBoxModeActive(DependencyObject obj) {
+            return (bool)obj.GetValue(CheckBoxModeActiveProperty);
+        }
+
+        public static void SetCheckBoxModeActive(DependencyObject obj, bool value) {
+            obj.SetValue(CheckBoxModeActiveProperty, value);
+        }
+
+        public static readonly DependencyProperty CheckBoxModeActiveProperty = DependencyProperty.RegisterAttached("CheckBoxModeActive", typeof(bool),
+                typeof(AcListPage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+
+
+        private Style _baseItemStyle;
+        private Style _checkBoxListBoxItemStyle;
+
+        private void OnRightMouseClick(object sender, MouseButtonEventArgs args) {
+            args.Handled = true;
+
+            if (_checkBoxListBoxItemStyle == null) {
+                _baseItemStyle = _list.ItemContainerStyle;
+                _checkBoxListBoxItemStyle = (Style)FindResource("AcListPageCheckBoxItem");
+            }
+
+            if (ReferenceEquals(_list.ItemContainerStyle, _checkBoxListBoxItemStyle)) {
+                _list.ItemContainerStyle = _baseItemStyle;
+                _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
+                SetCheckBoxMode(false).Forget();
+            } else {
+                _list.ItemContainerStyle = _checkBoxListBoxItemStyle;
+                _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, true);
+                SetCheckBoxMode(true).Forget();
+            }
+        }
+
+        private async Task SetCheckBoxMode(bool value) {
+            await Task.Delay(1);
+            SetCheckBoxModeActive(this, value);
         }
 
         public static readonly DependencyProperty AddNewCommandProperty = DependencyProperty.Register(nameof(AddNewCommand), typeof(CommandBase),

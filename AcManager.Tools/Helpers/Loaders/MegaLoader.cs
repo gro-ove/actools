@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcTools.Utils;
 using CG.Web.MegaApiClient;
 
 namespace AcManager.Tools.Helpers.Loaders {
@@ -34,6 +36,10 @@ namespace AcManager.Tools.Helpers.Loaders {
         public bool UsesClientToDownload => false;
 
         public Task DownloadAsync(CookieAwareWebClient client, string destination, IProgress<double> progress, CancellationToken cancellation) {
+            if (File.Exists(destination)) {
+                File.Delete(destination);
+            }
+
             return _client.DownloadFileAsync(_uri, destination, new Progress<double>(x => progress?.Report(x / 100d)), cancellation);
         }
 

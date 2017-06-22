@@ -52,7 +52,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 CancellationToken cancellation = default(CancellationToken)) {
             var fixedDirectory = directory != null;
             if (!fixedDirectory) {
-                directory = Path.GetTempPath();
+                directory = SettingsHolder.Content.TemporaryFilesLocationValue;
             }
 
             if (useCachedIfAny) {
@@ -81,6 +81,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                             : FileUtils.GetTempFileName(directory, extension);
                 }
 
+                File.WriteAllBytes(destination, new byte[0]);
                 return await TryToLoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
             }
         }
@@ -106,7 +107,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 CancellationToken cancellation = default(CancellationToken)) {
             var fixedDirectory = directory != null;
             if (!fixedDirectory) {
-                directory = Path.GetTempPath();
+                directory = SettingsHolder.Content.TemporaryFilesLocationValue;
             }
 
             if (useCachedIfAny) {
@@ -135,6 +136,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                             : FileUtils.GetTempFileName(directory, extension);
                 }
 
+                File.WriteAllBytes(destination, new byte[0]);
                 return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
             }
         }
@@ -151,7 +153,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
                 }
-            }, TimeSpan.FromMinutes(2))) {
+            }, TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
 
                 if (_proxy != null) {
@@ -175,7 +177,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
                 }
-            }, TimeSpan.FromMinutes(2))) {
+            }, TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
 
                 if (_proxy != null) {

@@ -1,249 +1,248 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
-    <ItemsPanelTemplate x:Key="HorizontalItemsPanel">
-        <StackPanel Orientation="Horizontal" />
-    </ItemsPanelTemplate>
+    xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+  <ItemsPanelTemplate x:Key="HorizontalItemsPanel">
+    <StackPanel Orientation="Horizontal" />
+  </ItemsPanelTemplate>
 
-    <ItemsPanelTemplate x:Key="WrapItemsPanel">
-        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
-    </ItemsPanelTemplate>
+  <ItemsPanelTemplate x:Key="WrapItemsPanel">
+    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+  </ItemsPanelTemplate>
 
-    <Style TargetType="ListBoxItem">
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    </Style>
+  <Style TargetType="ListBoxItem">
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+  </Style>
 
-    <Style x:Key="ListBoxItemBase" TargetType="ListBoxItem">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="Padding" Value="2" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    </Style>
+  <Style x:Key="ListBoxItemBase" TargetType="ListBoxItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Padding" Value="2" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+  </Style>
 
-    <Style x:Key="FlatListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
-                <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-                <Setter Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
-                <Setter Property="FontWeight" Value="Bold" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="FlatListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+              Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+      </Trigger>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+        <Setter Property="FontWeight" Value="Bold" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="RibbonListBoxItem.Left" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
-        <Setter Property="Padding" Value="6 2 2 2" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
-                        <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
-                        <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                Margin="{TemplateBinding Padding}" />
-                    </controls:Cell>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="RibbonListBoxItem.Left" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
+    <Setter Property="Padding" Value="6 2 2 2" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
+            <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
+            <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" />
+          </controls:Cell>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+      </Trigger>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="RibbonListBoxItem.Top" TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Left}">
-        <Setter Property="Padding" Value="2 6 2 2" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
-                        <Rectangle Fill="{TemplateBinding Background}" VerticalAlignment="Top" Height="4" />
-                        <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                Margin="{TemplateBinding Padding}" />
-                    </controls:Cell>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="RibbonListBoxItem.Top" TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Left}">
+    <Setter Property="Padding" Value="2 6 2 2" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
+            <Rectangle Fill="{TemplateBinding Background}" VerticalAlignment="Top" Height="4" />
+            <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" />
+          </controls:Cell>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style x:Key="RadioBoxListItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type  
+  <Style x:Key="RadioBoxListItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+            <StackPanel Orientation="Horizontal">
+              <RadioButton
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type
                                                  ListBoxItem}}, Path=IsSelected}" />
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </StackPanel>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Style.Triggers>
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </StackPanel>
+          </Border>
+          <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
             </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-                <Setter Property="FontWeight" Value="Normal" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
 
-    <Style x:Key="CheckBoxListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <DockPanel>
-                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type  
-                                                 ListBoxItem}}, Path=IsSelected}" IsHitTestVisible="False" DockPanel.Dock="Left" />
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </DockPanel>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+      </Trigger>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="FontWeight" Value="Normal" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
-                <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-                <Setter Property="FontWeight" Value="Normal" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="CheckBoxListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+              Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+            <DockPanel>
+              <CheckBox
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type
+                                                 ListBoxItem}}, Path=IsSelected}"
+                  IsHitTestVisible="False" DockPanel.Dock="Left" />
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </DockPanel>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
 
-    <Style TargetType="ListBox">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-        <Setter Property="ItemContainerStyle" Value="{StaticResource FlatListBoxItem}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBox">
-                    <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False">
-                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </ScrollViewer>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+      </Trigger>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="FontWeight" Value="Normal" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style TargetType="ListBox" x:Key="VirtualizingListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
-        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
-        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
-        <Setter Property="VirtualizingPanel.CacheLength" Value="1,1" />
-        <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Page" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBox">
-                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
-                        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
-                                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
-                            CacheLengthUnit="{TemplateBinding VirtualizingPanel.CacheLengthUnit}" ScrollUnit="{TemplateBinding VirtualizingPanel.ScrollUnit}"
-                            VirtualizationMode="{TemplateBinding VirtualizingPanel.VirtualizationMode}"
-                            IsVirtualizing="{TemplateBinding VirtualizingPanel.IsVirtualizing}" />
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style TargetType="ListBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource FlatListBoxItem}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBox">
+          <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False">
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </ScrollViewer>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style TargetType="ItemsControl" x:Key="VirtualizingItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
-        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
-        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
-        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
-        <Setter Property="VirtualizingPanel.CacheLength" Value="1,1" />
-        <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Page" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ItemsControl">
-                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
-                        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
-                                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
-                            CacheLengthUnit="{TemplateBinding VirtualizingPanel.CacheLengthUnit}" ScrollUnit="{TemplateBinding VirtualizingPanel.ScrollUnit}"
-                            VirtualizationMode="{TemplateBinding VirtualizingPanel.VirtualizationMode}"
-                            IsVirtualizing="{TemplateBinding VirtualizingPanel.IsVirtualizing}" />
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style TargetType="ListBox" x:Key="VirtualizingListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
+    <Setter Property="VirtualizingPanel.CacheLength" Value="1,1" />
+    <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Page" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBox">
+          <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
+              Padding="{TemplateBinding Padding}">
+            <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </ScrollViewer>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
+              CacheLengthUnit="{TemplateBinding VirtualizingPanel.CacheLengthUnit}" ScrollUnit="{TemplateBinding VirtualizingPanel.ScrollUnit}"
+              VirtualizationMode="{TemplateBinding VirtualizingPanel.VirtualizationMode}" IsVirtualizing="{TemplateBinding VirtualizingPanel.IsVirtualizing}" />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="ItemsControl" x:Key="VirtualizingItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
+    <Setter Property="VirtualizingPanel.CacheLength" Value="1,1" />
+    <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Page" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ItemsControl">
+          <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
+              Padding="{TemplateBinding Padding}">
+            <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </ScrollViewer>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
+              CacheLengthUnit="{TemplateBinding VirtualizingPanel.CacheLengthUnit}" ScrollUnit="{TemplateBinding VirtualizingPanel.ScrollUnit}"
+              VirtualizationMode="{TemplateBinding VirtualizingPanel.VirtualizationMode}" IsVirtualizing="{TemplateBinding VirtualizingPanel.IsVirtualizing}" />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

@@ -7,19 +7,16 @@ namespace AcManager.Tools.Helpers.Loaders {
     public class DirectLoader : ILoader {
         protected string Url;
 
-        public virtual long TotalSize { get; protected set; } = -1L;
-
-        private string _fileName;
-
-        public virtual string FileName {
-            get => _fileName;
-            protected set => _fileName = value;
-        }
-
-        public virtual string Version { get; protected set; }
+        public long TotalSize { get; protected set; } = -1L;
+        public string Version { get; protected set; }
+        public string FileName { get; protected set; }
 
         public DirectLoader(string url) {
-            _fileName = Path.GetFileName(url);
+            if (GetType() == typeof(DirectLoader)) {
+                FileName = Path.GetFileName(url)?.Split('?', '&')[0];
+                if (FileName == "") FileName = null;
+            }
+
             Url = url;
         }
 

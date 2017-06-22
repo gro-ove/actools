@@ -138,7 +138,7 @@ namespace AcManager {
             }
         }
 
-        private static string CommunicationFilename => Path.Combine(Path.GetTempPath(), "__CM_SnappySandybrownTerrier_811447478013131345");
+        private static string CommunicationFilename => Path.Combine(Path.GetTempPath(), "__cm_cuymbo6r");
 
         [Localizable(false)]
         private static string PackArgs(IEnumerable<string> args) {

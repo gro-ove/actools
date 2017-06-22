@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -211,11 +212,11 @@ namespace AcManager.Tools.Helpers {
 
             public bool LoadServersWithMissingContent {
                 get => _loadServersWithMissingContent ??
-                        (_loadServersWithMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServersWithMissingContent", true)).Value;
+                        (_loadServersWithMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServersWithMissingContent2", true)).Value;
                 set {
                     if (Equals(value, _loadServersWithMissingContent)) return;
                     _loadServersWithMissingContent = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.LoadServersWithMissingContent", value);
+                    ValuesStorage.Set("Settings.OnlineSettings.LoadServersWithMissingContent2", value);
                     OnPropertyChanged();
                 }
             }
@@ -1477,6 +1478,22 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private string _temporaryFilesLocation;
+
+            public string TemporaryFilesLocation {
+                get { return _temporaryFilesLocation ?? (_temporaryFilesLocation = ValuesStorage.GetString("Settings.ContentSettings.TemporaryFilesLocation", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _temporaryFilesLocation)) return;
+                    _temporaryFilesLocation = value;
+                    ValuesStorage.Set("Settings.ContentSettings.TemporaryFilesLocation", value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(TemporaryFilesLocationValue));
+                }
+            }
+
+            public string TemporaryFilesLocationValue => TemporaryFilesLocation == "" ? Path.GetTempPath() : TemporaryFilesLocation;
 
             private string _rdLogin;
 

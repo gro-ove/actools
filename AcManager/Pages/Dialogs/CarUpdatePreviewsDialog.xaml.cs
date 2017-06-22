@@ -738,6 +738,7 @@ namespace AcManager.Pages.Dialogs {
                     FixedCameraLookAt = CameraLookAt,
                     FixedCameraFov = CameraFov,
                     FixedCameraExposure = CameraExposure ?? 0d,
+                    TemporaryDirectory = SettingsHolder.Content.TemporaryFilesLocationValue,
                 }, this, cancellation);
                 if (cancellation.IsCancellationRequested) return;
             } catch (ProcessExitedException e) when (applyImmediately) {

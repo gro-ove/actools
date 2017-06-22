@@ -11,10 +11,20 @@ namespace AcManager.Tools.Helpers {
         private string _method;
 
         public IDisposable SetMethod(string method) {
-            var oldMethod = _method;
+            var oldValue = _method;
             _method = method;
             return new ActionAsDisposable(() => {
-                _method = oldMethod;
+                _method = oldValue;
+            });
+        }
+
+        private bool? _autoRedirect;
+
+        public IDisposable SetAutoRedirect(bool value) {
+            var oldValue = _autoRedirect;
+            _autoRedirect = value;
+            return new ActionAsDisposable(() => {
+                _autoRedirect = oldValue;
             });
         }
 
@@ -47,6 +57,10 @@ namespace AcManager.Tools.Helpers {
 
             if (webRequest != null) {
                 webRequest.CookieContainer = _container;
+
+                if (_autoRedirect.HasValue) {
+                    webRequest.AllowAutoRedirect = _autoRedirect.Value;
+                }
 
                 if (!string.IsNullOrEmpty(_method)) {
                     webRequest.Method = _method;

@@ -423,7 +423,10 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "maxContactsPerKm")]
         public double? MaxContactsPerKm { get; set; }
 
+        [JsonProperty(PropertyName = "until")]
+        public long Until { get; set; }
+
         [JsonIgnore]
-        public DateTime LoadedAt { get; set; }
+        public DateTime UntilLocal { get; set; }
     }
 }

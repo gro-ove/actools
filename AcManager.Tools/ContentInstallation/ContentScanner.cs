@@ -463,7 +463,8 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             var uiCarSkin = directory.GetSubFile("ui_skin.json");
-            if (uiCarSkin != null && CarsManager.Instance != null /* for crawlers only */) {
+            if ((uiCarSkin != null || directory.HasSubFile("preview.jpg") || directory.HasSubFile("livery.png"))
+                    && CarsManager.Instance != null /* for crawlers only */) {
                 var icon = await (directory.GetSubFile("livery.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                 cancellation.ThrowIfCancellationRequested();
 
@@ -487,13 +488,19 @@ namespace AcManager.Tools.ContentInstallation {
                     throw new Exception("Can’t figure out car’s ID");
                 }
 
-                var data = await uiCarSkin.Info.ReadAsync() ?? throw new MissingContentException();
-                var parsed = JsonExtension.Parse(data.ToUtf8String());
                 var skinId = directory.Name;
+                if (skinId != null){
+                    string name;
+                    if (uiCarSkin != null) {
+                        var data = await uiCarSkin.Info.ReadAsync() ?? throw new MissingContentException();
+                        var parsed = JsonExtension.Parse(data.ToUtf8String());
+                        name = parsed.GetStringValueOnly("name");
+                    } else {
+                        name = AcStringValues.NameFromId(skinId);
+                    }
 
-                if (skinId != null) {
                     return new CarSkinContentEntry(directory.Key ?? "", skinId, carId,
-                            parsed.GetStringValueOnly("name"), icon);
+                            name, icon);
                 }
             }
 

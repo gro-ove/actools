@@ -97,6 +97,10 @@ namespace AcManager {
         private AppHibernator _hibernator;
 
         private App() {
+            if (AppArguments.GetBool(AppFlag.IgnoreHttps)) {
+                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+            }
+
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
