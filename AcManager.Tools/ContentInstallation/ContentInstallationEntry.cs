@@ -371,18 +371,17 @@ namespace AcManager.Tools.ContentInstallation {
                                 return false;
                             }
 
-                            var wrappers = new List<EntryWrapper>();
-                            foreach (var entry in entries) {
-                                wrappers.Add(new EntryWrapper(entry, await entry.GetExistingAcCommonObjectAsync()));
-                                entry.SingleEntry = entries.Count == 1;
-                            }
-
-                            if (wrappers.Count == 0) {
+                            if (entries.Count == 0) {
                                 Failed = "Nothing to install";
                                 return false;
                             }
 
-                            Entries = wrappers.ToArray();
+                            foreach (var entry in entries) {
+                                entry.SingleEntry = entries.Count == 1;
+                                await entry.CheckExistingAsync();
+                            }
+
+                            Entries = entries.ToArray();
                             ExtraOptions = (await GetExtraOptionsAsync(Entries)).ToArray();
 
                             if (CheckCancellation()) return false;
@@ -391,7 +390,7 @@ namespace AcManager.Tools.ContentInstallation {
                             if (CheckCancellation()) return false;
 
                             var toInstall = (await Entries.Where(x => x.Active)
-                                                          .Select(x => x.Entry.GetInstallationDetails(cancellation.Token)).WhenAll(15)).ToList();
+                                                          .Select(x => x.GetInstallationDetails(cancellation.Token)).WhenAll(15)).ToList();
                             if (toInstall.Count == 0 || CheckCancellation()) return false;
 
                             foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
@@ -420,7 +419,7 @@ namespace AcManager.Tools.ContentInstallation {
                         Failed = "Cancelled";
                         return false;
                     } catch (Exception e) {
-                        Failed = "Can’t find content: " + e.Message;
+                        Failed = "Can’t find content: " + e.Message.ToSentenceMember();
                         Logging.Warning(e);
                         return false;
                     }
@@ -443,48 +442,9 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         #region Found entries
-        public class EntryWrapper : NotifyPropertyChanged {
-            [NotNull]
-            public ContentEntryBase Entry { get; }
+        private ContentEntryBase[] _entries;
 
-            [CanBeNull]
-            public AcCommonObject Existing { get; }
-
-            private bool _active;
-
-            public bool Active {
-                get => _active;
-                set {
-                    if (Equals(value, _active)) return;
-                    _active = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            public EntryWrapper([NotNull] ContentEntryBase entry, [CanBeNull] AcCommonObject existing) {
-                Entry = entry;
-                Existing = existing;
-                IsNew = existing == null;
-                ExistingVersion = (existing as IAcObjectVersionInformation)?.Version;
-                Active = true;
-                IsNewer = entry.Version.IsVersionNewerThan(ExistingVersion);
-                IsOlder = entry.Version.IsVersionOlderThan(ExistingVersion);
-            }
-
-            public bool IsNew { get; set; }
-
-            [CanBeNull]
-            public string ExistingVersion { get; }
-
-            public bool IsNewer { get; set; }
-            public bool IsOlder { get; set; }
-
-            public string DisplayName => IsNew ? Entry.GetNew(Entry.Name) : Entry.GetExisting(Existing?.DisplayName ?? Entry.Name);
-        }
-
-        private EntryWrapper[] _entries;
-
-        public EntryWrapper[] Entries {
+        public ContentEntryBase[] Entries {
             get => _entries;
             set {
                 if (Equals(value, _entries)) return;

@@ -1,4 +1,5 @@
 using System;
+using AcManager.Tools.Managers.Presets;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -6,7 +7,7 @@ namespace AcManager.Tools.Helpers {
         bool CanBeSaved { get; }
 
         [NotNull]
-        string PresetableCategory { get; }
+        PresetsCategory PresetableCategory { get; }
 
         [NotNull]
         string PresetableKey { get; }

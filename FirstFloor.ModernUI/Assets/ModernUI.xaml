@@ -1,85 +1,55 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Button.xaml" />
-        <ResourceDictionary Source="ButtonWithComboBox.xaml" />
-        <ResourceDictionary Source="Calendar.xaml" />
-        <ResourceDictionary Source="CheckBox.xaml" />
-        <ResourceDictionary Source="ColorPicker.xaml" />
-        <ResourceDictionary Source="ComboBox.xaml" />
-        <ResourceDictionary Source="ContextMenu.xaml" />
-        <ResourceDictionary Source="DataGrid.xaml" />
-        <ResourceDictionary Source="DatePicker.xaml" />
-        <ResourceDictionary Source="Fonts.xaml" />
-        <ResourceDictionary Source="GridSplitter.xaml" />
-        <ResourceDictionary Source="Hyperlink.xaml" />
-        <ResourceDictionary Source="Label.xaml" />
-        <ResourceDictionary Source="ListBox.xaml" />
-        <ResourceDictionary Source="ListView.xaml" />
-        <ResourceDictionary Source="ModernProgressRing.xaml" />
-        <ResourceDictionary Source="ModernWindowEx.xaml" />
-        <ResourceDictionary Source="MenuItem.xaml" />
-        <ResourceDictionary Source="PasswordBox.xaml" />
-        <ResourceDictionary Source="ProgressBar.xaml" />
-        <ResourceDictionary Source="RadioButton.xaml" />
-        <ResourceDictionary Source="ScrollBar.xaml" />
-        <ResourceDictionary Source="Slider.xaml" />
-        <ResourceDictionary Source="TextBlock.xaml" />
-        <ResourceDictionary Source="TextBox.xaml" />
-        <ResourceDictionary Source="ToolBar.xaml" />
-        <ResourceDictionary Source="ToolTip.xaml" />
-        <ResourceDictionary Source="TreeView.xaml" />
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:windows="clr-namespace:FirstFloor.ModernUI.Windows"
+    xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="Button.xaml" />
+    <ResourceDictionary Source="ButtonWithComboBox.xaml" />
+    <ResourceDictionary Source="Calendar.xaml" />
+    <ResourceDictionary Source="CheckBox.xaml" />
+    <ResourceDictionary Source="ColorPicker.xaml" />
+    <ResourceDictionary Source="ComboBox.xaml" />
+    <ResourceDictionary Source="ContextMenu.xaml" />
+    <ResourceDictionary Source="DataGrid.xaml" />
+    <ResourceDictionary Source="DatePicker.xaml" />
+    <ResourceDictionary Source="Easing.xaml" />
+    <ResourceDictionary Source="Fonts.xaml" />
+    <ResourceDictionary Source="GridSplitter.xaml" />
+    <ResourceDictionary Source="Hyperlink.xaml" />
+    <ResourceDictionary Source="Label.xaml" />
+    <ResourceDictionary Source="Layout.xaml" />
+    <ResourceDictionary Source="ListBox.xaml" />
+    <ResourceDictionary Source="ListView.xaml" />
+    <ResourceDictionary Source="ModernProgressRing.xaml" />
+    <ResourceDictionary Source="ModernWindowEx.xaml" />
+    <ResourceDictionary Source="MenuItem.xaml" />
+    <ResourceDictionary Source="PasswordBox.xaml" />
+    <ResourceDictionary Source="ProgressBar.xaml" />
+    <ResourceDictionary Source="RadioButton.xaml" />
+    <ResourceDictionary Source="ScrollBar.xaml" />
+    <ResourceDictionary Source="Slider.xaml" />
+    <ResourceDictionary Source="TextBlock.xaml" />
+    <ResourceDictionary Source="TextBox.xaml" />
+    <ResourceDictionary Source="ToolBar.xaml" />
+    <ResourceDictionary Source="ToolTip.xaml" />
+    <ResourceDictionary Source="TreeView.xaml" />
 
-        <ResourceDictionary Source="FancyScroll.xaml" />
-        <ResourceDictionary Source="Marks.xaml" />
-        <ResourceDictionary Source="ProperPasswordBox.xaml" />
-        <ResourceDictionary Source="Watermark.xaml" />
+    <ResourceDictionary Source="FancyScroll.xaml" />
+    <ResourceDictionary Source="Marks.xaml" />
+    <ResourceDictionary Source="ProperPasswordBox.xaml" />
+    <ResourceDictionary Source="Watermark.xaml" />
 
-        <ResourceDictionary Source="BetterTextBox.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="BetterTextBox.xaml" />
+    <ResourceDictionary Source="{x:Static presentation:AppearanceManager.DefaultValuesSource}" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <!-- default accent colors and brushes -->
-    <Color x:Key="AccentColor">#1ba1e2</Color>
-    <Color x:Key="GoColor">Lime</Color>
-    <Color x:Key="ErrorColor">DarkOrange</Color>
-    <sys:Double x:Key="BackgroundAccentOpacity">0.18</sys:Double>
+  <!-- Basic color brushes -->
+  <SolidColorBrush x:Key="Accent" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="Go" Color="{DynamicResource GoColor}" />
+  <SolidColorBrush x:Key="Error" Color="{DynamicResource ErrorColor}" />
 
-    <SolidColorBrush x:Key="Accent" Color="{DynamicResource AccentColor}" />
-    <SolidColorBrush x:Key="Go" Color="{DynamicResource GoColor}" />
-    <SolidColorBrush x:Key="Error" Color="{DynamicResource ErrorColor}" />
-
-    <!-- font settings -->
-    <sys:Double x:Key="DefaultFontSize">13</sys:Double>
-    <sys:Double x:Key="FixedFontSize">13.333</sys:Double>
-    <sys:Double x:Key="SmallFontSize">11</sys:Double>
-    <sys:Double x:Key="ModernSubMenuFontSize">11</sys:Double>
-
-    <!-- layout margins -->
-    <Thickness x:Key="RootMargin">0</Thickness>
-    <Thickness x:Key="ContentMargin">0 8 0 0</Thickness>
-    <Thickness x:Key="ContentMarginWithPadding">20</Thickness>
-    <Thickness x:Key="InnerContentMargin">16 28 16 16</Thickness>
-    <Thickness x:Key="StatusMargin">16 8 4 8</Thickness>
-    <Thickness x:Key="HeaderMargin">0 -28 44 0</Thickness>
-
-    <!-- bottom row, to override in dialogs -->
-    <Style x:Key="BottomRow" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="0 20 0 0" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
-
-    <Thickness x:Key="SplitLeft">0 0 0 0</Thickness>
-    <Thickness x:Key="SplitRight">16 0 0 0</Thickness>
-
-    <Style x:Key="ContentRoot" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource ContentMargin}" />
-    </Style>
-
-    <Style x:Key="ContentRootWithPadding" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource ContentMarginWithPadding}" />
-    </Style>
-
-    <Style x:Key="InnerContentRoot" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource InnerContentMargin}" />
-    </Style>
+  <!-- Font settings -->
+  <sys:Double x:Key="DefaultFontSize">13</sys:Double>
+  <sys:Double x:Key="FixedFontSize">13.333</sys:Double>
+  <sys:Double x:Key="SmallFontSize">11</sys:Double>
+  <sys:Double x:Key="ModernSubMenuFontSize">11</sys:Double>
 </ResourceDictionary>

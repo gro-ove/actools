@@ -6,7 +6,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

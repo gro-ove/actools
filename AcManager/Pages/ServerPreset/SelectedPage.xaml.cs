@@ -16,6 +16,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -368,7 +369,7 @@ namespace AcManager.Pages.ServerPreset {
 
             public void InitializePackServerPresets() {
                 if (PackServerPresets == null) {
-                    PackServerPresets = _helper.Create(PackServerDialog.ViewModel.PresetableKeyValue, p => {
+                    PackServerPresets = _helper.Create(new PresetsCategory(PackServerDialog.ViewModel.PresetableKeyValue), p => {
                         new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Forget();
                     });
                 }

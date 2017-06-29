@@ -23,12 +23,12 @@ Here is a small list of shortcuts available for Custom Showroom in 0.8.808:
  • [b]Shift+R[/b]: toggle SSLR’s interpolation mode (point/linear; linear by default, so I wouldn’t recommend to press it);
  • [b]W[/b]: toggle wireframe mode.
 [b]Shots:[/b]
- • [b]F8[/b]: take a shot in 4xSSAA resolution and then downsize it to 50% for best antialising;
- • [b]F8+Shift[/b]: take a shot in 4xSSAA resolution, but don’t downsize;
- • [b]F8+Alt[/b]: take a shot in 16xSSAA resolution, downsize to 50%;
- • [b]F8+Alt+Shift[/b]: take a shot in 16xSSAA resolution, but don’t downsize;
- • [b]F8+Ctrl[/b]: take a shot in 64xSSAA resolution, downsize to 50% (will be splitted to pieces, more details [url="/Pages/About/ImportantTipsPage.xaml?Key=bigScreenshots"]here[/url]);
- • [b]F8+Ctrl+Shift[/b]: take a shot in 64xSSAA resolution, but don’t downsize;
+ • [b]F8[/b]: take a shot in 2x per each side resolution and then downsize it to 50% for best antialising;
+ • [b]F8+Shift[/b]: take a shot in 2x per each side resolution, but don’t downsize;
+ • [b]F8+Alt[/b]: take a shot in 4x per each side resolution, downsize to 50%;
+ • [b]F8+Alt+Shift[/b]: take a shot in 4x per each side resolution, but don’t downsize;
+ • [b]F8+Ctrl[/b]: take a shot in 8x per each side resolution, downsize to 50% (will be splitted to pieces, more details [url="/Pages/About/ImportantTipsPage.xaml?Key=bigScreenshots"]here[/url]);
+ • [b]F8+Ctrl+Shift[/b]: take a shot in 8x per each side resolution, but don’t downsize;
  • [b]F8+Ctrl+Alt[/b]: take a shot in original resolution, downsize to 50%;
  • [b]F8+Ctrl+Alt+Shift[/b]: take a shot in original resolution, but don’t downsize.
 [b]Car:[/b]

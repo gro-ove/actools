@@ -29,9 +29,7 @@ namespace AcManager.Controls.Dialogs {
         }
 
         public bool CanBeSaved => false;
-
-        public string PresetableCategory => _parent.PresetableCategory;
-
+        public PresetsCategory PresetableCategory => _parent.PresetableCategory;
         public string PresetableKey => _key;
 
         public string ExportToPresetData() {
@@ -74,7 +72,7 @@ namespace AcManager.Controls.Dialogs {
                 SelectedCar = carObject;
                 SelectedSkinId = selectedSkinId ?? SelectedCar.SelectedSkin?.Id;
 
-                VideoPresets = _helper.CreateGroup(AcSettingsHolder.VideoPresetsKey, "", "Default");
+                VideoPresets = _helper.CreateGroup(AcSettingsHolder.VideoPresetsCategory, "", "Default");
 
                 _saveable = new SaveHelper<SaveableData>("__CarOpenInShowroom", () => new SaveableData {
                     ShowroomId = SelectedShowroom?.Id,
@@ -231,10 +229,8 @@ namespace AcManager.Controls.Dialogs {
             public AcEnabledOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.EnabledOnlyCollection;
 
             public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
-
             string IUserPresetable.PresetableKey => PresetableKeyValue;
-
-            string IUserPresetable.PresetableCategory => PresetableKeyValue;
+            PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(PresetableKeyValue);
 
             public string ExportToPresetData() {
                 return _saveable.ToSerializedString();

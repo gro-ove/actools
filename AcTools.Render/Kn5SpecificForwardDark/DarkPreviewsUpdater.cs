@@ -8,10 +8,12 @@ using AcTools.DataFile;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 using ThreadPool = AcTools.Render.Base.Utils.ThreadPool;
 
@@ -104,6 +106,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool UseAccumulationDof = false;
         public int AccumulationDofIterations = 300;
         public double AccumulationDofApertureSize = 0.01;
+
+        [CanBeNull]
+        public string SerializedLights;
 
         #region Checksum
         private static int GetHashCode(double[] array) {
@@ -219,8 +224,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _renderer = existingRenderer;
                 _carId = existingRenderer.CarNode?.CarId;
 
-                existingRenderer.AutoloadCarLights = false;
-                existingRenderer.AutoloadShowroomLights = false;
+                existingRenderer.AutoloadCarLights = true;
+                existingRenderer.AutoloadShowroomLights = true;
                 existingRenderer.Lights = existingRenderer.Lights.Where(x => !x.Tag.IsCarTag && !x.Tag.IsShowroomTag).ToArray();
             }
         }
@@ -268,9 +273,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             var renderer = new DarkKn5ObjectRenderer(initialCar, showroom) {
-                AutoloadCarLights = false,
-                AutoloadShowroomLights = false
+                AutoloadCarLights = true,
+                AutoloadShowroomLights = true
             };
+
             SetRendererOptions(renderer, options);
 
             renderer.SelectSkin(initialSkinId);
@@ -353,6 +359,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.UseAccumulationDof = options.UseAccumulationDof;
             renderer.AccumulationDofIterations = options.AccumulationDofIterations;
             renderer.AccumulationDofApertureSize = (float)options.AccumulationDofApertureSize;
+
+            // Lights
+            AcToolsLogging.Write(options.SerializedLights);
+            renderer.DeserializeLights(DarkLightTag.Extra, JArray.Parse(options.SerializedLights ?? @"[]").OfType<JObject>());
         }
 
         private static void SetRendererCarOptions(DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {

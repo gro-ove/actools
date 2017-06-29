@@ -18,12 +18,16 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public class FontObjectBitmap {
         public FontObjectBitmap(string bitmapFilename, string fontFilename) :
-                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {}
+                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {
+            Logging.Debug(bitmapFilename);
+        }
 
         public FontObjectBitmap(byte[] bitmapData, byte[] fontData) :
                 this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).BitmapSource, fontData) {}
 
-        public FontObjectBitmap(BitmapSource font, byte[] fontData) {
+        private FontObjectBitmap(BitmapSource font, byte[] fontData) {
+            Logging.Here();
+            Logging.Debug(font);
             _fontBitmapImage = font;
 
             try {
@@ -66,7 +70,9 @@ namespace AcManager.Tools.Objects {
             width = Math.Min(width, 1d - x);
 
             var rect = new Int32Rect((int)(x * _fontBitmapImage.PixelWidth), 0, (int)(width * _fontBitmapImage.PixelWidth), _fontBitmapImage.PixelHeight);
-            return new CroppedBitmap(_fontBitmapImage, rect);
+            var result = new CroppedBitmap(_fontBitmapImage, rect);
+            result.Freeze();
+            return result;
         }
 
         public CroppedBitmap GetIcon() {
@@ -134,18 +140,25 @@ namespace AcManager.Tools.Objects {
         private CroppedBitmap _iconBitmap;
         private bool _iconBitmapLoaded;
 
+        private async Task LoadIcon() {
+            _iconBitmapLoaded = true;
+
+            try {
+                _iconBitmap = await Task.Run(() => FontObjectBitmap.GetIcon());
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t load font’s icon", e);
+            }
+
+            OnPropertyChanged(nameof(IconBitmap));
+        }
+
         public CroppedBitmap IconBitmap {
             get {
-                if (_iconBitmapLoaded) return _iconBitmap;
+                if (!_iconBitmapLoaded) {
+                    LoadIcon().Forget();
+                }
 
-                _iconBitmapLoaded = true;
-                _iconBitmap = FontObjectBitmap.GetIcon();
                 return _iconBitmap;
-            }
-            set {
-                if (Equals(value, _iconBitmap)) return;
-                _iconBitmap = value;
-                OnPropertyChanged();
             }
         }
 

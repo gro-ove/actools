@@ -2,10 +2,17 @@
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
-    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-    <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Easing.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Layout.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TreeView.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+    <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style x:Key="GroupBoxExpander" TargetType="Expander">
@@ -40,84 +47,51 @@
 
   <Style TargetType="ac:AcListPage">
     <Style.Resources>
-      <Style x:Key="AcListPageCheckBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="ListBoxItem">
-              <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                  Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                <DockPanel>
-                  <TextBlock Text="{Binding (ac:AcListPage.CheckBoxModeActive), RelativeSource={RelativeSource Self}}" />
-                  <TextBlock Text="{Binding (ac:AcListPage.CheckBoxModeActive), RelativeSource={RelativeSource AncestorType={x:Type ac:AcListPage}}}" />
-                  <CheckBox x:Name="PART_CheckBox"
-                      IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}"
-                      IsHitTestVisible="False" DockPanel.Dock="Left" Margin="10 0 -10 0" Width="20">
-                    <CheckBox.Style>
-                      <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                        <Style.Triggers>
-                          <DataTrigger
-                              Binding="{Binding (ac:AcListPage.CheckBoxModeActive), RelativeSource={RelativeSource Self}}"
-                              Value="True">
-                            <!--<DataTrigger.EnterActions>
-                              <BeginStoryboard>
-                                <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
-                                  <DoubleAnimation To="22" Duration="0:0:0.3" />
-                                </Storyboard>
-                              </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                              <BeginStoryboard>
-                                <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
-                                  <DoubleAnimation To="0" Duration="0:0:0.3" />
-                                </Storyboard>
-                              </BeginStoryboard>
-                            </DataTrigger.ExitActions>-->
-                            <DataTrigger.EnterActions>
-                              <BeginStoryboard>
-                                <Storyboard FillBehavior="HoldEnd" TargetProperty="Background">
-                                  <ColorAnimation To="Red" Duration="0:0:0.3" />
-                                </Storyboard>
-                              </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                              <BeginStoryboard>
-                                <Storyboard FillBehavior="HoldEnd" TargetProperty="Background">
-                                  <ColorAnimation To="Yellow" Duration="0:0:0.3" />
-                                </Storyboard>
-                              </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                          </DataTrigger>
-                          <!--<EventTrigger RoutedEvent="Loaded">
-                            <BeginStoryboard>
-                              <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
-                                <DoubleAnimation To="22" Duration="0:0:0.3" />
-                              </Storyboard>
-                            </BeginStoryboard>
-                          </EventTrigger>-->
-                        </Style.Triggers>
-                      </Style>
-                    </CheckBox.Style>
-                  </CheckBox>
-                  <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </DockPanel>
-              </Border>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
+      <ControlTemplate x:Key="AcListPageCheckBoxItemTemplate" TargetType="ListBoxItem">
+        <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}" Padding="2">
+          <DockPanel>
+            <CheckBox x:Name="PART_CheckBox"
+                IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" IsHitTestVisible="False"
+                DockPanel.Dock="Left" Margin="10 0 -11 0" Width="0" />
+            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </DockPanel>
+        </Border>
 
+        <ControlTemplate.Triggers>
+          <DataTrigger Binding="{Binding Path=(ac:AcListPage.ActiveBoolHolder).Value, ElementName=PART_CheckBox}" Value="True">
+            <DataTrigger.EnterActions>
+              <BeginStoryboard>
+                <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
+                  <DoubleAnimation To="22" Duration="0:0:0.2" EasingFunction="{StaticResource StandartEase}" Storyboard.TargetName="PART_CheckBox" />
+                </Storyboard>
+              </BeginStoryboard>
+            </DataTrigger.EnterActions>
+            <DataTrigger.ExitActions>
+              <BeginStoryboard>
+                <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
+                  <DoubleAnimation To="0" Duration="0:0:0.2" EasingFunction="{StaticResource StandartEase}" Storyboard.TargetName="PART_CheckBox" />
+                </Storyboard>
+              </BeginStoryboard>
+            </DataTrigger.ExitActions>
+          </DataTrigger>
+
+          <!--<DataTrigger Value="True">
+            <DataTrigger.Binding>
+              <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ac:AcListPage}}" Path="SelectedWrapper" />
+                <Binding />
+              </MultiBinding>
+            </DataTrigger.Binding>
+            <Setter TargetName="PART_Bg" Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
+            <Setter TargetName="PART_ContentHighlight" Property="Clip" Value="{x:Null}" />
+            <Setter TargetName="PART_Content" Property="Visibility" Value="Collapsed" />
+          </DataTrigger>-->
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+
+      <Style x:Key="AcListPageCheckBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
+        <Setter Property="Template" Value="{StaticResource AcListPageCheckBoxItemTemplate}" />
         <Style.Triggers>
-          <Trigger Property="IsMouseOver" Value="True">
-            <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
-            <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-          </Trigger>
-          <Trigger Property="IsSelected" Value="True">
-            <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-            <Setter Property="FontWeight" Value="Normal" />
-          </Trigger>
-          <Trigger Property="IsEnabled" Value="False">
-            <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-          </Trigger>
           <Trigger Property="IsMouseOver" Value="True">
             <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
             <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
@@ -146,16 +120,24 @@
               <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Grid>
+            <Grid ZIndex="10">
               <Grid.RowDefinitions>
                 <RowDefinition />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="33" />
               </Grid.RowDefinitions>
 
               <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
                   ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" mui:SaveScroll.Key="{TemplateBinding SaveScrollKey}">
+                <ListBox.Template>
+                  <ControlTemplate TargetType="ListBox">
+                    <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+                        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                      <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </ScrollViewer>
+                  </ControlTemplate>
+                </ListBox.Template>
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
@@ -170,13 +152,126 @@
                     Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>
+
+              <mui:Cell x:Name="PART_BatchMenuTransform" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Bottom" Height="89.000"
+                  Background="{DynamicResource Accent}" TextBlock.Foreground="White" Margin="0 0 -4 0">
+                <FrameworkElement.RenderTransform>
+                  <TranslateTransform Y="89.000" />
+                </FrameworkElement.RenderTransform>
+
+                <Border x:Name="PART_BatchBlock" Panel.ZIndex="2" Padding="8" Background="{DynamicResource Accent}">
+                  <mui:SpacingStackPanel VerticalAlignment="Top" Spacing="8">
+                    <mui:HierarchicalComboBox x:Name="PART_BatchActions" Style="{StaticResource HierarchicalComboBox.Borderless.White}" BorderBrush="White" />
+                    <TextBlock DataContext="{Binding SelectedBatchAction.Description, RelativeSource={RelativeSource TemplatedParent}}" Text="{Binding}"
+                        Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Style="{StaticResource Small}"
+                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+
+                    <Grid x:Name="PART_BatchBlock_ButtonsGrid" Height="27">
+                      <FrameworkElement.Resources>
+                        <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
+                      </FrameworkElement.Resources>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="1*" />
+                      </Grid.ColumnDefinitions>
+
+                      <Button x:Name="PART_BatchBlock_RunButton" Padding="8 3 8 5" Height="27"
+                          IsEnabled="{Binding SelectedItems.Count, ElementName=ItemsList, Converter={StaticResource MoreConverter}}">
+                        <DockPanel>
+                          <Path Width="8" Height="8" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0"
+                              Stretch="Fill" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                              Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z" />
+                          <TextBlock x:Name="PART_BatchBlock_RunButton_Text" VerticalAlignment="Center" Margin="4 0 0 0">
+                            <TextBlock.Text>
+                              <MultiBinding StringFormat="{}{0}: {1}">
+                                <Binding Path="SelectedBatchAction.DisplayApply" TargetNullValue="Run" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="SelectedAmount" RelativeSource="{RelativeSource TemplatedParent}" />
+                              </MultiBinding>
+                            </TextBlock.Text>
+                          </TextBlock>
+                        </DockPanel>
+                      </Button>
+                      <Button x:Name="PART_BatchBlock_CloseButton" Padding="8 3 8 5" Height="27" Grid.Column="2">
+                        <DockPanel>
+                          <mui:Cell Width="8" Height="8" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0">
+                            <Line X1="-5.01" X2="12.99" Y1="-5.01" Y2="12.99" StrokeThickness="1"
+                                Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+                            <Line X1="-5.01" X2="12.99" Y1="12.99" Y2="-5.01" StrokeThickness="1"
+                                Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+                          </mui:Cell>
+                          <TextBlock x:Name="PART_BatchBlock_CloseButton_Text" Text="{x:Static mui:UiStrings.Close}" VerticalAlignment="Center"
+                              Margin="4 0 0 0" />
+                        </DockPanel>
+                      </Button>
+                    </Grid>
+                  </mui:SpacingStackPanel>
+                </Border>
+              </mui:Cell>
             </Grid>
 
-            <!-- seperator -->
+            <!-- Separator -->
             <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage" />
-            <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal"
+            <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0" TransitionName="Normal"
                 TopSource="{x:Null}" />
+
+            <!-- Batch params -->
+            <Border Grid.Column="2" x:Name="PART_BatchActionParams_Wrapper" Panel.ZIndex="2" Margin="-9 0 0 0" VerticalAlignment="Bottom" Height="89.000">
+              <FrameworkElement.RenderTransform>
+                <TranslateTransform Y="89.000" />
+              </FrameworkElement.RenderTransform>
+              <Border x:Name="PART_BatchActionParams" Background="{DynamicResource Accent}" Padding="8">
+                <FrameworkElement.RenderTransform>
+                  <TranslateTransform X="0" />
+                </FrameworkElement.RenderTransform>
+                <FrameworkElement.Resources>
+                  <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
+                </FrameworkElement.Resources>
+                <DockPanel TextBlock.Foreground="{DynamicResource WindowText}">
+                  <ContentPresenter x:Name="PART_BatchAction" Margin="20 0" />
+                </DockPanel>
+              </Border>
+            </Border>
           </Grid>
+
+          <ControlTemplate.Triggers>
+            <Trigger Property="BatchMenuVisible" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard BeginTime="0:0:0.12">
+                    <DoubleAnimation Duration="0:0:0.22" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="PART_BatchMenuTransform"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource DecelerationEase}" />
+                    <DoubleAnimation Duration="0:0:0.22" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="PART_BatchActionParams_Wrapper"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource DecelerationEase}" />
+                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetName="ItemsList" Storyboard.TargetProperty="(ListBox.Padding)">
+                      <DiscreteObjectKeyFrame KeyTime="0:0:0.22">
+                        <DiscreteObjectKeyFrame.Value>
+                          <Thickness>0 0 0 56</Thickness>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="0:0:0.22" To="89.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchMenuTransform"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
+                    <DoubleAnimation Duration="0:0:0.22" To="89.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchActionParams_Wrapper"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
+                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetName="ItemsList" Storyboard.TargetProperty="(ListBox.Padding)">
+                      <DiscreteObjectKeyFrame KeyTime="0:0:0.0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <Thickness>0</Thickness>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -251,7 +346,7 @@
                   </DockPanel>
                 </Grid>
 
-                <!-- seperator -->
+                <!-- Separator -->
                 <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage" />
                 <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal"
                     TopSource="{x:Null}" />

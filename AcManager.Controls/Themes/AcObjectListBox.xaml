@@ -1,34 +1,35 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-        <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+  <ResourceDictionary.MergedDictionaries>
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="ac:AcObjectListBox">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ac:AcObjectListBox">
-                    <DockPanel Background="{TemplateBinding Background}">
-                        <DockPanel DockPanel.Dock="Top" Margin="8"
-                                Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static ac:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
-                            <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
-                                    Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}"
-                                    SaveKey="{TemplateBinding UserFiltersKey}" />
-                        </DockPanel>
-                        <ListBox x:Name="PART_ListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
-                                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1" VirtualizingPanel.CacheLengthUnit="Page"
-                                VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
-                                SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
-                                ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}"
-                                mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}" />
-                    </DockPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style TargetType="ac:AcObjectListBox">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ac:AcObjectListBox">
+          <DockPanel Background="{TemplateBinding Background}">
+            <DockPanel DockPanel.Dock="Top" Margin="8"
+                Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <TextBlock Text="{x:Static ac:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
+              <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
+                  Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}"
+                  SaveKey="{TemplateBinding UserFiltersKey}" />
+            </DockPanel>
+            <ListBox x:Name="PART_ListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1" VirtualizingPanel.CacheLengthUnit="Page"
+                VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
+                SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}"
+                mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}" />
+          </DockPanel>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

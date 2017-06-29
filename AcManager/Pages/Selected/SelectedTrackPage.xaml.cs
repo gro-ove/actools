@@ -19,6 +19,7 @@ using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.AiFile;
@@ -106,7 +107,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
                         QuickDrive.RunPreset(p.Filename, track: SelectedTrackConfiguration);
                     });
                 }

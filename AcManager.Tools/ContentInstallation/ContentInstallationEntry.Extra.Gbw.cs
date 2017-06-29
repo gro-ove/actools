@@ -8,17 +8,17 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry {
-        private static async Task<IReadOnlyList<ExtraOption>> GetGbwRelatedExtraOptions(EntryWrapper[] entries) {
+        private static async Task<IReadOnlyList<ExtraOption>> GetGbwRelatedExtraOptions(ContentEntryBase[] entries) {
             const string gbwWeatherPart = "_gbW_";
             const string gbwPpFilterPart = "__gbW";
 
-            if (!entries.Any(x => x.Entry.Id.Contains(gbwWeatherPart))) {
+            if (!entries.Any(x => x.Id.Contains(gbwWeatherPart))) {
                 // This is not the GBW pack
                 return new ExtraOption[0];
             }
 
-            var gbwWeatherIds = entries.Where(x => x.Entry.Id.Contains(gbwWeatherPart) && x.Entry is WeatherContentEntry)
-                                    .Select(x => x.Entry.Id).ToList();
+            var gbwWeatherIds = entries.Where(x => x.Id.Contains(gbwWeatherPart) && x is WeatherContentEntry)
+                                    .Select(x => x.Id).ToList();
             if (gbwWeatherIds.Count < 10) {
                 // It contains some GBW weather, but not a lot — not the pack
                 return new ExtraOption[0];
@@ -46,8 +46,8 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 {
-                    var gbwPpFilterIds = entries.Where(x => x.Entry.Id.Contains(gbwPpFilterPart) && x.Entry is PpFilterContentEntry)
-                                                .Select(x => x.Entry.Id).ToList();
+                    var gbwPpFilterIds = entries.Where(x => x.Id.Contains(gbwPpFilterPart) && x is PpFilterContentEntry)
+                                                .Select(x => x.Id).ToList();
                     var installedPpFilterIds = PpFiltersManager.Instance.WrappersList.Select(x => x.Id).Where(x => x.Contains(gbwPpFilterPart)).ToList();
                     var obsoletePpFilterIds = installedPpFilterIds.ApartFrom(gbwPpFilterIds).ToList();
 

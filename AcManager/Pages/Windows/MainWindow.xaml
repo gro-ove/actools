@@ -2,10 +2,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="False" MinWidth="800" MinHeight="640"
-    Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter"
-    DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing" Closed="OnClosed"
-    MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:ac="clr-namespace:AcManager.QuickSwitches" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
+    IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
+    Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
+    Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
     AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
@@ -19,13 +19,15 @@
   </mui:ModernWindow.Resources>
 
   <mui:ModernWindow.MenuLinkGroups>
-    <!--drive-->
+    <!-- ReSharper disable Xaml.PathError -->
+
+    <!-- Drive -->
     <mui:LinkGroup GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Single}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
         <mui:Link DisplayName="Championships" Source="/Pages/Drive/UserChampionships.xaml" IsEnabled="False" />
-        <!--<mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" />-->
+        <!-- <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" /> -->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False">
@@ -52,14 +54,14 @@
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
 
-    <!--lap times-->
+    <!-- Lap times -->
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Table" Source="/Pages/Miscellaneous/LapTimes_Table.xaml" />
     <mui:LinkGroupFilterable x:Name="LapTimesGrid" GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
         Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Sources" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml" />
 
-    <!--stats-->
+    <!-- Stats -->
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Kunos Cars Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
@@ -69,11 +71,11 @@
     </mui:LinkGroupFilterable>
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
-    <!--media-->
+    <!-- Media -->
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Lists/ReplaysListPage.xaml" />
 
-    <!--content-->
+    <!-- Content -->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml" />
     <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml" />
     <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Showrooms}"
@@ -86,7 +88,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
         <mui:Link DisplayName="User Championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
-        <!--<mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />-->
+        <!-- <mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" /> -->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
@@ -95,12 +97,12 @@
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
-    <!--server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
+    <!-- Server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
         Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />
 
-    <!--settings-->
+    <!-- Settings -->
     <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ContentManager}" Source="/Pages/Settings/SettingsPage.xaml" />
@@ -108,7 +110,7 @@
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
-    <!--about-->
+    <!-- About -->
     <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="about">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
@@ -116,6 +118,8 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
+
+    <!-- ReSharper restore Xaml.PathError -->
   </mui:ModernWindow.MenuLinkGroups>
 
   <mui:ModernWindow.TitleLinks>
@@ -135,15 +139,44 @@
         Source="/Pages/Lists/ServerPresetsListPage.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
-    <mui:TitleLink x:Name="OriginalLauncher" Content="original launcher" Source="cmd://originalLauncher" />
-    <mui:TitleLink Content="enter key" Source="cmd://enterkey" IsAccented="True" />
+    <mui:TitleLink x:Name="OriginalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
+    <mui:TitleLink Content="enter key" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
   </mui:ModernWindow.TitleLinks>
 
   <mui:Cell>
-    <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
-        VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
-        Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}" x:Name="Popup" StaysOpen="False"
-        PopupAnimation="Slide" AllowsTransparency="True" mui:PopupHelper.Register="True" />
+    <Border x:Name="Popup" HorizontalAlignment="Left" Width="330">
+      <Border.Style>
+        <Style TargetType="Border">
+          <Setter Property="Focusable" Value="True" />
+          <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+          <Setter Property="RenderTransform">
+            <Setter.Value>
+              <TranslateTransform X="-340" />
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <EventTrigger RoutedEvent="GotFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard FillBehavior="HoldEnd" TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
+                    <DoubleAnimation To="0" Duration="0:0:0.24" EasingFunction="{StaticResource DecelerationEase}" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="LostFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard FillBehavior="Stop" TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
+                    <DoubleAnimation To="-340" Duration="0:0:0.24" EasingFunction="{StaticResource AccelerationEase}" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
+    </Border>
     <Popup Placement="Absolute" HorizontalOffset="{Binding ActualRight, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-140}"
         VerticalOffset="{Binding ActualBottom, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-100}" Height="80" Width="120"
         x:Name="QuickSwitchesNotification" StaysOpen="True" PopupAnimation="Fade" AllowsTransparency="True">

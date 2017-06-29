@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -20,6 +21,7 @@ namespace AcManager.Pages.Settings {
         public SettingsGeneral() {
             InitializeComponent();
             DataContext = new ViewModel();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -28,7 +30,7 @@ namespace AcManager.Pages.Settings {
             private string _steamId;
 
             public string SteamId {
-                get { return _steamId; }
+                get => _steamId;
                 set {
                     if (Equals(value, _steamId)) return;
                     _steamId = value;
@@ -39,7 +41,7 @@ namespace AcManager.Pages.Settings {
             private string _steamProfileName;
 
             public string SteamProfileName {
-                get { return _steamProfileName; }
+                get => _steamProfileName;
                 set {
                     if (Equals(value, _steamProfileName)) return;
                     _steamProfileName = value;
@@ -55,7 +57,7 @@ namespace AcManager.Pages.Settings {
             private bool _appShortcutExists;
 
             public bool AppShortcutExists {
-                get { return _appShortcutExists; }
+                get => _appShortcutExists;
                 set {
                     if (Equals(value, _appShortcutExists)) return;
                     _appShortcutExists = value;
@@ -88,27 +90,33 @@ namespace AcManager.Pages.Settings {
                 SteamProfileName = await SteamIdHelper.GetSteamName(SteamId);
             }
 
-            private ICommand _changeAcRootCommand;
+            private DelegateCommand _openAcRootCommand;
 
-            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new DelegateCommand(() => {
+            public DelegateCommand OpenAcRootCommand => _openAcRootCommand ?? (_openAcRootCommand = new DelegateCommand(() => {
+                WindowsHelper.OpenFile(AcRootDirectory.Instance.RequireValue);
+            }));
+
+            private DelegateCommand _changeAcRootCommand;
+
+            public DelegateCommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new DelegateCommand(() => {
                 if (ModernDialog.ShowMessage(AppStrings.Settings_General_ChangeAcRoot_Message, AppStrings.Settings_General_ChangeAcRoot,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
                 WindowsHelper.RestartCurrentApplication();
             }));
 
-            private ICommand _changeSteamIdCommand;
+            private DelegateCommand _changeSteamIdCommand;
 
-            public ICommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new DelegateCommand(() => {
+            public DelegateCommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new DelegateCommand(() => {
                 if (ModernDialog.ShowMessage("Do you want to change Steam ID? App will be restarted; also, RSR and SRS progress will be nulled.",
                                 "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 new AcRootDirectorySelector(false, true).ShowDialog();
                 WindowsHelper.RestartCurrentApplication();
             }));
 
-            private ICommand _changeAppKeyCommand;
+            private DelegateCommand _changeAppKeyCommand;
 
-            public ICommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new DelegateCommand(() => {
+            public DelegateCommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new DelegateCommand(() => {
                 new AppKeyDialog().ShowDialog();
             }));
 
@@ -118,10 +126,10 @@ namespace AcManager.Pages.Settings {
 
             public DataUpdater DataUpdater => DataUpdater.Instance;
 
-            private ICommand _cleanUpStorageCommand;
+            private DelegateCommand _cleanUpStorageCommand;
 
             [Localizable(false)]
-            public ICommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new DelegateCommand(() => {
+            public DelegateCommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new DelegateCommand(() => {
                 ValuesStorage.Storage.CleanUp(x =>
                         x.StartsWith(".") ||
                         x.StartsWith("KunosCareerObject.SelectedEvent__") ||
@@ -138,6 +146,13 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__online_") ||
                         x.StartsWith("MainWindow__") ||
                         x.StartsWith("__tmp_FontObject.UsingsCarsIds_"));
+            }));
+
+            private DelegateCommand _resetDoNotAskAgainsCommand;
+
+            [Localizable(false)]
+            public DelegateCommand ResetDoNotAskAgainsCommand => _resetDoNotAskAgainsCommand ?? (_resetDoNotAskAgainsCommand = new DelegateCommand(() => {
+                ValuesStorage.Storage.CleanUp(x => x.StartsWith("_stored:__doNotAskAgain_"));
             }));
         }
 

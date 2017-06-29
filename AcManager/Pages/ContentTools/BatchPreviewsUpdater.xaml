@@ -187,8 +187,8 @@
             <DataTemplate>
               <mui:Cell Width="160" Height="90" Background="Black">
                 <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="200" Stretch="UniformToFill" />
-                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
-                    Foreground="White" TextTrimming="CharacterEllipsis" />
+                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                    Text="{Binding DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
               </mui:Cell>
             </DataTemplate>
           </ListBox.ItemTemplate>

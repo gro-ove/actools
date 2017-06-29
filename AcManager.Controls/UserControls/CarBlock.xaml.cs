@@ -9,6 +9,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using JetBrains.Annotations;
@@ -120,7 +121,7 @@ namespace AcManager.Controls.UserControls {
 
             // presets
             item = new MenuItem { Header = "Showroom Presets" };
-            foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue,
+            foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue),
                     p => CarOpenInShowroomDialog.RunPreset(p.Filename, car, skin?.Id))) {
                 item.Items.Add(menuItem);
             }
@@ -145,7 +146,7 @@ namespace AcManager.Controls.UserControls {
             // presets
             if (CustomShowroomWrapper != null) {
                 item = new MenuItem { Header = "Custom Showroom Presets" };
-                foreach (var menuItem in PresetsMenuHelper.GroupPresets(CustomShowroomWrapper.PresetableKeyValue,
+                foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(CustomShowroomWrapper.PresetableKeyValue),
                         p => CustomShowroomWrapper.StartAsync(car, skin, p.Filename))) {
                     item.Items.Add(menuItem);
                 }

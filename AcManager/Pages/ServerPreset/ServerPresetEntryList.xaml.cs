@@ -140,7 +140,7 @@ namespace AcManager.Pages.ServerPreset {
         }
 
         private void OnCarClick(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Left) return;
+            if (e.ChangedButton != MouseButton.Left || e.ClickCount != 2) return;
 
             var entry = ((FrameworkElement)sender).DataContext as ServerPresetDriverEntry;
             if (entry != null) {
@@ -166,7 +166,7 @@ namespace AcManager.Pages.ServerPreset {
         private CarObject _selectedCar;
 
         public CarObject SelectedCar {
-            get { return _selectedCar; }
+            get => _selectedCar;
             set {
                 if (Equals(value, _selectedCar) || value == null) return;
                 _selectedCar = value;

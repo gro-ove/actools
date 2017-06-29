@@ -116,6 +116,8 @@
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Effects\InvertEffect.cs" />
+    <Compile Include="Effects\InvertKeepColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="NotifyExtension.cs" />
     <Compile Include="TaskExtension.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
     <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
     <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
+    <Compile Include="Windows\CubicBesierEase.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
@@ -401,11 +404,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Easing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Layout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Marks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ModernUI.Default.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -561,10 +576,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\ModernUI.Light.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Assets\ModernUI.Dark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -636,6 +647,8 @@
   <ItemGroup>
     <None Include="Assets\BrokenImage.bin" />
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
+    <None Include="Effects\Shaders\InvertEffect.fx" />
+    <None Include="Effects\Shaders\InvertKeepColorEffect.fx" />
     <None Include="packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />
     <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
@@ -664,7 +677,10 @@
     <Resource Include="Effects\Shaders\GrayscaleEffect.ps" />
     <None Include="Effects\Shaders\Include\HSV.fx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Effects\Shaders\InvertEffect.ps" />
+    <Resource Include="Effects\Shaders\InvertKeepColorEffect.ps" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>

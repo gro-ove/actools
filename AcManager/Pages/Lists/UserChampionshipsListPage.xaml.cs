@@ -28,7 +28,9 @@ namespace AcManager.Pages.Lists {
                 : base(UserChampionshipsManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} championship");
+            protected override string GetSubject() {
+                return "{0} championship";
+            }
         }
     }
 }

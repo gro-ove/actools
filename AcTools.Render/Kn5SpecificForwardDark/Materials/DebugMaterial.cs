@@ -58,6 +58,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             };
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) {
+            // Because Dispose() is empty, we can just re-initialize shader
+            Initialize(contextHolder);
+        }
+
         protected IRenderableTexture GetTexture(string mappingName, IDeviceContextHolder contextHolder) {
             var mapping = Kn5Material.GetMappingByName(mappingName);
             return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);

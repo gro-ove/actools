@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
-using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -52,7 +49,7 @@ namespace AcManager.Tools.ContentInstallation {
         private bool _singleEntry;
 
         public bool SingleEntry {
-            get { return _singleEntry; }
+            get => _singleEntry;
             set {
                 if (Equals(value, _singleEntry)) return;
                 _singleEntry = value;
@@ -168,14 +165,150 @@ namespace AcManager.Tools.ContentInstallation {
                     null;
         }
 
-        public abstract Task<AcCommonObject> GetExistingAcCommonObjectAsync();
-
         [ItemCanBeNull]
         protected abstract Task<string> GetDestination(CancellationToken cancellation);
 
         private BetterImage.BitmapEntry? _icon;
         public BetterImage.BitmapEntry? Icon => IconData == null ? null :
                 _icon ?? (_icon = BetterImage.LoadBitmapSourceFromBytes(IconData, 32));
+
+        #region From Wrapper
+        private bool _active = true;
+
+        public bool Active {
+            get => _active;
+            set {
+                if (Equals(value, _active)) return;
+                _active = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _noConflictMode;
+
+        public bool NoConflictMode {
+            get => _noConflictMode;
+            set {
+                if (value == _noConflictMode) return;
+                _noConflictMode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public async Task CheckExistingAsync() {
+            var tuple = await GetExistingNameAndVersionAsync();
+            IsNew = tuple == null;
+            ExistingName = tuple?.Item1;
+            ExistingVersion = tuple?.Item2;
+            IsNewer = Version.IsVersionNewerThan(ExistingVersion);
+            IsOlder = Version.IsVersionOlderThan(ExistingVersion);
+        }
+
+        [ItemCanBeNull]
+        protected abstract Task<Tuple<string, string>> GetExistingNameAndVersionAsync();
+
+        public bool IsNew { get; set; }
+
+        [CanBeNull]
+        private string _existingVersion;
+
+        [CanBeNull]
+        public string ExistingVersion {
+            get => _existingVersion;
+            set {
+                if (value == _existingVersion) return;
+                _existingVersion = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+
+        [CanBeNull]
+        private string _existingName;
+
+        [CanBeNull]
+        public string ExistingName {
+            get => _existingName;
+            set {
+                if (value == _existingName) return;
+                _existingName = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+
+        private bool _isNewer;
+
+        public bool IsNewer {
+            get => _isNewer;
+            set {
+                if (value == _isNewer) return;
+                _isNewer = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isOlder;
+
+        public bool IsOlder {
+            get => _isOlder;
+            set {
+                if (value == _isOlder) return;
+                _isOlder = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DisplayName => IsNew ? GetNew(Name) : GetExisting(ExistingName ?? Name);
+        #endregion
+    }
+
+    public class CmThemeEntry : ContentEntryBase {
+        public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
+                : base(path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
+
+        public override string NewFormat => "New CM theme {0}";
+        public override string ExistingFormat => "Update for a CM theme {0}";
+
+        public static string GetVersion(string data, out bool isTheme) {
+            var doc = XDocument.Parse(data);
+            var n = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+
+            isTheme = doc.Root?.Name == n + "ResourceDictionary";
+            if (!isTheme) return null;
+
+            var nx = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
+            var ns = XNamespace.Get("clr-namespace:System;assembly=mscorlib");
+            return doc.Descendants(ns + "String")
+                      .FirstOrDefault(x => x.Attribute(nx + "Key")?.Value == "Version")?.Value;
+        }
+
+        protected override IEnumerable<UpdateOption> GetUpdateOptions() {
+            yield return new UpdateOption("Install") {
+                RemoveExisting = false
+            };
+        }
+
+        protected override CopyCallback GetCopyCallback(string destination) {
+            var xaml = EntryPath;
+            if (string.IsNullOrWhiteSpace(xaml)) return info => null;
+
+            var resources = EntryPath.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase);
+            return fileInfo => {
+                var filename = fileInfo.Key;
+                return FileUtils.ArePathsEqual(filename, xaml) ? Path.Combine(destination, Path.GetFileName(xaml))
+                        : FileUtils.IsAffected(resources, filename) ? Path.Combine(destination, FileUtils.GetRelativePath(filename, resources)) : null;
+            };
+        }
+
+        protected override async Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
+            var existing = Path.Combine(FilesStorage.Instance.GetDirectory("Themes"), Id);
+            return File.Exists(existing) ? Tuple.Create(Name, GetVersion(await FileUtils.ReadAllTextAsync(existing), out var _)) : null;
+        }
+
+        protected override Task<string> GetDestination(CancellationToken cancellation) {
+            return Task.FromResult(FilesStorage.Instance.GetDirectory("Themes"));
+        }
     }
 
     public abstract class ContentEntryBase<T> : ContentEntryBase where T : AcCommonObject {
@@ -195,8 +328,9 @@ namespace AcManager.Tools.ContentInstallation {
             return _acObjectNew ?? (_acObjectNew = GetManager().GetById(Id));
         }
 
-        public override async Task<AcCommonObject> GetExistingAcCommonObjectAsync() {
-            return await GetExistingAcObjectAsync();
+        protected override async Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
+            var obj = await GetExistingAcObjectAsync();
+            return obj == null ? null : Tuple.Create(obj.DisplayName, (obj as IAcObjectVersionInformation)?.Version);
         }
 
         protected override async Task<string> GetDestination(CancellationToken cancellation) {
@@ -253,7 +387,7 @@ namespace AcManager.Tools.ContentInstallation {
         private string[] _missingKn5Files = new string[0];
 
         public string[] MissingKn5Files {
-            get { return _missingKn5Files; }
+            get => _missingKn5Files;
             set {
                 value = value ?? new string[0];
                 if (Equals(value, _missingKn5Files)) return;
@@ -335,7 +469,7 @@ namespace AcManager.Tools.ContentInstallation {
         private string[] _missingKn5Files = new string[0];
 
         public string[] MissingKn5Files {
-            get { return _missingKn5Files; }
+            get => _missingKn5Files;
             set {
                 value = value ?? new string[0];
                 if (Equals(value, _missingKn5Files)) return;
@@ -572,17 +706,6 @@ namespace AcManager.Tools.ContentInstallation {
             set {
                 if (Equals(value, _hasNewExtraLayouts)) return;
                 _hasNewExtraLayouts = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _noConflictMode;
-
-        public bool NoConflictMode {
-            get => _noConflictMode;
-            set {
-                if (value == _noConflictMode) return;
-                _noConflictMode = value;
                 OnPropertyChanged();
             }
         }

@@ -554,9 +554,7 @@ namespace AcManager.Pages.Drive {
 
             #region Presets
             bool IUserPresetable.CanBeSaved => true;
-
-            string IUserPresetable.PresetableCategory => PresetableKeyValue;
-
+            PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(PresetableKeyValue);
             string IUserPresetable.PresetableKey => PresetableKeyValue;
 
             public string ExportToPresetData() {
@@ -929,7 +927,7 @@ namespace AcManager.Pages.Drive {
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             LeftPanel.Width = 180 + ((ActualWidth - 800) / 2d).Clamp(0, 60);
 
-            var cellWidth = (((ActualWidth - 720) / 320).Saturate() * 60 + 120).Round();
+            var cellWidth = (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round();
             CarCell.Width = cellWidth;
             TrackCell.Width = cellWidth;
         }

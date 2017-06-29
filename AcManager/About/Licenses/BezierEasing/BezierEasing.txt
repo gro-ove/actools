@@ -1,0 +1,4 @@
+name: bezier-easing
+url: https://github.com/gre/bezier-easing
+content: LICENSE
+sid: yd4mquxr

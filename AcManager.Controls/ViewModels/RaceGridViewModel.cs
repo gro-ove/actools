@@ -52,10 +52,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public bool CanBeSaved => true;
-
-        public string PresetableCategory => PresetableKeyValue;
-
         public string PresetableKey => PresetableKeyValue;
+        public PresetsCategory PresetableCategory { get; } = new PresetsCategory(PresetableKeyValue);
 
         public string ExportToPresetData() {
             return _saveable.ToSerializedString();
@@ -147,7 +145,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _ignoreStartingPosition;
 
         public bool IgnoreStartingPosition {
-            get { return _ignoreStartingPosition; }
+            get => _ignoreStartingPosition;
             set {
                 if (Equals(value, _ignoreStartingPosition)) return;
                 _ignoreStartingPosition = value;
@@ -159,7 +157,7 @@ namespace AcManager.Controls.ViewModels {
         private double _playerBallast;
 
         public double PlayerBallast {
-            get { return _playerBallast; }
+            get => _playerBallast;
             set {
                 if (Equals(value, _playerBallast)) return;
                 _playerBallast = value;
@@ -174,7 +172,7 @@ namespace AcManager.Controls.ViewModels {
         private double _playerRestrictor;
 
         public double PlayerRestrictor {
-            get { return _playerRestrictor; }
+            get => _playerRestrictor;
             set {
                 if (Equals(value, _playerRestrictor)) return;
                 _playerRestrictor = value;
@@ -346,7 +344,7 @@ namespace AcManager.Controls.ViewModels {
                 BuiltInGridMode.SameCar,
                 _randomGroup,
                 BuiltInGridMode.Custom,
-                _presetsHelper.Create(PresetableKeyValue, p => {
+                _presetsHelper.Create(PresetableCategory, p => {
                     ImportFromPresetData(p.ReadData());
                 }, ControlsStrings.Common_Presets)
             };
@@ -477,7 +475,7 @@ namespace AcManager.Controls.ViewModels {
 
         [NotNull]
         public IRaceGridMode Mode {
-            get { return _mode; }
+            get => _mode;
             set {
                 if (Equals(value, _mode)) return;
 
@@ -517,7 +515,7 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         private RaceGridPlayerEntry PlayerEntry {
-            get { return _playerEntry; }
+            get => _playerEntry;
             set {
                 if (ReferenceEquals(value, _playerEntry)) return;
                 _playerEntry?.UnsubscribeWeak(OnPlayerEntryPropertyChanged);
@@ -709,7 +707,7 @@ namespace AcManager.Controls.ViewModels {
         private string _errorMessage;
 
         public string ErrorMessage {
-            get { return _errorMessage; }
+            get => _errorMessage;
             set {
                 if (Equals(value, _errorMessage)) return;
                 _errorMessage = value;
@@ -805,7 +803,7 @@ namespace AcManager.Controls.ViewModels {
         private string _filterValue;
 
         public string FilterValue {
-            get { return _filterValue; }
+            get => _filterValue;
             set {
                 value = value?.Trim();
                 if (Equals(value, _filterValue)) return;
@@ -836,7 +834,7 @@ namespace AcManager.Controls.ViewModels {
         private string _randomSkinsFilter;
 
         public string RandomSkinsFilter {
-            get { return _randomSkinsFilter; }
+            get => _randomSkinsFilter;
             set {
                 if (Equals(value, _randomSkinsFilter)) return;
                 _randomSkinsFilter = value;
@@ -852,7 +850,7 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         public CarObject PlayerCar {
-            get { return _playerCar; }
+            get => _playerCar;
             set {
                 if (Equals(_playerCar, value)) return;
 
@@ -874,7 +872,7 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         public TrackObjectBase PlayerTrack {
-            get { return _track; }
+            get => _track;
             set {
                 if (Equals(_track, value)) return;
 
@@ -905,7 +903,7 @@ namespace AcManager.Controls.ViewModels {
         private int _trackPitsNumber;
 
         public int TrackPitsNumber {
-            get { return _trackPitsNumber; }
+            get => _trackPitsNumber;
             set {
                 if (Equals(value, _trackPitsNumber)) return;
                 _trackPitsNumber = value;
@@ -936,7 +934,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _shuffleCandidates;
 
         public bool ShuffleCandidates {
-            get { return _shuffleCandidates; }
+            get => _shuffleCandidates;
             set {
                 if (Equals(value, _shuffleCandidates)) return;
                 _shuffleCandidates = value;
@@ -954,7 +952,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiLevel;
 
         public double AiLevel {
-            get { return _aiLevel; }
+            get => _aiLevel;
             set {
                 value = value.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
                 if (Equals(value, _aiLevel)) return;
@@ -973,7 +971,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiLevelMin;
 
         public double AiLevelMin {
-            get { return _aiLevelMin; }
+            get => _aiLevelMin;
             set {
                 value = value.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
                 if (Equals(value, _aiLevelMin)) return;
@@ -992,7 +990,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiLevelArrangeRandom;
 
         public double AiLevelArrangeRandom {
-            get { return _aiLevelArrangeRandom; }
+            get => _aiLevelArrangeRandom;
             set {
                 value = value.Round(0.01);
                 if (Equals(value, _aiLevelArrangeRandom)) return;
@@ -1005,7 +1003,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _aiLevelArrangeReverse;
 
         public bool AiLevelArrangeReverse {
-            get { return _aiLevelArrangeReverse; }
+            get => _aiLevelArrangeReverse;
             set {
                 if (Equals(value, _aiLevelArrangeReverse)) return;
                 _aiLevelArrangeReverse = value;
@@ -1015,7 +1013,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public bool AiLevelInDriverName {
-            get { return SettingsHolder.Drive.QuickDriveAiLevelInName; }
+            get => SettingsHolder.Drive.QuickDriveAiLevelInName;
             set {
                 if (Equals(value, SettingsHolder.Drive.QuickDriveAiLevelInName)) return;
                 SettingsHolder.Drive.QuickDriveAiLevelInName = value;
@@ -1030,7 +1028,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiAggression;
 
         public double AiAggression {
-            get { return _aiAggression; }
+            get => _aiAggression;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _aiAggression)) return;
@@ -1049,7 +1047,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiAggressionMin;
 
         public double AiAggressionMin {
-            get { return _aiAggressionMin; }
+            get => _aiAggressionMin;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _aiAggressionMin)) return;
@@ -1068,7 +1066,7 @@ namespace AcManager.Controls.ViewModels {
         private double _aiAggressionArrangeRandom;
 
         public double AiAggressionArrangeRandom {
-            get { return _aiAggressionArrangeRandom; }
+            get => _aiAggressionArrangeRandom;
             set {
                 value = value.Round(0.01);
                 if (Equals(value, _aiAggressionArrangeRandom)) return;
@@ -1081,7 +1079,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _aiAggressionArrangeReverse;
 
         public bool AiAggressionArrangeReverse {
-            get { return _aiAggressionArrangeReverse; }
+            get => _aiAggressionArrangeReverse;
             set {
                 if (Equals(value, _aiAggressionArrangeReverse)) return;
                 _aiAggressionArrangeReverse = value;
@@ -1091,7 +1089,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public bool AiAggressionInDriverName {
-            get { return SettingsHolder.Drive.QuickDriveAiAggressionInName; }
+            get => SettingsHolder.Drive.QuickDriveAiAggressionInName;
             set {
                 if (Equals(value, SettingsHolder.Drive.QuickDriveAiAggressionInName)) return;
                 SettingsHolder.Drive.QuickDriveAiAggressionInName = value;
@@ -1207,7 +1205,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public int OpponentsNumber {
-            get { return _opponentsNumber; }
+            get => _opponentsNumber;
             set {
                 if (!Mode.CandidatesMode) return;
                 if (value < 1) value = 1;
@@ -1216,8 +1214,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public int OpponentsNumberLimited {
-            get { return _opponentsNumber.Clamp(0, OpponentsNumberLimit); }
-            set { OpponentsNumber = value.Clamp(1, OpponentsNumberLimit); }
+            get => _opponentsNumber.Clamp(0, OpponentsNumberLimit);
+            set => OpponentsNumber = value.Clamp(1, OpponentsNumberLimit);
         }
 
         public int StartingPositionLimit => OpponentsNumberLimited + 1;
@@ -1225,7 +1223,7 @@ namespace AcManager.Controls.ViewModels {
         private int _startingPosition;
 
         public int StartingPosition {
-            get { return _startingPosition; }
+            get => _startingPosition;
             set {
                 if (value < 0) value = 0;
                 if (Equals(value, _startingPosition)) return;
@@ -1241,8 +1239,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public int StartingPositionLimited {
-            get { return _startingPosition.Clamp(0, StartingPositionLimit); }
-            set { StartingPosition = value.Clamp(0, StartingPositionLimit); }
+            get => _startingPosition.Clamp(0, StartingPositionLimit);
+            set => StartingPosition = value.Clamp(0, StartingPositionLimit);
         }
         #endregion
 

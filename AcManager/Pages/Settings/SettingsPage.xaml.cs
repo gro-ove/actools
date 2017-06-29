@@ -14,6 +14,13 @@ namespace AcManager.Pages.Settings {
                     Source = new Uri("/Pages/Settings/SettingsDev.xaml", UriKind.Relative)
                 });
             }
+
+            #if DEBUG
+            Tab.Links.Add(new Link {
+                DisplayName = "Debug",
+                Source = new Uri("/Pages/Settings/SettingsDebug.xaml", UriKind.Relative)
+            });
+            #endif
         }
 
         void IParametrizedUriContent.OnUri(Uri uri) {

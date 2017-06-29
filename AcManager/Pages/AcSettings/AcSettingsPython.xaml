@@ -55,7 +55,7 @@
         <ListBox.ItemTemplate>
           <DataTemplate DataType="o:PythonAppObject">
             <DockPanel IsEnabled="{Binding Enabled}">
-              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
               <TextBlock Text="{Binding DisplayName}" />
             </DockPanel>

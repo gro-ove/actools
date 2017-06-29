@@ -1,0 +1,11 @@
+﻿sid: 3u5fjemi
+id: colorGrading
+
+Color grading option allows to modify colors in result image in a way specified by a small volume DDS-texture. To read more about it, please, go [url="https://docs.unity3d.com/550/Documentation/Manual/script-ColorCorrectionLookup.html"]here[/url], I’ll just sum it up.
+
+To create color grading texture, first, get a neutral texture. CM can generate one for you, by the way, here is [url="cmd://createneutrallut?param=16"]256×16[/url] one and [url="cmd://createneutrallut?param=32"]512×32[/url] one.
+
+Then, the easiest way is to open some sort of screenshot in your favourite image editor, put that color grading texture somewhere in the corner and then adjust contrast, brightness, saturation, hue and color curves. After that, just cut it out and save either as Volume DDS-file, using 8.8.8 RGB format or as a usual file, for instance, 24-bit PNG-file (you wouldn’t want any lossy compression, would you? althought it might give some interesting effects).
+
+ [img="http://i.imgur.com/hl4lXYR.jpg|240"]Lossy compression[/img]
+ [img="http://i.imgur.com/lNzpSXC.jpg|240"]Hue[/img]

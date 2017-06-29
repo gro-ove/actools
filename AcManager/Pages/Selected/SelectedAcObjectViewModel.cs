@@ -30,16 +30,18 @@ namespace AcManager.Pages.Selected {
 
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+                var inSentence = string.Equals(parameter as string, "insentence", StringComparison.OrdinalIgnoreCase);
+
                 var obj = values.FirstOrDefault() as IAcObjectFullAuthorshipInformation;
                 if (obj == null || obj.Author != null || obj.Url == null && obj.Version == null) {
-                    return ControlsStrings.AcObject_AuthorLabel;
+                    return inSentence ? ControlsStrings.AcObject_AuthorLabel.ToSentenceMember() : ControlsStrings.AcObject_AuthorLabel;
                 }
 
                 if (obj.Version != null) {
-                    return ControlsStrings.AcObject_VersionLabel;
+                    return inSentence ? ControlsStrings.AcObject_VersionLabel.ToSentenceMember() : ControlsStrings.AcObject_VersionLabel;
                 }
 
-                return ControlsStrings.AcObject_UrlLabel;
+                return inSentence ? ControlsStrings.AcObject_UrlLabel.ToSentenceMember() : ControlsStrings.AcObject_UrlLabel;
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {

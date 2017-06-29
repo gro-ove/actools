@@ -1,21 +1,15 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Windows.Media;
+﻿using System.Windows.Input;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class ServerPresetCombined {
         public ServerPresetCombined() {
             InitializeComponent();
-            Loaded += OnLoaded;
+            PreviewMouseWheel += OnMouseWheel;
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
-            foreach (var scrollViewer in this.FindLogicalChildren<ScrollViewer>().ApartFrom(ScrollViewer)) {
-                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                scrollViewer.Background = new SolidColorBrush(Colors.DarkCyan);
-            }
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
+            ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 }

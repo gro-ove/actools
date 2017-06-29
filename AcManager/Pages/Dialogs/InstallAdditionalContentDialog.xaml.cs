@@ -19,8 +19,7 @@ namespace AcManager.Pages.Dialogs {
         public DataTemplate TrackTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return (item as ContentInstallationEntry.EntryWrapper)?.Entry is TrackContentEntry ?
-                    TrackTemplate : BasicTemplate;
+            return item is TrackContentEntry ? TrackTemplate : BasicTemplate;
         }
     }
 

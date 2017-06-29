@@ -69,8 +69,8 @@
 
     <mui:Cell>
       <mui:ModernTab x:Name="Tab" Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" SaveKey="__serpr.st"
-          mui:ModernFrame.TopSource="/Pages/ServerPreset/ServerPresetBasic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/ServerPresetBasic.xaml"
-          SavePolicy="Strict">
+          mui:ModernFrame.TopSource="/Pages/ServerPreset/ServerPresetBasic.xaml" FrameNavigated="OnFrameNavigated"
+          SelectedSource="/Pages/ServerPreset/ServerPresetBasic.xaml" SavePolicy="Strict">
         <mui:ModernTab.Links>
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
           <mui:Link x:Name="MainBasicLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetBasic.xaml" />
@@ -84,7 +84,8 @@
       </mui:ModernTab>
 
       <Border x:Name="IsRunningMessage">
-        <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" MaxWidth="320"
+        <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" HorizontalAlignment="Center"
+            VerticalAlignment="Center" Padding="20" MaxWidth="320"
             Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
           <DockPanel>
             <Path Data="{StaticResource PlayIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"

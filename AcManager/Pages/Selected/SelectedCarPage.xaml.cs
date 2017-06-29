@@ -21,6 +21,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.AcdFile;
 using AcTools.Utils;
@@ -107,6 +108,35 @@ namespace AcManager.Pages.Selected {
 
                 base.FilterExec(type);
             }
+
+            private static WeakReference<ModernDialog> _analyzerDialog;
+            private DelegateCommand _carAnalyzerCommand;
+
+            public DelegateCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => {
+                if (_analyzerDialog != null && _analyzerDialog.TryGetTarget(out ModernDialog dialog)) {
+                    dialog.Close();
+                }
+
+                dialog = new ModernDialog {
+                    ShowTitle = false,
+                    Title = "Analyzer",
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = @"lsMigrationHelper",
+                    MinWidth = 800,
+                    MinHeight = 480,
+                    Width = 800,
+                    Height = 640,
+                    MaxWidth = 99999,
+                    MaxHeight = 99999,
+                    Content = new ModernFrame {
+                        Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True&Rating=True", SelectedObject.Id)
+                    }
+                };
+
+                dialog.Show();
+                _analyzerDialog = new WeakReference<ModernDialog>(dialog);
+            }));
 
             #region Open In Showroom
             private CommandBase _openInShowroomCommand;
@@ -211,7 +241,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
+                    ShowroomPresets = _helper.Create(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue), p => {
                         CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -219,7 +249,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeCustomShowroomPresets() {
                 if (CustomShowroomPresets == null) {
-                    CustomShowroomPresets = _helper.Create(DarkRendererSettings.DefaultPresetableKeyValue, p => {
+                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue), p => {
                         CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.Filename);
                     });
                 }
@@ -227,7 +257,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
                         QuickDrive.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -235,9 +265,9 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = _helper.Create(
+                    UpdatePreviewsPresets = _helper.Create(new PresetsCategory(
                             SettingsHolder.CustomShowroom.CustomShowroomPreviews
-                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                             p => new ToUpdatePreview(SelectedObject).Run(p.Filename));
                 }
             }

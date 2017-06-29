@@ -21,7 +21,7 @@ namespace AcManager.Pages.Dialogs {
         private double _multipler;
 
         public double Value {
-            get { return _value; }
+            get => _value;
             set {
                 value = value.Clamp(0d, 0.95d);
                 if (value == _value) return;
@@ -56,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

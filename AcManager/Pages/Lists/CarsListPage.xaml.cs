@@ -1,12 +1,25 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Windows;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
 
@@ -16,6 +29,13 @@ namespace AcManager.Pages.Lists {
             var filter = uri.GetQueryParam("Filter");
             DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(CarObjectTester.Instance, filter));
             InitializeComponent();
+        }
+
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return new BatchAction[] {
+                new BatchAction_AddTag(),
+                new BatchAction_FixSpecsFormat()
+            };
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -32,7 +52,9 @@ namespace AcManager.Pages.Lists {
             public ViewModel(IFilter<CarObject> listFilter)
                     : base(CarsManager.Instance, listFilter) {}
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Cars);
+            protected override string GetSubject() {
+                return AppStrings.List_Cars;
+            }
 
             protected override string LoadCurrentId() {
                 if (_selectNextCar != null) {
@@ -45,7 +67,7 @@ namespace AcManager.Pages.Lists {
                 return base.LoadCurrentId();
             }
         }
-        
+
         public static void Show(CarObject car, string carSkinId = null) {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             if (mainWindow == null) return;
@@ -62,5 +84,96 @@ namespace AcManager.Pages.Lists {
 
         private static string _selectNextCar;
         private static string _selectNextCarSkinId; // TODO
+
+        #region Batch actions
+        public class BatchAction_FixSpecsFormat : BatchAction<CarObject> {
+            public BatchAction_FixSpecsFormat() : base("Fix Specs Format", "This way, they’ll be more readable", "UI", null) { }
+
+            protected override void ApplyOverride(CarObject obj) {
+                Logging.Debug(obj);
+            }
+        }
+
+        public class BatchAction_AddTag : BatchAction<CarObject> {
+            public BatchAction_AddTag() : base("Add Tag", "Modify list of tags for several cars easily", "UI", "Batch.AddTag") {
+                DisplayApply = "Apply";
+                Tags = new BetterObservableCollection<string>();
+            }
+
+            #region Properies
+            public BetterObservableCollection<string> Tags { get; }
+            private List<string> _originalTags;
+
+            private bool _sortTags = ValuesStorage.GetBool("_ba.addTag.sort", true);
+
+            public bool SortTags {
+                get => _sortTags;
+                set {
+                    if (Equals(value, _sortTags)) return;
+                    _sortTags = value;
+                    ValuesStorage.Set("_ba.addTag.sort", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _cleanUp = ValuesStorage.GetBool("_ba.addTag.clean", false);
+
+            public bool CleanUp {
+                get => _cleanUp;
+                set {
+                    if (Equals(value, _cleanUp)) return;
+                    _cleanUp = value;
+                    ValuesStorage.Set("_ba.addTag.clean", value);
+                    OnPropertyChanged();
+                }
+            }
+            #endregion
+
+            public override void OnSelectionChanged(IEnumerable<CarObject> enumerable) {
+                IEnumerable<string> removed, added;
+
+                if (_originalTags != null) {
+                    removed = _originalTags.Where(x => !Tags.Contains(x)).ToList();
+                    added = Tags.Where(x => !_originalTags.Contains(x)).ToList();
+                } else {
+                    removed = added = null;
+                }
+
+                List<string> list = null;
+                foreach (var car in enumerable) {
+                    if (list == null) {
+                        list = car.Tags.ToList();
+                    } else {
+                        for (var i = list.Count - 1; i >= 0; i--) {
+                            if (car.Tags.ContainsIgnoringCase(list[i])) continue;
+                            list.RemoveAt(i);
+                            if (list.Count == 0) goto End;
+                        }
+                    }
+                }
+
+                End:
+                _originalTags = list ?? new List<string>(0);
+                Tags.ReplaceEverythingBy_Direct(_originalTags.ApartFrom(removed)
+                                                             .If(x => added == null ? x : x.Concat(added))
+                                                             .OrderBy(x => x, TagsComparer.Instance));
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                var updatedList = obj.Tags.ApartFrom(_originalTags.Where(x => !Tags.Contains(x)))
+                                     .Concat(Tags.Where(x => !_originalTags.Contains(x))).Distinct();
+
+                if (_cleanUp) {
+                    updatedList = TagsCollection.CleanUp(updatedList);
+                }
+
+                if (_sortTags) {
+                    updatedList = updatedList.OrderBy(x => x, TagsComparer.Instance);
+                }
+
+                obj.Tags = new TagsCollection(updatedList);
+            }
+        }
+        #endregion
     }
 }

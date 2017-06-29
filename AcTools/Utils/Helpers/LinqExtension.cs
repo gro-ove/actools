@@ -611,6 +611,16 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static IEnumerable<T> If<T>([NotNull] this IEnumerable<T> source, [NotNull] Func<IEnumerable<T>, IEnumerable<T>> fn) {
+            return fn(source);
+        }
+
+        [Pure]
+        public static IEnumerable<T> If<T>([NotNull] this IEnumerable<T> source, bool condition, [NotNull] Func<IEnumerable<T>, IEnumerable<T>> fn) {
+            return condition ? fn(source) : source;
+        }
+
+        [Pure]
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (additionalItems == null) return source;

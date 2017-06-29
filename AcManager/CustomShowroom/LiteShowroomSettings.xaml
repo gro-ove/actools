@@ -324,7 +324,11 @@
 
       <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
           Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='null'}">
-        <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
+        <CheckBox IsChecked="{Binding Renderer.AnyGround}">
+          <Label Content="Draw ground" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Renderer.FlatMirror}" IsEnabled="{Binding Renderer.AnyGround}">
           <Label Content="Mirror" />
         </CheckBox>
 
@@ -998,7 +1002,11 @@
             TickFrequency="30" TickPlacement="BottomRight" />
       </DockPanel>
 
-      <TextBlock Text="Color grading:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <TextBlock Style="{StaticResource Heading2}" Margin="0 20 0 0">
+        <Run Text="Color grading" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                                        Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=colorGrading">[?]</Hyperlink><Run
+                                                                                                                                                                             Text=":" />
+      </TextBlock>
 
       <CheckBox IsChecked="{Binding Renderer.UseColorGrading}"
           IsEnabled="{Binding Renderer.ColorGradingData, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">

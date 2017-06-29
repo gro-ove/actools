@@ -44,7 +44,7 @@ namespace AcManager.CustomShowroom {
         private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
             if (kn5 == null) yield break;
 
-            var carPaint = new[] { "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "car_paint.dds", "carpaint.dds" }
+            var carPaint = new[] { "car_paint.dds", "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "carpaint.dds" }
                     .FirstOrDefault(x => kn5.Textures.ContainsKey(x));
             var mapsMap = kn5.Materials.Values.Where(x => x.ShaderName == "ksPerPixelMultiMap_damage_dirt")
                              .Select(x => x.GetMappingByName(@"txMaps")?.Texture)

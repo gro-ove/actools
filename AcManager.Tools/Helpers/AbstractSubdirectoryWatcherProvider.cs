@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 
@@ -90,33 +91,22 @@ namespace AcManager.Tools.Helpers {
         }
 
         private Dictionary<string, ContentWatcher> _watchers;
+        protected IReadOnlyDictionary<string, ContentWatcher> Watchers => _watchers ?? (_watchers = new Dictionary<string, ContentWatcher>());
 
-        public virtual ContentWatcher Watcher(params string[] name) {
-            if (_watchers == null) {
-                _watchers = new Dictionary<string, ContentWatcher>();
-            }
+        protected ContentWatcher GetWatcher(string directory) {
+            var key = FileUtils.NormalizePath(directory);
+            if (Watchers.TryGetValue(key, out var result)) return result;
 
-            string key;
-            string local;
-
-            if (name.Length == 0) {
-                key = "";
-                local = null;
-            } else {
-                key = Path.Combine(name);
-                local = key;
-            }
-
-            ContentWatcher result;
-            if (_watchers.TryGetValue(key, out result)) return result;
-
-            var directory = GetSubdirectoryFilename(local);
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
             }
 
             _watchers[key] = new ContentWatcher(directory);
             return _watchers[key];
+        }
+
+        public virtual ContentWatcher Watcher(params string[] name) {
+            return GetWatcher(GetSubdirectoryFilename(name.Length == 0 ? null : Path.Combine(name)));
         }
 
         protected abstract string GetSubdirectoryFilename([CanBeNull] string name);

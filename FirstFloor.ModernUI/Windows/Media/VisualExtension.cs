@@ -24,13 +24,19 @@ namespace FirstFloor.ModernUI.Windows.Media {
         }
 
         public static Point GetMousePosition(this Visual relativeTo) {
-            var mouse = new Win32Point();
-            GetCursorPos(ref mouse);
             return relativeTo.PointFromScreen(GetMousePosition());
+        }
+
+        public static Point GetMousePosition(this Visual relativeTo, Point screenPoint) {
+            return relativeTo.PointFromScreen(screenPoint);
         }
 
         public static bool IsMouseOverElement(this Visual target) {
             return VisualTreeHelper.GetDescendantBounds(target).Contains(target.GetMousePosition());
+        }
+
+        public static bool IsMouseOverElement(this Visual target, Point screenPoint) {
+            return VisualTreeHelper.GetDescendantBounds(target).Contains(target.GetMousePosition(screenPoint));
         }
 
         [CanBeNull]
@@ -43,9 +49,15 @@ namespace FirstFloor.ModernUI.Windows.Media {
             return list.GetItemVisual(index)?.IsMouseOverElement() == true;
         }
 
+        public static bool IsMouseOverItem(this ItemsControl list, int index, Point point) {
+            return list.GetItemVisual(index)?.IsMouseOverElement(point) == true;
+        }
+
         public static int GetMouseItemIndex(this ItemsControl list) {
+            var screenPoint = GetMousePosition();
+
             for (var i = 0; i < list.Items.Count; i++) {
-                if (list.IsMouseOverItem(i)) {
+                if (list.IsMouseOverItem(i, screenPoint)) {
                     return i;
                 }
             }

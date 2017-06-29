@@ -370,6 +370,7 @@ namespace AcManager.Tools.Objects {
                     d ?? (Track?.Id ?? _information.TrackKunosId ?? CarSetupObject.GenericDirectory), _information.FileName));
             FileUtils.EnsureFileDirectoryExists(filename);
             File.WriteAllText(filename, _loadedData);
+            Toast.Show("Setup Installed", $"Setup {DisplayName} downloaded and installed");
         }));
     }
 }

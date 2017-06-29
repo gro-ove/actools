@@ -27,6 +27,7 @@ namespace AcManager.Controls.Video {
                 True = _mediaPlayer,
                 False = new BbCodeBlock {
                     Width = 320,
+                    Foreground = new SolidColorBrush(Colors.White),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     TextWrapping = TextWrapping.Wrap
@@ -58,7 +59,7 @@ namespace AcManager.Controls.Video {
 
             ((BbCodeBlock)_switch.False).BbCode = string.Format(
                     "Can’t play file. Make sure Windows Media Player is available and {0}required codec is installed{1}, or enable VLC plugin instead.",
-                    url == null ? "" : $@"[url=""{url}""]",
+                    url == null ? "" : $@"[url={BbCodeBlock.EncodeAttribute(url)}]",
                     url == null ? "" : @"[/url]");
         }
 
@@ -130,7 +131,7 @@ namespace AcManager.Controls.Video {
             _active = true;
 
             var duration = _mediaPlayer.NaturalDuration;
-            ResetAndPlay(duration.HasTimeSpan ? 
+            ResetAndPlay(duration.HasTimeSpan ?
                 TimeSpan.FromSeconds(MathUtils.Random() * Math.Max(_mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds - 5d, 0d)) :
                 TimeSpan.Zero);
 

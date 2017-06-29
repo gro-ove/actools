@@ -58,6 +58,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             base.Initialize(contextHolder);
         }
 
+        protected override void RefreshOverride(IDeviceContextHolder contextHolder) {
+            _hasNormalMap = false;
+            base.RefreshOverride(contextHolder);
+        }
+
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!base.Prepare(contextHolder, mode)) return false;
 

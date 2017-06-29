@@ -18,6 +18,7 @@ namespace AcTools.Render.Base.Materials {
 
         private readonly Dictionary<int, IRenderableMaterial> _materials = new Dictionary<int, IRenderableMaterial>();
 
+        [NotNull]
         public IRenderableMaterial GetMaterial(object key) {
             var keyHash = key.GetHashCode();
 

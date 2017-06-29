@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class UniformGridWithOrientation : SpacingUniformGrid {
-        #region Orientation (Dependency Property)  
+        #region Orientation (Dependency Property)
         public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register("Orientation", typeof(Orientation),
                 typeof(UniformGridWithOrientation), new FrameworkPropertyMetadata(Orientation.Vertical, FrameworkPropertyMetadataOptions.AffectsMeasure),
                 IsValidOrientation);
@@ -16,35 +16,50 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public Orientation Orientation {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get => (Orientation)GetValue(OrientationProperty);
+            set => SetValue(OrientationProperty, value);
         }
         #endregion
 
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
-            var available = new Size((constraint.Width - _totalSpacingWidth) / _columns, (constraint.Height - _totalSpacingHeight) / _rows);
+            if (_columns == 0 || _rows == 0) return new Size();
+
+            var available = new Size(
+                    Math.Max((constraint.Width - _totalSpacingWidth) / _columns, 0),
+                    Math.Max((constraint.Height - _totalSpacingHeight) / _rows, 0));
+
             var width = 0d;
             var height = 0d;
-            var num3 = 0;
             var count = InternalChildren.Count;
-            while (num3 < count) {
-                var element = InternalChildren[num3];
+
+            for (var n = 0; n < count; n++) {
+                var element = InternalChildren[n];
                 element.Measure(available);
+
                 var desiredSize = element.DesiredSize;
+
                 if (width < desiredSize.Width) {
                     width = desiredSize.Width;
                 }
+
                 if (height < desiredSize.Height) {
                     height = desiredSize.Height;
                 }
-                num3++;
+
+                n++;
             }
+
             return new Size(width * _columns + _totalSpacingWidth, height * _rows + _totalSpacingHeight);
         }
 
         protected override Size ArrangeOverride(Size arrangeSize) {
-            var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, (arrangeSize.Height - _totalSpacingHeight) / _rows);
+            if (_columns == 0 || _rows == 0) return new Size();
+
+            var childBounds = new Rect(0, 0,
+                    Math.Max((arrangeSize.Width - _totalSpacingWidth) / _columns, 0),
+                    Math.Max((arrangeSize.Height - _totalSpacingHeight) / _rows, 0));
+
             var xStep = childBounds.Width + _horizontalSpacing;
             var yStep = childBounds.Height + _verticalSpacing;
 
@@ -138,8 +153,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _horizontalSpacing = HorizontalSpacing;
             _verticalSpacing = VerticalSpacing;
 
-            _totalSpacingWidth = _columns == 0 ? 0 : HorizontalSpacing * (_columns - 1);
-            _totalSpacingHeight = _rows == 0 ? 0 : VerticalSpacing * (_rows - 1);
+            _totalSpacingWidth = _columns == 0 ? 0 : HorizontalSpacing * Math.Max(_columns - 1, 0);
+            _totalSpacingHeight = _rows == 0 ? 0 : VerticalSpacing * Math.Max(_rows - 1, 0);
 
             _orientation = Orientation;
         }

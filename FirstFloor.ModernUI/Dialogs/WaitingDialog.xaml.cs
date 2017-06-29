@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private string _message;
 
         public string Message {
-            get { return _message; }
+            get => _message;
             private set {
                 if (Equals(value, _message)) return;
                 _message = value;
@@ -33,7 +34,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private string _details;
 
         public string Details {
-            get { return _details; }
+            get => _details;
             private set {
                 if (Equals(value, _details)) return;
                 _details = value;
@@ -73,7 +74,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private double? _progress;
 
         public double? Progress {
-            get { return _progress; }
+            get => _progress;
             private set {
                 if (Equals(value, _progress)) return;
                 _progress = value;
@@ -84,7 +85,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private bool _progressIndetermitate;
 
         public bool ProgressIndetermitate {
-            get { return _progressIndetermitate; }
+            get => _progressIndetermitate;
             private set {
                 if (Equals(value, _progressIndetermitate)) return;
                 _progressIndetermitate = value;
@@ -95,7 +96,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private bool _isCancelled;
 
         public bool IsCancelled {
-            get { return _isCancelled; }
+            get => _isCancelled;
             private set {
                 if (Equals(value, _isCancelled)) return;
                 _isCancelled = value;
@@ -120,8 +121,24 @@ namespace FirstFloor.ModernUI.Dialogs {
         private TaskbarProgress _taskbarProgress;
 
         public new string Title {
-            get { return base.Title; }
-            set { base.Title = value ?? UiStrings.Common_PleaseWait; }
+            get => base.Title;
+            set => base.Title = value ?? UiStrings.Common_PleaseWait;
+        }
+
+        private string _cancellationText = UiStrings.Cancel;
+
+        public string CancellationText {
+            get => _cancellationText;
+            set {
+                if (Equals(value, _cancellationText)) return;
+                _cancellationText = value;
+                OnPropertyChanged();
+
+                var c = Buttons.OfType<Button>().FirstOrDefault();
+                if (c != null) {
+                    c.Content = value;
+                }
+            }
         }
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -133,7 +150,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 lock (_lock) {
                     return Dispatcher.Invoke(() => {
                         _cancellationTokenSource = new CancellationTokenSource();
-                        Buttons = new[] { CancelButton };
+                        Buttons = new[] { CreateCloseDialogButton(CancellationText, false, true, MessageBoxResult.Cancel) };
                         Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 20);
                         Closing += WaitingDialog_Closing;
                         return _cancellationTokenSource.Token;

@@ -30,7 +30,9 @@ namespace AcManager.Pages.Lists {
                 : base(WeatherManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Weather);
+            protected override string GetSubject() {
+                return AppStrings.List_Weather;
+            }
         }
     }
 }

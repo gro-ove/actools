@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public async void Do(Func<Task> a) {
+        public async void Task(Func<Task> a) {
             if (Is) return;
             using (Set()) {
                 await a();
@@ -37,34 +37,48 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public void DoDelay(Action a, int millisecondsDelay) {
-            Do(async () => {
-                await Task.Delay(millisecondsDelay);
+            Task(async () => {
+                await System.Threading.Tasks.Task.Delay(millisecondsDelay);
                 a();
+            });
+        }
+
+        public void TaskDelay(Func<Task> a, int millisecondsDelay) {
+            Task(async () => {
+                await System.Threading.Tasks.Task.Delay(millisecondsDelay);
+                await a();
             });
         }
 
         public Task DoDelay(Action a, TimeSpan delay) {
-            return DoAsync(async () => {
-                await Task.Delay(delay);
+            return TaskAsync(async () => {
+                await System.Threading.Tasks.Task.Delay(delay);
                 a();
+            });
+        }
+
+        public void TaskDelay(Func<Task> a, TimeSpan delay) {
+            Task(async () => {
+                await System.Threading.Tasks.Task.Delay(delay);
+                await a();
             });
         }
 
         public void DoDelayAfterwards(Action a, int millisecondsDelay) {
-            Do(async () => {
+            Task(async () => {
                 a();
-                await Task.Delay(millisecondsDelay);
+                await System.Threading.Tasks.Task.Delay(millisecondsDelay);
             });
         }
 
         public Task DoDelayAfterwards(Action a, TimeSpan delay) {
-            return DoAsync(async () => {
+            return TaskAsync(async () => {
                 a();
-                await Task.Delay(delay);
+                await System.Threading.Tasks.Task.Delay(delay);
             });
         }
 
-        public async Task DoAsync(Func<Task> a) {
+        public async Task TaskAsync(Func<Task> a) {
             if (Is) return;
             using (Set()) {
                 await a();

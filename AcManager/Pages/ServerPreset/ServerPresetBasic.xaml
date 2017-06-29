@@ -28,7 +28,8 @@
           <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
             <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
             <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
-            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}" Foreground="White" />
+            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                Text="{Binding Name}" Foreground="{DynamicResource DarkStripeText}" />
           </Grid>
         </Button>
       </StackPanel>
@@ -37,8 +38,8 @@
         <Button Padding="0" Width="160" Height="120" IsHitTestVisible="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
           <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
             <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Cars[0].DisplayName}"
-                Foreground="White" />
+            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                Text="{Binding Cars[0].DisplayName}" Foreground="{DynamicResource DarkStripeText}" />
           </Grid>
         </Button>
       </StackPanel>

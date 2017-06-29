@@ -414,10 +414,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _serverPresetsFitInFewerTabs;
 
             public bool ServerPresetsFitInFewerTabs {
-                get {
-                    return _serverPresetsFitInFewerTabs ??
-                            (_serverPresetsFitInFewerTabs = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", false)).Value;
-                }
+                get => _serverPresetsFitInFewerTabs ??
+                        (_serverPresetsFitInFewerTabs = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", false)).Value;
                 set {
                     if (Equals(value, _serverPresetsFitInFewerTabs)) return;
                     _serverPresetsFitInFewerTabs = value;
@@ -1328,14 +1326,14 @@ namespace AcManager.Tools.Helpers {
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
 
-            private bool? _newLayout;
+            private bool? _oldLayout;
 
-            public bool NewLayout {
-                get => _newLayout ?? (_newLayout = ValuesStorage.GetBool("Settings.ContentSettings.NewLayout", true)).Value;
+            public bool OldLayout {
+                get => _oldLayout ?? (_oldLayout = ValuesStorage.GetBool("Settings.ContentSettings.OldLayout", false)).Value;
                 set {
-                    if (Equals(value, _newLayout)) return;
-                    _newLayout = value;
-                    ValuesStorage.Set("Settings.ContentSettings.NewLayout", value);
+                    if (Equals(value, _oldLayout)) return;
+                    _oldLayout = value;
+                    ValuesStorage.Set("Settings.ContentSettings.OldLayout", value);
                     OnPropertyChanged();
                 }
             }
@@ -1343,10 +1341,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _mentionCmInPackedContent;
 
             public bool MentionCmInPackedContent {
-                get {
-                    return _mentionCmInPackedContent ??
-                            (_mentionCmInPackedContent = ValuesStorage.GetBool("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
-                }
+                get => _mentionCmInPackedContent ??
+                        (_mentionCmInPackedContent = ValuesStorage.GetBool("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
                 set {
                     if (Equals(value, _mentionCmInPackedContent)) return;
                     _mentionCmInPackedContent = value;
@@ -1482,7 +1478,7 @@ namespace AcManager.Tools.Helpers {
             private string _temporaryFilesLocation;
 
             public string TemporaryFilesLocation {
-                get { return _temporaryFilesLocation ?? (_temporaryFilesLocation = ValuesStorage.GetString("Settings.ContentSettings.TemporaryFilesLocation", "")); }
+                get => _temporaryFilesLocation ?? (_temporaryFilesLocation = ValuesStorage.GetString("Settings.ContentSettings.TemporaryFilesLocation", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _temporaryFilesLocation)) return;
@@ -1682,6 +1678,28 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _missingContentSearch)) return;
                     _missingContentSearch = value;
                     ValuesStorage.Set("Settings.ContentSettings.MissingContentSearch", value.DisplayName);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _carReplaceTyresDonorFilter;
+
+            public string CarReplaceTyresDonorFilter {
+                get {
+                    if (_carReplaceTyresDonorFilter == null) {
+                        _carReplaceTyresDonorFilter = ValuesStorage.GetString("Settings.ContentSettings.CarReplaceTyresDonorFilter", "k+");
+                        if (string.IsNullOrWhiteSpace(_carReplaceTyresDonorFilter)) {
+                            _carReplaceTyresDonorFilter = "*";
+                        }
+                    }
+
+                    return _carReplaceTyresDonorFilter;
+                }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _carReplaceTyresDonorFilter)) return;
+                    _carReplaceTyresDonorFilter = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarReplaceTyresDonorFilter", value);
                     OnPropertyChanged();
                 }
             }
@@ -2157,7 +2175,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _theSetupMarketTab;
 
             public bool TheSetupMarketTab {
-                get { return _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value; }
+                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value;
                 set {
                     if (Equals(value, _theSetupMarketTab)) return;
                     _theSetupMarketTab = value;
@@ -2170,10 +2188,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _theSetupMarketCounter;
 
             public bool TheSetupMarketCounter {
-                get {
-                    return TheSetupMarketTab && (_theSetupMarketCounter ??
-                            (_theSetupMarketCounter = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
-                }
+                get => TheSetupMarketTab && (_theSetupMarketCounter ??
+                        (_theSetupMarketCounter = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
                 set {
                     if (Equals(value, _theSetupMarketCounter)) return;
                     _theSetupMarketCounter = value;

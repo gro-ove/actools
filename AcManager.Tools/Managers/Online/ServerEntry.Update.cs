@@ -221,6 +221,7 @@ namespace AcManager.Tools.Managers.Online {
                             : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout);
                     if (pair != null) {
                         Ping = (long)pair.Item2.TotalMilliseconds;
+                        _updatePingFailed = false;
                     } else {
                         Ping = null;
                         _updatePingFailed = true;

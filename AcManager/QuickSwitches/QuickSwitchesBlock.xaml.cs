@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace AcManager.QuickSwitches {
     public partial class QuickSwitchesBlock {
         public QuickSwitchesBlock() {
             InitializeComponent();
             Rebuild();
-
-            SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
+            SettingsHolder.Drive.PropertyChanged += OnDrivePropertyChanged;
         }
 
-        private void Drive_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnDrivePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.Drive.QuickSwitches) ||
                     e.PropertyName == nameof(SettingsHolder.Drive.QuickSwitchesList)) {
                 Rebuild();
@@ -40,5 +41,22 @@ namespace AcManager.QuickSwitches {
                 List.Items.Add(item);
             }
         }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e) {
+            (Application.Current?.MainWindow as MainWindow)?.CloseQuickSwitches();
+        }
+
+        public static bool GetIsActive(FrameworkElement obj) {
+            return obj.IsFocused;
+        }
+
+        public static void SetIsActive(FrameworkElement obj, bool value) {
+            if (value) {
+                obj.Focus();
+            } else {
+                obj.RemoveFocus();
+            }
+        }
+
     }
 }

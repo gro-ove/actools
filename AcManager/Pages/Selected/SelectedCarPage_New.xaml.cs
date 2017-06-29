@@ -25,6 +25,7 @@ using AcManager.Tools.ContentRepairUi;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.AcdFile;
@@ -243,7 +244,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
+                    ShowroomPresets = _helper.Create(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue), p => {
                         CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -251,7 +252,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeCustomShowroomPresets() {
                 if (CustomShowroomPresets == null) {
-                    CustomShowroomPresets = _helper.Create(DarkRendererSettings.DefaultPresetableKeyValue, p => {
+                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue), p => {
                         CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.Filename);
                     });
                 }
@@ -259,7 +260,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
                         QuickDrive.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -267,9 +268,9 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = _helper.Create(
+                    UpdatePreviewsPresets = _helper.Create(new PresetsCategory(
                             SettingsHolder.CustomShowroom.CustomShowroomPreviews
-                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                             p => new ToUpdatePreview(SelectedObject).Run(p.Filename));
                 }
             }
@@ -337,10 +338,15 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
                     (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
 
-            private AsyncCommand _carAnalyzerCommand;
+            private static WeakReference<ModernDialog> _analyzerDialog;
+            private DelegateCommand _carAnalyzerCommand;
 
-            public AsyncCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new AsyncCommand(() => {
-                var dialog = new ModernDialog {
+            public DelegateCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => {
+                if (_analyzerDialog != null && _analyzerDialog.TryGetTarget(out ModernDialog dialog)) {
+                    dialog.Close();
+                }
+
+                dialog = new ModernDialog {
                     ShowTitle = false,
                     Title = "Analyzer",
                     SizeToContent = SizeToContent.Manual,
@@ -356,7 +362,9 @@ namespace AcManager.Pages.Selected {
                         Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True&Rating=True", SelectedObject.Id)
                     }
                 };
-                return dialog.ShowAndWaitAsync();
+
+                dialog.Show();
+                _analyzerDialog = new WeakReference<ModernDialog>(dialog);
             }));
 
             #region Specs editor
@@ -556,7 +564,8 @@ namespace AcManager.Pages.Selected {
                 o.SpecsTorqueCurve = new GraphData(torque);
                 o.SpecsPowerCurve = new GraphData(power);
 
-                if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo,
+                        "copyNewPowerAndTorque") == MessageBoxResult.Yes) {
                     // MaxY values were updated while creating new GraphData instances above
                     o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
                     o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
@@ -609,7 +618,8 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
-            UpdateExtendedMode();
+            this.AddWidthCondition(800).Add(x => ExtendedMode = OptionExtendedMode && x);
+            this.AddWidthCondition(x => x >= 1200 ? 180 : x >= 1000 ? 144 : 108).Add(x => SkinsListExtendedModeParent.MaxHeight = x);
 
             if (!AppAppearanceManager.Instance.PopupToolBars) {
                 FancyHints.AccidentallyRemoved.Trigger();
@@ -621,6 +631,7 @@ namespace AcManager.Pages.Selected {
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
+                new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt)),
                 new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
@@ -643,6 +654,8 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.CarAnalyzerCommand, new KeyGesture(Key.A, ModifierKeys.Alt)),
                 new InputBinding(_model.ReplaceTyresCommand, new KeyGesture(Key.T, ModifierKeys.Alt)),
                 new InputBinding(_model.ReplaceSoundCommand, new KeyGesture(Key.S, ModifierKeys.Alt)),
+
+                new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
             });
         }
 
@@ -806,14 +819,6 @@ namespace AcManager.Pages.Selected {
                 ScrollViewer.SetVerticalScrollBarVisibility(SkinsList, value ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
                 HorizontalScrollBehavior.IsEnabled = !value;
             }
-        }
-
-        private void UpdateExtendedMode() {
-            ExtendedMode = OptionExtendedMode && ActualWidth > 1200d;
-        }
-
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            UpdateExtendedMode();
         }
 
         private void OnPowerGraphContextMenuClick(object sender, ContextMenuButtonEventArgs e) {

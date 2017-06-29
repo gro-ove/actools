@@ -1,63 +1,61 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AcRootDirectorySelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_ContentManager}"
-        ShowInTaskbar="True" WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
-        d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}">
-    <mui:ModernDialog.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </mui:ModernDialog.Resources>
-    <StackPanel Width="500">
-        <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
-                Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <mui:BbCodeBlock BbCode="Content Manager was updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
-                Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_ContentManager}" ShowInTaskbar="True"
+    WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
+    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
+  <StackPanel Width="500">
+    <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
+        Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    <mui:BbCodeBlock BbCode="Content Manager was updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
+        Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <!--AC root-->
-        <StackPanel Visibility="{Binding ChangeAcRoot, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
-            <DockPanel Margin="20 8 0 0">
-                <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ChangeAcRootCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Placeholder="?" />
-            </DockPanel>
-        </StackPanel>
-
-        <!--Steam ID-->
-        <StackPanel Visibility="{Binding ChangeSteamId, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
-            <DockPanel Margin="20 8 0 0">
-                <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                <mui:BetterComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" Placeholder="?"
-                        Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" IsEditable="False" />
-            </DockPanel>
-        </StackPanel>
-
-        <!--shortcut-->
-        <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <TextBlock Text="Add a shortcut to Start Menu?"
-                    Style="{StaticResource Heading2}" Margin="0 20 0 0" />
-            <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
-            <StackPanel Margin="20 8 0 0" Orientation="Horizontal">
-                <Button Content="Create" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
-                <Button Content="Delete" Command="{x:Static mui:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
-            </StackPanel>
-        </StackPanel>
-
-        <!--plugins-->
-        <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
-                    Visibility="{Binding List.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
-            <DockPanel Margin="20 8 0 0">
-                <ScrollViewer MaxHeight="200">
-                    <ItemsControl ItemsSource="{Binding List, Source={x:Static t:PluginsManager.Instance}}" ItemTemplate="{StaticResource PluginItemTemplate}" />
-                </ScrollViewer>
-            </DockPanel>
-        </StackPanel>
+    <!--AC root-->
+    <StackPanel Visibility="{Binding ChangeAcRoot, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
+      <DockPanel Margin="20 8 0 0">
+        <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ChangeAcRootCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
+        <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Placeholder="?" />
+      </DockPanel>
     </StackPanel>
-</mui:ModernDialog>
 
+    <!--Steam ID-->
+    <StackPanel Visibility="{Binding ChangeSteamId, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <DockPanel Margin="20 8 0 0">
+        <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
+        <mui:BetterComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" Placeholder="?"
+            Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" IsEditable="False" />
+      </DockPanel>
+    </StackPanel>
+
+    <!--shortcut-->
+    <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+      <TextBlock Text="Add a shortcut to Start Menu?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
+      <StackPanel Margin="20 8 0 0" Orientation="Horizontal">
+        <Button Content="Create" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
+        <Button Content="Delete" Command="{x:Static mui:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
+      </StackPanel>
+    </StackPanel>
+
+    <!--plugins-->
+    <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+      <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
+          Visibility="{Binding List.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
+      <DockPanel Margin="20 8 0 0">
+        <ScrollViewer MaxHeight="200">
+          <ItemsControl ItemsSource="{Binding ListView, Source={x:Static t:PluginsManager.Instance}}" ItemTemplate="{StaticResource PluginItemTemplate}" />
+        </ScrollViewer>
+      </DockPanel>
+    </StackPanel>
+  </StackPanel>
+</mui:ModernDialog>

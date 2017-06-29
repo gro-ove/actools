@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style TargetType="ac:AcObjectBase">
@@ -16,8 +17,8 @@
               <RowDefinition />
               <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" Icon="{TemplateBinding Icon}"
-                IconSource="{TemplateBinding IconSource}" x:Name="PART_Header" />
+            <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}"
+                IconBackground="{TemplateBinding IconBackground}" Icon="{TemplateBinding Icon}" IconSource="{TemplateBinding IconSource}" x:Name="PART_Header" />
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 8 -14 0" Padding="0 0 8 0">
               <StackPanel MinWidth="500" Margin="0 0 0 40">
                 <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" />
@@ -42,8 +43,9 @@
                   <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" Icon="{TemplateBinding Icon}"
-                    x:Name="PART_Header" Margin="{TemplateBinding HeaderPadding}" />
+                <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}"
+                    IconBackground="{TemplateBinding IconBackground}" Icon="{TemplateBinding Icon}" x:Name="PART_Header"
+                    Margin="{TemplateBinding HeaderPadding}" />
                 <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" Grid.Row="1" Margin="0 4 0 0" />
                 <ContentPresenter Grid.Row="2" Content="{TemplateBinding Content}" Margin="-8 4 -8 0" />
                 <ac:AcToolBar Grid.Row="3" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}" />

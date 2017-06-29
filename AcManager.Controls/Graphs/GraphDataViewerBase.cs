@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
+using HitTestResult = OxyPlot.HitTestResult;
 using LineSeries = OxyPlot.Series.LineSeries;
 using PlotCommands = OxyPlot.PlotCommands;
 
@@ -20,7 +23,30 @@ namespace AcManager.Controls.Graphs {
 
         protected GraphDataViewerBase() {
             Controller = new CustomController();
+            Loaded += OnLoaded;
         }
+
+        protected void LoadColor(ref OxyColor color, string key) {
+            var r = TryFindResource(key);
+            var v = r as Color? ?? (r as SolidColorBrush)?.Color;
+            if (v != null) {
+                color = v.Value.ToOxyColor();
+            }
+        }
+
+        private OxyColor _textColor = OxyColor.FromUInt32(0xffffffff);
+        protected OxyColor BaseTextColor => _textColor;
+        protected OxyColor BaseLegendTextColor => OxyColor.FromArgb((_textColor.A * 0.67).ClampToByte(), _textColor.R, _textColor.G, _textColor.B);
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+            SetValue(TextOptions.TextHintingModeProperty, TextHintingMode.Fixed);
+            SetValue(TextOptions.TextRenderingModeProperty, TextRenderingMode.Grayscale);
+            LoadColor(ref _textColor, "WindowText");
+            OnLoadedOverride();
+        }
+
+        protected virtual void OnLoadedOverride() {}
 
         static GraphDataViewerBase() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GraphDataViewerBase), new FrameworkPropertyMetadata(typeof(GraphDataViewerBase)));

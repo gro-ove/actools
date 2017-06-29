@@ -67,12 +67,27 @@ namespace AcManager.Controls {
             return new SizeRelatedCondition<TParent, bool>(parent, p => p.ActualWidth >= widthThreshold);
         }
 
+        public static SizeRelatedCondition<TParent, double> AddWidthCondition<TParent>([NotNull] this TParent parent, Func<double, double> condition)
+                where TParent : FrameworkElement {
+            return new SizeRelatedCondition<TParent, double>(parent, p => condition(p.ActualWidth));
+        }
+
         public static SizeRelatedCondition<TParent, TValue> AddSizeCondition<TParent, TValue>([NotNull] this TParent parent, Func<TParent, TValue> condition)
                 where TParent : FrameworkElement {
             return new SizeRelatedCondition<TParent, TValue>(parent, condition);
         }
 
         // Template-related (with getChild funs):
+
+        public static SizeRelatedCondition<TParent, bool> Add<TParent>(this SizeRelatedCondition<TParent, bool> condition,
+                Func<FrameworkElement> getChild) where TParent : FrameworkElement {
+            return condition.Add(x => getChild(), (child, b) => child.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
+        }
+
+        public static SizeRelatedCondition<TParent, bool> Add<TParent>(this SizeRelatedCondition<TParent, bool> condition,
+                Func<DataGridColumn> getChild) where TParent : FrameworkElement {
+            return condition.Add(x => getChild(), (child, b) => child.Visibility = b ? Visibility.Visible : Visibility.Collapsed);
+        }
 
         public static SizeRelatedCondition<TParent, bool> Add<TParent>(this SizeRelatedCondition<TParent, bool> condition,
                 Func<TParent, FrameworkElement> getChild) where TParent : FrameworkElement {
@@ -107,7 +122,7 @@ namespace AcManager.Controls {
         }
     }
 
-    public abstract class SizeRelatedCondition {
+    public abstract class SizeRelatedCondition : IDisposable {
         public abstract void Update();
 
         private readonly Busy _updateLater = new Busy();
@@ -121,6 +136,8 @@ namespace AcManager.Controls {
             await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
             Update();
         }
+
+        public virtual void Dispose() { }
     }
 
     public class SizeRelatedCondition<TParent, TValue> : SizeRelatedCondition where TParent : FrameworkElement {
@@ -142,6 +159,12 @@ namespace AcManager.Controls {
         private void OnParentLoaded(object sender, RoutedEventArgs routedEventArgs) {
             _parent.Loaded -= OnParentLoaded;
             Update();
+        }
+
+        public override void Dispose() {
+            base.Dispose();
+            _parent.Loaded -= OnParentLoaded;
+            _parent.SizeChanged -= OnParentSizeChanged;
         }
 
         private readonly List<ChildHolderBase> _children = new List<ChildHolderBase>(10);

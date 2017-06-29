@@ -19,7 +19,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         protected readonly Kn5MaterialDescription Description;
 
         // [NotNull]
-        // It’s actually not null, but Resharper won’t allow it.
+        // Itâ€™s actually not null, but Resharper wonâ€™t allow it.
         protected Kn5Material Kn5Material => Description.Material;
 
         protected EffectSimpleMaterial Effect { get; private set; }
@@ -39,6 +39,11 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public virtual void Initialize(IDeviceContextHolder contextHolder) {
             Effect = contextHolder.GetEffect<EffectSimpleMaterial>();
+        }
+
+        public void Refresh(IDeviceContextHolder contextHolder) {
+            // Because Dispose() is empty, we can just re-initialize shader
+            Initialize(contextHolder);
         }
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {

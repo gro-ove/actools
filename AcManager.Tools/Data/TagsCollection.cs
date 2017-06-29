@@ -9,6 +9,8 @@ using MoonSharp.Interpreter;
 
 namespace AcManager.Tools.Data {
     public class TagsComparer : IComparer<string> {
+        public static readonly TagsComparer Instance = new TagsComparer();
+
         public int Compare(string x, string y) {
             var categoryX = GetCategory(x);
             var categoryY = GetCategory(y);
@@ -27,7 +29,7 @@ namespace AcManager.Tools.Data {
                 case "fwd":
                 case "rwd":
                     return 10;
-                    
+
                 case "automatic":
                 case "manual":
                 case "semiautomatic":
@@ -36,7 +38,7 @@ namespace AcManager.Tools.Data {
 
                 case "h-shifter":
                     return 21;
-                    
+
                 case "compressor":
                 case "turbo":
                 case "v4":
@@ -50,7 +52,7 @@ namespace AcManager.Tools.Data {
                 case "heavyweight":
                 case "subcompact":
                     return 28;
-                    
+
                 case "drift":
                 case "rally":
                 case "race":
@@ -87,13 +89,11 @@ namespace AcManager.Tools.Data {
 
         [NotNull]
         public TagsCollection Sort() {
-            return new TagsCollection(this.OrderBy(x => x, new TagsComparer()));
+            return new TagsCollection(this.OrderBy(x => x, TagsComparer.Instance));
         }
 
-        [NotNull]
-        public TagsCollection CleanUp() {
-            // TODO: Special case for tracks?
-            return new TagsCollection(this.Select(x => {
+        public static IEnumerable<string> CleanUp(IEnumerable<string> tags) {
+            return tags.Select(x => {
                 var s = x.Trim();
 
                 if (Regex.IsMatch(s, @"^#?[abAB]\d\d?$")) {
@@ -119,7 +119,12 @@ namespace AcManager.Tools.Data {
                     default:
                         return AcStringValues.CountryFromTag(t)?.ToLower() ?? t;
                 }
-            }).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct());
+            }).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct();
+        }
+
+        [NotNull]
+        public TagsCollection CleanUp() {
+            return new TagsCollection(CleanUp(this));
         }
     }
 }

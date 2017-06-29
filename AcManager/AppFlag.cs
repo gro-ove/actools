@@ -258,8 +258,8 @@ namespace AcManager {
 
         /// <summary>
         /// Timeout for online requests sent to Kunos servers (time interval or seconds).
-        /// Default value: 10.
-        /// Example: --web-request-timeout=00:05.
+        /// Default value: 1 minute.
+        /// Example: --web-request-timeout=02:00.
         /// </summary>
         WebRequestTimeout,
 

@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls"
+    xmlns:sel="clr-namespace:AcManager.Pages.Selected" mc:Ignorable="d" d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -14,17 +14,10 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <Button PreviewMouseDoubleClick="OnCarClick">
-          <Button.Template>
-            <ControlTemplate TargetType="{x:Type ButtonBase}">
-              <ContentPresenter x:Name="Presenter" />
-            </ControlTemplate>
-          </Button.Template>
-          <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4">
-            <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
-            <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
-          </mui:SpacingStackPanel>
-        </Button>
+        <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4" PreviewMouseLeftButtonDown="OnCarClick">
+          <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
+          <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
+        </mui:SpacingStackPanel>
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
@@ -134,6 +127,10 @@
               Maximum="100" Mode="IntegerOrLabel" ModeLabel="None" Style="{StaticResource Borderless.White}" TextAlignment="Right" />
         </DockPanel>
       </DataTemplate>
+
+      <Style x:Key="RowStyle" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.SemiTransparent}">
+        <Setter Property="Padding" Value="0 4" />
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -239,25 +236,45 @@
     </c:ModernPopup>
 
     <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite.VisibleDetails}" mui:Draggable.Enabled="True"
-        MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop"><!-- TODO: SelectionMode="Extended"-->
+        MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
+        CellStyle="{StaticResource DataGridCell.SemiTransparent}"><!-- TODO: SelectionMode="Extended"-->
       <!--<mui:Draggable.DestinationConverter>
         <l:ServerPresetDriverEntryDraggableConverter />
       </mui:Draggable.DestinationConverter>-->
       <DataGrid.RowDetailsTemplate>
         <DataTemplate>
-          <Border Background="Transparent" Padding="20 4">
-            <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal"
-                d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
-              <Button Content="Random Skin" Padding="4 2" Command="{Binding RandomSkinCommand}" />
-              <Button Content="Store" Padding="4 2" Command="{Binding StoreCommand}" />
-              <Button Content="Clone" Padding="4 2" Command="{Binding CloneCommand}" />
-              <Button Content="Delete" Padding="4 2" Command="{Binding DeleteCommand}" />
-            </mui:SpacingStackPanel>
+          <Border Background="Transparent" Padding="44 4 20 4">
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" Orientation="Horizontal"
+                  d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
+                <TextBlock Text="ID: " />
+                <mui:BetterTextBox Text="{Binding CarId, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" />
+                <TextBlock>
+                  <Run Text=", " /><Run>
+                    <Run.Text>
+                      <MultiBinding Converter="{x:Static sel:SelectedAcObjectViewModel.VersionInfoLabelConverter}" ConverterParameter="insentence"
+                          Mode="OneWay">
+                        <Binding Path="CarObject" />
+                        <Binding Path="CarObject.VersionInfoDisplay" />
+                      </MultiBinding>
+                    </Run.Text>
+                  </Run><Run Text=" " />
+                </TextBlock>
+                <mui:BbCodeBlock BbCode="{Binding CarObject.VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+              </StackPanel>
+              <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal"
+                  d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
+                <Button Content="Random Skin" Padding="4 2" Margin="0 -4 0 0" Command="{Binding RandomSkinCommand}" />
+                <Button Content="Store" Padding="4 2" Margin="0 -4 0 0" Command="{Binding StoreCommand}" />
+                <Button Content="Clone" Padding="4 2" Margin="0 -4 0 0" Command="{Binding CloneCommand}" />
+                <Button Content="Delete" Padding="4 2" Margin="0 -4 0 0" Command="{Binding DeleteCommand}" />
+              </mui:SpacingStackPanel>
+            </DockPanel>
           </Border>
         </DataTemplate>
       </DataGrid.RowDetailsTemplate>
       <DataGrid.Columns>
-        <DataGridTemplateColumn Width="40" Header="" CellStyle="{StaticResource NumberCellStyle}"
+        <DataGridTemplateColumn Width="40" Header="" CellStyle="{StaticResource DataGridCell.SemiTransparent.Number}"
             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate DataType="{x:Type t:ServerPresetDriverEntry}">

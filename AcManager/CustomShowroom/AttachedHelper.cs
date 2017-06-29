@@ -1,33 +1,54 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using AcManager.Tools.Helpers;
+using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using SlimDX.Windows;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace AcManager.CustomShowroom {
     internal class AttachedHelper {
+        private static readonly WeakList<AttachedHelper> Instances = new WeakList<AttachedHelper>();
+
+        [CanBeNull]
+        public static AttachedHelper GetInstance(Window window) {
+            Instances.Purge();
+            return Instances.FirstOrDefault(x => ReferenceEquals(x._child, window));
+        }
+
+        [CanBeNull]
+        public static AttachedHelper GetInstance(BaseRenderer renderer) {
+            Instances.Purge();
+            return Instances.FirstOrDefault(x => ReferenceEquals(x._wrapper.Renderer, renderer));
+        }
+
+        private readonly BaseFormWrapper _wrapper;
         private readonly RenderForm _parent;
 
         [CanBeNull]
         private Window _child;
+        private readonly List<Window> _attached = new List<Window>();
 
         private bool _visible;
 
         public bool Visible {
-            get { return _visible; }
+            get => _visible;
             set {
                 if (Equals(_visible, value)) return;
                 _visible = value;
                 UpdateVisibility(true);
             }
         }
-        
+
         private readonly int _padding;
         private readonly bool _limitHeight;
         private readonly int _offset;
@@ -36,6 +57,7 @@ namespace AcManager.CustomShowroom {
             _padding = padding;
             _limitHeight = limitHeight;
 
+            _wrapper = parent;
             _parent = parent.Form;
             _parent.Closed += OnClosed;
             _parent.UserResized += OnResize;
@@ -71,6 +93,9 @@ namespace AcManager.CustomShowroom {
 
             child.Topmost = true;
             Visible = true;
+
+            Instances.Purge();
+            Instances.Add(this);
         }
 
         private void OnClosed(object sender, EventArgs e) {
@@ -78,6 +103,16 @@ namespace AcManager.CustomShowroom {
                 _child.Close();
                 _child = null;
             }
+
+            foreach (var window in _attached) {
+                try {
+                    window.Close();
+                } catch {
+                    // ignored
+                }
+            }
+
+            _attached.Clear();
         }
 
         private void OnResize(object sender, EventArgs e) {
@@ -173,35 +208,46 @@ namespace AcManager.CustomShowroom {
 
         private void ChildClosed(object sender, EventArgs e) {
             _child = null;
+            Instances.Remove(this);
         }
 
-        private bool _updating;
+        private readonly Busy _busyUpdating = new Busy();
 
-        private async void UpdateVisibility(bool keepFocus) {
-            if (_updating) return;
+        private bool IsAnyActive() {
+            return _parent.Focused || _child?.IsActive == true || _attached.Any(x => x.IsActive);
+        }
 
-            _updating = true;
-            await Task.Delay(1);
+        private Visibility GetVisibility() {
+            return _visible && IsAnyActive() ? Visibility.Visible : Visibility.Hidden;
+        }
 
-            if (_child != null) {
-                var val = _visible && (_parent.Focused || _child.IsActive) ? Visibility.Visible : Visibility.Hidden;
-                if (val != _child.Visibility) {
-                    _child.Visibility = val;
+        private async Task UpdateVisibility(Window child, Visibility visibility, bool setFocus) {
+            if (child == null) return;
 
-                    if (val == Visibility.Visible) {
-                        _child.Topmost = false;
-                        _child.Topmost = true;
-                    }
+            if (visibility != child.Visibility) {
+                child.Visibility = visibility;
 
-                    if (keepFocus) {
-                        await Task.Delay(1);
-                        _parent.Focus();
-                        _parent.Activate();
-                    }
+                if (visibility == Visibility.Visible) {
+                    child.Topmost = false;
+                    child.Topmost = true;
+                }
+
+                if (setFocus) {
+                    await Task.Delay(1);
+                    _parent.Focus();
+                    _parent.Activate();
                 }
             }
+        }
 
-            _updating = false;
+        private void UpdateVisibility(bool keepFocus) {
+            _busyUpdating.DoDelay(async () => {
+                var visibility = GetVisibility();
+                await UpdateVisibility(_child, visibility, keepFocus);
+                foreach (var window in _attached) {
+                    await UpdateVisibility(window, visibility, false);
+                }
+            }, 1);
         }
 
         protected void OnGotFocus(object sender, EventArgs e) {
@@ -210,6 +256,66 @@ namespace AcManager.CustomShowroom {
 
         protected void OnLostFocus(object sender, EventArgs e) {
             UpdateVisibility(false);
+        }
+
+        public void Attach(string tag, Window window) {
+            if (tag != null) {
+                try {
+                    _attached.FirstOrDefault(x => Equals(x.Tag, tag))?.Close();
+                } catch {
+                    // ignored
+                }
+            }
+
+            _attached.Add(window);
+            window.Owner = null;
+            window.Activated += ChildActivated;
+            window.Deactivated += ChildDeactivated;
+            window.Closed += OnWindowClosed;
+            window.Tag = tag;
+            window.Show();
+            window.Activate();
+            window.Topmost = true;
+            ElementHost.EnableModelessKeyboardInterop(window);
+            UpdateVisibility(window, GetVisibility(), true).Forget();
+        }
+
+        public void Attach(Window window) {
+            Attach(null, window);
+        }
+
+        public Task AttachAndWaitAsync(string tag, Window window) {
+            if (tag != null) {
+                try {
+                    _attached.FirstOrDefault(x => Equals(x.Tag, tag))?.Close();
+                } catch {
+                    // ignored
+                }
+            }
+
+            _attached.Add(window);
+            window.Owner = null;
+            window.Activated += ChildActivated;
+            window.Deactivated += ChildDeactivated;
+            window.Closed += OnWindowClosed;
+            window.Tag = tag;
+            window.Show();
+            window.Activate();
+            window.Topmost = true;
+            ElementHost.EnableModelessKeyboardInterop(window);
+            UpdateVisibility(window, GetVisibility(), true).Forget();
+
+            var tcs = new TaskCompletionSource<bool>();
+            window.Closed += (sender, args) => tcs.SetResult(true);
+            return tcs.Task;
+        }
+
+        public Task AttachAndWaitAsync(Window window) {
+            return AttachAndWaitAsync(null, window);
+        }
+
+        private void OnWindowClosed(object sender, EventArgs eventArgs) {
+            _attached.Remove((Window)sender);
         }
 
         private int _stickyLocation;

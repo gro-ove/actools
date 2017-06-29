@@ -492,7 +492,16 @@ namespace AcTools.Render.Forward {
             DisposeHelper.Dispose(ref _colorGradingTexture);
 
             try {
-                _colorGradingTexture = Texture3D.FromMemory(Device, ColorGradingData);
+                var d = ColorGradingData;
+                if (d.Length > 3 && d[0] == 'D' && d[1] == 'D' && d[2] == 'D') {
+                    _colorGradingTexture = Texture3D.FromMemory(Device, ColorGradingData);
+                } else {
+                    using (var s = new MemoryStream(d))
+                    using (var b = Image.FromStream(s)) {
+                        _colorGradingTexture = ColorGradingConverter.CreateTexture(Device, (Bitmap)b);
+                    }
+                }
+
                 _colorGradingView = new ShaderResourceView(Device, _colorGradingTexture);
             } catch (Exception) {
                 DisposeHelper.Dispose(ref _colorGradingView);

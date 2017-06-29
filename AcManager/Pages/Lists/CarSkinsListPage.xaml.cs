@@ -79,8 +79,8 @@ namespace AcManager.Pages.Lists {
                 SelectedCar = car;
             }
 
-            protected override string GetStatus() {
-                return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Skins);
+            protected override string GetSubject() {
+                return AppStrings.List_Skins;
             }
 
             private ICommand _resetPriorityCommand;

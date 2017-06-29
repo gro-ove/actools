@@ -16,7 +16,7 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {
-        public bool IsBlending { get; }
+        public bool IsBlending { get; private set; }
 
         [NotNull]
         protected readonly Kn5MaterialDescription Description;
@@ -42,6 +42,20 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public virtual void Initialize(IDeviceContextHolder contextHolder) {
             Effect = contextHolder.GetEffect<EffectDarkMaterial>();
+        }
+
+        protected virtual void RefreshOverride(IDeviceContextHolder contextHolder) {
+            Initialize(contextHolder);
+        }
+
+        public void Refresh(IDeviceContextHolder contextHolder) {
+            // Because Dispose() is empty, we can just re-initialize shader
+            try {
+                IsBlending = Kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
+                RefreshOverride(contextHolder);
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+            }
         }
 
         protected virtual void SetInputLayout(IDeviceContextHolder contextHolder) {

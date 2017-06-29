@@ -11,14 +11,16 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ac:StatEntry}">
-          <Border Background="#aa000000" Padding="8" Width="181" Height="181" Margin="0 0 0 10">
+          <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="8" Width="181"
+              Height="181" Margin="0 0 0 10">
             <DockPanel>
               <mui:ReferenceSwitch Value="{TemplateBinding CarId}" DockPanel.Dock="Top" Height="80">
                 <mui:ReferenceSwitch.NonNull>
                   <mui:Cell DataContext="{TemplateBinding CarId, Converter={StaticResource CarIdToCarWrapperConverter}}">
                     <mui:BetterImage Filename="{Binding Value.SelectedSkin.PreviewImage}" Margin="0 8 0 0" />
-                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="#99000000" Text="{Binding Value.DisplayName}"
-                        Foreground="White" Style="{StaticResource Small}" TextAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
+                        Text="{Binding Value.DisplayName}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
+                        TextTrimming="CharacterEllipsis" />
                     <mui:Cell.ToolTip>
                       <userControls:CarBlock Car="{Binding Value}" SelectSkin="False" ShowSkinsAndPreview="False" Width="512" MaxHeight="320" />
                     </mui:Cell.ToolTip>
@@ -29,8 +31,9 @@
                     <mui:ReferenceSwitch.NonNull>
                       <mui:Cell DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}">
                         <mui:BetterImage Filename="{Binding Value.OutlineImage}" Margin="0 8 0 0" />
-                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="#99000000" Text="{Binding Value.Name}"
-                            Foreground="White" Style="{StaticResource Small}" TextAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
+                            Text="{Binding Value.Name}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
+                            TextTrimming="CharacterEllipsis" />
                         <mui:Cell.ToolTip>
                           <userControls:TrackBlock Track="{Binding Value}" ShowPreview="True" />
                         </mui:Cell.ToolTip>

@@ -5,7 +5,8 @@
     xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
     FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="OnLoaded">
-  <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}" IconMouseDown="OnIconMouseDown">
+  <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}" IconBackground="Black"
+      IconMouseDown="OnIconMouseDown">
     <ac:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_FontTooltip}"

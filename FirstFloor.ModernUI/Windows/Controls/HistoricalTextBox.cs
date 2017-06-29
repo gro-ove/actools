@@ -41,8 +41,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HistoricalTextBox), new PropertyMetadata(OnDefaultItemsChanged));
 
         public ObservableCollection<string> DefaultItems {
-            get { return (ObservableCollection<string>)GetValue(DefaultItemsProperty); }
-            set { SetValue(DefaultItemsProperty, value); }
+            get => (ObservableCollection<string>)GetValue(DefaultItemsProperty);
+            set => SetValue(DefaultItemsProperty, value);
         }
 
         private static void OnDefaultItemsChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -132,8 +132,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HistoricalTextBox), new PropertyMetadata(null, OnSaveKeyChanged));
 
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -151,7 +151,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             _filtersHistory.ReplaceEverythingBy_Direct(items);
-
             _dirty = false;
         }
 
@@ -159,8 +158,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HistoricalTextBox), new PropertyMetadata(10, OnMaxSizeChanged));
 
         public int MaxSize {
-            get { return (int)GetValue(MaxSizeProperty); }
-            set { SetValue(MaxSizeProperty, value); }
+            get => (int)GetValue(MaxSizeProperty);
+            set => SetValue(MaxSizeProperty, value);
         }
 
         private static void OnMaxSizeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

@@ -39,6 +39,8 @@ namespace AcManager.Controls.Presentation {
 
         public const string UriDefaultTheme = "/AcManager.Controls;component/Assets/ModernUI.AcTheme.xaml";
         public const string UriBlackTheme = "/AcManager.Controls;component/Assets/ModernUI.Black.xaml";
+        public const string UriLightTheme = "/AcManager.Controls;component/Assets/ModernUI.Light.xaml";
+        public const string UriWhiteTheme = "/AcManager.Controls;component/Assets/ModernUI.White.xaml";
 
         public static AppAppearanceManager Instance { get; private set; }
 
@@ -147,6 +149,10 @@ namespace AcManager.Controls.Presentation {
             AppearanceManager.Current.ThemeObsolete += OnThemeObsolete;
 
             var theme = ValuesStorage.GetString(KeyTheme);
+            if (theme == "/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml") {
+                theme = "/AcManager.Controls;component/Assets/ModernUI.Light.xaml";
+            }
+
             InitializeThemesList();
             SelectedTheme = Themes.OfType<ThemeLink>().GetByIdOrDefault(theme) ?? Themes.OfType<ThemeLink>().FirstOrDefault();
 
@@ -455,7 +461,8 @@ namespace AcManager.Controls.Presentation {
             new ThemeLink(ControlsStrings.Theme_Nordschleife, new Uri(UriDefaultTheme, UriKind.Relative)),
             new ThemeLink(ControlsStrings.Theme_Dark, AppearanceManager.DarkThemeSource),
             new ThemeLink(ControlsStrings.Theme_Black, new Uri(UriBlackTheme, UriKind.Relative)),
-            new ThemeLink(ControlsStrings.Theme_Light, AppearanceManager.LightThemeSource)
+            new ThemeLink(ControlsStrings.Theme_Light, new Uri(UriLightTheme, UriKind.Relative)),
+            new ThemeLink("White", new Uri(UriWhiteTheme, UriKind.Relative)),
         };
 
         public HierarchicalGroup Themes { get; } = new HierarchicalGroup();

@@ -21,14 +21,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         private IRenderableTexture _txDiffuse;
 
         internal AmbientShadowMaterialSimple([NotNull] Kn5AmbientShadowMaterialDescription description) {
-            if (description == null) throw new ArgumentNullException(nameof(description));
-            _description = description;
+            _description = description ?? throw new ArgumentNullException(nameof(description));
         }
 
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDarkMaterial>();
             _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _description.Filename);
         }
+
+        public void Refresh(IDeviceContextHolder contextHolder) {}
 
         private RasterizerState _rasterizerState;
 

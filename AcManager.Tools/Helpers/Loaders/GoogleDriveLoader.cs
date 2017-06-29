@@ -44,9 +44,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             var location = client.ResponseHeaders?.Get("Location");
             if (location != null) {
                 Url = location;
+                Logging.Debug("Download URL is ready: " + location);
                 return true;
             }
 
+            Logging.Debug("Loading page…");
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 

@@ -28,6 +28,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public readonly string PluginsDirectory;
 
         public BetterObservableCollection<PluginEntry> List { get; }
+        public BetterListCollectionView ListView { get; }
 
         private bool _locallyLoaded;
 
@@ -42,6 +43,8 @@ namespace AcManager.Tools.Managers.Plugins {
         public PluginsManager(string dir) {
             PluginsDirectory = dir;
             List = new BetterObservableCollection<PluginEntry>();
+            ListView = new BetterListCollectionView(List);
+            ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
             ReloadLocalList();
             // TODO: Directory watching
         }
@@ -50,7 +53,7 @@ namespace AcManager.Tools.Managers.Plugins {
             if (!_locallyLoaded) {
                 ReloadLocalList();
             }
-            
+
             return GetById(id)?.IsReady ?? false;
         }
 
@@ -110,7 +113,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
             foreach (var plugin in list) {
                 if (plugin.IsObsolete || plugin.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
-                
+
                 var local = GetById(plugin.Id);
                 if (local != null) {
                     List.Remove(local);
@@ -136,7 +139,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
             try {
                 plugin.IsInstalling = true;
-                
+
                 var data = await CmApiProvider.GetDataAsync($"plugins/get/{plugin.Id}", progress, cancellation);
                 if (data == null || cancellation.IsCancellationRequested) return;
 

@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers.Api {
     public static partial class KunosApiProvider {
         public static bool OptionNoProxy = false;
 
-        public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
+        public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(60d);
 
         // This timeout looks like too much, but sometimes, with a lot of async requests in background,
         // even requests which usually take couple of milliseconds might go on up to several seconds.
@@ -161,7 +161,7 @@ namespace AcManager.Tools.Helpers.Api {
                     Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (Exception e) {
-                    Logging.Warning(e.Message);
+                    Logging.Warning(e);
                 }
 
                 NextServer();

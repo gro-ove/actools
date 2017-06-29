@@ -18,7 +18,7 @@
     </ItemsControl.Template>
     <ItemsControl.ItemTemplate>
       <DataTemplate DataType="t:LapTimesSource">
-        <Border Background="#aa000000" TextBlock.Foreground="White" Padding="20" Margin="20">
+        <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="20" Margin="20">
           <DockPanel>
             <Button DockPanel.Dock="Bottom" Content="Export" ToolTip="Export lap times from other enabled sources" Command="{Binding ExportCommand}"
                 Margin="0 12 0 0" />

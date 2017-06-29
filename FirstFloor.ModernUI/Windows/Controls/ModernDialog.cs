@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -219,13 +220,36 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <param name="text">The text.</param>
         /// <param name="title">The title.</param>
         /// <param name="button">The button.</param>
+        /// <param name="doNotAskAgainKey">Set to non-null value to add a Don’t Ask Again checkbox.</param>
         /// <param name="owner">The window owning the messagebox. The messagebox will be located at the center of the owner.</param>
         /// <returns></returns>
-        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, Window owner = null) {
+        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, string doNotAskAgainKey = null, Window owner = null) {
+            if (doNotAskAgainKey != null) {
+                var value = Stored.GetValue("__doNotAskAgain_" + doNotAskAgainKey);
+                if (Enum.TryParse<MessageBoxResult>(value, out var v)) return v;
+            }
+
+            FrameworkElement content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) };
+
+            if (doNotAskAgainKey != null) {
+                var checkbox = new CheckBox {
+                    Content = new Label { Content = "Don’t ask again" }
+                };
+
+                checkbox.SetBinding(ToggleButton.IsCheckedProperty, new Stored("__doNotAskAgain_" + doNotAskAgainKey));
+                content = new SpacingStackPanel {
+                    Spacing = 8,
+                    Children = {
+                        content,
+                        checkbox
+                    }
+                };
+            }
+
             var dlg = new ModernDialog {
                 Title = title.ToTitle(),
                 Content = new ScrollViewer {
-                    Content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                    Content = content,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },

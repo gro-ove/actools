@@ -12,27 +12,27 @@ namespace AcManager.Controls.Helpers {
         private readonly List<PresetsHandlerToRemove> _presetsHandlersToRemove = new List<PresetsHandlerToRemove>();
 
         private class PresetsHandlerToRemove {
-            public string Key;
+            public PresetsCategory Key;
             public EventHandler Handler;
         }
 
-        public static IEnumerable<object> GroupPresets(string presetsKey, [CanBeNull] Action<ISavedPresetEntry> action) {
-            var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
+        public static IEnumerable<object> GroupPresets(PresetsCategory category, [CanBeNull] Action<ISavedPresetEntry> action) {
+            var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(category));
             var result = new HierarchicalItemsView((o, g) => {
                 action?.Invoke((ISavedPresetEntry)o);
             }, group, false);
             return result;
         }
 
-        public HierarchicalItemsView Create(string presetsKey, Action<ISavedPresetEntry> action, string displayName = "") {
+        public HierarchicalItemsView Create(PresetsCategory category, Action<ISavedPresetEntry> action, string displayName = "") {
             return new HierarchicalItemsView((o, g) => {
                 action((ISavedPresetEntry)o);
-            }, CreateGroup(presetsKey, displayName), false);
+            }, CreateGroup(category, displayName), false);
         }
 
-        public HierarchicalGroup CreateGroup(string presetsKey, string displayName = "", string prependWithDefault = null) {
-            Func<IEnumerable<object>> groupPresets = () => {
-                var result = UserPresetsControl.GroupPresets(presetsKey);
+        public HierarchicalGroup CreateGroup(PresetsCategory category, string displayName = "", string prependWithDefault = null) {
+            IEnumerable<object> Presets() {
+                var result = UserPresetsControl.GroupPresets(category);
 
                 if (prependWithDefault != null) {
                     var menuItem = new HierarchicalItem {
@@ -44,16 +44,16 @@ namespace AcManager.Controls.Helpers {
                 }
 
                 return result;
-            };
+            }
 
-            var group = new HierarchicalGroup(displayName, groupPresets());
+            var group = new HierarchicalGroup(displayName, Presets());
 
             var handler = new EventHandler((sender, e) => {
-                group.ReplaceEverythingBy(groupPresets());
+                group.ReplaceEverythingBy(Presets());
             });
 
-            PresetsManager.Instance.Watcher(presetsKey).Update += handler;
-            _presetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = presetsKey, Handler = handler });
+            PresetsManager.Instance.Watcher(category).Update += handler;
+            _presetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = category, Handler = handler });
 
             return group;
         }

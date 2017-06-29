@@ -24,6 +24,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 Effect = contextHolder.GetEffect<EffectDarkMaterial>();
             }
 
+            public void Refresh(IDeviceContextHolder contextHolder) {}
+
             public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
                 if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.GBuffer) return false;
                 contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;

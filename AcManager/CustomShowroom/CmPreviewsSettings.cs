@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -22,6 +23,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 
 namespace AcManager.CustomShowroom {
@@ -147,7 +149,7 @@ namespace AcManager.CustomShowroom {
         [NotNull]
         public static DarkPreviewsOptions GetSavedOptions(string presetFilename = null) {
             if (presetFilename != null && !File.Exists(presetFilename)) {
-                var builtIn = PresetsManager.Instance.GetBuiltInPreset(DefaultPresetableKeyValue, presetFilename);
+                var builtIn = PresetsManager.Instance.GetBuiltInPreset(new PresetsCategory(DefaultPresetableKeyValue), presetFilename);
                 if (builtIn != null) {
                     return (SaveHelper<SaveableData>.LoadSerialized(builtIn.ReadData()) ?? new SaveableData())
                             .ToPreviewsOptions(true);
@@ -226,7 +228,7 @@ namespace AcManager.CustomShowroom {
             /// <summary>
             /// Convert to DarkPreviewsOptions.
             /// </summary>
-            /// <param name="keepChecksum">Set to True if you’re loading existing preset and want checksum to be 
+            /// <param name="keepChecksum">Set to True if you’re loading existing preset and want checksum to be
             /// independent from any future format changes; otherwise, for actual checksum, set to False.</param>
             /// <returns>Instance of DarkPreviewsOptions.</returns>
             [NotNull]
@@ -242,7 +244,7 @@ namespace AcManager.CustomShowroom {
                     MsaaSampleCount = MsaaMode,
                     SsaaMultiplier = Math.Sqrt(SsaaMode),
                     ShadowMapSize = ShadowMapSize,
-                    
+
                     Showroom = ShowroomId,
                     ColorGradingData = UseColorGrading ? ColorGradingData : null,
 
@@ -313,6 +315,7 @@ namespace AcManager.CustomShowroom {
                     SuspensionDebugMode = false,
                     PreviewName = "preview.jpg",
                     WireframeMode = false,
+                    SerializedLights = ExtraLights != null ? new JArray(ExtraLights.OfType<object>()).ToString() : null,
 
                     FixedChecksum = keepChecksum ? Checksum : null
                 };
@@ -344,7 +347,7 @@ namespace AcManager.CustomShowroom {
         private bool? _highQualityPreview;
 
         public bool HighQualityPreview {
-            get { return _highQualityPreview ?? (_highQualityPreview = ValuesStorage.GetBool(".cmPsHqPreview")).Value; }
+            get => _highQualityPreview ?? (_highQualityPreview = ValuesStorage.GetBool(".cmPsHqPreview")).Value;
             set {
                 if (Equals(value, HighQualityPreview)) return;
                 _highQualityPreview = value;
@@ -357,7 +360,7 @@ namespace AcManager.CustomShowroom {
         private bool? _lockCamera;
 
         public bool LockCamera {
-            get { return _lockCamera ?? (_lockCamera = ValuesStorage.GetBool(".cmPsLc")).Value; }
+            get => _lockCamera ?? (_lockCamera = ValuesStorage.GetBool(".cmPsLc")).Value;
             set {
                 if (Equals(value, LockCamera)) return;
                 _lockCamera = value;
@@ -429,7 +432,7 @@ namespace AcManager.CustomShowroom {
         private int _width = CommonAcConsts.PreviewWidth;
 
         public int Width {
-            get { return _width; }
+            get => _width;
             set {
                 if (Equals(value, _width)) return;
                 _width = value;
@@ -441,7 +444,7 @@ namespace AcManager.CustomShowroom {
         private int _height = CommonAcConsts.PreviewHeight;
 
         public int Height {
-            get { return _height; }
+            get => _height;
             set {
                 if (Equals(value, _height)) return;
                 _height = value;
@@ -453,7 +456,7 @@ namespace AcManager.CustomShowroom {
         private bool _softwareDownsize;
 
         public bool SoftwareDownsize {
-            get { return _softwareDownsize; }
+            get => _softwareDownsize;
             set {
                 if (Equals(value, _softwareDownsize)) return;
                 _softwareDownsize = value;
@@ -478,7 +481,7 @@ namespace AcManager.CustomShowroom {
         private float _cameraFov;
 
         public float CameraFov {
-            get { return _cameraFov; }
+            get => _cameraFov;
             set {
                 if (Equals(value, _cameraFov)) return;
                 _cameraFov = value;
@@ -490,7 +493,7 @@ namespace AcManager.CustomShowroom {
         private bool _alignCar;
 
         public bool AlignCar {
-            get { return _alignCar; }
+            get => _alignCar;
             set {
                 if (Equals(value, _alignCar)) return;
                 _alignCar = value;
@@ -502,7 +505,7 @@ namespace AcManager.CustomShowroom {
         private bool _alignCameraHorizontally;
 
         public bool AlignCameraHorizontally {
-            get { return _alignCameraHorizontally; }
+            get => _alignCameraHorizontally;
             set {
                 if (Equals(value, _alignCameraHorizontally)) return;
                 _alignCameraHorizontally = value;
@@ -514,7 +517,7 @@ namespace AcManager.CustomShowroom {
         private float _alignCameraHorizontallyOffset;
 
         public float AlignCameraHorizontallyOffset {
-            get { return _alignCameraHorizontallyOffset; }
+            get => _alignCameraHorizontallyOffset;
             set {
                 if (Equals(value, _alignCameraHorizontallyOffset)) return;
                 _alignCameraHorizontallyOffset = value;
@@ -526,7 +529,7 @@ namespace AcManager.CustomShowroom {
         private bool _alignCameraHorizontallyOffsetRelative;
 
         public bool AlignCameraHorizontallyOffsetRelative {
-            get { return _alignCameraHorizontallyOffsetRelative; }
+            get => _alignCameraHorizontallyOffsetRelative;
             set {
                 if (Equals(value, _alignCameraHorizontallyOffsetRelative)) return;
                 _alignCameraHorizontallyOffsetRelative = value;
@@ -538,7 +541,7 @@ namespace AcManager.CustomShowroom {
         private bool _alignCameraVertically;
 
         public bool AlignCameraVertically {
-            get { return _alignCameraVertically; }
+            get => _alignCameraVertically;
             set {
                 if (Equals(value, _alignCameraVertically)) return;
                 _alignCameraVertically = value;
@@ -550,7 +553,7 @@ namespace AcManager.CustomShowroom {
         private float _alignCameraVerticallyOffset;
 
         public float AlignCameraVerticallyOffset {
-            get { return _alignCameraVerticallyOffset; }
+            get => _alignCameraVerticallyOffset;
             set {
                 if (Equals(value, _alignCameraVerticallyOffset)) return;
                 _alignCameraVerticallyOffset = value;
@@ -562,7 +565,7 @@ namespace AcManager.CustomShowroom {
         private bool _alignCameraVerticallyOffsetRelative;
 
         public bool AlignCameraVerticallyOffsetRelative {
-            get { return _alignCameraVerticallyOffsetRelative; }
+            get => _alignCameraVerticallyOffsetRelative;
             set {
                 if (Equals(value, _alignCameraVerticallyOffsetRelative)) return;
                 _alignCameraVerticallyOffsetRelative = value;
@@ -651,7 +654,7 @@ namespace AcManager.CustomShowroom {
         private float _steerDeg;
 
         public float SteerDeg {
-            get { return _steerDeg; }
+            get => _steerDeg;
             set {
                 if (Equals(value, _steerDeg)) return;
                 _steerDeg = value;
@@ -663,7 +666,7 @@ namespace AcManager.CustomShowroom {
         private bool _headlightsEnabled;
 
         public bool HeadlightsEnabled {
-            get { return _headlightsEnabled; }
+            get => _headlightsEnabled;
             set {
                 if (Equals(value, _headlightsEnabled)) return;
                 _headlightsEnabled = value;
@@ -675,7 +678,7 @@ namespace AcManager.CustomShowroom {
         private bool _brakeLightsEnabled;
 
         public bool BrakeLightsEnabled {
-            get { return _brakeLightsEnabled; }
+            get => _brakeLightsEnabled;
             set {
                 if (Equals(value, _brakeLightsEnabled)) return;
                 _brakeLightsEnabled = value;
@@ -687,7 +690,7 @@ namespace AcManager.CustomShowroom {
         private bool _leftDoorOpen;
 
         public bool LeftDoorOpen {
-            get { return _leftDoorOpen; }
+            get => _leftDoorOpen;
             set {
                 if (Equals(value, _leftDoorOpen)) return;
                 _leftDoorOpen = value;
@@ -699,7 +702,7 @@ namespace AcManager.CustomShowroom {
         private bool _rightDoorOpen;
 
         public bool RightDoorOpen {
-            get { return _rightDoorOpen; }
+            get => _rightDoorOpen;
             set {
                 if (Equals(value, _rightDoorOpen)) return;
                 _rightDoorOpen = value;
@@ -711,7 +714,7 @@ namespace AcManager.CustomShowroom {
         private bool _showDriver;
 
         public bool ShowDriver {
-            get { return _showDriver; }
+            get => _showDriver;
             set {
                 if (Equals(value, _showDriver)) return;
                 _showDriver = value;
@@ -781,7 +784,8 @@ namespace AcManager.CustomShowroom {
                 filename = relative == filename ? null : Path.Combine(PresetsManager.Instance.Combine(DefaultPresetableKeyValue), relative);
             }
 
-            PresetsManager.Instance.SavePresetUsingDialog(null, DefaultPresetableKeyValue, SaveHelper<SaveableData>.Serialize(data), filename);
+            PresetsManager.Instance.SavePresetUsingDialog(null, new PresetsCategory(DefaultPresetableKeyValue),
+                    SaveHelper<SaveableData>.Serialize(data), filename);
         }
     }
 
@@ -789,7 +793,7 @@ namespace AcManager.CustomShowroom {
         private double _x;
 
         public double X {
-            get { return _x; }
+            get => _x;
             set {
                 if (Equals(value, _x)) return;
                 _x = value;
@@ -800,7 +804,7 @@ namespace AcManager.CustomShowroom {
         private double _y;
 
         public double Y {
-            get { return _y; }
+            get => _y;
             set {
                 if (Equals(value, _y)) return;
                 _y = value;
@@ -811,7 +815,7 @@ namespace AcManager.CustomShowroom {
         private double _z;
 
         public double Z {
-            get { return _z; }
+            get => _z;
             set {
                 if (Equals(value, _z)) return;
                 _z = value;

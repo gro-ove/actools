@@ -1,261 +1,32 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsDev" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDev+ViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:settings="clr-namespace:AcManager.Pages.Settings" mc:Ignorable="d" d:DataContext="{d:DesignInstance settings:SettingsDev+ViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="SettingsContent">
+    <StackPanel Style="{StaticResource SettingsPanel}">
+      <DockPanel>
+        <Label Content="User-entered years:" />
+        <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
+      </DockPanel>
 
-    <ScrollViewer x:Name="ScrollViewer" mui:SaveScroll.Key="SettingsDev">
-        <StackPanel>
-            <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-                <DockPanel>
-                    <Label Content="User-entered years:" />
-                    <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
-                </DockPanel>
+      <DockPanel>
+        <Label Content="Sidekick databases:" />
+        <Button Command="{Binding UpdateSidekickDatabaseCommand}" Content="Update Both"
+            ToolTip="Update tyres and brakes information for all cars installed and enabled" />
+      </DockPanel>
 
-                <DockPanel>
-                    <Label Content="Sidekick databases:" />
-                    <Button Command="{Binding UpdateSidekickDatabaseCommand}" Content="Update Both"
-                            ToolTip="Update tyres and brakes information for all cars installed and enabled" />
-                </DockPanel>
+      <DockPanel>
+        <Label Content="Start with current race.ini:" />
+        <Button Command="{Binding StartDirectCommand}" Content="Start" />
+      </DockPanel>
 
-                <DockPanel>
-                    <Label Content="Start with current race.ini:" />
-                    <Button Command="{Binding StartDirectCommand}" Content="Start" />
-                </DockPanel>
-
-                <StackPanel>
-                    <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
-                    <DockPanel>
-                        <Label Content="Magick.NET:" />
-                        <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Label Content="DH:" />
-                        <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Label Content="Test:" />
-                        <Button Command="{Binding TestCommand}" Content="Test" />
-                    </DockPanel>
-                </StackPanel>
-            </StackPanel>
-
-            <!--controls test-->
-            <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
-
-            <StackPanel Margin="0 20 0 20" TextBlock.Foreground="Cyan">
-                <StackPanel.Resources>
-                    <Style TargetType="DockPanel">
-                        <Setter Property="Height" Value="24" />
-                        <Setter Property="Margin" Value="0 0 0 4" />
-                    </Style>
-                </StackPanel.Resources>
-                <TextBlock Text="Double Sliders Test" Style="{StaticResource SettingsPanel.Heading2.First}" />
-
-                <!--<DockPanel>
-                    <Label Content="Sel. range:" Width="200" DockPanel.Dock="Left" />
-                    <Slider Minimum="0" Maximum="60" AutoToolTipPlacement="TopLeft" IsSelectionRangeEnabled="True" TickPlacement="Both" Margin="0 0 20 0"
-                            SelectionStart="20" SelectionEnd="40" />
-                </DockPanel>-->
-
-                <DockPanel>
-                    <Label Content="Double slider (FromTo):" Width="200" DockPanel.Dock="Left" />
-                    <mui:DoubleSlider x:Name="DoubleSlider1" BindingMode="FromTo" Maximum="60" Minimum="10" From="30" To="30" Margin="0 0 20 0"
-                                      LargeChange="5" SmallChange="5" />
-                </DockPanel>
-
-                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
-                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider1}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider1}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider1}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider1}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
-                </mui:SpacingStackPanel>
-
-                <DockPanel>
-                    <Label Content="Double slider (P.R.):" Width="200" DockPanel.Dock="Left" />
-                    <mui:DoubleSlider x:Name="DoubleSlider2" BindingMode="PositionRange" Maximum="60" Minimum="10" Value="30" Range="0" Margin="0 0 20 0"
-                                      LargeChange="5" SmallChange="5" />
-                </DockPanel>
-
-                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
-                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider2}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider2}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider2}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider2}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
-                </mui:SpacingStackPanel>
-
-                <DockPanel>
-                    <Label Content="Double slider (FromTo):" Width="200" DockPanel.Dock="Left" />
-                    <mui:DoubleSlider x:Name="DoubleSlider3" BindingMode="FromTo" Maximum="60" Minimum="10" From="30" To="30" Margin="0 0 20 0"
-                                      LargeChange="5" SmallChange="5" mui:DoubleThumb.HighlightRange="True" />
-                </DockPanel>
-
-                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
-                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider3}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider3}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider3}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider3}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
-                </mui:SpacingStackPanel>
-
-                <DockPanel>
-                    <Label Content="Double slider (P.R.):" Width="200" DockPanel.Dock="Left" />
-                    <mui:DoubleSlider x:Name="DoubleSlider4" BindingMode="PositionRange" Maximum="60" Minimum="10" Value="30" Range="0" Margin="0 0 20 0"
-                                      LargeChange="5" SmallChange="5" mui:DoubleThumb.HighlightRange="True" />
-                </DockPanel>
-
-                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
-                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider4}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider4}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider4}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
-                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider4}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
-                </mui:SpacingStackPanel>
-
-                <TextBlock Text="Toggle Buttons Test" Style="{StaticResource SettingsPanel.Heading2}" />
-
-                <DockPanel>
-                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton x:Name="ToggleButton" LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" />
-                </DockPanel>
-
-                <!--<mui:SpacingStackPanel Spacing="4" Height="80" Background="Black">
-                    <mui:Switch2 Value="{Binding IsChecked, ElementName=ToggleButton}">
-                        <mui:SpacingStackPanel mui:Switch2.When="True">
-                            <TextBlock Text="Checked" />
-                            <mui:DebugControl x:Name="Checked" />
-
-                            <mui:Switch2 Value="{Binding IsChecked, ElementName=SecondaryButton}">
-                                <mui:SpacingStackPanel mui:Switch2.When="True">
-                                    <TextBlock Text="Secondary Checked" />
-                                    <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                                </mui:SpacingStackPanel>
-                                <TextBlock mui:Switch2.When="False" Text="Secondary Unchecked" />
-                            </mui:Switch2>
-                        </mui:SpacingStackPanel>
-                        <TextBlock mui:Switch2.When="False" Text="Unchecked" />
-                    </mui:Switch2>
-                </mui:SpacingStackPanel>-->
-
-                <mui:SpacingStackPanel Spacing="4" Height="80" Background="DarkSlateBlue">
-                    <mui:Switch Value="{Binding IsChecked, ElementName=ToggleButton}">
-                        <TextBlock mui:Switch.When="True" Text="Checked" />
-                        <TextBlock mui:Switch.When="False" Text="Unchecked" />
-                    </mui:Switch>
-                </mui:SpacingStackPanel>
-
-                <DockPanel>
-                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton x:Name="SecondaryButton" LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left"
-                            HighlightChecked="True" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" IsChecked="True" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="LabeledToggleButton, stretch:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Stretch" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="Previous, placeholder:" Width="200" DockPanel.Dock="Left" />
-                    <!-- ReSharper disable once ObsoleteElement -->
-                    <TextBox mui:WatermarkService.Watermark="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="Previous, b., p.:" Width="200" DockPanel.Dock="Left" />
-                    <!-- ReSharper disable once ObsoleteElement -->
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:WatermarkService.Watermark="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterTextBox Text="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New, placeholder:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterTextBox Placeholder="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="Text:" Width="200" DockPanel.Dock="Left" />
-                    <TextBlock Text="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New, borderless:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New, b., p.:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterTextBox Style="{StaticResource Borderless}" Placeholder="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New CB:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterComboBox IsEditable="True" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}"
-                            Text="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New CB, placeholder:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterComboBox Placeholder="Placeholder" IsEditable="True"
-                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New CB, borderless:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}"
-                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="New CB, b., p.:" Width="200" DockPanel.Dock="Left" />
-                    <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="Placeholder"
-                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="Colorpicker:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ColorPicker />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="Colorpicker, borderless:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ColorPicker Style="{StaticResource ColorPicker.Borderless}" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="PasswordBox:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ProperPasswordBox Placeholder="Placeholder" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="PasswordBox:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ProperPasswordBox Placeholder="Placeholder" VisiblePassword="True" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="PasswordBox, borderless:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ProperPasswordBox Placeholder="Placeholder" Style="{StaticResource ProperPasswordBox.Borderless}" />
-                </DockPanel>
-
-                <DockPanel>
-                    <Label Content="PasswordBox, borderless:" Width="200" DockPanel.Dock="Left" />
-                    <mui:ProperPasswordBox Placeholder="Placeholder" VisiblePassword="True" Style="{StaticResource ProperPasswordBox.Borderless}" />
-                </DockPanel>
-            </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+      <CheckBox IsChecked="{Binding RateCars, Source={x:Static t:SettingsHolder.Content}}">
+        <CheckBox.ToolTip>Might help to check quality of modded cars</CheckBox.ToolTip>
+        <Label Content="While analyzing, check some extra cars’ details" />
+      </CheckBox>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

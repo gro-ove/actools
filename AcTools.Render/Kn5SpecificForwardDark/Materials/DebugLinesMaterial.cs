@@ -15,6 +15,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect = contextHolder.GetEffect<EffectSpecialDebugLines>();
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) {}
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 

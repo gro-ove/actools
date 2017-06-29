@@ -21,14 +21,14 @@ namespace AcManager.Controls.ViewModels {
     /// Full version with presets. Load-save-switch between presets-save as a preset, full
     /// package. Also, provides previews for presets!
     /// </summary>
-    public class TrackStateViewModel : TrackStateViewModelBase, IUserPresetable, IUserPresetableDefaultPreset, IUserPresetableCustomDisplay, 
+    public class TrackStateViewModel : TrackStateViewModelBase, IUserPresetable, IUserPresetableDefaultPreset, IUserPresetableCustomDisplay,
             IUserPresetableCustomSorting, IPresetsPreviewProvider {
         private static TrackStateViewModel _instance;
 
         public static TrackStateViewModel Instance => _instance ?? (_instance = new TrackStateViewModel("qdtrackstate"));
 
         public TrackStateViewModel([Localizable(false)] string customKey = null) : base(customKey, false) {
-            PresetableKey = customKey ?? PresetableCategory;
+            PresetableKey = customKey ?? PresetableCategory.DirectoryName;
             Saveable.Initialize();
         }
 
@@ -39,11 +39,8 @@ namespace AcManager.Controls.ViewModels {
 
         #region Presetable
         bool IUserPresetable.CanBeSaved => true;
-
         public string PresetableKey { get; }
-
-        string IUserPresetable.PresetableCategory => PresetableCategory;
-
+        PresetsCategory IUserPresetable.PresetableCategory => PresetableCategory;
         string IUserPresetableDefaultPreset.DefaultPreset => "Green";
 
         public string ExportToPresetData() {

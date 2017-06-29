@@ -138,7 +138,6 @@ namespace AcManager.Tools.ContentInstallation {
             if (!m.Success) return null;
 
             var key = m.Groups[3].Value;
-            Logging.Debug(key + " → " + key.Trim());
             return m.Groups[1].Value.StartsWith("D") ? null : new SevenZipEntry {
                 Key = key.Trim(),
                 Size = FlexibleParser.TryParseLong(m.Groups[2].Value) ?? 0L

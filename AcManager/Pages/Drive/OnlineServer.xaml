@@ -316,12 +316,12 @@
                   </mui:Cell.ToolTip>
                   <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill" c:ImageViewerService.Image="{Binding Track.PreviewImage}" />
                   <mui:BetterImage Filename="{Binding Track.OutlineImage}" ShowBroken="False" IsHitTestVisible="False" />
-                  <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Track.Name}" Foreground="White"
-                      IsHitTestVisible="False" />
+                  <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding Track.Name}"
+                      Foreground="{DynamicResource DarkStripeText}" IsHitTestVisible="False" />
                   <mui:Cell Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}" Background="#111111">
                     <TextBlock Style="{StaticResource Heading1}" Text="Track is missing" Foreground="#444444" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0 0 0 20" />
-                    <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding TrackId}"
+                    <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding TrackId}"
                         Foreground="{DynamicResource ItemTextDisabled}" IsHitTestVisible="False" />
                   </mui:Cell>
                 </mui:Cell>
@@ -360,7 +360,7 @@
                       </MultiBinding>
                     </mui:BooleanSwitch.Value>
                     <mui:BooleanSwitch.True>
-                      <Border Background="#99333333" Padding="4" VerticalAlignment="Bottom">
+                      <Border Background="{DynamicResource DarkStripeBackground}" Padding="4" VerticalAlignment="Bottom">
                         <DockPanel DataContext="{Binding SelectedCarEntry}">
                           <Border DockPanel.Dock="Left"
                               Visibility="{Binding ShowBrandBadges, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -371,7 +371,7 @@
                         </DockPanel>
                         <Border.Style>
                           <Style TargetType="Border">
-                            <Setter Property="TextBlock.Foreground" Value="White" />
+                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource DarkStripeText}" />
                             <Style.Triggers>
                               <DataTrigger Binding="{Binding SelectedCarEntry.CarObject}" Value="{x:Null}">
                                 <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />
@@ -382,8 +382,8 @@
                       </Border>
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
-                      <ComboBox x:Name="CarsComboBox" SelectionChanged="CarsComboBox_OnSelectionChanged" Background="#99333333" Foreground="White" Padding="4"
-                          VerticalAlignment="Bottom" BorderThickness="0" ItemTemplate="{StaticResource CarItemDataTemplate}" />
+                      <ComboBox x:Name="CarsComboBox" SelectionChanged="CarsComboBox_OnSelectionChanged" Background="{DynamicResource DarkStripeBackground}"
+                          Foreground="{DynamicResource DarkStripeText}" Padding="4" VerticalAlignment="Bottom" BorderThickness="0" ItemTemplate="{StaticResource CarItemDataTemplate}" />
                     </mui:BooleanSwitch.False>
                   </mui:BooleanSwitch>
                 </mui:Cell>
@@ -602,11 +602,7 @@
                       <DoubleAnimationUsingKeyFrames>
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.500" Value="0" />
-                        <EasingDoubleKeyFrame KeyTime="0:0:2.000" Value="180">
-                          <EasingDoubleKeyFrame.EasingFunction>
-                            <QuarticEase EasingMode="EaseInOut" />
-                          </EasingDoubleKeyFrame.EasingFunction>
-                        </EasingDoubleKeyFrame>
+                        <EasingDoubleKeyFrame KeyTime="0:0:2.000" Value="180" EasingFunction="{StaticResource StandartEase}" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </BeginStoryboard>

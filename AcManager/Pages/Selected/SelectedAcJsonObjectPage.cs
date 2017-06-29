@@ -18,7 +18,12 @@ namespace AcManager.Pages.Selected {
         }
 
         protected virtual void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
-            if (SelectedAcJsonObject.Author == AcCommonObject.AuthorKunos) return;
+            if (SelectedAcJsonObject.Author == AcCommonObject.AuthorKunos) {
+                if (SelectedAcJsonObject?.Dlc != null) {
+                    WindowsHelper.ViewInBrowser(SelectedAcJsonObject.Dlc.Url);
+                }
+                return;
+            }
 
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;

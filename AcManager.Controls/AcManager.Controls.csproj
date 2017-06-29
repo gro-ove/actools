@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppModernWindow.cs" />
+    <Compile Include="BatchAction.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
     <Compile Include="Graphs\CarGraphViewer.cs" />
@@ -274,6 +275,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\ModernUI.Default.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ModernUI.Light.xaml" />
+    <Page Include="Assets\ModernUI.White.xaml" />
     <Page Include="Assets\Plugins.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -361,6 +368,10 @@
     <Page Include="QuickSwitches\QuickSwitchesIconData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\AcListPage.BatchStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\BestLapsList.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -520,9 +531,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Syntax\Ini.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

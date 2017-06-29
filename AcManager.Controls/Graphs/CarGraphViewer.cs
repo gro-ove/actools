@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;
+using SlimDX.DirectWrite;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
 
@@ -34,8 +38,8 @@ namespace AcManager.Controls.Graphs {
                 typeof(CarGraphViewer), new PropertyMetadata(OnCarChanged));
 
         public CarObject Car {
-            get { return (CarObject)GetValue(CarProperty); }
-            set { SetValue(CarProperty, value); }
+            get => (CarObject)GetValue(CarProperty);
+            set => SetValue(CarProperty, value);
         }
 
         private static void OnCarChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -51,59 +55,59 @@ namespace AcManager.Controls.Graphs {
 
         [CanBeNull]
         public GraphData SourceTorque {
-            get { return (GraphData)GetValue(SourceTorqueProperty); }
-            set { SetValue(SourceTorqueProperty, value); }
+            get => (GraphData)GetValue(SourceTorqueProperty);
+            set => SetValue(SourceTorqueProperty, value);
         }
 
         [CanBeNull]
         public GraphData SourcePower {
-            get { return (GraphData)GetValue(SourcePowerProperty); }
-            set { SetValue(SourcePowerProperty, value); }
+            get => (GraphData)GetValue(SourcePowerProperty);
+            set => SetValue(SourcePowerProperty, value);
         }
 
         private const string KeyRpm = "rpm";
         private const string KeyBhp = "bhp";
         private const string KeyNm = "nm";
 
-        private static readonly OxyColor PowerColor = OxyColor.FromUInt32(0xffff0000);
-        private static readonly OxyColor TorqueColor = OxyColor.FromUInt32(0xffffff00);
+        private OxyColor _powerColor = OxyColor.FromUInt32(0xffff0000);
+        private OxyColor _torqueColor = OxyColor.FromUInt32(0xffffff00);
 
         protected override PlotModel CreateModel() {
             SettingsHolder.Content.SubscribeWeak(OnContentSettingsChanged);
             return new PlotModel {
-                TextColor = OxyColor.FromUInt32(0xffffffff),
+                TextColor = BaseTextColor,
                 PlotAreaBorderColor = OxyColors.Transparent,
-                LegendTextColor = OxyColor.FromUInt32(0x88ffffff),
+                LegendTextColor = BaseLegendTextColor,
                 LegendPosition = LegendPosition.RightBottom,
 
                 Axes = {
                     new LinearAxis {
                         Key = KeyRpm,
                         Title = ToolsStrings.Units_RPM,
-                        TextColor = OxyColors.White,
-                        TitleColor = OxyColors.White,
-                        TicklineColor = OxyColors.White,
-                        AxislineColor = OxyColors.White,
+                        TextColor = BaseTextColor,
+                        TitleColor = BaseTextColor,
+                        TicklineColor = BaseTextColor,
+                        AxislineColor = BaseTextColor,
                         Minimum = 0d,
                         Position = AxisPosition.Bottom
                     },
                     new LinearAxis {
                         Key = KeyBhp,
                         Title = ToolsStrings.Units_BHP,
-                        TextColor = PowerColor,
-                        TitleColor = PowerColor,
-                        TicklineColor = PowerColor,
-                        AxislineColor = PowerColor,
+                        TextColor = _powerColor,
+                        TitleColor = _powerColor,
+                        TicklineColor = _powerColor,
+                        AxislineColor = _powerColor,
                         Minimum = 0d,
                         Position = AxisPosition.Right
                     },
                     new LinearAxis {
                         Key = KeyNm,
                         Title = ToolsStrings.Units_Nm,
-                        TextColor = TorqueColor,
-                        TitleColor = TorqueColor,
-                        TicklineColor = TorqueColor,
-                        AxislineColor = TorqueColor,
+                        TextColor = _torqueColor,
+                        TitleColor = _torqueColor,
+                        TicklineColor = _torqueColor,
+                        AxislineColor = _torqueColor,
                         Minimum = 0d,
                         Position = AxisPosition.Left
                     }
@@ -111,7 +115,7 @@ namespace AcManager.Controls.Graphs {
 
                 Series = {
                     new CatmulLineSeries {
-                        Color = PowerColor,
+                        Color = _powerColor,
                         Title = ToolsStrings.Common_Power,
                         XAxisKey = KeyRpm,
                         YAxisKey = KeyBhp,
@@ -119,7 +123,7 @@ namespace AcManager.Controls.Graphs {
                         TrackerFormatString = $"[b]{{4:F0}} {ToolsStrings.Units_BHP}[/b] at [b]{{2:F0}} {ToolsStrings.Units_RPM}[/b]"
                     },
                     new CatmulLineSeries {
-                        Color = TorqueColor,
+                        Color = _torqueColor,
                         Title = ToolsStrings.Common_Torque,
                         XAxisKey = KeyRpm,
                         YAxisKey = KeyNm,
@@ -139,6 +143,7 @@ namespace AcManager.Controls.Graphs {
         }
 
         private void UpdatePower() {
+            if (!IsLoaded) return;
             EnsureModelCreated();
             Model.Replace(KeyBhp, SourcePower);
             UpdateMaximumValues();
@@ -146,20 +151,24 @@ namespace AcManager.Controls.Graphs {
         }
 
         private void UpdateTorque() {
+            if (!IsLoaded) return;
             EnsureModelCreated();
             Model.Replace(KeyNm, SourceTorque);
             UpdateMaximumValues();
             InvalidatePlot();
         }
 
-        private static IEnumerable<double> Steps() {
-            for (var i = 0; i < 10; i++) {
-                var v = Math.Pow(10d, i - 1);
-                yield return v;
-                yield return v * 2d;
-                yield return v * 4d;
-                yield return v * 5d;
-            }
+        protected override void OnLoadedOverride() {
+            base.OnLoadedOverride();
+
+            LoadColor(ref _powerColor, "CarPowerColor");
+            LoadColor(ref _torqueColor, "CarTorqueColor");
+
+            EnsureModelCreated();
+            Model.Replace(KeyBhp, SourcePower);
+            Model.Replace(KeyNm, SourceTorque);
+            UpdateMaximumValues();
+            InvalidatePlot();
         }
 
         private void UpdateMaximumValues() {

@@ -1,5 +1,6 @@
 using System.Text;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -11,14 +12,13 @@ using Newtonsoft.Json.Serialization;
 namespace AcManager.Controls.ViewModels {
     public class TrackStateViewModelBase : NotifyPropertyChanged {
         private const string DefaultKey = "TrackStateVM.sd";
-
-        public const string PresetableCategory = "Track States";
+        public static readonly PresetsCategory PresetableCategory = new PresetsCategory("Track States");
 
         #region Properties
         private double _gripStart;
 
         public double GripStart {
-            get { return _gripStart; }
+            get => _gripStart;
             set {
                 value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripStart)) return;
@@ -31,7 +31,7 @@ namespace AcManager.Controls.ViewModels {
         private double _gripTransfer;
 
         public double GripTransfer {
-            get { return _gripTransfer; }
+            get => _gripTransfer;
             set {
                 value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripTransfer)) return;
@@ -44,7 +44,7 @@ namespace AcManager.Controls.ViewModels {
         private double _gripRandomness;
 
         public double GripRandomness {
-            get { return _gripRandomness; }
+            get => _gripRandomness;
             set {
                 value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripRandomness)) return;
@@ -57,7 +57,7 @@ namespace AcManager.Controls.ViewModels {
         private int _lapGain;
 
         public int LapGain {
-            get { return _lapGain; }
+            get => _lapGain;
             set {
                 if (Equals(value, _lapGain)) return;
                 _lapGain = value;
@@ -70,7 +70,7 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (Equals(value, _description)) return;
                 _description = value;
@@ -133,7 +133,7 @@ namespace AcManager.Controls.ViewModels {
 
         #region Constructors
         /// <summary>
-        /// Full load-and-save mode. All changes will be saved automatically and loaded 
+        /// Full load-and-save mode. All changes will be saved automatically and loaded
         /// later (only with this constuctor).
         /// </summary>
         public TrackStateViewModelBase() : this(null, false) {
@@ -141,7 +141,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         /// <summary>
-        /// Create a new AssistsViewModel which will load data from serialized string, but won’t
+        /// Create a new AssistsViewModel which will load data from serialized string, but wonâ€™t
         /// save any changes if they will occur.
         /// </summary>
         public static TrackStateViewModelBase CreateFixed([NotNull] string serializedData) {
@@ -152,7 +152,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         /// <summary>
-        /// Create a new AssistsViewModel which will load data from serialized string, but won’t
+        /// Create a new AssistsViewModel which will load data from serialized string, but wonâ€™t
         /// save any changes if they will occur.
         /// </summary>
         /// <param name="section">INI-file section.</param>

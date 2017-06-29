@@ -30,7 +30,9 @@ namespace AcManager.Pages.Lists {
                 : base(ShowroomsManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Showrooms);
+            protected override string GetSubject() {
+                return AppStrings.List_Showrooms;
+            }
         }
     }
 }

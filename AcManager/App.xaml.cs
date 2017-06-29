@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Windows.UI.Xaml.Documents;
+using AcManager.AcSound;
 using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Converters;
@@ -59,7 +59,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Navigation;
+using FirstFloor.ModernUI.Windows.Converters;
 using Newtonsoft.Json;
 using StringBasedFilter;
 
@@ -91,6 +91,8 @@ namespace AcManager {
 
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
+
+            AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
             new App().Run();
         }
 
@@ -236,6 +238,7 @@ namespace AcManager {
 
                 PluginsManager.Initialize(pluginsDir);
                 PluginsWrappers.Initialize(
+                        new FmodPluginWrapper(),
                         new MagickPluginWrapper(),
                         new AwesomiumPluginWrapper(),
                         new CefSharpPluginWrapper(),
@@ -283,6 +286,10 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/track"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
                 IndexDirectDownloader.DownloadTrackAsync(s[0], s.ElementAtOrDefault(1)).Forget();
+            }));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"), new DelegateCommand<string>(id => {
+                NeutralColorGradingLut.CreateNeutralLut(id.AsInt(16));
             }));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {

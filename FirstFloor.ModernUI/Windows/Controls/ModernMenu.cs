@@ -36,7 +36,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             foreach (var i in Enumerable.Range(0, 9)) {
                 InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
-                InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchSection(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Alt)));
+                InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchSection(i, false)),
+                        new KeyGesture(Key.D1 + i, ModifierKeys.Alt | ModifierKeys.Control)));
             }
         }
 

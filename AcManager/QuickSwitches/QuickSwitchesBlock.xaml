@@ -1,22 +1,48 @@
 ﻿<DockPanel x:Class="AcManager.QuickSwitches.QuickSwitchesBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-        mc:Ignorable="d" Background="{DynamicResource WindowBackground}" Width="320">
-    <DockPanel.Resources>
-        <ResourceDictionary Source="/QuickSwitches/QuickSwitchesWidgets.xaml" />
-    </DockPanel.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+    mc:Ignorable="d" Width="330">
+  <DockPanel.Resources>
+    <ResourceDictionary Source="/QuickSwitches/QuickSwitchesWidgets.xaml" />
+  </DockPanel.Resources>
 
-    <Rectangle DockPanel.Dock="Right" HorizontalAlignment="Right" Width="1" Fill="{DynamicResource Accent}" />
+  <Rectangle DockPanel.Dock="Right" HorizontalAlignment="Right" Width="10" IsHitTestVisible="False">
+    <Rectangle.Fill>
+      <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" SpreadMethod="Pad">
+        <LinearGradientBrush.GradientStops>
+          <GradientStop Color="#44000000" Offset="0" />
+          <GradientStop Color="#11000000" Offset="0.5" />
+          <GradientStop Color="#00000000" Offset="1" />
+        </LinearGradientBrush.GradientStops>
+      </LinearGradientBrush>
+    </Rectangle.Fill>
+  </Rectangle>
 
+  <Rectangle DockPanel.Dock="Right" HorizontalAlignment="Right" Width="1" Fill="{DynamicResource Accent}" />
+  <Border Background="{DynamicResource PopupBackground}">
     <StackPanel Margin="16 8 8 48" VerticalAlignment="Center">
-        <TextBlock Text="{x:Static c:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
-
-        <ItemsControl x:Name="List">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="3" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+      <TextBlock Text="{x:Static c:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
+      <ItemsControl x:Name="List">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Columns="3" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+      <Button Click="OnCloseButtonClick" Margin="0 20 0 0" BorderThickness="0">
+        <Button.Resources>
+          <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+        </Button.Resources>
+        <DockPanel>
+          <mui:Cell Width="8" Height="8" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 4 0">
+            <Line X1="-5.01" X2="12.99" Y1="-5.01" Y2="12.99" StrokeThickness="1"
+                Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+            <Line X1="-5.01" X2="12.99" Y1="12.99" Y2="-5.01" StrokeThickness="1"
+                Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
+          </mui:Cell>
+          <TextBlock Text="{x:Static mui:UiStrings.Close}" VerticalAlignment="Center" />
+        </DockPanel>
+      </Button>
     </StackPanel>
+  </Border>
 </DockPanel>

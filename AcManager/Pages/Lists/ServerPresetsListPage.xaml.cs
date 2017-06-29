@@ -28,7 +28,9 @@ namespace AcManager.Pages.Lists {
         private class ViewModel : AcListPageViewModel<ServerPresetObject> {
             public ViewModel(IFilter<ServerPresetObject> listFilter) : base(ServerPresetsManager.Instance, listFilter) { }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_ServerPresets);
+            protected override string GetSubject() {
+                return AppStrings.List_ServerPresets;
+            }
         }
     }
 }

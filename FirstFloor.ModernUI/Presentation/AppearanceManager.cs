@@ -2,14 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {
+        public static Uri DefaultValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
         public static readonly Uri DarkThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml", UriKind.Relative);
-        public static readonly Uri LightThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml", UriKind.Relative);
 
         // TODO: rearrange
         public static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml", UriKind.Relative);
@@ -26,14 +28,24 @@ namespace FirstFloor.ModernUI.Presentation {
         public event EventHandler ThemeChange;
         public event EventHandler ThemeObsolete;
 
-        private AppearanceManager() {
-        }
+        private AppearanceManager() {}
 
         public void Initialize() {
             /*Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
                 [@"DefaultFont"] = new FontFamily(@"Courier New"),
-                [@"LightFont"] = new FontFamily(@"Impact"),
-            });*/
+                [@"CondensedFont"] = new FontFamily(@"Impact"),
+            });
+
+            TextElement.FontFamilyProperty.OverrideMetadata(
+                    typeof(TextElement),
+                    new FrameworkPropertyMetadata(
+                            new FontFamily("Comic Sans MS")));
+
+            TextBlock.FontFamilyProperty.OverrideMetadata(
+                    typeof(TextBlock),
+                    new FrameworkPropertyMetadata(
+                            new FontFamily("Comic Sans MS")));*/
+
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
                 Source = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative)
             });

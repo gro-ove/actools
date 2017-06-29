@@ -5,8 +5,12 @@
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush x:Key="TextEditorBackground">#333333</SolidColorBrush>
+    <!--<SolidColorBrush x:Key="TextEditorBackground">#333333</SolidColorBrush>
     <SolidColorBrush x:Key="TextEditorForeground">#ffffff</SolidColorBrush>
+    <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>-->
+
+    <SolidColorBrush x:Key="TextEditorBackground">#fafafa</SolidColorBrush>
+    <SolidColorBrush x:Key="TextEditorForeground">#000000</SolidColorBrush>
     <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>
 
     <Style TargetType="{x:Type ae:TextEditor}" BasedOn="{StaticResource {x:Type ae:TextEditor}}">
@@ -20,7 +24,7 @@
         <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
         <Setter Property="ShowLineNumbers" Value="True" />
     </Style>
-    
+
     <Pen x:Key="SelectionBorderPen" Brush="Transparent" Thickness="0" />
 
     <Style TargetType="{x:Type ae:TextArea}">

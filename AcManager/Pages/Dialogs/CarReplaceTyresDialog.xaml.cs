@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Filters;
@@ -35,12 +36,11 @@ using StringBasedFilter;
 namespace AcManager.Pages.Dialogs {
     public partial class CarReplaceTyresDialog {
         public static bool OptionRoundNicely = true;
-        public static string OptionTyresDonorsFilter = "k+";
 
         private CarReplaceTyresDialog(CarObject target, List<TyresSet> sets, List<TyresEntry> tyres) {
             DataContext = new ViewModel(target, sets, tyres);
             InitializeComponent();
-            
+
             Buttons = new[] {
                 CreateExtraDialogButton(ControlsStrings.Presets_Save, new DelegateCommand(() => {
                     if (DataUpdateWarning.Warn(Model.Car)) {
@@ -64,14 +64,14 @@ namespace AcManager.Pages.Dialogs {
 
             public ChangeableObservableCollection<TyresSet> Sets { get; }
 
-            public List<TyresEntry> Tyres { get; }
+            public BetterObservableCollection<TyresEntry> Tyres { get; }
 
             public BetterListCollectionView TyresView { get; }
 
             private int _setsVersion;
 
             public int SetsVersion {
-                get { return _setsVersion; }
+                get => _setsVersion;
                 set {
                     if (Equals(value, _setsVersion)) return;
                     _setsVersion = value;
@@ -83,9 +83,37 @@ namespace AcManager.Pages.Dialogs {
 
             public TyresEntry OriginalTyresRear { get; }
 
+            private AsyncCommand _changeCarsFilterCommand;
+
+            public AsyncCommand ChangeCarsFilterCommand => _changeCarsFilterCommand ?? (_changeCarsFilterCommand = new AsyncCommand(async () => {
+                var newFilter = Prompt.Show("New filter for source cars:", "Source cars filter",
+                        SettingsHolder.Content.CarReplaceTyresDonorFilter, "*",
+                        suggestions: ValuesStorage.GetStringList("__CarReplaceTyresDonorFilters"))?.Trim();
+
+                switch (newFilter) {
+                    case null:
+                        return;
+                    case "":
+                        newFilter = "*";
+                        break;
+                }
+
+                var list = await GetList(newFilter);
+                if (list == null) return;
+
+                foreach (var entry in list) {
+                    entry.SetAppropriateLevel(_originalTyresSet);
+                }
+
+                Tyres.ReplaceEverythingBy(list);
+                SettingsHolder.Content.CarReplaceTyresDonorFilter = newFilter;
+            }));
+
+            private readonly TyresSet _originalTyresSet;
+
             public ViewModel(CarObject car, List<TyresSet> sets, List<TyresEntry> tyres) {
                 Car = car;
-                Tyres = tyres;
+                Tyres = new BetterObservableCollection<TyresEntry>(tyres);
                 TyresView = new BetterListCollectionView(Tyres);
                 Sets = new ChangeableObservableCollection<TyresSet>(sets);
 
@@ -96,17 +124,17 @@ namespace AcManager.Pages.Dialogs {
 
                 SetsVersion = firstSet.Front.Version;
 
-                var original = GetOriginal(car) ?? firstSet;
-                OriginalTyresFront = original.Front;
-                OriginalTyresRear = original.Rear;
+                _originalTyresSet = GetOriginal(car) ?? firstSet;
+                OriginalTyresFront = _originalTyresSet.Front;
+                OriginalTyresRear = _originalTyresSet.Rear;
 
                 foreach (var set in Sets) {
-                    set.Front.SetAppropriateLevel(original);
-                    set.Rear.SetAppropriateLevel(original);
+                    set.Front.SetAppropriateLevel(_originalTyresSet);
+                    set.Rear.SetAppropriateLevel(_originalTyresSet);
                 }
 
                 foreach (var entry in tyres) {
-                    entry.SetAppropriateLevel(original);
+                    entry.SetAppropriateLevel(_originalTyresSet);
                 }
 
                 Sets.CollectionChanged += OnSetsCollectionChanged;
@@ -130,7 +158,7 @@ namespace AcManager.Pages.Dialogs {
             private TyresEntry _movingTyres;
 
             public TyresEntry MovingTyres {
-                get { return _movingTyres; }
+                get => _movingTyres;
                 set {
                     if (Equals(value, _movingTyres)) return;
                     _movingTyres = value;
@@ -151,7 +179,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _changed;
 
             public bool Changed {
-                get { return _changed; }
+                get => _changed;
                 set {
                     if (Equals(value, _changed)) return;
                     _changed = value;
@@ -179,7 +207,7 @@ namespace AcManager.Pages.Dialogs {
 
                     var tyresIni = data.GetIniFile("tyres.ini");
                     tyresIni["HEADER"].Set("VERSION", SetsVersion);
-                    
+
                     var sets = Sets.Distinct(TyresSet.TyresSetComparer).ToList();
                     var defaultIndex = sets.FindIndex(x => x.DefaultSet);
                     tyresIni["COMPOUND_DEFAULT"].Set("INDEX", defaultIndex == -1 ? 0 : defaultIndex);
@@ -214,7 +242,7 @@ namespace AcManager.Pages.Dialogs {
                             ["__CM_SOURCE_ID"] = x.Rear.SourceId
                         };
                     }));
-                    
+
                     tyresIni.SetSections("THERMAL_FRONT", -1, sets.Select((x, i) => {
                         var curve = data.GetRawFile($@"__cm_tyre_perfcurve_front_{i}.lut");
                         curve.Content = x.Front.PerformanceCurveData ?? "";
@@ -285,7 +313,7 @@ namespace AcManager.Pages.Dialogs {
             private IFilter<TyresEntry> _filterObj;
 
             public string FilterValue {
-                get { return _filterValue; }
+                get => _filterValue;
                 set {
                     if (Equals(value, _filterValue)) return;
                     _filterValue = value;
@@ -452,6 +480,52 @@ namespace AcManager.Pages.Dialogs {
             });
         }
 
+        [ItemCanBeNull]
+        private static async Task<List<TyresEntry>> GetList(string filter) {
+            var filterObj = Filter.Create(CarObjectTester.Instance, filter);
+
+            var wrappers = CarsManager.Instance.WrappersList.ToList();
+            var list = new List<TyresEntry>(wrappers.Count);
+
+            using (var waiting = new WaitingDialog("Getting a list of tyres…")) {
+                for (var i = 0; i < wrappers.Count; i++) {
+                    if (waiting.CancellationToken.IsCancellationRequested) return null;
+
+                    var wrapper = wrappers[i];
+                    var car = (CarObject)await wrapper.LoadedAsync();
+                    waiting.Report(new AsyncProgressEntry(car.DisplayName, i, wrappers.Count));
+
+                    if (!filterObj.Test(car) || car.AcdData == null) continue;
+                    var tyres = car.AcdData.GetIniFile("tyres.ini");
+
+                    var version = tyres["HEADER"].GetInt("VERSION", -1);
+                    if (version < 4) continue;
+
+                    foreach (var tuple in GetTyres(car)) {
+                        if (list.Contains(tuple.Item1, TyresEntry.TyresEntryComparer)) {
+                            if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
+                                list.Add(tuple.Item2);
+                            }
+                        } else {
+                            if (TyresEntry.TyresEntryComparer.Equals(tuple.Item1, tuple.Item2)) {
+                                list.Add(tuple.Item1);
+                                tuple.Item1.BothTyres = true;
+                            } else if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
+                                list.Add(tuple.Item1);
+                                list.Add(tuple.Item2);
+                            }
+                        }
+                    }
+
+                    if (i % 3 == 0) {
+                        await Task.Delay(10);
+                    }
+                }
+            }
+
+            return list;
+        }
+
         public static async Task<bool> Run(CarObject target) {
             try {
                 var sets = GetSets(target).ToList();
@@ -460,45 +534,8 @@ namespace AcManager.Pages.Dialogs {
                     return false;
                 }
 
-                var wrappers = CarsManager.Instance.WrappersList.ToList();
-                var list = new List<TyresEntry>(wrappers.Count);
-                var filter = Filter.Create(CarObjectTester.Instance, OptionTyresDonorsFilter);
-
-                using (var waiting = new WaitingDialog("Getting a list of tyres…")) {
-                    for (var i = 0; i < wrappers.Count; i++) {
-                        if (waiting.CancellationToken.IsCancellationRequested) return false;
-
-                        var wrapper = wrappers[i];
-                        var car = (CarObject)await wrapper.LoadedAsync();
-                        waiting.Report(new AsyncProgressEntry(car.DisplayName, i, wrappers.Count));
-
-                        if (!filter.Test(car) || car.AcdData == null) continue;
-                        var tyres = car.AcdData.GetIniFile("tyres.ini");
-
-                        var version = tyres["HEADER"].GetInt("VERSION", -1);
-                        if (version < 4) continue;
-
-                        foreach (var tuple in GetTyres(car)) {
-                            if (list.Contains(tuple.Item1, TyresEntry.TyresEntryComparer)) {
-                                if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
-                                    list.Add(tuple.Item2);
-                                }
-                            } else {
-                                if (TyresEntry.TyresEntryComparer.Equals(tuple.Item1, tuple.Item2)) {
-                                    list.Add(tuple.Item1);
-                                    tuple.Item1.BothTyres = true;
-                                } else if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
-                                    list.Add(tuple.Item1);
-                                    list.Add(tuple.Item2);
-                                }
-                            }
-                        }
-
-                        if (i % 3 == 0) {
-                            await Task.Delay(10);
-                        }
-                    }
-                }
+                var list = await GetList(SettingsHolder.Content.CarReplaceTyresDonorFilter);
+                if (list == null) return false;
 
                 var dialog = new CarReplaceTyresDialog(target, sets, list);
                 dialog.ShowDialog();
@@ -513,7 +550,7 @@ namespace AcManager.Pages.Dialogs {
             private int _index;
 
             public int Index {
-                get { return _index; }
+                get => _index;
                 set {
                     if (Equals(value, _index)) return;
                     _index = value;
@@ -527,7 +564,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _dublicate;
 
             public bool Dublicate {
-                get { return _dublicate; }
+                get => _dublicate;
                 set {
                     if (Equals(value, _dublicate)) return;
                     _dublicate = value;
@@ -538,7 +575,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _differentTyres;
 
             public bool DifferentTyres {
-                get { return _differentTyres; }
+                get => _differentTyres;
                 set {
                     if (Equals(value, _differentTyres)) return;
                     _differentTyres = value;
@@ -553,7 +590,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _defaultSet;
 
             public bool DefaultSet {
-                get { return _defaultSet; }
+                get => _defaultSet;
                 set {
                     if (Equals(value, _defaultSet)) return;
                     _defaultSet = value;
@@ -565,7 +602,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public TyresEntry Front {
-                get { return _front; }
+                get => _front;
                 set {
                     if (Equals(value, _front)) return;
                     _front = value;
@@ -578,7 +615,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public TyresEntry Rear {
-                get { return _rear; }
+                get => _rear;
                 set {
                     if (Equals(value, _rear)) return;
                     _rear = value;
@@ -611,7 +648,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _isDeleted;
 
             public bool IsDeleted {
-                get { return _isDeleted; }
+                get => _isDeleted;
                 set {
                     if (Equals(value, _isDeleted)) return;
                     _isDeleted = value;
@@ -622,7 +659,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _canBeDeleted;
 
             public bool CanBeDeleted {
-                get { return _canBeDeleted; }
+                get => _canBeDeleted;
                 set {
                     if (Equals(value, _canBeDeleted)) return;
                     _canBeDeleted = value;
@@ -676,7 +713,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _bothTyres;
 
             public bool BothTyres {
-                get { return _bothTyres; }
+                get => _bothTyres;
                 set {
                     if (value == _bothTyres) return;
                     _bothTyres = value;
@@ -695,7 +732,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public string Name {
-                get { return _name; }
+                get => _name;
                 set {
                     if (string.IsNullOrWhiteSpace(value)) value = @"?";
                     if (value == _name) return;
@@ -709,7 +746,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public string ShortName {
-                get { return _shortName; }
+                get => _shortName;
                 set {
                     if (Equals(value, _shortName)) return;
                     _shortName = value;
@@ -755,10 +792,10 @@ namespace AcManager.Pages.Dialogs {
 
             public string DisplayWidth => (_width * 1000).Round(OptionRoundNicely ? 1d : 0.1d).ToString(CultureInfo.CurrentUICulture);
 
-            public string DisplayProfile => _rimRadius <= 0 ? @"?" : 
+            public string DisplayProfile => _rimRadius <= 0 ? @"?" :
                 (100d * (_radius - (_rimRadius + 0.0127)) / _width).Round(OptionRoundNicely ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
 
-            public string DisplayRimRadius => _rimRadius <= 0 ? @"?" : 
+            public string DisplayRimRadius => _rimRadius <= 0 ? @"?" :
                 (_rimRadius * 100 / 2.54 * 2 - 1).Round(OptionRoundNicely ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
 
             #region Unique stuff
@@ -813,7 +850,7 @@ namespace AcManager.Pages.Dialogs {
                 var widthOffset = (_width - entry._width).Abs() * 1000d;
                 var displayOffset = string.Format("• Radius: {0};\n• Rim radius: {1};\n• Width: {2}",
                         OffsetOut(_radius - entry._radius),
-                        entry._rimRadius <= 0d ? @"?" : OffsetOut(_rimRadius - entry._rimRadius), 
+                        entry._rimRadius <= 0d ? @"?" : OffsetOut(_rimRadius - entry._rimRadius),
                         OffsetOut(_width - entry._width));
 
                 if (radiusOffset < 1 && rimRadiusOffset < 1 && widthOffset < 1) {
@@ -842,7 +879,7 @@ namespace AcManager.Pages.Dialogs {
             private TyresAppropriateLevel _appropriateLevelFront;
 
             public TyresAppropriateLevel AppropriateLevelFront {
-                get { return _appropriateLevelFront; }
+                get => _appropriateLevelFront;
                 set {
                     if (Equals(value, _appropriateLevelFront)) return;
                     _appropriateLevelFront = value;
@@ -854,7 +891,7 @@ namespace AcManager.Pages.Dialogs {
             private string _displayOffsetFront;
 
             public string DisplayOffsetFront {
-                get { return _displayOffsetFront; }
+                get => _displayOffsetFront;
                 set {
                     if (Equals(value, _displayOffsetFront)) return;
                     _displayOffsetFront = value;
@@ -868,7 +905,7 @@ namespace AcManager.Pages.Dialogs {
             private TyresAppropriateLevel _appropriateLevelRear;
 
             public TyresAppropriateLevel AppropriateLevelRear {
-                get { return _appropriateLevelRear; }
+                get => _appropriateLevelRear;
                 set {
                     if (Equals(value, _appropriateLevelRear)) return;
                     _appropriateLevelRear = value;
@@ -880,7 +917,7 @@ namespace AcManager.Pages.Dialogs {
             private string _displayOffsetRear;
 
             public string DisplayOffsetRear {
-                get { return _displayOffsetRear; }
+                get => _displayOffsetRear;
                 set {
                     if (Equals(value, _displayOffsetRear)) return;
                     _displayOffsetRear = value;
@@ -1041,7 +1078,7 @@ namespace AcManager.Pages.Dialogs {
             if (set == null) return;
 
             e.Effects = DragDropEffects.Copy;
-            
+
             await Task.Delay(1);
             if (Model.PrepareTyre(tyre, false)) {
                 if (Keyboard.Modifiers == ModifierKeys.Shift && _draggingFrom != null) {
@@ -1130,16 +1167,16 @@ namespace AcManager.Pages.Dialogs {
                 typeof(TyresPlace));
 
         public Brush HighlightColor {
-            get { return (Brush)GetValue(HighlightColorProperty); }
-            set { SetValue(HighlightColorProperty, value); }
+            get => (Brush)GetValue(HighlightColorProperty);
+            set => SetValue(HighlightColorProperty, value);
         }
 
         public static readonly DependencyProperty LevelProperty = DependencyProperty.Register(nameof(Level), typeof(TyresAppropriateLevel),
                 typeof(TyresPlace));
 
         public TyresAppropriateLevel Level {
-            get { return (TyresAppropriateLevel)GetValue(LevelProperty); }
-            set { SetValue(LevelProperty, value); }
+            get => (TyresAppropriateLevel)GetValue(LevelProperty);
+            set => SetValue(LevelProperty, value);
         }
     }
 }

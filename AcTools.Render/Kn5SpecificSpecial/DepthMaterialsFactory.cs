@@ -35,6 +35,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect = contextHolder.GetEffect<EffectSpecialShadow>();
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) {}
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
             return true;

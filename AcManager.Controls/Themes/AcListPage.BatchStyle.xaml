@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+  <ResourceDictionary.MergedDictionaries>
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/CheckBox.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+  <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#44ffffff" />
+  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="White" />
+  <SolidColorBrush x:Key="ButtonBorder" Color="#44ffffff" />
+  <SolidColorBrush x:Key="ButtonBorderHover" Color="#44ffffff" />
+  <SolidColorBrush x:Key="ButtonBorderPressed" Color="White" />
+  <SolidColorBrush x:Key="ButtonText" Color="White" />
+  <SolidColorBrush x:Key="ButtonTextHover" Color="White" />
+  <SolidColorBrush x:Key="ButtonTextPressed" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="ButtonTextDisabled" Color="#919191" />
+
+  <SolidColorBrush x:Key="InputBackground" Color="Transparent" />
+  <SolidColorBrush x:Key="InputBackgroundHover" Color="Transparent" />
+  <SolidColorBrush x:Key="InputBorder" Color="White" />
+  <SolidColorBrush x:Key="InputBorderHover" Color="White" />
+  <SolidColorBrush x:Key="InputText" Color="White" />
+  <SolidColorBrush x:Key="InputTextHover" Color="White" />
+  <SolidColorBrush x:Key="InputTextDisabled" Color="#919191" />
+
+  <SolidColorBrush x:Key="WindowText" Color="White" />
+
+  <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Style.Triggers>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="CheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+    <Style.Triggers>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="White" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+</ResourceDictionary>

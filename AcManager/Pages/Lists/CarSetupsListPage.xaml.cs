@@ -121,8 +121,8 @@ namespace AcManager.Pages.Lists {
                 SelectedCar = car;
             }
 
-            protected override string GetStatus() {
-                return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Setups);
+            protected override string GetSubject() {
+                return AppStrings.List_Setups;
             }
         }
 
@@ -135,8 +135,8 @@ namespace AcManager.Pages.Lists {
                 SelectedCar = car;
             }
 
-            protected override string GetStatus() {
-                return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Setups);
+            protected override string GetSubject() {
+                return AppStrings.List_Setups;
             }
         }
 

@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="Found Tyres" SizeToContent="Manual"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:t="http://acstuff.ru/app/tools"
+        mc:Ignorable="d" Title="Found Tyres" SizeToContent="Manual"
         Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="99999" MaxHeight="99999" LocationAndSizeKey=".carReplaceTyresDialog"
         ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" x:Name="This">
     <mui:ModernDialog.Resources>
@@ -48,7 +50,7 @@
                                     <Binding Path="Dublicate" />
                                 </MultiBinding>
                             </mui:BooleanSwitch.Value>
-                            <mui:SpacingStackPanel Background="#99333333" TextBlock.Foreground="White">
+                            <mui:SpacingStackPanel Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}">
                                 <DockPanel Visibility="{Binding DifferentTyres, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         Background="Transparent" Margin="4 2">
                                     <DockPanel.ToolTip>Different tyres might cause car to drive badly and unexpectedly</DockPanel.ToolTip>
@@ -236,7 +238,7 @@
                     ItemTemplate="{StaticResource TyresSetDataTemplate}" />
         </DockPanel>
 
-        <Border Grid.Column="0" Background="#99333333" TextBlock.Foreground="White" VerticalAlignment="Bottom" Padding="20 8" Margin="20"
+        <Border Grid.Column="0" Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" VerticalAlignment="Bottom" Padding="20 8" Margin="20"
                 HorizontalAlignment="Center" IsHitTestVisible="False"
                 Visibility="{Binding MovingTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
             <TextBlock Text="Hold Shift to swap tyres" Style="{StaticResource Small}" TextAlignment="Center" />
@@ -245,6 +247,11 @@
         <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarReplaceTyresDialog" />
 
         <DockPanel Grid.Column="2" Margin="8 0 0 0">
+            <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
+                <TextBlock Text="Source cars filter:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+                <Button Command="{Binding ChangeCarsFilterCommand}" Content="Change" DockPanel.Dock="Right" Margin="0 -8" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding CarReplaceTyresDonorFilter, Source={x:Static t:SettingsHolder.Content}}" />
+            </DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
                 <TextBlock Text="Unique tyres found:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
                 <TextBlock Text="{Binding TyresView.Count}" />

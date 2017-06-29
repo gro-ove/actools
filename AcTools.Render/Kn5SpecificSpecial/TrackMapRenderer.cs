@@ -111,29 +111,19 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public CameraOrbit CameraOrbit => Camera as CameraOrbit;
-
         public FpsCamera FpsCamera => Camera as FpsCamera;
-
         public CameraOrtho CameraOrtho => Camera as CameraOrtho;
 
         public bool AutoResetCamera { get; set; } = true;
-
         public bool AutoRotate { get; set; }
-
         public bool AutoAdjustTarget { get; set; }
-
         public bool UseFpsCamera { get; set; }
-
         public bool VisibleUi { get; set; } = true;
-
         public bool CarLightsEnabled { get; set; }
-
         public bool CarBrakeLightsEnabled { get; set; }
 
         public void SelectPreviousSkin() {}
-
         public void SelectNextSkin() {}
-
         public void SelectSkin(string skinId) {}
 
         void IKn5ObjectRenderer.ResetCamera() {
@@ -141,6 +131,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public void ChangeCameraFov(float newFovY) {}
+        public void RefreshMaterial(Kn5 kn5, uint materialId) {}
+        public void UpdateMaterialPropertyA(Kn5 kn5, uint materialId, string propertyName, float valueA) {}
+        public void UpdateMaterialPropertyC(Kn5 kn5, uint materialId, string propertyName, float[] valueC) {}
 
         protected sealed override void DrawSprites() {
             var sprite = Sprite;
@@ -711,6 +704,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSpecialTrackMap>();
         }
+
+        public void Refresh(IDeviceContextHolder contextHolder) {}
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;

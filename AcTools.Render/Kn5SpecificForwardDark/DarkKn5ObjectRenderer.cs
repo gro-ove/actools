@@ -580,7 +580,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (CubemapAmbient != 0f) {
                     effect.FxCubemapAmbient.Set(FxCubemapAmbientValue);
                 }
-            } else {
+            } else if (AnyGround) {
                 // draw a mirror
                 if (_mirror != null) {
                     SetFlatMirrorSide(-1);
@@ -899,7 +899,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             if (ShowroomNode != null) {
                 ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
                 SetFlatMirrorSide(0);
-            } else {
+            } else if (AnyGround) {
                 if (_mirror != null) {
                     SetFlatMirrorSide(-1);
 

@@ -1,41 +1,43 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AcErrorSolutionSelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:mu="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
-        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{Binding AcError.Message}"
-        d:DataContext="{d:DesignInstance di:AcErrorSolutionSelector}" Loaded="OnLoaded" Unloaded="OnUnloaded">
-    <mui:ModernDialog.ButtonsRowContent>
-        <StackPanel Orientation="Horizontal">
-            <Button Content="{x:Static mu:UiStrings.Ok}" IsDefault="True" Command="{Binding RunCommand}" />
-            <Button Content="{x:Static g:AppStrings.AcError_SolveAllSimilarErrors}" Command="{Binding RunAllCommand}" Margin="4 0 0 0"
-                    Visibility="{Binding MultiAppliable, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </StackPanel>
-    </mui:ModernDialog.ButtonsRowContent>
-    <Grid>
-        <Grid Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" />
-        </Grid>
-        <StackPanel Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}">
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8"
-                    Text="{Binding Solutions.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.AcError_AvailableSolutions}}" />
-            <ListBox ItemsSource="{Binding Solutions}" SelectedItem="{Binding SelectedSolution, Mode=TwoWay}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
-                    VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel ToolTip="{Binding Description}">
-                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 4 0 0"
-                                    Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource RadioBoxListItem}">
-                        <Setter Property="Margin" Value="8 4 4 8" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>
-        </StackPanel>
-    </Grid>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:mu="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
+    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{Binding AcError.Message}" d:DataContext="{d:DesignInstance di:AcErrorSolutionSelector}"
+    Loaded="OnLoaded" Unloaded="OnUnloaded">
+  <mui:ModernDialog.ButtonsRowContent>
+    <StackPanel Orientation="Horizontal">
+      <Button Content="{x:Static mu:UiStrings.Ok}" IsDefault="True" Command="{Binding RunCommand}" />
+      <Button Content="{x:Static g:AppStrings.AcError_SolveAllSimilarErrors}" Command="{Binding RunAllCommand}" Margin="4 0 0 0"
+          Visibility="{Binding MultiAppliable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    </StackPanel>
+  </mui:ModernDialog.ButtonsRowContent>
+  <mui:ReferenceSwitch Value="{Binding ErrorMessage}">
+    <mui:ReferenceSwitch.NonNull>
+      <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" />
+    </mui:ReferenceSwitch.NonNull>
+    <mui:ReferenceSwitch.Null>
+      <StackPanel>
+        <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8"
+            Text="{Binding Solutions.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.AcError_AvailableSolutions}}" />
+        <ListBox ItemsSource="{Binding Solutions}" SelectedItem="{Binding SelectedSolution, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
+            ScrollViewer.CanContentScroll="True">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel ToolTip="{Binding Description}">
+                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" FontWeight="Bold" />
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 4 0 0"
+                    Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+          <ListBox.ItemContainerStyle>
+            <Style TargetType="ListBoxItem" BasedOn="{StaticResource RadioBoxListItem}">
+              <Setter Property="Margin" Value="8 4 4 8" />
+            </Style>
+          </ListBox.ItemContainerStyle>
+        </ListBox>
+      </StackPanel>
+    </mui:ReferenceSwitch.Null>
+  </mui:ReferenceSwitch>
 </mui:ModernDialog>

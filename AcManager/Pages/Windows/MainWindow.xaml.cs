@@ -56,6 +56,9 @@ using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator {
+        public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
+        public static readonly Uri EnterKeyUrl = new Uri("cmd://enterkey");
+
         private readonly bool _cancelled;
         private readonly string _testGameDialog = null;
 
@@ -82,8 +85,10 @@ namespace AcManager.Pages.Windows {
 
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F1, ModifierKeys.Alt)),
-                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F1, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "server"), new KeyGesture(Key.F2, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F3, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F4, ModifierKeys.Control)),
                 new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
                 new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
                 new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
@@ -475,39 +480,50 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private bool _closed;
         private void OnClosing(object sender, CancelEventArgs e) {
-            if (SettingsHolder.Online.ServerPresetsManaging && ServerPresetsManager.Instance.IsScanned) {
-                var running = ServerPresetsManager.Instance.LoadedOnly.Where(x => x.IsRunning).ToList();
-                if (running.Count > 0 && ModernDialog.ShowMessage(
-                        $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
-                                running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",
-                        "Some servers are running", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+            if (_closed) return;
+
+            try {
+                if (SettingsHolder.Online.ServerPresetsManaging && ServerPresetsManager.Instance.IsScanned) {
+                    var running = ServerPresetsManager.Instance.LoadedOnly.Where(x => x.IsRunning).ToList();
+                    if (running.Count > 0 && ModernDialog.ShowMessage(
+                            $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
+                                    running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",
+                            "Some servers are running", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
+                var loading = ContentInstallationManager.Instance.Queue.Count(x => x.State != ContentInstallationEntryState.Finished);
+                if (loading > 0 && ModernDialog.ShowMessage(
+                        "If you’ll close app, installation queue will be cancelled. Are you sure?",
+                        "Something is being installed", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     e.Cancel = true;
                     return;
                 }
-            }
 
-            var loading = ContentInstallationManager.Instance.Queue.Count(x => x.State != ContentInstallationEntryState.Finished);
-            if (loading > 0 && ModernDialog.ShowMessage(
-                    "If you’ll close app, installation queue will be cancelled. Are you sure?",
-                    "Something is being installed", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                e.Cancel = true;
-                return;
-            }
-
-            var unsaved = Superintendent.Instance.UnsavedChanges();
-            if (unsaved.Count > 0) {
-                switch (ModernDialog.ShowMessage(
-                        $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
-                                unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
-                        AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel)) {
-                            case MessageBoxResult.Yes:
-                                Superintendent.Instance.SaveAll();
-                                break;
-                            case MessageBoxResult.Cancel:
-                                e.Cancel = true;
-                                break;
+                var unsaved = Superintendent.Instance.UnsavedChanges();
+                if (unsaved.Count > 0) {
+                    switch (ModernDialog.ShowMessage(
+                            $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
+                                    unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
+                            AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel)) {
+                                case MessageBoxResult.Yes:
+                                    Superintendent.Instance.SaveAll();
+                                    break;
+                                case MessageBoxResult.Cancel:
+                                    e.Cancel = true;
+                                    return;
+                            }
                 }
+
+                // Just in case, temporary
+                _closed = true;
+                Application.Current.Shutdown();
+            } catch (Exception ex) {
+                Logging.Warning(ex);
             }
         }
 
@@ -523,13 +539,19 @@ namespace AcManager.Pages.Windows {
         }
 
         private void ToggleQuickSwitches(bool force = true) {
-            if (Popup.IsOpen) {
-                Popup.IsOpen = false;
+            Logging.Debug(QuickSwitchesBlock.GetIsActive(Popup));
+            if (QuickSwitchesBlock.GetIsActive(Popup)) {
+                QuickSwitchesBlock.SetIsActive(Popup, false);
             } else if (force || _openOnNext) {
                 InitializePopup();
-                Popup.IsOpen = true;
+                QuickSwitchesBlock.SetIsActive(Popup, true);
+                Logging.Debug(QuickSwitchesBlock.GetIsActive(Popup));
                 Popup.Focus();
             }
+        }
+
+        public void CloseQuickSwitches() {
+            QuickSwitchesBlock.SetIsActive(Popup, false);
         }
 
         private ICommand _quickSwitchesCommand;
@@ -541,7 +563,7 @@ namespace AcManager.Pages.Windows {
         private int _popupId;
 
         private async void ShowQuickSwitchesPopup(Geometry icon, string message, object toolTip) {
-            if (Popup.IsOpen) return;
+            if (QuickSwitchesBlock.GetIsActive(Popup)) return;
 
             var id = ++_popupId;
             QuickSwitchesNotificationIcon.Data = icon;
@@ -647,7 +669,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            if (Popup.IsOpen) {
+            if (QuickSwitchesBlock.GetIsActive(Popup)) {
                 e.Handled = true;
             }
         }
@@ -655,7 +677,7 @@ namespace AcManager.Pages.Windows {
         private bool _openOnNext;
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            _openOnNext = !Popup.IsOpen;
+            _openOnNext = !QuickSwitchesBlock.GetIsActive(Popup);
         }
 
         private class InnerPopupHeightConverter : IValueConverter {

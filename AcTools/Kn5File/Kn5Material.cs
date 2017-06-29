@@ -1,12 +1,14 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
-    public class Kn5Material {
+    public class Kn5Material : ICloneable {
         public string Name { get; set; }
 
         public string ShaderName { get; set; }
-        
+
         public Kn5MaterialBlendMode BlendMode { get; set; }
 
         public bool AlphaTested { get; set; }
@@ -17,12 +19,51 @@ namespace AcTools.Kn5File {
 
         public TextureMapping[] TextureMappings { get; set; }
 
-        public class ShaderProperty {
+        public Kn5Material Clone() {
+            return new Kn5Material {
+                Name = Name,
+                ShaderName = ShaderName,
+                BlendMode = BlendMode,
+                AlphaTested = AlphaTested,
+                DepthMode = DepthMode,
+                ShaderProperties = ShaderProperties.Select(x => x.Clone()).ToArray(),
+                TextureMappings = TextureMappings.Select(x => x.Clone()).ToArray()
+            };
+        }
+
+        object ICloneable.Clone() {
+            return Clone();
+        }
+
+        public class ShaderProperty : ICloneable {
             public string Name;
             public float ValueA;
             public float[] ValueB;
             public float[] ValueC;
             public float[] ValueD;
+
+            public ShaderProperty Clone() {
+                return new ShaderProperty {
+                    Name = Name,
+                    ValueA = ValueA,
+                    ValueB = ValueB?.ToArray(),
+                    ValueC = ValueC?.ToArray(),
+                    ValueD = ValueD?.ToArray()
+                };
+            }
+
+            object ICloneable.Clone() {
+                return Clone();
+            }
+
+            public void CopyFrom([CanBeNull] ShaderProperty property) {
+                if (property == null) return;
+                Name = property.Name;
+                ValueA = property.ValueA;
+                ValueB = property.ValueB?.ToArray();
+                ValueC = property.ValueC?.ToArray();
+                ValueD = property.ValueD?.ToArray();
+            }
         }
 
         [CanBeNull]
@@ -35,9 +76,21 @@ namespace AcTools.Kn5File {
             return null;
         }
 
-        public class TextureMapping {
+        public class TextureMapping : ICloneable {
             public string Name, Texture;
             public int Slot;
+
+            public TextureMapping Clone() {
+                return new TextureMapping {
+                    Name = Name,
+                    Texture = Texture,
+                    Slot = Slot
+                };
+            }
+
+            object ICloneable.Clone() {
+                return Clone();
+            }
         }
 
         [CanBeNull]
@@ -61,7 +114,7 @@ namespace AcTools.Kn5File {
         [Description("Alpha To Coverage")]
         AlphaToCoverage = 2
     }
-    
+
     public enum Kn5MaterialDepthMode {
         [Description("Normal")]
         DepthNormal = 0,

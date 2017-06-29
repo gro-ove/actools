@@ -137,6 +137,8 @@ namespace AcTools.Render.Base {
 
         RendererStopwatch StartNewStopwatch();
 
+        float TimeFactor { get; set; }
+
         void RaiseUpdateRequired();
 
         void RaiseSceneUpdated();
@@ -148,10 +150,14 @@ namespace AcTools.Render.Base {
 
         [NotNull]
         ShaderResourceView GetFlatNmTexture();
+
+        double LastFrameTime { get; }
     }
 
     public class DeviceContextHolder : IDeviceContextHolder, IDisposable {
         public Device Device { get; }
+
+        public float TimeFactor { get; set; }
 
         public DeviceContext DeviceContext { get; }
 
@@ -347,7 +353,6 @@ namespace AcTools.Render.Base {
 
         public CommonStates States => _states ?? (_states = new CommonStates(Device));
 
-
         private readonly Dictionary<Tuple<int, int>, ShaderResourceView> _randomTextures =
                 new Dictionary<Tuple<int, int>, ShaderResourceView>();
 
@@ -462,6 +467,8 @@ namespace AcTools.Render.Base {
         public ShaderResourceView GetFlatNmTexture() {
             return _flatNmView ?? (_flatNmView = CreateTextureView(4, 4, (x, y) => Color.FromArgb(255, 127, 127, 255)));
         }
+
+        double IDeviceContextHolder.LastFrameTime => _clock.GetLastFrameTime();
 
         public void Dispose() {
             Debug.WriteLine("DeviceContextHolder.Dispose()");

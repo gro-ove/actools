@@ -27,9 +27,8 @@ namespace LicensePlates {
 
 
         private MagickImage LoadImage(string filename) {
-            MagickImage result;
             filename = filename.ToLowerInvariant();
-            if (_images.TryGetValue(filename, out result)) return result;
+            if (_images.TryGetValue(filename, out var result)) return result;
 
             try {
                 return _images[filename] = new MagickImage(filename);

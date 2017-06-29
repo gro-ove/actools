@@ -1,246 +1,240 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.UserChampionships" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
-        Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance dr:UserChampionships+ViewModel}"
-        x:Name="ThisControl">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance dr:UserChampionships+ViewModel}" x:Name="ThisControl">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-            <sys:Double x:Key="TileSize">202</sys:Double>
-            <Thickness x:Key="ItemPadding">8</Thickness>
-            <Thickness x:Key="ItemPaddingFix">-8 0 -8 0</Thickness>
-            <sys:Double x:Key="ItemSize">218</sys:Double>
+      <sys:Double x:Key="TileSize">202</sys:Double>
+      <Thickness x:Key="ItemPadding">8</Thickness>
+      <Thickness x:Key="ItemPaddingFix">-8 0 -8 0</Thickness>
+      <sys:Double x:Key="ItemSize">218</sys:Double>
 
-            <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:AcItemWrapper}">
-                <ContentControl DataContext="{Binding Value}" Content="{Binding}">
-                    <ContentControl.Resources>
-                        <!--placeholder-->
-                        <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
-                            <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="#555555">
-                                <!-- TODO: diagonal lines? -->
-                                <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}"
-                                        Text="{Binding DisplayName}" Foreground="White" />
-                            </mui:Cell>
-                        </DataTemplate>
-
-                        <!--KunosCareerObject-->
-                        <DataTemplate DataType="{x:Type t:UserChampionshipObject}">
-                            <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
-                                <TextBlock Text="No preview" Style="{StaticResource Heading1}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Opacity="0.4" ToolTip="{Binding DisplayName}" />
-                                <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" x:Name="Image"
-                                        ClearOnChange="True" Crop="{Binding PreviewCrop}" CropUnits="Absolute" CollapseIfMissing="True" IsHitTestVisible="False" />
-
-                                <TextBlock x:Name="TopPanel" Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                                        Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}" Foreground="White"
-                                        FontSize="{DynamicResource SmallFontSize}" TextAlignment="Right">
-                                    <TextBlock.RenderTransform>
-                                        <TranslateTransform />
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-
-                                <mui:Cell x:Name="BottomPanel" VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}">
-                                    <FrameworkElement.RenderTransform>
-                                        <TranslateTransform />
-                                    </FrameworkElement.RenderTransform>
-
-                                    <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="4" Text="{Binding DisplayCode}" x:Name="CodeTextBlock"
-                                            FontWeight="Bold" />
-                                    <TextBlock Foreground="White" HorizontalAlignment="Right" Margin="4" x:Name="ProgressTextBlock">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}/{1}">
-                                                <Binding Path="CompletedEvents" />
-                                                <Binding Path="ExtendedRounds.Count" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-
-                                    <mui:Cell Margin="4 2"
-                                            Height="{Binding ActualHeight, ElementName=CodeTextBlock, Converter={StaticResource SumConverter}, ConverterParameter=-4}">
-                                        <Path Data="{StaticResource LeaderboardIconData}" Fill="White" SnapsToDevicePixels="True" MaxWidth="16"
-                                                Stretch="Uniform" HorizontalAlignment="Left" />
-                                        <Path Data="{StaticResource LockIconData}" Fill="White" SnapsToDevicePixels="True" MaxWidth="32" Stretch="Uniform"
-                                                ToolTip="{x:Static g:AppStrings.KunosCareer_RequiredSeriesAreNotDoneYet}" HorizontalAlignment="Right"
-                                                Visibility="Collapsed" x:Name="LockIcon" />
-                                        <Path Data="{StaticResource CheckIconData}" Fill="{StaticResource Completed}" SnapsToDevicePixels="True" MaxWidth="32"
-                                                Stretch="Uniform" ToolTip="{x:Static g:AppStrings.KunosCareer_FullyCompleted}" HorizontalAlignment="Right"
-                                                Visibility="Collapsed" x:Name="CheckIcon" />
-                                    </mui:Cell>
-                                </mui:Cell>
-
-                                <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" x:Name="FullyFinished" />
-                                <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="50" Stretch="Uniform"
-                                        HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource Error}" Visibility="Collapsed"
-                                        x:Name="ErrorIcon" />
-                            </mui:Cell>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0:0:0.12" To="-40" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
-                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
-                                                <DoubleAnimation Duration="0:0:0.12" To="40" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
-                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
-                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
-                                                <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
-                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
-                                    <Setter TargetName="ProgressTextBlock" Property="Foreground" Value="{StaticResource Completed}" />
-                                </DataTrigger>
-
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
-                                            <Binding Path="CompletedEvents" />
-                                            <Binding Path="ExtendedRounds.Count" />
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
-                                    <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Value="True">
-                                            <Condition.Binding>
-                                                <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
-                                                    <Binding Path="CompletedEvents" />
-                                                    <Binding Path="ExtendedRounds.Count" />
-                                                </MultiBinding>
-                                            </Condition.Binding>
-                                        </Condition>
-                                        <Condition Binding="{Binding SecondPlaces}" Value="0" />
-                                        <Condition Binding="{Binding ThirdPlaces}" Value="0" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="FullyFinished" Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
-
-                                <DataTrigger Binding="{Binding HasErrors}" Value="True">
-                                    <Setter TargetName="Image" Property="Effect">
-                                        <Setter.Value>
-                                            <mui:GrayscaleEffect SaturationFactor="0" />
-                                        </Setter.Value>
-                                    </Setter>
-
-                                    <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed" />
-
-                                    <Setter TargetName="FullyFinished" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="FullyFinished" Property="BorderBrush" Value="{DynamicResource Error}" />
-                                    <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsAvailable}" Value="False">
-                                    <Setter TargetName="Image" Property="Effect">
-                                        <Setter.Value>
-                                            <mui:GrayscaleEffect SaturationFactor="0" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="LockIcon" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="FullyFinished" Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ContentControl.Resources>
-                </ContentControl>
+      <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:AcItemWrapper}">
+        <ContentControl DataContext="{Binding Value}" Content="{Binding}">
+          <ContentControl.Resources>
+            <!--placeholder-->
+            <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
+              <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="#555555">
+                <!-- TODO: diagonal lines? -->
+                <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}"
+                    Text="{Binding DisplayName}" Foreground="White" />
+              </mui:Cell>
             </DataTemplate>
 
-            <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-        </ResourceDictionary>
-    </UserControl.Resources>
+            <!--KunosCareerObject-->
+            <DataTemplate DataType="{x:Type t:UserChampionshipObject}">
+              <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
+                <TextBlock Text="No preview" Style="{StaticResource Heading1}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.4"
+                    ToolTip="{Binding DisplayName}" />
+                <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" x:Name="Image" ClearOnChange="True"
+                    Crop="{Binding PreviewCrop}" CropUnits="Absolute" CollapseIfMissing="True" IsHitTestVisible="False" />
 
-    <Grid Style="{StaticResource ContentRootWithPadding}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+                <TextBlock x:Name="TopPanel" Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}"
+                    Text="{Binding DisplayName}" Foreground="White" FontSize="{DynamicResource SmallFontSize}" TextAlignment="Right">
+                  <TextBlock.RenderTransform>
+                    <TranslateTransform />
+                  </TextBlock.RenderTransform>
+                </TextBlock>
 
-        <Grid x:Name="MainListWrapper" Grid.Row="0" Grid.ColumnSpan="2" Margin="{StaticResource ItemPaddingFix}">
-            <ListBox ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
-                    ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ItemTemplate="{StaticResource ItemTemplate}" x:Name="ListBox" ScrollViewer.ScrollChanged="OnListBoxScrollChanged"
-                    PreviewMouseDoubleClick="OnListBoxDoubleClick">
-                <i:Interaction.Behaviors>
-                    <mui:HorizontalScrollBehavior />
-                </i:Interaction.Behaviors>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
-                        <Setter Property="FontWeight" Value="Normal" />
-                        <Setter Property="Padding" Value="{StaticResource ItemPadding}" />
+                <mui:Cell x:Name="BottomPanel" VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}">
+                  <FrameworkElement.RenderTransform>
+                    <TranslateTransform />
+                  </FrameworkElement.RenderTransform>
 
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <mui:VirtualizingTilePanel Orientation="Vertical" VerticalContentAlignment="Center" ItemWidth="{StaticResource ItemSize}"
-                                ItemHeight="{StaticResource ItemSize}" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel"
-                                MaxHeight="{Binding ActualHeight, ElementName=MainListWrapper}" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
-        </Grid>
+                  <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="4" Text="{Binding DisplayCode}" x:Name="CodeTextBlock" FontWeight="Bold" />
+                  <TextBlock Foreground="White" HorizontalAlignment="Right" Margin="4" x:Name="ProgressTextBlock">
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="{}{0}/{1}">
+                        <Binding Path="CompletedEvents" />
+                        <Binding Path="ExtendedRounds.Count" />
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
 
-        <!--<StackPanel Margin="0 24 24 0" Grid.Row="1" Grid.Column="0">
+                  <mui:Cell Margin="4 2"
+                      Height="{Binding ActualHeight, ElementName=CodeTextBlock, Converter={StaticResource SumConverter}, ConverterParameter=-4}">
+                    <Path Data="{StaticResource LeaderboardIconData}" Fill="White" SnapsToDevicePixels="True" MaxWidth="16" Stretch="Uniform"
+                        HorizontalAlignment="Left" />
+                    <Path Data="{StaticResource LockIconData}" Fill="White" SnapsToDevicePixels="True" MaxWidth="32" Stretch="Uniform"
+                        ToolTip="{x:Static g:AppStrings.KunosCareer_RequiredSeriesAreNotDoneYet}" HorizontalAlignment="Right" Visibility="Collapsed"
+                        x:Name="LockIcon" />
+                    <Path Data="{StaticResource CheckIconData}" Fill="{StaticResource Completed}" SnapsToDevicePixels="True" MaxWidth="32" Stretch="Uniform"
+                        ToolTip="{x:Static g:AppStrings.KunosCareer_FullyCompleted}" HorizontalAlignment="Right" Visibility="Collapsed" x:Name="CheckIcon" />
+                  </mui:Cell>
+                </mui:Cell>
+
+                <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" x:Name="FullyFinished" />
+                <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="50" Stretch="Uniform" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Fill="{DynamicResource Error}" Visibility="Collapsed" x:Name="ErrorIcon" />
+              </mui:Cell>
+              <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
+                  <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <DoubleAnimation Duration="0:0:0.20" To="-21" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
+                        <DoubleAnimation Duration="0:0:0.24" To="26" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.EnterActions>
+                  <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <DoubleAnimation Duration="0:0:0.20" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource DecelerationEase}" />
+                        <DoubleAnimation Duration="0:0:0.24" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource DecelerationEase}" />
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.ExitActions>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                  <Setter TargetName="ProgressTextBlock" Property="Foreground" Value="{StaticResource Completed}" />
+                </DataTrigger>
+
+                <DataTrigger Value="True">
+                  <DataTrigger.Binding>
+                    <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                      <Binding Path="CompletedEvents" />
+                      <Binding Path="ExtendedRounds.Count" />
+                    </MultiBinding>
+                  </DataTrigger.Binding>
+                  <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
+                  <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+
+                <MultiDataTrigger>
+                  <MultiDataTrigger.Conditions>
+                    <Condition Value="True">
+                      <Condition.Binding>
+                        <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <Binding Path="CompletedEvents" />
+                          <Binding Path="ExtendedRounds.Count" />
+                        </MultiBinding>
+                      </Condition.Binding>
+                    </Condition>
+                    <Condition Binding="{Binding SecondPlaces}" Value="0" />
+                    <Condition Binding="{Binding ThirdPlaces}" Value="0" />
+                  </MultiDataTrigger.Conditions>
+                  <Setter TargetName="FullyFinished" Property="Visibility" Value="Visible" />
+                </MultiDataTrigger>
+
+                <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                  <Setter TargetName="Image" Property="Effect">
+                    <Setter.Value>
+                      <mui:GrayscaleEffect SaturationFactor="0" />
+                    </Setter.Value>
+                  </Setter>
+
+                  <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
+                  <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed" />
+
+                  <Setter TargetName="FullyFinished" Property="Visibility" Value="Visible" />
+                  <Setter TargetName="FullyFinished" Property="BorderBrush" Value="{DynamicResource Error}" />
+                  <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                  <Setter TargetName="Image" Property="Effect">
+                    <Setter.Value>
+                      <mui:GrayscaleEffect SaturationFactor="0" />
+                    </Setter.Value>
+                  </Setter>
+                  <Setter TargetName="ProgressTextBlock" Property="Visibility" Value="Collapsed" />
+                  <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed" />
+                  <Setter TargetName="LockIcon" Property="Visibility" Value="Visible" />
+                  <Setter TargetName="FullyFinished" Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+              </DataTemplate.Triggers>
+            </DataTemplate>
+          </ContentControl.Resources>
+        </ContentControl>
+      </DataTemplate>
+
+      <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid Style="{StaticResource ContentRootWithPadding}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Grid x:Name="MainListWrapper" Grid.Row="0" Grid.ColumnSpan="2" Margin="{StaticResource ItemPaddingFix}">
+      <ListBox ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
+          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" ItemTemplate="{StaticResource ItemTemplate}"
+          x:Name="ListBox" ScrollViewer.ScrollChanged="OnListBoxScrollChanged" PreviewMouseDoubleClick="OnListBoxDoubleClick">
+        <i:Interaction.Behaviors>
+          <mui:HorizontalScrollBehavior />
+        </i:Interaction.Behaviors>
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Padding" Value="{StaticResource ItemPadding}" />
+
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+              </Trigger>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+                <Setter Property="FontWeight" Value="Normal" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:VirtualizingTilePanel Orientation="Vertical" VerticalContentAlignment="Center" ItemWidth="{StaticResource ItemSize}"
+                ItemHeight="{StaticResource ItemSize}" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel"
+                MaxHeight="{Binding ActualHeight, ElementName=MainListWrapper}" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+      </ListBox>
+    </Grid>
+
+    <!--<StackPanel Margin="0 24 24 0" Grid.Row="1" Grid.Column="0">
             <TextBlock Style="{StaticResource Heading2}"
                     Text="{Binding Manager.DisplayProgress, StringFormat={x:Static g:AppStrings.KunosCareer_ProgressFormat}}" Margin="0 0 0 8" />
             <ProgressBar Maximum="1" Value="{Binding Manager.Progress}" Height="4" />
         </StackPanel>-->
 
-        <c:UserChampionshipBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding MainList.CurrentItem.Value}">
-            <c:UserChampionshipBlock.ButtonPlaceholder>
-                <Button Style="{StaticResource Go.Button}" IsEnabled="{Binding IsAvailable}"
-                        Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}" Margin="0 4 0 0" />
-            </c:UserChampionshipBlock.ButtonPlaceholder>
-        </c:UserChampionshipBlock>
+    <c:UserChampionshipBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding MainList.CurrentItem.Value}">
+      <c:UserChampionshipBlock.ButtonPlaceholder>
+        <Button Style="{StaticResource Go.Button}" IsEnabled="{Binding IsAvailable}"
+            Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}" Margin="0 4 0 0" />
+      </c:UserChampionshipBlock.ButtonPlaceholder>
+    </c:UserChampionshipBlock>
 
-        <Border Background="#99333333" TextBlock.Foreground="White" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
-                Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Padding="20" MaxWidth="320">
-            <DockPanel>
-                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                        Margin="0 0 8 0" VerticalAlignment="Center" />
-                <mui:BbCodeBlock VerticalAlignment="Center" TextWrapping="Wrap">
-                    <mui:BbCodeBlock.BbCode>It appears that you don’t have any championships installed. Please, go to [url="/Pages/Lists/UserChampionshipsListPage.xaml"]Content/Miscellaneuos/User Championships[/url] if you want to create one.</mui:BbCodeBlock.BbCode>
-                </mui:BbCodeBlock>
-            </DockPanel>
-        </Border>
-    </Grid>
+    <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" Grid.Row="0" Grid.RowSpan="2"
+        Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Padding="20" MaxWidth="320">
+      <DockPanel>
+        <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+            Margin="0 0 8 0" VerticalAlignment="Center" />
+        <mui:BbCodeBlock VerticalAlignment="Center" TextWrapping="Wrap">
+          <mui:BbCodeBlock.BbCode>It appears that you don’t have any championships installed. Please, go to [url="/Pages/Lists/UserChampionshipsListPage.xaml"]Content/Miscellaneuos/User Championships[/url] if you want to create one.</mui:BbCodeBlock.BbCode>
+        </mui:BbCodeBlock>
+      </DockPanel>
+    </Border>
+  </Grid>
 </UserControl>

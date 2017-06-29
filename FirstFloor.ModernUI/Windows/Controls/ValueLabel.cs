@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
@@ -20,8 +21,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _secondValue = "";
         public string SecondValue {
-            get { return _secondValue; }
-            set { SetValue(SecondValueProperty, value); }
+            get => _secondValue;
+            set => SetValue(SecondValueProperty, value);
         }
 
         private static void OnSecondValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -64,8 +65,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _relativeRangeBase = "";
         public string RelativeRangeBase {
-            get { return _relativeRangeBase; }
-            set { SetValue(RelativeRangeBaseProperty, value); }
+            get => _relativeRangeBase;
+            set => SetValue(RelativeRangeBaseProperty, value);
         }
 
         private static void OnRelativeRangeBaseChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -82,8 +83,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _relativeRangeHalf = "";
         public string RelativeRangeHalf {
-            get { return _relativeRangeHalf; }
-            set { SetValue(RelativeRangeHalfProperty, value); }
+            get => _relativeRangeHalf;
+            set => SetValue(RelativeRangeHalfProperty, value);
         }
 
         private static void OnRelativeRangeHalfChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -102,8 +103,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _relativeRangeStringFormat = "";
         public string RelativeRangeStringFormat {
-            get { return _relativeRangeStringFormat; }
-            set { SetValue(RelativeRangeStringFormatProperty, value); }
+            get => _relativeRangeStringFormat;
+            set => SetValue(RelativeRangeStringFormatProperty, value);
         }
 
         public static readonly DependencyPropertyKey ValuesEqualPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ValuesEqual), typeof(bool),
@@ -117,24 +118,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleValueLabel));
 
         public string Separator {
-            get { return (string)GetValue(SeparatorProperty); }
-            set { SetValue(SeparatorProperty, value); }
+            get => (string)GetValue(SeparatorProperty);
+            set => SetValue(SeparatorProperty, value);
         }
 
         public static readonly DependencyProperty JoinIfEqualProperty = DependencyProperty.Register(nameof(JoinIfEqual), typeof(bool),
                 typeof(DoubleValueLabel));
 
         public bool JoinIfEqual {
-            get { return (bool)GetValue(JoinIfEqualProperty); }
-            set { SetValue(JoinIfEqualProperty, value); }
+            get => (bool)GetValue(JoinIfEqualProperty);
+            set => SetValue(JoinIfEqualProperty, value);
         }
 
         public static readonly DependencyProperty RelativeRangeProperty = DependencyProperty.Register(nameof(RelativeRange), typeof(bool),
                 typeof(DoubleValueLabel));
 
         public bool RelativeRange {
-            get { return (bool)GetValue(RelativeRangeProperty); }
-            set { SetValue(RelativeRangeProperty, value); }
+            get => (bool)GetValue(RelativeRangeProperty);
+            set => SetValue(RelativeRangeProperty, value);
         }
     }
 
@@ -148,17 +149,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ValueLabel));
 
         public string Content {
-            get { return (string)GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
+            get => (string)GetValue(ContentProperty);
+            set => SetValue(ContentProperty, value);
         }
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(string),
-                typeof(ValueLabel), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
+                typeof(ValueLabel), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged) {
+                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                });
 
         private string _value = "";
         public string Value {
-            get { return _value; }
-            set { SetValue(ValueProperty, value); }
+            get => _value;
+            set => SetValue(ValueProperty, value);
         }
 
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -173,32 +176,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ValueLabel));
 
         public string Prefix {
-            get { return (string)GetValue(PrefixProperty); }
-            set { SetValue(PrefixProperty, value); }
+            get => (string)GetValue(PrefixProperty);
+            set => SetValue(PrefixProperty, value);
         }
 
         public static readonly DependencyProperty PostfixProperty = DependencyProperty.Register(nameof(Postfix), typeof(string),
                 typeof(ValueLabel));
 
         public string Postfix {
-            get { return (string)GetValue(PostfixProperty); }
-            set { SetValue(PostfixProperty, value); }
+            get => (string)GetValue(PostfixProperty);
+            set => SetValue(PostfixProperty, value);
         }
 
         public static readonly DependencyProperty ShowZeroAsOffProperty = DependencyProperty.Register(nameof(ShowZeroAsOff), typeof(bool),
                 typeof(ValueLabel));
 
         public bool ShowZeroAsOff {
-            get { return (bool)GetValue(ShowZeroAsOffProperty); }
-            set { SetValue(ShowZeroAsOffProperty, value); }
+            get => (bool)GetValue(ShowZeroAsOffProperty);
+            set => SetValue(ShowZeroAsOffProperty, value);
         }
 
         public static readonly DependencyProperty ShowPostfixProperty = DependencyProperty.Register(nameof(ShowPostfix), typeof(bool),
                 typeof(ValueLabel), new PropertyMetadata(true));
 
         public bool ShowPostfix {
-            get { return (bool)GetValue(ShowPostfixProperty); }
-            set { SetValue(ShowPostfixProperty, value); }
+            get => (bool)GetValue(ShowPostfixProperty);
+            set => SetValue(ShowPostfixProperty, value);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {

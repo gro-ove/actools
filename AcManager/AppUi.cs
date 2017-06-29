@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -17,8 +19,28 @@ namespace AcManager {
 
         public AppUi([NotNull] Application application) {
             _application = application ?? throw new ArgumentNullException(nameof(application));
+
+            // Extra close-if-nothing-shown timer just to be sure
+            _timer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnTimer, _application.Dispatcher);
+            _timer.Start();
         }
 
+        private int _nothing;
+        private void OnTimer(object sender, EventArgs eventArgs) {
+            if (_application.Windows.Count == 0 && System.Windows.Forms.Application.OpenForms.Count == 0) {
+                if (_nothing > 2) {
+                    Logging.Debug("Nothing shown! Existing…");
+                    _timer.Stop();
+                    _application.Shutdown();
+                } else {
+                    _nothing++;
+                }
+            } else {
+                _nothing = 0;
+            }
+        }
+
+        private readonly DispatcherTimer _timer;
         private Window _currentWindow;
         private int _additionalProcessing;
         private bool _showMainWindow;
@@ -78,19 +100,30 @@ namespace AcManager {
                     }
 
                     if (_additionalProcessing > 0) {
+                        Logging.Debug("Waiting for extra workers…");
                         await WaitForInProgress();
+                        Logging.Debug("Done");
                     }
 
                     if (_showMainWindow) {
+                        Logging.Debug("Main window…");
                         await new MainWindow().ShowAndWaitAsync();
+                        Logging.Debug("Main window closed");
                     }
+
+                    Logging.Debug("Waiting for extra windows to close…");
 
                     do {
                         await Task.Delay(100);
                     } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault()));
+
+                    Logging.Debug("No more windows");
                 } finally {
+                    _timer.Stop();
                     _application.Shutdown();
                 }
+
+                Logging.Debug("Main loop is finished");
             });
         }
     }

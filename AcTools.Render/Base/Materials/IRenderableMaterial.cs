@@ -9,6 +9,8 @@ namespace AcTools.Render.Base.Materials {
     public interface IRenderableMaterial : IDisposable {
         void Initialize(IDeviceContextHolder contextHolder);
 
+        void Refresh(IDeviceContextHolder contextHolder);
+
         bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode);
 
         void SetMatrices(Matrix objectTransform, ICamera camera);

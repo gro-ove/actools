@@ -36,6 +36,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class DirectContentLoaderEntry {
         public Uri Source { get; set; }
 
+        public string Key {
+            get => Source.OriginalString;
+            set => Source = new Uri(value, UriKind.Relative);
+        }
+
         public object Content { get; set; }
     }
 
@@ -61,8 +66,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
         public HorizontalAlignment LinksHorizontalAlignment {
-            get { return (HorizontalAlignment)GetValue(LinksHorizontalAlignmentProperty); }
-            set { SetValue(LinksHorizontalAlignmentProperty, value); }
+            get => (HorizontalAlignment)GetValue(LinksHorizontalAlignmentProperty);
+            set => SetValue(LinksHorizontalAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty LinksMarginProperty = DependencyProperty.Register("LinksMargin", typeof(Thickness),
@@ -72,21 +77,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public Thickness LinksMargin {
-            get { return (Thickness)GetValue(LinksMarginProperty); }
-            set { SetValue(LinksMarginProperty, value); }
+            get => (Thickness)GetValue(LinksMarginProperty);
+            set => SetValue(LinksMarginProperty, value);
         }
 
         public Thickness FrameMargin {
-            get { return (Thickness)GetValue(FrameMarginProperty); }
-            set { SetValue(FrameMarginProperty, value); }
+            get => (Thickness)GetValue(FrameMarginProperty);
+            set => SetValue(FrameMarginProperty, value);
         }
 
         public static readonly DependencyProperty SavePolicyProperty = DependencyProperty.Register(nameof(SavePolicy), typeof(SavePolicy),
                 typeof(ModernTab));
 
         public SavePolicy SavePolicy {
-            get { return (SavePolicy)GetValue(SavePolicyProperty); }
-            set { SetValue(SavePolicyProperty, value); }
+            get => (SavePolicy)GetValue(SavePolicyProperty);
+            set => SetValue(SavePolicyProperty, value);
         }
 
         public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader),
@@ -192,12 +197,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public IContentLoader ContentLoader {
-            get { return (IContentLoader)GetValue(ContentLoaderProperty); }
-            set { SetValue(ContentLoaderProperty, value); }
+            get => (IContentLoader)GetValue(ContentLoaderProperty);
+            set => SetValue(ContentLoaderProperty, value);
         }
 
         public TabLayout Layout {
-            get { return (TabLayout)GetValue(LayoutProperty); }
+            get => (TabLayout)GetValue(LayoutProperty);
             set {
                 Title = null;
                 SetValue(LayoutProperty, value);
@@ -205,26 +210,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public LinkCollection Links {
-            get { return (LinkCollection)GetValue(LinksProperty); }
-            set { SetValue(LinksProperty, value); }
+            get => (LinkCollection)GetValue(LinksProperty);
+            set => SetValue(LinksProperty, value);
         }
 
         public GridLength ListWidth {
-            get { return (GridLength)GetValue(ListWidthProperty); }
-            set { SetValue(ListWidthProperty, value); }
+            get => (GridLength)GetValue(ListWidthProperty);
+            set => SetValue(ListWidthProperty, value);
         }
 
         public Uri SelectedSource {
-            get { return (Uri)GetValue(SelectedSourceProperty); }
-            set { SetValue(SelectedSourceProperty, value); }
+            get => (Uri)GetValue(SelectedSourceProperty);
+            set => SetValue(SelectedSourceProperty, value);
         }
 
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof (string),
                                                                                              typeof (ModernTab));
 
         public string Title {
-            get { return (string) GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get => (string) GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
         }
 
         // saving and loading uri
@@ -233,8 +238,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [CanBeNull]
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -245,8 +250,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernTab));
 
         public ControlTemplate LinksListBoxTemplate {
-            get { return (ControlTemplate)GetValue(LinksListBoxTemplateProperty); }
-            set { SetValue(LinksListBoxTemplateProperty, value); }
+            get => (ControlTemplate)GetValue(LinksListBoxTemplateProperty);
+            set => SetValue(LinksListBoxTemplateProperty, value);
         }
     }
 

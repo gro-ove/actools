@@ -32,7 +32,9 @@ namespace AcManager.Pages.Lists {
                 : base(TracksManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Tracks);
+            protected override string GetSubject() {
+                return AppStrings.List_Tracks;
+            }
 
             protected override string LoadCurrentId() {
                 if (_selectNextTrack != null) {

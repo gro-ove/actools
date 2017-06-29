@@ -115,6 +115,23 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         #endregion
 
         #region Flat mirror/ground
+        private bool _anyGround = true;
+
+        public bool AnyGround {
+            get { return _anyGround; }
+            set {
+                if (Equals(value, _anyGround)) return;
+                _anyGround = value;
+
+                if (!value) {
+                    FlatMirror = false;
+                }
+
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
         private bool _flatMirror;
 
         public bool FlatMirror {
@@ -122,6 +139,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             set {
                 if (value == _flatMirror) return;
                 _flatMirror = value;
+
+                if (value) {
+                    AnyGround = true;
+                }
+
                 IsDirty = true;
                 OnPropertyChanged();
                 _mirrorDirty = true;

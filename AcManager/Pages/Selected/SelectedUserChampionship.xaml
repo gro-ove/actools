@@ -310,8 +310,8 @@
             <mui:Cell Width="160" Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedObject.PlayerCar}" AllowDrop="True" Drop="OnCarBlockDrop"
                 MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
               <mui:BetterImage Filename="{Binding SelectedObject.PlayerCarSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-              <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
-                  Text="{Binding SelectedObject.PlayerCar.DisplayName}" Foreground="White" TextTrimming="CharacterEllipsis" />
+              <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                  Text="{Binding SelectedObject.PlayerCar.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
             </mui:Cell>
 
             <ListBox ItemsSource="{Binding SelectedObject.PlayerCar.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -536,21 +536,22 @@
     <mui:Cell>
       <mui:ModernTab x:Name="Tab" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectedUserChampionship:editing" LinksMargin="0" FrameMargin="0 28 0 0">
         <mui:ModernTab.Links>
-          <mui:Link DisplayName="Rules &amp; information" Source="Rules" />
-          <mui:Link DisplayName="Rounds" Source="Rounds" />
-          <mui:Link DisplayName="Cars" Source="Cars" />
+          <mui:Link DisplayName="Rules &amp; information" Key="Rules" />
+          <mui:Link DisplayName="Rounds" Key="Rounds" />
+          <mui:Link DisplayName="Cars" Key="Cars" />
         </mui:ModernTab.Links>
         <mui:ModernTab.ContentLoader>
           <mui:DirectContentLoader>
-            <mui:DirectContentLoaderEntry Source="Rules" Content="{StaticResource Rules}" />
-            <mui:DirectContentLoaderEntry Source="Rounds" Content="{StaticResource Rounds}" />
-            <mui:DirectContentLoaderEntry Source="Cars" Content="{StaticResource Cars}" />
+            <mui:DirectContentLoaderEntry Key="Rules" Content="{StaticResource Rules}" />
+            <mui:DirectContentLoaderEntry Key="Rounds" Content="{StaticResource Rounds}" />
+            <mui:DirectContentLoaderEntry Key="Cars" Content="{StaticResource Cars}" />
           </mui:DirectContentLoader>
         </mui:ModernTab.ContentLoader>
       </mui:ModernTab>
 
-      <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
-          Visibility="{Binding SelectedObject.IsStarted, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20" MaxWidth="320">
+      <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" HorizontalAlignment="Center"
+          VerticalAlignment="Center" Visibility="{Binding SelectedObject.IsStarted, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20"
+          MaxWidth="320">
         <DockPanel>
           <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
               Margin="0 0 8 0" VerticalAlignment="Center" />

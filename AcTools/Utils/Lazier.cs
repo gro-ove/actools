@@ -9,14 +9,18 @@ namespace AcTools.Utils {
             return new Lazier<T>(fn);
         }
 
-        public static Lazier<T> Create<T>(T obj) {
+        /*public static Lazier<T> Create<T, TSource>(TSource s, Func<TSource, T> fn) {
+            return new Lazier<T>(() => fn(s));
+        }*/
+
+        public static Lazier<T> Static<T>(T obj) {
             return new Lazier<T>(obj);
         }
     }
-    
+
     public class Lazier<T> : INotifyPropertyChanged {
         private readonly Func<T> _fn;
-        
+
         private T _value;
 
         [CanBeNull]

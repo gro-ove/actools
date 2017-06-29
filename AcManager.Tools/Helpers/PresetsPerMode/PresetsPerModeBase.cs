@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
-using AcManager.Tools.Miscellaneous;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -25,21 +24,20 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
     }
 
     public sealed class CustomPresetEntry : CustomPresetEntryBase {
-        private readonly string _presetsCategory;
+        private readonly PresetsCategory _presetsCategory;
 
-        public CustomPresetEntry(bool enabled, [CanBeNull] string filename, string presetsCategory) : base(enabled, filename) {
+        public CustomPresetEntry(bool enabled, [CanBeNull] string filename, PresetsCategory presetsCategory) : base(enabled, filename) {
             _presetsCategory = presetsCategory;
         }
 
         protected override string GetPresetName(string filename) {
             return FileUtils.GetRelativePath(filename, PresetsManager.Instance.GetDirectory(_presetsCategory))
-                            .ApartFromLast(PresetsManager.FileExtension);
+                            .ApartFromLast(_presetsCategory.Extension);
         }
-
     }
 
     public abstract class CustomPresetEntryBase : NotifyPropertyChanged {
-        public CustomPresetEntryBase(bool enabled, [CanBeNull] string filename) {
+        protected CustomPresetEntryBase(bool enabled, [CanBeNull] string filename) {
             _isEnabled = enabled;
             _filename = filename;
         }
@@ -53,7 +51,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private bool _isEnabled;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (Equals(value, IsEnabled)) return;
                 _isEnabled = value;
@@ -82,7 +80,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         [CanBeNull]
         public string Filename {
-            get { return _filename; }
+            get => _filename;
             set {
                 if (Equals(value, Filename)) return;
 
@@ -95,7 +93,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         }
 
         public object Value {
-            get { return null; }
+            get => null;
             set {
                 var entry = value as ISavedPresetEntry;
                 if (entry != null) {
@@ -123,18 +121,15 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
     }
 
     public abstract class PresetPerModeBase : NotifyPropertyChanged {
-        public CustomPresetEntryBase Apps { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.AppsPresetsKey);
-
-        public CustomPresetEntryBase Audio { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.AudioPresetsKey);
-
-        public CustomPresetEntryBase Video { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.VideoPresetsKey);
-
+        public CustomPresetEntryBase Apps { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.AppsPresetsCategory);
+        public CustomPresetEntryBase Audio { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.AudioPresetsCategory);
+        public CustomPresetEntryBase Video { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.VideoPresetsCategory);
         public CustomPresetEntryBase Controls { get; } = new ControlsPresetEntry(false, null);
 
         private bool? _rearViewMirror;
 
         public bool? RearViewMirror {
-            get { return _rearViewMirror; }
+            get => _rearViewMirror;
             set {
                 if (Equals(value, _rearViewMirror)) return;
                 _rearViewMirror = value;
@@ -233,7 +228,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private bool _notEmpty;
 
         public bool NotEmpty {
-            get { return _notEmpty; }
+            get => _notEmpty;
             private set {
                 if (Equals(value, _notEmpty)) return;
                 _notEmpty = value;
@@ -287,7 +282,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private static IDisposable ApplyWithUpdate(CustomPresetEntryBase entry, IUserPresetable presetable, string name) {
             return Apply(entry, presetable, name, true);
         }
-        
+
         private static void Apply(CustomPresetEntryBase entry, IUserPresetable presetable, string name) {
             Apply(entry, presetable, name, false);
         }
@@ -350,7 +345,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private string _conditionId;
 
         public string ConditionId {
-            get { return _conditionId; }
+            get => _conditionId;
             set {
                 if (Equals(value, _conditionId)) return;
                 _conditionId = value;
@@ -363,7 +358,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private string _conditionFn;
 
         public string ConditionFn {
-            get { return _conditionFn; }
+            get => _conditionFn;
             set {
                 if (value == _conditionFn) return;
                 _conditionFn = value;
@@ -378,7 +373,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private bool _enabled = true;
 
         public bool Enabled {
-            get { return _enabled; }
+            get => _enabled;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;
@@ -390,7 +385,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         private bool _deleted;
 
         public bool Deleted {
-            get { return _deleted; }
+            get => _deleted;
             set {
                 if (Equals(value, _deleted)) return;
                 _deleted = value;

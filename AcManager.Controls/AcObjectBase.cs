@@ -81,72 +81,80 @@ namespace AcManager.Controls {
                 typeof(AcObjectBase));
 
         public AcObjectNew AcObject {
-            get { return (AcObjectNew)GetValue(AcObjectProperty); }
-            set { SetValue(AcObjectProperty, value); }
+            get => (AcObjectNew)GetValue(AcObjectProperty);
+            set => SetValue(AcObjectProperty, value);
         }
 
         public static readonly DependencyProperty IsNameReadOnlyProperty = DependencyProperty.Register(nameof(IsNameReadOnly), typeof(bool),
                 typeof(AcObjectBase), new PropertyMetadata(false));
 
         public bool IsNameReadOnly {
-            get { return (bool)GetValue(IsNameReadOnlyProperty); }
-            set { SetValue(IsNameReadOnlyProperty, value); }
+            get => (bool)GetValue(IsNameReadOnlyProperty);
+            set => SetValue(IsNameReadOnlyProperty, value);
         }
 
         public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
                 typeof(AcObjectBase));
 
         public bool ShowIcon {
-            get { return (bool)GetValue(ShowIconProperty); }
-            set { SetValue(ShowIconProperty, value); }
+            get => (bool)GetValue(ShowIconProperty);
+            set => SetValue(ShowIconProperty, value);
+        }
+
+        public static readonly DependencyProperty IconBackgroundProperty = DependencyProperty.Register(nameof(IconBackground), typeof(Brush),
+                typeof(AcObjectBase));
+
+        public Brush IconBackground {
+            get => (Brush)GetValue(IconBackgroundProperty);
+            set => SetValue(IconBackgroundProperty, value);
         }
 
         public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(string),
                 typeof(AcObjectBase));
 
         public string Icon {
-            get { return (string)GetValue(IconProperty); }
-            set { SetValue(IconProperty, value); }
+            get => (string)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         public static readonly DependencyProperty IconSourceProperty = DependencyProperty.Register(nameof(IconSource), typeof(ImageSource),
                 typeof(AcObjectBase));
 
         public ImageSource IconSource {
-            get { return (ImageSource)GetValue(IconSourceProperty); }
-            set { SetValue(IconSourceProperty, value); }
+            get => (ImageSource)GetValue(IconSourceProperty);
+            set => SetValue(IconSourceProperty, value);
         }
 
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(nameof(Content), typeof(object),
                 typeof(AcObjectBase));
 
         public object Content {
-            get { return GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
+            get => GetValue(ContentProperty);
+            set => SetValue(ContentProperty, value);
         }
 
         public static readonly DependencyProperty ToolBarsProperty = DependencyProperty.Register(nameof(ToolBars), typeof(Collection<ToolBar>),
                 typeof(AcObjectBase));
 
         public Collection<ToolBar> ToolBars {
-            get { return (Collection<ToolBar>)GetValue(ToolBarsProperty); }
-            set { SetValue(ToolBarsProperty, value); }
+            get => (Collection<ToolBar>)GetValue(ToolBarsProperty);
+            set => SetValue(ToolBarsProperty, value);
         }
 
         public static readonly DependencyProperty ScrollableProperty = DependencyProperty.Register(nameof(Scrollable), typeof(bool),
                 typeof(AcObjectBase), new PropertyMetadata(true));
 
         public bool Scrollable {
-            get { return (bool)GetValue(ScrollableProperty); }
-            set { SetValue(ScrollableProperty, value); }
+            get => (bool)GetValue(ScrollableProperty);
+            set => SetValue(ScrollableProperty, value);
         }
 
         public static readonly DependencyProperty HeaderPaddingProperty = DependencyProperty.Register(nameof(HeaderPadding), typeof(Thickness),
                 typeof(AcObjectBase));
 
         public Thickness HeaderPadding {
-            get { return (Thickness)GetValue(HeaderPaddingProperty); }
-            set { SetValue(HeaderPaddingProperty, value); }
+            get => (Thickness)GetValue(HeaderPaddingProperty);
+            set => SetValue(HeaderPaddingProperty, value);
         }
     }
 }

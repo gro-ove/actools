@@ -114,6 +114,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             _effect = contextHolder.GetEffect<EffectSpecialAreaLights>();
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) {}
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.GBuffer) return false;
 

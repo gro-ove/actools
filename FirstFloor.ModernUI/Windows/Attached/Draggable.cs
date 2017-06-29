@@ -65,6 +65,18 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             remove => WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragEndedInner), value);
         }
 
+        public static bool GetForceDisabled(DependencyObject obj) {
+            return (bool)obj.GetValue(ForceDisabledProperty);
+        }
+
+        public static void SetForceDisabled(DependencyObject obj, bool value) {
+            obj.SetValue(ForceDisabledProperty, value);
+        }
+
+        public static readonly DependencyProperty ForceDisabledProperty = DependencyProperty.RegisterAttached("ForceDisabled", typeof(bool),
+                typeof(Draggable), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+
+
         public static bool GetEnabled(FrameworkElement obj) {
             return (bool)obj.GetValue(EnabledProperty);
         }
@@ -147,6 +159,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (!e.Handled) {
                 var element = sender as FrameworkElement;
                 if (element != null && !IgnoreSpecialControls(sender, e)) {
+                    if (GetForceDisabled(element)) return;
+
                     _previous = element;
                     _startingPoint = VisualExtension.GetMousePosition();
                     return;

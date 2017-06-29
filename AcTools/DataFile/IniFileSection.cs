@@ -129,8 +129,7 @@ namespace AcTools.DataFile {
             if (s.Length != size) return result;
 
             for (var i = 0; i < result.Length; i++) {
-                double f;
-                if (FlexibleParser.TryParseDouble(s[i], out f)) {
+                if (FlexibleParser.TryParseDouble(s[i], out double f)) {
                     result[i] = (float)f;
                 }
             }
@@ -229,9 +228,8 @@ namespace AcTools.DataFile {
 
             var s = GetNonEmpty(key);
             if (s == null) return null;
-
-            T result;
-            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ||
+            
+            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out T result) ||
                     s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : (T?)null;
         }
 
@@ -250,9 +248,8 @@ namespace AcTools.DataFile {
 
             var s = GetNonEmpty(key);
             if (s == null) return defaultValue;
-
-            T result;
-            return Enum.TryParse(s, ignoreCase, out result) ||
+            
+            return Enum.TryParse(s, ignoreCase, out T result) ||
                     s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : defaultValue;
         }
 

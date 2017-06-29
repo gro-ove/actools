@@ -63,9 +63,9 @@ namespace AcManager.Controls {
             return GetInstance(key).Any();
         }
 
-        public static void RescanCategory([NotNull] string category, bool reloadPresets) {
+        public static void RescanCategory([NotNull] PresetsCategory category, bool reloadPresets) {
             foreach (var c in Instances.Values.SelectMany(x => x)) {
-                if (c?._presetable?.PresetableCategory == category) {
+                if (c != null && Equals(c._presetable?.PresetableCategory, category)) {
                     c.UpdateSavedPresets();
 
                     if (reloadPresets && c._selectedPresetFilename != null) {
@@ -138,12 +138,11 @@ namespace AcManager.Controls {
         }
 
         public static bool LoadBuiltInPreset([NotNull] string key, [NotNull] string presetName) {
-            return LoadBuiltInPreset(key, key, presetName);
+            return LoadBuiltInPreset(key, new PresetsCategory(key), presetName);
         }
 
-        public static bool LoadBuiltInPreset([NotNull] string key, [NotNull] string category, [NotNull] string presetName) {
-            var filename = Path.Combine(PresetsManager.Instance.GetDirectory(category), presetName) + PresetsManager.FileExtension;
-            return LoadPreset(key, filename);
+        public static bool LoadBuiltInPreset([NotNull] string key, [NotNull] PresetsCategory category, [NotNull] string presetName) {
+            return LoadPreset(key, PresetsManager.Instance.GetPresetFilename(category, presetName));
         }
 
         private bool _loaded;
@@ -428,13 +427,13 @@ namespace AcManager.Controls {
             }
         }
 
-        public static IEnumerable<object> GroupPresets(string presetableKey) {
-            return GroupPresets(presetableKey, null, null);
+        public static IEnumerable<object> GroupPresets(PresetsCategory category) {
+            return GroupPresets(category, null, null);
         }
 
-        public static IEnumerable<object> GroupPresets(string presetableKey, [CanBeNull] IUserPresetableCustomDisplay customDisplay,
+        public static IEnumerable<object> GroupPresets(PresetsCategory category, [CanBeNull] IUserPresetableCustomDisplay customDisplay,
                 [CanBeNull] IUserPresetableCustomSorting sorting) {
-            return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey), PresetsManager.Instance.GetDirectory(presetableKey),
+            return GroupPresets(PresetsManager.Instance.GetSavedPresets(category), PresetsManager.Instance.GetDirectory(category),
                 customDisplay, sorting);
         }
 

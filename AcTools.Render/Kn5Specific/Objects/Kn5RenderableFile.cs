@@ -25,7 +25,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
     /* Despite holding references to SharedMaterials and ITexturesProvider, this
      * thing doesn’t need to be disposed — those references are managed outside,
-     * and this thing is just a relatively convinient way to pass them down 
+     * and this thing is just a relatively convinient way to pass them down
      * rendering tree */
 
     public class Kn5LocalDeviceContextHolder : IDeviceContextHolder {
@@ -99,8 +99,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return _mainHolder.GetFlatNmTexture();
         }
 
+        public double LastFrameTime => _mainHolder.LastFrameTime;
+
         public RendererStopwatch StartNewStopwatch() {
             return _mainHolder.StartNewStopwatch();
+        }
+
+        public float TimeFactor {
+            get { return _mainHolder.TimeFactor; }
+            set {}
         }
     }
 
@@ -184,7 +191,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         protected Kn5SharedMaterials SharedMaterials;
         protected ITexturesProvider TexturesProvider;
         protected IDeviceContextHolder LocalHolder;
-        
+
         protected virtual Kn5SharedMaterials InitializeMaterials(IDeviceContextHolder contextHolder) {
             return new Kn5SharedMaterials(contextHolder, OriginalFile);
         }
@@ -197,8 +204,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return new Kn5LocalDeviceContextHolder(contextHolder, SharedMaterials, TexturesProvider, this);
         }
 
+        public void RefreshMaterial(DeviceContextHolder contextHolder, uint materialId) {
+            if (LocalHolder == null) {
+                SharedMaterials = InitializeMaterials(contextHolder);
+                TexturesProvider = InitializeTextures(contextHolder);
+                LocalHolder = InitializeLocalHolder(contextHolder);
+            }
+
+            SharedMaterials.GetMaterial(materialId)?.Refresh(LocalHolder);
+        }
+
         protected void DrawInitialize(IDeviceContextHolder contextHolder) {
             UpdateModelMatrixInverted();
+
             if (LocalHolder == null) {
                 SharedMaterials = InitializeMaterials(contextHolder);
                 TexturesProvider = InitializeTextures(contextHolder);

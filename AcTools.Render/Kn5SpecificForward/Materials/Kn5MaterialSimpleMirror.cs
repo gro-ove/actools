@@ -9,13 +9,18 @@ using SlimDX;
 namespace AcTools.Render.Kn5SpecificForward.Materials {
     public class Kn5MaterialSimpleMirror : IRenderableMaterial, IAcDynamicMaterial {
         public bool IsBlending => false;
-        
+
         private EffectSimpleMaterial _effect;
 
         internal Kn5MaterialSimpleMirror() {}
 
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
+        }
+
+        public void Refresh(IDeviceContextHolder contextHolder) {
+            // Because Dispose() is empty, we can just re-initialize shader
+            Initialize(contextHolder);
         }
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {

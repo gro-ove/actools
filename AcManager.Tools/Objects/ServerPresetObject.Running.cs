@@ -118,7 +118,7 @@ namespace AcManager.Tools.Objects {
                 result.Add(PackedEntry.FromContent("cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
 
                 // Content
-                result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", "{}"));
+                result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", WrapperContentJObject?.ToString(Formatting.Indented) ?? "{}"));
             }
 
             // Executable

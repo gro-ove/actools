@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Color x:Key="GoColor">GreenYellow</Color>
-    <Color x:Key="WindowBackgroundColor">#060606</Color>
-    <ImageBrush x:Key="WindowBackgroundContentBrush" Opacity=".2" ImageSource="/AcManager.Controls;component/Assets/Background.jpg" Stretch="UniformToFill"
-            AlignmentX="Center" AlignmentY="Center" />
-    <x:Null x:Key="DialogBackgroundContentBrush" />
+  <Color x:Key="GoColor">GreenYellow</Color>
+  <Color x:Key="WindowBackgroundColor">#060606</Color>
+  <ImageBrush x:Key="WindowBackgroundContentBrush" Opacity=".2" ImageSource="/AcManager.Controls;component/Assets/Background.jpg" Stretch="UniformToFill"
+      AlignmentX="Center" AlignmentY="Center" />
+  <x:Null x:Key="DialogBackgroundContentBrush" />
 </ResourceDictionary>

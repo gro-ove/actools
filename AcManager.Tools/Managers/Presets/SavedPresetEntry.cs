@@ -5,6 +5,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Managers.Presets {
     internal class SavedPresetEntry : Displayable, ISavedPresetEntry, IShortDisplayable {
+        private readonly string _extension;
+
         public string BaseDirectory { get; }
 
         public string Filename { get; }
@@ -15,7 +17,7 @@ namespace AcManager.Tools.Managers.Presets {
             get {
                 if (_displayName != null) return _displayName;
                 var start = BaseDirectory.Length + 1;
-                return _displayName = Filename.Substring(start, Filename.Length - start - PresetsManager.FileExtension.Length);
+                return _displayName = Filename.Substring(start, Filename.Length - start - _extension.Length);
             }
         }
 
@@ -26,13 +28,14 @@ namespace AcManager.Tools.Managers.Presets {
             get {
                 if (_shortDisplayName != null) return _shortDisplayName;
                 var start = _displayBaseDirectory.Length + 1;
-                return _shortDisplayName = Filename.Substring(start, Filename.Length - start - PresetsManager.FileExtension.Length);
+                return _shortDisplayName = Filename.Substring(start, Filename.Length - start - _extension.Length);
             }
         }
 
-        public SavedPresetEntry(string baseDirectory, string filename) {
+        public SavedPresetEntry(string baseDirectory, string extension, string filename) {
             BaseDirectory = baseDirectory;
             _displayBaseDirectory = baseDirectory;
+            _extension = extension;
             Filename = filename;
         }
 

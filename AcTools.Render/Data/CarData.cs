@@ -911,5 +911,30 @@ namespace AcTools.Render.Data {
             return _data.GetIniFile("car.ini")["FUEL"].GetFloat("MAX_FUEL", 40f) * 0.001f;
         }
         #endregion
+
+        public float GetEngineMinimumRpm() {
+            return _data.GetIniFile("engine.ini")["ENGINE_DATA"].GetFloat("MINIMUM", 800f);
+        }
+
+        public float GetEngineMaximumRpm() {
+            return _data.GetIniFile("engine.ini")["ENGINE_DATA"].GetFloat("LIMITER", 8000f);
+        }
+
+        public Vector3 GetEngineOffset(float carLength) {
+            var engine = _data.GetIniFile("sounds.ini")["ENGINE"];
+            if (engine.ContainsKey("__CM_POSITION")) {
+                return engine.GetSlimVector3("__CM_POSITION");
+            }
+
+            var position = engine.GetNonEmpty("POSITION");
+            switch (position?.ToLowerInvariant()) {
+                case "rear":
+                    return new Vector3(0f, 0f, -carLength * 0.25f);
+                case "front":
+                    return new Vector3(0f, 0f, carLength * 0.25f);
+                default:
+                    return new Vector3(0f, 0f, carLength * 0.15f);
+            }
+        }
     }
 }

@@ -415,7 +415,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             try {
                 var filename = Path.Combine(objDirectory, "ui", "cm_lights.json");
                 if (!File.Exists(filename)) {
-                    filename = _lightsDescriptionProvider?.GetFilename(Path.GetFileName(objDirectory) ?? "");
+                    filename = _lightsDescriptionProvider?.GetFilename(Path.GetFileName(objDirectory));
                     if (filename == null || !File.Exists(filename)) {
                         RemoveLights(tag);
                         return false;

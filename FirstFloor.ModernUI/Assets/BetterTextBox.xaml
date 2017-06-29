@@ -1,475 +1,470 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/MenuItem.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/MenuItem.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Thickness x:Key="BorderlessOutline">-3</Thickness>
+  <Thickness x:Key="BorderlessOutline">-3</Thickness>
 
-    <ControlTemplate x:Key="BetterTextBoxControlTemplate.Basic" TargetType="{x:Type c:BetterTextBox}">
-        <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
-                SnapsToDevicePixels="True" Padding="{TemplateBinding Padding}">
-            <c:Cell>
-                <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="0"
-                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Margin="2 0" Padding="{TemplateBinding Padding}"
-                        Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
-            </c:Cell>
-        </Border>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Text" Value="" />
-                    <Condition Property="IsFocused" Value="False" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputText}" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsReadOnly" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
+  <ControlTemplate x:Key="BetterTextBoxControlTemplate.Basic" TargetType="{x:Type c:BetterTextBox}">
+    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
+        SnapsToDevicePixels="True" Padding="{TemplateBinding Padding}">
+      <c:Cell>
+        <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Margin="2 0" Padding="{TemplateBinding Padding}"
+            Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+      </c:Cell>
+    </Border>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Text" Value="" />
+          <Condition Property="IsFocused" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsReadOnly" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-    <ControlTemplate x:Key="BetterTextBoxControlTemplate.Simple" TargetType="{x:Type c:BetterTextBox}">
-        <c:Cell>
-            <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="{TemplateBinding Padding}" Margin="-2 0"
+  <ControlTemplate x:Key="BetterTextBoxControlTemplate.Simple" TargetType="{x:Type c:BetterTextBox}">
+    <c:Cell>
+      <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="{TemplateBinding Padding}" Margin="-2 0"
+          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+      <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Padding="{TemplateBinding Padding}"
+          Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+    </c:Cell>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Text" Value="" />
+          <Condition Property="IsFocused" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsReadOnly" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="BetterTextBoxControlTemplate.Borderless" TargetType="{x:Type c:BetterTextBox}">
+    <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
+      <c:AdornedControl.AdornerContent>
+        <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
+      </c:AdornedControl.AdornerContent>
+      <c:Cell>
+        <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
+            IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+      </c:Cell>
+    </c:AdornedControl>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Text" Value="" />
+          <Condition Property="IsFocused" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsReadOnly" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+        <Setter TargetName="Outline" Property="Order" Value="5" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="BetterTextBoxControlTemplate.Borderless.ReadOnly" TargetType="{x:Type c:BetterTextBox}">
+    <c:Cell>
+      <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+      <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
+          IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+    </c:Cell>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Text" Value="" />
+          <Condition Property="IsFocused" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource {x:Type TextBoxBase}}">
+    <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Basic}" />
+  </Style>
+
+  <Style x:Key="Borderless" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
+    <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless}" />
+    <Style.Triggers>
+      <Trigger Property="IsReadOnly" Value="True">
+        <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless.ReadOnly}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+    <Setter Property="FontFamily" Value="{StaticResource CondensedFont}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style x:Key="Borderless.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
+  </Style>
+
+  <Style x:Key="Borderless.Heading2" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="FontWeight" Value="Bold" />
+  </Style>
+
+  <Style x:Key="Borderless.White" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+    <Style.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
+      </MultiTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="Borderless.White.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless.White}">
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
+  </Style>
+
+  <!--combobox-->
+  <Style x:Key="BetterComboBoxEditableTextBox" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
+    <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Simple}" />
+  </Style>
+
+  <ControlTemplate x:Key="BetterComboBoxTemplate.Basic" TargetType="{x:Type c:BetterComboBox}">
+    <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+      <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+          IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+          PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+        <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+          <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+          <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+          <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
+              Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+            <ScrollViewer x:Name="DropDownScrollViewer">
+              <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </ScrollViewer>
+          </Border>
+        </c:Cell>
+      </Popup>
+      <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
+          BorderThickness="{TemplateBinding BorderThickness}"
+          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+      <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
+          VerticalAlignment="Center" IsHitTestVisible="False" />
+      <ContentPresenter IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
+          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+          ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+    </c:Cell>
+    <ControlTemplate.Triggers>
+      <Trigger Property="HasItems" Value="False">
+        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="BetterComboBoxTemplate.Editable" TargetType="{x:Type c:BetterComboBox}">
+    <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+      <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+          IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+          PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+        <c:Cell Margin="4" MinWidth="{Binding ActualWidth, ElementName=MainGrid}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+          <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+          <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+          <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
+              Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+            <ScrollViewer x:Name="DropDownScrollViewer">
+              <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </ScrollViewer>
+          </Border>
+        </c:Cell>
+      </Popup>
+      <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
+          BorderThickness="{TemplateBinding BorderThickness}"
+          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+      <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
+          VerticalAlignment="Center" IsHitTestVisible="False" />
+      <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
+          Margin="4 0 16 0" Padding="3 3" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+          Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+    </c:Cell>
+    <ControlTemplate.Triggers>
+      <Trigger Property="HasItems" Value="False">
+        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+      <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="BetterComboBoxTemplate.Basic.Borderless" TargetType="{x:Type c:BetterComboBox}">
+    <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
+      <c:AdornedControl.AdornerContent>
+        <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
+      </c:AdornedControl.AdornerContent>
+      <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+        <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+            IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+            PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+          <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+            <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+            <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+            <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
+                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+              <ScrollViewer x:Name="DropDownScrollViewer">
+                <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Padding="{TemplateBinding Padding}"
-                    Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
-        </c:Cell>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Text" Value="" />
-                    <Condition Property="IsFocused" Value="False" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsReadOnly" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
+              </ScrollViewer>
+            </Border>
+          </c:Cell>
+        </Popup>
+        <ToggleButton Background="Transparent" BorderThickness="0" Padding="0"
+            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+        <DockPanel>
+          <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
+              VerticalAlignment="Center" IsHitTestVisible="False" DockPanel.Dock="Right" />
+          <ContentPresenter IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
+              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </DockPanel>
+      </c:Cell>
+    </c:AdornedControl>
+    <ControlTemplate.Triggers>
+      <Trigger Property="HasItems" Value="False">
+        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+        <Setter TargetName="Outline" Property="Order" Value="5" />
+      </Trigger>
+      <Trigger Property="HasItems" Value="False">
+        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-    <ControlTemplate x:Key="BetterTextBoxControlTemplate.Borderless" TargetType="{x:Type c:BetterTextBox}">
-        <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
-            <c:AdornedControl.AdornerContent>
-                <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
-            </c:AdornedControl.AdornerContent>
-            <c:Cell>
-                <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0"
-                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
-                        IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
-            </c:Cell>
-        </c:AdornedControl>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Text" Value="" />
-                    <Condition Property="IsFocused" Value="False" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsReadOnly" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                <Setter TargetName="Outline" Property="Order" Value="5" />
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="BetterTextBoxControlTemplate.Borderless.ReadOnly" TargetType="{x:Type c:BetterTextBox}">
-        <c:Cell>
-            <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0"
+  <ControlTemplate x:Key="BetterComboBoxTemplate.Editable.Borderless" TargetType="{x:Type c:BetterComboBox}">
+    <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
+      <c:AdornedControl.AdornerContent>
+        <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
+      </c:AdornedControl.AdornerContent>
+      <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+        <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+            IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+            PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+          <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+            <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+            <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+            <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
+                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+              <ScrollViewer x:Name="DropDownScrollViewer">
+                <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
-                    IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
-        </c:Cell>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Text" Value="" />
-                    <Condition Property="IsFocused" Value="False" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
+              </ScrollViewer>
+            </Border>
+          </c:Cell>
+        </Popup>
+        <ToggleButton Background="Transparent" BorderThickness="0" Padding="0"
+            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
+            VerticalAlignment="Center" IsHitTestVisible="False" />
+        <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
+            Margin="0 0 16 0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
+            IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+      </c:Cell>
+    </c:AdornedControl>
+    <ControlTemplate.Triggers>
+      <Trigger Property="HasItems" Value="False">
+        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+        <Setter TargetName="Outline" Property="Order" Value="5" />
+      </Trigger>
+      <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+        <Setter TargetName="Outline" Property="Order" Value="5" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-    <Style TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource {x:Type TextBoxBase}}">
-        <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Basic}" />
-    </Style>
+  <Style x:Key="{x:Type c:BetterComboBox}" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
+    <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
+    <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic}" />
+    <Style.Triggers>
+      <Trigger Property="IsEditable" Value="True">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="Borderless" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
+  <Style x:Key="BetterComboBox.Borderless" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
+    <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
+    <Style.Triggers>
+      <Trigger Property="IsEditable" Value="True">
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
-        <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless}" />
-        <Style.Triggers>
-            <Trigger Property="IsReadOnly" Value="True">
-                <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless.ReadOnly}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="{StaticResource CondensedFont}" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-
-    <Style x:Key="Borderless.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
-    </Style>
-
-    <Style x:Key="Borderless.Heading2" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="Bold" />
-    </Style>
-
-    <Style x:Key="Borderless.White" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Style.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
-            </MultiTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Borderless.White.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless.White}">
-        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
-    </Style>
-
-    <!--combobox-->
-    <Style x:Key="BetterComboBoxEditableTextBox" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
-        <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Simple}" />
-    </Style>
-
-    <ControlTemplate x:Key="BetterComboBoxTemplate.Basic" TargetType="{x:Type c:BetterComboBox}">
-        <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
-            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
-                    IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                    PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                    <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                            BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
-                        <ScrollViewer x:Name="DropDownScrollViewer">
-                            <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
-                </c:Cell>
-            </Popup>
-            <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-            <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
-                    VerticalAlignment="Center" IsHitTestVisible="False" />
-            <ContentPresenter IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
-                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                    ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-        </c:Cell>
-        <ControlTemplate.Triggers>
-            <Trigger Property="HasItems" Value="False">
-                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="BetterComboBoxTemplate.Editable" TargetType="{x:Type c:BetterComboBox}">
-        <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
-            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
-                    IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                    PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                <c:Cell Margin="4" MinWidth="{Binding ActualWidth, ElementName=MainGrid}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                    <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                            BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
-                        <ScrollViewer x:Name="DropDownScrollViewer">
-                            <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
-                </c:Cell>
-            </Popup>
-            <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-            <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
-                    VerticalAlignment="Center" IsHitTestVisible="False" />
-            <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
-                    Margin="4 0 16 0" Padding="3 3" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
-                    Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-        </c:Cell>
-        <ControlTemplate.Triggers>
-            <Trigger Property="HasItems" Value="False">
-                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputText}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-            <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="BetterComboBoxTemplate.Basic.Borderless" TargetType="{x:Type c:BetterComboBox}">
-        <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
-            <c:AdornedControl.AdornerContent>
-                <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
-            </c:AdornedControl.AdornerContent>
-            <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
-                <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
-                        IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                        PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                    <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                        <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
-                            <ScrollViewer x:Name="DropDownScrollViewer">
-                                <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled"
-                                        KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </ScrollViewer>
-                        </Border>
-                    </c:Cell>
-                </Popup>
-                <ToggleButton Background="Transparent" BorderThickness="0" Padding="0"
-                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                <DockPanel>
-                    <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
-                            HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" DockPanel.Dock="Right" />
-                    <ContentPresenter IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                            ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </DockPanel>
-            </c:Cell>
-        </c:AdornedControl>
-        <ControlTemplate.Triggers>
-            <Trigger Property="HasItems" Value="False">
-                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                <Setter TargetName="Outline" Property="Order" Value="5" />
-            </Trigger>
-            <Trigger Property="HasItems" Value="False">
-                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="BetterComboBoxTemplate.Editable.Borderless" TargetType="{x:Type c:BetterComboBox}">
-        <c:AdornedControl x:Name="Outline" IsAdornerVisible="False">
-            <c:AdornedControl.AdornerContent>
-                <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
-            </c:AdornedControl.AdornerContent>
-            <c:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
-                <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
-                        IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                        PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                    <c:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                        <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
-                            <ScrollViewer x:Name="DropDownScrollViewer">
-                                <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled"
-                                        KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </ScrollViewer>
-                        </Border>
-                    </c:Cell>
-                </Popup>
-                <ToggleButton Background="Transparent" BorderThickness="0" Padding="0"
-                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right"
-                        VerticalAlignment="Center" IsHitTestVisible="False" />
-                <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}"
-                        Style="{StaticResource BetterComboBoxEditableTextBox}" Margin="0 0 16 0" Padding="{TemplateBinding Padding}"
-                        Foreground="{TemplateBinding Foreground}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
-                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-            </c:Cell>
-        </c:AdornedControl>
-        <ControlTemplate.Triggers>
-            <Trigger Property="HasItems" Value="False">
-                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                <Setter TargetName="Outline" Property="Order" Value="5" />
-            </Trigger>
-            <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                <Setter TargetName="Outline" Property="Order" Value="5" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="{x:Type c:BetterComboBox}" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
-        <Setter Property="Background" Value="{DynamicResource InputBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
-        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic}" />
-        <Style.Triggers>
-            <Trigger Property="IsEditable" Value="True">
-                <Setter Property="IsTabStop" Value="False" />
-                <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="BetterComboBox.Borderless" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+  <Style x:Key="BetterComboBox.Borderless.White" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
+    <Style.Triggers>
+      <Trigger Property="IsEditable" Value="True">
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
-        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
-        <Style.Triggers>
-            <Trigger Property="IsEditable" Value="True">
-                <Setter Property="IsTabStop" Value="False" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="BetterComboBox.Borderless.White" TargetType="{x:Type c:BetterComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
-        <Style.Triggers>
-            <Trigger Property="IsEditable" Value="True">
-                <Setter Property="IsTabStop" Value="False" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly" Value="False" />
-                    <Condition Property="IsEnabled" Value="True" />
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
-            </MultiTrigger>
-        </Style.Triggers>
-    </Style>
+        <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsReadOnly" Value="False" />
+          <Condition Property="IsEnabled" Value="True" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
+      </MultiTrigger>
+    </Style.Triggers>
+  </Style>
 </ResourceDictionary>

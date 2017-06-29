@@ -114,41 +114,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        private readonly object _readSolidSync = new object();
         private IReader _readSolid;
-
-        private byte[] ReadSolidImmediately(string key) {
-            if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
-
-            lock (_readSolidSync) {
-                var created = false;
-                while (true) {
-                    if (_readSolid == null) {
-                        _readSolid = _extractor.ExtractAllEntries();
-                        created = true;
-                    }
-
-                    while (_readSolid.MoveToNextEntry()) {
-                        if (_readSolid.Entry.Key == key) {
-                            using (var memory = new MemoryStream())
-                            using (var stream = _readSolid.OpenEntryStream()) {
-                                stream.CopyTo(memory);
-                                return memory.ToArray();
-                            }
-                        }
-                    }
-
-                    // just went to the end of archive, so next time, let’s start from the beginning
-                    DisposeHelper.Dispose(ref _readSolid);
-
-                    if (created) {
-                        // if we started from the beginning, file is not here
-                        return null;
-                    }
-
-                }
-            }
-        }
 
         private List<string> _askedData;
         private Dictionary<string, byte[]> _preloadedData;
@@ -226,25 +192,29 @@ namespace AcManager.Tools.ContentInstallation {
                 return;
             }
 
-            await Task.Run(() => {
-                using (var reader = _extractor.ExtractAllEntries()) {
-                    var i = 0;
-                    var count = _extractor.Entries.Count();
+            try {
+                await Task.Run(() => {
+                    using (var reader = _extractor.ExtractAllEntries()) {
+                        var i = 0;
+                        var count = _extractor.Entries.Count();
 
-                    while (reader.MoveToNextEntry()) {
-                        i++;
+                        while (reader.MoveToNextEntry()) {
+                            i++;
 
-                        var entry = new SimpleFileInfo(reader.Entry);
-                        var destination = callback(entry);
-                        if (destination != null) {
-                            FileUtils.EnsureFileDirectoryExists(destination);
-                            progress?.Report(Path.GetFileName(destination), i, count);
-                            reader.WriteEntryTo(destination);
-                            if (cancellation.IsCancellationRequested) return;
+                            var entry = new SimpleFileInfo(reader.Entry);
+                            var destination = callback(entry);
+                            if (destination != null) {
+                                FileUtils.EnsureFileDirectoryExists(destination);
+                                progress?.Report(Path.GetFileName(destination), i, count);
+                                reader.WriteEntryTo(destination);
+                                if (cancellation.IsCancellationRequested) return;
+                            }
                         }
                     }
-                }
-            });
+                });
+            } catch (NullReferenceException) {
+                throw new InformativeException("Unsupported archive; please, consider enabling CM’s 7-Zip plugin");
+            }
         }
 
         public override Task TrySetPasswordAsync(string password, CancellationToken cancellation) {

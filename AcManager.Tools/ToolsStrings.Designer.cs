@@ -2797,7 +2797,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Car Locked.
+        ///   Looks up a localized string similar to Lock Car.
         /// </summary>
         public static string JumpStart_CarLocked {
             get {
@@ -2806,7 +2806,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DriveThrough.
+        ///   Looks up a localized string similar to Drive Through.
         /// </summary>
         public static string JumpStart_DriveThrough {
             get {
@@ -2815,7 +2815,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Teleport To Pit.
+        ///   Looks up a localized string similar to Teleport To Pits.
         /// </summary>
         public static string JumpStart_TeleportToPit {
             get {

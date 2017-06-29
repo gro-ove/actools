@@ -31,7 +31,9 @@ namespace AcManager.Pages.Lists {
             public ViewModel(IFilter<DriverModelObject> listFilter)
                     : base(DriverModelsManager.Instance, listFilter) {}
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_DriverModels);
+            protected override string GetSubject() {
+                return AppStrings.List_DriverModels;
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -232,7 +233,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             // It’s a track, let’s find out layout IDs
-            var layoutLowerCaseIds = uiTrackSubs.Select(x => x.Parent.NameLowerCase).ToList();
+            // var layoutLowerCaseIds = uiTrackSubs.Select(x => x.Parent.NameLowerCase).ToList();
 
             // And track ID (so far, without layouts)
             var trackId = directory.Name;
@@ -579,6 +580,16 @@ namespace AcManager.Tools.ContentInstallation {
             if (file.Parent.NameLowerCase == "driver" && file.NameLowerCase.EndsWith(DriverModelObject.FileExtension)) {
                 return new DriverModelContentEntry(file.Key, file.Name,
                         file.Name.ApartFromLast(DriverModelObject.FileExtension, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (file.NameLowerCase.EndsWith(".xaml")) {
+                var data = await file.Info.ReadAsync();
+                if (data == null) {
+                    throw new MissingContentException();
+                }
+
+                var version = CmThemeEntry.GetVersion(data.ToUtf8String(), out var isTheme);
+                return isTheme ? new CmThemeEntry(file.Key, file.Name, version) : null;
             }
 
             return null;

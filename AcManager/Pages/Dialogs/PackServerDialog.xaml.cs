@@ -13,6 +13,7 @@ using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.AcdFile;
 using AcTools.Utils;
@@ -143,7 +144,7 @@ namespace AcManager.Pages.Dialogs {
             public const string PresetableKeyValue = "Pack Server";
             public bool CanBeSaved => true;
             string IUserPresetable.PresetableKey => PresetableKeyValue;
-            string IUserPresetable.PresetableCategory => PresetableKeyValue;
+            PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(PresetableKeyValue);
 
             public string ExportToPresetData() {
                 return _saveable.ToSerializedString();
@@ -265,7 +266,8 @@ different.";
 
             if (notPacked.Any() &&
                     ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),
-                            ToolsStrings.ServerPreset_UnpackedDataWarning_Title, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                            ToolsStrings.ServerPreset_UnpackedDataWarning_Title, MessageBoxButton.YesNo, "serverpreset_unpackedDataWarning") ==
+                            MessageBoxResult.Yes) {
                 using (var memory = new MemoryStream()) {
                     using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
                         var i = 0;

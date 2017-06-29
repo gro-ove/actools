@@ -22,6 +22,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     ReloadSuspension();
                     ResetWings();
 
+                    // engine
+                    LoadEngineParams();
+
+                    // sounds
+                    ResetSoundEmitters();
+
                     // driver
                     _driverSet = false;
                     _driverSteerAnimator = null;
@@ -65,6 +71,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     DisposeHelper.Dispose(ref _driver);
                     _driverSteerAnimator = null;
                     break;
+                case "engine.ini":
+                    LoadEngineParams();
+                    break;
                 case "extra_animations.ini":
                     ResetExtras();
                     break;
@@ -76,6 +85,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     break;
                 case "mirrors.ini":
                     LoadMirrors(holder);
+                    break;
+                case "sounds.ini":
+                    ResetSoundEmitters();
                     break;
                 case "suspensions.ini":
                     ReloadSuspension();

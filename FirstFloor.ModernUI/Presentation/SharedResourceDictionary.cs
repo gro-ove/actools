@@ -5,9 +5,9 @@ using System.Windows;
 namespace FirstFloor.ModernUI.Presentation {
     public class SharedResourceDictionary : ResourceDictionary {
         /// <summary>
-        /// Internal cache of loaded dictionaries 
+        /// Internal cache of loaded dictionaries
         /// </summary>
-        public static Dictionary<Uri, ResourceDictionary> SharedDictionaries =
+        private static readonly Dictionary<Uri, ResourceDictionary> SharedDictionaries =
                 new Dictionary<Uri, ResourceDictionary>();
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Presentation {
         /// Gets or sets the uniform resource identifier (URI) to load resources from.
         /// </summary>
         public new Uri Source {
-            get { return _sourceUri; }
+            get => _sourceUri;
             set {
                 _sourceUri = value;
 

@@ -28,6 +28,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _description.Filename);
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) {}
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 

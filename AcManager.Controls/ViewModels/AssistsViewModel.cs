@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Presets;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
@@ -24,11 +25,8 @@ namespace AcManager.Controls.ViewModels {
 
         #region Presetable
         bool IUserPresetable.CanBeSaved => true;
-
         public string PresetableKey { get; }
-
-        string IUserPresetable.PresetableCategory => UserPresetableKeyValue;
-
+        public PresetsCategory PresetableCategory { get; } = new PresetsCategory(UserPresetableKeyValue);
         string IUserPresetableDefaultPreset.DefaultPreset => ControlsStrings.AssistsPreset_Pro;
 
         public string ExportToPresetData() {

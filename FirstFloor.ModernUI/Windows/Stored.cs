@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Xaml.Schema;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -34,12 +35,20 @@ namespace FirstFloor.ModernUI.Windows {
                     defaultValue = null;
                 }
 
-                Initialize(@"_stored:" + value, defaultValue);
+                Initialize(value, defaultValue);
             }
         }
 
         public static StoredValue Get(string key, string defaultValue = null) {
             return StoredValue.Create(key, defaultValue);
+        }
+
+        public static string GetValue(string key, string defaultValue = null) {
+            return StoredValue.Create(key, defaultValue).Value;
+        }
+
+        public static void SetValue(string key, string value) {
+            StoredValue.Create(key, null).Value = value;
         }
 
         public class StoredValue : NotifyPropertyChanged {
@@ -60,7 +69,6 @@ namespace FirstFloor.ModernUI.Windows {
                 WeakReference<StoredValue> link;
                 StoredValue result;
 
-
                 if (!Instances.TryGetValue(key, out link) || !link.TryGetTarget(out result)) {
                     if (link != null) {
                         RemoveDeadReferences(Instances);
@@ -74,22 +82,22 @@ namespace FirstFloor.ModernUI.Windows {
                 return result;
             }
 
-            private readonly string _key;
+            private readonly string _storageKey;
             private readonly string _defaultValue;
 
             private StoredValue(string key, string defaultValue) {
-                _key = key;
+                _storageKey = @"_stored:" + key;
                 _defaultValue = defaultValue;
             }
 
             private string _value;
 
             public string Value {
-                get => _value ?? (_value = ValuesStorage.GetString(_key, _defaultValue));
+                get => _value ?? (_value = ValuesStorage.GetString(_storageKey, _defaultValue));
                 set {
                     if (Equals(value, Value)) return;
                     _value = value;
-                    ValuesStorage.Set(_key, value);
+                    ValuesStorage.Set(_storageKey, value);
                     OnPropertyChanged();
                 }
             }

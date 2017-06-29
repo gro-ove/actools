@@ -1,44 +1,41 @@
 ﻿<sel:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedPpFilterPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:av="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:g="clr-namespace:AcManager"
-        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}">
-    <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
-    </UserControl.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:av="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:g="clr-namespace:AcManager"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
+  </UserControl.Resources>
 
-    <c:AcObjectBase Scrollable="False" AcObject="{Binding SelectedObject}" ShowIcon="False">
-        <c:AcObjectBase.ToolBars>
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_PpFilterTooltip}"
-                        Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
-                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone PP filter (Ctrl+Shift+D)" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Share_FilterTooltip}" />
-                <Button Content="{x:Static g:AppStrings.Common_Test}" Command="{Binding TestCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Test_FilterTooltip}" />
-            </ToolBar>
-            <ToolBar Band="1" BandIndex="1">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_PpFilterTooltip}" />
-            </ToolBar>
-        </c:AcObjectBase.ToolBars>
+  <c:AcObjectBase Scrollable="False" AcObject="{Binding SelectedObject}" ShowIcon="False">
+    <c:AcObjectBase.ToolBars>
+      <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_PpFilterTooltip}"
+            Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+            Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone PP filter (Ctrl+Shift+D)" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Share_FilterTooltip}" />
+        <Button Content="{x:Static g:AppStrings.Common_Test}" Command="{Binding TestCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Test_FilterTooltip}" />
+      </ToolBar>
+      <ToolBar Band="1" BandIndex="1">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
+        <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_Delete_PpFilterTooltip}" />
+      </ToolBar>
+    </c:AcObjectBase.ToolBars>
 
-        <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
-    </c:AcObjectBase>
+    <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
+  </c:AcObjectBase>
 </sel:SelectedAcObjectPage>
-

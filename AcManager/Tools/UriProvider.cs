@@ -13,8 +13,8 @@ namespace AcManager.Tools {
             switch (obj?.GetType().Name) {
                 case nameof(CarObject):
                     return UriExtension.Create(
-                            SettingsHolder.Content.NewLayout ? "/Pages/Selected/SelectedCarPage_New.xaml?Id={0}" :
-                                    "/Pages/Selected/SelectedCarPage.xaml?Id={0}",
+                            SettingsHolder.Content.OldLayout ? "/Pages/Selected/SelectedCarPage.xaml?Id={0}" :
+                                    "/Pages/Selected/SelectedCarPage_New.xaml?Id={0}",
                             obj.Id);
 
                 case nameof(TrackObject):

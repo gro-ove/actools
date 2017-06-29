@@ -122,6 +122,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect = contextHolder.GetEffect<EffectSpecialUv>();
         }
 
+        public void Refresh(IDeviceContextHolder contextHolder) { }
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
             if (!_textures.Contains(Filter)) return false;

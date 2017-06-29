@@ -29,6 +29,7 @@ namespace AcTools.Render.Base {
 
         private void SetDeviceContextHolder(DeviceContextHolder value) {
             _deviceContextHolder = value;
+            value.TimeFactor = TimeFactor;
             value.UpdateRequired += (sender, args) => {
                 IsDirty = true;
             };
@@ -432,10 +433,15 @@ namespace AcTools.Render.Base {
         private float _timeFactor = 1f;
 
         public float TimeFactor {
-            get { return _timeFactor; }
+            get => _timeFactor;
             set {
                 if (value.Equals(_timeFactor)) return;
                 _timeFactor = value;
+
+                if (_deviceContextHolder != null) {
+                    _deviceContextHolder.TimeFactor = value;
+                }
+
                 OnPropertyChanged();
             }
         }

@@ -12,6 +12,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base.Utils;
@@ -189,7 +190,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonIgnore]
             public byte[] ColorGradingData {
-                get { return ColorGrading == null ? null : Decompress(Convert.FromBase64String(ColorGrading)); }
+                get => ColorGrading == null ? null : Decompress(Convert.FromBase64String(ColorGrading));
                 set {
                     var c = Compress(value);
                     ColorGrading = c == null ? null : Convert.ToBase64String(c);
@@ -691,7 +692,7 @@ namespace AcManager.CustomShowroom {
         private SettingEntry _msaaMode = MsaaModes[0];
 
         public SettingEntry MsaaMode {
-            get { return _msaaMode; }
+            get => _msaaMode;
             set {
                 if (!MsaaModes.Contains(value)) value = MsaaModes[0];
                 if (Equals(value, _msaaMode)) return;
@@ -706,7 +707,7 @@ namespace AcManager.CustomShowroom {
         private SettingEntry _ssaaMode = SsaaModesExtended[0];
 
         public SettingEntry SsaaMode {
-            get { return _ssaaMode; }
+            get => _ssaaMode;
             set {
                 if (!SsaaModesExtended.Contains(value)) value = SsaaModesExtended[0];
                 if (Equals(value, _ssaaMode)) return;
@@ -723,7 +724,7 @@ namespace AcManager.CustomShowroom {
         private SettingEntry _shadowMapSize = ShadowResolutions[1];
 
         public SettingEntry ShadowMapSize {
-            get { return _shadowMapSize; }
+            get => _shadowMapSize;
             set {
                 if (!ShadowResolutions.Contains(value)) value = ShadowResolutions[1];
                 if (Equals(value, _shadowMapSize)) return;
@@ -737,7 +738,7 @@ namespace AcManager.CustomShowroom {
         private SettingEntry _cubemapReflectionMapSize;
 
         public SettingEntry CubemapReflectionMapSize {
-            get { return _cubemapReflectionMapSize; }
+            get => _cubemapReflectionMapSize;
             set {
                 if (!CubemapReflectionResolutions.Contains(value)) value = CubemapReflectionResolutions[2];
                 if (Equals(value, _cubemapReflectionMapSize)) return;
@@ -751,7 +752,7 @@ namespace AcManager.CustomShowroom {
         private CarAmbientShadowsMode _carAmbientShadowsMode;
 
         public CarAmbientShadowsMode CarAmbientShadowsMode {
-            get { return _carAmbientShadowsMode; }
+            get => _carAmbientShadowsMode;
             set {
                 if (Equals(value, _carAmbientShadowsMode)) return;
                 _carAmbientShadowsMode = value;
@@ -781,7 +782,7 @@ namespace AcManager.CustomShowroom {
         private float _lightθ;
 
         public float LightθDeg {
-            get { return 90f - _lightθ.ToDegrees(); }
+            get => 90f - _lightθ.ToDegrees();
             set {
                 value = (90f - value).ToRadians();
                 if (Equals(value, _lightθ)) return;
@@ -794,7 +795,7 @@ namespace AcManager.CustomShowroom {
         private float _lightφ;
 
         public float LightφDeg {
-            get { return _lightφ.ToDegrees(); }
+            get => _lightφ.ToDegrees();
             set {
                 value = value.ToRadians();
                 if (Equals(value, _lightφ)) return;
@@ -808,7 +809,7 @@ namespace AcManager.CustomShowroom {
 
         [CanBeNull]
         public object Showroom {
-            get { return _showroom; }
+            get => _showroom;
             set {
                 value = value ?? BetterComboBox.NullValue;
                 if (Equals(value, _showroom)) return;
@@ -823,7 +824,7 @@ namespace AcManager.CustomShowroom {
         public DelegateCommand SetColorGradingTextureCommand => _setColorGradingTextureCommand ?? (_setColorGradingTextureCommand = new DelegateCommand(() => {
             try {
                 var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.ImagesFilter,
+                    Filter = FileDialogFilters.TexturesAllFilter,
                     Title = "Select Color Grading Texture"
                 };
 
@@ -832,7 +833,7 @@ namespace AcManager.CustomShowroom {
                     Renderer.LoadColorGradingData();
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t load color grading texture", e);
+                NonfatalError.Notify("Can’t load color grading texture", "Make sure it’s a volume DDS texture.", e);
             }
         }));
 
@@ -841,7 +842,7 @@ namespace AcManager.CustomShowroom {
         private bool? _tryToGuessCarLights;
 
         public bool TryToGuessCarLights {
-            get { return _tryToGuessCarLights ?? false; }
+            get => _tryToGuessCarLights ?? false;
             set {
                 if (Equals(value, _tryToGuessCarLights)) return;
                 _tryToGuessCarLights = value;
@@ -936,7 +937,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public Color BackgroundColor {
-            get { return Renderer.BackgroundColor.ToColor(); }
+            get => Renderer.BackgroundColor.ToColor();
             set {
                 if (Equals(value, BackgroundColor)) return;
                 Renderer.BackgroundColor = value.ToColor();
@@ -945,7 +946,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public Color LightColor {
-            get { return Renderer.LightColor.ToColor(); }
+            get => Renderer.LightColor.ToColor();
             set {
                 if (Equals(value, LightColor)) return;
                 Renderer.LightColor = value.ToColor();
@@ -954,7 +955,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public Color AmbientDownColor {
-            get { return Renderer.AmbientDown.ToColor(); }
+            get => Renderer.AmbientDown.ToColor();
             set {
                 if (Equals(value, AmbientDownColor)) return;
                 Renderer.AmbientDown = value.ToColor();
@@ -963,7 +964,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public Color AmbientUpColor {
-            get { return Renderer.AmbientUp.ToColor(); }
+            get => Renderer.AmbientUp.ToColor();
             set {
                 if (Equals(value, AmbientUpColor)) return;
                 Renderer.AmbientUp = value.ToColor();
@@ -976,10 +977,8 @@ namespace AcManager.CustomShowroom {
         public bool CanBeSaved => true;
 
         private readonly string _presetableKeyValue;
-
         public string PresetableKey => _presetableKeyValue;
-
-        string IUserPresetable.PresetableCategory => _presetableKeyValue;
+        PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(_presetableKeyValue);
 
         public string ExportToPresetData() {
             return _saveable?.ToSerializedString();

@@ -9,6 +9,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ValueLabel.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <Style x:Key="PropertyLabel" TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">

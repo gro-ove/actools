@@ -122,12 +122,13 @@
     </Setter>
 
     <Style.Triggers>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+        <Setter Property="FontWeight" Value="Normal" />
+      </Trigger>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
-      </Trigger>
-      <Trigger Property="IsSelected" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
@@ -155,13 +156,13 @@
     </Setter>
 
     <Style.Triggers>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+        <Setter Property="FontWeight" Value="Normal" />
+      </Trigger>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
         <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-      </Trigger>
-      <Trigger Property="IsSelected" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
-        <Setter Property="FontWeight" Value="Normal" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />

@@ -255,7 +255,7 @@ namespace AcManager.Tools.Managers.Online {
             WindSpeed = extended.WindSpeed;
             Grip = extended.Grip;
             GripTransfer = extended.GripTransfer;
-            TrackBaseId = extended.TrackBase;
+            TrackBaseId = extended.TrackBase?.Trim();
             FrequencyHz = extended.FrequencyHz ?? 0;
             MaxContactsPerKm = extended.MaxContactsPerKm;
             _missingContentReferences = extended.Content;

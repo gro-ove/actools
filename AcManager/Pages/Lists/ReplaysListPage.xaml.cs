@@ -41,7 +41,9 @@ namespace AcManager.Pages.Lists {
                 GroupBy(nameof(ReplayObject.EditableCategory), new CategoryGroupDescription());
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Replays);
+            protected override string GetSubject() {
+                return AppStrings.List_Replays;
+            }
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using FirstFloor.ModernUI.Helpers;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
@@ -119,10 +121,15 @@ namespace AcManager.Controls {
             var element = d as TextEditor;
             if (element == null || !(e.NewValue is AvalonEditMode)) return;
 
-            var newValue = (AvalonEditMode)e.NewValue;
-            switch (newValue) {
-                    case AvalonEditMode.Ini:
-                    element.SyntaxHighlighting = HighlighterHolder.Get(@"Ini");
+            // TODO: Live changing
+            element.Loaded += OnTextEditorLoaded;
+        }
+
+        private static void OnTextEditorLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            var element = (TextEditor)sender;
+            switch (GetMode(element)) {
+                case AvalonEditMode.Ini:
+                    element.SyntaxHighlighting = HighlighterHolder.Get(element.TryFindResource("TextEditorSyntaxIni") as string);
                     // IniFoldingStrategy.Set(TextEditor);
                     break;
             }
@@ -153,11 +160,17 @@ namespace AcManager.Controls {
 
     internal static class HighlighterHolder {
         [CanBeNull]
-        public static IHighlightingDefinition Get(string key) {
-            using (var s = Application.GetResourceStream(new Uri($"pack://application:,,,/AcManager.Controls;component/Assets/Syntax/{key}.xml",
-                    UriKind.Absolute))?.Stream)
-            using (var reader = s == null ? null : new XmlTextReader(s)) {
-                return s == null ? null : HighlightingLoader.Load(reader, HighlightingManager.Instance);
+        public static IHighlightingDefinition Get(string data) {
+            if (data == null) return null;
+
+            try {
+                using (var stringReader = new StringReader(data))
+                using (var reader = new XmlTextReader(stringReader)) {
+                    return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
             }
         }
     }

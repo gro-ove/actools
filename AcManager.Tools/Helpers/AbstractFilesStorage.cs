@@ -29,7 +29,7 @@ namespace AcManager.Tools.Helpers {
             return filename;
         }
 
-        public string GetDirectory([Localizable(false)] params string[] file) {
+        public virtual string GetDirectory([Localizable(false)] params string[] file) {
             var filename = Combine(file);
             EnsureDirectory(filename);
             return filename;

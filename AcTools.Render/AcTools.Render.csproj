@@ -24,6 +24,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -33,6 +34,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -42,6 +44,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -51,6 +54,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -112,6 +116,7 @@
     <Compile Include="Base\Shadows\ShadowsBase.cs" />
     <Compile Include="Base\Shadows\ShadowsPointFlat.cs" />
     <Compile Include="Base\Shadows\ShadowsSpot.cs" />
+    <Compile Include="Base\Utils\ColorGradingConverter.cs" />
     <Compile Include="Data\CarSuspensionModifiers.cs" />
     <Compile Include="Forward\ToneMappingFn.cs" />
     <Compile Include="Base\PostEffects\AO\AssaoHelper.cs" />
@@ -168,7 +173,6 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleTyres.cs" />
-    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleDiffMaps.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleGl.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleMaps.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleMirror.cs" />
@@ -190,12 +194,14 @@
     <Compile Include="Kn5SpecificSpecial\ShadowsRendererBase.cs" />
     <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
+    <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.LiveReload.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Wheels.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lines.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Utils.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Sound.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCollider.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableDriver.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableShowroom.cs" />

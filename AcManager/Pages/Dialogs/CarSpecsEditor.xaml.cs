@@ -227,10 +227,12 @@ namespace AcManager.Pages.Dialogs {
             o.SpecsTorqueCurve = new GraphData(torque);
             o.SpecsPowerCurve = new GraphData(power);
 
-            if (ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+            if (ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo, "copyNewPowerAndTorque") ==
+                    MessageBoxResult.Yes) {
                 // MaxY values were updated while creating new GraphData instances above
-                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
-                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                var postfix = dlg.Multipler == 1d ? "*" : "";
+                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture) + postfix);
+                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture) + postfix);
             }
         }
 

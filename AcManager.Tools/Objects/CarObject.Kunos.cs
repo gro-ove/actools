@@ -5,6 +5,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -32,7 +33,7 @@ namespace AcManager.Tools.Objects {
         public override string VersionInfoDisplay {
             get {
                 var dlc = Dlc;
-                return dlc != null ? $@"{AuthorKunos} ([url=""http://store.steampowered.com/app/{dlc.Id}/""]{dlc.ShortName}[/url])" :
+                return dlc != null ? $@"{AuthorKunos} ([url={BbCodeBlock.EncodeAttribute(dlc.Url)}]{dlc.ShortName}[/url])" :
                         base.VersionInfoDisplay;
             }
         }

@@ -51,5 +51,10 @@ namespace FirstFloor.ModernUI.Presentation {
                 OnPropertyChanged();
             }
         }
+
+        public string Key {
+            get => Source.OriginalString;
+            set => Source = new Uri(value, UriKind.Relative);
+        }
     }
 }

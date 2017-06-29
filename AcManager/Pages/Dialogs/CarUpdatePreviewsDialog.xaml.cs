@@ -22,6 +22,7 @@ using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Processes;
@@ -538,12 +539,9 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
-
         public const string PresetableKeyValue = "Previews";
-
         public string PresetableKey => PresetableKeyValue;
-
-        string IUserPresetable.PresetableCategory => PresetableKeyValue;
+        PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(PresetableKeyValue);
 
         public string ExportToPresetData() {
             return _saveable.ToSerializedString();

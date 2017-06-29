@@ -130,9 +130,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public string RootDirectory => _rootDirectory;
 
-        public Kn5RenderableCar(CarDescription car, Matrix matrix, string selectSkin = DefaultSkin, bool scanForSkins = true,
-                float shadowsHeight = 0.0f, bool asyncTexturesLoading = true, bool asyncOverrideTexturesLoading = false, bool allowSkinnedObjects = false)
+        public Kn5RenderableCar(CarDescription car, Matrix matrix, [CanBeNull] IAcCarSoundFactory soundFactory, string selectSkin = DefaultSkin,
+                bool scanForSkins = true, float shadowsHeight = 0.0f, bool asyncTexturesLoading = true, bool asyncOverrideTexturesLoading = false,
+                bool allowSkinnedObjects = false)
                 : base(car.Kn5LoadedRequire, matrix, asyncTexturesLoading, allowSkinnedObjects) {
+            CreateSoundEmittersAndSmoothers();
+
             _rootDirectory = car.CarDirectoryRequire;
 
             _skinsDirectory = FileUtils.GetCarSkinsDirectory(_rootDirectory);
@@ -168,6 +171,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             IsReflectable = false;
             SuspensionModifiers.PropertyChanged += OnSuspensionModifiersChanged;
+
+            if (soundFactory != null) {
+                InitializeSoundAsync(soundFactory).Forget();
+            }
         }
 
         protected override ITexturesProvider InitializeTextures(IDeviceContextHolder contextHolder) {
@@ -204,6 +211,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            if (camera != null && Sound != null && mode == SpecialRenderMode.Simple && IsSoundActive) {
+                UpdateSound(camera, holder);
+            }
+
             DrawInitialize(holder);
 
             if (!_mirrorsInitialized) {
@@ -1347,14 +1358,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Doors
+        private readonly float DoorCloseSoundDuration = 0.21f;
+
+        private Lazier<CarData.AnimationBase> _doorLeftAnimation;
+        private Lazier<CarData.AnimationBase> _doorRightAnimation;
         private Lazier<KsAnimAnimator> _doorLeftAnimator;
         private Lazier<KsAnimAnimator> _doorRightAnimator;
 
         private void InitializeDoors() {
             if (_doorLeftAnimator != null) return;
 
-            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _carData.GetLeftDoorAnimation()));
-            _doorRightAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _carData.GetRightDoorAnimation()));
+            _doorLeftAnimation = Lazier.Create(() => _carData.GetLeftDoorAnimation());
+            _doorRightAnimation = Lazier.Create(() => _carData.GetRightDoorAnimation());
+            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _doorLeftAnimation.Value));
+            _doorRightAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _doorRightAnimation.Value));
         }
 
         private void ReenableDoors() {
@@ -1375,6 +1392,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 InitializeDoors();
                 _doorLeftAnimator.Value?.SetTarget(RootObject, value ? 1f : 0f);
+
+                if (_skinsWatcherHolder?.TimeFactor == 1f && IsSoundActive) {
+                    Sound?.Door(value, value ? TimeSpan.Zero :
+                            TimeSpan.FromSeconds((_doorLeftAnimator.Value?.Position * _doorLeftAnimation.Value?.Duration ?? 1f) -
+                                    DoorCloseSoundDuration));
+                }
             }
         }
 
@@ -1397,6 +1420,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 InitializeDoors();
                 _doorRightAnimator.Value?.SetTarget(RootObject, value ? 1f : 0f);
+
+                if (_skinsWatcherHolder?.TimeFactor == 1f && IsSoundActive) {
+                    Sound?.Door(value, value ? TimeSpan.Zero :
+                            TimeSpan.FromSeconds((_doorRightAnimator.Value?.Position * _doorRightAnimation.Value?.Duration ?? 1f) -
+                                    DoorCloseSoundDuration));
+                }
             }
         }
 
@@ -2017,6 +2046,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _flamesLines.Dispose();
             _wheelsLines.Dispose();
             _wingsLines.Dispose();
+
+            _sound?.Dispose();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,26 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
         static AcListPage() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcListPage), new FrameworkPropertyMetadata(typeof(AcListPage)));
         }
-
-        public bool SelectMode { get; set; }
 
         private ListBox _list;
 
@@ -31,13 +41,13 @@ namespace AcManager.Controls {
             get => _currentObject;
             set {
                 if (_currentObject != null) {
-                    _currentObject.AcObjectOutdated -= SelectedAcObject_Outdated;
+                    _currentObject.AcObjectOutdated -= OnSelectedObjectOutdated;
                 }
 
                 _currentObject = value;
 
                 if (_currentObject != null) {
-                    _currentObject.AcObjectOutdated += SelectedAcObject_Outdated;
+                    _currentObject.AcObjectOutdated += OnSelectedObjectOutdated;
                     SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(_currentObject));
                 } else {
                     SetCurrentValue(SelectedSourceProperty, null);
@@ -45,9 +55,14 @@ namespace AcManager.Controls {
             }
         }
 
-        public AcListPage() {
-            SelectMode = false;
+        private static readonly DependencyPropertyKey SelectedWrapperPropertyKey = DependencyProperty.RegisterReadOnly(nameof(SelectedWrapper), typeof(AcItemWrapper),
+                typeof(AcListPage), new PropertyMetadata(null));
 
+        public static readonly DependencyProperty SelectedWrapperProperty = SelectedWrapperPropertyKey.DependencyProperty;
+
+        public AcItemWrapper SelectedWrapper => (AcItemWrapper)GetValue(SelectedWrapperProperty);
+
+        public AcListPage() {
             _selectedWrapper = new DelayedPropertyWrapper<AcItemWrapper>(async v => {
                 CurrentObject = v?.Loaded();
 
@@ -58,50 +73,253 @@ namespace AcManager.Controls {
             });
 
             PreviewMouseRightButtonDown += OnRightMouseDown;
-            PreviewMouseRightButtonUp += OnRightMouseClick;
+            PreviewKeyDown += OnKeyDown;
+            SizeChanged += OnSizeChanged;
+        }
+
+        private BatchAction[] _batchActionsArray;
+        private BatchAction[] GetBatchActionsArray() {
+            return _batchActionsArray ?? (_batchActionsArray = GetBatchActions().ToArrayIfItIsNot());
+        }
+
+        protected virtual IEnumerable<BatchAction> GetBatchActions() {
+            return new BatchAction[0];
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args) {
+            if (BatchMenuVisible && (args.Key == Key.Escape || args.Key == Key.Back)) {
+                args.Handled = true;
+                SetMultiSelectionMode(false);
+            } else if (Keyboard.Modifiers == ModifierKeys.Control && args.Key == Key.A) {
+                SetMultiSelectionMode(true);
+            }
+        }
+
+        public static readonly DependencyProperty BatchMenuVisibleProperty = DependencyProperty.Register(nameof(BatchMenuVisible), typeof(bool),
+                typeof(AcListPage), new PropertyMetadata(false, (o, e) => {
+                    ((AcListPage)o)._batchMenuVisible = (bool)e.NewValue;
+                }));
+
+        private bool _batchMenuVisible;
+
+        public bool BatchMenuVisible {
+            get => _batchMenuVisible;
+            set => SetValue(BatchMenuVisibleProperty, value);
+        }
+
+        private void OnLeftMouseDown(object sender, MouseButtonEventArgs e) {
+            if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ||
+                    Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) && !BatchMenuVisible) {
+                var index = _list.GetMouseItemIndex();
+                SetMultiSelectionMode(true);
+                if (!BatchMenuVisible) return;
+
+                if (index != -1) {
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
+                        var current = _list.SelectedIndex;
+                        var addToSelection = new List<object>();
+                        for (var i = current; i != index; i += current < index ? 1 : -1) {
+                            addToSelection.Add(_list.ItemsSource?.OfType<object>().ElementAtOrDefault(i));
+                        }
+
+                        addToSelection.Add(_list.ItemsSource?.OfType<object>().ElementAtOrDefault(index));
+                        foreach (var o in addToSelection.NonNull()) {
+                            _list.SelectedItems.Add(o);
+                        }
+                    } else {
+                        var item = _list.ItemsSource?.OfType<object>().ElementAtOrDefault(index);
+                        if (item != null) {
+                            _list.SelectedItems.Add(item);
+                        }
+                    }
+                }
+            }
         }
 
         private void OnRightMouseDown(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
         }
 
-        public static bool GetCheckBoxModeActive(DependencyObject obj) {
-            return (bool)obj.GetValue(CheckBoxModeActiveProperty);
-        }
-
-        public static void SetCheckBoxModeActive(DependencyObject obj, bool value) {
-            obj.SetValue(CheckBoxModeActiveProperty, value);
-        }
-
-        public static readonly DependencyProperty CheckBoxModeActiveProperty = DependencyProperty.RegisterAttached("CheckBoxModeActive", typeof(bool),
-                typeof(AcListPage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
-
-
         private Style _baseItemStyle;
         private Style _checkBoxListBoxItemStyle;
+        private readonly BoolHolder _holder = new BoolHolder();
 
-        private void OnRightMouseClick(object sender, MouseButtonEventArgs args) {
-            args.Handled = true;
+        public class BoolHolder : NotifyPropertyChanged {
+            private bool _value;
+
+            public bool Value {
+                get => _value;
+                set {
+                    if (Equals(value, _value)) return;
+                    _value = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public static BoolHolder GetActiveBoolHolder(DependencyObject obj) {
+            return (BoolHolder)obj.GetValue(ActiveBoolHolderProperty);
+        }
+
+        public static void SetActiveBoolHolder(DependencyObject obj, BoolHolder value) {
+            obj.SetValue(ActiveBoolHolderProperty, value);
+        }
+
+        public static readonly DependencyProperty ActiveBoolHolderProperty = DependencyProperty.RegisterAttached("ActiveBoolHolder", typeof(BoolHolder),
+                typeof(AcListPage), new FrameworkPropertyMetadata(new BoolHolder(), FrameworkPropertyMetadataOptions.Inherits));
+
+        public static bool GetNarrowList(DependencyObject obj) {
+            return (bool)obj.GetValue(NarrowListProperty);
+        }
+
+        public static void SetNarrowList(DependencyObject obj, bool value) {
+            obj.SetValue(NarrowListProperty, value);
+        }
+
+        public static readonly DependencyProperty NarrowListProperty = DependencyProperty.RegisterAttached("NarrowList", typeof(bool),
+                typeof(AcListPage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+
+        private bool _batchActionsSet;
+
+        private bool SetMultiSelectionMode(bool? newValue = null) {
+            if (BatchMenuVisible == newValue) return false;
+            if (!BatchMenuVisible && GetBatchActionsArray().Length == 0) return false;
 
             if (_checkBoxListBoxItemStyle == null) {
                 _baseItemStyle = _list.ItemContainerStyle;
-                _checkBoxListBoxItemStyle = (Style)FindResource("AcListPageCheckBoxItem");
+
+                var originStyle = (Style)FindResource("AcListPageCheckBoxItem");
+
+                var style = new Style(typeof(ListBoxItem));
+                foreach (var setter in originStyle.Setters) {
+                    style.Setters.Add(setter);
+                }
+
+                foreach (var trigger in originStyle.Triggers) {
+                    style.Triggers.Add(trigger);
+                }
+
+                style.Setters.Add(new Setter(ActiveBoolHolderProperty, _holder));
+                style.Seal();
+
+                _checkBoxListBoxItemStyle = style;
             }
 
-            if (ReferenceEquals(_list.ItemContainerStyle, _checkBoxListBoxItemStyle)) {
-                _list.ItemContainerStyle = _baseItemStyle;
-                _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
-                SetCheckBoxMode(false).Forget();
-            } else {
+            if (newValue ?? !BatchMenuVisible) {
                 _list.ItemContainerStyle = _checkBoxListBoxItemStyle;
                 _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, true);
+                _list.SelectionChanged += OnMultiSelectionChanged;
+                SetBatchActions();
                 SetCheckBoxMode(true).Forget();
+            } else {
+                _list.SelectionChanged -= OnMultiSelectionChanged;
+                SetCheckBoxMode(false, () => {
+                    _list.ItemContainerStyle = _baseItemStyle;
+                    _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
+                }).Forget();
             }
+
+            BatchMenuVisible = !BatchMenuVisible;
+            Draggable.SetForceDisabled(this, BatchMenuVisible);
+            return true;
         }
 
-        private async Task SetCheckBoxMode(bool value) {
+        private void SetBatchActions() {
+            if (_batchActionsSet || _batchActions == null) return;
+            _batchActionsSet = true;
+
+            _batchActions.ItemsSource = new HierarchicalGroup("", GetBatchActionsArray().OrderBy(x => x.DisplayName));
+            _batchActions.SetBinding(HierarchicalComboBox.SelectedItemProperty, new Binding(nameof(SelectedBatchAction)) {
+                Source = this,
+                Mode = BindingMode.TwoWay
+            });
+
+            SelectedBatchAction = _batchActions.ItemsSource.OfType<BatchAction>().FirstOrDefault();
+        }
+
+        public static readonly DependencyProperty SelectedBatchActionProperty = DependencyProperty.Register(nameof(SelectedBatchAction), typeof(BatchAction),
+                typeof(AcListPage), new PropertyMetadata(OnSelectedBatchActionChanged));
+
+        public BatchAction SelectedBatchAction {
+            get => (BatchAction)GetValue(SelectedBatchActionProperty);
+            set => SetValue(SelectedBatchActionProperty, value);
+        }
+
+        private static void OnSelectedBatchActionChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((AcListPage)o).OnSelectedBatchActionChanged((BatchAction)e.NewValue);
+        }
+
+        [CanBeNull]
+        private BatchAction _selectedBatchAction;
+
+        private void OnSelectedBatchActionChanged([CanBeNull] BatchAction newValue) {
+            var hasParams = newValue?.GetParams(this) != null;
+            if (hasParams == SelectedBatchActionHasParams) return;
+
+            _selectedBatchAction = newValue;
+            _selectedBatchActionHasParams = hasParams;
+            SetValue(SelectedBatchActionHasParamsPropertyKey, hasParams);
+
+            if (_batchActionParams != null) {
+                try {
+                    var size = _batchActionParams.ActualWidth;
+                    var duration = TimeSpan.FromMilliseconds(size / 4);
+
+                    _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
+                        To = 0d,
+                        Duration = duration,
+                        FillBehavior = FillBehavior.HoldEnd,
+                        EasingFunction = (EasingFunctionBase)FindResource("DecelerationEase")
+                    } : new DoubleAnimation {
+                        To = -size,
+                        Duration = duration,
+                        FillBehavior = FillBehavior.HoldEnd,
+                        EasingFunction = (EasingFunctionBase)FindResource("AccelerationEase")
+                    });
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+
+                if (newValue?.GetParams(this) != null) {
+                    _batchAction.Content = newValue.GetParams(this);
+                }
+            }
+
+            PrepareBatchAction();
+        }
+
+        private void PrepareBatchAction() {
+            _selectedBatchAction?.OnSelectionChanged(_list.SelectedItems);
+        }
+
+        private static readonly DependencyPropertyKey SelectedBatchActionHasParamsPropertyKey =
+                DependencyProperty.RegisterReadOnly(nameof(SelectedBatchActionHasParams), typeof(bool),
+                        typeof(AcListPage), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty SelectedBatchActionHasParamsProperty = SelectedBatchActionHasParamsPropertyKey.DependencyProperty;
+
+        private bool _selectedBatchActionHasParams;
+        public bool SelectedBatchActionHasParams => _selectedBatchActionHasParams;
+
+        private void OnMultiSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs) {
+            SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(_list.SelectedItems.Count));
+            PrepareBatchAction();
+        }
+
+        public static readonly DependencyPropertyKey SelectedAmountPropertyKey = DependencyProperty.RegisterReadOnly(nameof(SelectedAmount), typeof(string),
+                typeof(AcListPage), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty SelectedAmountProperty = SelectedAmountPropertyKey.DependencyProperty;
+
+        public string SelectedAmount => (string)GetValue(SelectedAmountProperty);
+
+        private async Task SetCheckBoxMode(bool value, Action callback = null) {
             await Task.Delay(1);
-            SetCheckBoxModeActive(this, value);
+            _holder.Value = value;
+            if (callback != null) {
+                await Task.Delay(200);
+                callback.Invoke();
+            }
         }
 
         public static readonly DependencyProperty AddNewCommandProperty = DependencyProperty.Register(nameof(AddNewCommand), typeof(CommandBase),
@@ -116,25 +334,117 @@ namespace AcManager.Controls {
             ((AcListPage)o).OnAddNewCommandChanged((CommandBase)e.NewValue);
         }
 
-        private void OnAddNewCommandChanged(CommandBase newValue) {
+        private void OnAddNewCommandChanged(ICommand newValue) {
             InputBindings.Clear();
             InputBindings.Add(new InputBinding(newValue, new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
         }
 
-        private Button _addButton;
+        private Button _addButton, _batchActionRunButton, _batchActionCloseButton;
+        private HierarchicalComboBox _batchActions;
+        private ContentPresenter _batchAction;
+        private FrameworkElement _batchActionParams;
+        private TranslateTransform _batchActionParamsTransform;
+        private FrameworkElement _frame;
+        //private DoubleAnimation _batchActionParamsAnimation;
+        private SizeRelatedCondition[] _listSizeConditions;
 
         public override void OnApplyTemplate() {
+            DisposeHelper.Dispose(ref _listSizeConditions);
+
+            if (_list != null) {
+                _list.PreviewMouseLeftButtonDown -= OnLeftMouseDown;
+                _list.SizeChanged -= OnListSizeChanged;
+            }
+
             if (_addButton != null) {
                 _addButton.Click -= OnAddButtonClick;
             }
 
+            if (_batchActionCloseButton != null) {
+                _batchActionCloseButton.Click -= OnBatchActionCloseButtonClick;
+            }
+
+            if (_batchActionRunButton != null) {
+                _batchActionRunButton.Click -= OnBatchActionRunButtonClick;
+            }
+
             base.OnApplyTemplate();
             _list = GetTemplateChild(@"ItemsList") as ListBox;
-            _list?.ScrollIntoView(_list.SelectedItem);
             _addButton = GetTemplateChild(@"AddCarButton") as Button;
+            _batchActions = GetTemplateChild(@"PART_BatchActions") as HierarchicalComboBox;
+            _batchAction = GetTemplateChild(@"PART_BatchAction") as ContentPresenter;
+            _batchActionParams = GetTemplateChild(@"PART_BatchActionParams") as FrameworkElement;
+            _batchActionRunButton = GetTemplateChild(@"PART_BatchBlock_RunButton") as Button;
+            _batchActionCloseButton = GetTemplateChild(@"PART_BatchBlock_CloseButton") as Button;
+            _frame = GetTemplateChild(@"PART_Frame") as FrameworkElement;
+            //_batchActionParamsAnimation = GetTemplateChild(@"PART_BatchActionParams_Animation") as DoubleAnimation;
+
+            if (_list != null) {
+                _list.ScrollIntoView(_list.SelectedItem);
+                _list.PreviewMouseLeftButtonDown += OnLeftMouseDown;
+                _list.SizeChanged += OnListSizeChanged;
+                _listSizeConditions = new SizeRelatedCondition[] {
+                    _list.AddWidthCondition(80)
+                         .Add(() => _batchActionCloseButton)
+                         .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
+                                 (c, x) => c.ColumnDefinitions[1].Width = new GridLength(x ? 8 : 0, GridUnitType.Pixel)),
+                    _list.AddWidthCondition(140).Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_RunButton_Text")),
+                    _list.AddWidthCondition(180)
+                         .Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_CloseButton_Text"))
+                         .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
+                                 (c, x) => c.ColumnDefinitions.Last().Width = new GridLength(1, x ? GridUnitType.Star : GridUnitType.Auto)),
+                    _list.AddWidthCondition(200).Add(x => SetNarrowList(_list, !x)),
+                };
+            }
 
             if (_addButton != null) {
                 _addButton.Click += OnAddButtonClick;
+            }
+
+            if (_batchActionCloseButton != null) {
+                _batchActionCloseButton.Click += OnBatchActionCloseButtonClick;
+            }
+
+            if (_batchActionRunButton != null) {
+                _batchActionRunButton.Click += OnBatchActionRunButtonClick;
+            }
+
+            if (_batchActionParams != null) {
+                _batchActionParamsTransform = new TranslateTransform();
+                _batchActionParams.RenderTransform = _batchActionParamsTransform;
+            }
+
+            UpdateBatchBlocksSizes();
+        }
+
+        private readonly Busy _batchActionRunBusy = new Busy();
+        private void OnBatchActionRunButtonClick(object sender, RoutedEventArgs e) {
+            _batchActionRunBusy.Task(async () => {
+                if (_selectedBatchAction == null || _list == null) return;
+
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Processing…"));
+                    await _selectedBatchAction.ApplyAsync(_list.SelectedItems, waiting, waiting.CancellationToken);
+                }
+            });
+        }
+
+        private void OnListSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
+            UpdateBatchBlocksSizes();
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
+            UpdateBatchBlocksSizes();
+        }
+
+        private void UpdateBatchBlocksSizes() {
+            if (_batchActionParams != null) {
+                _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, null);
+                if (SelectedBatchActionHasParams) {
+                    _batchActionParamsTransform.X = 0d;
+                } else {
+                    _batchActionParamsTransform.X = -_batchActionParams.ActualWidth;
+                }
             }
         }
 
@@ -162,6 +472,10 @@ namespace AcManager.Controls {
             }
         }
 
+        private void OnBatchActionCloseButtonClick(object sender, RoutedEventArgs e) {
+            SetMultiSelectionMode(false);
+        }
+
         private void OnAddButtonCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems.Count == 1) {
                 ItemsSource.MoveCurrentTo(e.NewItems[0]);
@@ -170,6 +484,8 @@ namespace AcManager.Controls {
 
         private void OnCurrentChanged(object sender, EventArgs e) {
             var newValue = ItemsSource.CurrentItem as AcItemWrapper;
+            SetValue(SelectedWrapperPropertyKey, newValue);
+
             if (ItemsSource.Contains(_selectedWrapper.Value)) {
                 _selectedWrapper.Value = newValue;
             } else {
@@ -177,7 +493,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private void SelectedAcObject_Outdated(object sender, EventArgs e) {
+        private void OnSelectedObjectOutdated(object sender, EventArgs e) {
             SetCurrentValue(SelectedSourceProperty, null);
 
             var oldItem = _selectedWrapper.Value;
@@ -225,6 +541,7 @@ namespace AcManager.Controls {
             if (newValue != null) {
                 newValue.CurrentChanged += OnCurrentChanged;
                 _selectedWrapper.Value = newValue.CurrentItem as AcItemWrapper;
+                SetValue(SelectedWrapperPropertyKey, newValue.CurrentItem as AcItemWrapper);
             }
         }
 
@@ -237,8 +554,8 @@ namespace AcManager.Controls {
                 typeof(AcListPage));
 
         public bool IsGroupingEnabled {
-            get { return (bool)GetValue(IsGroupingEnabledProperty); }
-            set { SetValue(IsGroupingEnabledProperty, value); }
+            get => (bool)GetValue(IsGroupingEnabledProperty);
+            set => SetValue(IsGroupingEnabledProperty, value);
         }
         #endregion
     }

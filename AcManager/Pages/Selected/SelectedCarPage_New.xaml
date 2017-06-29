@@ -3,8 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
-    mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}" SizeChanged="OnSizeChanged">
+    mc:Ignorable="d" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -149,7 +149,8 @@
           </Border>
           <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64"
               PreviewMouseLeftButtonUp="OnUpgradeIconClick" Filename="{Binding SelectedObject.UpgradeIcon}"
-              Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Background="{DynamicResource CarIconBackground}" Effect="{DynamicResource CarIconEffect}" />
         </mui:Cell>
 
         <!-- description -->
@@ -406,7 +407,7 @@
                 <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
                     c:PropertiesGrid.Label="Setups on TSM:">
                   <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
-                    <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 0 0" Click="OnTsmSetupsButtonClick" />
+                    <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 1 0" Click="OnTsmSetupsButtonClick" />
                     <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding SelectedObject.TsmSetupsCount}" />
                   </DockPanel>
                 </mui:BooleanSwitch>

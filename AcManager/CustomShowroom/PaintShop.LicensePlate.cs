@@ -234,7 +234,7 @@ namespace AcManager.CustomShowroom {
                                             ApplySlowNormals();
                                         }
                                     } catch (Exception e) {
-                                        NonfatalError.Notify("Can’t generate number plate", e);
+                                        NonfatalError.Notify("Canâ€™t generate number plate", e);
                                     } finally {
                                         _dirty = false;
                                     }

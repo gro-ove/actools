@@ -13,6 +13,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
     public static class AcSettingsHolder {
         #region Apps with presets
         public static readonly string AppsPresetsKey = @"In-Game Apps";
+        public static readonly PresetsCategory AppsPresetsCategory = new PresetsCategory(AppsPresetsKey);
 
         private class AppsPresetsInner : IUserPresetable, IPresetsPreviewProvider {
             private class Saveable {
@@ -21,10 +22,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public bool CanBeSaved => true;
-
             public string PresetableKey => AppsPresetsKey;
-
-            string IUserPresetable.PresetableCategory => PresetableKey;
+            PresetsCategory IUserPresetable.PresetableCategory => AppsPresetsCategory;
 
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
@@ -109,6 +108,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         #region Graphics with presets
         public static readonly string VideoPresetsKey = @"Video Settings";
+        public static readonly PresetsCategory VideoPresetsCategory = new PresetsCategory(VideoPresetsKey);
 
         private class VideoPresetsInner : IUserPresetable {
             private class Saveable {
@@ -116,10 +116,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public bool CanBeSaved => true;
-
             public string PresetableKey => VideoPresetsKey;
-
-            string IUserPresetable.PresetableCategory => VideoPresetsKey;
+            PresetsCategory IUserPresetable.PresetableCategory => VideoPresetsCategory;
 
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
@@ -166,6 +164,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         #region Audio with presets
         public static readonly string AudioPresetsKey = @"Audio Settings";
+        public static readonly PresetsCategory AudioPresetsCategory = new PresetsCategory(AudioPresetsKey);
 
         private class AudioPresetsInner : IUserPresetable {
             private class Saveable {
@@ -173,10 +172,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public bool CanBeSaved => true;
-
             public string PresetableKey => AudioPresetsKey;
-
-            string IUserPresetable.PresetableCategory => AudioPresetsKey;
+            PresetsCategory IUserPresetable.PresetableCategory => AudioPresetsCategory;
 
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {

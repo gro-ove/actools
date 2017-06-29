@@ -10,6 +10,7 @@ using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Render.Kn5Specific.Objects;
@@ -64,7 +65,7 @@ namespace AcManager.CustomShowroom {
                 _skin = value;
                 OnPropertyChanged();
 
-                _busy.Do(async () => {
+                _busy.Task(async () => {
                     await Task.Delay(1);
                     Slot.SelectSkin(value?.Id ?? Car?.SelectedSkin?.Id ?? "");
                 });
@@ -208,7 +209,7 @@ namespace AcManager.CustomShowroom {
             Slots.ItemPropertyChanged += OnSlotPropertyChanged;
             Slots.CollectionChanged+=OnSlotsCollectionChanged;
             Renderer.PropertyChanged += OnRendererPropertyChanged;
-            
+
             foreach (var slot in Slots) {
                 slot.MainCar = ReferenceEquals(Renderer.MainSlot, slot.Slot);
             }
@@ -217,7 +218,7 @@ namespace AcManager.CustomShowroom {
         private readonly Busy _listBusy = new Busy();
 
         private void OnSlotsCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
-            _listBusy.Do(async () => {
+            _listBusy.Task(async () => {
                 await Task.Delay(1);
                 Renderer.CarSlots = Slots.Select(x => x.Slot).Distinct().ToArray();
             });
@@ -269,10 +270,8 @@ namespace AcManager.CustomShowroom {
         public bool CanBeSaved => true;
 
         private readonly string _presetableKeyValue;
-
         public string PresetableKey => _presetableKeyValue;
-
-        string IUserPresetable.PresetableCategory => _presetableKeyValue;
+        PresetsCategory IUserPresetable.PresetableCategory => new PresetsCategory(_presetableKeyValue);
 
         public string ExportToPresetData() {
             return _saveable?.ToSerializedString();
@@ -294,8 +293,7 @@ namespace AcManager.CustomShowroom {
             var data = ExportToPresetData();
             if (data == null) return;
             await SharingUiHelper.ShareAsync(SharedEntryType.CustomShowroomPreset,
-                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(_presetableKeyValue)), null,
-                    data);
+                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(_presetableKeyValue)), null, data);
         }
         #endregion
 

@@ -327,8 +327,8 @@ namespace AcManager.Pages.Drive {
                     AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
                     Penalties = Penalties,
                     JumpStartPenalty = JumpStartPenalty,
-                    StartingPosition = RaceGridViewModel.StartingPosition == 0
-                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPosition,
+                    StartingPosition = RaceGridViewModel.StartingPositionLimited == 0
+                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPositionLimited,
                     RaceLaps = LapsNumber,
                     BotCars = botCars
                 };

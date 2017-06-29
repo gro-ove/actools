@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.AcSound;
 using AcManager.Controls;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.Helpers;
@@ -29,7 +30,7 @@ namespace AcManager.CustomShowroom {
                 return false;
             }
         }
-        
+
         private static bool _starting;
 
         private static void SetProperties(BaseKn5FormWrapper wrapper, IKn5ObjectRenderer renderer) {
@@ -72,9 +73,12 @@ namespace AcManager.CustomShowroom {
                                 new ToolsKn5ObjectRenderer(description) {
                                     UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa,
                                     UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa,
-                                    UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
+                                    UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom,
+                                    SoundFactory = new AcCarSoundFactory()
                                 } :
-                                new DarkKn5ObjectRenderer(description));
+                                new DarkKn5ObjectRenderer(description) {
+                                    SoundFactory = new AcCarSoundFactory()
+                                });
                         formWrapper = new LiteShowroomFormWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename);
                         renderer = toolsRenderer;
                     } else {

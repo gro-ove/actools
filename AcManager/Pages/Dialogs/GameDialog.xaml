@@ -12,7 +12,7 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource NumberCellStyle}">
+      <Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Number}">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource Error}" />
         <Style.Triggers>
           <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Value="-">
@@ -153,7 +153,7 @@
               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
             <DataGrid ItemsSource="{Binding PlayerEntries}" Style="{StaticResource DataGrid.ReadOnly}">
               <DataGrid.Columns>
-                <DataGridTemplateColumn Width="40" Header="" SortMemberPath="TakenPlace" CellStyle="{StaticResource NumberCellStyle}"
+                <DataGridTemplateColumn Width="40" Header="" SortMemberPath="TakenPlace" CellStyle="{StaticResource DataGridCell.Number}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
@@ -172,8 +172,8 @@
                     CellTemplate="{StaticResource DataGridCell.Car}" />
                 <DataGridTextColumn Width="120" Header="{x:Static c:ControlsStrings.TableHeader_BestLap}" SortMemberPath="BestLapTime"
                     Binding="{Binding BestLapTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
-                    CellStyle="{StaticResource NumberCellStyle}" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
-                <DataGridTemplateColumn Width="120" Header="Delta" SortMemberPath="DeltaToSessionBest" CellStyle="{StaticResource NumberCellStyle}"
+                    CellStyle="{StaticResource DataGridCell.Number}" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
+                <DataGridTemplateColumn Width="120" Header="Delta" SortMemberPath="DeltaToSessionBest" CellStyle="{StaticResource DataGridCell.Number}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">

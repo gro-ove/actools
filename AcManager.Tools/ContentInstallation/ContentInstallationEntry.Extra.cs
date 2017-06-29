@@ -37,7 +37,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        private static Task<IReadOnlyList<ExtraOption>> GetExtraOptionsAsync(EntryWrapper[] entries) {
+        private static Task<IReadOnlyList<ExtraOption>> GetExtraOptionsAsync(ContentEntryBase[] entries) {
             return GetGbwRelatedExtraOptions(entries);
         }
     }

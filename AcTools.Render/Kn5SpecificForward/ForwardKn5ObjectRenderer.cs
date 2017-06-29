@@ -469,6 +469,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public void ResetCamera() {
             UseFpsCamera = false;
             _resetState = 1f;
+            IsDirty = true;
         }
 
         private bool _reflectionCubemapAtCamera;
@@ -859,24 +860,25 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 CarSlots[i].CarNode?.OnTick(dt);
             }
 
-            const float threshold = 0.001f;
+            const float threshold = 0.01f;
             if (_resetState > threshold) {
-                if (!AutoRotate) {
+                /*if (!AutoRotate) {
                     _resetState = 0f;
                     return;
-                }
+                }*/
 
-                _resetState += (-0f - _resetState) / 10f;
+                var d = (dt * 10f).Saturate();
+                _resetState += (-0f - _resetState) * d;
                 if (_resetState <= threshold) {
                     AutoRotate = false;
                 }
 
                 var cam = CameraOrbit;
                 if (cam != null) {
-                    cam.Alpha += (_resetCamera.Alpha - cam.Alpha) / 10f;
-                    cam.Beta += (_resetCamera.Beta - cam.Beta) / 10f;
-                    cam.Radius += (_resetCamera.Radius - cam.Radius) / 10f;
-                    cam.FovY += (_resetCamera.FovY - cam.FovY) / 10f;
+                    cam.Alpha += (_resetCamera.Alpha - cam.Alpha) * d;
+                    cam.Beta += (_resetCamera.Beta - cam.Beta) * d;
+                    cam.Radius += (_resetCamera.Radius - cam.Radius) * d;
+                    cam.FovY += (_resetCamera.FovY - cam.FovY) * d;
                     cam.SetLens(cam.Aspect);
                 }
 

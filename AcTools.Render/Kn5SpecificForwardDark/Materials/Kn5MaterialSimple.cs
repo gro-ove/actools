@@ -37,6 +37,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             };
         }
 
+        protected override void RefreshOverride(IDeviceContextHolder contextHolder) {
+            Flags = default(uint);
+            base.RefreshOverride(contextHolder);
+        }
+
         private const SpecialRenderMode AllowedFlags = SpecialRenderMode.SimpleTransparent |
                 SpecialRenderMode.Simple |
                 SpecialRenderMode.Outline |

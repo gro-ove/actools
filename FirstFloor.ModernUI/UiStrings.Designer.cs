@@ -1303,6 +1303,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DDS Files|*.dds|All files (*.*)|*.*.
+        /// </summary>
+        public static string TexturesDdsFilter {
+            get {
+                return ResourceManager.GetString("TexturesDdsFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*.
         /// </summary>
         public static string TexturesFilter {

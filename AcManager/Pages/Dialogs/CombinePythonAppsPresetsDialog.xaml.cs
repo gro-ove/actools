@@ -100,7 +100,7 @@ namespace AcManager.Pages.Dialogs {
             public CombineDesktopEntry[] Entries { get; }
 
             public ViewModel() {
-                AppPresets = _helper.CreateGroup(AcSettingsHolder.AppsPresetsKey);
+                AppPresets = _helper.CreateGroup(AcSettingsHolder.AppsPresetsCategory);
                 Entries = Enumerable.Range(0, 4).Select(x => new CombineDesktopEntry {
                     DisplayName = $"Desktop #{x + 1}",
                     IsSelected = x == 0
@@ -121,7 +121,7 @@ namespace AcManager.Pages.Dialogs {
                     var data = AcSettingsHolder.CombineAppPresets(Entries.Select(x => Tuple.Create(x.Preset, x.PresetDesktopToUse.IntValue ?? 0)),
                             Entries.FindIndex(x => x.IsSelected) + 1);
                     string filename = null;
-                    if (PresetsManager.Instance.SavePresetUsingDialog(AcSettingsHolder.AppsPresetsKey, AcSettingsHolder.AppsPresetsKey, data, ref filename)) {
+                    if (PresetsManager.Instance.SavePresetUsingDialog(AcSettingsHolder.AppsPresetsKey, AcSettingsHolder.AppsPresetsCategory, data, ref filename)) {
                         UserPresetsControl.LoadPreset(AcSettingsHolder.AppsPresetsKey, filename);
                         return true;
                     }

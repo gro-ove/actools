@@ -174,7 +174,9 @@
     <Compile Include="Data\HierarchicalHelper.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
+    <Compile Include="Data\KunosDlcInformation.cs" />
     <Compile Include="Data\KunosLauncherDataWatcher.cs" />
+    <Compile Include="Data\NameNationality.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />

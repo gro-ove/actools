@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -14,33 +13,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Data {
-    public class NameNationality {
-        [Localizable(false)]
-        public string Name;
-
-        [Localizable(false)]
-        public string Nationality;
-    }
-
-    public sealed class KunosDlcInformation : Displayable {
-        public int Id { get; }
-
-        public string ShortName { get; }
-
-        public string[] Cars { get; }
-
-        public string[] Tracks { get; }
-
-        [JsonConstructor]
-        public KunosDlcInformation(int id, string shortName, string name, string[] cars, string[] tracks) {
-            Id = id;
-            ShortName = shortName;
-            DisplayName = name;
-            Cars = cars ?? new string[0];
-            Tracks = tracks ?? new string[0];
-        }
-    }
-
     public class DataProvider : NotifyPropertyChanged {
         private static DataProvider _instance;
 

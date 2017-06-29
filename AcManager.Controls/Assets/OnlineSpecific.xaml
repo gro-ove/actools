@@ -32,7 +32,7 @@
     </Border>
 
     <Border x:Key="FavouriteIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Favourite server" x:Shared="False">
-        <Path Data="{StaticResource BookmarkIconData}" Fill="{StaticResource FavouriteBrush}" Width="10" Height="10" Stretch="Uniform" />
+        <Path Data="{StaticResource BookmarkIconData}" Fill="{DynamicResource FavouriteBrush}" Width="10" Height="10" Stretch="Uniform" />
     </Border>
 
     <Border x:Key="HiddenIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Hidden server" x:Shared="False">

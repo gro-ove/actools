@@ -16,6 +16,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI;
@@ -92,7 +93,7 @@ namespace AcManager.Pages.ContentTools {
         private BetterListCollectionView _entriesView;
 
         public BetterListCollectionView EntriesView {
-            get { return _entriesView; }
+            get => _entriesView;
             set {
                 if (Equals(value, _entriesView)) return;
                 _entriesView = value;
@@ -103,7 +104,7 @@ namespace AcManager.Pages.ContentTools {
         private ChangeableObservableCollection<CarObjectEntry> _entries;
 
         public ChangeableObservableCollection<CarObjectEntry> Entries {
-            get { return _entries; }
+            get => _entries;
             set {
                 if (Equals(value, _entries)) return;
                 _entries = value;
@@ -123,7 +124,7 @@ namespace AcManager.Pages.ContentTools {
         private IFilter<CarObject> _filter;
 
         public string FilterValue {
-            get { return _filterValue; }
+            get => _filterValue;
             set {
                 if (Equals(value, _filterValue)) return;
                 _filterValue = value;
@@ -136,7 +137,7 @@ namespace AcManager.Pages.ContentTools {
         private CarObjectEntry _selectedEntry;
 
         public CarObjectEntry SelectedEntry {
-            get { return _selectedEntry; }
+            get => _selectedEntry;
             set {
                 if (Equals(value, _selectedEntry)) return;
 
@@ -158,7 +159,7 @@ namespace AcManager.Pages.ContentTools {
         private int _totalSelected;
 
         public int TotalSelected {
-            get { return _totalSelected; }
+            get => _totalSelected;
             set {
                 if (Equals(value, _totalSelected)) return;
                 _totalSelected = value;
@@ -182,7 +183,7 @@ namespace AcManager.Pages.ContentTools {
             private ICollection<CarSkinObject> _selectedSkins = new List<CarSkinObject>(0);
 
             public ICollection<CarSkinObject> SelectedSkins {
-                get { return _selectedSkins; }
+                get => _selectedSkins;
                 set {
                     if (Equals(value, _selectedSkins)) return;
                     _selectedSkins = value;
@@ -209,7 +210,7 @@ namespace AcManager.Pages.ContentTools {
             private bool? _isSelected = false;
 
             public bool? IsSelected {
-                get { return _isSelected; }
+                get => _isSelected;
                 set {
                     if (!SetIsSelected(value)) return;
 
@@ -222,16 +223,16 @@ namespace AcManager.Pages.ContentTools {
             }
 
             public bool? IsSelectedReadOnly {
-                get { return _isSelected; }
+                get => _isSelected;
 
                 // ReSharper disable once ValueParameterNotUsed
-                set { OnPropertyChanged(); }
+                set => OnPropertyChanged();
             }
 
             private bool _isCurrent;
 
             public bool IsCurrent {
-                get { return _isCurrent; }
+                get => _isCurrent;
                 set {
                     if (Equals(value, _isCurrent)) return;
                     _isCurrent = value;
@@ -397,7 +398,7 @@ namespace AcManager.Pages.ContentTools {
         private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
         public HierarchicalItemsView UpdatePreviewsPresets {
-            get { return _updatePreviewsPresets; }
+            get => _updatePreviewsPresets;
             set {
                 if (Equals(value, _updatePreviewsPresets)) return;
                 _updatePreviewsPresets = value;
@@ -443,8 +444,8 @@ namespace AcManager.Pages.ContentTools {
         private void InitializePreviews() {
             if (UpdatePreviewsPresets == null) {
                 UpdatePreviewsPresets = _helper.Create(
-                        SettingsHolder.CustomShowroom.CustomShowroomPreviews
-                                ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                        new PresetsCategory(SettingsHolder.CustomShowroom.CustomShowroomPreviews
+                                ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                         p => {
                             if (_runButtonClicked) {
                                 Run(p.Filename).Forget();

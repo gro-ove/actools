@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
@@ -45,8 +46,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(TagsList));
 
         public ContextMenu ItemContextMenu {
-            get { return (ContextMenu)GetValue(ItemContextMenuProperty); }
-            set { SetValue(ItemContextMenuProperty, value); }
+            get => (ContextMenu)GetValue(ItemContextMenuProperty);
+            set => SetValue(ItemContextMenuProperty, value);
         }
 
         public TagsList() {
@@ -54,15 +55,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public ObservableCollection<string> ItemsSource {
-            get { return (ObservableCollection<string>)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get => (ObservableCollection<string>)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
         }
 
         public CollectionView SuggestionsSource {
-            get { return (CollectionView)GetValue(SuggestionsSourceProperty); }
-            set { SetValue(SuggestionsSourceProperty, value); }
+            get => (CollectionView)GetValue(SuggestionsSourceProperty);
+            set => SetValue(SuggestionsSourceProperty, value);
         }
-        
+
         private ComboBox _previousTextBox;
 
         public override void OnApplyTemplate() {
@@ -107,12 +108,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 textBox.Text = "";
 
                 if (e.Key == Key.Tab) {
-                    FocusAdvancement.MoveFocus(textBox, Keyboard.Modifiers == ModifierKeys.Shift ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next);
+                    textBox.MoveFocus(Keyboard.Modifiers == ModifierKeys.Shift ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next);
                 } else if (e.Key == Key.Escape) {
-                    FocusAdvancement.RemoveFocus(textBox);
+                    textBox.RemoveFocus();
                 }
             } else if (string.IsNullOrWhiteSpace(textBox.Text) || IsCaretAtFront(textBox)) {
-                FocusAdvancement.MoveFocus(textBox, FocusNavigationDirection.Previous);
+                textBox.MoveFocus(FocusNavigationDirection.Previous);
             } else {
                 return;
             }
@@ -144,8 +145,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(TagsList));
 
         public bool IsReadOnly {
-            get { return (bool)GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
+            get => (bool)GetValue(IsReadOnlyProperty);
+            set => SetValue(IsReadOnlyProperty, value);
         }
     }
 

@@ -60,24 +60,25 @@
       <mui:Cell x:Name="CarCell" Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}"
           AllowDrop="True" Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
         <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding SelectedCar.DisplayName}"
-            Foreground="White" TextTrimming="CharacterEllipsis" />
+        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedCar.DisplayName}"
+            Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
 
-        <Border Opacity="0" Background="Transparent" Cursor="Hand"
+        <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
             Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <mui:Cell Background="#33000000">
-            <mui:Cell.Effect>
-              <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
-            </mui:Cell.Effect>
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car" Click="OnCarBlockClick" />
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
+          <mui:Cell Effect="{DynamicResource OverlayEffect}">
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car" Click="OnCarBlockClick" />
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
                 PreviewMouseRightButtonDown="OnShowroomContextMenu" />
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}" />
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}" />
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}" />
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}" />
           </mui:Cell>
           <Border.Triggers>
             <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -108,19 +109,18 @@
           AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
         <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
         <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="160" ShowBroken="False" />
-        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding SelectedTrack.Name}"
-            Foreground="White" TextTrimming="CharacterEllipsis" />
+        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
+            Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
 
-        <Border Opacity="0" Background="Transparent" Cursor="Hand"
+        <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
             Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <mui:Cell Background="#33000000">
-            <mui:Cell.Effect>
-              <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
-            </mui:Cell.Effect>
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track" Click="OnTrackBlockClick" />
-            <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0"
-                HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}" />
+          <mui:Cell Effect="{DynamicResource OverlayEffect}">
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track" Click="OnTrackBlockClick" />
+            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0" HorizontalAlignment="Center"
+                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}" />
           </mui:Cell>
           <Border.Triggers>
             <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -348,7 +348,7 @@
 
         <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
           <DockPanel DataContext="{Binding AssistsViewModel}" Margin="0 0 0 4">
-            <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+            <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0">
               <c:ModernPopup Padding="16 12 16 16">
                 <uc:TrackStateEditor DataContext="{Binding Data.TrackState, Source={StaticResource Model}}" />
               </c:ModernPopup>

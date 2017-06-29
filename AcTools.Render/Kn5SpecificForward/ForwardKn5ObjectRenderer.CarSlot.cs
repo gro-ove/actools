@@ -10,6 +10,7 @@ using AcTools.Kn5File;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -17,6 +18,8 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public partial class ForwardKn5ObjectRenderer {
+        [CanBeNull]
+        public IAcCarSoundFactory SoundFactory { get; set; }
         public static int OptionCacheSize = 0;
 
         private class PreviousCar {
@@ -50,7 +53,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             public void Initialize() {
                 if (_car != null) {
-                    var carNode = new Kn5RenderableCar(_car, Matrix.Identity, _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
+                    var carNode = new Kn5RenderableCar(_car, Matrix.Identity, _renderer.SoundFactory,
+                            _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
                             asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                             asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
                             allowSkinnedObjects: _renderer.AllowSkinnedObjects);
@@ -255,7 +259,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                         return;
                     }
 
-                    loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
+                    loaded = new Kn5RenderableCar(car, Matrix.Identity, _renderer.SoundFactory,
+                            _selectSkinLater ? _selectSkin : skinId,
                             asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                             asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
                             allowSkinnedObjects: _renderer.AllowSkinnedObjects);
@@ -331,7 +336,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     if (cancellationToken.IsCancellationRequested) return;
 
                     await Task.Run(() => {
-                        loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
+                        loaded = new Kn5RenderableCar(car, Matrix.Identity, _renderer.SoundFactory,
+                                _selectSkinLater ? _selectSkin : skinId,
                                 asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                                 asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
                                 allowSkinnedObjects: _renderer.AllowSkinnedObjects);
@@ -457,6 +463,36 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public void SelectSkin(string skinId) {
             MainSlot.SelectSkin(skinId);
+        }
+
+        public void RefreshMaterial(Kn5 kn5, uint materialId) {
+            if (ShowroomNode != null && ShowroomNode.OriginalFile == kn5) {
+                ShowroomNode.RefreshMaterial(DeviceContextHolder, materialId);
+                IsDirty = true;
+            } else {
+                foreach (var carSlot in CarSlots) {
+                    if (carSlot.CarNode?.OriginalFile != kn5) continue;
+                    carSlot.CarNode.RefreshMaterial(DeviceContextHolder, materialId);
+                    IsDirty = true;
+                    return;
+                }
+            }
+        }
+
+        public void UpdateMaterialPropertyA(Kn5 kn5, uint materialId, string propertyName, float valueA) {
+            var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
+            if (prop != null) {
+                prop.ValueA = valueA;
+                RefreshMaterial(kn5, materialId);
+            }
+        }
+
+        public void UpdateMaterialPropertyC(Kn5 kn5, uint materialId, string propertyName, float[] valueC) {
+            var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
+            if (prop != null) {
+                prop.ValueC = valueC;
+                RefreshMaterial(kn5, materialId);
+            }
         }
     }
 }

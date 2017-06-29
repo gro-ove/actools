@@ -87,6 +87,10 @@ namespace AcTools.Render.Base.Utils {
             return new Vector3(vec.X, vec.Y, vec.Z);
         }
 
+        public static float[] ToArray(this Vector3 vec) {
+            return new []{ vec.X, vec.Y, vec.Z };
+        }
+
         public static Color ToDrawingColor(this Vector3 color) {
             return Color.FromArgb((int)(color.X * 255f).Clamp(0, 255), (int)(color.Y * 255f).Clamp(0, 255), (int)(color.Z * 255f).Clamp(0, 255));
         }

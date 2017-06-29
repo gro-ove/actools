@@ -36,13 +36,13 @@ namespace AcTools.Utils {
 
             return Path.Combine(directory, $"en.{extension}");
         }
-        
+
         private Dictionary<string, string> _tag;
         private IniFile _ini;
 
         [CanBeNull]
-        public string GetString(string category, string key) {
-            if (!_exists) return null;
+        public string GetString(string category, [CanBeNull] string key) {
+            if (!_exists || key == null) return null;
             if (category == CategoryTag) {
                 if (_tag == null) {
                     _tag = TagFile.FromFile(GetSupported(_locale, _directory, @"tag"));
