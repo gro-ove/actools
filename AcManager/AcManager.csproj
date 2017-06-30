@@ -210,6 +210,7 @@
     <Compile Include="AppUi.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
     <Compile Include="CustomShowroom\BakedShadowsRendererViewModel.cs" />
+    <Compile Include="CustomShowroom\Kn5Extension.cs" />
     <Compile Include="CustomShowroom\Kn5MaterialDialog.xaml.cs">
       <DependentUpon>Kn5MaterialDialog.xaml</DependentUpon>
     </Compile>

@@ -1979,6 +1979,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     RootObject.GetAllChildren().Contains(obj);
         }
 
+        public Kn5 GetCurrentLodKn5() {
+            return _currentLodObject.NonDefaultKn5 ?? OriginalFile;
+        }
+
         [NotNull]
         public Kn5 GetKn5(IKn5RenderableObject obj) {
             if (_driver != null && _driver.GetAllChildren().Contains(obj)) {

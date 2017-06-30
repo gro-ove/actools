@@ -7,15 +7,34 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class PathTrimmingTextBlock : TextBlock, IValueConverter {
+    public class PathTrimmingTextBlock : RichTextBox, IValueConverter {
         public PathTrimmingTextBlock() {
+            DefaultStyleKey = typeof(PathTrimmingTextBlock);
+
             Loaded += OnLoaded;
             SizeChanged += OnSizeChanged;
             Background = new SolidColorBrush(Colors.Transparent);
-            TextTrimming = TextTrimming.CharacterEllipsis;
+            // TextTrimming = TextTrimming.CharacterEllipsis;
+
+            DataObject.AddCopyingHandler(this, CopyCommand);
+            MouseDown += OnMouseDown;
+
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            Document.PageWidth = 2000;
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
+            SelectAll();
+        }
+
+        private void CopyCommand(object sender, DataObjectEventArgs e) {
+            e.Handled = true;
+            e.CancelCommand();
+            Clipboard.SetText(Text);
         }
 
         private void Update() {
@@ -26,7 +45,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 var trimmed = GetTrimmedPath(ActualWidth);
                 ToolTip = trimmed == text ? null : text;
-                SetValue(TextBlock.TextProperty, trimmed);
+
+                Document.Blocks.Clear();
+                Document.Blocks.Add(new Paragraph(new Run(trimmed)) {
+                    TextAlignment = TextAlignment.Left
+                });
             }
         }
 
@@ -53,7 +76,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected void SetPlaceholder() {
-            Inlines.Clear();
+            Document.Blocks.Clear();
             var placeholder = Placeholder;
             if (!string.IsNullOrEmpty(placeholder)) {
                 var inline = new Run { Text = placeholder };
@@ -62,7 +85,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Source = this,
                     Converter = this
                 });
-                Inlines.Add(inline);
+                Document.Blocks.Add(new Paragraph(inline) {
+                    TextAlignment = TextAlignment.Left
+                });
             }
         }
 
@@ -70,21 +95,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(PathTrimmingTextBlock), new PropertyMetadata(OnPlaceholderChanged));
 
         public string Placeholder {
-            get { return (string)GetValue(PlaceholderProperty); }
-            set { SetValue(PlaceholderProperty, value); }
+            get => (string)GetValue(PlaceholderProperty);
+            set => SetValue(PlaceholderProperty, value);
         }
 
         private static void OnPlaceholderChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((PathTrimmingTextBlock)o).Update();
         }
 
-        public new static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string),
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string),
                 typeof(PathTrimmingTextBlock), new PropertyMetadata(OnTextChanged));
 
         private string _text;
-        public new string Text {
-            get { return _text; }
-            set { SetValue(TextProperty, value); }
+        public string Text {
+            get => _text;
+            set => SetValue(TextProperty, value);
         }
 
         private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

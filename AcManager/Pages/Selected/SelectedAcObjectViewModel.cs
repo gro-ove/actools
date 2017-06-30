@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -226,7 +225,7 @@ namespace AcManager.Pages.Selected {
 
         [CanBeNull]
         private string GetSpecsValue(string key) {
-            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item3.Invoke() ?? null;
+            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item3.Invoke();
         }
 
         private void SetSpecsValue(string key, string value) {

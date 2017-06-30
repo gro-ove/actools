@@ -446,7 +446,7 @@ namespace AcManager.Tools {
         }
 
         public static async Task GenerateRandomAsync(CarSkinObject target) {
-            var editor = new LiveryIconEditor(target, true, false, null, null);
+            var editor = new LiveryIconEditor(target, true, true, null, null);
             await editor.GuessColorsAsync();
             editor.CreateNewIcon();
         }

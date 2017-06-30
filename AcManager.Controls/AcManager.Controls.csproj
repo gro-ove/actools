@@ -137,6 +137,7 @@
   <ItemGroup>
     <Compile Include="AppModernWindow.cs" />
     <Compile Include="BatchAction.cs" />
+    <Compile Include="CommonBatchActions.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
     <Compile Include="Graphs\CarGraphViewer.cs" />
@@ -370,6 +371,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\AcListPage.BatchStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\AcListPage.CommonBatchActions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

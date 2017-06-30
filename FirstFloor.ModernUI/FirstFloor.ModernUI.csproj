@@ -424,6 +424,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\SelectableBbCodeBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Watermark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

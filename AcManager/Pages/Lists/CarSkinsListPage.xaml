@@ -1,66 +1,29 @@
-﻿<UserControl x:Class="AcManager.Pages.Lists.CarSkinsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<c:AcListPage x:Class="AcManager.Pages.Lists.CarSkinsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:li="clr-namespace:AcManager.Pages.Lists" mc:Ignorable="d" FocusVisualStyle="{x:Null}" Unloaded="OnUnloaded"
-    d:DataContext="{d:DesignInstance li:CarSkinsListPage+ViewModel}">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Grid Style="{StaticResource ContentRoot}">
-    <c:AcListPage ItemsSource="{Binding MainList}" Visibility="{Binding SelectedCar}">
-      <c:AcListPage.Template>
-        <ControlTemplate TargetType="c:AcListPage">
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="200" />
-              <ColumnDefinition Width="9" />
-              <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}"
-                Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" HorizontalAlignment="Center"
-                VerticalAlignment="Center" Margin="0 0 0 100" />
-
-            <Grid Grid.Column="0" Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-              <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-
-              <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
-                  VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
-                  ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}">
-                <ListBox.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
-                        IsVirtualizing="True" />
-                  </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-              </ListBox>
-
-              <Border Grid.Row="1" Background="Transparent">
-                <Border.ContextMenu>
-                  <ContextMenu>
-                    <MenuItem Header="Reset priorities" Command="{Binding ResetPriorityCommand}"
-                        ToolTip="Priority for all skins in the list will be reset to 0 (or removed if that option is enabled)" />
-                  </ContextMenu>
-                </Border.ContextMenu>
-                <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
-              </Border>
-            </Grid>
-
-            <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-            <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" />
-          </Grid>
-        </ControlTemplate>
-      </c:AcListPage.Template>
-    </c:AcListPage>
-  </Grid>
-</UserControl>
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:li="clr-namespace:AcManager.Pages.Lists" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded" Margin="{StaticResource ContentMargin}"
+    d:DataContext="{d:DesignInstance li:CarSkinsListPage+ViewModel}" ItemsSource="{Binding MainList}"
+    SaveScrollKey="{Binding SelectedCar.Id, StringFormat='{}CarSkinsListPage.Scroll:{0}'}">
+  <c:AcListPage.Resources>
+    <DataTemplate x:Key="Batch.UpdateLivery" DataType="{x:Type li:CarSkinsListPage+BatchAction_UpdateLivery}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <!--<DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
+        </DockPanel>-->
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding RandomShape}">
+            <Label Content="Random shape" />
+          </CheckBox>
+          <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+            <Label Content="Sort tags" />
+          </CheckBox>-->
+        </mui:SpacingUniformGrid>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
+  </c:AcListPage.Resources>
+</c:AcListPage>

@@ -39,13 +39,13 @@
       <Setter.Value>
         <ControlTemplate TargetType="c:UserPresetsControl">
           <DockPanel>
-            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" DockPanel.Dock="Bottom" Margin="0 4 0 0">
+            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" DockPanel.Dock="Bottom" Margin="0 4 0 0" Height="24">
               <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"
                   Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" />
-              <Button Command="{Binding Settings.ShareCommand}" Content="Share" />
+                  ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" Padding="4 2 4 3" />
+              <Button Command="{Binding Settings.ShareCommand}" Content="Share" Padding="4 2 4 3" />
             </mui:SpacingUniformGrid>
-            <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
+            <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False" Height="24">
               <mui:HierarchicalComboBox.SelectedContent>
                 <DataTemplate>
                   <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"

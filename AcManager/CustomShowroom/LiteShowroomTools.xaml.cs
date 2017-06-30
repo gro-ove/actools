@@ -760,17 +760,6 @@ namespace AcManager.CustomShowroom {
             }
             #endregion
 
-            #region Ambient Shadows
-            private DelegateCommand _toggleAmbientShadowModeCommand;
-
-            public DelegateCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
-                Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
-            }));
-
-            private static string ToString(Vector3 vec) {
-                return $"{-vec.X:F3}, {vec.Y:F3}, {vec.Z:F3}";
-            }
-
             private DelegateCommand _copyCameraPositionCommand;
 
             public DelegateCommand CopyCameraPositionCommand => _copyCameraPositionCommand ?? (_copyCameraPositionCommand = new DelegateCommand(() => {
@@ -781,6 +770,30 @@ namespace AcManager.CustomShowroom {
                         180d / Math.PI * renderer.Camera.FovY),
                         "Camera Position");
             }));
+
+            private AsyncCommand _updateKn5Command;
+
+            public AsyncCommand UpdateKn5Command => _updateKn5Command ?? (_updateKn5Command = new AsyncCommand(async () => {
+                var renderer = Renderer;
+                var kn5 = renderer?.CarNode?.GetCurrentLodKn5();
+                if (kn5 == null) return;
+
+                using (WaitingDialog.Create("Updating model…")) {
+                    renderer.CarNode.UpdateCurrentLodKn5Values();
+                    await kn5.UpdateKn5(_renderer, _skin);
+                }
+            }));
+
+            #region Ambient Shadows
+            private DelegateCommand _toggleAmbientShadowModeCommand;
+
+            public DelegateCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
+                Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
+            }));
+
+            private static string ToString(Vector3 vec) {
+                return $"{-vec.X:F3}, {vec.Y:F3}, {vec.Z:F3}";
+            }
 
             private double _ambientShadowDiffusion;
 

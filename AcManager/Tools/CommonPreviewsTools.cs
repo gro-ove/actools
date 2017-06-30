@@ -48,7 +48,7 @@ namespace AcManager.Tools {
                     case UpdatePreviewMode.Options:
                         return CmPreviewsFormWrapper.Run(list, presetFilename);
                     case UpdatePreviewMode.StartManual:
-                        NonfatalError.Notify("Can’t update previews in Manual Mode with Custom Showroom",
+                        NonfatalError.Notify("Canâ€™t update previews in Manual Mode with Custom Showroom",
                                 "Why would you need it anyway? Just open Custom Previews settings, locate camera the way you want and update one or all previews.");
                         return Task.FromResult<IReadOnlyList<UpdatePreviewError>>(null);
                     default:
@@ -63,11 +63,11 @@ namespace AcManager.Tools {
         /*public static Task Run(this ToUpdatePreview toUpdate, UpdatePreviewMode? mode = null) {
             return new[] { toUpdate }.Run(mode);
         }
-        
+
         public static async Task Run(this IEnumerable<ToUpdatePreview> toUpdate, UpdatePreviewMode? mode = null) {
             var errors = await toUpdate.Try(mode);
             if (errors?.Count > 0) {
-                NonfatalError.Notify("Can’t update previews", errors.Select(x => x.Message.ToSentence()).JoinToString(Environment.NewLine));
+                NonfatalError.Notify("Canâ€™t update previews", errors.Select(x => x.Message.ToSentence()).JoinToString(Environment.NewLine));
             }
         }*/
     }

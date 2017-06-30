@@ -26,6 +26,7 @@
     <ResourceDictionary Source="ProgressBar.xaml" />
     <ResourceDictionary Source="RadioButton.xaml" />
     <ResourceDictionary Source="ScrollBar.xaml" />
+    <ResourceDictionary Source="SelectableBbCodeBlock.xaml" />
     <ResourceDictionary Source="Slider.xaml" />
     <ResourceDictionary Source="TextBlock.xaml" />
     <ResourceDictionary Source="TextBox.xaml" />

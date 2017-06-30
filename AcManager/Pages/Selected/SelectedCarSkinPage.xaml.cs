@@ -52,15 +52,15 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private CommandBase _createJsonCommand;
+            private DelegateCommand _createJsonCommand;
 
-            public ICommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new DelegateCommand(() => {
+            public DelegateCommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new DelegateCommand(() => {
                 SelectedObject.Save();
             }));
 
-            private CommandBase _deleteJsonCommand;
+            private DelegateCommand _deleteJsonCommand;
 
-            public ICommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new DelegateCommand(() => {
+            public DelegateCommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new DelegateCommand(() => {
                 try {
                     if (File.Exists(SelectedObject.JsonFilename)) {
                         FileUtils.Recycle(SelectedObject.JsonFilename);
@@ -70,44 +70,44 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private CommandBase _changeLiveryCommand;
+            private DelegateCommand _changeLiveryCommand;
 
-            public ICommand ChangeLiveryCommand => _changeLiveryCommand ??
+            public DelegateCommand ChangeLiveryCommand => _changeLiveryCommand ??
                     (_changeLiveryCommand = new DelegateCommand(() => new LiveryIconEditorDialog(SelectedObject).ShowDialog()));
 
-            private CommandBase _generateLiveryCommand;
+            private AsyncCommand _generateLiveryCommand;
 
-            public ICommand GenerateLiveryCommand => _generateLiveryCommand ??
+            public AsyncCommand GenerateLiveryCommand => _generateLiveryCommand ??
                     (_generateLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateAsync(SelectedObject)));
 
-            private CommandBase _generateRandomLiveryCommand;
+            private AsyncCommand _generateRandomLiveryCommand;
 
-            public ICommand GenerateRandomLiveryCommand => _generateRandomLiveryCommand ??
+            public AsyncCommand GenerateRandomLiveryCommand => _generateRandomLiveryCommand ??
                     (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
 
 
             #region Auto-Update Previews
-            private CommandBase _updatePreviewCommand;
+            private AsyncCommand _updatePreviewCommand;
 
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ??
+            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ??
                     (_updatePreviewCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(), () => SelectedObject.Enabled));
 
-            private ICommand _updatePreviewsManuallyCommand;
+            private AsyncCommand _updatePreviewsManuallyCommand;
 
-            public ICommand UpdatePreviewManuallyCommand => _updatePreviewsManuallyCommand ??
+            public AsyncCommand UpdatePreviewManuallyCommand => _updatePreviewsManuallyCommand ??
                     (_updatePreviewsManuallyCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(UpdatePreviewMode.StartManual),
                             () => SelectedObject.Enabled));
 
-            private ICommand _updatePreviewsOptionsCommand;
+            private AsyncCommand _updatePreviewsOptionsCommand;
 
-            public ICommand UpdatePreviewOptionsCommand => _updatePreviewsOptionsCommand ??
+            public AsyncCommand UpdatePreviewOptionsCommand => _updatePreviewsOptionsCommand ??
                     (_updatePreviewsOptionsCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(UpdatePreviewMode.Options),
                             () => SelectedObject.Enabled));
             #endregion
 
             #region Presets
             public HierarchicalItemsView ShowroomPresets {
-                get { return _showroomPresets; }
+                get => _showroomPresets;
                 set {
                     if (Equals(value, _showroomPresets)) return;
                     _showroomPresets = value;
@@ -116,7 +116,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView CustomShowroomPresets {
-                get { return _customShowroomPresets; }
+                get => _customShowroomPresets;
                 set {
                     if (Equals(value, _customShowroomPresets)) return;
                     _customShowroomPresets = value;
@@ -125,7 +125,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView UpdatePreviewsPresets {
-                get { return _updatePreviewsPresets; }
+                get => _updatePreviewsPresets;
                 set {
                     if (Equals(value, _updatePreviewsPresets)) return;
                     _updatePreviewsPresets = value;
@@ -134,7 +134,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public HierarchicalItemsView QuickDrivePresets {
-                get { return _quickDrivePresets; }
+                get => _quickDrivePresets;
                 set {
                     if (Equals(value, _quickDrivePresets)) return;
                     _quickDrivePresets = value;
@@ -180,43 +180,43 @@ namespace AcManager.Pages.Selected {
             #endregion
 
             #region Open In Showroom
-            private CommandBase _openInShowroomCommand;
+            private DelegateCommand<object> _openInShowroomCommand;
 
-            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
+            public DelegateCommand<object> OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute(o);
+                    OpenInCustomShowroomCommand.Execute();
                     return;
                 }
 
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(Car, SelectedObject.Id)) {
-                    OpenInShowroomOptionsCommand.Execute(null);
+                    OpenInShowroomOptionsCommand.Execute();
                 }
             }, o => SelectedObject.Enabled));
 
-            private CommandBase _openInShowroomOptionsCommand;
+            private DelegateCommand _openInShowroomOptionsCommand;
 
-            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
                 new CarOpenInShowroomDialog(Car, SelectedObject.Id).ShowDialog();
             }, () => SelectedObject.Enabled));
 
-            private CommandBase _openInCustomShowroomCommand;
+            private AsyncCommand _openInCustomShowroomCommand;
 
-            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+            public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
                     (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(Car, SelectedObject)));
 
-            private CommandBase _driveCommand;
+            private DelegateCommand _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(Car, SelectedObject.Id)) {
-                    DriveOptionsCommand.Execute(null);
+                    DriveOptionsCommand.Execute();
                 }
             }, () => SelectedObject.Enabled));
 
-            private CommandBase _driveOptionsCommand;
+            private DelegateCommand _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(Car, SelectedObject.Id);
             }, () => SelectedObject.Enabled));
             #endregion
@@ -269,8 +269,9 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
-                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control | ModifierKeys.Alt)),
 
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
@@ -290,7 +291,7 @@ namespace AcManager.Pages.Selected {
 
         private void OnIconClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                _model.ChangeLiveryCommand.Execute(null);
+                _model.ChangeLiveryCommand.Execute();
             }
         }
 

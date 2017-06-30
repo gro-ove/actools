@@ -5,7 +5,6 @@
     Margin="{StaticResource ContentMargin}" d:DataContext="{d:DesignInstance li:CarsListPage+ViewModel}" ItemsSource="{Binding MainList}"
     SaveScrollKey="CarsListPage.Scroll">
   <c:AcListPage.Resources>
-
     <DataTemplate x:Key="Batch.AddTag" DataType="{x:Type li:CarsListPage+BatchAction_AddTag}">
       <DataTemplate.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
@@ -25,30 +24,5 @@
         </mui:SpacingUniformGrid>
       </mui:SpacingStackPanel>
     </DataTemplate>
-
-    <!--<c:BatchActionParams x:Key="Batch.AddTag" DisplayName="Add Tag" Group="UI" Description="Modify list of tags for several cars easily" DisplayApply="Apply"
-        Preparation="Batch_AddTag_OnPreparation" AvailableTest="Batch_AddTag_OnAvailable" Action="Batch_AddTag_OnAction">
-      <ControlTemplate>
-        <ControlTemplate.Resources>
-          <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
-        </ControlTemplate.Resources>
-        <mui:SpacingStackPanel Spacing="4">
-          <DockPanel VerticalAlignment="Top">
-            <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource Label}" />
-            <mui:TagsList x:Name="TagsList" Margin="0 -4 0 -4" />
-          </DockPanel>
-          <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
-            <CheckBox Style="{StaticResource CheckBox}" x:Name="CleanUpTags" IsChecked="{mui:Stored batch.addTag.cleanUp}">
-              <Label Content="Clean up tags" />
-            </CheckBox>
-            <CheckBox Style="{StaticResource CheckBox}" x:Name="SortTags" IsChecked="{mui:Stored batch.addTag.sort}">
-              <Label Content="Sort tags" />
-            </CheckBox>
-          </mui:SpacingUniformGrid>
-        </mui:SpacingStackPanel>
-      </ControlTemplate>
-    </c:BatchActionParams>
-    <c:BatchActionParams x:Key="Batch.FixFormats" DisplayName="Fix Specs Formats" Group="UI" Action="Batch_FixFormats_OnAction" Template="{x:Null}"
-        Description="This way, they’ll be more readable" />-->
   </c:AcListPage.Resources>
 </c:AcListPage>

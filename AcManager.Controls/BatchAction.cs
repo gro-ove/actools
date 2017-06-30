@@ -9,13 +9,14 @@ using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    public abstract class BatchAction : Displayable {
+    public abstract class BatchAction : Displayable, IWithId {
         [CanBeNull]
         private readonly string _paramsTemplateKey;
 
@@ -24,12 +25,15 @@ namespace AcManager.Controls {
             set => base.DisplayName = value;
         }
 
+        public string Id { get; protected set; }
+        public bool InternalWaitingDialog { get; protected set; }
         public string DisplayApply { get; protected set; }
         public string Description { get; }
         public string GroupPath { get; }
 
         public BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey) {
             _paramsTemplateKey = paramsTemplateKey;
+            Id = GetType().Name;
             DisplayName = displayName;
             Description = description;
             GroupPath = groupPath;
@@ -64,21 +68,25 @@ namespace AcManager.Controls {
             return true;
         }
 
-        public abstract Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        public abstract Task ApplyAsync(IList list, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 
     public abstract class BatchAction<T> : BatchAction where T : AcObjectNew {
         public BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey)
                 : base(displayName, description, groupPath, paramsTemplateKey) { }
 
+        protected IEnumerable<T> OfType(IList list) {
+            return list.OfType<AcItemWrapper>().Select(x => x.Value).OfType<T>();
+        }
+
         public override void OnSelectionChanged(IList list) {
-            OnSelectionChanged(list.OfType<AcItemWrapper>().Select(x => x.Value).OfType<T>());
+            OnSelectionChanged(OfType(list));
         }
 
         public virtual void OnSelectionChanged(IEnumerable<T> enumerable){}
 
         public override bool IsAvailable(IList list) {
-            return IsAvailable(list.OfType<AcItemWrapper>().Select(x => x.Value).OfType<T>());
+            return IsAvailable(OfType(list));
         }
 
         public virtual bool IsAvailable(IEnumerable<T> enumerable) {
@@ -88,10 +96,12 @@ namespace AcManager.Controls {
         public override async Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var s = Stopwatch.StartNew();
 
-            foreach (var t in list.OfType<AcItemWrapper>().Select(x => x.Value).OfType<T>().ToList()) {
-                ApplyOverride(t);
+            var l = OfType(list).ToList();
+            for (var i = 0; i < l.Count; i++) {
+                await ApplyOverrideAsync(l[i]);
                 if (s.ElapsedMilliseconds > 5) {
-                    await Task.Delay(10);
+                    progress?.Report(l[i].DisplayName, i, l.Count);
+                    await Task.Delay(5);
                     if (cancellation.IsCancellationRequested) return;
                     s.Restart();
                 }
@@ -100,6 +110,11 @@ namespace AcManager.Controls {
             OnSelectionChanged(list);
         }
 
-        protected abstract void ApplyOverride(T obj);
+        protected virtual Task ApplyOverrideAsync(T obj) {
+            ApplyOverride(obj);
+            return Task.Delay(0);
+        }
+
+        protected virtual void ApplyOverride(T obj) { }
     }
 }

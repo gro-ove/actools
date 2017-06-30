@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+  <DataTemplate x:Key="Batch.SetRating" DataType="{x:Type ac:CommonBatchActions+BatchAction_SetRating}">
+    <DataTemplate.Resources>
+      <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+          <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+          <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
+    </DataTemplate.Resources>
+
+    <mui:SpacingStackPanel Spacing="4">
+      <DockPanel VerticalAlignment="Top" IsEnabled="{Binding RemoveRating, Converter={StaticResource InvertBooleanConverter}}">
+        <TextBlock Text="Rating:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+        <ac:RatingBar Rating="{Binding Rating}" />
+      </DockPanel>
+      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding RemoveRating}">
+          <Label Content="Remove rating" />
+        </CheckBox>
+      </mui:SpacingUniformGrid>
+    </mui:SpacingStackPanel>
+  </DataTemplate>
+</ResourceDictionary>

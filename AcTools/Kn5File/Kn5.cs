@@ -21,10 +21,8 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5Header Header;
-
         public Dictionary<string, Kn5Texture> Textures;
         public Dictionary<string, byte[]> TexturesData;
-
         public Dictionary<string, Kn5Material> Materials;
 
         [CanBeNull]

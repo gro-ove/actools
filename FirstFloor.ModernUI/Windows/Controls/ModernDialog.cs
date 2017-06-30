@@ -250,13 +250,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Title = title.ToTitle(),
                 Content = new ScrollViewer {
                     Content = content,
+                    MaxWidth = 640,
+                    MaxHeight = 520,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },
                 MinHeight = 0,
                 MinWidth = 0,
-                MaxHeight = 480,
-                MaxWidth = 640
+                MaxHeight = 640,
+                MaxWidth = 800
             };
 
             if (owner != null) {

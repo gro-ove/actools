@@ -43,6 +43,11 @@ namespace AcManager.Tools.Data {
         }
 
         [Pure, CanBeNull]
+        public static T FirstOrDefault<T>([NotNull] this HierarchicalGroup source) {
+            return source.OfType<T>().FirstOrDefault();
+        }
+
+        [Pure, CanBeNull]
         public static T FirstOrDefault<T>([NotNull] this HierarchicalGroup source, Func<T, bool> filter) {
             return source.HierarchicalWhere(filter).FirstOrDefault();
         }

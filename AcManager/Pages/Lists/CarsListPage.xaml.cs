@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Selected;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
@@ -29,13 +33,6 @@ namespace AcManager.Pages.Lists {
             var filter = uri.GetQueryParam("Filter");
             DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(CarObjectTester.Instance, filter));
             InitializeComponent();
-        }
-
-        protected override IEnumerable<BatchAction> GetBatchActions() {
-            return new BatchAction[] {
-                new BatchAction_AddTag(),
-                new BatchAction_FixSpecsFormat()
-            };
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -86,15 +83,53 @@ namespace AcManager.Pages.Lists {
         private static string _selectNextCarSkinId; // TODO
 
         #region Batch actions
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return new BatchAction[] {
+                CommonBatchActions.BatchAction_AddToFavourites.Instance,
+                CommonBatchActions.BatchAction_RemoveFromFavourites.Instance,
+                CommonBatchActions.BatchAction_SetRating.Instance,
+
+                BatchAction_AddTag.Instance,
+                BatchAction_FixSpecsFormat.Instance,
+                BatchAction_SetBrandBadge.Instance,
+            };
+        }
+
         public class BatchAction_FixSpecsFormat : BatchAction<CarObject> {
+            public static readonly BatchAction_FixSpecsFormat Instance = new BatchAction_FixSpecsFormat();
             public BatchAction_FixSpecsFormat() : base("Fix Specs Format", "This way, they’ll be more readable", "UI", null) { }
 
             protected override void ApplyOverride(CarObject obj) {
-                Logging.Debug(obj);
+                new SelectedCarPage_New.ViewModel(obj, true).FixFormatCommand.Execute(null);
+            }
+        }
+
+        public class BatchAction_SetBrandBadge : BatchAction<CarObject> {
+            public static readonly BatchAction_SetBrandBadge Instance = new BatchAction_SetBrandBadge();
+            public BatchAction_SetBrandBadge() : base("Update Brand Badge", "Will be updated if exists in library, ", "UI", null) { }
+
+            private List<FilesStorage.ContentEntry> _badges;
+
+            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                _badges = FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges).ToList();
+                return base.ApplyAsync(list, progress, cancellation);
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                var badge = _badges.FirstOrDefault(x => string.Equals(x.Name, obj.Brand, StringComparison.OrdinalIgnoreCase));
+                if (badge == null) return;
+
+                if (File.Exists(obj.BrandBadge)) {
+                    FileUtils.Recycle(obj.BrandBadge);
+                }
+
+                File.Copy(badge.Filename, obj.BrandBadge);
             }
         }
 
         public class BatchAction_AddTag : BatchAction<CarObject> {
+            public static readonly BatchAction_AddTag Instance = new BatchAction_AddTag();
+
             public BatchAction_AddTag() : base("Add Tag", "Modify list of tags for several cars easily", "UI", "Batch.AddTag") {
                 DisplayApply = "Apply";
                 Tags = new BetterObservableCollection<string>();
@@ -105,7 +140,6 @@ namespace AcManager.Pages.Lists {
             private List<string> _originalTags;
 
             private bool _sortTags = ValuesStorage.GetBool("_ba.addTag.sort", true);
-
             public bool SortTags {
                 get => _sortTags;
                 set {
@@ -117,7 +151,6 @@ namespace AcManager.Pages.Lists {
             }
 
             private bool _cleanUp = ValuesStorage.GetBool("_ba.addTag.clean", false);
-
             public bool CleanUp {
                 get => _cleanUp;
                 set {

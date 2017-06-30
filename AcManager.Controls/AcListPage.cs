@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -14,6 +17,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
@@ -25,6 +29,11 @@ using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Binding = System.Windows.Data.Binding;
+using Button = System.Windows.Controls.Button;
+using Control = System.Windows.Controls.Control;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using ListBox = System.Windows.Controls.ListBox;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
@@ -224,17 +233,77 @@ namespace AcManager.Controls {
             return true;
         }
 
+        private class BatchActionComparer : IComparer<object> {
+            public static readonly BatchActionComparer Instance = new BatchActionComparer();
+
+            public int Compare(object x, object y) {
+                var gx = x as HierarchicalGroup;
+                var gy = y as HierarchicalGroup;
+
+                string sx, sy;
+                if (gx != null) {
+                    if (gy == null) return -1;
+                    sx = gx.DisplayName;
+                    sy = gy.DisplayName;
+                } else {
+                    if (gy != null) return 1;
+                    sx = (x as BatchAction)?.DisplayName;
+                    sy = (y as BatchAction)?.DisplayName;
+                }
+
+                return sx == null ?
+                        (sy == null ? 0 : 1) :
+                        (sy == null ? -1 : string.Compare(sx, sy, StringComparison.InvariantCulture));
+            }
+        }
+
+        private HierarchicalGroup GroupItems() {
+            var result = new HierarchicalGroup();
+            var dict = new Dictionary<string, HierarchicalGroup> {
+                [""] = result
+            };
+
+            HierarchicalGroup GetGroup(string group) {
+                if (string.IsNullOrWhiteSpace(group)) return result;
+                if (dict.TryGetValue(group, out var v)) return v;
+                var i = group.LastIndexOf('/');
+                v = new HierarchicalGroup(i == -1 ? group : group.Substring(i + 1));
+                (i == -1 ? result : GetGroup(group.Substring(0, i))).Add(v);
+                dict[group] = v;
+                return v;
+            }
+
+            foreach (var action in GetBatchActionsArray()) {
+                GetGroup(action.GroupPath).Add(action);
+            }
+
+            foreach (var group in dict.Values) {
+                group.Sort(BatchActionComparer.Instance);
+            }
+
+            return result;
+        }
+
+        private string _batchActionKey;
+
         private void SetBatchActions() {
             if (_batchActionsSet || _batchActions == null) return;
             _batchActionsSet = true;
 
-            _batchActions.ItemsSource = new HierarchicalGroup("", GetBatchActionsArray().OrderBy(x => x.DisplayName));
+            var grouped = GroupItems();
+            _batchActions.ItemsSource = grouped;
             _batchActions.SetBinding(HierarchicalComboBox.SelectedItemProperty, new Binding(nameof(SelectedBatchAction)) {
                 Source = this,
                 Mode = BindingMode.TwoWay
             });
 
-            SelectedBatchAction = _batchActions.ItemsSource.OfType<BatchAction>().FirstOrDefault();
+            if (_batchActionKey == null) {
+                _batchActionKey = "batchAction:" + GetType().Name;
+            }
+
+            var selected = ValuesStorage.GetString(_batchActionKey);
+            SelectedBatchAction = (selected == null ? null : grouped.GetByIdOrDefault<BatchAction>(selected)) ??
+                    grouped.FirstOrDefault<BatchAction>();
         }
 
         public static readonly DependencyProperty SelectedBatchActionProperty = DependencyProperty.Register(nameof(SelectedBatchAction), typeof(BatchAction),
@@ -253,35 +322,39 @@ namespace AcManager.Controls {
         private BatchAction _selectedBatchAction;
 
         private void OnSelectedBatchActionChanged([CanBeNull] BatchAction newValue) {
-            var hasParams = newValue?.GetParams(this) != null;
-            if (hasParams == SelectedBatchActionHasParams) return;
-
             _selectedBatchAction = newValue;
-            _selectedBatchActionHasParams = hasParams;
-            SetValue(SelectedBatchActionHasParamsPropertyKey, hasParams);
+            if (_batchActionKey != null && _selectedBatchAction != null) {
+                ValuesStorage.Set(_batchActionKey, _selectedBatchAction.Id);
+            }
 
-            if (_batchActionParams != null) {
-                try {
-                    var size = _batchActionParams.ActualWidth;
-                    var duration = TimeSpan.FromMilliseconds(size / 4);
+            var hasParams = newValue?.GetParams(this) != null;
+            if (hasParams != SelectedBatchActionHasParams) {
+                _selectedBatchActionHasParams = hasParams;
+                SetValue(SelectedBatchActionHasParamsPropertyKey, hasParams);
 
-                    _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
-                        To = 0d,
-                        Duration = duration,
-                        FillBehavior = FillBehavior.HoldEnd,
-                        EasingFunction = (EasingFunctionBase)FindResource("DecelerationEase")
-                    } : new DoubleAnimation {
-                        To = -size,
-                        Duration = duration,
-                        FillBehavior = FillBehavior.HoldEnd,
-                        EasingFunction = (EasingFunctionBase)FindResource("AccelerationEase")
-                    });
-                } catch (Exception e) {
-                    Logging.Warning(e);
-                }
+                if (_batchActionParams != null) {
+                    try {
+                        var size = _batchActionParams.ActualWidth;
+                        var duration = TimeSpan.FromMilliseconds(size / 4);
 
-                if (newValue?.GetParams(this) != null) {
-                    _batchAction.Content = newValue.GetParams(this);
+                        _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
+                            To = 0d,
+                            Duration = duration,
+                            FillBehavior = FillBehavior.HoldEnd,
+                            EasingFunction = (EasingFunctionBase)FindResource("DecelerationEase")
+                        } : new DoubleAnimation {
+                            To = -size,
+                            Duration = duration,
+                            FillBehavior = FillBehavior.HoldEnd,
+                            EasingFunction = (EasingFunctionBase)FindResource("AccelerationEase")
+                        });
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+
+                    if (newValue?.GetParams(this) != null) {
+                        _batchAction.Content = newValue.GetParams(this);
+                    }
                 }
             }
 
@@ -344,7 +417,7 @@ namespace AcManager.Controls {
         private ContentPresenter _batchAction;
         private FrameworkElement _batchActionParams;
         private TranslateTransform _batchActionParamsTransform;
-        private FrameworkElement _frame;
+        //private FrameworkElement _frame;
         //private DoubleAnimation _batchActionParamsAnimation;
         private SizeRelatedCondition[] _listSizeConditions;
 
@@ -376,7 +449,7 @@ namespace AcManager.Controls {
             _batchActionParams = GetTemplateChild(@"PART_BatchActionParams") as FrameworkElement;
             _batchActionRunButton = GetTemplateChild(@"PART_BatchBlock_RunButton") as Button;
             _batchActionCloseButton = GetTemplateChild(@"PART_BatchBlock_CloseButton") as Button;
-            _frame = GetTemplateChild(@"PART_Frame") as FrameworkElement;
+            //_frame = GetTemplateChild(@"PART_Frame") as FrameworkElement;
             //_batchActionParamsAnimation = GetTemplateChild(@"PART_BatchActionParams_Animation") as DoubleAnimation;
 
             if (_list != null) {
@@ -418,15 +491,23 @@ namespace AcManager.Controls {
         }
 
         private readonly Busy _batchActionRunBusy = new Busy();
-        private void OnBatchActionRunButtonClick(object sender, RoutedEventArgs e) {
-            _batchActionRunBusy.Task(async () => {
-                if (_selectedBatchAction == null || _list == null) return;
+        private void OnBatchActionRunButtonClick(object sender, RoutedEventArgs args) {
+            try {
+                _batchActionRunBusy.Task(async () => {
+                    if (_selectedBatchAction == null || _list == null) return;
 
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Processing…"));
-                    await _selectedBatchAction.ApplyAsync(_list.SelectedItems, waiting, waiting.CancellationToken);
-                }
-            });
+                    if (_selectedBatchAction.InternalWaitingDialog) {
+                        await _selectedBatchAction.ApplyAsync(_list.SelectedItems, null, default(CancellationToken));
+                    } else {
+                        using (var waiting = new WaitingDialog()) {
+                            waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Processing…"));
+                            await _selectedBatchAction.ApplyAsync(_list.SelectedItems, waiting, waiting.CancellationToken);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                NonfatalError.Notify("Batch processing failed", e);
+            }
         }
 
         private void OnListSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {

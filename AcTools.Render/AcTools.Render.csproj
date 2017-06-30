@@ -388,7 +388,7 @@
     <TransformOnBuild>true</TransformOnBuild>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; zsh -c "~/bin/t4auto Shaders.tt *(F)"
+    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; rem zsh -c "~/bin/t4auto Shaders.tt *(F)"
 vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -495,34 +495,8 @@ namespace AcManager.CustomShowroom {
 
             public void OnLoaded() {}
 
-            public async Task UpdateKn5(bool updateModel) {
-                var backup = _kn5.OriginalFilename + ".backup";
-                try {
-                    if (!File.Exists(backup)) {
-                        File.Copy(_kn5.OriginalFilename, backup);
-                    }
-                } catch (Exception e) {
-                    Logging.Warning(e);
-                }
-
-                await Task.Run(() => {
-                    using (var f = FileUtils.RecycleOriginal(_kn5.OriginalFilename)) {
-                        _kn5.Save(f.Filename);
-                    }
-                });
-
-                if (updateModel) {
-                    var car = _activeSkin == null ? null : CarsManager.Instance.GetById(_activeSkin.CarId);
-                    var slot = (_renderer as ToolsKn5ObjectRenderer)?.MainSlot;
-                    if (car != null && slot != null) {
-                        slot.SetCar(CarDescription.FromKn5(_kn5, car.Location, car.AcdData));
-                        slot.SelectSkin(_activeSkin.Id);
-                    }
-                }
-            }
-
             public async Task UpdateKn5AndClose(bool updateModel) {
-                await UpdateKn5(updateModel);
+                await _kn5.UpdateKn5(updateModel ? _renderer : null, _activeSkin);
                 Close?.Invoke();
             }
 

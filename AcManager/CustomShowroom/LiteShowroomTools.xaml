@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom"
     mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" Width="250"
-    SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" ResizeMode="CanResizeWithGrip" LocationAndSizeKey="__cmls"
+    SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls"
     d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
@@ -313,7 +313,7 @@
 
   <DockPanel Margin="-4 -8 -4 -20">
     <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
-        Style="{StaticResource CompactUserPresetsControl}" Margin="0 20 0 0" />
+        Style="{StaticResource CompactUserPresetsControl}" Margin="0 20 0 0" Width="208" />
 
     <mui:LazySwitch Value="{Binding Mode}">
       <FrameworkElement.Resources>
@@ -424,8 +424,8 @@
               <Button Margin="0 20 0 0" Command="{Binding ToggleSkinModeCommand}" Content="Modify Skin" />
               <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
                   Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-              <Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
-                  ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />
+              <!--<Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
+                  ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />-->
 
               <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -848,6 +848,9 @@
                   <Label Content="Horn" />
                 </CheckBox>
               </mui:SpacingStackPanel>
+
+              <Button Margin="0 8 0 0" Command="{Binding UpdateKn5Command}" Content="Update Model"
+                  ToolTip="Save model state, such as wheels position or blurred rims on/off (experimental; current version will be moved to the Recycle Bin)" />
             </mui:SpacingStackPanel>
           </ScrollViewer>
 

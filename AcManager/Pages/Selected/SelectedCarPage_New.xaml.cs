@@ -44,9 +44,11 @@ namespace AcManager.Pages.Selected {
         public static bool OptionExtendedMode = true;
 
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
-            public ViewModel([NotNull] CarObject acObject) : base(acObject) {
+            public ViewModel([NotNull] CarObject acObject, bool liteMode = false) : base(acObject) {
                 InitializeSpecs();
-                InitializeLater().Forget();
+                if (!liteMode) {
+                    InitializeLater().Forget();
+                }
             }
 
             public async Task InitializeLater() {

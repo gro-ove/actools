@@ -232,10 +232,23 @@ namespace AcManager.Tools.AcObjectsNew {
             throw new NotSupportedException();
         }
 
+        public class PackParams {
+            public bool
+        }
+
         private void Pack(Stream outputZipStream, IProgress<string> progress) {
             var packer = CreatePacker();
             packer.SetProgress(progress);
             packer.Pack(outputZipStream, this);
+        }
+
+        public static void Pack<T>(IEnumerable<T> objs, Stream outputZipStream, IProgress<string> progress) where T : AcCommonObject {
+            var list = objs.ToList();
+            if (list.Count == 0) return;
+
+            var packer = list.First().CreatePacker();
+            packer.SetProgress(progress);
+            packer.Pack(outputZipStream, list);
         }
 
         private AsyncCommand _packCommand;

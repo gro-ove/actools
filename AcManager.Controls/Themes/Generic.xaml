@@ -87,7 +87,7 @@
           <graphs:CustomTrackerControl PositionOverride="{Binding Position}" LineExtentsOverride="{Binding PlotModel.PlotArea}">
             <graphs:CustomTrackerControl.Content>
               <!--this is just horrible-->
-              <TextBlock Text="{Binding}" Margin="-64 4 0 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
+              <TextBlock Text="{Binding}" Margin="-54 4 0 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch" Foreground="{DynamicResource WindowText}" />
             </graphs:CustomTrackerControl.Content>
           </graphs:CustomTrackerControl>

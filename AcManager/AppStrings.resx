@@ -1503,7 +1503,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update skin’s preview (Ctrl+P)</value>
   </data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
-    <value>Change skin’s livery.png (Ctrl+L)</value>
+    <value>Change skin’s livery.png (Ctrl+J)</value>
   </data>
   <data name="AcObject_TeamLabel" xml:space="preserve">
     <value>Team:</value>

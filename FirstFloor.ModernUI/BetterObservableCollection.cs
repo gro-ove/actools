@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
@@ -30,6 +31,24 @@ namespace FirstFloor.ModernUI {
                 foreach (var item in list) {
                     Add(item);
                 }
+            }
+        }
+
+        public void Sort(IComparer<T> comparer) {
+            var list = Items as List<T>;
+            if (list != null) {
+#if DEBUG
+                Logging.Debug("Sort at list");
+#endif
+                list.Sort(comparer);
+                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            } else {
+#if DEBUG
+                Logging.Debug("Sort by replacing");
+#endif
+                ReplaceEverythingBy(Items.OrderBy(x => x, comparer));
             }
         }
 

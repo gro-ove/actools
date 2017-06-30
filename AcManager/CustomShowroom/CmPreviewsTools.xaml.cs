@@ -368,10 +368,11 @@ namespace AcManager.CustomShowroom {
                 _options = options;
                 _presetName = presetName;
 
-                _localUpdater = updater == null;
-                if (_localUpdater) {
+                if (updater == null) {
+                    _localUpdater = true;
                     _updater = new DarkPreviewsUpdater(AcRootDirectory.Instance.RequireValue, options);
                 } else {
+                    _updater = updater;
                     _updater.SetOptions(options);
                 }
             }
@@ -418,7 +419,7 @@ namespace AcManager.CustomShowroom {
             private IReadOnlyList<CarSkinObject> _currentSkins;
             private CarSkinObject _currentSkin;
 
-            async Task<IReadOnlyList<UpdatePreviewError>> RunReady() {
+            private async Task<IReadOnlyList<UpdatePreviewError>> RunReady() {
                 _checksum = _options.GetChecksum();
 
                 _finished = false;
@@ -443,7 +444,7 @@ namespace AcManager.CustomShowroom {
 
                 _started = Stopwatch.StartNew();
 
-                _dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.1), DispatcherPriority.Background, TimerCallback,
+                _dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.5), DispatcherPriority.Background, TimerCallback,
                         Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
                 _dispatcherTimer.Start();
 
