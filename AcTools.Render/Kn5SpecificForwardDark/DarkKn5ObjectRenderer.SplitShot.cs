@@ -11,7 +11,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer {
         public static double OptionMaxMultipler = 1d;
         public static float OptionGBufferExtra = 2f;
-        public static bool OptionHwCrop = true;
+        public const bool OptionHwCrop = true;
 
         private delegate void SplitCallback(Action<Stream> stream, int x, int y, int width, int height);
 
@@ -51,7 +51,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     Camera.SetLens(Camera.Aspect);
 
                     callback(s => {
-                        Shot(halfMultiplier, downscale, OptionHwCrop && expand ? OptionGBufferExtra : 1d, s, true);
+                        Shot(halfMultiplier, downscale, expand ? OptionGBufferExtra : 1d, s, true);
                     }, x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
 
                 }
@@ -69,7 +69,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public MagickImage SplitShot(double multiplier, double downscale, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height };
-            var expand = UseSslr || UseAo;
             var cuts = Math.Ceiling(multiplier / OptionMaxMultipler).FloorToInt();
             var result = new MagickImage(MagickColors.Black,
                     (original.Width * cuts * downscale).RoundToInt(),
@@ -82,10 +81,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                     stream.Position = 0;
                     using (var piece = new MagickImage(stream)) {
-                        if (expand && !OptionHwCrop) {
-                            piece.Crop(original.Width, original.Height, Gravity.Center);
-                        }
-
                         result.Composite(piece, x * width, y * height);
                     }
                 }
@@ -100,10 +95,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public SplitShotInformation SplitShot(double multiplier, double downscale, string destination, bool softwareDownscale, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var original = new { Width, Height };
-            var expand = UseSslr || UseAo;
             var cuts = Math.Ceiling(multiplier / OptionMaxMultipler).FloorToInt();
-            var magickMode = softwareDownscale || !OptionHwCrop;
+            var magickMode = softwareDownscale;
             var extension = magickMode ? "jpg" : "png";
 
             Directory.CreateDirectory(destination);
@@ -116,10 +109,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                         stream.Position = 0;
                         using (var piece = new MagickImage(stream)) {
-                            if (expand && !OptionHwCrop) {
-                                piece.Crop(original.Width, original.Height, Gravity.Center);
-                            }
-
                             piece.Downscale();
                             ImageUtils.SaveImage(piece, filename, exif: new ImageUtils.ImageInformation());
                         }
