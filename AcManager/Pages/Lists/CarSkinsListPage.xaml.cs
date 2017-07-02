@@ -15,6 +15,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -145,18 +146,15 @@ namespace AcManager.Pages.Lists {
 
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return new BatchAction[] {
-                CommonBatchActions.BatchAction_AddToFavourites.Instance,
-                CommonBatchActions.BatchAction_RemoveFromFavourites.Instance,
-                CommonBatchActions.BatchAction_SetRating.Instance,
-
+            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
                 BatchAction_UpdateLivery.Instance,
                 BatchAction_UpdatePreviews.Instance,
                 BatchAction_ResetPriority.Instance,
                 BatchAction_RemoveNumbers.Instance,
                 BatchAction_RemoveUiSkinJson.Instance,
                 BatchAction_CreateMissingUiSkinJson.Instance,
-            };
+                BatchAction_PackSkins.Instance,
+            });
         }
 
         public class BatchAction_UpdateLivery : BatchAction<CarSkinObject> {
@@ -243,6 +241,42 @@ namespace AcManager.Pages.Lists {
 
             protected override void ApplyOverride(CarSkinObject obj) {
                 obj.Save();
+            }
+        }
+
+        public class BatchAction_PackSkins : CommonBatchActions.BatchAction_Pack<CarSkinObject> {
+            public static readonly BatchAction_PackSkins Instance = new BatchAction_PackSkins();
+            public BatchAction_PackSkins() : base("Batch.PackCarSkins") {}
+
+            #region Properies
+            private bool _cmForFlag = ValuesStorage.GetBool("_ba.packSkins.cmForFlag", true);
+            public bool CmForFlag {
+                get => _cmForFlag;
+                set {
+                    if (Equals(value, _cmForFlag)) return;
+                    _cmForFlag = value;
+                    ValuesStorage.Set("_ba.packSkins.cmForFlag", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _cmPaintShopValues = ValuesStorage.GetBool("_ba.packSkins.cmPaintShopValues", true);
+            public bool CmPaintShopValues {
+                get => _cmPaintShopValues;
+                set {
+                    if (Equals(value, _cmPaintShopValues)) return;
+                    _cmPaintShopValues = value;
+                    ValuesStorage.Set("_ba.packSkins.cmPaintShopValues", value);
+                    OnPropertyChanged();
+                }
+            }
+            #endregion
+
+            protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
+                return new CarSkinObject.CarSkinPackerParams {
+                    CmForFlag = CmForFlag,
+                    CmPaintShopValues = CmPaintShopValues
+                };
             }
         }
         #endregion

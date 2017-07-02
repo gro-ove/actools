@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using AcManager.Tools.AcErrors;
@@ -9,9 +11,14 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
+using AcTools.AcdFile;
+using AcTools.DataFile;
+using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
@@ -122,7 +129,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string DriverName {
-            get { return _driverName; }
+            get => _driverName;
             set {
                 if (Equals(value, _driverName)) return;
                 _driverName = value;
@@ -139,7 +146,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Team {
-            get { return _team; }
+            get => _team;
             set {
                 if (Equals(value, _team)) return;
                 _team = value;
@@ -156,7 +163,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SkinNumber {
-            get { return _skinNumber; }
+            get => _skinNumber;
             set {
                 if (Equals(value, _skinNumber)) return;
                 _skinNumber = value;
@@ -171,7 +178,7 @@ namespace AcManager.Tools.Objects {
         private int? _priority;
 
         public int? Priority {
-            get { return _priority; }
+            get => _priority;
             set {
                 if (Equals(value, _priority)) return;
                 _priority = value;
@@ -264,5 +271,65 @@ namespace AcManager.Tools.Objects {
         }
 
         public ListCollectionView TeamsList => SuggestionLists.CarSkinDriverNamesList.View;
+
+        #region Packing
+        public class CarSkinPackerParams : AcCommonObjectPackerParams {
+            public bool CmForFlag { get; set; } = true;
+            public bool CmPaintShopValues { get; set; } = true;
+        }
+
+        private class CarSkinPacker : AcCommonObjectPacker<CarSkinObject, CarSkinPackerParams> {
+            protected override string GetBasePath(CarSkinObject t) {
+                return $"content/cars/{t.CarId}/skins/{t.Id}";
+            }
+
+            private static string _recentCarId;
+            private static string[] _recentTextures;
+
+            protected override void PackOverride(CarSkinObject t) {
+                Add("preview.jpg", "livery.png", "ui_skin.json");
+
+                if (Params.CmForFlag) {
+                    AddString("cm_skin_for.json", new JObject {
+                        ["id"] = t.CarId
+                    }.ToString(Formatting.Indented));
+                }
+
+                if (Params.CmPaintShopValues) {
+                    Add("cm_skin.json");
+                }
+
+                if (t.CarId == _recentCarId) {
+                    Add(_recentTextures);
+                } else {
+                    var car = CarsManager.Instance.GetById(t.CarId);
+                    if (car != null) {
+                        _recentCarId = t.CarId;
+                        _recentTextures = Kn5.FromFile(FileUtils.GetMainCarFilename(car.Location, car.AcdData),
+                                SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToArray();
+                        Add(_recentTextures);
+                    } else {
+                        Add("*.dds", "*.png", "*.jpg", "*.jpeg", "*.gif");
+                    }
+                }
+            }
+
+            protected override PackedDescription GetDescriptionOverride(CarSkinObject t) {
+                return new PackedDescription(t.Id, t.Name,
+                    new Dictionary<string, string> {
+                        ["Made for"] = CarsManager.Instance.GetById(t.CarId)?.DisplayName,
+                        ["Version"] = t.Version,
+                        ["Made by"] = t.Author,
+                        ["Webpage"] = t.Url,
+                    }, CarsManager.Instance.Directories.GetMainDirectory(), true) {
+                        FolderToMove = t.CarId
+                    };
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new CarSkinPacker();
+        }
+        #endregion
     }
 }

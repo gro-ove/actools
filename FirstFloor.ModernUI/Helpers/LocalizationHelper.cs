@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Localizable;
@@ -121,7 +122,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return i / 1024d / 1024d;
         }
 
-        public static string ToReadableSize(this long i, int round = 2) {
+        public static string ToReadableSize(this long i, int? round = null) {
             var absoluteI = i < 0 ? -i : i;
 
             string suffix;
@@ -149,10 +150,26 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             readable = readable / 1024;
+
+            if (!round.HasValue) {
+                if (readable < 10) {
+                    round = 2;
+                } else if (readable < 100) {
+                    round = 1;
+                } else {
+                    round = 0;
+                }
+            }
+
             return $@"{readable.ToString($@"F{round}")} {suffix}";
         }
 
-        public static bool TryParseReadableSize(string size, [CanBeNull] string defaultPostfix, out long bytes) {
+        public static bool TryParseReadableSize([CanBeNull] string size, [CanBeNull] string defaultPostfix, out long bytes) {
+            if (string.IsNullOrWhiteSpace(size)) {
+                bytes = 0;
+                return false;
+            }
+
             var split = -1;
 
             for (var i = 0; i < size.Length; i++) {

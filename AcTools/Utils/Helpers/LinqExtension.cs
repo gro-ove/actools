@@ -657,6 +657,21 @@ namespace AcTools.Utils.Helpers {
             public int Compare(T x, T y) => _fn(x, y);
         }
 
+        [Pure]
+        public static bool AreIdentical<T>([NotNull] this IEnumerable<T> source) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            using (var enumerator = source.GetEnumerator()) {
+                if (!enumerator.MoveNext()) return true;
+                var first = enumerator.Current;
+                while (enumerator.MoveNext()) {
+                    if (!Equals(enumerator.Current, first)) return false;
+                }
+
+                return true;
+            }
+        }
+
         [Pure, NotNull]
         public static T GetById<T>([NotNull] this IEnumerable<T> source, string id) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));

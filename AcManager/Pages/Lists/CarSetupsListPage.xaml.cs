@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using AcManager.Controls;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
@@ -18,7 +21,9 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -204,5 +209,33 @@ namespace AcManager.Pages.Lists {
 
             mainWindow.NavigateTo(uri);
         }
+
+        #region Batch actions
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
+                //BatchAction_SetSetupTrack.Instance
+            });
+        }
+
+        public class BatchAction_SetSetupTrack : BatchAction<CarSetupObject> {
+            public static readonly BatchAction_SetSetupTrack Instance = new BatchAction_SetSetupTrack();
+            public BatchAction_SetSetupTrack() : base("Set Track", "Assign setups to a track", "Car Setup", null) { }
+
+            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                return base.ApplyAsync(list, progress, cancellation);
+            }
+
+            protected override void ApplyOverride(CarSetupObject obj) {
+                /*var badge = _badges.FirstOrDefault(x => string.Equals(x.Name, obj.Brand, StringComparison.OrdinalIgnoreCase));
+                if (badge == null) return;
+
+                if (File.Exists(obj.BrandBadge)) {
+                    FileUtils.Recycle(obj.BrandBadge);
+                }
+
+                File.Copy(badge.Filename, obj.BrandBadge);*/
+            }
+        }
+        #endregion
     }
 }

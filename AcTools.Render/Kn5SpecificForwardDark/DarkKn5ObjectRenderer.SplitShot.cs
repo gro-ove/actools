@@ -97,7 +97,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             public string Extension;
             public int Cuts;
         }
-        
+
         public SplitShotInformation SplitShot(double multiplier, double downscale, string destination, bool softwareDownscale, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height };
@@ -108,7 +108,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             Directory.CreateDirectory(destination);
             SplitShot(multiplier, downscale, (c, x, y, width, height) => {
-                var filename = Path.Combine(destination, $"{y}-{x}.{extension}");
+                var filename = Path.Combine(destination, $"{y:D2}-{x:D2}.{extension}");
                 if (magickMode) {
                     using (var stream = new MemoryStream()) {
                         c(stream);

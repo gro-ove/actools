@@ -165,7 +165,7 @@ namespace AcManager.Tools.AcManagersNew {
             // let’s move!
             try {
                 await MoveOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
-                AcCommonObject.MoveRatings<T>(oldId, newId, false);
+                AcObjectNew.MoveRatings<T>(oldId, newId, false);
             } catch (InformativeException) {
                 throw;
             } catch (Exception e) {
@@ -200,7 +200,7 @@ namespace AcManager.Tools.AcManagersNew {
             // let’s move!
             try {
                 await CloneOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
-                AcCommonObject.MoveRatings<T>(oldId, newId, true);
+                AcObjectNew.MoveRatings<T>(oldId, newId, true);
             } catch (InformativeException) {
                 throw;
             } catch (Exception e) {
@@ -208,7 +208,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public Task ToggleAsync(string id) {
+        public Task ToggleAsync(string id, bool? enabled = null) {
             if (!Directories.Actual) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -218,7 +218,25 @@ namespace AcManager.Tools.AcManagersNew {
                 throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             }
 
-            return RenameAsync(id, id, !wrapper.Value.Enabled);
+            return enabled == wrapper.Value.Enabled ? Task.Delay(0) :
+                RenameAsync(id, id, enabled ?? !wrapper.Value.Enabled);
+        }
+
+        public async Task ToggleAsync(IEnumerable<string> ids, bool? enabled = null) {
+            if (!Directories.Actual) return;
+            if (ids == null) throw new ArgumentNullException(nameof(ids));
+
+            var objs = ids.Select(GetWrapperById).ToList();
+            if (objs.Contains(null)) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(ids));
+
+            try {
+                foreach (var wrapper in objs) {
+                    if (enabled == wrapper.Value.Enabled) continue;
+                    await RenameAsync(wrapper.Id, wrapper.Id, enabled ?? !wrapper.Value.Enabled);
+                }
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+            }
         }
 
         public Task DeleteAsync([NotNull] string id) {
@@ -230,6 +248,34 @@ namespace AcManager.Tools.AcManagersNew {
 
             return DeleteOverrideAsync(id, obj.Location, GetAttachedFiles(obj.Location).NonNull());
         }
+
+        public async Task DeleteAsync([NotNull] IEnumerable<string> ids) {
+            if (!Directories.Actual) return;
+            if (ids == null) throw new ArgumentNullException(nameof(ids));
+
+            var objs = (await ids.Select(GetByIdAsync).WhenAll(10)).ToList();
+            if (objs.Contains(null)) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(ids));
+
+            try {
+                if (ModernDialog.ShowMessage(
+                        string.Format("Are you sure you want to move {0} to the Recycle Bin?", objs.Select(x => x.DisplayName).JoinToReadableString()),
+                        "Are You Sure?", MessageBoxButton.YesNo, new ModernDialog.ShowMessageCallbacks(
+                                () => SettingsHolder.Content.DeleteConfirmation ? (MessageBoxResult?)null : MessageBoxResult.Yes,
+                                r => {
+                                    if (r == MessageBoxResult.Yes) {
+                                        SettingsHolder.Content.DeleteConfirmation = false;
+                                    }
+                                })) == MessageBoxResult.Yes) {
+                    await DeleteOverrideAsync(objs.Select(x => Tuple.Create(x.Id, x.Location, GetAttachedFiles(x.Location).NonNull())));
+                }
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+            }
+        }
+
+        /*async Task IFileAcManager.DeleteAsync(IEnumerable<string> id) {
+            await DeleteAsync(id);
+        }*/
 
         public async Task<string> PrepareForAdditionalContentAsync([NotNull] string id, bool removeExisting) {
             if (id == null) throw new ArgumentNullException(nameof(id));
@@ -245,28 +291,6 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             return location;
-        }
-
-        // special version to remove a lot of objects at once
-        public async Task<bool> DeleteAsync([NotNull] IEnumerable<string> ids) {
-            if (!Directories.Actual) return false;
-            if (ids == null) throw new ArgumentNullException(nameof(ids));
-
-            var objs = (await ids.Select(GetByIdAsync).WhenAll(10)).ToList();
-            if (objs.Contains(null)) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(ids));
-
-            try {
-                if (!SettingsHolder.Content.DeleteConfirmation ||
-                        ModernDialog.ShowMessage(
-                                string.Format("Are you sure you want to move {0} to the Recycle Bin?", objs.Select(x => x.DisplayName).JoinToReadableString()),
-                                "Are You Sure?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                    await DeleteOverrideAsync(objs.Select(x => Tuple.Create(x.Id, x.Location, GetAttachedFiles(x.Location).NonNull())));
-                }
-                return true;
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-                return false;
-            }
         }
     }
 }

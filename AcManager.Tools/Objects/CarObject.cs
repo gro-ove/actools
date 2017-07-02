@@ -73,7 +73,7 @@ namespace AcManager.Tools.Objects {
                         ? $@"{Name} '{Year % 100:D2}" : Name;
 
         public override int? Year {
-            get { return base.Year; }
+            get => base.Year;
             set {
                 base.Year = value;
                 if (SettingsHolder.Content.CarsYearPostfix && Loaded) {
@@ -259,7 +259,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Brand {
-            get { return _brand; }
+            get => _brand;
             set {
                 value = value?.Trim();
 
@@ -281,7 +281,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string CarClass {
-            get { return _carClass; }
+            get => _carClass;
             set {
                 if (value == _carClass) return;
                 _carClass = value;
@@ -301,7 +301,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsBhp {
-            get { return _specsBhp; }
+            get => _specsBhp;
             set {
                 if (value == _specsBhp) return;
                 _specsBhp = value;
@@ -318,7 +318,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsTorque {
-            get { return _specsTorque; }
+            get => _specsTorque;
             set {
                 if (value == _specsTorque) return;
                 _specsTorque = value;
@@ -335,7 +335,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsWeight {
-            get { return _specsWeight; }
+            get => _specsWeight;
             set {
                 if (value == _specsWeight) return;
                 _specsWeight = value;
@@ -362,7 +362,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsTopSpeed {
-            get { return _specsTopSpeed; }
+            get => _specsTopSpeed;
             set {
                 if (value == _specsTopSpeed) return;
                 _specsTopSpeed = value;
@@ -379,7 +379,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsAcceleration {
-            get { return _specsAcceleration; }
+            get => _specsAcceleration;
             set {
                 if (value == _specsAcceleration) return;
                 _specsAcceleration = value;
@@ -396,7 +396,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsPwRatio {
-            get { return _specsPwRatio; }
+            get => _specsPwRatio;
             set {
                 if (value == _specsPwRatio) return;
                 _specsPwRatio = value;
@@ -468,7 +468,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public GraphData SpecsTorqueCurve {
-            get { return _specsTorqueCurve; }
+            get => _specsTorqueCurve;
             set {
                 if (value == _specsTorqueCurve) return;
                 _specsTorqueCurve = value;
@@ -485,7 +485,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public GraphData SpecsPowerCurve {
-            get { return _specsPowerCurve; }
+            get => _specsPowerCurve;
             set {
                 if (value == _specsPowerCurve) return;
                 _specsPowerCurve = value;
@@ -507,59 +507,6 @@ namespace AcManager.Tools.Objects {
         public string UpgradeIcon { get; private set; }
 
         public string SkinsDirectory { get; private set; }
-        #endregion
-
-        #region Packing
-        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`";
-
-        private static readonly Lazy<IFilter<CarObject>> CanBePackedFilterObj = new Lazy<IFilter<CarObject>>(() =>
-                Filter.Create(CarObjectTester.Instance, OptionCanBePackedFilter));
-
-        public override bool CanBePacked() {
-            return CanBePackedFilterObj.Value.Test(this);
-        }
-
-        private class CarPacker : AcCommonObjectPacker<CarObject> {
-            protected override void PackOverride(CarObject t) {
-                Add("body_shadow.png", "tyre_0_shadow.png", "tyre_1_shadow.png", "tyre_2_shadow.png", "tyre_3_shadow.png",
-                        "collider.kn5", "driver_base_pos.knh", "logo.png");
-                Add("animations/*.ksanim");
-                Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
-                Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
-                Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");
-
-                var textureNames = Kn5.FromFile(FileUtils.GetMainCarFilename(t.Location, t.AcdData),
-                        SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
-                Add(textureNames.Select(x => $"skins/*/{x}"));
-                Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
-
-                if (!Add("data.acd")) {
-                    var dataDirectory = Path.Combine(t.Location, "data");
-                    var acd = Acd.FromDirectory(dataDirectory);
-                    using (var s = new MemoryStream()) {
-                        acd.Save(dataDirectory, s);
-                        AddBytes("data.acd", s.ToArray());
-                    }
-                }
-
-                var data = DataWrapper.FromCarDirectory(t.Location);
-                Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
-            }
-
-            protected override PackedDescription GetDescriptionOverride(CarObject t) {
-                return new PackedDescription(t.Id, t.Name,
-                    new Dictionary<string, string> {
-                        ["Version"] = t.Version,
-                        ["Made by"] = t.Author,
-                        ["Webpage"] = t.Url,
-                        ["Packed at"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz"),
-                    }, CarsManager.Instance.Directories.GetMainDirectory(), true);
-            }
-        }
-
-        protected override AcCommonObjectPacker CreatePacker() {
-            return new CarPacker();
-        }
         #endregion
 
         #region Loading
@@ -640,5 +587,77 @@ namespace AcManager.Tools.Objects {
         public const string DraggableFormat = "Data-CarObject";
 
         string IDraggable.DraggableFormat => DraggableFormat;
+
+        #region Packing
+        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`";
+
+        private static readonly Lazy<IFilter<CarObject>> CanBePackedFilterObj = new Lazy<IFilter<CarObject>>(() =>
+                Filter.Create(CarObjectTester.Instance, OptionCanBePackedFilter));
+
+        public override bool CanBePacked() {
+            return CanBePackedFilterObj.Value.Test(this);
+        }
+
+        public class CarPackerParams : AcCommonObjectPackerParams {
+            public bool PackData { get; set; } = true;
+            public bool IncludeTemplates { get; set; } = true;
+        }
+
+        private class CarPacker : AcCommonObjectPacker<CarObject, CarPackerParams> {
+            protected override string GetBasePath(CarObject t) {
+                return $"content/cars/{t.Id}";
+            }
+
+            protected override void PackOverride(CarObject t) {
+                Add(t.AcdData?.GetIniFile("digital_instruments.ini").Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
+                     .NonNull()?.Select(FontsManager.Instance.GetByAcId));
+                Add(DriverModelsManager.Instance.GetByAcId(t.AcdData?.GetIniFile("driver3d.ini")["MODEL"].GetNonEmpty("NAME") ?? ""));
+
+                Add("body_shadow.png", "tyre_?_shadow.png", "collider.kn5", "driver_base_pos.knh", "logo.png");
+                Add("animations/*.ksanim");
+                Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
+                Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
+                Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");
+
+                if (Params.IncludeTemplates) {
+                    Add("templates/*");
+                }
+
+                var textureNames = Kn5.FromFile(FileUtils.GetMainCarFilename(t.Location, t.AcdData),
+                        SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
+                Add(textureNames.Select(x => $"skins/*/{x}"));
+                Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
+
+                if (!Add("data.acd")) {
+                    if (Params.PackData) {
+                        var dataDirectory = Path.Combine(t.Location, "data");
+                        var acd = Acd.FromDirectory(dataDirectory);
+                        using (var s = new MemoryStream()) {
+                            acd.Save(dataDirectory, s);
+                            AddBytes("data.acd", s.ToArray());
+                        }
+                    } else {
+                        Add("data/*");
+                    }
+                }
+
+                var data = DataWrapper.FromCarDirectory(t.Location);
+                Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
+            }
+
+            protected override PackedDescription GetDescriptionOverride(CarObject t) {
+                return new PackedDescription(t.Id, t.Name,
+                    new Dictionary<string, string> {
+                        ["Version"] = t.Version,
+                        ["Made by"] = t.Author,
+                        ["Webpage"] = t.Url,
+                    }, CarsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new CarPacker();
+        }
+        #endregion
     }
 }

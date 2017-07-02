@@ -25,6 +25,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using Microsoft.Win32;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
@@ -84,15 +85,12 @@ namespace AcManager.Pages.Lists {
 
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return new BatchAction[] {
-                CommonBatchActions.BatchAction_AddToFavourites.Instance,
-                CommonBatchActions.BatchAction_RemoveFromFavourites.Instance,
-                CommonBatchActions.BatchAction_SetRating.Instance,
-
+            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
                 BatchAction_AddTag.Instance,
                 BatchAction_FixSpecsFormat.Instance,
                 BatchAction_SetBrandBadge.Instance,
-            };
+                BatchAction_PackCars.Instance,
+            });
         }
 
         public class BatchAction_FixSpecsFormat : BatchAction<CarObject> {
@@ -106,7 +104,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_SetBrandBadge : BatchAction<CarObject> {
             public static readonly BatchAction_SetBrandBadge Instance = new BatchAction_SetBrandBadge();
-            public BatchAction_SetBrandBadge() : base("Update Brand Badge", "Will be updated if exists in library, ", "UI", null) { }
+            public BatchAction_SetBrandBadge() : base("Update Brand Badge", "Will be updated if exists in library", "UI", null) { }
 
             private List<FilesStorage.ContentEntry> _badges;
 
@@ -205,6 +203,43 @@ namespace AcManager.Pages.Lists {
                 }
 
                 obj.Tags = new TagsCollection(updatedList);
+            }
+        }
+
+        public class BatchAction_PackCars : CommonBatchActions.BatchAction_Pack<CarObject> {
+            public static readonly BatchAction_PackCars Instance = new BatchAction_PackCars();
+
+            public BatchAction_PackCars() : base("Batch.PackCars") {}
+
+            #region Properies
+            private bool _packData = ValuesStorage.GetBool("_ba.packCars.data", true);
+            public bool PackData {
+                get => _packData;
+                set {
+                    if (Equals(value, _packData)) return;
+                    _packData = value;
+                    ValuesStorage.Set("_ba.packCars.data", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _includeTemplates = ValuesStorage.GetBool("_ba.packCars.templates", true);
+            public bool IncludeTemplates {
+                get => _includeTemplates;
+                set {
+                    if (Equals(value, _includeTemplates)) return;
+                    _includeTemplates = value;
+                    ValuesStorage.Set("_ba.packCars.templates", value);
+                    OnPropertyChanged();
+                }
+            }
+            #endregion
+
+            protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
+                return new CarObject.CarPackerParams {
+                    PackData = PackData,
+                    IncludeTemplates = IncludeTemplates
+                };
             }
         }
         #endregion

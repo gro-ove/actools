@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -34,5 +38,47 @@ namespace AcManager.Pages.Lists {
                 return AppStrings.List_Weather;
             }
         }
+
+        #region Batch actions
+        public class BatchAction_PackWeather : CommonBatchActions.BatchAction_Pack<WeatherObject> {
+            public static readonly BatchAction_PackWeather Instance = new BatchAction_PackWeather();
+
+            public BatchAction_PackWeather() : base(null) {}
+
+            /*#region Properies
+            private bool _packData = ValuesStorage.GetBool("_ba.packCars.data", true);
+            public bool PackData {
+                get => _packData;
+                set {
+                    if (Equals(value, _packData)) return;
+                    _packData = value;
+                    ValuesStorage.Set("_ba.packCars.data", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _includeTemplates = ValuesStorage.GetBool("_ba.packCars.templates", true);
+            public bool IncludeTemplates {
+                get => _includeTemplates;
+                set {
+                    if (Equals(value, _includeTemplates)) return;
+                    _includeTemplates = value;
+                    ValuesStorage.Set("_ba.packCars.data", value);
+                    OnPropertyChanged();
+                }
+            }
+            #endregion*/
+
+            protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
+                return new AcCommonObject.AcCommonObjectPackerParams();
+            }
+        }
+
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
+                BatchAction_PackWeather.Instance,
+            });
+        }
+        #endregion
     }
 }

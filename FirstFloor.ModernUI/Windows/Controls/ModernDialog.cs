@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
@@ -214,36 +215,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public bool IsResultYes => MessageBoxResult == MessageBoxResult.Yes;
 
-        /// <summary>
-        /// Displays a messagebox.
-        /// </summary>
-        /// <param name="text">The text.</param>
-        /// <param name="title">The title.</param>
-        /// <param name="button">The button.</param>
-        /// <param name="doNotAskAgainKey">Set to non-null value to add a Don’t Ask Again checkbox.</param>
-        /// <param name="owner">The window owning the messagebox. The messagebox will be located at the center of the owner.</param>
-        /// <returns></returns>
-        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, string doNotAskAgainKey = null, Window owner = null) {
-            if (doNotAskAgainKey != null) {
-                var value = Stored.GetValue("__doNotAskAgain_" + doNotAskAgainKey);
-                if (Enum.TryParse<MessageBoxResult>(value, out var v)) return v;
-            }
+        private static MessageBoxResult ShowMessageInner(string text, string title, MessageBoxButton button,
+                ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {
+            var value = doNotAskAgainLoadSave?.Item1?.Invoke();
+            if (value != null) return value.Value;
 
             FrameworkElement content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) };
 
-            if (doNotAskAgainKey != null) {
-                var checkbox = new CheckBox {
+            CheckBox doNotAskAgainCheckbox;
+            if (doNotAskAgainLoadSave != null) {
+                doNotAskAgainCheckbox = new CheckBox {
                     Content = new Label { Content = "Don’t ask again" }
                 };
 
-                checkbox.SetBinding(ToggleButton.IsCheckedProperty, new Stored("__doNotAskAgain_" + doNotAskAgainKey));
                 content = new SpacingStackPanel {
                     Spacing = 8,
                     Children = {
                         content,
-                        checkbox
+                        doNotAskAgainCheckbox
                     }
                 };
+            } else {
+                doNotAskAgainCheckbox = null;
             }
 
             var dlg = new ModernDialog {
@@ -267,7 +260,38 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             dlg.Buttons = GetButtons(dlg, button);
             dlg.ShowDialog();
+
+            if (doNotAskAgainCheckbox != null) {
+                doNotAskAgainLoadSave.Item2.Invoke(doNotAskAgainCheckbox.IsChecked == true ?
+                        dlg.MessageBoxResult : (MessageBoxResult?)null);
+            }
+
             return dlg.MessageBoxResult;
+        }
+
+        public class ShowMessageCallbacks : Tuple<Func<MessageBoxResult?>, Action<MessageBoxResult?>> {
+            public ShowMessageCallbacks(Func<MessageBoxResult?> load, Action<MessageBoxResult?> save) : base(load, save) { }
+        }
+
+        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button,
+                ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {
+            return ShowMessageInner(text, title, button, doNotAskAgainLoadSave, owner);
+        }
+
+        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, Window owner = null) {
+            return ShowMessageInner(text, title, button, null, owner);
+        }
+
+        public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, [NotNull] string doNotAskAgainKey, Window owner = null) {
+            var key = "__doNotAskAgain:" + doNotAskAgainKey;
+            return ShowMessage(text, title, button,
+                    new ShowMessageCallbacks(() => ValuesStorage.GetEnumNullable<MessageBoxResult>(key), k => {
+                        if (!k.HasValue) {
+                            ValuesStorage.Remove(key);
+                        } else {
+                            ValuesStorage.SetEnum(key, k.Value);
+                        }
+                    }), owner);
         }
 
         public static MessageBoxResult ShowMessage(string text) {

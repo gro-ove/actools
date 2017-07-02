@@ -41,8 +41,6 @@ namespace AcManager.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcListPage), new FrameworkPropertyMetadata(typeof(AcListPage)));
         }
 
-        private ListBox _list;
-
         private readonly DelayedPropertyWrapper<AcItemWrapper> _selectedWrapper;
         private AcObjectNew _currentObject;
 
@@ -119,26 +117,29 @@ namespace AcManager.Controls {
         private void OnLeftMouseDown(object sender, MouseButtonEventArgs e) {
             if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ||
                     Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) && !BatchMenuVisible) {
+                var list = _list;
+                if (list == null) return;
+
                 var index = _list.GetMouseItemIndex();
                 SetMultiSelectionMode(true);
                 if (!BatchMenuVisible) return;
 
                 if (index != -1) {
                     if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
-                        var current = _list.SelectedIndex;
+                        var current = list.SelectedIndex;
                         var addToSelection = new List<object>();
                         for (var i = current; i != index; i += current < index ? 1 : -1) {
-                            addToSelection.Add(_list.ItemsSource?.OfType<object>().ElementAtOrDefault(i));
+                            addToSelection.Add(list.ItemsSource?.OfType<object>().ElementAtOrDefault(i));
                         }
 
-                        addToSelection.Add(_list.ItemsSource?.OfType<object>().ElementAtOrDefault(index));
+                        addToSelection.Add(list.ItemsSource?.OfType<object>().ElementAtOrDefault(index));
                         foreach (var o in addToSelection.NonNull()) {
-                            _list.SelectedItems.Add(o);
+                            list.SelectedItems.Add(o);
                         }
                     } else {
-                        var item = _list.ItemsSource?.OfType<object>().ElementAtOrDefault(index);
+                        var item = list.ItemsSource?.OfType<object>().ElementAtOrDefault(index);
                         if (item != null) {
-                            _list.SelectedItems.Add(item);
+                            list.SelectedItems.Add(item);
                         }
                     }
                 }
@@ -190,12 +191,14 @@ namespace AcManager.Controls {
 
         private bool _batchActionsSet;
 
-        private bool SetMultiSelectionMode(bool? newValue = null) {
-            if (BatchMenuVisible == newValue) return false;
-            if (!BatchMenuVisible && GetBatchActionsArray().Length == 0) return false;
+        private void SetMultiSelectionMode(bool? newValue = null) {
+            if (BatchMenuVisible == newValue) return;
+
+            var list = _list;
+            if (list == null || !BatchMenuVisible && GetBatchActionsArray().Length == 0) return;
 
             if (_checkBoxListBoxItemStyle == null) {
-                _baseItemStyle = _list.ItemContainerStyle;
+                _baseItemStyle = list.ItemContainerStyle;
 
                 var originStyle = (Style)FindResource("AcListPageCheckBoxItem");
 
@@ -215,22 +218,22 @@ namespace AcManager.Controls {
             }
 
             if (newValue ?? !BatchMenuVisible) {
-                _list.ItemContainerStyle = _checkBoxListBoxItemStyle;
-                _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, true);
-                _list.SelectionChanged += OnMultiSelectionChanged;
+                list.ItemContainerStyle = _checkBoxListBoxItemStyle;
+                list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, true);
+                list.SelectionChanged += OnMultiSelectionChanged;
                 SetBatchActions();
                 SetCheckBoxMode(true).Forget();
+                SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(list.SelectedItems.Count));
             } else {
-                _list.SelectionChanged -= OnMultiSelectionChanged;
+                list.SelectionChanged -= OnMultiSelectionChanged;
                 SetCheckBoxMode(false, () => {
-                    _list.ItemContainerStyle = _baseItemStyle;
-                    _list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
+                    list.ItemContainerStyle = _baseItemStyle;
+                    list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
                 }).Forget();
             }
 
             BatchMenuVisible = !BatchMenuVisible;
             Draggable.SetForceDisabled(this, BatchMenuVisible);
-            return true;
         }
 
         private class BatchActionComparer : IComparer<object> {
@@ -287,12 +290,14 @@ namespace AcManager.Controls {
         private string _batchActionKey;
 
         private void SetBatchActions() {
-            if (_batchActionsSet || _batchActions == null) return;
+            var batchActions = _batchActions;
+
+            if (_batchActionsSet || batchActions == null) return;
             _batchActionsSet = true;
 
             var grouped = GroupItems();
-            _batchActions.ItemsSource = grouped;
-            _batchActions.SetBinding(HierarchicalComboBox.SelectedItemProperty, new Binding(nameof(SelectedBatchAction)) {
+            batchActions.ItemsSource = grouped;
+            batchActions.SetBinding(HierarchicalComboBox.SelectedItemProperty, new Binding(nameof(SelectedBatchAction)) {
                 Source = this,
                 Mode = BindingMode.TwoWay
             });
@@ -337,7 +342,7 @@ namespace AcManager.Controls {
                         var size = _batchActionParams.ActualWidth;
                         var duration = TimeSpan.FromMilliseconds(size / 4);
 
-                        _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
+                        _batchActionParamsTransform?.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
                             To = 0d,
                             Duration = duration,
                             FillBehavior = FillBehavior.HoldEnd,
@@ -352,7 +357,7 @@ namespace AcManager.Controls {
                         Logging.Warning(e);
                     }
 
-                    if (newValue?.GetParams(this) != null) {
+                    if (newValue?.GetParams(this) != null && _batchAction != null) {
                         _batchAction.Content = newValue.GetParams(this);
                     }
                 }
@@ -362,7 +367,10 @@ namespace AcManager.Controls {
         }
 
         private void PrepareBatchAction() {
-            _selectedBatchAction?.OnSelectionChanged(_list.SelectedItems);
+            var list = _list;
+            if (list == null) return;
+
+            _selectedBatchAction?.OnSelectionChanged(list.SelectedItems);
         }
 
         private static readonly DependencyPropertyKey SelectedBatchActionHasParamsPropertyKey =
@@ -375,6 +383,7 @@ namespace AcManager.Controls {
         public bool SelectedBatchActionHasParams => _selectedBatchActionHasParams;
 
         private void OnMultiSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs) {
+            if (_list == null) return;
             SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(_list.SelectedItems.Count));
             PrepareBatchAction();
         }
@@ -412,14 +421,30 @@ namespace AcManager.Controls {
             InputBindings.Add(new InputBinding(newValue, new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
         }
 
+
+        [CanBeNull]
+        private ListBox _list;
+
+        [CanBeNull]
         private Button _addButton, _batchActionRunButton, _batchActionCloseButton;
+
+        [CanBeNull]
         private HierarchicalComboBox _batchActions;
+
+        [CanBeNull]
         private ContentPresenter _batchAction;
+
+        [CanBeNull]
         private FrameworkElement _batchActionParams;
+
+        [CanBeNull]
         private TranslateTransform _batchActionParamsTransform;
+
+        [CanBeNull]
+        private SizeRelatedCondition[] _listSizeConditions;
+
         //private FrameworkElement _frame;
         //private DoubleAnimation _batchActionParamsAnimation;
-        private SizeRelatedCondition[] _listSizeConditions;
 
         public override void OnApplyTemplate() {
             DisposeHelper.Dispose(ref _listSizeConditions);
@@ -442,6 +467,8 @@ namespace AcManager.Controls {
             }
 
             base.OnApplyTemplate();
+
+            _batchActionsSet = false;
             _list = GetTemplateChild(@"ItemsList") as ListBox;
             _addButton = GetTemplateChild(@"AddCarButton") as Button;
             _batchActions = GetTemplateChild(@"PART_BatchActions") as HierarchicalComboBox;
@@ -519,12 +546,13 @@ namespace AcManager.Controls {
         }
 
         private void UpdateBatchBlocksSizes() {
-            if (_batchActionParams != null) {
-                _batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, null);
+            var batchActionParamsTransform = _batchActionParamsTransform;
+            if (_batchActionParams != null && batchActionParamsTransform != null) {
+                batchActionParamsTransform.BeginAnimation(TranslateTransform.XProperty, null);
                 if (SelectedBatchActionHasParams) {
-                    _batchActionParamsTransform.X = 0d;
+                    batchActionParamsTransform.X = 0d;
                 } else {
-                    _batchActionParamsTransform.X = -_batchActionParams.ActualWidth;
+                    batchActionParamsTransform.X = -_batchActionParams.ActualWidth;
                 }
             }
         }

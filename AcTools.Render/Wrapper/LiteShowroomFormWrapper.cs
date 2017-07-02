@@ -245,6 +245,8 @@ namespace AcTools.Render.Wrapper {
             return new ProgressWrapper(baseProgress, message ?? "Rendering…");
         }
 
+        public static long OptionMontageMemoryLimit = 2147483648L;
+
         protected virtual void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var dark = (DarkKn5ObjectRenderer)Renderer;
@@ -252,9 +254,12 @@ namespace AcTools.Render.Wrapper {
             var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
                     !OptionHwDownscale && downscale, Wrap(progress), cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
-rem Use montage.exe from ImageMagick for Windows to run this script
+rem Use magick.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
-montage.exe *-*.{information.Extension} -tile {information.Cuts}x{information.Cuts} -geometry +0+0 out.jpg
+set MAGICK_TMPDIR=tmp
+mkdir tmp
+magick.exe montage *-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg
+rmdir /q tmp
 echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
         }
 

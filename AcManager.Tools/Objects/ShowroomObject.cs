@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +11,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -60,7 +62,7 @@ namespace AcManager.Tools.Objects {
         private bool _hasSound;
 
         public bool HasSound {
-            get { return _hasSound; }
+            get => _hasSound;
             private set {
                 if (Equals(value, _hasSound)) return;
                 _hasSound = value;
@@ -72,7 +74,7 @@ namespace AcManager.Tools.Objects {
         private bool _soundEnabled;
 
         public bool SoundEnabled {
-            get { return _soundEnabled; }
+            get => _soundEnabled;
             private set {
                 if (Equals(value, _soundEnabled)) return;
                 _soundEnabled = value;
@@ -197,5 +199,30 @@ namespace AcManager.Tools.Objects {
                     ToolsStrings.ShowroomObject_CannotToggleSound_Commentary, ex);
             }
         }, () => HasSound));
+
+        #region Packing
+        private class ShowroomPacker : AcCommonObjectPacker<ShowroomObject> {
+            protected override string GetBasePath(ShowroomObject t) {
+                return $"content/showroom/{t.Id}";
+            }
+
+            protected override void PackOverride(ShowroomObject t) {
+                Add($"{t.Id}.kn5", "preview.jpg", "track.wav", "ui/ui_showroom.json");
+            }
+
+            protected override PackedDescription GetDescriptionOverride(ShowroomObject t) {
+                return new PackedDescription(t.Id, t.Name,
+                    new Dictionary<string, string> {
+                        ["Version"] = t.Version,
+                        ["Made by"] = t.Author,
+                        ["Webpage"] = t.Url,
+                    }, ShowroomsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new ShowroomPacker();
+        }
+        #endregion
     }
 }

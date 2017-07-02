@@ -46,6 +46,16 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
+        public static long GetLong([NotNull, LocalizationRequired(false)] string key, long defaultValue = 0) {
+            return Storage.GetLong(key, defaultValue);
+        }
+
+        [Pure]
+        public static long? GetLongNullable([NotNull, LocalizationRequired(false)] string key) {
+            return Storage.GetLongNullable(key);
+        }
+
+        [Pure]
         public static double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue = 0) {
             return Storage.GetDouble(key, defaultValue);
         }
@@ -54,6 +64,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public static double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
             return Storage.GetDoubleNullable(key);
         }
+
         [Pure]
         public static Point GetPoint([NotNull, LocalizationRequired(false)] string key, Point defaultValue = default(Point)) {
             return Storage.GetPoint(key, defaultValue);

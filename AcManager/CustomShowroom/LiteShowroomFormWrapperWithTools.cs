@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base;
@@ -186,14 +187,13 @@ namespace AcManager.CustomShowroom {
         protected override void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var plugin = PluginsManager.Instance.GetById("ImageMontage");
-            if (plugin == null || !plugin.CanWork) {
+            if (plugin == null || !plugin.IsReady) {
                 if (!_warningShown) {
                     _warningShown = true;
-                    ActionExtension.InvokeInMainThreadAsync(() => {
-                        FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
-                    });
+                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
                 }
 
+                OptionMontageMemoryLimit = SettingsHolder.Plugins.MontageMemoryLimit;
                 base.SplitShotPieces(multipler, downscale, filename, progress, cancellation);
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
@@ -203,11 +203,20 @@ namespace AcManager.CustomShowroom {
 
                 progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.92));
 
+                var magick = plugin.GetFilename("magick.exe");
+                if (!File.Exists(magick)) {
+                    magick = plugin.GetFilename("montage.exe");
+                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Is Obsolete", "Please, update it, and it’ll consume twice less power");
+                }
+
+                Environment.SetEnvironmentVariable("MAGICK_TMPDIR", SettingsHolder.Plugins.MontageTemporaryDirectory);
+                FileUtils.EnsureDirectoryExists(SettingsHolder.Plugins.MontageTemporaryDirectory);
+
                 using (var process = new Process {
                     StartInfo = {
-                    FileName =  plugin.GetFilename("montage.exe"),
+                    FileName = magick,
                     WorkingDirectory = destination,
-                    Arguments = $"*-*.{information.Extension} -tile {information.Cuts}x{information.Cuts} -geometry +0+0 out.jpg",
+                    Arguments = $"montage *-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg",
                     CreateNoWindow = true,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -216,7 +225,7 @@ namespace AcManager.CustomShowroom {
                     EnableRaisingEvents = true
                 }) {
                     process.Start();
-                    process.WaitForExit(60000);
+                    process.WaitForExit(600000);
                     if (!process.HasExited) {
                         process.Kill();
                     }

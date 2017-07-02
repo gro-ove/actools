@@ -136,6 +136,41 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
                   ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" mui:SaveScroll.Key="{TemplateBinding SaveScrollKey}">
+                <ListBox.GroupStyle>
+                  <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                      <Style TargetType="GroupItem">
+                        <Setter Property="Template">
+                          <Setter.Value>
+                            <ControlTemplate TargetType="GroupItem">
+                              <mui:RememberingExpander Key="{Binding Name, StringFormat='{}.content_category_{0}', Mode=OneTime}" Margin="0"
+                                  Style="{StaticResource GroupBoxExpander}">
+                                <Expander.Header>
+                                  <TextBlock Style="{StaticResource Label}">
+                                    <Run Text="{Binding Name, Mode=OneWay}" />
+                                    <Run Text="{Binding ItemCount, Mode=OneWay, StringFormat='{}({0})'}" />
+                                  </TextBlock>
+                                </Expander.Header>
+                                <ItemsPresenter />
+                              </mui:RememberingExpander>
+                            </ControlTemplate>
+                          </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding Name}" Value="">
+                            <Setter Property="Template">
+                              <Setter.Value>
+                                <ControlTemplate TargetType="GroupItem">
+                                  <ItemsPresenter />
+                                </ControlTemplate>
+                              </Setter.Value>
+                            </Setter>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </GroupStyle.ContainerStyle>
+                  </GroupStyle>
+                </ListBox.GroupStyle>
                 <ListBox.Template>
                   <ControlTemplate TargetType="ListBox">
                     <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
@@ -241,6 +276,16 @@
           </Grid>
 
           <ControlTemplate.Triggers>
+            <Trigger Property="IsGroupingEnabled" Value="True">
+              <Setter Property="ScrollViewer.CanContentScroll" TargetName="ItemsList" Value="False" />
+              <Setter Property="ItemsPanel" TargetName="ItemsList">
+                <Setter.Value>
+                  <ItemsPanelTemplate>
+                    <StackPanel IsItemsHost="True" />
+                  </ItemsPanelTemplate>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
             <Trigger Property="BatchMenuVisible" Value="True">
               <Trigger.EnterActions>
                 <BeginStoryboard>
@@ -281,86 +326,9 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+
+    <!-- Specific version with grouping -->
     <Style.Triggers>
-      <Trigger Property="IsGroupingEnabled" Value="True">
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="ac:AcListPage">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition MinWidth="50" MaxWidth="400" />
-                  <ColumnDefinition Width="9" />
-                  <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <Grid>
-                  <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                  </Grid.RowDefinitions>
-
-                  <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False"
-                      ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" mui:SaveScroll.Key="{TemplateBinding SaveScrollKey}">
-                    <ListBox.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <StackPanel IsItemsHost="True" />
-                      </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.GroupStyle>
-                      <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                          <Style TargetType="GroupItem">
-                            <Setter Property="Template">
-                              <Setter.Value>
-                                <ControlTemplate TargetType="GroupItem">
-                                  <mui:RememberingExpander Key="{Binding Name, StringFormat='{}.content_category_{0}', Mode=OneTime}" Margin="0"
-                                      Style="{StaticResource GroupBoxExpander}">
-                                    <Expander.Header>
-                                      <TextBlock Style="{StaticResource Label}">
-                                        <Run Text="{Binding Name, Mode=OneWay}" />
-                                        <Run Text="{Binding ItemCount, Mode=OneWay, StringFormat='{}({0})'}" />
-                                      </TextBlock>
-                                    </Expander.Header>
-                                    <ItemsPresenter />
-                                  </mui:RememberingExpander>
-                                </ControlTemplate>
-                              </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Name}" Value="">
-                                <Setter Property="Template">
-                                  <Setter.Value>
-                                    <ControlTemplate TargetType="GroupItem">
-                                      <ItemsPresenter />
-                                    </ControlTemplate>
-                                  </Setter.Value>
-                                </Setter>
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </GroupStyle.ContainerStyle>
-                      </GroupStyle>
-                    </ListBox.GroupStyle>
-                  </ListBox>
-
-                  <DockPanel Grid.Row="1">
-                    <mui:ModernButton x:Name="AddCarButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
-                        ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
-                        Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
-                    <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
-                  </DockPanel>
-                </Grid>
-
-                <!-- Separator -->
-                <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage" />
-                <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal"
-                    TopSource="{x:Null}" />
-              </Grid>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Trigger>
       <DataTrigger Binding="{Binding IsEmpty}" Value="True">
         <Setter Property="Template">
           <Setter.Value>

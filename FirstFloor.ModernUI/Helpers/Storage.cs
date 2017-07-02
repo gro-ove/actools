@@ -144,9 +144,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [Pure]
         public static T? GetEnumNullable<T>([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key) where T : struct, IConvertible {
-            T result;
             var value = storage.GetString(key);
-            return value != null && Enum.TryParse(value, out result) ? result : (T?)null;
+            return value != null && Enum.TryParse(value, out T result) ? result : (T?)null;
         }
 
         [Pure]
@@ -156,9 +155,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [Pure]
         public static int? GetIntNullable([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key) {
-            int result;
             var value = storage.GetString(key);
-            return value != null && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) ? result : (int?)null;
+            return value != null && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : (int?)null;
         }
 
         [Pure]
@@ -168,9 +166,19 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [Pure]
         public static double? GetDoubleNullable([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key) {
-            double result;
             var value = storage.GetString(key);
-            return value != null && double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (double?)null;
+            return value != null && double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : (double?)null;
+        }
+
+        [Pure]
+        public static long GetLong([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, long defaultValue = 0) {
+            return GetLongNullable(storage, key) ?? defaultValue;
+        }
+
+        [Pure]
+        public static long? GetLongNullable([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key) {
+            var value = storage.GetString(key);
+            return value != null && long.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : (long?)null;
         }
 
         [Pure]

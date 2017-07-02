@@ -14,12 +14,18 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class FontsManager : AcManagerFileSpecific<FontObject> {
         private static FontsManager _instance;
 
         public static FontsManager Instance => _instance ?? (_instance = new FontsManager());
+
+        [CanBeNull]
+        public FontObject GetByAcId(string v) {
+            return GetById(v + FontObject.FontExtension);
+        }
 
         public FontsManager() {
             SettingsHolder.Content.PropertyChanged += Content_PropertyChanged;
@@ -67,7 +73,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public DateTime? LastUsingsRescan {
-            get { return ValuesStorage.GetDateTime("FontsManager.LastUsingsRescan"); }
+            get => ValuesStorage.GetDateTime("FontsManager.LastUsingsRescan");
             set {
                 if (Equals(value, LastUsingsRescan)) return;
 

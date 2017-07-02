@@ -28,7 +28,7 @@ namespace AcManager.Pages.Settings {
             public ICommand ChangeTemporaryFilesLocationCommand
                 => _changeTemporaryFilesLocationCommand ?? (_changeTemporaryFilesLocationCommand = new DelegateCommand(() => {
                     var dialog = new FolderBrowserDialog {
-                        ShowNewFolderButton = false,
+                        ShowNewFolderButton = true,
                         SelectedPath = SettingsHolder.Content.TemporaryFilesLocation
                     };
 

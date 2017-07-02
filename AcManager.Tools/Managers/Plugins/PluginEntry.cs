@@ -53,7 +53,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public string AppVersion { get; private set; }
 
         public string Name {
-            get { return _name; }
+            get => _name;
             set {
                 if (value == _name) return;
                 _name = value;
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
-            get { return ValuesStorage.GetBool(KeyEnabled, true) && !IsObsolete; }
+            get => ValuesStorage.GetBool(KeyEnabled, true) && !IsObsolete;
             set {
                 if (value == IsEnabled) return;
                 if (value) {
@@ -80,6 +80,8 @@ namespace AcManager.Tools.Managers.Plugins {
                 }
 
                 PluginsManager.Instance.OnPluginEnabled(this, value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsReady));
             }
         }
 
@@ -95,7 +97,7 @@ namespace AcManager.Tools.Managers.Plugins {
         private bool _isInstalling;
 
         public bool IsInstalling {
-            get { return _isInstalling; }
+            get => _isInstalling;
             set {
                 if (value == _isInstalling) return;
                 _isInstalling = value;
@@ -107,7 +109,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public bool HasUpdate => IsInstalled && Version.IsVersionNewerThan(InstalledVersion);
 
         public string InstalledVersion {
-            get { return _installedVersion; }
+            get => _installedVersion;
             set {
                 if (value == _installedVersion) return;
                 _installedVersion = value;
@@ -122,7 +124,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (value == _description) return;
                 _description = value;
@@ -131,7 +133,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public bool IsHidden {
-            get { return _hidden; }
+            get => _hidden;
             set {
                 if (Equals(value, _hidden)) return;
                 _hidden = value;
@@ -140,7 +142,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public string Version {
-            get { return _version; }
+            get => _version;
             set {
                 if (value == _version) return;
                 _version = value;
@@ -149,7 +151,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public string Platform {
-            get { return _platform; }
+            get => _platform;
             set {
                 if (value == _platform) return;
                 _platform = value;
@@ -162,7 +164,7 @@ namespace AcManager.Tools.Managers.Plugins {
         private bool _installationInProgress;
 
         public bool InstallationInProgress {
-            get { return _installationInProgress; }
+            get => _installationInProgress;
             set {
                 if (Equals(value, _installationInProgress)) return;
                 _installationInProgress = value;
@@ -174,7 +176,7 @@ namespace AcManager.Tools.Managers.Plugins {
         private bool _downloadProgressIndeterminate;
 
         public bool DownloadProgressIndeterminate {
-            get { return _downloadProgressIndeterminate; }
+            get => _downloadProgressIndeterminate;
             set {
                 if (Equals(value, _downloadProgressIndeterminate)) return;
                 _downloadProgressIndeterminate = value;
@@ -185,7 +187,7 @@ namespace AcManager.Tools.Managers.Plugins {
         private double _downloadProgress;
 
         public double DownloadProgress {
-            get { return _downloadProgress; }
+            get => _downloadProgress;
             set {
                 if (Equals(value, _downloadProgress)) return;
                 _downloadProgress = value;
@@ -214,7 +216,7 @@ namespace AcManager.Tools.Managers.Plugins {
         private bool _isObsolete;
 
         public bool IsObsolete {
-            get { return _isObsolete; }
+            get => _isObsolete;
             set {
                 if (value == _isObsolete) return;
                 _isObsolete = value;
@@ -261,7 +263,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
         [JsonIgnore]
         public string Directory => PluginsManager.Instance.GetPluginDirectory(Id);
-        
+
         public string GetFilename([Localizable(false)] string fileId) {
             return PluginsManager.Instance.GetPluginFilename(Id, fileId);
         }

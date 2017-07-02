@@ -90,6 +90,10 @@
             <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}">
                 <Setter Property="Margin" Value="0 0 0 8" />
             </Style>
+
+            <Style TargetType="{x:Type controls:MessageBlock}" BasedOn="{StaticResource {x:Type controls:MessageBlock}}">
+                <Setter Property="Margin" Value="0 0 0 8" />
+            </Style>
         </Style.Resources>
     </Style>
 

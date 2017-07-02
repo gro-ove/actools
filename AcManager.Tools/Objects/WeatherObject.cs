@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,11 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
+using AcTools.AcdFile;
 using AcTools.DataFile;
+using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -24,7 +29,7 @@ namespace AcManager.Tools.Objects {
         private WeatherType _type;
 
         public WeatherType Type {
-            get { return _type; }
+            get => _type;
             set {
                 if (Equals(_type, value)) return;
                 _type = value;
@@ -39,7 +44,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string TimeDiapason {
-            get { return _timeDiapason; }
+            get => _timeDiapason;
             set {
                 if (string.IsNullOrWhiteSpace(value)) value = null;
                 if (Equals(value, _timeDiapason)) return;
@@ -55,7 +60,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string TemperatureDiapason {
-            get { return _temperatureDiapason; }
+            get => _temperatureDiapason;
             set {
                 if (string.IsNullOrWhiteSpace(value)) value = null;
                 if (Equals(value, _temperatureDiapason)) return;
@@ -70,7 +75,7 @@ namespace AcManager.Tools.Objects {
         private bool _disableShadows;
 
         public bool DisableShadows {
-            get { return _disableShadows; }
+            get => _disableShadows;
             set {
                 if (Equals(value, _disableShadows)) return;
                 _disableShadows = value;
@@ -84,7 +89,7 @@ namespace AcManager.Tools.Objects {
         private double _temperatureCoefficient;
 
         public double TemperatureCoefficient {
-            get { return _temperatureCoefficient; }
+            get => _temperatureCoefficient;
             set {
                 if (Equals(_temperatureCoefficient, value)) return;
                 _temperatureCoefficient = value;
@@ -156,7 +161,7 @@ namespace AcManager.Tools.Objects {
         private IniFile _colorCurvesIniObject;
 
         public IniFile ColorCurvesIniObject {
-            get { return _colorCurvesIniObject; }
+            get => _colorCurvesIniObject;
             private set {
                 if (Equals(_colorCurvesIniObject, value)) return;
                 _colorCurvesIniObject = value;
@@ -166,7 +171,7 @@ namespace AcManager.Tools.Objects {
         private string _author;
 
         public string Author {
-            get { return _author; }
+            get => _author;
             set {
                 if (value == _author) return;
                 _author = value;
@@ -236,7 +241,7 @@ namespace AcManager.Tools.Objects {
         private bool _forceCarLights;
 
         public bool ForceCarLights {
-            get { return _forceCarLights; }
+            get => _forceCarLights;
             set {
                 if (Equals(value, _forceCarLights)) return;
                 _forceCarLights = value;
@@ -250,7 +255,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsCover;
 
         public double CloudsCover {
-            get { return _cloudsCover; }
+            get => _cloudsCover;
             set {
                 if (Equals(value, _cloudsCover)) return;
                 _cloudsCover = value;
@@ -264,7 +269,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsCutoff;
 
         public double CloudsCutoff {
-            get { return _cloudsCutoff; }
+            get => _cloudsCutoff;
             set {
                 if (Equals(value, _cloudsCutoff)) return;
                 _cloudsCutoff = value;
@@ -278,7 +283,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsColor;
 
         public double CloudsColor {
-            get { return _cloudsColor; }
+            get => _cloudsColor;
             set {
                 if (Equals(value, _cloudsColor)) return;
                 _cloudsColor = value;
@@ -292,7 +297,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsWidth;
 
         public double CloudsWidth {
-            get { return _cloudsWidth; }
+            get => _cloudsWidth;
             set {
                 if (Equals(value, _cloudsWidth)) return;
                 _cloudsWidth = value;
@@ -306,7 +311,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsHeight;
 
         public double CloudsHeight {
-            get { return _cloudsHeight; }
+            get => _cloudsHeight;
             set {
                 if (Equals(value, _cloudsHeight)) return;
                 _cloudsHeight = value;
@@ -320,7 +325,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsRadius;
 
         public double CloudsRadius {
-            get { return _cloudsRadius; }
+            get => _cloudsRadius;
             set {
                 if (Equals(value, _cloudsRadius)) return;
                 _cloudsRadius = value;
@@ -334,7 +339,7 @@ namespace AcManager.Tools.Objects {
         private int _cloudsNumber;
 
         public int CloudsNumber {
-            get { return _cloudsNumber; }
+            get => _cloudsNumber;
             set {
                 if (Equals(value, _cloudsNumber)) return;
                 _cloudsNumber = value;
@@ -348,7 +353,7 @@ namespace AcManager.Tools.Objects {
         private double _cloudsSpeedMultipler;
 
         public double CloudsSpeedMultipler {
-            get { return _cloudsSpeedMultipler; }
+            get => _cloudsSpeedMultipler;
             set {
                 if (Equals(value, _cloudsSpeedMultipler)) return;
                 _cloudsSpeedMultipler = value;
@@ -361,14 +366,14 @@ namespace AcManager.Tools.Objects {
         }
 
         public double CloudsSpeedMultiplerRounded {
-            get { return CloudsSpeedMultipler;  }
-            set { CloudsSpeedMultipler = value.Round(0.01);  }
+            get => CloudsSpeedMultipler;
+            set => CloudsSpeedMultipler = value.Round(0.01);
         }
 
         private Color _fogColor;
 
         public Color FogColor {
-            get { return _fogColor; }
+            get => _fogColor;
             set {
                 if (Equals(value, _fogColor)) return;
                 _fogColor = value;
@@ -382,7 +387,7 @@ namespace AcManager.Tools.Objects {
         private double _fogColorMultipler;
 
         public double FogColorMultipler {
-            get { return _fogColorMultipler; }
+            get => _fogColorMultipler;
             set {
                 if (Equals(value, _fogColorMultipler)) return;
                 _fogColorMultipler = value;
@@ -396,7 +401,7 @@ namespace AcManager.Tools.Objects {
         private double _fogBlend;
 
         public double FogBlend {
-            get { return _fogBlend; }
+            get => _fogBlend;
             set {
                 if (Equals(value, _fogBlend)) return;
                 _fogBlend = value;
@@ -410,7 +415,7 @@ namespace AcManager.Tools.Objects {
         private double _fogDistance;
 
         public double FogDistance {
-            get { return _fogDistance; }
+            get => _fogDistance;
             set {
                 if (Equals(value, _fogDistance)) return;
                 _fogDistance = value;
@@ -509,7 +514,7 @@ namespace AcManager.Tools.Objects {
         private bool _hasCurvesData;
 
         public bool HasCurvesData {
-            get { return _hasCurvesData; }
+            get => _hasCurvesData;
             set {
                 if (Equals(value, _hasCurvesData)) return;
                 _hasCurvesData = value;
@@ -520,7 +525,7 @@ namespace AcManager.Tools.Objects {
         private double _hdrOffMultipler;
 
         public double HdrOffMultipler {
-            get { return _hdrOffMultipler; }
+            get => _hdrOffMultipler;
             set {
                 if (Equals(value, _hdrOffMultipler)) return;
                 _hdrOffMultipler = value;
@@ -534,7 +539,7 @@ namespace AcManager.Tools.Objects {
         private double _angleGamma;
 
         public double AngleGamma {
-            get { return _angleGamma; }
+            get => _angleGamma;
             set {
                 if (Equals(value, _angleGamma)) return;
                 _angleGamma = value;
@@ -683,5 +688,28 @@ namespace AcManager.Tools.Objects {
             return Enabled == o.Enabled ?
                     AlphanumComparatorFast.Compare(Id, o.Id) : Enabled ? -1 : 1;
         }
+
+        #region Packing
+        private class WeatherPacker : AcCommonObjectPacker<WeatherObject> {
+            protected override string GetBasePath(WeatherObject t) {
+                return $"content/weather/{t.Id}";
+            }
+
+            protected override void PackOverride(WeatherObject t) {
+                Add("preview.png", "*.ini", "clouds/*");
+            }
+
+            protected override PackedDescription GetDescriptionOverride(WeatherObject t) {
+                return new PackedDescription(t.Id, t.Name,
+                    new Dictionary<string, string> {
+                        ["Made by"] = t.Author
+                    }, WeatherManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new WeatherPacker();
+        }
+        #endregion
     }
 }

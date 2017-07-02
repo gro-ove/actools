@@ -24,5 +24,27 @@
         </mui:SpacingUniformGrid>
       </mui:SpacingStackPanel>
     </DataTemplate>
+    <DataTemplate x:Key="Batch.PackCars" DataType="{x:Type li:CarsListPage+BatchAction_PackCars}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <!--<DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
+        </DockPanel>-->
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackData}">
+            <Label Content="Encrypt data" />
+          </CheckBox>
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding IncludeTemplates}">
+            <Label Content="Include “templates” directory" ToolTip="Simply put all templates to “templates” directory" />
+          </CheckBox>
+          <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+            <Label Content="Sort tags" />
+          </CheckBox>-->
+        </mui:SpacingUniformGrid>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
   </c:AcListPage.Resources>
 </c:AcListPage>

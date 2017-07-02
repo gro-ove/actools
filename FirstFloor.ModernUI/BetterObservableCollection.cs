@@ -37,17 +37,11 @@ namespace FirstFloor.ModernUI {
         public void Sort(IComparer<T> comparer) {
             var list = Items as List<T>;
             if (list != null) {
-#if DEBUG
-                Logging.Debug("Sort at list");
-#endif
                 list.Sort(comparer);
                 OnPropertyChanged(new PropertyChangedEventArgs("Count"));
                 OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             } else {
-#if DEBUG
-                Logging.Debug("Sort by replacing");
-#endif
                 ReplaceEverythingBy(Items.OrderBy(x => x, comparer));
             }
         }

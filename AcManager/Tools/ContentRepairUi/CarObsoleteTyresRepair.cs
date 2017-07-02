@@ -28,7 +28,7 @@ namespace AcManager.Tools.ContentRepairUi {
             if (int.TryParse(section.GetNonEmpty("VERSION"), out version) && version > 4) return null;
 
             return new ContentObsoleteSuggestion("Tyres use quite an old Tyre Model",
-                    $"Used version is only v{version}, but v7 and v10 are already available. If you want, you can try to find a replacement for them them manually.",
+                    $"Used version is only v{version}, but v7 and v10 are already available. If you want, you can try to find a replacement for them manually.",
                     (p, c) => FixAsync(car, p, c)) {
                         /* we have our own warning in CarReplaceTyresDialog */
                         AffectsData = false,

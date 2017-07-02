@@ -9,6 +9,8 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -26,8 +28,6 @@ namespace AcManager.Tools.Objects {
                 this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).BitmapSource, fontData) {}
 
         private FontObjectBitmap(BitmapSource font, byte[] fontData) {
-            Logging.Here();
-            Logging.Debug(font);
             _fontBitmapImage = font;
 
             try {
@@ -219,5 +219,29 @@ namespace AcManager.Tools.Objects {
             _iconBitmapLoaded = false;
             OnPropertyChanged(nameof(IconBitmap));
         }
+
+        #region Packing
+        private class FontPacker : AcCommonObjectPacker<FontObject> {
+            protected override string GetBasePath(FontObject t) {
+                return "content/fonts";
+            }
+
+            protected override void PackOverride(FontObject t) {
+                AddFilename(Path.GetFileName(t.Location), t.Location);
+
+                if (t.FontBitmap != null) {
+                    AddFilename(Path.GetFileName(t.FontBitmap), t.FontBitmap);
+                }
+            }
+
+            protected override PackedDescription GetDescriptionOverride(FontObject t) {
+                return new PackedDescription(t.Id, t.Name, null, FontsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new FontPacker();
+        }
+        #endregion
     }
 }

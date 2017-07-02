@@ -1,5 +1,8 @@
+using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 
 namespace AcManager.Tools.Objects {
     public class TrueTypeFontObject : AcCommonSingleFileObject {
@@ -11,5 +14,25 @@ namespace AcManager.Tools.Objects {
                 : base(manager, id, enabled) {}
 
         public override bool HasData => true;
+
+        #region Packing
+        private class TrueTypeFontPacker : AcCommonObjectPacker<TrueTypeFontObject> {
+            protected override string GetBasePath(TrueTypeFontObject t) {
+                return "system/cfg/ppfilters";
+            }
+
+            protected override void PackOverride(TrueTypeFontObject t) {
+                AddFilename(Path.GetFileName(t.Location), t.Location);
+            }
+
+            protected override PackedDescription GetDescriptionOverride(TrueTypeFontObject t) {
+                return new PackedDescription(t.Id, t.Name, null, TrueTypeFontsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new TrueTypeFontPacker();
+        }
+        #endregion
     }
 }

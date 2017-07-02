@@ -39,6 +39,8 @@ namespace AcManager.Controls.UserControls {
                 RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
         public static bool ShouldBeBlocked(string url) {
+            if (!SettingsHolder.Plugins.CefFilterAds) return false;
+
 #if DEBUG
             // Logging.Debug(url);
 #endif
@@ -90,7 +92,7 @@ namespace AcManager.Controls.UserControls {
 
                 menu.IsOpen = true;
             });
-            
+
             return true;
         }
     }
@@ -223,7 +225,7 @@ namespace AcManager.Controls.UserControls {
                 if (_overflow.Count > 0) {
                     WriteOverflow(dataOut, ref dataOutWritten);
                 }
-                
+
                 for (var i = 0; i < dataInRead; ++i) {
                     var readByte = (byte)dataIn.ReadByte();
                     if (readByte != _find[_findMatchOffset]) {
@@ -246,7 +248,7 @@ namespace AcManager.Controls.UserControls {
             private void WriteOverflow(Stream dataOut, ref long dataOutWritten) {
                 var remainingSpace = dataOut.Length - dataOutWritten;
                 var maxWrite = Math.Min(_overflow.Count, remainingSpace);
-                
+
                 if (maxWrite > 0) {
                     dataOut.Write(_overflow.ToArray(), 0, (int)maxWrite);
                     dataOutWritten += maxWrite;
@@ -262,7 +264,7 @@ namespace AcManager.Controls.UserControls {
             private void WriteBytes(byte[] bytes, int bytesCount, Stream dataOut, ref long dataOutWritten) {
                 var remainingSpace = dataOut.Length - dataOutWritten;
                 var maxWrite = Math.Min(bytesCount, remainingSpace);
-                
+
                 if (maxWrite > 0) {
                     dataOut.Write(bytes, 0, (int)maxWrite);
                     dataOutWritten += maxWrite;
@@ -277,7 +279,7 @@ namespace AcManager.Controls.UserControls {
 
             private void WriteSingleByte(byte data, Stream dataOut, ref long dataOutWritten) {
                 var remainingSpace = dataOut.Length - dataOutWritten;
-                
+
                 if (remainingSpace > 0) {
                     dataOut.WriteByte(data);
                     dataOutWritten += 1;
@@ -408,7 +410,7 @@ namespace AcManager.Controls.UserControls {
         public void ModifyPage() {
             Execute(@"window.__cm_loaded = true;
 window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };
-document.addEventListener('mousedown', function(e){ 
+document.addEventListener('mousedown', function(e){
     var t = e.target;
     if (t.tagName != 'A' || !t.href) return;
 

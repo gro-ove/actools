@@ -69,10 +69,10 @@
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
       </ToolBar>
-      <ToolBar Band="0" BandIndex="0"
+      <!--<ToolBar Band="0" BandIndex="0"
           Visibility="{Binding SelectedObject.PackCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button Content="Pack Car" Command="{Binding SelectedObject.PackCommand}" ToolTip="Pack important files for easy distribution" />
-      </ToolBar>
+      </ToolBar>-->
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"

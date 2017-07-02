@@ -32,17 +32,19 @@ namespace FirstFloor.ModernUI.Windows {
         /// <param name="icon">Uri to some icon</param>
         /// <param name="click">Click action</param>
         public static void Show(string title, string message, [NotNull] Uri icon, Action click = null) {
-            if (!_winToasterIsNotAvailable && !OptionFallbackMode) {
-                try {
-                    ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
-                    return;
-                } catch {
-                    Logging.Warning("Win8 Toaster is not available");
-                    _winToasterIsNotAvailable = true;
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                if (!_winToasterIsNotAvailable && !OptionFallbackMode) {
+                    try {
+                        ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
+                        return;
+                    } catch {
+                        Logging.Warning("Win8 Toaster is not available");
+                        _winToasterIsNotAvailable = true;
+                    }
                 }
-            }
 
-            ShowFallback(title, message, icon, click);
+                ShowFallback(title, message, icon, click);
+            });
         }
 
         private static void ShowFallback(string title, string message, [NotNull] Uri icon, Action click) {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
@@ -17,8 +17,9 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 using StringBasedFilter;
+using Application = System.Windows.Application;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 // ReSharper disable RedundantArgumentDefaultValue
 
@@ -38,7 +39,7 @@ namespace AcManager.Tools.Helpers {
         public sealed class PeriodEntry : Displayable {
             public TimeSpan TimeSpan { get; }
 
-            public PeriodEntry() {}
+            public PeriodEntry() { }
 
             public PeriodEntry(TimeSpan timeSpan, string displayName = null) {
                 TimeSpan = timeSpan;
@@ -56,7 +57,7 @@ namespace AcManager.Tools.Helpers {
         public sealed class DelayEntry : Displayable {
             public TimeSpan TimeSpan { get; }
 
-            public DelayEntry() {}
+            public DelayEntry() { }
 
             public DelayEntry(TimeSpan timeSpan, string displayName = null) {
                 TimeSpan = timeSpan;
@@ -83,7 +84,8 @@ namespace AcManager.Tools.Helpers {
         }
 
         public enum MissingContentType {
-            Car, Track
+            Car,
+            Track
         }
 
         public delegate string MissingContentUrlFunc(MissingContentType type, [NotNull] string id);
@@ -430,7 +432,7 @@ namespace AcManager.Tools.Helpers {
         public static OnlineSettings Online => _online ?? (_online = new OnlineSettings());
 
         public class CommonSettings : NotifyPropertyChanged {
-            internal CommonSettings() {}
+            internal CommonSettings() { }
 
             public TemperatureUnitMode[] TemperatureUnitModes { get; } = EnumExtension.GetValues<TemperatureUnitMode>();
 
@@ -957,7 +959,10 @@ namespace AcManager.Tools.Helpers {
             private string _replaysNameFormat;
 
             public string ReplaysNameFormat {
-                get => _replaysNameFormat ?? (_replaysNameFormat = ValuesStorage.GetString("Settings.DriveSettings.ReplaysNameFormat", DefaultReplaysNameFormat));
+                get
+                        =>
+                                _replaysNameFormat ??
+                                        (_replaysNameFormat = ValuesStorage.GetString("Settings.DriveSettings.ReplaysNameFormat", DefaultReplaysNameFormat));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _replaysNameFormat)) return;
@@ -1085,7 +1090,10 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveAiAggressionInName;
 
             public bool QuickDriveAiAggressionInName {
-                get => _quickDriveAiAggressionInName ?? (_quickDriveAiAggressionInName = ValuesStorage.GetBool("RaceGrid.AiAggressionInDriverName", false)).Value;
+                get
+                        =>
+                                _quickDriveAiAggressionInName ??
+                                        (_quickDriveAiAggressionInName = ValuesStorage.GetBool("RaceGrid.AiAggressionInDriverName", false)).Value;
                 set {
                     if (Equals(value, _quickDriveAiAggressionInName)) return;
                     _quickDriveAiAggressionInName = value;
@@ -1097,7 +1105,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveUseSkinNames;
 
             public bool QuickDriveUseSkinNames {
-                get => _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value;
+                get => _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value
+                        ;
                 set {
                     if (Equals(value, _quickDriveUseSkinNames)) return;
                     _quickDriveUseSkinNames = value;
@@ -1135,7 +1144,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _kunosCareerUserAiLevel;
 
             public bool KunosCareerUserAiLevel {
-                get => _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", true)).Value;
+                get => _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", true)).Value
+                        ;
                 set {
                     if (Equals(value, _kunosCareerUserAiLevel)) return;
                     _kunosCareerUserAiLevel = value;
@@ -1228,7 +1238,10 @@ namespace AcManager.Tools.Helpers {
             private bool? _weatherSpecificPpFilter;
 
             public bool WeatherSpecificPpFilter {
-                get => _weatherSpecificPpFilter ?? (_weatherSpecificPpFilter = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificPpFilter", true)).Value;
+                get
+                        =>
+                                _weatherSpecificPpFilter ??
+                                        (_weatherSpecificPpFilter = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificPpFilter", true)).Value;
                 set {
                     if (Equals(value, _weatherSpecificPpFilter)) return;
                     _weatherSpecificPpFilter = value;
@@ -1943,7 +1956,7 @@ namespace AcManager.Tools.Helpers {
         public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
 
         public class LiveSettings : NotifyPropertyChanged {
-            internal LiveSettings() {}
+            internal LiveSettings() { }
 
             private bool? _srsEnabled;
 
@@ -2063,7 +2076,7 @@ namespace AcManager.Tools.Helpers {
         public static LiveSettings Live => _live ?? (_live = new LiveSettings());
 
         public class LocaleSettings : NotifyPropertyChanged {
-            internal LocaleSettings() {}
+            internal LocaleSettings() { }
 
             private string _localeName;
 
@@ -2137,7 +2150,7 @@ namespace AcManager.Tools.Helpers {
         public static LocaleSettings Locale => _locale ?? (_locale = new LocaleSettings());
 
         public class InterfaceSettings : NotifyPropertyChanged {
-            internal InterfaceSettings() {}
+            internal InterfaceSettings() { }
 
             private bool? _quickDriveFastAccessButtons;
 
@@ -2202,5 +2215,67 @@ namespace AcManager.Tools.Helpers {
         private static IntegratedSettings _integrated;
 
         public static IntegratedSettings Integrated => _integrated ?? (_integrated = new IntegratedSettings());
+
+        public class PluginsSettings : NotifyPropertyChanged {
+            internal PluginsSettings() { }
+
+            private bool? _cefFilterAds;
+
+            public bool CefFilterAds {
+                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.GetBool("Settings.PluginsSettings.CefFilterAds", true)).Value;
+                set {
+                    if (Equals(value, _cefFilterAds)) return;
+                    _cefFilterAds = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.CefFilterAds", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private long? _montageMemoryLimit;
+
+            public long MontageMemoryLimit {
+                get => _montageMemoryLimit ?? (_montageMemoryLimit = ValuesStorage.GetLong("Settings.PluginsSettings.MontageMemoryLimit", 2147483648L)).Value;
+                set {
+                    if (Equals(value, _montageMemoryLimit)) return;
+                    _montageMemoryLimit = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.MontageMemoryLimit", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public string MontageDefaultTemporaryDirectory => Path.Combine(Path.GetTempPath(), "CMMontage");
+
+            private string _montageTemporaryDirectory;
+
+            public string MontageTemporaryDirectory {
+                get => _montageTemporaryDirectory ?? (_montageTemporaryDirectory = ValuesStorage.GetString("Settings.PluginsSettings.MontageTemporaryDirectory",
+                        MontageDefaultTemporaryDirectory));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _montageTemporaryDirectory)) return;
+                    _montageTemporaryDirectory = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.MontageTemporaryDirectory", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelegateCommand _changeMontageTemporaryDirectoryCommand;
+
+            public DelegateCommand ChangeMontageTemporaryDirectoryCommand
+                => _changeMontageTemporaryDirectoryCommand ?? (_changeMontageTemporaryDirectoryCommand = new DelegateCommand(() => {
+                    var dialog = new FolderBrowserDialog {
+                        ShowNewFolderButton = true,
+                        SelectedPath = MontageTemporaryDirectory
+                    };
+
+                    if (dialog.ShowDialog() == DialogResult.OK) {
+                        MontageTemporaryDirectory = dialog.SelectedPath;
+                    }
+                }));
+        }
+
+        private static PluginsSettings _plugins;
+
+        public static PluginsSettings Plugins => _plugins ?? (_plugins = new PluginsSettings());
     }
 }

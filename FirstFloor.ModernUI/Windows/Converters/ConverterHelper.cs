@@ -24,6 +24,27 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
+        public static long AsLong([CanBeNull] this object value) {
+            return value.AsLong(0);
+        }
+
+        public static long AsLong([CanBeNull] this string value) {
+            return value.AsLong(0);
+        }
+
+        public static long AsLong([CanBeNull] this object value, long defaultValue) {
+            return value as long? ?? value?.ToString().AsLong(defaultValue) ?? defaultValue;
+        }
+
+        public static long AsLong([CanBeNull] this string value, long defaultValue) {
+            long result;
+            if (value == null || !long.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
+                return defaultValue;
+            }
+
+            return result;
+        }
+
         public static double AsDouble([CanBeNull] this object value) {
             return value.AsDouble(0);
         }

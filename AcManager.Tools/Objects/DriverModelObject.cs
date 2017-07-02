@@ -1,7 +1,10 @@
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -54,5 +57,25 @@ namespace AcManager.Tools.Objects {
         }
 
         public string AcId { get; }
+
+        #region Packing
+        private class DriverModelPacker : AcCommonObjectPacker<DriverModelObject> {
+            protected override string GetBasePath(DriverModelObject t) {
+                return "content/driver";
+            }
+
+            protected override void PackOverride(DriverModelObject t) {
+                AddFilename(Path.GetFileName(t.Location), t.Location);
+            }
+
+            protected override PackedDescription GetDescriptionOverride(DriverModelObject t) {
+                return new PackedDescription(t.Id, t.Name, null, DriverModelsManager.Instance.Directories.GetMainDirectory(), true);
+            }
+        }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new DriverModelPacker();
+        }
+        #endregion
     }
 }
