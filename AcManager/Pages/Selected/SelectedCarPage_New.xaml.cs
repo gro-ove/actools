@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,7 @@ using AcManager.Tools.ContentRepairUi;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools;
@@ -33,6 +35,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -144,62 +147,62 @@ namespace AcManager.Pages.Selected {
             }
 
             #region Open In Showroom
-            private CommandBase _openInShowroomCommand;
+            private DelegateCommand<object> _openInShowroomCommand;
 
-            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
+            public DelegateCommand<object> OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute(o);
+                    OpenInCustomShowroomCommand.Execute();
                     return;
                 }
 
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
-                    OpenInShowroomOptionsCommand.Execute(null);
+                    OpenInShowroomOptionsCommand.Execute();
                 }
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private CommandBase _openInShowroomOptionsCommand;
+            private DelegateCommand _openInShowroomOptionsCommand;
 
-            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
             }, () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private CommandBase _openInCustomShowroomCommand;
+            private AsyncCommand _openInCustomShowroomCommand;
 
-            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+            public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
                     (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
 
-            private CommandBase _driveCommand;
+            private DelegateCommand _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
-                    DriveOptionsCommand.Execute(null);
+                    DriveOptionsCommand.Execute();
                 }
             }, () => SelectedObject.Enabled));
 
-            private CommandBase _driveOptionsCommand;
+            private DelegateCommand _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
             }, () => SelectedObject.Enabled));
             #endregion
 
             #region Auto-Update Previews
-            private ICommand _updatePreviewsCommand;
+            private AsyncCommand _updatePreviewsCommand;
 
-            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ??
+            public AsyncCommand UpdatePreviewsCommand => _updatePreviewsCommand ??
                     (_updatePreviewsCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(), () => SelectedObject.Enabled));
 
-            private ICommand _updatePreviewsManuallyCommand;
+            private AsyncCommand _updatePreviewsManuallyCommand;
 
-            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ??
+            public AsyncCommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ??
                     (_updatePreviewsManuallyCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(UpdatePreviewMode.StartManual),
                             () => SelectedObject.Enabled));
 
-            private ICommand _updatePreviewsOptionsCommand;
+            private AsyncCommand _updatePreviewsOptionsCommand;
 
-            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ??
+            public AsyncCommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ??
                     (_updatePreviewsOptionsCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(UpdatePreviewMode.Options),
                             () => SelectedObject.Enabled));
             #endregion
@@ -278,23 +281,23 @@ namespace AcManager.Pages.Selected {
             }
             #endregion
 
-            private CommandBase _manageSkinsCommand;
+            private DelegateCommand _manageSkinsCommand;
 
-            public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
+            public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
                 CarSkinsListPage.Open(SelectedObject);
             }));
 
-            private CommandBase _manageSetupsCommand;
+            private DelegateCommand _manageSetupsCommand;
 
-            public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
+            public DelegateCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
                 CarSetupsListPage.Open(SelectedObject);
             }));
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
-            private CommandBase _readDataCommand;
+            private DelegateCommand _readDataCommand;
 
-            public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new DelegateCommand(() => {
+            public DelegateCommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new DelegateCommand(() => {
                 var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                 try {
                     var destination = FileUtils.EnsureUnique(DataDirectory);
@@ -305,9 +308,9 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData?.IsPacked == true));
 
-            private CommandBase _packDataCommand;
+            private DelegateCommand _packDataCommand;
 
-            public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
+            public DelegateCommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
                 try {
                     var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                     var exists = File.Exists(destination);
@@ -330,9 +333,43 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => Directory.Exists(DataDirectory)));
 
-            private CommandBase _replaceSoundCommand;
+            private DelegateCommand _extractSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ??
+            public DelegateCommand ExtractSoundCommand => _extractSoundCommand ?? (_extractSoundCommand = new DelegateCommand(async () => {
+                try {
+                    var filename = PluginsManager.Instance.GetPluginFilename("FmodHelper", "helper.exe");
+                    if (!File.Exists(filename)) {
+                        throw new InformativeException("Can’t extract sounds", "Helper executable not found");
+                    }
+
+                    if (!File.Exists(SelectedObject.SoundbankFilename)) {
+                        throw new InformativeException("Can’t extract sounds", "Car soundbank not found");
+                    }
+
+                    var destination = FileUtils.EnsureUnique(Path.Combine(SelectedObject.Location, "sfx-samples"));
+                    using (WaitingDialog.Create("Extracting…"))
+                    using (var process = ProcessExtension.Start(filename, new[] {
+                        "/C", "/V1", "/S1", "/L:sfx-samples/log.txt", "/O:sfx-samples",
+                        FileUtils.GetRelativePath(SelectedObject.SoundbankFilename, SelectedObject.Location)
+                    }, new ProcessStartInfo {
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        WorkingDirectory = SelectedObject.Location
+                    })) {
+                        await process.WaitForExitAsync();
+                        if (process.HasExitedSafe() && process.ExitCode != 0) {
+                            throw new InformativeException("Can’t extract sounds", $"Exit code: {process.ExitCode}");
+                        }
+
+                        WindowsHelper.ViewDirectory(destination);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t extract sounds", ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
+                }
+            }, () => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FmodHelper")));
+
+            private AsyncCommand _replaceSoundCommand;
+
+            public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ??
                     (_replaceSoundCommand = new AsyncCommand(() => CarSoundReplacer.Replace(SelectedObject)));
 
             private AsyncCommand _replaceTyresCommand;

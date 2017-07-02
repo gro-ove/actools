@@ -11,7 +11,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer {
         public static double OptionMaxMultipler = 1d;
         public static float OptionGBufferExtra = 2f;
-        public const bool OptionHwCrop = true;
 
         private delegate void SplitCallback(Action<Stream> stream, int x, int y, int width, int height);
 

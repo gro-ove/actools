@@ -18,6 +18,7 @@ using SlimDX;
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomFormWrapper : BaseKn5FormWrapper {
         public bool OptionHwDownscale = true;
+        public static long OptionMontageMemoryLimit = 2147483648L;
 
         private readonly ForwardKn5ObjectRenderer _renderer;
 
@@ -244,8 +245,6 @@ namespace AcTools.Render.Wrapper {
         protected static IProgress<double> Wrap(IProgress<Tuple<string, double?>> baseProgress, string message = null) {
             return new ProgressWrapper(baseProgress, message ?? "Rendering…");
         }
-
-        public static long OptionMontageMemoryLimit = 2147483648L;
 
         protected virtual void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
