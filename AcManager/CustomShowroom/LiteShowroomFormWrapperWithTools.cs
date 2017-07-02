@@ -198,8 +198,7 @@ namespace AcManager.CustomShowroom {
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
                 var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
-                var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
-                        !OptionHwDownscale && downscale, Wrap(progress), cancellation);
+                var information = dark.SplitShot(multipler, downscale ? 0.5d : 1d, destination, false, Wrap(progress), cancellation);
 
                 progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.92));
 

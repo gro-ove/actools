@@ -17,7 +17,6 @@ using SlimDX;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomFormWrapper : BaseKn5FormWrapper {
-        public bool OptionHwDownscale = true;
         public static long OptionMontageMemoryLimit = 2147483648L;
 
         private readonly ForwardKn5ObjectRenderer _renderer;
@@ -250,8 +249,8 @@ namespace AcTools.Render.Wrapper {
                 CancellationToken cancellation = default(CancellationToken)) {
             var dark = (DarkKn5ObjectRenderer)Renderer;
             var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
-            var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
-                    !OptionHwDownscale && downscale, Wrap(progress), cancellation);
+            var information = dark.SplitShot(multipler, downscale ? 0.5d : 1d, destination,
+                    false, Wrap(progress), cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
 rem Use magick.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
@@ -269,14 +268,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 SplitShotPieces(multipler, downscale, filename, progress, cancellation);
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
-                using (var image = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, Wrap(progress), cancellation)) {
+                using (var image = dark.SplitShot(multipler, downscale ? 0.5d : 1d, Wrap(progress), cancellation)) {
                     if (cancellation.IsCancellationRequested) return;
-
-                    if (downscale && !OptionHwDownscale) {
-                        progress?.Report(Tuple.Create("Downscaling…", (double?)0.93));
-                        image.Downscale();
-                        if (cancellation.IsCancellationRequested) return;
-                    }
 
                     progress?.Report(Tuple.Create("Saving…", (double?)0.95));
                     ImageUtils.SaveImage(image, filename, 95, new ImageUtils.ImageInformation());
@@ -289,16 +282,14 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
                 progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
-                _renderer.Shot(multipler, OptionHwDownscale && downscale ? 0.5 : 1d, 1d, stream, true,
+                _renderer.Shot(multipler, downscale ? 0.5 : 1d, 1d, stream, true,
                         progress.ToDouble("Rendering…").Subrange(0.2, 0.6), cancellation);
                 stream.Position = 0;
                 if (cancellation.IsCancellationRequested) return;
 
                 using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
                     progress?.Report(Tuple.Create("Saving…", (double?)0.9));
-                    ImageUtils.Convert(stream, destination, !OptionHwDownscale && downscale
-                            ? new Size((_renderer.ActualWidth * multipler / 2).RoundToInt(), (_renderer.ActualHeight * multipler / 2).RoundToInt())
-                            : (Size?)null, 95, new ImageUtils.ImageInformation());
+                    ImageUtils.Convert(stream, destination, null, 95, new ImageUtils.ImageInformation());
                 }
             }
         }
