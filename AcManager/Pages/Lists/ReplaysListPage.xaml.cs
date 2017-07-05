@@ -1,12 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -45,5 +56,32 @@ namespace AcManager.Pages.Lists {
                 return AppStrings.List_Replays;
             }
         }
+
+        #region Batch actions
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return CommonBatchActions.DefaultSet.Append(CommonBatchActions.BatchAction_Delete.Instance)
+                                     .If(AcSettingsHolder.Replay.Autosave, x => x.Append(BatchAction_KeepAutosaveReplay.Instance));
+        }
+
+        public class BatchAction_KeepAutosaveReplay : BatchAction<ReplayObject> {
+            public static readonly BatchAction_KeepAutosaveReplay Instance = new BatchAction_KeepAutosaveReplay();
+            public BatchAction_KeepAutosaveReplay() : base("Keep Replay", "Keep auto-saved replays in selection", null, null) {
+                DisplayApply = "Keep";
+                Priority = 2;
+            }
+
+            public override bool IsAvailable(ReplayObject obj) {
+                return obj.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave;
+            }
+
+            protected override async Task ApplyOverrideAsync(ReplayObject obj) {
+                if (obj.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave) {
+                    obj.EditableCategory = null;
+                    await Task.Delay(10);
+                    obj.SaveCommand.Execute();
+                }
+            }
+        }
+        #endregion
     }
 }

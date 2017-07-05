@@ -1,19 +1,19 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        mc:Ignorable="d" FocusVisualStyle="{x:Null}">
-    <Grid Style="{StaticResource ContentRoot}">
-        <mui:ModernTab Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
-            <mui:ModernTab.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Video}" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Source="/Pages/AcSettings/AcSettingsView.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Audio}" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Controls}" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
-                <mui:Link DisplayName="Presets Per Mode" Source="/Pages/AcSettings/PresetsPerMode.xaml" IsNew="True" />
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
-    </Grid>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    mc:Ignorable="d" FocusVisualStyle="{x:Null}">
+  <Grid Style="{StaticResource ContentRoot}">
+    <mui:ModernTab Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
+      <mui:ModernTab.Links>
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Video}" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Source="/Pages/AcSettings/AcSettingsView.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Audio}" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Controls}" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
+        <mui:Link DisplayName="Presets Per Mode" Source="/Pages/AcSettings/PresetsPerMode.xaml" IsNew="True" />
+      </mui:ModernTab.Links>
+    </mui:ModernTab>
+  </Grid>
 </UserControl>

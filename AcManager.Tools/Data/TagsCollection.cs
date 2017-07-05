@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 
@@ -94,7 +95,7 @@ namespace AcManager.Tools.Data {
 
         public static IEnumerable<string> CleanUp(IEnumerable<string> tags) {
             return tags.Select(x => {
-                var s = x.Trim();
+                var s = x.Trim().ApartFromLast("\"]").ApartFromFirst("[\"").Trim();
 
                 if (Regex.IsMatch(s, @"^#?[abAB]\d\d?$")) {
                     return null;

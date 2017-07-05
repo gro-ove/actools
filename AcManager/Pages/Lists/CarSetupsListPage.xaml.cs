@@ -22,7 +22,9 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -212,28 +214,93 @@ namespace AcManager.Pages.Lists {
 
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
-                //BatchAction_SetSetupTrack.Instance
-            });
+            return CommonBatchActions.GetDefaultSet<CarSetupObject>().Concat(new BatchAction[] {
+                BatchAction_SetSetupTrack.Instance,
+                BatchAction_RemoveSetupTrack.Instance,
+                _remoteSource == CarSetupsRemoteSource.None ? null : BatchAction_InstallRemoteSetup.Instance
+            }).NonNull();
+        }
+
+        public class BatchAction_InstallRemoteSetup : BatchAction<RemoteCarSetupObject> {
+            public static readonly BatchAction_InstallRemoteSetup Instance = new BatchAction_InstallRemoteSetup();
+
+            public BatchAction_InstallRemoteSetup() : base("Install", "Install car setups", null, "Batch.InstallRemoteSetup") {
+                Priority = 10;
+                DisplayApply = "Install";
+            }
+
+            public override bool IsAvailable(RemoteCarSetupObject obj) {
+                return true;
+            }
+
+            private bool _asGeneric = ValuesStorage.GetBool("_ba.installRemoteSetup.asGeneric");
+
+            public bool AsGeneric {
+                get => _asGeneric;
+                set {
+                    if (Equals(value, _asGeneric)) return;
+                    _asGeneric = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.installRemoteSetup.asGeneric", value);
+                }
+            }
+
+            protected override Task ApplyOverrideAsync(RemoteCarSetupObject obj) {
+                return obj.InstallCommand.ExecuteAsync(AsGeneric ? CarSetupObject.GenericDirectory : null);
+            }
         }
 
         public class BatchAction_SetSetupTrack : BatchAction<CarSetupObject> {
             public static readonly BatchAction_SetSetupTrack Instance = new BatchAction_SetSetupTrack();
-            public BatchAction_SetSetupTrack() : base("Set Track", "Assign setups to a track", "Car Setup", null) { }
 
-            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                return base.ApplyAsync(list, progress, cancellation);
+            public BatchAction_SetSetupTrack() : base("Set Track", "Assign setups to a track", "Car Setup", "Batch.SetSetupTrack") {
+                Track = TracksManager.Instance.GetById(ValuesStorage.GetString("_ba.setSetupTrack.track") ?? "") ??
+                        TracksManager.Instance.GetDefault();
+                DisplayApply = "Set";
+            }
+
+            private TrackObject _track;
+
+            public TrackObject Track {
+                get => _track;
+                set {
+                    if (Equals(value, _track)) return;
+                    _track = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.setSetupTrack.track", value?.Id);
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            public override bool IsAvailable(CarSetupObject obj) {
+                return Track != null && obj.TrackId != Track?.Id;
+            }
+
+            private DelegateCommand _changeTrackCommand;
+
+            public DelegateCommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
+                Track = SelectTrackDialog.Show(Track)?.MainTrackObject;
+            }));
+
+            protected override void ApplyOverride(CarSetupObject obj) {
+                obj.Track = Track;
+            }
+        }
+
+        public class BatchAction_RemoveSetupTrack : BatchAction<CarSetupObject> {
+            public static readonly BatchAction_RemoveSetupTrack Instance = new BatchAction_RemoveSetupTrack();
+
+            public BatchAction_RemoveSetupTrack() : base("Unlink From Track", "Unlink setups from a track", "Car Setup", null) {
+                DisplayApply = "Unlink";
+                Priority = -1;
+            }
+
+            public override bool IsAvailable(CarSetupObject obj) {
+                return obj.TrackId != null;
             }
 
             protected override void ApplyOverride(CarSetupObject obj) {
-                /*var badge = _badges.FirstOrDefault(x => string.Equals(x.Name, obj.Brand, StringComparison.OrdinalIgnoreCase));
-                if (badge == null) return;
-
-                if (File.Exists(obj.BrandBadge)) {
-                    FileUtils.Recycle(obj.BrandBadge);
-                }
-
-                File.Copy(badge.Filename, obj.BrandBadge);*/
+                obj.Track = null;
             }
         }
         #endregion

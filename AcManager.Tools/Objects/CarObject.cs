@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -69,8 +71,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string DisplayName => Name == null ? Id :
-                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !AcStringValues.GetYearFromName(Name).HasValue
-                        ? $@"{Name} '{Year % 100:D2}" : Name;
+                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !AcStringValues.GetYearFromName(Name).HasValue ?
+                        $@"{Name.ApartFromLast(Year?.ToInvariantString())} '{Year % 100:D2}" : Name;
 
         public override int? Year {
             get => base.Year;
@@ -123,7 +125,6 @@ namespace AcManager.Tools.Objects {
 
             if (!Enabled) return;
 
-            SuggestionLists.CarBrandsList.AddUnique(Brand);
             SuggestionLists.CarClassesList.AddUnique(CarClass);
             UpdateParentValues();
         }
@@ -271,8 +272,6 @@ namespace AcManager.Tools.Objects {
                 if (Loaded) {
                     OnPropertyChanged(nameof(Brand));
                     Changed = true;
-
-                    SuggestionLists.RebuildCarBrandsList();
                 }
             }
         }
@@ -608,41 +607,51 @@ namespace AcManager.Tools.Objects {
                 return $"content/cars/{t.Id}";
             }
 
-            protected override void PackOverride(CarObject t) {
-                Add(t.AcdData?.GetIniFile("digital_instruments.ini").Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
-                     .NonNull()?.Select(FontsManager.Instance.GetByAcId));
-                Add(DriverModelsManager.Instance.GetByAcId(t.AcdData?.GetIniFile("driver3d.ini")["MODEL"].GetNonEmpty("NAME") ?? ""));
+            protected override IEnumerable PackOverride(CarObject t) {
+                // Fonts
+                yield return Add(t.AcdData?.GetIniFile("digital_instruments.ini")
+                                  .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
+                                  .NonNull()?.Select(FontsManager.Instance.GetByAcId).Where(x => x?.Author != AuthorKunos));
 
-                Add("body_shadow.png", "tyre_?_shadow.png", "collider.kn5", "driver_base_pos.knh", "logo.png");
-                Add("animations/*.ksanim");
-                Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
-                Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
-                Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");
+                // Driver models
+                var driver = DriverModelsManager.Instance.GetByAcId(
+                        t.AcdData?.GetIniFile("driver3d.ini")["MODEL"].GetNonEmpty("NAME") ?? "");
+                if (driver != null && driver.Author != AuthorKunos) {
+                    yield return Add(driver);
+                }
+
+                // Various files
+                yield return Add("body_shadow.png", "tyre_?_shadow.png", "collider.kn5", "driver_base_pos.knh", "logo.png");
+                yield return Add("animations/*.ksanim");
+                yield return Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
+                yield return Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
+                yield return Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");
 
                 if (Params.IncludeTemplates) {
-                    Add("templates/*");
+                    yield return Add("templates/*");
                 }
 
                 var textureNames = Kn5.FromFile(FileUtils.GetMainCarFilename(t.Location, t.AcdData),
                         SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
-                Add(textureNames.Select(x => $"skins/*/{x}"));
-                Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
+                yield return Add(textureNames.Select(x => $"skins/*/{x}"));
+                yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
 
-                if (!Add("data.acd")) {
+                yield return Add("data.acd");
+                if (!Has("data.acd")) {
                     if (Params.PackData) {
                         var dataDirectory = Path.Combine(t.Location, "data");
                         var acd = Acd.FromDirectory(dataDirectory);
                         using (var s = new MemoryStream()) {
                             acd.Save(dataDirectory, s);
-                            AddBytes("data.acd", s.ToArray());
+                            yield return AddBytes("data.acd", s.ToArray());
                         }
                     } else {
-                        Add("data/*");
+                        yield return Add("data/*");
                     }
                 }
 
                 var data = DataWrapper.FromCarDirectory(t.Location);
-                Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
+                yield return Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
             }
 
             protected override PackedDescription GetDescriptionOverride(CarObject t) {

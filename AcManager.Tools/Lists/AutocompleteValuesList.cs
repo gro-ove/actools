@@ -36,11 +36,11 @@ namespace AcManager.Tools.Lists {
                 return _valuesLc.Contains(s.ToLower());
             }
         }
-        
+
         public new void RemoveAt(int pos) {
             Remove(this[pos]);
         }
-        
+
         public new void Remove(string s) {
             lock (_valuesLc) {
                 var lc = s.ToLower();
@@ -51,7 +51,7 @@ namespace AcManager.Tools.Lists {
                 }
             }
         }
-        
+
         public new void ReplaceEverythingBy(IEnumerable<string> values) {
             lock (_valuesLc) {
                 try {
@@ -78,32 +78,52 @@ namespace AcManager.Tools.Lists {
                 }
             }
         }
-        
+
+        private void AddUniqueInner(string value) {
+            if (string.IsNullOrWhiteSpace(value)) return;
+
+            value = value.Trim();
+            var valueLc = value.ToLower();
+            if (_valuesLc.IndexOf(valueLc) == -1) {
+                base.Add(value);
+                _valuesLc.Add(valueLc);
+            }
+        }
+
         public void AddUnique(string value) {
             if (string.IsNullOrWhiteSpace(value)) return;
 
-            lock (_valuesLc) {
-                try {
-                    value = value.Trim();
-                    var valueLc = value.ToLower();
-                    if (_valuesLc.IndexOf(valueLc) == -1) {
-                        base.Add(value);
-                        _valuesLc.Add(valueLc);
-                    }
-                } catch (Exception e) {
-                    if (Application.Current?.Dispatcher.CheckAccess() != true) {
-                        Logging.Error(e);
-                    } else {
-                        Logging.Warning("[ UI THREAD ONLY! ]");
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                lock (_valuesLc) {
+                    try {
+                        AddUniqueInner(value);
+                    } catch (Exception e) {
+                        if (Application.Current?.Dispatcher.CheckAccess() != true) {
+                            Logging.Error(e);
+                        } else {
+                            Logging.Warning("[ UI THREAD ONLY! ]");
+                        }
                     }
                 }
-            }
+            });
         }
-        
+
         public void AddUniques(IEnumerable<string> values) {
-            foreach (var value in values) {
-                AddUnique(value);
-            }
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                lock (_valuesLc) {
+                    try {
+                        foreach (var value in values) {
+                            AddUniqueInner(value);
+                        }
+                    } catch (Exception e) {
+                        if (Application.Current?.Dispatcher.CheckAccess() != true) {
+                            Logging.Error(e);
+                        } else {
+                            Logging.Warning("[ UI THREAD ONLY! ]");
+                        }
+                    }
+                }
+            });
         }
 
         private ListCollectionView _view;

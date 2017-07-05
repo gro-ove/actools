@@ -12,7 +12,6 @@
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
-    <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style x:Key="GroupBoxExpander" TargetType="Expander">
@@ -188,9 +187,13 @@
               </ListBox>
 
               <DockPanel Grid.Row="1">
-                <mui:ModernButton x:Name="AddCarButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
+                <mui:ModernButton x:Name="AddNewButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
                     Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
+                <mui:ModernButton x:Name="SaveAllButton" DockPanel.Dock="Right" IconData="{StaticResource SaveIconData}"
+                    ToolTip="Save all (Ctrl+Shift+S)" IconWidth="10" IconHeight="10" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
+                    ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>
 
@@ -218,7 +221,7 @@
                       </Grid.ColumnDefinitions>
 
                       <Button x:Name="PART_BatchBlock_RunButton" Padding="8 3 8 5" Height="27"
-                          IsEnabled="{Binding SelectedItems.Count, ElementName=ItemsList, Converter={StaticResource MoreConverter}}">
+                          IsEnabled="{Binding SelectedAmount, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource MoreConverter}}">
                         <DockPanel>
                           <Path Width="8" Height="8" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0"
                               Stretch="Fill" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
@@ -327,7 +330,7 @@
       </Setter.Value>
     </Setter>
 
-    <!-- Specific version with grouping -->
+    <!-- Empty version -->
     <Style.Triggers>
       <DataTrigger Binding="{Binding IsEmpty}" Value="True">
         <Setter Property="Template">
@@ -335,7 +338,7 @@
             <ControlTemplate TargetType="ac:AcListPage">
               <mui:Cell>
                 <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <mui:ModernButton DockPanel.Dock="Left" x:Name="AddCarButton" IconData="{StaticResource AddIconData}"
+                  <mui:ModernButton DockPanel.Dock="Left" x:Name="AddNewButton" IconData="{StaticResource AddIconData}"
                       ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 0 8 0" Style="{StaticResource NonTransparent}"
                       Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Width="24"
                       Height="24" EllipseDiameter="22" />

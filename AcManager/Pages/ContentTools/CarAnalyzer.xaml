@@ -65,7 +65,7 @@
         </DockPanel>
 
         <mui:BooleanSwitch Value="{Binding RatingMode}">
-          <mui:SpacingStackPanel Spacing="4" MinHeight="200" MaxHeight="320">
+          <mui:SpacingStackPanel Spacing="4" MinHeight="120">
             <TextBlock Text="More details:" Style="{StaticResource Label.Padding}" />
             <mui:ReferenceSwitch Value="{Binding Ratings}">
               <mui:ReferenceSwitch.Null>
@@ -74,7 +74,7 @@
             </mui:ReferenceSwitch>
             <mui:BooleanSwitch Value="{Binding RatingLoading}">
               <mui:BooleanSwitch.False>
-                <ItemsControl ItemsSource="{Binding Ratings}" Style="{StaticResource VirtualizingItemsControl}" mui:FancyScrollHelper.Outside="True">
+                <ItemsControl ItemsSource="{Binding Ratings}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <DockPanel Height="32" Margin="0 0 8 4">

@@ -85,7 +85,8 @@ namespace AcManager.Tools.Lists {
         }
 
         public void RefreshFilter([NotNull] AcItemWrapper wrapperObject) {
-            CollectionChangedInner?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, wrapperObject, wrapperObject));
+            CollectionChangedInner?.Invoke(this,
+                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, wrapperObject, wrapperObject, IndexOf(wrapperObject)));
         }
 
         public int ListenersCount { get; private set; }

@@ -126,7 +126,7 @@ namespace AcManager.Pages.Selected {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        private void TestTextBox_OnTextChanged(object sender, TextChangedEventArgs e) {
+        private void OnTestTextChanged(object sender, TextChangedEventArgs e) {
             ValuesStorage.Set(KeyTestText, TextBox.Text);
             RedrawTestText();
         }

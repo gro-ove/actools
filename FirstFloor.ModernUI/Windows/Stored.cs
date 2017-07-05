@@ -18,6 +18,11 @@ namespace FirstFloor.ModernUI.Windows {
             Key = path;
         }
 
+        public Stored(string key, object defaultValue) : base(key) {
+            _key = key;
+            Initialize(_key, defaultValue);
+        }
+
         private string _key;
 
         public string Key {
@@ -25,25 +30,25 @@ namespace FirstFloor.ModernUI.Windows {
             set {
                 if (Equals(_key, value)) return;
 
-                _key = value;
                 var i = value.IndexOf('=');
                 string defaultValue;
                 if (i != -1) {
                     defaultValue = value.Substring(i + 1);
-                    value = value.Substring(0, i);
+                    _key = value.Substring(0, i);
                 } else {
                     defaultValue = null;
+                    _key = value;
                 }
 
-                Initialize(value, defaultValue);
+                Initialize(_key, defaultValue);
             }
         }
 
-        public static StoredValue Get(string key, string defaultValue = null) {
+        public static StoredValue Get(string key, object defaultValue = null) {
             return StoredValue.Create(key, defaultValue);
         }
 
-        public static string GetValue(string key, string defaultValue = null) {
+        public static string GetValue(string key, object defaultValue = null) {
             return StoredValue.Create(key, defaultValue).Value;
         }
 
@@ -65,7 +70,7 @@ namespace FirstFloor.ModernUI.Windows {
                 }
             }
 
-            internal static StoredValue Create(string key, string defaultValue) {
+            internal static StoredValue Create(string key, object defaultValue) {
                 WeakReference<StoredValue> link;
                 StoredValue result;
 
@@ -85,9 +90,9 @@ namespace FirstFloor.ModernUI.Windows {
             private readonly string _storageKey;
             private readonly string _defaultValue;
 
-            private StoredValue(string key, string defaultValue) {
+            private StoredValue(string key, object defaultValue) {
                 _storageKey = @"_stored:" + key;
-                _defaultValue = defaultValue;
+                _defaultValue = defaultValue?.ToString();
             }
 
             private string _value;
@@ -103,7 +108,7 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
-        private void Initialize(string key, string defaultValue) {
+        private void Initialize(string key, object defaultValue) {
             Source = StoredValue.Create(key, defaultValue);
             Path = new PropertyPath(nameof(StoredValue.Value));
             Mode = BindingMode.TwoWay;

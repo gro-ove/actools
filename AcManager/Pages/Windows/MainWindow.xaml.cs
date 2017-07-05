@@ -508,7 +508,7 @@ namespace AcManager.Pages.Windows {
                 if (unsaved.Count > 0) {
                     switch (ModernDialog.ShowMessage(
                             $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
-                                    unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
+                                    unsaved.OrderBy(x => x).Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
                             AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel)) {
                                 case MessageBoxResult.Yes:
                                     Superintendent.Instance.SaveAll();

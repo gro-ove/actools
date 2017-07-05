@@ -57,11 +57,15 @@ namespace AcManager.Tools.Data {
                     _kunosContent = new Dictionary<string, string[]> {
                         [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                        [@"drivers"] = (j[@"drivers"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                        [@"fonts"] = (j[@"fonts"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                     };
                 } else {
                     _kunosContent = new Dictionary<string, string[]> {
                         [@"tracks"] = new string[] { },
-                        [@"showrooms"] = new string[] { }
+                        [@"showrooms"] = new string[] { },
+                        [@"drivers"] = new string[] { },
+                        [@"fonts"] = new string[] { },
                     };
 
                     Logging.Warning("Cannot load KunosContent.json");

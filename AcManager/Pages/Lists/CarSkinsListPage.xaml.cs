@@ -146,7 +146,7 @@ namespace AcManager.Pages.Lists {
 
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
+            return CommonBatchActions.GetDefaultSet<CarSkinObject>().Concat(new BatchAction[] {
                 BatchAction_UpdateLivery.Instance,
                 BatchAction_UpdatePreviews.Instance,
                 BatchAction_ResetPriority.Instance,
@@ -162,6 +162,7 @@ namespace AcManager.Pages.Lists {
             public BatchAction_UpdateLivery()
                     : base("Update Liveries", "With previously used params", "Look", "Batch.UpdateLivery") {
                 DisplayApply = "Update";
+                Priority = 2;
             }
 
             private bool _randomShape = ValuesStorage.GetBool("_ba.updateLivery.random", true);
@@ -175,6 +176,10 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
+            public override bool IsAvailable(CarSkinObject obj) {
+                return true;
+            }
+
             protected override Task ApplyOverrideAsync(CarSkinObject obj) {
                 return RandomShape ? LiveryIconEditor.GenerateRandomAsync(obj) : LiveryIconEditor.GenerateAsync(obj);
             }
@@ -186,6 +191,11 @@ namespace AcManager.Pages.Lists {
                     : base("Update Previews", "With previously used params", "Look", null) {
                 DisplayApply = "Update";
                 InternalWaitingDialog = true;
+                Priority = 1;
+            }
+
+            public override bool IsAvailable(CarSkinObject obj) {
+                return true;
             }
 
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
@@ -203,6 +213,10 @@ namespace AcManager.Pages.Lists {
                 DisplayApply = "Reset";
             }
 
+            public override bool IsAvailable(CarSkinObject obj) {
+                return obj.SkinNumber != null;
+            }
+
             protected override void ApplyOverride(CarSkinObject obj) {
                 obj.SkinNumber = null;
             }
@@ -213,6 +227,10 @@ namespace AcManager.Pages.Lists {
             public BatchAction_ResetPriority()
                     : base("Reset Priorities", "Set all priorities to 0", "UI", null) {
                 DisplayApply = "Reset";
+            }
+
+            public override bool IsAvailable(CarSkinObject obj) {
+                return obj.Priority != null;
             }
 
             protected override void ApplyOverride(CarSkinObject obj) {
@@ -227,6 +245,10 @@ namespace AcManager.Pages.Lists {
                 DisplayApply = "Remove";
             }
 
+            public override bool IsAvailable(CarSkinObject obj) {
+                return obj.HasData;
+            }
+
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 return Task.Run(() => FileUtils.Recycle(OfType(list).Select(x => x.JsonFilename).ToArray()));
             }
@@ -237,6 +259,10 @@ namespace AcManager.Pages.Lists {
             public BatchAction_CreateMissingUiSkinJson()
                     : base("Create Missing UI Files", "And generate names from IDs", "UI File", null) {
                 DisplayApply = "Check";
+            }
+
+            public override bool IsAvailable(CarSkinObject obj) {
+                return !obj.HasData;
             }
 
             protected override void ApplyOverride(CarSkinObject obj) {

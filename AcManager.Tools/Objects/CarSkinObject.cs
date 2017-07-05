@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -286,30 +287,30 @@ namespace AcManager.Tools.Objects {
             private static string _recentCarId;
             private static string[] _recentTextures;
 
-            protected override void PackOverride(CarSkinObject t) {
-                Add("preview.jpg", "livery.png", "ui_skin.json");
+            protected override IEnumerable PackOverride(CarSkinObject t) {
+                yield return Add("preview.jpg", "livery.png", "ui_skin.json");
 
                 if (Params.CmForFlag) {
-                    AddString("cm_skin_for.json", new JObject {
+                    yield return AddString("cm_skin_for.json", new JObject {
                         ["id"] = t.CarId
                     }.ToString(Formatting.Indented));
                 }
 
                 if (Params.CmPaintShopValues) {
-                    Add("cm_skin.json");
+                    yield return Add("cm_skin.json");
                 }
 
                 if (t.CarId == _recentCarId) {
-                    Add(_recentTextures);
+                    yield return Add(_recentTextures);
                 } else {
                     var car = CarsManager.Instance.GetById(t.CarId);
                     if (car != null) {
                         _recentCarId = t.CarId;
                         _recentTextures = Kn5.FromFile(FileUtils.GetMainCarFilename(car.Location, car.AcdData),
                                 SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToArray();
-                        Add(_recentTextures);
+                        yield return Add(_recentTextures);
                     } else {
-                        Add("*.dds", "*.png", "*.jpg", "*.jpeg", "*.gif");
+                        yield return Add("*.dds", "*.png", "*.jpg", "*.jpeg", "*.gif");
                     }
                 }
             }

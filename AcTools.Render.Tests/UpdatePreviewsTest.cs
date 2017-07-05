@@ -47,6 +47,7 @@ namespace AcTools.Render.Tests {
                     renderer.Initialize();
                     renderer.Width = CommonAcConsts.PreviewWidth;
                     renderer.Height = CommonAcConsts.PreviewHeight;
+                    renderer.ResolutionMultiplier = 1d;
 
                     do {
                         if (e.Current != first) {
@@ -61,7 +62,7 @@ namespace AcTools.Render.Tests {
                         foreach (var skinDirectory in Directory.GetDirectories(Path.Combine(first.CarDirectory, "skins"))) {
                             // Console.WriteLine(skinDirectory);
 
-                            renderer.Shot(4d, 1d, 1d, true)
+                            renderer.Shot(renderer.Width * 4, renderer.Height * 4, 1d, 1d, true)
                                     .HighQualityResize(new Size(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
                                     .Save(Path.Combine(skinDirectory, "preview_new.jpg"));
                             renderer.SelectNextSkin();

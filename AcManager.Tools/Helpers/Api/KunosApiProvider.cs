@@ -56,24 +56,6 @@ namespace AcManager.Tools.Helpers.Api {
             public long ServerTimeStamp;
         }
 
-        private static HttpClient _httpClient;
-        private static HttpClient GetHttpClient() {
-            if (_httpClient == null) {
-                var handler = new HttpClientHandler {
-                    AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                    AllowAutoRedirect = true,
-                    UseCookies = false,
-                    UseProxy = !OptionNoProxy
-                };
-
-                _httpClient = new HttpClient(handler);
-                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", InternalUtils.GetKunosUserAgent());
-                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-User-Agent", CmApiProvider.UserAgent);
-            }
-
-            return _httpClient;
-        }
-
         [ItemNotNull]
         private static async Task<string> LoadAsync(string uri, TimeSpan? timeout = null) {
             if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
@@ -81,7 +63,7 @@ namespace AcManager.Tools.Helpers.Api {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             try {
                 using (var cancellation = new CancellationTokenSource(timeout.Value))
-                using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
+                using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
                     return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             } catch (OperationCanceledException) {
@@ -111,7 +93,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 using (var cancellation = new CancellationTokenSource(timeout.Value))
-                using (var response = await GetHttpClient().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
+                using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
                     if (response.StatusCode == HttpStatusCode.NotModified) {
                         return new LoadedData { Data = null, LastModified = ifModifiedSince ?? DateTime.Now };
                     }
@@ -132,7 +114,7 @@ namespace AcManager.Tools.Helpers.Api {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             try {
                 using (var cancellation = new CancellationTokenSource(timeout))
-                using (var response = GetHttpClient().SendAsync(request, cancellation.Token).Result)
+                using (var response = HttpClientHolder.Get().SendAsync(request, cancellation.Token).Result)
                 using (var stream = response.Content.ReadAsStreamAsync().Result) {
                     return deserializationFn(stream);
                 }

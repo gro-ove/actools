@@ -282,6 +282,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SmaaResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Special\PiecesBlender.cs" />
     <Compile Include="Temporary\Logging.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
@@ -297,7 +298,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\SearchTex.dds" />
@@ -352,6 +352,7 @@
     <Content Include="Shaders\Special\SpecialAreaLights.fx" />
     <Content Include="Shaders\Special\SpecialDebugReflections.fx" />
     <Content Include="Shaders\Special\SpecialPaintShop.fx" />
+    <Content Include="Shaders\Special\SpecialPiecesBlender.fx" />
     <Content Include="Shaders\Special\SpecialRandom.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />
@@ -388,7 +389,7 @@
     <TransformOnBuild>true</TransformOnBuild>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; rem zsh -c "~/bin/t4auto Shaders.tt *(F)"
+    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; zsh -c "~/bin/t4auto Shaders.tt *(F)"
 vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

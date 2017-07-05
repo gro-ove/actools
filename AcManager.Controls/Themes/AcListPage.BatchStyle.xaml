@@ -4,6 +4,7 @@
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/CheckBox.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />

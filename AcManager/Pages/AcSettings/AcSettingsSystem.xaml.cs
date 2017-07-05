@@ -1,4 +1,5 @@
-﻿using AcManager.Tools.Helpers.AcSettings;
+﻿using AcManager.Controls;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {
@@ -6,6 +7,7 @@ namespace AcManager.Pages.AcSettings {
         public AcSettingsSystem() {
             InitializeComponent();
             DataContext = new AcSystemViewModel();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         public class AcSystemViewModel : NotifyPropertyChanged {
@@ -26,7 +28,7 @@ namespace AcManager.Pages.AcSettings {
             private string _ghostDisplayColor;
 
             public string GhostDisplayColor {
-                get { return _ghostDisplayColor; }
+                get => _ghostDisplayColor;
                 set {
                     if (Equals(value, _ghostDisplayColor)) return;
                     _ghostDisplayColor = value;

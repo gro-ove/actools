@@ -223,8 +223,8 @@ namespace AcTools.Utils {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             if (directory == null) throw new ArgumentNullException(nameof(directory));
 
-            filename = filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            directory = directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            filename = NormalizePath(filename);
+            directory = NormalizePath(directory);
 
             if (!filename.StartsWith(directory, StringComparison.OrdinalIgnoreCase) || directory.Length == 0) return filename;
 

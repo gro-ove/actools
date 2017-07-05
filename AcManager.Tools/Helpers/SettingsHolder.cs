@@ -2243,6 +2243,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private long? _montageVramCache;
+
+            public long MontageVramCache {
+                get => _montageVramCache ?? (_montageVramCache = ValuesStorage.GetLong("Settings.PluginsSettings.MontageVramCache", 268435456L)).Value;
+                set {
+                    if (Equals(value, _montageVramCache)) return;
+                    _montageVramCache = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.MontageVramCache", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public string MontageDefaultTemporaryDirectory => Path.Combine(Path.GetTempPath(), "CMMontage");
 
             private string _montageTemporaryDirectory;

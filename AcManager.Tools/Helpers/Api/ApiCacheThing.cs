@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -71,21 +73,23 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 try {
-                    using (var client = new WebClient {
-                        Encoding = Encoding.UTF8,
-                        Headers = {
-                            [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                        }
-                    }) {
-                        var data = await client.DownloadStringTaskAsync(url);
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                    using (var timeout = new CancellationTokenSource(KunosApiProvider.OptionWebRequestTimeout))
+                    using (var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellation, timeout.Token))
+                    using (var response = await HttpClientHolder.Get().SendAsync(request, combined.Token).ConfigureAwait(false)) {
+                        var data = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
                         lock (_cache) {
                             _cache[cacheKey] = Tuple.Create(data, DateTime.Now);
                         }
+
                         try {
                             File.WriteAllText(cacheFile.FullName, data);
                         } catch (Exception e) {
                             Logging.Warning(e);
                         }
+
                         return data;
                     }
                 } catch (Exception e) {

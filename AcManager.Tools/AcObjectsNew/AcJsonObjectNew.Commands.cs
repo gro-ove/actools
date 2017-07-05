@@ -3,21 +3,21 @@ using FirstFloor.ModernUI.Commands;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcJsonObjectNew {
-        private ICommand _tagsCleanUpCommand;
+        private DelegateCommand _tagsCleanUpCommand;
 
-        public ICommand TagsCleanUpCommand => _tagsCleanUpCommand ?? (_tagsCleanUpCommand = new DelegateCommand(() => {
+        public DelegateCommand TagsCleanUpCommand => _tagsCleanUpCommand ?? (_tagsCleanUpCommand = new DelegateCommand(() => {
             Tags = Tags.CleanUp();
         }));
 
-        private ICommand _tagsSortCommand;
+        private DelegateCommand _tagsSortCommand;
 
-        public ICommand TagsSortCommand => _tagsSortCommand ?? (_tagsSortCommand = new DelegateCommand(() => {
+        public DelegateCommand TagsSortCommand => _tagsSortCommand ?? (_tagsSortCommand = new DelegateCommand(() => {
             Tags = Tags.Sort();
         }));
 
-        private ICommand _tagsCleanUpAndSortCommand;
+        private DelegateCommand _tagsCleanUpAndSortCommand;
 
-        public ICommand TagsCleanUpAndSortCommand => _tagsCleanUpAndSortCommand ?? (_tagsCleanUpAndSortCommand = new DelegateCommand(() => {
+        public DelegateCommand TagsCleanUpAndSortCommand => _tagsCleanUpAndSortCommand ?? (_tagsCleanUpAndSortCommand = new DelegateCommand(() => {
             Tags = Tags.CleanUp().Sort();
         }));
     }

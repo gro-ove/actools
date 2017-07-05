@@ -67,6 +67,7 @@ namespace AcManager.Pages.AcSettings {
         public void Initialize() {
             DataContext = new ViewModel();
             InitializeComponent();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.BenchmarkCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),

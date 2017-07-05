@@ -52,8 +52,8 @@ namespace AcTools.Processes {
         public class StartType : IWithId {
             public string Name { get; }
 
-            public static readonly StartType Pit = new StartType("PIT", "Pit Stop");
-            public static readonly StartType RegularStart = new StartType("START", "Race Start");
+            public static readonly StartType Pit = new StartType("PIT", "Pits");
+            public static readonly StartType RegularStart = new StartType("START", "Starting Line");
             public static readonly StartType HotlapStart = new StartType("HOTLAP_START", "Hotlap Start");
 
             public static readonly StartType[] Values = {

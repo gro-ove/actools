@@ -24,7 +24,6 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override void OnListUpdate() {
-            SuggestionLists.RebuildCarBrandsList();
             SuggestionLists.RebuildCarClassesList();
             SuggestionLists.RebuildCarTagsList();
         }

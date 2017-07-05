@@ -45,37 +45,13 @@ namespace AcManager.Pages.Lists {
 
             public BatchAction_PackWeather() : base(null) {}
 
-            /*#region Properies
-            private bool _packData = ValuesStorage.GetBool("_ba.packCars.data", true);
-            public bool PackData {
-                get => _packData;
-                set {
-                    if (Equals(value, _packData)) return;
-                    _packData = value;
-                    ValuesStorage.Set("_ba.packCars.data", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _includeTemplates = ValuesStorage.GetBool("_ba.packCars.templates", true);
-            public bool IncludeTemplates {
-                get => _includeTemplates;
-                set {
-                    if (Equals(value, _includeTemplates)) return;
-                    _includeTemplates = value;
-                    ValuesStorage.Set("_ba.packCars.data", value);
-                    OnPropertyChanged();
-                }
-            }
-            #endregion*/
-
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return new AcCommonObject.AcCommonObjectPackerParams();
             }
         }
 
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return CommonBatchActions.DefaultSet.Concat(new BatchAction[] {
+            return CommonBatchActions.GetDefaultSet<WeatherObject>().Concat(new BatchAction[] {
                 BatchAction_PackWeather.Instance,
             });
         }

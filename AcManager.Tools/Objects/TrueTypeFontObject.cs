@@ -1,3 +1,4 @@
+using System.Collections;
 using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -21,8 +22,8 @@ namespace AcManager.Tools.Objects {
                 return "system/cfg/ppfilters";
             }
 
-            protected override void PackOverride(TrueTypeFontObject t) {
-                AddFilename(Path.GetFileName(t.Location), t.Location);
+            protected override IEnumerable PackOverride(TrueTypeFontObject t) {
+                yield return AddFilename(Path.GetFileName(t.Location), t.Location);
             }
 
             protected override PackedDescription GetDescriptionOverride(TrueTypeFontObject t) {

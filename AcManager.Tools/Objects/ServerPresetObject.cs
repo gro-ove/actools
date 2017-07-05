@@ -263,7 +263,7 @@ namespace AcManager.Tools.Objects {
             if (iniChanged || FileUtils.IsAffected(filename, WrapperConfigFilename) || FileUtils.IsAffected(filename, WrapperContentFilename)) {
                 if (!Changed || ModernDialog.ShowMessage(iniChanged ?
                         ToolsStrings.AcObject_ReloadAutomatically_Ini : ToolsStrings.AcObject_ReloadAutomatically_Json,
-                        ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {
                     ClearErrors(AcErrorCategory.Data);
                     LoadOrThrow();
                     Changed = false;

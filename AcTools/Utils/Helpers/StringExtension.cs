@@ -195,8 +195,7 @@ namespace AcTools.Utils.Helpers {
 
         [Pure, NotNull]
         public static string ApartFromLast([NotNull] this string s, [CanBeNull] string apart) {
-            if (apart == string.Empty) return s;
-            return apart == null ? s : s.EndsWith(apart) ? s.ApartFromLast(apart.Length) : s;
+            return string.IsNullOrEmpty(apart) ? s : s.EndsWith(apart) ? s.ApartFromLast(apart.Length) : s;
         }
 
         public static string ApartFromLast([NotNull] this string s, [CanBeNull] string apart, StringComparison comparisonType) {

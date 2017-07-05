@@ -168,7 +168,7 @@
 
                   <!-- additional content -->
                   <ContentPresenter Content="{TemplateBinding AdditionalContent}" />
-                  <Rectangle x:Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
+                  <Rectangle x:Name="DimmingThing" Panel.ZIndex="20" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                 </c:Cell>
               </Border>
             </AdornerDecorator>

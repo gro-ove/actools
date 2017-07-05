@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -34,5 +37,11 @@ namespace AcManager.Pages.Lists {
                 return AppStrings.List_Apps;
             }
         }
+
+        #region Batch actions
+        protected override IEnumerable<BatchAction> GetBatchActions() {
+            return CommonBatchActions.GetDefaultSet<PythonAppObject>();
+        }
+        #endregion
     }
 }

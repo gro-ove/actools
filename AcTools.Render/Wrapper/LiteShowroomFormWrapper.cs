@@ -245,44 +245,45 @@ namespace AcTools.Render.Wrapper {
             return new ProgressWrapper(baseProgress, message ?? "Rendering…");
         }
 
-        protected virtual void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected virtual void SplitShotPieces(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var dark = (DarkKn5ObjectRenderer)Renderer;
             var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
-            var information = dark.SplitShot(multipler, downscale ? 0.5d : 1d, destination,
-                    false, Wrap(progress), cancellation);
+            var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress, cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
 rem Use magick.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
 set MAGICK_TMPDIR=tmp
 mkdir tmp
-magick.exe montage *-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg
+magick.exe montage piece-*-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg
 rmdir /q tmp
 echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected void SplitShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected void SplitShotInner(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            if (multipler > 4d) {
-                SplitShotPieces(multipler, downscale, filename, progress, cancellation);
+            SplitShotPieces(size, downscale, filename, progress, cancellation);
+
+            /*if (multipler > 4d) {
+                SplitShotPieces(size.Width, size.Height, downscale, filename, progress, cancellation);
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
-                using (var image = dark.SplitShot(multipler, downscale ? 0.5d : 1d, Wrap(progress), cancellation)) {
+                using (var image = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, progress, cancellation)) {
                     if (cancellation.IsCancellationRequested) return;
 
                     progress?.Report(Tuple.Create("Saving…", (double?)0.95));
                     ImageUtils.SaveImage(image, filename, 95, new ImageUtils.ImageInformation());
                 }
-            }
+            }*/
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected void ShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected void ShotInner(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
                 progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
-                _renderer.Shot(multipler, downscale ? 0.5 : 1d, 1d, stream, true,
+                _renderer.Shot(size.Width, size.Height, downscale ? 0.5 : 1d, 1d, stream, true,
                         progress.ToDouble("Rendering…").Subrange(0.2, 0.6), cancellation);
                 stream.Position = 0;
                 if (cancellation.IsCancellationRequested) return;
@@ -294,12 +295,12 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             }
         }
 
-        protected virtual void SplitShot(double multipler, bool downscale, string filename) {
-            SplitShotInner(multipler, downscale, filename);
+        protected virtual void SplitShot(Size size, bool downscale, string filename) {
+            SplitShotInner(size, downscale, filename);
         }
 
-        protected virtual void Shot(double multipler, bool downscale, string filename) {
-            ShotInner(multipler, downscale, filename);
+        protected virtual void Shot(Size size, bool downscale, string filename) {
+            ShotInner(size, downscale, filename);
         }
 
         private void Shot() {
@@ -316,25 +317,26 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             var winPressed = User32.IsKeyPressed(Keys.LWin) || User32.IsKeyPressed(Keys.RWin);
 
             var downscale = !shiftPressed;
-            double multipler;
+            int multipler;
             if (winPressed && splitMode) {
-                multipler = altPressed ? ctrlPressed ? 16d : 12d : ctrlPressed ? 10d : 6d;
+                multipler = altPressed ? ctrlPressed ? 48 : 32 : ctrlPressed ? 24 : 16;
             } else if (ctrlPressed) {
-                multipler = altPressed ? 1d : splitMode ? 8d : 4d;
+                multipler = altPressed ? 1 : splitMode ? 8 : 4;
             } else if (altPressed) {
-                multipler = splitMode ? 4d : 3d;
+                multipler = splitMode ? 4 : 3;
             } else {
-                multipler = 2d;
+                multipler = 2;
             }
 
+            var size = new Size(1920 * multipler, 1080 * multipler);
             var directory = FileUtils.GetDocumentsScreensDirectory();
             FileUtils.EnsureDirectoryExists(directory);
             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
 
             if (splitMode && multipler > 2d) {
-                SplitShot(multipler, downscale, filename);
+                SplitShot(size, downscale, filename);
             } else {
-                Shot(multipler, downscale, filename);
+                Shot(size, downscale, filename);
             }
         }
 

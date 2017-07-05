@@ -46,13 +46,13 @@ namespace AcManager.Pages.Dialogs {
 
             Closing += BrandBadgeEditor_Closing;
 
-            FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += BrandBadgeEditor_Update;
+            FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += OnBrandBadgesUpdate;
             Icons = new BetterObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges));
             UpdateSelected();
         }
 
         private void BrandBadgeEditor_Closing(object sender, CancelEventArgs e) {
-            FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update -= BrandBadgeEditor_Update;
+            FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update -= OnBrandBadgesUpdate;
 
             if (MessageBoxResult != MessageBoxResult.OK) return;
             if (Selected == null) return;
@@ -70,7 +70,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void BrandBadgeEditor_Update(object sender, EventArgs e) {
+        private void OnBrandBadgesUpdate(object sender, EventArgs e) {
             Icons.ReplaceEverythingBy(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges));
             UpdateSelected();
         }

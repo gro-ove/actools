@@ -5,7 +5,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _stayInCar;
 
         public bool StayInCar {
-            get { return _stayInCar; }
+            get => _stayInCar;
             set {
                 if (Equals(value, _stayInCar)) return;
                 _stayInCar = value;
@@ -16,7 +16,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _useMouse;
 
         public bool UseMouse {
-            get { return _useMouse; }
+            get => _useMouse;
             set {
                 if (Equals(value, _useMouse)) return;
                 _useMouse = value;
@@ -27,7 +27,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _presetsCount;
 
         public int PresetsCount {
-            get { return _presetsCount; }
+            get => _presetsCount;
             set {
                 if (Equals(value, _presetsCount)) return;
                 _presetsCount = value;

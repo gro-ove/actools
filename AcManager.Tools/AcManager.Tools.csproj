@@ -213,7 +213,10 @@
     <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
+    <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
+    <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\IndexDirectDownloader.cs" />
@@ -328,6 +331,7 @@
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\TrueTypeFontsManager.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Miscellaneous\CarUtils.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />

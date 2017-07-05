@@ -1,8 +1,11 @@
+using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils.Helpers;
@@ -10,7 +13,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class DriverModelObject : AcCommonSingleFileObject {
+    public class DriverModelObject : AcCommonSingleFileObject, IAcObjectAuthorInformation {
         public const string FileExtension = ".kn5";
 
         public override string Extension => FileExtension;
@@ -58,14 +61,26 @@ namespace AcManager.Tools.Objects {
 
         public string AcId { get; }
 
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+
+            try {
+                Author = (DataProvider.Instance.KunosContent[@"drivers"]?.Contains(Id) ?? false) ? AuthorKunos : null;
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
+        public string Author { get; private set; }
+
         #region Packing
         private class DriverModelPacker : AcCommonObjectPacker<DriverModelObject> {
             protected override string GetBasePath(DriverModelObject t) {
                 return "content/driver";
             }
 
-            protected override void PackOverride(DriverModelObject t) {
-                AddFilename(Path.GetFileName(t.Location), t.Location);
+            protected override IEnumerable PackOverride(DriverModelObject t) {
+                yield return AddFilename(Path.GetFileName(t.Location), t.Location);
             }
 
             protected override PackedDescription GetDescriptionOverride(DriverModelObject t) {

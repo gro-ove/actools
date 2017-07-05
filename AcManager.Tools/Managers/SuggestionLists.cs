@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
     public static class SuggestionLists {
-        public static AutocompleteValuesList CarBrandsList { get; } = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarBrandsList { get; }
         public static ListCollectionView CarBrandsListView => CarBrandsList.View;
 
         public static AutocompleteValuesList CarClassesList { get; } = new AutocompleteValuesList();
@@ -40,11 +42,13 @@ namespace AcManager.Tools.Managers {
         public static AutocompleteValuesList CitiesList { get; } = new AutocompleteValuesList();
         public static ListCollectionView CitiesListView => CitiesList.View;
 
-        static SuggestionLists (){}
+        static SuggestionLists() {
+            CarBrandsList = new AutocompleteValuesList(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges).Select(x => x.Name));
+            FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += OnBrandBadgesUpdate;
+        }
 
-        public static void RebuildCarBrandsList() {
-            Logging.Write("RebuildCarBrandsList()");
-            CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.Brand);
+        private static void OnBrandBadgesUpdate(object sender, EventArgs e) {
+            CarBrandsList.ReplaceEverythingBy(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges).Select(x => x.Name));
         }
 
         public static void RebuildCarClassesList() {

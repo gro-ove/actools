@@ -67,7 +67,7 @@ namespace AcTools.Render.Base {
         /// will be smaller.
         /// </summary>
         public double ResolutionMultiplier {
-            get { return _resolutionMultiplier; }
+            get => _resolutionMultiplier;
             set {
                 if (value < 0d) {
                     _previousResolutionMultiplier = -value;
@@ -99,14 +99,14 @@ namespace AcTools.Render.Base {
         }
 
         public bool UseSsaa {
-            get { return !Equals(1d, _resolutionMultiplier); }
-            set { ResolutionMultiplier = value ? _previousResolutionMultiplier : 1d; }
+            get => !Equals(1d, _resolutionMultiplier);
+            set => ResolutionMultiplier = value ? _previousResolutionMultiplier : 1d;
         }
 
         public int ActualWidth => _width;
 
         public int Width {
-            get { return (int)(_width * ResolutionMultiplier); }
+            get => (int)(_width * ResolutionMultiplier);
             set {
                 if (Equals(_width, value)) return;
                 _width = value;
@@ -120,7 +120,7 @@ namespace AcTools.Render.Base {
         public int ActualHeight => _height;
 
         public int Height {
-            get { return (int)(_height * ResolutionMultiplier); }
+            get => (int)(_height * ResolutionMultiplier);
             set {
                 if (Equals(_height, value)) return;
                 _height = value;
@@ -176,7 +176,7 @@ namespace AcTools.Render.Base {
         private bool _useMsaa;
 
         public bool UseMsaa {
-            get { return _useMsaa; }
+            get => _useMsaa;
             set {
                 if (value == _useMsaa) return;
                 _useMsaa = value;
@@ -189,7 +189,7 @@ namespace AcTools.Render.Base {
         private int _msaaSampleCount = 4;
 
         public int MsaaSampleCount {
-            get { return _msaaSampleCount; }
+            get => _msaaSampleCount;
             set {
                 if (Equals(value, _msaaSampleCount)) return;
                 _msaaSampleCount = value;
@@ -222,7 +222,7 @@ namespace AcTools.Render.Base {
         private SampleDescription _sampleDescription = new SampleDescription(1, 0);
 
         public SampleDescription SampleDescription {
-            get { return _sampleDescription; }
+            get => _sampleDescription;
             private set {
                 if (value.Equals(_sampleDescription)) return;
                 _sampleDescription = value;
@@ -233,7 +233,7 @@ namespace AcTools.Render.Base {
 
         protected abstract FeatureLevel FeatureLevel { get; }
 
-        public DeviceCreationFlags DeviceCreationFlags { get; set; } = DeviceCreationFlags.None;
+        protected DeviceCreationFlags DeviceCreationFlags { get; set; } = DeviceCreationFlags.None;
 
         /// <summary>
         /// Get Device (could be temporary, could be not), set proper SampleDescription
@@ -502,7 +502,7 @@ namespace AcTools.Render.Base {
         private bool _syncInterval = true;
 
         public bool SyncInterval {
-            get { return _syncInterval; }
+            get => _syncInterval;
             set {
                 if (Equals(value, _syncInterval)) return;
                 _syncInterval = value;
@@ -580,7 +580,7 @@ namespace AcTools.Render.Base {
         private bool _disposed;
 
         public bool Disposed {
-            get { return _disposed; }
+            get => _disposed;
             private set {
                 if (value == _disposed) return;
                 _disposed = value;
@@ -627,9 +627,7 @@ namespace AcTools.Render.Base {
 
             var renderView = _renderView;
             _renderView = view;
-            return new ActionAsDisposable(() => {
-                _renderView = renderView;
-            });
+            return new ActionAsDisposable(() => _renderView = renderView);
         }
 
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture, _shotCutTexture;
@@ -648,21 +646,33 @@ namespace AcTools.Render.Base {
         }
 
         protected virtual bool CanShotWithoutExtraTextures => !UseMsaa;
+        protected int LastShotWidth, LastShotHeight;
 
-        public void Shot(double multiplier, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
+        public void Shot(int baseWidth, int baseHeight, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            AcToolsLogging.Write($"{baseWidth}×{baseHeight}, downscale={downscale}, crop={crop}");
+
             var original = new { Width, Height, ResolutionMultiplier };
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
             try {
-                Width = (Width * multiplier).RoundToInt();
-                Height = (Height * multiplier).RoundToInt();
+                Width = baseWidth;
+                Height = baseHeight;
                 ResolutionMultiplier = 1d;
 
                 if (Equals(downscale, 1d) && Equals(crop, 1d) && CanShotWithoutExtraTextures) {
                     // Simplest case: existing buffer will do just great, so let’s use it
+                    if (_resized) {
+                        Resize();
+                        _resized = false;
+                    }
+
                     DrawShot(null, progress.Subrange(0.05, 0.9), cancellation);
                     Texture2D.ToStream(DeviceContext, _renderBuffer, format, outputStream);
+
+                    var desc = _renderBuffer.Description;
+                    LastShotWidth = desc.Width;
+                    LastShotHeight = desc.Height;
                 } else {
                     // More complicated situation: we need to temporary replace existing _renderBuffer
                     // with a custom one
@@ -718,7 +728,6 @@ namespace AcTools.Render.Base {
                         }
 
                         _shotDownsampleTexture.Resize(DeviceContextHolder, outputWidth, outputHeight, null);
-
                         DeviceContextHolder.GetHelper<DownsampleHelper>()
                                            .Draw(DeviceContextHolder, result, _shotDownsampleTexture);
                         result = _shotDownsampleTexture;
@@ -739,6 +748,10 @@ namespace AcTools.Render.Base {
                         result = _shotCutTexture;
                     }
 
+                    var desc = result.Texture.Description;
+                    LastShotWidth = desc.Width;
+                    LastShotHeight = desc.Height;
+
                     Texture2D.ToStream(DeviceContext, result.Texture, format, outputStream);
 
                     if (swapChainMode) {
@@ -752,10 +765,10 @@ namespace AcTools.Render.Base {
             }
         }
 
-        public Image Shot(double multiplier, double downscale, double crop, bool lossless, IProgress<double> progress = null,
+        public Image Shot(int baseWidth, int baseHeight, double downscale, double crop, bool lossless, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
-                Shot(multiplier, downscale, crop, stream, lossless, progress, cancellation);
+                Shot(baseWidth, baseHeight, downscale, crop, stream, lossless, progress, cancellation);
                 stream.Position = 0;
                 return Image.FromStream(stream);
             }

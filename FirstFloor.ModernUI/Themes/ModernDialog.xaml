@@ -86,7 +86,7 @@
                       <c:TransitioningContentControl x:Name="PART_Content" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" />
                     </DockPanel>
 
-                    <Rectangle x:Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
+                    <Rectangle x:Name="DimmingThing" Panel.ZIndex="20" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                   </c:Cell>
                 </Border>
               </AdornerDecorator>

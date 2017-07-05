@@ -71,8 +71,8 @@ namespace AcManager.Tools.AcObjectsNew {
         public override bool HandleChangedFile(string filename) {
             if (!FileUtils.IsAffected(filename, JsonFilename)) return false;
 
-            if (!Changed || ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Json, ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
-                    MessageBoxResult.Yes) {
+            if (!Changed || ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Json, ToolsStrings.AcObject_ReloadAutomatically,
+                    MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {
                 ReloadJsonData();
             }
 
@@ -84,7 +84,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private JObject _jsonObject;
 
         public JObject JsonObject {
-            get { return _jsonObject; }
+            get => _jsonObject;
             set {
                 if (_jsonObject == value) return;
 
@@ -247,7 +247,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public string Country {
-            get { return _country; }
+            get => _country;
             set {
                 if (value == _country) return;
                 _country = value;
@@ -264,7 +264,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (value == _description) return;
                 _description = value;
@@ -280,9 +280,8 @@ namespace AcManager.Tools.AcObjectsNew {
         #region Version info
         private string _author;
 
-        [CanBeNull]
         public string Author {
-            get { return _author; }
+            get => _author;
             set {
                 if (value == _author) return;
                 _author = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -298,9 +297,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _version;
 
-        [CanBeNull]
         public string Version {
-            get { return _version; }
+            get => _version;
             set {
                 if (value == _version) return;
                 _version = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -315,9 +313,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _url;
 
-        [CanBeNull]
         public string Url {
-            get { return _url; }
+            get => _url;
             set {
                 if (value == _url) return;
                 _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();

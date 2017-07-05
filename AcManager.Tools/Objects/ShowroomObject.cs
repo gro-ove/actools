@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -206,8 +207,8 @@ namespace AcManager.Tools.Objects {
                 return $"content/showroom/{t.Id}";
             }
 
-            protected override void PackOverride(ShowroomObject t) {
-                Add($"{t.Id}.kn5", "preview.jpg", "track.wav", "ui/ui_showroom.json");
+            protected override IEnumerable PackOverride(ShowroomObject t) {
+                yield return Add($"{t.Id}.kn5", "preview.jpg", "track.wav", "ui/ui_showroom.json");
             }
 
             protected override PackedDescription GetDescriptionOverride(ShowroomObject t) {

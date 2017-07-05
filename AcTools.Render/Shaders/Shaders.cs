@@ -1711,6 +1711,46 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
+	public class EffectSpecialPiecesBlender : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT;
+        public InputLayout LayoutPT;
+
+		public EffectReadyTechnique TechBlend;
+
+		[NotNull]
+		public EffectOnlyResourceArrayVariable FxInputMaps;
+		[NotNull]
+		public EffectOnlyVector2Variable FxPaddingSize, FxTexMultiplier;
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPiecesBlender");
+			E = new Effect(device, _b);
+
+			TechBlend = new EffectReadyTechnique(E.GetTechniqueByName("Blend"));
+
+			for (var i = 0; i < TechBlend.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechBlend.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialPiecesBlender, PT, Blend) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxInputMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gInputMaps"));
+			FxPaddingSize = new EffectOnlyVector2Variable(E.GetVariableByName("gPaddingSize"));
+			FxTexMultiplier = new EffectOnlyVector2Variable(E.GetVariableByName("gTexMultiplier"));
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
+        }
+	}
+
 	public class EffectSpecialRandom : IEffectWrapper {
 		private ShaderBytecode _b;
 		public Effect E;

@@ -11,6 +11,7 @@ using AcManager.Tools.Objects;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
+using AcTools.Render.Special;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -20,6 +21,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using Size = System.Drawing.Size;
 
 namespace AcManager.CustomShowroom {
     public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapper {
@@ -184,8 +186,10 @@ namespace AcManager.CustomShowroom {
 
         private static bool _warningShown;
 
-        protected override void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected override void SplitShotPieces(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            PiecesBlender.OptionMaxCacheSize = SettingsHolder.Plugins.MontageVramCache;
+
             var plugin = PluginsManager.Instance.GetById("ImageMontage");
             if (plugin == null || !plugin.IsReady) {
                 if (!_warningShown) {
@@ -194,13 +198,17 @@ namespace AcManager.CustomShowroom {
                 }
 
                 OptionMontageMemoryLimit = SettingsHolder.Plugins.MontageMemoryLimit;
-                base.SplitShotPieces(multipler, downscale, filename, progress, cancellation);
+                base.SplitShotPieces(size, downscale, filename, progress, cancellation);
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
-                var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
-                var information = dark.SplitShot(multipler, downscale ? 0.5d : 1d, destination, false, Wrap(progress), cancellation);
+                var destination = Path.Combine(SettingsHolder.Plugins.MontageTemporaryDirectory, Path.GetFileNameWithoutExtension(filename) ?? "image");
 
-                progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.92));
+                // For pre-smoothed files, in case somebody would want to use super-resolution with SSLR/SSAO
+                DarkKn5ObjectRenderer.OptionTemporaryDirectory = destination;
+
+                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress.Subrange(0.001, 0.95, "Rendering ({0})…"), cancellation);
+
+                progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.97));
 
                 var magick = plugin.GetFilename("magick.exe");
                 if (!File.Exists(magick)) {
@@ -208,14 +216,12 @@ namespace AcManager.CustomShowroom {
                     FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Is Obsolete", "Please, update it, and it’ll consume twice less power");
                 }
 
-                Environment.SetEnvironmentVariable("MAGICK_TMPDIR", SettingsHolder.Plugins.MontageTemporaryDirectory);
-                FileUtils.EnsureDirectoryExists(SettingsHolder.Plugins.MontageTemporaryDirectory);
-
+                Environment.SetEnvironmentVariable("MAGICK_TMPDIR", destination);
                 using (var process = new Process {
                     StartInfo = {
                     FileName = magick,
                     WorkingDirectory = destination,
-                    Arguments = $"montage *-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg",
+                    Arguments = $"montage piece-*-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg",
                     CreateNoWindow = true,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -230,7 +236,7 @@ namespace AcManager.CustomShowroom {
                     }
                 }
 
-                progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.96));
+                progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.99));
 
                 var result = Path.Combine(destination, "out.jpg");
                 if (!File.Exists(result)) {
@@ -242,15 +248,15 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected override void SplitShot(double multipler, bool downscale, string filename) {
+        protected override void SplitShot(Size size, bool downscale, string filename) {
             ShotAsync((progress, token) => {
-                SplitShotInner(multipler, downscale, filename, progress, token);
+                SplitShotInner(size, downscale, filename, progress, token);
             });
         }
 
-        protected override void Shot(double multipler, bool downscale, string filename) {
+        protected override void Shot(Size size, bool downscale, string filename) {
             ShotAsync((progress, token) => {
-                ShotInner(multipler, downscale, filename, progress, token);
+                ShotInner(size, downscale, filename, progress, token);
             });
         }
 

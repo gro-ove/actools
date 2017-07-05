@@ -1,198 +1,204 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsSystem" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsSystem+AcSystemViewModel}">
-    <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-    </UserControl.Resources>
-    <ScrollViewer mui:SaveScroll.Key="AcSettingsSystem">
-        <StackPanel Style="{StaticResource SettingsPanel}">
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding System.SimulationValue}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_System_SimulationValueLabel}" />
-                <Slider Minimum="0" Maximum="100" Value="{Binding System.SimulationValue}" TickFrequency="10" TickPlacement="BottomRight" />
-            </DockPanel>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsSystem+AcSystemViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="AcSettingsSystem">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True" Margin="0">
 
-            <CheckBox IsChecked="{Binding System.DeveloperApps}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
-            </CheckBox>
+      <StackPanel Style="{StaticResource SettingsPanel}">
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding System.SimulationValue}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_System_SimulationValueLabel}" />
+          <Slider Minimum="0" Maximum="100" Value="{Binding System.SimulationValue}" TickFrequency="10" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <CheckBox IsChecked="{Binding System.AllowFreeCamera}" ToolTip="{x:Static g:AppStrings.AcSettings_System_FreeCamera_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_System_FreeCamera}" />
-            </CheckBox>
+        <CheckBox IsChecked="{Binding System.DeveloperApps}">
+          <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
+        </CheckBox>
 
-            <CheckBox IsChecked="{Binding System.Logging}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_System_Logging}" />
-            </CheckBox>
+        <CheckBox IsChecked="{Binding System.AllowFreeCamera}" ToolTip="{x:Static g:AppStrings.AcSettings_System_FreeCamera_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.AcSettings_System_FreeCamera}" />
+        </CheckBox>
 
-            <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}">
-                <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
-            </CheckBox>
+        <CheckBox IsChecked="{Binding System.Logging}">
+          <Label Content="{x:Static g:AppStrings.AcSettings_System_Logging}" />
+        </CheckBox>
 
-            <CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}" mui:NewMarkService.New="True">
-                <Label Content="Disable teleporting at the end of race" />
-            </CheckBox>
+        <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}">
+          <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
+        </CheckBox>
 
-            <DockPanel>
-                <Label Content="{x:Static g:AppStrings.AcSettings_System_ScreenshotsFormatLabel}" />
-                <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
+        <CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}">
+          <Label Content="Disable teleporting at the end of race" />
+        </CheckBox>
 
-            <Grid Margin="0 20 0 8">
-                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <StackPanel Margin="8">
-                    <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality_Title}" />
-                    <TextBlock TextWrapping="Wrap" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality}" />
-                </StackPanel>
-            </Grid>
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.AcSettings_System_ScreenshotsFormatLabel}" />
+          <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
+        </DockPanel>
 
-            <!--proximity indicator-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_ProximityIndicator}" />
+        <Grid Margin="0 20 0 8">
+          <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+          <StackPanel Margin="8">
+            <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality_Title}" />
+            <TextBlock TextWrapping="Wrap" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality}" />
+          </StackPanel>
+        </Grid>
 
-            <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_ProximityIndicator_ShowNearestOpponents}" />
-            </CheckBox>
+        <!--proximity indicator-->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_ProximityIndicator}" />
 
-            <!--session information-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_SessionInformation}"
-                    mui:NewMarkService.New="True" />
+        <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
+          <Label Content="{x:Static g:AppStrings.AcSettings_ProximityIndicator_ShowNearestOpponents}" />
+        </CheckBox>
 
-            <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
-                <CheckBox IsChecked="{Binding SessionInfo.Practice}">
-                    <Label Content="Practice" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SessionInfo.Qualify}">
-                    <Label Content="Qualification" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SessionInfo.Race}">
-                    <Label Content="Race" />
-                </CheckBox>
-            </mui:SpacingUniformGrid>
+        <!--session information-->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_SessionInformation}" />
 
-            <mui:SpacingUniformGrid Columns="2" Rows="2" VerticalSpacing="8" HorizontalSpacing="8">
-                <DockPanel>
-                    <Label Content="Text color:" Width="108" />
-                    <mui:ColorPicker Color="{Binding SessionInfo.ForegroundColor}" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
-                            Postfix="%" mui:BetterTextBox.Mode="Number" Content="Text opacity" />
-                    <Slider Minimum="0" Maximum="100"
-                            Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            TickFrequency="10" TickPlacement="BottomRight" />
-                </DockPanel>
+        <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
+          <CheckBox IsChecked="{Binding SessionInfo.Practice}">
+            <Label Content="Practice" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SessionInfo.Qualify}">
+            <Label Content="Qualification" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SessionInfo.Race}">
+            <Label Content="Race" />
+          </CheckBox>
+        </mui:SpacingUniformGrid>
 
-                <DockPanel>
-                    <Label Content="Background color:" Width="108" />
-                    <mui:ColorPicker Color="{Binding SessionInfo.BackgroundColor}" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
-                            Postfix="%" mui:BetterTextBox.Mode="Number" Content="Background opacity" />
-                    <Slider Minimum="0" Maximum="100"
-                            Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            TickFrequency="10" TickPlacement="BottomRight" />
-                </DockPanel>
-            </mui:SpacingUniformGrid>
+        <mui:SpacingUniformGrid Columns="2" Rows="2" VerticalSpacing="8" HorizontalSpacing="8">
+          <DockPanel>
+            <Label Content="Text color:" Width="108" />
+            <mui:ColorPicker Color="{Binding SessionInfo.ForegroundColor}" />
+          </DockPanel>
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
+                Postfix="%" mui:BetterTextBox.Mode="Number" Content="Text opacity" />
+            <Slider Minimum="0" Maximum="100"
+                Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="10"
+                TickPlacement="BottomRight" />
+          </DockPanel>
 
-            <!--skidmarks-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
+          <DockPanel>
+            <Label Content="Background color:" Width="108" />
+            <mui:ColorPicker Color="{Binding SessionInfo.BackgroundColor}" />
+          </DockPanel>
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
+                Postfix="%" mui:BetterTextBox.Mode="Number" Content="Background opacity" />
+            <Slider Minimum="0" Maximum="100"
+                Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="10"
+                TickPlacement="BottomRight" />
+          </DockPanel>
+        </mui:SpacingUniformGrid>
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Quantity}" />
-                <Slider Minimum="0" Maximum="250" Value="{Binding Skidmarks.QuantityMultipler}" TickFrequency="25" TickPlacement="BottomRight" />
-            </DockPanel>
+      </StackPanel>
+      <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Skidmarks.Height, StringFormat='{}{0:F3}'}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
-                        mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Height}" />
-                <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
-            </DockPanel>
+        <!--skidmarks-->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
 
-            <!--mirrors-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Mirrors}" />
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Quantity}" />
+          <Slider Minimum="0" Maximum="250" Value="{Binding Skidmarks.QuantityMultipler}" TickFrequency="25" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <DockPanel>
-                <DockPanel.ToolTip>
-                    <TextBlock>
-                        <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                        <Run Text="{Binding System.MirrorsFieldOfViewDefault, Mode=OneWay}" /><Run Text="°" />
-                    </TextBlock>
-                </DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding System.MirrorsFieldOfView}" Postfix="°" Content="{x:Static g:AppStrings.AcSettings_FieldOfView}" />
-                <Slider Minimum="5" Maximum="55" Value="{Binding System.MirrorsFieldOfView}" TickFrequency="5" TickPlacement="BottomRight" />
-            </DockPanel>
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Skidmarks.Height, StringFormat='{}{0:F3}'}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+              mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Height}" />
+          <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <DockPanel>
-                <DockPanel.ToolTip>
-                    <TextBlock>
-                        <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                        <Run Text="{Binding System.MirrorsFarPlaneDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
-                    </TextBlock>
-                </DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
-                        Content="{x:Static g:AppStrings.AcSettings_Mirrors_RenderingDistance}" />
-                <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
-            </DockPanel>
+        <!--mirrors-->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Mirrors}" />
 
-            <!--ghost-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_GhostCar}" />
+        <DockPanel>
+          <DockPanel.ToolTip>
+            <TextBlock>
+              <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+              <Run Text="{Binding System.MirrorsFieldOfViewDefault, Mode=OneWay}" /><Run Text="°" />
+            </TextBlock>
+          </DockPanel.ToolTip>
+          <mui:ValueLabel Value="{Binding System.MirrorsFieldOfView}" Postfix="°" Content="{x:Static g:AppStrings.AcSettings_FieldOfView}" />
+          <Slider Minimum="5" Maximum="55" Value="{Binding System.MirrorsFieldOfView}" TickFrequency="5" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <DockPanel>
-                <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
-                <mui:ColorPicker Color="{Binding Ghost.Color}" />
-            </DockPanel>
+        <DockPanel>
+          <DockPanel.ToolTip>
+            <TextBlock>
+              <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+              <Run Text="{Binding System.MirrorsFarPlaneDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
+            </TextBlock>
+          </DockPanel.ToolTip>
+          <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+              Content="{x:Static g:AppStrings.AcSettings_Mirrors_RenderingDistance}" />
+          <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MaxMinutesRecording}" Postfix="{x:Static c:ControlsStrings.Common_MinutesPostfix}"
-                        Content="{x:Static g:AppStrings.AcSettings_GhostCar_RecordingLimit}">
-                    <mui:ValueLabel.ToolTip>
-                        <TextBlock>
-                            <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                            <Run Text="{Binding Ghost.MaxMinutesRecordingDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MinutesPostfix}" />
-                        </TextBlock>
-                    </mui:ValueLabel.ToolTip>
-                </mui:ValueLabel>
-                <Slider Minimum="5" Maximum="45" Value="{Binding Ghost.MaxMinutesRecording}" TickFrequency="5" TickPlacement="BottomRight" />
-            </DockPanel>
+        <!--ghost-->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_GhostCar}" />
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MinDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
-                        Content="{x:Static g:AppStrings.AcSettings_GhostCar_StartShowingAt}">
-                    <mui:ValueLabel.ToolTip>
-                        <TextBlock>
-                            <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                            <Run Text="{Binding Ghost.MinDistanceDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
-                        </TextBlock>
-                    </mui:ValueLabel.ToolTip>
-                </mui:ValueLabel>
-                <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MinDistance}" TickFrequency="12" TickPlacement="BottomRight" />
-            </DockPanel>
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
+          <mui:ColorPicker Color="{Binding Ghost.Color}" />
+        </DockPanel>
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MaxDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
-                        Content="{x:Static g:AppStrings.AcSettings_GhostCar_MaxOpacityAt}">
-                    <mui:ValueLabel.ToolTip>
-                        <TextBlock>
-                            <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                            <Run Text="{Binding Ghost.MaxDistanceDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
-                        </TextBlock>
-                    </mui:ValueLabel.ToolTip>
-                </mui:ValueLabel>
-                <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MaxDistance}" TickFrequency="12" TickPlacement="BottomRight" />
-            </DockPanel>
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Ghost.MaxMinutesRecording}" Postfix="{x:Static c:ControlsStrings.Common_MinutesPostfix}"
+              Content="{x:Static g:AppStrings.AcSettings_GhostCar_RecordingLimit}">
+            <mui:ValueLabel.ToolTip>
+              <TextBlock>
+                <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+                <Run Text="{Binding Ghost.MaxMinutesRecordingDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MinutesPostfix}" />
+              </TextBlock>
+            </mui:ValueLabel.ToolTip>
+          </mui:ValueLabel>
+          <Slider Minimum="5" Maximum="45" Value="{Binding Ghost.MaxMinutesRecording}" TickFrequency="5" TickPlacement="BottomRight" />
+        </DockPanel>
 
-            <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MaxOpacity}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_GhostCar_Opacity}">
-                    <mui:ValueLabel.ToolTip>
-                        <TextBlock>
-                            <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
-                            <Run Text="{Binding Ghost.MaxOpacityDefault, Mode=OneWay}" /><Run Text="%" />
-                        </TextBlock>
-                    </mui:ValueLabel.ToolTip>
-                </mui:ValueLabel>
-                <Slider Minimum="0" Maximum="100" Value="{Binding Ghost.MaxOpacity}" TickFrequency="10" TickPlacement="BottomRight" />
-            </DockPanel>
-        </StackPanel>
-    </ScrollViewer>
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Ghost.MinDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+              Content="{x:Static g:AppStrings.AcSettings_GhostCar_StartShowingAt}">
+            <mui:ValueLabel.ToolTip>
+              <TextBlock>
+                <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+                <Run Text="{Binding Ghost.MinDistanceDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
+              </TextBlock>
+            </mui:ValueLabel.ToolTip>
+          </mui:ValueLabel>
+          <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MinDistance}" TickFrequency="12" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Ghost.MaxDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+              Content="{x:Static g:AppStrings.AcSettings_GhostCar_MaxOpacityAt}">
+            <mui:ValueLabel.ToolTip>
+              <TextBlock>
+                <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+                <Run Text="{Binding Ghost.MaxDistanceDefault, Mode=OneWay}" /><Run Text="{x:Static c:ControlsStrings.Common_MetersPostfix}" />
+              </TextBlock>
+            </mui:ValueLabel.ToolTip>
+          </mui:ValueLabel>
+          <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MaxDistance}" TickFrequency="12" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Ghost.MaxOpacity}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_GhostCar_Opacity}">
+            <mui:ValueLabel.ToolTip>
+              <TextBlock>
+                <Run Text="{x:Static g:AppStrings.AcSettings_DefaultValue}" />
+                <Run Text="{Binding Ghost.MaxOpacityDefault, Mode=OneWay}" /><Run Text="%" />
+              </TextBlock>
+            </mui:ValueLabel.ToolTip>
+          </mui:ValueLabel>
+          <Slider Minimum="0" Maximum="100" Value="{Binding Ghost.MaxOpacity}" TickFrequency="10" TickPlacement="BottomRight" />
+        </DockPanel>
+      </StackPanel>
+
+    </mui:SpacingUniformGrid>
+  </ScrollViewer>
 </UserControl>

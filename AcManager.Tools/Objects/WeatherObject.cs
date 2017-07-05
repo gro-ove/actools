@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -671,8 +672,8 @@ namespace AcManager.Tools.Objects {
 
             if (_loadedExtended && FileUtils.IsAffected(filename, ColorCurvesIniFilename)) {
                 if (!Changed ||
-                        ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Ini, ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
-                                MessageBoxResult.Yes) {
+                        ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Ini, ToolsStrings.AcObject_ReloadAutomatically,
+                                MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {
                     var c = Changed;
                     ReloadColorCurves();
                     Changed = c;
@@ -695,8 +696,8 @@ namespace AcManager.Tools.Objects {
                 return $"content/weather/{t.Id}";
             }
 
-            protected override void PackOverride(WeatherObject t) {
-                Add("preview.png", "*.ini", "clouds/*");
+            protected override IEnumerable PackOverride(WeatherObject t) {
+                yield return Add("preview.png", "*.ini", "clouds/*");
             }
 
             protected override PackedDescription GetDescriptionOverride(WeatherObject t) {

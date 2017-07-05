@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +22,12 @@ namespace AcManager.Controls {
         [CanBeNull]
         private readonly string _paramsTemplateKey;
 
+        // This is a very bad place: I’ll change DisplayName later when building
+        // a HierarchicalGroup, and I’ll need to know the original name. Very stupid,
+        // of course, but, you know… If you know how to make a better version of
+        // HierarchicalComboBox, let me know.
+        public string BaseDisplayName { get; }
+
         public sealed override string DisplayName {
             get => base.DisplayName;
             set => base.DisplayName = value;
@@ -27,17 +35,38 @@ namespace AcManager.Controls {
 
         public string Id { get; protected set; }
         public bool InternalWaitingDialog { get; protected set; }
-        public string DisplayApply { get; protected set; }
+        public int Priority { get; protected set; }
         public string Description { get; }
         public string GroupPath { get; }
 
-        public BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey) {
+        private string _displayApply;
+
+        public string DisplayApply {
+            get => _displayApply;
+            protected set {
+                if (value == _displayApply) return;
+                _displayApply = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey) {
             _paramsTemplateKey = paramsTemplateKey;
             Id = GetType().Name;
+            BaseDisplayName = displayName;
             DisplayName = displayName;
             Description = description;
             GroupPath = groupPath;
         }
+
+        public virtual void OnActionSelected() {}
+
+        private static ResourceDictionary _commonBatchActionsResources;
+
+        private static ResourceDictionary CommonBatchActionsResources
+            => _commonBatchActionsResources ?? (_commonBatchActionsResources = new SharedResourceDictionary {
+                Source = new Uri("/AcManager.Controls;component/Themes/AcListPage.CommonBatchActions.xaml", UriKind.Relative)
+            });
 
         private ContentPresenter _params;
 
@@ -45,30 +74,28 @@ namespace AcManager.Controls {
         public ContentPresenter GetParams(FrameworkElement parent) {
             if (_paramsTemplateKey == null) return null;
 
-            if (_params == null) {
-                var template = (DataTemplate)parent.Resources[_paramsTemplateKey];
-                _params = new ContentPresenter {
-                    ContentTemplate = template,
+            try {
+                return _params ?? (_params = new ContentPresenter {
+                    ContentTemplate = (DataTemplate)(parent.Resources[_paramsTemplateKey] ?? CommonBatchActionsResources[_paramsTemplateKey]),
                     Content = this
-                };
-
-                _params.Loaded += OnParamsLoaded;
+                });
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
             }
-
-            return _params;
         }
 
-        private void OnParamsLoaded(object sender, RoutedEventArgs args) {
-        }
-
-        public virtual void OnSelectionChanged(IList list) {
-        }
-
-        public virtual bool IsAvailable(IList list) {
-            return true;
+        public virtual int OnSelectionChanged(IList list) {
+            return list.Count;
         }
 
         public abstract Task ApplyAsync(IList list, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+
+        public event EventHandler AvailabilityChanged;
+
+        protected void RaiseAvailabilityChanged() {
+            AvailabilityChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public abstract class BatchAction<T> : BatchAction where T : AcObjectNew {
@@ -79,19 +106,15 @@ namespace AcManager.Controls {
             return list.OfType<AcItemWrapper>().Select(x => x.Value).OfType<T>();
         }
 
-        public override void OnSelectionChanged(IList list) {
-            OnSelectionChanged(OfType(list));
+        public override int OnSelectionChanged(IList list) {
+            return OnSelectionChanged(OfType(list));
         }
 
-        public virtual void OnSelectionChanged(IEnumerable<T> enumerable){}
-
-        public override bool IsAvailable(IList list) {
-            return IsAvailable(OfType(list));
+        public virtual int OnSelectionChanged(IEnumerable<T> enumerable) {
+            return enumerable.Count(IsAvailable);
         }
 
-        public virtual bool IsAvailable(IEnumerable<T> enumerable) {
-            return true;
-        }
+        public abstract bool IsAvailable(T obj);
 
         public override async Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var s = Stopwatch.StartNew();

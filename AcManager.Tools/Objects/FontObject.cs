@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Windows.Media.Imaging;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
@@ -20,9 +22,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public class FontObjectBitmap {
         public FontObjectBitmap(string bitmapFilename, string fontFilename) :
-                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {
-            Logging.Debug(bitmapFilename);
-        }
+                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {}
 
         public FontObjectBitmap(byte[] bitmapData, byte[] fontData) :
                 this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).BitmapSource, fontData) {}
@@ -80,7 +80,7 @@ namespace AcManager.Tools.Objects {
         }
     }
 
-    public class FontObject : AcCommonSingleFileObject {
+    public class FontObject : AcCommonSingleFileObject, IAcObjectAuthorInformation {
         public const string FontExtension = ".txt";
 
         public static readonly string[] BitmapExtensions = { @".bmp", @".png" };
@@ -213,6 +213,12 @@ namespace AcManager.Tools.Objects {
             base.LoadOrThrow();
             UpdateFontBitmap();
             ErrorIf(IsUsed && !Enabled, AcErrorType.Font_UsedButDisabled);
+
+            try {
+                Author = (DataProvider.Instance.KunosContent[@"fonts"]?.Contains(Id) ?? false) ? AuthorKunos : null;
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
         }
 
         public void ResetIconBitmap() {
@@ -220,17 +226,19 @@ namespace AcManager.Tools.Objects {
             OnPropertyChanged(nameof(IconBitmap));
         }
 
+        public string Author { get; private set; }
+
         #region Packing
         private class FontPacker : AcCommonObjectPacker<FontObject> {
             protected override string GetBasePath(FontObject t) {
                 return "content/fonts";
             }
 
-            protected override void PackOverride(FontObject t) {
-                AddFilename(Path.GetFileName(t.Location), t.Location);
+            protected override IEnumerable PackOverride(FontObject t) {
+                yield return AddFilename(Path.GetFileName(t.Location), t.Location);
 
                 if (t.FontBitmap != null) {
-                    AddFilename(Path.GetFileName(t.FontBitmap), t.FontBitmap);
+                    yield return AddFilename(Path.GetFileName(t.FontBitmap), t.FontBitmap);
                 }
             }
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -30,6 +32,13 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public async void Task(Func<Task> a) {
+            if (Is) return;
+            using (Set()) {
+                await a();
+            }
+        }
+
+        public async Task TaskAsync(Func<Task> a) {
             if (Is) return;
             using (Set()) {
                 await a();
@@ -76,13 +85,6 @@ namespace FirstFloor.ModernUI.Helpers {
                 a();
                 await System.Threading.Tasks.Task.Delay(delay);
             });
-        }
-
-        public async Task TaskAsync(Func<Task> a) {
-            if (Is) return;
-            using (Set()) {
-                await a();
-            }
         }
     }
 }

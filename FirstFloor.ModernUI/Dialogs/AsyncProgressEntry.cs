@@ -106,6 +106,11 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         [NotNull]
+        public static IProgress<double> ToDoubleProgress([CanBeNull] this IProgress<AsyncProgressEntry> baseProgress, string message) {
+            return new Progress<double>(v => baseProgress.Report(message, v));
+        }
+
+        [NotNull]
         public static IProgress<AsyncProgressEntry> Subrange([CanBeNull] this IProgress<AsyncProgressEntry> baseProgress, double from, double range,
                 string forceMessage, bool ignoreIndeterminate = true) {
             return new SubrangeProgress(baseProgress, from, range, forceMessage, ignoreIndeterminate);
@@ -117,6 +122,54 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public static void Report([CanBeNull] this IProgress<AsyncProgressEntry> progress, string message, int i, int total) {
             progress?.Report(new AsyncProgressEntry(message, i, total));
+        }
+
+        private class SubrangeTupleProgress : IProgress<Tuple<string, double?>> {
+            private readonly IProgress<Tuple<string, double?>> _baseProgress;
+            private readonly double _from;
+            private readonly double _range;
+            private readonly string _forceMessage;
+            private readonly bool _ignoreIndeterminate;
+
+            public SubrangeTupleProgress(IProgress<Tuple<string, double?>> baseProgress, double from, double range, string forceMessage = "",
+                    bool ignoreIndeterminate = true) {
+                _baseProgress = baseProgress;
+                _from = from;
+                _range = range;
+                _forceMessage = forceMessage;
+                _ignoreIndeterminate = ignoreIndeterminate;
+            }
+
+            public void Report(Tuple<string, double?> value) {
+                if (_ignoreIndeterminate && value.IsIndeterminate()) return;
+                _baseProgress?.Report(new Tuple<string, double?>(
+                        _forceMessage == "" ? value.Item1 : string.Format(_forceMessage, value.Item1.ToSentenceMember()), _from + value.Item2 * _range));
+            }
+        }
+
+        public static bool IsIndeterminate([CanBeNull] this Tuple<string, double?> baseProgress) {
+            return baseProgress?.Item1 == "" && Equals(baseProgress.Item2, 0d);
+        }
+
+        [NotNull]
+        public static IProgress<Tuple<string, double?>> Subrange([CanBeNull] this IProgress<Tuple<string, double?>> baseProgress, double from, double range,
+                bool ignoreIndeterminate = true) {
+            return new SubrangeTupleProgress(baseProgress, from, range, ignoreIndeterminate: ignoreIndeterminate);
+        }
+
+        [NotNull]
+        public static IProgress<Tuple<string, double?>> Subrange([CanBeNull] this IProgress<Tuple<string, double?>> baseProgress, double from, double range,
+                string forceMessage, bool ignoreIndeterminate = true) {
+            return new SubrangeTupleProgress(baseProgress, from, range, forceMessage, ignoreIndeterminate);
+        }
+
+        public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, double? value) {
+            progress?.Report(new Tuple<string, double?>(message, value));
+        }
+
+        public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, int i, int total) {
+            const double x = 0.000001;
+            progress?.Report(new Tuple<string, double?>(message, (double)i / total * (1d - 2d * x) + x));
         }
     }
 }

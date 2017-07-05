@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Controls.Helpers;
@@ -21,12 +19,15 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Binding = System.Windows.Data.Binding;
@@ -36,6 +37,7 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using ListBox = System.Windows.Controls.ListBox;
 
 namespace AcManager.Controls {
+    [ContentProperty(nameof(Resources))]
     public class AcListPage : Control {
         static AcListPage() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcListPage), new FrameworkPropertyMetadata(typeof(AcListPage)));
@@ -80,7 +82,6 @@ namespace AcManager.Controls {
             });
 
             PreviewMouseRightButtonDown += OnRightMouseDown;
-            PreviewKeyDown += OnKeyDown;
             SizeChanged += OnSizeChanged;
         }
 
@@ -224,6 +225,11 @@ namespace AcManager.Controls {
                 SetBatchActions();
                 SetCheckBoxMode(true).Forget();
                 SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(list.SelectedItems.Count));
+                list.Focus();
+
+                if (_batchMenu != null && _batchMenu.ContextMenu == null) {
+                    _batchMenu.ContextMenu = CreateBatchActionContextMenu();
+                }
             } else {
                 list.SelectionChanged -= OnMultiSelectionChanged;
                 SetCheckBoxMode(false, () => {
@@ -234,6 +240,23 @@ namespace AcManager.Controls {
 
             BatchMenuVisible = !BatchMenuVisible;
             Draggable.SetForceDisabled(this, BatchMenuVisible);
+        }
+
+        private static readonly string KeepBatchActionsPanelOpenKey = "_ba.keepOpen";
+
+        private ContextMenu CreateBatchActionContextMenu() {
+            var keepOpenItem = new MenuItem {
+                Header = "Keep Batch Actions Panel Open",
+                IsCheckable = true
+            };
+
+            keepOpenItem.SetBinding(MenuItem.IsCheckedProperty, new Stored(KeepBatchActionsPanelOpenKey, true));
+
+            return new ContextMenu {
+                Items = {
+                    keepOpenItem
+                }
+            };
         }
 
         private class BatchActionComparer : IComparer<object> {
@@ -277,7 +300,21 @@ namespace AcManager.Controls {
             }
 
             foreach (var action in GetBatchActionsArray()) {
+                action.DisplayName = action.BaseDisplayName;
                 GetGroup(action.GroupPath).Add(action);
+            }
+
+            foreach (var group in dict.Values.Where(x => x.Count == 1)) {
+                foreach (var value in dict.Values) {
+                    if (value.Contains(group)) {
+                        var action = group[0] as BatchAction;
+                        if (action != null) {
+                            action.DisplayName = group.DisplayName + @"\" + action.BaseDisplayName;
+                        }
+
+                        value.Replace(group, group[0]);
+                    }
+                }
             }
 
             foreach (var group in dict.Values) {
@@ -308,7 +345,7 @@ namespace AcManager.Controls {
 
             var selected = ValuesStorage.GetString(_batchActionKey);
             SelectedBatchAction = (selected == null ? null : grouped.GetByIdOrDefault<BatchAction>(selected)) ??
-                    grouped.FirstOrDefault<BatchAction>();
+                    grouped.Flatten().OfType<BatchAction>().OrderByDescending(x => x.Priority).FirstOrDefault();
         }
 
         public static readonly DependencyProperty SelectedBatchActionProperty = DependencyProperty.Register(nameof(SelectedBatchAction), typeof(BatchAction),
@@ -327,38 +364,41 @@ namespace AcManager.Controls {
         private BatchAction _selectedBatchAction;
 
         private void OnSelectedBatchActionChanged([CanBeNull] BatchAction newValue) {
+            if (_selectedBatchAction != null) {
+                WeakEventManager<BatchAction, EventArgs>.RemoveHandler(newValue, nameof(BatchAction.AvailabilityChanged), OnBatchActionAvailabilityChanged);
+            }
+
             _selectedBatchAction = newValue;
             if (_batchActionKey != null && _selectedBatchAction != null) {
                 ValuesStorage.Set(_batchActionKey, _selectedBatchAction.Id);
             }
 
-            var hasParams = newValue?.GetParams(this) != null;
+            if (newValue != null) {
+                newValue.OnActionSelected();
+                WeakEventManager<BatchAction, EventArgs>.AddHandler(newValue, nameof(BatchAction.AvailabilityChanged), OnBatchActionAvailabilityChanged);
+            }
+
+            var actionParams = newValue?.GetParams(this);
+
+            if (actionParams != null && _batchAction != null) {
+                _batchAction.Content = actionParams;
+            }
+
+            var hasParams = actionParams != null;
             if (hasParams != SelectedBatchActionHasParams) {
                 _selectedBatchActionHasParams = hasParams;
                 SetValue(SelectedBatchActionHasParamsPropertyKey, hasParams);
 
                 if (_batchActionParams != null) {
                     try {
-                        var size = _batchActionParams.ActualWidth;
-                        var duration = TimeSpan.FromMilliseconds(size / 4);
-
-                        _batchActionParamsTransform?.BeginAnimation(TranslateTransform.XProperty, hasParams ? new DoubleAnimation {
-                            To = 0d,
-                            Duration = duration,
+                        _batchActionParamsTransform?.BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation {
+                            To = hasParams ? 0d : -_batchActionParams.ActualWidth,
+                            Duration = TimeSpan.FromMilliseconds(_batchActionParams.ActualWidth / 4),
                             FillBehavior = FillBehavior.HoldEnd,
-                            EasingFunction = (EasingFunctionBase)FindResource("DecelerationEase")
-                        } : new DoubleAnimation {
-                            To = -size,
-                            Duration = duration,
-                            FillBehavior = FillBehavior.HoldEnd,
-                            EasingFunction = (EasingFunctionBase)FindResource("AccelerationEase")
+                            EasingFunction = (EasingFunctionBase)FindResource(hasParams ? "DecelerationEase" : "AccelerationEase")
                         });
                     } catch (Exception e) {
                         Logging.Warning(e);
-                    }
-
-                    if (newValue?.GetParams(this) != null && _batchAction != null) {
-                        _batchAction.Content = newValue.GetParams(this);
                     }
                 }
             }
@@ -366,11 +406,20 @@ namespace AcManager.Controls {
             PrepareBatchAction();
         }
 
+        private void OnBatchActionAvailabilityChanged(object sender, EventArgs eventArgs) {
+            if (!IsLoaded) return;
+            PrepareBatchAction();
+        }
+
         private void PrepareBatchAction() {
             var list = _list;
             if (list == null) return;
 
-            _selectedBatchAction?.OnSelectionChanged(list.SelectedItems);
+            var count = _selectedBatchAction?.OnSelectionChanged(list.SelectedItems) ?? 0;
+            SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(count));
+            if (_batchActionRunButton != null) {
+                _batchActionRunButton.IsEnabled = count > 0;
+            }
         }
 
         private static readonly DependencyPropertyKey SelectedBatchActionHasParamsPropertyKey =
@@ -383,8 +432,6 @@ namespace AcManager.Controls {
         public bool SelectedBatchActionHasParams => _selectedBatchActionHasParams;
 
         private void OnMultiSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs) {
-            if (_list == null) return;
-            SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(_list.SelectedItems.Count));
             PrepareBatchAction();
         }
 
@@ -426,7 +473,8 @@ namespace AcManager.Controls {
         private ListBox _list;
 
         [CanBeNull]
-        private Button _addButton, _batchActionRunButton, _batchActionCloseButton;
+        private Button _addButton, _saveAllButton, _scrollToSelectedButton,
+                _batchActionRunButton, _batchActionCloseButton;
 
         [CanBeNull]
         private HierarchicalComboBox _batchActions;
@@ -435,7 +483,7 @@ namespace AcManager.Controls {
         private ContentPresenter _batchAction;
 
         [CanBeNull]
-        private FrameworkElement _batchActionParams;
+        private FrameworkElement _batchActionParams, _batchMenu;
 
         [CanBeNull]
         private TranslateTransform _batchActionParamsTransform;
@@ -451,11 +499,20 @@ namespace AcManager.Controls {
 
             if (_list != null) {
                 _list.PreviewMouseLeftButtonDown -= OnLeftMouseDown;
+                _list.PreviewKeyDown -= OnKeyDown;
                 _list.SizeChanged -= OnListSizeChanged;
             }
 
             if (_addButton != null) {
                 _addButton.Click -= OnAddButtonClick;
+            }
+
+            if (_saveAllButton != null) {
+                _saveAllButton.Click -= OnSaveAllButtonClick;
+            }
+
+            if (_scrollToSelectedButton != null) {
+                _scrollToSelectedButton.Click -= OnScrollToSelectedButtonClick;
             }
 
             if (_batchActionCloseButton != null) {
@@ -470,9 +527,12 @@ namespace AcManager.Controls {
 
             _batchActionsSet = false;
             _list = GetTemplateChild(@"ItemsList") as ListBox;
-            _addButton = GetTemplateChild(@"AddCarButton") as Button;
+            _addButton = GetTemplateChild(@"AddNewButton") as Button;
+            _saveAllButton = GetTemplateChild(@"SaveAllButton") as Button;
+            _scrollToSelectedButton = GetTemplateChild(@"ScrollToSelectedButton") as Button;
             _batchActions = GetTemplateChild(@"PART_BatchActions") as HierarchicalComboBox;
             _batchAction = GetTemplateChild(@"PART_BatchAction") as ContentPresenter;
+            _batchMenu = GetTemplateChild(@"PART_BatchMenuTransform") as FrameworkElement;
             _batchActionParams = GetTemplateChild(@"PART_BatchActionParams") as FrameworkElement;
             _batchActionRunButton = GetTemplateChild(@"PART_BatchBlock_RunButton") as Button;
             _batchActionCloseButton = GetTemplateChild(@"PART_BatchBlock_CloseButton") as Button;
@@ -482,13 +542,16 @@ namespace AcManager.Controls {
             if (_list != null) {
                 _list.ScrollIntoView(_list.SelectedItem);
                 _list.PreviewMouseLeftButtonDown += OnLeftMouseDown;
+                _list.PreviewKeyDown += OnKeyDown;
                 _list.SizeChanged += OnListSizeChanged;
                 _listSizeConditions = new SizeRelatedCondition[] {
                     _list.AddWidthCondition(80)
                          .Add(() => _batchActionCloseButton)
                          .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
                                  (c, x) => c.ColumnDefinitions[1].Width = new GridLength(x ? 8 : 0, GridUnitType.Pixel)),
-                    _list.AddWidthCondition(140).Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_RunButton_Text")),
+                    _list.AddWidthCondition(140)
+                         .Add(() => _scrollToSelectedButton)
+                         .Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_RunButton_Text")),
                     _list.AddWidthCondition(180)
                          .Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_CloseButton_Text"))
                          .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
@@ -499,6 +562,14 @@ namespace AcManager.Controls {
 
             if (_addButton != null) {
                 _addButton.Click += OnAddButtonClick;
+            }
+
+            if (_saveAllButton != null) {
+                _saveAllButton.Click += OnSaveAllButtonClick;
+            }
+
+            if (_scrollToSelectedButton != null) {
+                _scrollToSelectedButton.Click += OnScrollToSelectedButtonClick;
             }
 
             if (_batchActionCloseButton != null) {
@@ -517,6 +588,17 @@ namespace AcManager.Controls {
             UpdateBatchBlocksSizes();
         }
 
+        private void OnScrollToSelectedButtonClick(object sender, RoutedEventArgs e) {
+            _list?.ScrollIntoView(_list.SelectedItem);
+        }
+
+        private void OnSaveAllButtonClick(object sender, RoutedEventArgs e) {
+            if (_list == null) return;
+            foreach (var c in _list.ItemsSource.OfType<AcItemWrapper>().Select(x => x.Value).OfType<AcCommonObject>()) {
+                c.SaveCommand.Execute();
+            }
+        }
+
         private readonly Busy _batchActionRunBusy = new Busy();
         private void OnBatchActionRunButtonClick(object sender, RoutedEventArgs args) {
             try {
@@ -530,6 +612,11 @@ namespace AcManager.Controls {
                             waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Processing…"));
                             await _selectedBatchAction.ApplyAsync(_list.SelectedItems, waiting, waiting.CancellationToken);
                         }
+                    }
+
+                    PrepareBatchAction();
+                    if (!Stored.GetValue(KeepBatchActionsPanelOpenKey, true).AsBoolean()) {
+                        SetMultiSelectionMode(false);
                     }
                 });
             } catch (Exception e) {

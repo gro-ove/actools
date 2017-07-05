@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Filters;
@@ -109,14 +111,21 @@ namespace AcManager.Tools.AcObjectsNew {
             private List<string> _added = new List<string>();
             private AcCommonObject _current;
             private string _basePath;
+
+            [CanBeNull]
             private AcCommonObjectPackerParams _packerParams;
 
-            public void SetProgress(IProgress<string> progress) {
-                _progress = progress;
+            public void SetParams([CanBeNull] AcCommonObjectPackerParams packerParams) {
+                _packerParams = packerParams;
             }
 
-            public void SetParams(AcCommonObjectPackerParams packerParams) {
-                _packerParams = packerParams;
+            [CanBeNull]
+            private IProgress<string> _progress;
+            private CancellationToken _cancellation;
+
+            public void SetProgress([CanBeNull] IProgress<string> progress, CancellationToken cancellation) {
+                _progress = progress;
+                _cancellation = cancellation;
             }
 
             [NotNull]
@@ -139,7 +148,6 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             private IWriter _writer;
-            private IProgress<string> _progress;
 
             private bool Write(string name, Action<IWriter, string> fn) {
                 var key = GetKey(name);
@@ -155,18 +163,6 @@ namespace AcManager.Tools.AcObjectsNew {
                 var name = FileUtils.GetRelativePath(filename, _current.Location);
                 if (!forceExists && !File.Exists(filename)) return false;
                 return Write(name, (w, k) => w.Write(k, filename));
-            }
-
-            public bool AddBytes(string name, byte[] data) {
-                return Write(name, (w, k) => w.WriteBytes(k, data));
-            }
-
-            public bool AddString(string name, string data) {
-                return Write(name, (w, k) => w.WriteString(k, data));
-            }
-
-            public bool AddStream(string name, Stream data) {
-                return Write(name, (w, k) => w.Write(k, data));
             }
 
             protected bool AddFilename(string name, string filename) {
@@ -187,42 +183,81 @@ namespace AcManager.Tools.AcObjectsNew {
                 return _subFiles.Where(x => f.IsMatch(x)).Select(x => Path.Combine(location, x));
             }
 
-            protected bool Add(string name) {
+            private bool Add(string name) {
                 if (string.IsNullOrWhiteSpace(name)) return false;
                 return name.Contains("*") || name.Contains("?")
                         ? GetFiles(name).Aggregate(false, (current, filename) => current | AddFilename(filename, true))
                         : AddFilename(FileUtils.NormalizePath(Path.Combine(_current.Location, name)), false);
             }
 
-            protected bool Add(IEnumerable<string> names) {
-                return names != null && names.Aggregate(false, (current, name) => current | Add(name));
+            public bool Has(string name) {
+                return _added.Contains(GetKey(name).ToLowerInvariant());
             }
 
-            protected bool Add(params string[] names) {
-                return names != null && names.Aggregate(false, (current, name) => current | Add(name));
+            #region Public Add() methods
+            public bool AddBytes(string name, byte[] data) {
+                return Write(name, (w, k) => w.WriteBytes(k, data));
             }
 
-            public void Add(params AcCommonObject[] objs) {
-                Add(objs as IEnumerable<AcCommonObject>);
+            public bool AddString(string name, string data) {
+                return Write(name, (w, k) => w.WriteString(k, data));
             }
 
-            public void Add(IEnumerable< AcCommonObject> objs) {
-                if (objs == null) return;
+            public bool AddStream(string name, Stream data) {
+                return Write(name, (w, k) => w.Write(k, data));
+            }
+
+            [Pure]
+            protected IEnumerable Add(IEnumerable<string> names) {
+                return names.Select(Add);
+            }
+
+            [Pure]
+            protected IEnumerable Add(params string[] names) {
+                return names.Select(Add);
+            }
+
+            [Pure]
+            public IEnumerable Add(params AcCommonObject[] obj) {
+                return Add((IEnumerable<AcCommonObject>)obj);
+            }
+
+            [Pure]
+            public IEnumerable Add(IEnumerable<AcCommonObject> objs) {
+                if (objs == null) yield break;
+
                 foreach (var o in objs) {
                     if (o == null) continue;
                     var p = o.CreatePacker();
                     p._writer = _writer;
                     p._progress = _progress;
                     p._added = _added;
-                    p.Pack(o);
+
+                    foreach (var v in p.Pack(o)) {
+                        yield return v;
+                    }
                 }
             }
+            #endregion
 
-            private void Pack(AcCommonObject obj) {
+            private IEnumerable Pack(AcCommonObject obj) {
                 SetBasePath(GetBasePath(obj));
                 _current = obj;
                 _subFiles = null;
-                PackOverride(obj);
+
+                return PackOverride(obj);
+            }
+
+            private void Drain(IEnumerable enumerable, CancellationToken cancellation) {
+                if (enumerable == null) return;
+
+                var enumerator = enumerable.GetEnumerator();
+                while (!cancellation.IsCancellationRequested && enumerator.MoveNext()) {
+                    Drain(enumerator.Current as IEnumerable, cancellation);
+                    if (enumerator.Current is string name) {
+                        Add(name);
+                    }
+                }
             }
 
             public void Pack(Stream outputZipStream, AcCommonObject obj) {
@@ -231,7 +266,9 @@ namespace AcManager.Tools.AcObjectsNew {
                     _writer = writer;
                     _added.Clear();
 
-                    Pack(obj);
+                    Drain(Pack(obj), _cancellation);
+                    if (_cancellation.IsCancellationRequested) return;
+
                     writer.WriteString("ReadMe.txt", description);
                 }
 
@@ -246,8 +283,8 @@ namespace AcManager.Tools.AcObjectsNew {
                     _added.Clear();
 
                     foreach (var obj in list) {
-                        Pack(obj);
-                        PackOverride(obj);
+                        Drain(Pack(obj), _cancellation);
+                        if (_cancellation.IsCancellationRequested) return;
                     }
 
                     writer.WriteString("ReadMe.txt", description);
@@ -257,7 +294,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             protected abstract string GetBasePath(AcCommonObject acCommonObject);
-            protected abstract void PackOverride(AcCommonObject acCommonObject);
+            protected abstract IEnumerable PackOverride(AcCommonObject acCommonObject);
 
             [CanBeNull]
             protected abstract PackedDescription GetDescriptionOverride(AcCommonObject acCommonObject);
@@ -268,8 +305,8 @@ namespace AcManager.Tools.AcObjectsNew {
             private TParams _params;
             public TParams Params => _params ?? (_params = GetParams<TParams>());
 
-            protected sealed override void PackOverride(AcCommonObject acCommonObject) {
-                PackOverride((T)acCommonObject);
+            protected sealed override IEnumerable PackOverride(AcCommonObject acCommonObject) {
+                return PackOverride((T)acCommonObject);
             }
 
             protected sealed override PackedDescription GetDescriptionOverride(AcCommonObject acCommonObject) {
@@ -281,7 +318,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             protected abstract string GetBasePath(T t);
-            protected abstract void PackOverride(T t);
+            protected abstract IEnumerable PackOverride(T t);
 
             [CanBeNull]
             protected abstract PackedDescription GetDescriptionOverride(T t);
@@ -294,19 +331,20 @@ namespace AcManager.Tools.AcObjectsNew {
             throw new NotSupportedException();
         }
 
-        private void Pack(Stream outputZipStream, IProgress<string> progress, AcCommonObjectPackerParams packParams) {
+        private void Pack(Stream outputZipStream, AcCommonObjectPackerParams packParams, IProgress<string> progress, CancellationToken cancellation) {
             var packer = CreatePacker();
-            packer.SetProgress(progress);
+            packer.SetProgress(progress, cancellation);
             packer.SetParams(packParams);
             packer.Pack(outputZipStream, this);
         }
 
-        public static void Pack<T>(IEnumerable<T> objs, Stream outputZipStream, IProgress<string> progress, AcCommonObjectPackerParams packParams) where T : AcCommonObject {
+        public static void Pack<T>(IEnumerable<T> objs, Stream outputZipStream, [CanBeNull] AcCommonObjectPackerParams packParams,
+                [CanBeNull] IProgress<string> progress, CancellationToken cancellation) where T : AcCommonObject {
             var list = objs.ToList();
             if (list.Count == 0) return;
 
             var packer = list.First().CreatePacker();
-            packer.SetProgress(progress);
+            packer.SetProgress(progress, cancellation);
             packer.SetParams(packParams);
             packer.Pack(outputZipStream, list);
         }
@@ -321,9 +359,12 @@ namespace AcManager.Tools.AcObjectsNew {
                             var destination = Path.Combine(Location,
                                     $"{Id}-{(this as IAcObjectVersionInformation)?.Version ?? "0"}-{DateTime.Now.ToUnixTimestamp()}.zip");
                             using (var output = File.Create(destination)) {
-                                Pack(output, new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))), packerParams);
+                                Pack(output, packerParams,
+                                        new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
+                                        waiting.CancellationToken);
                             }
 
+                            if (waiting.CancellationToken.IsCancellationRequested) return;
                             WindowsHelper.ViewFile(destination);
                         });
                     }

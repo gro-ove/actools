@@ -249,6 +249,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static ReplaySettings Replay => _replay ?? (_replay = new ReplaySettings());
 
 
+        private static MessagesSettings _messages;
+        public static MessagesSettings Messages => _messages ?? (_messages = new MessagesSettings());
+
+
+        private static DamageDisplayerSettings _damageDisplayer;
+        public static DamageDisplayerSettings DamageDisplayer => _damageDisplayer ?? (_damageDisplayer = new DamageDisplayerSettings());
+
+
         private static SkidmarksSettings _skidmarks;
         public static SkidmarksSettings Skidmarks => _skidmarks ?? (_skidmarks = new SkidmarksSettings());
 

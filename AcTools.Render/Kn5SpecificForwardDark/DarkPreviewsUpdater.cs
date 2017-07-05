@@ -298,6 +298,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // Size-related options
             renderer.Width = (int)(options.PreviewWidth * options.SsaaMultiplier);
             renderer.Height = (int)(options.PreviewHeight * options.SsaaMultiplier);
+            renderer.ResolutionMultiplier = 1d;
             renderer.UseFxaa = options.UseFxaa;
             renderer.UseSmaa = options.UseSmaa;
             renderer.UseMsaa = options.UseMsaa;
@@ -427,7 +428,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             var shotStream = new MemoryStream(_approximateSize ?? 100000);
 
-            _renderer.Shot(1d, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, 1d, shotStream, true, null, default(CancellationToken));
+            _renderer.Shot(_renderer.Width, _renderer.Height, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, 1d, shotStream, true);
             if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
                 _approximateSize = (int)(shotStream.Position * 1.2);
             }

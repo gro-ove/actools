@@ -329,7 +329,7 @@ namespace AcManager.Pages.Selected {
         private bool _isLoaded;
 
         public bool IsLoaded {
-            get { return _isLoaded; }
+            get => _isLoaded;
             set {
                 if (Equals(value, _isLoaded)) return;
                 _isLoaded = value;

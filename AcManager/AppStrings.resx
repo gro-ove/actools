@@ -3061,13 +3061,13 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Switch to BMP, install Magick.NET plugin and don't forget to enable automatic conversion on Settings/Drive page.</value>
   </data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
-    <value>Proximity indicator</value>
+    <value>Proximity indicator:</value>
   </data>
   <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
     <value>Show nearest opponents</value>
   </data>
   <data name="AcSettings_Skidmarks" xml:space="preserve">
-    <value>Skidmarks</value>
+    <value>Skidmarks:</value>
   </data>
   <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
     <value>Quantity</value>
@@ -3076,7 +3076,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Height from the ground</value>
   </data>
   <data name="AcSettings_Mirrors" xml:space="preserve">
-    <value>Mirrors</value>
+    <value>Mirrors:</value>
   </data>
   <data name="AcSettings_FieldOfView" xml:space="preserve">
     <value>Field of view</value>
@@ -3091,7 +3091,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Rendering distance</value>
   </data>
   <data name="AcSettings_GhostCar" xml:space="preserve">
-    <value>Ghost car</value>
+    <value>Ghost car:</value>
   </data>
   <data name="AcSettings_GhostCar_StartShowingAt" xml:space="preserve">
     <value>Start showing at</value>
@@ -3435,7 +3435,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Class: {0}</value>
   </data>
   <data name="RaceGrid_CandidatePriority" xml:space="preserve">
-    <value>Candidate priority</value>
+    <value>Random chance multiplier</value>
   </data>
   <data name="RaceGrid_OverTheLimit" xml:space="preserve">
     <value>There is no pit stop for this car</value>
@@ -3549,7 +3549,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Grid</value>
   </data>
   <data name="AcSettings_SessionInformation" xml:space="preserve">
-    <value>Session information</value>
+    <value>Session information:</value>
   </data>
   <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
     <value>Add year postfix to cars’ names</value>

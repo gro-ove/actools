@@ -16,11 +16,9 @@ namespace AcManager.Tools.Helpers {
         public static void RestartCurrentApplication() {
             try {
                 ProcessExtension.Start(MainExecutingFile.Location,
-                        Environment.GetCommandLineArgs()
-                                   .Skip(1)
-                                   .ApartFrom(RestartArg)
-                                   .Where(x => !x.StartsWith("acmanager:", StringComparison.OrdinalIgnoreCase))
-                                   .Prepend(RestartArg));
+                        Environment.GetCommandLineArgs().Skip(1).ApartFrom(RestartArg)
+                                   .Where(x => !x.StartsWith("acmanager:", StringComparison.OrdinalIgnoreCase)).Prepend(RestartArg));
+
                 var app = Application.Current;
                 if (app == null) {
                     Environment.Exit(0);

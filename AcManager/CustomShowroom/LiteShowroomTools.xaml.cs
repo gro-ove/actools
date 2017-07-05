@@ -45,6 +45,8 @@ namespace AcManager.CustomShowroom {
     }
 
     public partial class LiteShowroomTools {
+        private const string KeySavedData = "__LiteShowroomTools";
+
         public static ILiveryGenerator LiveryGenerator { get; set; }
 
         private readonly string _loadPreset;
@@ -104,6 +106,36 @@ namespace AcManager.CustomShowroom {
             Cars,
             Skin,
             Camera,
+        }
+
+        public class AmbientShadowParams {
+            public double AmbientShadowDiffusion = 60d;
+            [JsonProperty("asb")]
+            public double AmbientShadowBrightness = 200d;
+            public int AmbientShadowIterations = 3200;
+            public bool AmbientShadowHideWheels;
+            public bool AmbientShadowFade = true;
+            [JsonProperty("asa")]
+            public bool AmbientShadowAccurate = true;
+
+            [JsonProperty("asbm")]
+            public float AmbientShadowBodyMultiplier = 0.75f;
+
+            [JsonProperty("aswm")]
+            public float AmbientShadowWheelMultiplier = 0.35f;
+        }
+
+        public static AmbientShadowParams LoadAmbientShadowParams() {
+            if (!ValuesStorage.Contains(KeySavedData)) {
+                return new AmbientShadowParams();
+            }
+
+            try {
+                return JsonConvert.DeserializeObject<AmbientShadowParams>(ValuesStorage.GetString(KeySavedData));
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return new AmbientShadowParams();
+            }
         }
 
         public bool CanSelectNodes => Model.CanSelectNodes();
@@ -243,22 +275,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private class SaveableData {
-                public double AmbientShadowDiffusion = 60d;
-                [JsonProperty("asb")]
-                public double AmbientShadowBrightness = 200d;
-                public int AmbientShadowIterations = 3200;
-                public bool AmbientShadowHideWheels;
-                public bool AmbientShadowFade = true;
-                [JsonProperty("asa")]
-                public bool AmbientShadowAccurate = true;
-
-                [JsonProperty("asbm")]
-                public float AmbientShadowBodyMultiplier = 0.75f;
-
-                [JsonProperty("aswm")]
-                public float AmbientShadowWheelMultiplier = 0.35f;
-
+            private class SaveableData : AmbientShadowParams {
                 public bool LiveReload;
 
                 [JsonProperty("cp")]
@@ -299,7 +316,7 @@ namespace AcManager.CustomShowroom {
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
                 Car.SkinsManager.EnsureLoadedAsync().Forget();
 
-                Saveable = new SaveHelper<SaveableData>("__LiteShowroomTools", () => new SaveableData {
+                Saveable = new SaveHelper<SaveableData>(KeySavedData, () => new SaveableData {
                     AmbientShadowDiffusion = AmbientShadowDiffusion,
                     AmbientShadowBrightness = AmbientShadowBrightness,
                     AmbientShadowIterations = AmbientShadowIterations,

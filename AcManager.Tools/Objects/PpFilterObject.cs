@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -88,8 +89,8 @@ namespace AcManager.Tools.Objects {
                 return "system/cfg/ppfilters";
             }
 
-            protected override void PackOverride(PpFilterObject t) {
-                AddFilename(Path.GetFileName(t.Location), t.Location);
+            protected override IEnumerable PackOverride(PpFilterObject t) {
+                yield return AddFilename(Path.GetFileName(t.Location), t.Location);
             }
 
             protected override PackedDescription GetDescriptionOverride(PpFilterObject t) {
