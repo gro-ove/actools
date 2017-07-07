@@ -135,4 +135,19 @@
   <SolidColorBrush x:Key="SubMenuText" Color="#717171" />
   <SolidColorBrush x:Key="SubMenuTextHover" Color="#515151" />
   <SolidColorBrush x:Key="SubMenuTextSelected" Color="#ffffff" />
+
+  <SolidColorBrush x:Key="FancyHintBackground" Color="#c4000000" />
+  <SolidColorBrush x:Key="FancyHintText" Color="#ffffff" />
+  <DropShadowEffect x:Key="FancyHintTextEffect" Opacity="1" Color="Black" ShadowDepth="0" BlurRadius="10" RenderingBias="Quality" />
+  <DropShadowEffect x:Key="FancyHintButtonsEffect" Opacity="0.6" Color="Black" Direction="-90" ShadowDepth="2" BlurRadius="10" RenderingBias="Quality" />
+  <SolidColorBrush x:Key="FancyHintButtonBackground" Color="#333333" />
+  <SolidColorBrush x:Key="FancyHintButtonBackgroundHover" Color="#3e3e42" />
+  <SolidColorBrush x:Key="FancyHintButtonBackgroundPressed" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="FancyHintButtonBorder" Color="#333333" />
+  <SolidColorBrush x:Key="FancyHintButtonBorderHover" Color="#3e3e42" />
+  <SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="FancyHintButtonText" Color="#ffffff" />
+  <SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#ffffff" />
+  <SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#ffffff" />
+  <SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 </ResourceDictionary>

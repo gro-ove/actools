@@ -2,7 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400"
+    xmlns:system="clr-namespace:System;assembly=mscorlib" 
+    xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
+    mc:Ignorable="d" Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400"
     MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent"
     d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop"
     DragEnter="OnDragEnter" ButtonRowContentAlignment="Stretch" Closed="OnClosed">
@@ -13,7 +15,7 @@
       </ResourceDictionary.MergedDictionaries>
       <system:String x:Key="ZeroWidthString">​</system:String>
 
-      <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type t:ContentEntryBase}">
+      <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type entries:ContentEntryBase}">
         <DockPanel>
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -70,7 +72,7 @@
         </DataTemplate.Triggers>
       </DataTemplate>
 
-      <DataTemplate x:Key="TrackEntryDataTemplate" DataType="{x:Type t:ContentEntryBase}">
+      <DataTemplate x:Key="TrackEntryDataTemplate" DataType="{x:Type entries:ContentEntryBase}">
         <DockPanel>
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -105,13 +107,13 @@
             </mui:SpacingUniformGrid>
 
             <!--layouts-->
-            <mui:ReferenceSwitch Value="{Binding Layouts}" d:DataContext="{d:DesignInstance t:TrackContentEntry}"
+            <mui:ReferenceSwitch Value="{Binding Layouts}" d:DataContext="{d:DesignInstance entries:TrackContentEntry}"
                 DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Label}" Text="Layouts to install:" DockPanel.Dock="Top" Margin="0 12 0 0" />
                 <ItemsControl ItemsSource="{Binding Layouts}">
                   <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type t:TrackContentLayoutEntry}">
+                    <DataTemplate DataType="{x:Type entries:TrackContentLayoutEntry}">
                       <CheckBox IsChecked="{Binding Active}" Margin="0 4 0 0">
                         <DockPanel>
                           <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
@@ -141,7 +143,7 @@
               </DockPanel>
             </mui:ReferenceSwitch>
 
-            <CheckBox d:DataContext="{d:DesignInstance t:TrackContentEntry}" IsChecked="{Binding KeepExistingSharedModels}"
+            <CheckBox d:DataContext="{d:DesignInstance entries:TrackContentEntry}" IsChecked="{Binding KeepExistingSharedModels}"
                 Visibility="{Binding SharedModelsOverlap, FallbackValue={x:Null}, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 4 0 0">
               <Label Content="{Binding DisplayOverlappedModels}" ContentStringFormat="{}Keep existing shared models: {0}">
                 <Label.ToolTip>
@@ -156,7 +158,7 @@
           <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
 
-          <DockPanel d:DataContext="{d:DesignInstance t:TrackContentEntry}" Margin="0 8 0 0"
+          <DockPanel d:DataContext="{d:DesignInstance entries:TrackContentEntry}" Margin="0 8 0 0"
               Visibility="{Binding MissingKn5Files.Length, Converter={StaticResource MoreToVisibilityConverter}, FallbackValue=0}">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                 DockPanel.Dock="Left" />

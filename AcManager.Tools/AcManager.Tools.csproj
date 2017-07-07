@@ -156,11 +156,24 @@
     </Compile>
     <Compile Include="ContentInstallation\ContentInstallationEntry.cs" />
     <Compile Include="ContentInstallation\ContentInstallationEntry.Extra.Gbw.cs" />
+    <Compile Include="ContentInstallation\ContentInstallationEntryState.cs" />
     <Compile Include="ContentInstallation\ContentInstallationManager.cs" />
     <Compile Include="ContentInstallation\ContentInstallationEntry.Extra.cs" />
+    <Compile Include="ContentInstallation\ContentInstallationParams.cs" />
     <Compile Include="ContentInstallation\ContentScanner.cs" />
-    <Compile Include="ContentInstallation\FileInfoEnumerableExtension.cs" />
-    <Compile Include="ContentInstallation\SevenZipContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Entries\AcContentEntries.cs" />
+    <Compile Include="ContentInstallation\Entries\ContentEntryBase.cs" />
+    <Compile Include="ContentInstallation\Entries\ExtraEntries.cs" />
+    <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Implementations\SharpCompressContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Implementations\ZipContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Installators\ContentInstallatorBase.cs" />
+    <Compile Include="ContentInstallation\Installators\CopyCallback.cs" />
+    <Compile Include="ContentInstallation\Installators\IAdditionalContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Installators\IFileInfo.cs" />
+    <Compile Include="ContentInstallation\Installators\InstallationDetails.cs" />
+    <Compile Include="ContentInstallation\IPluginsNavigator.cs" />
     <Compile Include="Data\BaseUpdater.cs" />
     <Compile Include="Data\DataUpdater.cs" />
     <Compile Include="Data\DataProvider.cs" />
@@ -256,11 +269,7 @@
     <Compile Include="Helpers\AcSettings\IniSettings.cs" />
     <Compile Include="Helpers\AcSettings\OculusSettings.cs" />
     <Compile Include="Helpers\AcSettings\PythonSettings.cs" />
-    <Compile Include="ContentInstallation\ContentInstallatorBase.cs" />
-    <Compile Include="ContentInstallation\DirectoryContentInstallator.cs" />
-    <Compile Include="ContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="ContentInstallation\UpdateOption.cs" />
-    <Compile Include="ContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\AcServerWrapperApi.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\IpGeoProvider.cs" />
@@ -304,6 +313,7 @@
     <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
+    <Compile Include="Helpers\SharpCompressExtension.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
@@ -329,6 +339,7 @@
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\ServerSavedDriver.cs" />
+    <Compile Include="Managers\TrackSkinsManager.cs" />
     <Compile Include="Managers\TrueTypeFontsManager.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Miscellaneous\CarUtils.cs" />
@@ -441,10 +452,6 @@
     <Compile Include="Helpers\TaskExtension.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
     <Compile Include="Helpers\TimeSpanExtension.cs" />
-    <Compile Include="ContentInstallation\ContentEntryBase.cs" />
-    <Compile Include="ContentInstallation\ContentInstallation.cs" />
-    <Compile Include="ContentInstallation\SharpCompressContentInstallator.cs" />
-    <Compile Include="ContentInstallation\IAdditionalContentInstallator.cs" />
     <Compile Include="ContentInstallation\PasswordException.cs" />
     <Compile Include="Helpers\Api\OpenWeatherApiProvider.cs" />
     <Compile Include="Helpers\FilesStorage.cs" />

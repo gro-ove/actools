@@ -1673,10 +1673,10 @@ namespace AcManager.Tools.Helpers {
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
                     }
                 }, false),
+                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
+                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true),
                 new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
                 new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
-                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
-                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true)
             });
 
             private MissingContentSearchEntry _missingContentSearch;

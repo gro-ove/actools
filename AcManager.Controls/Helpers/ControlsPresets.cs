@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
@@ -28,7 +29,7 @@ namespace AcManager.Controls.Helpers {
         private bool? _warnIfChanged;
 
         public bool WarnIfChanged {
-            get { return (bool)(_warnIfChanged ?? (_warnIfChanged = ValuesStorage.GetBool(KeyWarnIfChanged, true))); }
+            get => (bool)(_warnIfChanged ?? (_warnIfChanged = ValuesStorage.GetBool(KeyWarnIfChanged, true)));
             set {
                 if (Equals(value, WarnIfChanged)) return;
                 _warnIfChanged = value;
@@ -176,10 +177,19 @@ namespace AcManager.Controls.Helpers {
                 _userPresets = await ScanAsync(ControlsSettings.SubUserPresets);
 
                 Presets.Add(Rebuild(ControlsStrings.Controls_BuiltInPresets, ControlsSettings.SubBuiltInPresets, _builtInPresets));
-                Presets.Add(Rebuild(ControlsStrings.Controls_UserPresets, ControlsSettings.SubUserPresets, _userPresets));
+                var userPresets = Rebuild(ControlsStrings.Controls_UserPresets, ControlsSettings.SubUserPresets, _userPresets);
+                if (userPresets.Count < 20) {
+                    Presets.Add(new Separator());
+                    foreach (var preset in userPresets) {
+                        Presets.Add(preset);
+                    }
+                } else {
+                    Presets.Add(userPresets);
+                }
+
                 PresetsReady = true;
             } catch (Exception e) {
-                Logging.Warning("RebuildPresetsList(): " + e);
+                Logging.Warning(e);
             } finally {
                 _reloading = false;
             }

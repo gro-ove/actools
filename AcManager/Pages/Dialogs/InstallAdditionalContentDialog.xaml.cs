@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;

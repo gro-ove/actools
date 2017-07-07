@@ -51,7 +51,7 @@
                     <c:StatEntry Title="Fuel consumption" ValueUnits="l/100km" Value="{Binding Stats.FuelConsumption, StringFormat='{}{0:F1}'}"
                             Icon="F1 M 42,19L 42,31C 44,31 48,32 48,49C 49,53 54,53 55,47C 57,42 53,42 52,28C 52,26 52,22 45,19L 45,17C 52,17 57,25 57,26C 57,28 55,28 55,28C 55,28 55,38 57,39C 58,41 58,45 58,49C 58,52 53,55 52,55C 50,55 45,55 45,50C 45,46 45,36 42,35L 42,55C 43,55 44,56 44,57L 44,60L 19,60L 19,57C 19,56 19,55 20,55L 20,19C 20,17 22,15 23,15L 39,15C 41,15 42,17 42,19 Z M 25,33L 37,33C 38,33 39,32 39,31L 39,20C 39,20 38,19 37,19L 25,19C 24,19 23,20 23,20L 23,31C 23,32 24,33 25,33 Z" />
 
-                    <c:StatEntry Title="Maximum speed" ValueUnits="kph" Value="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1}'}"
+                    <c:StatEntry Title="Maximum speed" ValueUnits="km/h" Value="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1}'}"
                             CarId="{Binding Stats.MaxSpeedCarId}" />
 
                     <c:StatEntry Title="Driven distance" ValueUnits="km" Value="{Binding Stats.MaxDistancePerCarKm, StringFormat='{}{0:F1}'}"

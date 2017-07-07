@@ -5,20 +5,32 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Fancy hints are shown much more frequently.
+        /// Example: --fancy-hints-debug-mode.
+        /// </summary>
+        FancyHintsDebugMode,
+
+        /// <summary>
+        /// Minimal delay between fancy hints. Default value: 30 minutes.
+        /// Example: --fancy-hints-minimum-delay=00:10.
+        /// </summary>
+        FancyHintsMinimumDelay,
+
+        /// <summary>
         /// Do not waste time checking if HTTPS stuff is valid. Who might want to hack you this way?
-        /// Example: --ignore-https
+        /// Example: --ignore-https.
         /// </summary>
         IgnoreHttps,
 
         /// <summary>
         /// Filter specifying what content CM can pack and share. Default value: kunos-.
-        /// Example: --can-pack=kunos-&!private
+        /// Example: --can-pack=kunos-&!private.
         /// </summary>
         CanPack,
 
         /// <summary>
         /// Filter specifying which cars CM can pack and share. Default value: kunos-&!id:`^ad_`.
-        /// Example: --can-pack-cars=kunos-|dlc-
+        /// Example: --can-pack-cars=kunos-|dlc-.
         /// </summary>
         CanPackCars,
 

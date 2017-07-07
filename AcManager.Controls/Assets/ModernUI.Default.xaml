@@ -15,9 +15,11 @@
 	<SolidColorBrush x:Key="RatingBrush" Color="#ffff00" />
 	<SolidColorBrush x:Key="RatingCompactBackground" Color="#333333" />
 
-	<!-- Underlying color and filter for car upgrade icons -->
+	<!-- Underlying color and filter for car upgrade icons and track outlines (if they are alone) -->
   <SolidColorBrush x:Key="CarIconBackground" Color="Transparent" />
 	<x:Null x:Key="CarIconEffect" />
+  <SolidColorBrush x:Key="TrackOutlineAloneBackground" Color="Transparent" />
+	<x:Null x:Key="TrackOutlineAloneEffect" />
 
   <!-- For example, on dark stripe car’s and track’s names are written on quick drive page -->
   <SolidColorBrush x:Key="DarkStripeText" Color="#ffffff" />
@@ -168,6 +170,22 @@
   <SolidColorBrush x:Key="SubMenuText" Color="#717171" />
   <SolidColorBrush x:Key="SubMenuTextHover" Color="#515151" />
   <SolidColorBrush x:Key="SubMenuTextSelected" Color="#ffffff" />
+
+	<!-- Fancy hints -->
+	<SolidColorBrush x:Key="FancyHintBackground" Color="#c4000000" />
+	<SolidColorBrush x:Key="FancyHintText" Color="#ffffff" />
+	<DropShadowEffect x:Key="FancyHintTextEffect" Opacity="1" Color="Black" ShadowDepth="0" BlurRadius="10" RenderingBias="Quality" />
+	<DropShadowEffect x:Key="FancyHintButtonsEffect" Opacity="0.6" Color="Black" Direction="-90" ShadowDepth="2" BlurRadius="10" RenderingBias="Quality" />
+	<SolidColorBrush x:Key="FancyHintButtonBackground" Color="#333333" />
+	<SolidColorBrush x:Key="FancyHintButtonBackgroundHover" Color="#3e3e42" />
+	<SolidColorBrush x:Key="FancyHintButtonBackgroundPressed" Color="{DynamicResource AccentColor}" />
+	<SolidColorBrush x:Key="FancyHintButtonBorder" Color="#333333" />
+	<SolidColorBrush x:Key="FancyHintButtonBorderHover" Color="#3e3e42" />
+	<SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
+	<SolidColorBrush x:Key="FancyHintButtonText" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->
   <system:String x:Key="TextEditorSyntaxIni"><![CDATA[

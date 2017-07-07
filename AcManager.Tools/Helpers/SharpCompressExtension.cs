@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
@@ -12,7 +11,7 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
 
-namespace AcManager.Tools.ContentInstallation {
+namespace AcManager.Tools.Helpers {
     public static class SharpCompressExtension {
         // TODO: writer, string as a file
         public static void WriteString(this IWriter writer, string entryPath, string content) {

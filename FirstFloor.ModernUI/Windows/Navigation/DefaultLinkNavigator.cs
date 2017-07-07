@@ -5,8 +5,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
+    public interface INavigateUriHandler {
+        bool HandleUri(Uri uri);
+    }
+
     /// <summary>
     /// The default link navigator with support for loading frame content, external link navigation using the default browser and command execution.
     /// </summary>
@@ -95,8 +101,11 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
                     throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, UiStrings.NavigationFailedFrameNotFound, uri, parameter));
                 }
 
-                // delegate navigation to the frame
-                frame.Source = uri;
+                var window = Window.GetWindow(frame) as INavigateUriHandler;
+                if (window == null || frame.GetParent<ModernFrame>() != null || window.HandleUri(uri) != true) {
+                    // delegate navigation to the frame
+                    frame.Source = uri;
+                }
             }
         }
     }

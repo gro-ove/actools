@@ -16,6 +16,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -33,8 +35,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Icons\Icon.ico</ApplicationIcon>
@@ -284,6 +284,9 @@
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsPython.xaml.cs">
       <DependentUpon>AcSettingsPython.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsDamageDisplayer.xaml.cs">
+      <DependentUpon>AcSettingsDamageDisplayer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
       <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
@@ -741,6 +744,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsPython.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsDamageDisplayer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

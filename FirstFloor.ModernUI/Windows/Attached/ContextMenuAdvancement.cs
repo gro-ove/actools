@@ -3,14 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class ContextMenuAdvancement {
-        internal static readonly List<ContextMenu> ParentContextMenu = new List<ContextMenu>();
+        internal static readonly List<Tuple<ContextMenu, object>> ParentContextMenu = new List<Tuple<ContextMenu, object>>();
         private static DateTime _lastClicked;
 
         internal static void CheckTime() {
-            if (DateTime.Now - _lastClicked > TimeSpan.FromMilliseconds(500)) {
+            if (ParentContextMenu.Count > 0 && DateTime.Now - _lastClicked > TimeSpan.FromMilliseconds(500)) {
                 ParentContextMenu.Clear();
             }
         }
@@ -32,16 +33,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             var newValue = (bool)e.NewValue;
             if (newValue) {
-                element.PreviewMouseRightButtonDown += PropagateToChildren_PreviewMouseRightButtonDown;
+                element.PreviewMouseDown += OnMouseDown;
             } else {
-                element.PreviewMouseRightButtonDown -= PropagateToChildren_PreviewMouseRightButtonDown;
+                element.PreviewMouseDown -= OnMouseDown;
             }
         }
 
-        internal static void Add(ContextMenu menu) {
+        internal static void Add(FrameworkElement parent, ContextMenu menu) {
             CheckTime();
-            if (!ParentContextMenu.Any(x => ReferenceEquals(x, menu))) {
-                ParentContextMenu.Add(menu);
+            if (!ParentContextMenu.Any(x => ReferenceEquals(x.Item1, menu))) {
+                ParentContextMenu.Add(Tuple.Create(menu, parent?.DataContext));
             }
 
             _lastClicked = DateTime.Now;
@@ -50,11 +51,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static void PropagateToChildren(FrameworkElement parent) {
             var menu = (ContextMenu)parent.GetValue(FrameworkElement.ContextMenuProperty);
             if (menu != null) {
-                Add(menu);
+                Add(parent, menu);
             }
         }
 
-        private static void PropagateToChildren_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+        private static void OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
             PropagateToChildren((FrameworkElement)sender);
         }
     }

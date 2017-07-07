@@ -177,7 +177,7 @@ namespace AcManager.Tools.Profile {
                 _serialized = data.Serialize();
             }
         }
-        
+
         public event EventHandler<SessionStatsEventArgs> NewSessionAdded;
 
         private static OverallStats _overall;
@@ -311,7 +311,7 @@ namespace AcManager.Tools.Profile {
         private static void UpdateCarDrivenDistanceAndMaxSpeed(SessionStats current) {
             var car = current.CarId == null ? null : CarsManager.Instance.GetWrapperById(current.CarId)?.Value as CarObject;
             if (car == null) return;
-            
+
             car.RaiseMaxSpeedAchievedChanged();
             car.RaiseTotalDrivenDistanceChanged();
         }
@@ -329,8 +329,8 @@ namespace AcManager.Tools.Profile {
 Penalties: {current.Penalties}
 Distance: {current.DistanceKm:F1} km
 Driven time: {current.Time.ToProperString()}
-Max speed: {current.MaxSpeed:F1} kmh
-Avg speed: {current.AverageSpeed:F1} kmh
+Max speed: {current.MaxSpeed:F1} km/h
+Avg speed: {current.AverageSpeed:F1} km/h
 Fuel burnt: {current.FuelBurnt:F2}l ({current.FuelConsumption:F2} liters per 100 km)
 Gone offroad: {current.GoneOffroad} time(s)");
 

@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using AcManager.Tools.ContentInstallation.Entries;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -534,6 +536,11 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
+            // New textures
+            if (directory.NameLowerCase == "damage" && directory.HasSubFile("flatspot_fl.png")) {
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "damage");
+            }
+
             return null;
         }
 
@@ -590,6 +597,23 @@ namespace AcManager.Tools.ContentInstallation {
 
                 var version = CmThemeEntry.GetVersion(data.ToUtf8String(), out var isTheme);
                 return isTheme ? new CmThemeEntry(file.Key, file.Name, version) : null;
+            }
+
+            // A system config file?
+            if (file.NameLowerCase.EndsWith(".ini") && file.Parent.NameLowerCase == "cfg" &&
+                file.Parent.Parent?.NameLowerCase == "system") {
+                switch (file.NameLowerCase) {
+                    case "audio_engine.ini":
+                    case "damage_displayer.ini":
+                    case "graphics.ini":
+                    case "hdr.ini":
+                    case "pitstop.ini":
+                    case "skidmarks.ini":
+                    case "tyre_smoke.ini":
+                    case "tyre_smoke_grass.ini":
+                    case "vr.ini":
+                        return new SystemConfigEntry(file.Key, file.Name);
+                }
             }
 
             return null;

@@ -1,10 +1,21 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
     public static class ActualUnloadedHelper {
-        public static async void OnActualUnload(this FrameworkElement fe, Action action) {
+        public static void SubscribeWeak([CanBeNull] this INotifyPropertyChanged obj, [CanBeNull] FrameworkElement parent,
+                [CanBeNull] EventHandler<PropertyChangedEventArgs> onPropertyChanged) {
+            if (parent == null || obj == null || onPropertyChanged == null) return;
+            obj.SubscribeWeak(onPropertyChanged);
+            parent.OnActualUnload(() => {
+                obj.UnsubscribeWeak(onPropertyChanged);
+            });
+        }
+
+        public static async void OnActualUnload([NotNull] this FrameworkElement fe, Action action) {
             var unloading = false;
 
             fe.Loaded += (sender, args) => {

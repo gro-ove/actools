@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
@@ -46,6 +47,9 @@ namespace AcManager.Pages.Lists {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             Model.Load();
+            if ((Model as LocalViewModel)?.MainList.Count > 20 || (Model as RemoteViewModel)?.MainList.Count > 20) {
+                FancyHints.MultiSelectionMode.Trigger();
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

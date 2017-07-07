@@ -348,5 +348,39 @@ namespace AcTools.Utils.Helpers {
                 return new int[0];
             });
         }
+
+        #region Cut Base64
+        [Pure, CanBeNull]
+        public static string FromCutBase64([CanBeNull] this string encoded) {
+            if (!string.IsNullOrWhiteSpace(encoded)) {
+                try {
+                    var padding = 4 - encoded.Length % 4;
+                    if (padding > 0 && padding < 4) {
+                        encoded = encoded + "=".RepeatString(padding);
+                    }
+
+                    return Convert.FromBase64String(encoded).ToUtf8String();
+                } catch (Exception e) {
+                    AcToolsLogging.Write(">" + encoded + "<");
+                    AcToolsLogging.Write(e);
+                }
+            }
+
+            return null;
+        }
+
+        [Pure, CanBeNull]
+        public static string ToCutBase64([CanBeNull] this string decoded) {
+            if (!string.IsNullOrWhiteSpace(decoded)) {
+                try {
+                    return Convert.ToBase64String(Encoding.UTF8.GetBytes(decoded)).TrimEnd('=');
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                }
+            }
+
+            return null;
+        }
+        #endregion
     }
 }

@@ -215,8 +215,8 @@ namespace AcManager.UserControls {
 
                 resizeableHint.SetValue(FancyHintsService.HintProperty, FancyHints.ResizeableWindow.Id);
                 resizeableHint.SetValue(FancyHintsService.TriggerOnLoadProperty, true);
-                resizeableHint.SetValue(FancyHintsService.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-                resizeableHint.SetValue(FancyHintsService.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+                resizeableHint.SetValue(FancyHintsService.HorizontalContentAlignmentProperty, HorizontalAlignment.Right);
+                resizeableHint.SetValue(FancyHintsService.VerticalContentAlignmentProperty, VerticalAlignment.Bottom);
                 resizeableHint.SetValue(FancyHintsService.OffsetYProperty, 40d);
                 resizeableHint.SetValue(FancyHintsService.OffsetXProperty, 20d);
 

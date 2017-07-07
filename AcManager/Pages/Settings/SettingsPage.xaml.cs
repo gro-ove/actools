@@ -24,7 +24,16 @@ namespace AcManager.Pages.Settings {
         }
 
         void IParametrizedUriContent.OnUri(Uri uri) {
-            Tab.SelectedSource = new Uri($"/Pages/Settings/{uri.GetQueryParam("Category")}.xaml", UriKind.Relative);
+            var paramUri = uri.GetQueryParam("Uri");
+            if (paramUri != null) {
+                Tab.SelectedSource = new Uri(paramUri, UriKind.RelativeOrAbsolute);
+                return;
+            }
+
+            var category = uri.GetQueryParam("Category");
+            if (category != null) {
+                Tab.SelectedSource = new Uri($"/Pages/Settings/{category}.xaml", UriKind.Relative);
+            }
         }
     }
 }

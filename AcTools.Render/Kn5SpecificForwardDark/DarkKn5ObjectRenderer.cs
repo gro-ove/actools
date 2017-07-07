@@ -141,6 +141,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void ResizeAoBuffer() {
+            if (DeviceContextHolder == null) return;
             _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 

@@ -81,7 +81,7 @@ namespace AcManager.Controls {
                 }
             });
 
-            PreviewMouseRightButtonDown += OnRightMouseDown;
+            // PreviewMouseRightButtonDown += OnRightMouseDown;
             SizeChanged += OnSizeChanged;
         }
 
@@ -115,7 +115,25 @@ namespace AcManager.Controls {
             set => SetValue(BatchMenuVisibleProperty, value);
         }
 
+        protected virtual void OnItemDoubleClick([NotNull] AcObjectNew item) {
+
+        }
+
+        public AcObjectNew GetSelectedItem() {
+            return (_list?.SelectedItem as AcItemWrapper)?.Value as AcObjectNew;
+        }
+
         private void OnLeftMouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2) {
+                var item = GetSelectedItem();
+                if (item != null) {
+                    OnItemDoubleClick(item);
+                }
+
+                e.Handled = true;
+                return;
+            }
+
             if ((Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ||
                     Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) && !BatchMenuVisible) {
                 var list = _list;

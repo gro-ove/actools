@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -15,6 +16,7 @@ namespace AcManager.Pages.Settings {
         public SettingsDrive() {
             DataContext = new ViewModel();
             InitializeComponent();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         public class ViewModel : NotifyPropertyChanged {

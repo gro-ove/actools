@@ -59,8 +59,8 @@
                                   To="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
                                   SmallChange="5" LargeChange="5" BindingMode="FromToFixed"
                                   mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}"
-                                  mui:FancyHintsService.HorizontalAlignment="Center"
-                                  mui:FancyHintsService.VerticalAlignment="Bottom"
+                                  mui:FancyHintsService.HorizontalContentAlignment="Center"
+                                  mui:FancyHintsService.VerticalContentAlignment="Bottom"
                                   mui:FancyHintsService.TriggerOnLoad="True"
                                   mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
                 <mui:ContextMenuButton DockPanel.Dock="Right"

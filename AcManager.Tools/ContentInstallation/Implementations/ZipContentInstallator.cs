@@ -10,7 +10,7 @@ using AcTools;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation {
+namespace AcManager.Tools.ContentInstallation.Installators {
     internal class ZipContentInstallator : ContentInstallatorBase {
         public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams) {
             var result = new ZipContentInstallator(filename, installationParams);

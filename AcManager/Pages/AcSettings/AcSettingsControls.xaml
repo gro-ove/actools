@@ -1,175 +1,172 @@
 ﻿<UserControl x:Name="This" x:Class="AcManager.Pages.AcSettings.AcSettingsControls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}" SizeChanged="OnSizeChanged" Loaded="OnLoaded" Unloaded="OnUnloaded"
-        PreviewKeyDown="OnPreviewKeyDown" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}"
+    SizeChanged="OnSizeChanged" Loaded="OnLoaded" Unloaded="OnUnloaded" PreviewKeyDown="OnPreviewKeyDown"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
 
+    <DockPanel>
+      <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top">
         <DockPanel>
-            <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top">
-                <DockPanel>
-                    <Label Content="{x:Static g:AppStrings.Controls_InputMethodLabel}" />
-                    <ComboBox ItemsSource="{Binding Controls.InputMethods}" SelectedItem="{Binding Controls.InputMethod}" DisplayMemberPath="DisplayName" />
-                </DockPanel>
-            </StackPanel>
-            <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acset:AcSettingsControls.ModeToUriConverter}}" />
+          <Label Content="{x:Static g:AppStrings.Controls_InputMethodLabel}" />
+          <ComboBox ItemsSource="{Binding Controls.InputMethods}" SelectedItem="{Binding Controls.InputMethod}" DisplayMemberPath="DisplayName" />
         </DockPanel>
+      </StackPanel>
+      <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acset:AcSettingsControls.ModeToUriConverter}}" />
+    </DockPanel>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Controls.Devices}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+    <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
+      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Controls.Devices}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type t:DirectInputDevice}">
-                            <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
-                                <StackPanel.ToolTip>
-                                    <ToolTip
-                                            Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel Margin="4">
-                                            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                                            <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
-                                            <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
-                                            <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
-                                            <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
-                                            <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
-                                            <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
-                                            <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
-                                            <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
-                                            <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
-                                            <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
-                                        </StackPanel>
-                                    </ToolTip>
-                                </StackPanel.ToolTip>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type t:DirectInputDevice}">
+              <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
+                <StackPanel.ToolTip>
+                  <ToolTip
+                      Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Margin="4">
+                      <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
+                      <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
+                      <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
+                      <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
+                      <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
+                      <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
+                      <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
+                      <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
+                      <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
+                      <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
+                      <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
+                    </StackPanel>
+                  </ToolTip>
+                </StackPanel.ToolTip>
 
-                                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
 
-                                <ItemsControl ItemsSource="{Binding Axles}" Margin="0 8 0 0">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type t:DirectInputAxle}">
-                                            <Grid Height="8" Margin="0 2 0 2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="20" />
-                                                    <ColumnDefinition Width="144" />
-                                                </Grid.ColumnDefinitions>
+                <ItemsControl ItemsSource="{Binding Axles}" Margin="0 8 0 0">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type t:DirectInputAxle}">
+                      <Grid Height="8" Margin="0 2 0 2">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="20" />
+                          <ColumnDefinition Width="144" />
+                        </Grid.ColumnDefinitions>
 
-                                                <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
+                        <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
 
-                                                <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" />
-                                                <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonText}" Height="4" Width="8" Margin="2"
-                                                        HorizontalAlignment="Left">
-                                                    <Rectangle.RenderTransform>
-                                                        <TranslateTransform
-                                                                X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=132}" Y="0" />
-                                                    </Rectangle.RenderTransform>
-                                                </Rectangle>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <ItemsControl ItemsSource="{Binding Buttons}" Margin="0 8 -4 0">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type t:DirectInputButton}">
-                                            <mui:Cell Height="24" Margin="0 0 4 4">
-                                                <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" />
-                                                <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBorderPressed}"
-                                                        Visibility="{Binding Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                                <TextBlock Text="{Binding ShortName}" Style="{StaticResource Small}" TextAlignment="Center"
-                                                        VerticalAlignment="Center" />
-                                            </mui:Cell>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" />
+                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonText}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
+                          <Rectangle.RenderTransform>
+                            <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=132}" Y="0" />
+                          </Rectangle.RenderTransform>
+                        </Rectangle>
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </ScrollViewer>
-        </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
-            <Grid MinWidth="300">
-                <Grid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static g:AppStrings.Controls_WarnAboutUnsaved}" IsCheckable="True"
-                                ToolTip="{x:Static g:AppStrings.Controls_WarnAboutUnsaved_Tooltip}"
-                                IsChecked="{Binding WarnIfChanged, Source={x:Static c:ControlsPresets.Instance}}" />
-                    </ContextMenu>
-                </Grid.ContextMenu>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <mui:HierarchicalComboBox ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
-                        SelectedItem="{Binding SelectedPreset, Source={x:Static c:ControlsPresets.Instance}}"
-                        IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" FixedMode="False"
-                        PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
-                    <mui:HierarchicalComboBox.SelectedContent>
-                        <DataTemplate>
-                            <TextBlock TextTrimming="CharacterEllipsis" DataContext="{x:Static t:AcSettingsHolder.Controls}"
-                                    Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
-                                                <Setter Property="FontStyle" Value="Italic" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
-                                                <Setter Property="FontStyle" Value="Italic" />
-                                                <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </DataTemplate>
-                    </mui:HierarchicalComboBox.SelectedContent>
-                </mui:HierarchicalComboBox>
-                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
-                        ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" />
-            </Grid>
-            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0"
-                    ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}">
-                <Button.ContextMenu>
-                    <ContextMenu x:Name="ShareContextMenu">
-                        <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
-                                ToolTip="{x:Static g:AppStrings.Controls_SharePreset_Tooltip}" />
-                        <MenuItem Header="{x:Static g:AppStrings.Controls_ShareFfbOnly}" Command="{Binding ShareCommand, Mode=OneTime}"
-                                CommandParameter="FFBOnly" ToolTip="{x:Static g:AppStrings.Controls_ShareFfbOnly_Tooltip}" />
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
-            <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="{x:Static g:AppStrings.Controls_Test_Tooltip}"
-                    Style="{StaticResource Go.Button}" Content="{x:Static g:AppStrings.Common_Test}" />
-        </StackPanel>
-    </Grid>
+                <ItemsControl ItemsSource="{Binding Buttons}" Margin="0 8 -4 0">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type t:DirectInputButton}">
+                      <mui:Cell Height="24" Margin="0 0 4 4">
+                        <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" />
+                        <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBorderPressed}"
+                            Visibility="{Binding Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBlock Text="{Binding ShortName}" Style="{StaticResource Small}" TextAlignment="Center" VerticalAlignment="Center" />
+                      </mui:Cell>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
+      <Grid MinWidth="300">
+        <Grid.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static g:AppStrings.Controls_WarnAboutUnsaved}" IsCheckable="True"
+                ToolTip="{x:Static g:AppStrings.Controls_WarnAboutUnsaved_Tooltip}"
+                IsChecked="{Binding WarnIfChanged, Source={x:Static c:ControlsPresets.Instance}}" />
+          </ContextMenu>
+        </Grid.ContextMenu>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <mui:HierarchicalComboBox ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
+            SelectedItem="{Binding SelectedPreset, Source={x:Static c:ControlsPresets.Instance}}"
+            IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" FixedMode="False"
+            PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
+          <mui:HierarchicalComboBox.SelectedContent>
+            <DataTemplate>
+              <TextBlock TextTrimming="CharacterEllipsis" DataContext="{x:Static t:AcSettingsHolder.Controls}"
+                  Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                        <Setter Property="FontStyle" Value="Italic" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                        <Setter Property="FontStyle" Value="Italic" />
+                        <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </mui:HierarchicalComboBox.SelectedContent>
+        </mui:HierarchicalComboBox>
+        <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}"
+            Content="{x:Static c:ControlsStrings.Presets_Save}" />
+      </Grid>
+      <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0"
+          ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}">
+        <Button.ContextMenu>
+          <ContextMenu x:Name="ShareContextMenu">
+            <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
+                ToolTip="{x:Static g:AppStrings.Controls_SharePreset_Tooltip}" />
+            <MenuItem Header="{x:Static g:AppStrings.Controls_ShareFfbOnly}" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="FFBOnly"
+                ToolTip="{x:Static g:AppStrings.Controls_ShareFfbOnly_Tooltip}" />
+          </ContextMenu>
+        </Button.ContextMenu>
+      </Button>
+      <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="{x:Static g:AppStrings.Controls_Test_Tooltip}"
+          Style="{StaticResource Go.Button}" Content="{x:Static g:AppStrings.Common_Test}" />
+    </StackPanel>
+  </Grid>
 </UserControl>

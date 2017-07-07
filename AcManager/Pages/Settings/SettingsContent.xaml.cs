@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Commands;
@@ -13,8 +14,8 @@ namespace AcManager.Pages.Settings {
         public SettingsContent() {
             InitializeComponent();
             DataContext = new ViewModel();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
-
 
         public class ViewModel : NotifyPropertyChanged {
             public SettingsHolder.ContentSettings Holder => SettingsHolder.Content;

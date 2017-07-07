@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Entries;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation {
+namespace AcManager.Tools.ContentInstallation.Installators {
     public interface IAdditionalContentInstallator : IDisposable {
         string Password { get; }
 

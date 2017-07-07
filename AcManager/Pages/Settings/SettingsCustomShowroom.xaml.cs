@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.CustomShowroom;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -47,6 +48,10 @@ namespace AcManager.Pages.Settings {
             public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
                 ValuesStorage.Remove("__DarkRendererSettings");
             }));
+
+            private DelegateCommand _resetHeavyCommand;
+
+            public DelegateCommand ResetHeavyCommand => _resetHeavyCommand ?? (_resetHeavyCommand = new DelegateCommand(DarkRendererSettings.ResetHeavy));
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {

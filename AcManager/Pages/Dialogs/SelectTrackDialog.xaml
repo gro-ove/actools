@@ -1,93 +1,97 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.SelectTrackDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
-        xmlns:g="clr-namespace:AcManager"
-        xmlns:c="http://acstuff.ru/app/controls"
-        mc:Ignorable="d" Title="{Binding SelectedTrackConfiguration.Name}"
-        d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
-        MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual">
-    <mui:ModernDialog.BackgroundContent>
-        <Rectangle>
-            <Rectangle.Fill>
-                <VisualBrush>
-                    <VisualBrush.Visual>
-                        <Grid Opacity="0.15" Width="355" ClipToBounds="True">
-                            <Grid.Effect>
-                                <BlurEffect Radius="20" KernelType="Box" RenderingBias="Quality" />
-                            </Grid.Effect>
-                            <Image x:Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" />
-                            <Image x:Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Opacity="0" Stretch="UniformToFill" Margin="-20">
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup>
-                                        <VisualState x:Name="State0">
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="State1">
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3" />
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Image>
-                        </Grid>
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </mui:ModernDialog.BackgroundContent>
-    <mui:ModernDialog.Resources>
-        <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-        <DataTemplate x:Key="LayoutItemTemplate">
-            <mui:BetterImage Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" />
-        </DataTemplate>
-    </mui:ModernDialog.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <uc:TrackBlock Track="{Binding SelectedTrackConfiguration}" Margin="0 0 0 -42">
-            <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
-                    Visibility="{Binding SelectedTrack.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    ItemsSource="{Binding SelectedTrack.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    SelectedItem="{Binding SelectedTrackConfiguration}" ItemTemplate="{StaticResource LayoutItemTemplate}" Margin="0 210 0 0">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
-        </uc:TrackBlock>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
+    xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{Binding SelectedTrackConfiguration.Name}"
+    d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
+    MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual">
+  <mui:ModernDialog.BackgroundContent>
+    <Rectangle>
+      <Rectangle.Fill>
+        <VisualBrush>
+          <VisualBrush.Visual>
+            <Grid Opacity="0.15" Width="355" ClipToBounds="True">
+              <Grid.Effect>
+                <BlurEffect Radius="20" KernelType="Box" RenderingBias="Quality" />
+              </Grid.Effect>
+              <Image x:Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" />
+              <Image x:Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Opacity="0" Stretch="UniformToFill" Margin="-20">
+                <VisualStateManager.VisualStateGroups>
+                  <VisualStateGroup>
+                    <VisualState x:Name="State0">
+                      <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                      </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="State1">
+                      <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3" />
+                      </Storyboard>
+                    </VisualState>
+                  </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+              </Image>
+            </Grid>
+          </VisualBrush.Visual>
+        </VisualBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+  </mui:ModernDialog.BackgroundContent>
+  <mui:ModernDialog.Resources>
+    <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+    <DataTemplate x:Key="LayoutItemTemplate">
+      <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
+      <mui:BetterImage x:Name="Image" Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" ClearOnChange="True" />
+      <DataTemplate.Triggers>
+        <DataTrigger Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+          <Setter Property="Background" Value="{DynamicResource TrackOutlineAloneBackground}" TargetName="Image" />
+          <Setter Property="Effect" Value="{DynamicResource TrackOutlineAloneEffect}" TargetName="Image" />
+        </DataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+  </mui:ModernDialog.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <uc:TrackBlock Track="{Binding SelectedTrackConfiguration}" Margin="0 0 0 -42">
+      <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
+          Visibility="{Binding SelectedTrack.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+          ItemsSource="{Binding SelectedTrack.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+          SelectedItem="{Binding SelectedTrackConfiguration}" ItemTemplate="{StaticResource LayoutItemTemplate}" Margin="0 210 0 0">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+      </ListBox>
+    </uc:TrackBlock>
 
-        <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
+    <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
 
-        <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
-            <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="Tabs_OnNavigated"
-                    mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack"
-                    SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
-                <mui:ModernTab.LinksListBoxTemplate>
-                    <ControlTemplate>
-                        <DockPanel>
-                            <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
-                        </DockPanel>
-                    </ControlTemplate>
-                </mui:ModernTab.LinksListBoxTemplate>
-                <mui:ModernTab.Links>
-                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/TrackCountries.xaml" />
-                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/TrackCategories.xaml" />
-                    <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/TrackDlcs.xaml" />
-                    <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/TrackTags.xaml" />
-                    <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/TrackRatings.xaml" />
-                    <!-- ReSharper disable once Xaml.PathError -->
-                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}"
-                            Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&amp;Filter=enabled+" />
-                </mui:ModernTab.Links>
-            </mui:ModernTab>
-        </AdornerDecorator>
-    </Grid>
+    <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
+      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="Tabs_OnNavigated"
+          mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack"
+          SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
+        <mui:ModernTab.LinksListBoxTemplate>
+          <ControlTemplate>
+            <DockPanel>
+              <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+            </DockPanel>
+          </ControlTemplate>
+        </mui:ModernTab.LinksListBoxTemplate>
+        <mui:ModernTab.Links>
+          <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/TrackCountries.xaml" />
+          <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/TrackCategories.xaml" />
+          <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/TrackDlcs.xaml" />
+          <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/TrackTags.xaml" />
+          <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/TrackRatings.xaml" />
+          <!-- ReSharper disable once Xaml.PathError -->
+          <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&amp;Filter=enabled+" />
+        </mui:ModernTab.Links>
+      </mui:ModernTab>
+    </AdornerDecorator>
+  </Grid>
 </mui:ModernDialog>

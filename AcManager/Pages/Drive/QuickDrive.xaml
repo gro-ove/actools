@@ -430,7 +430,7 @@
           <mui:DoubleSlider Minimum="0" Maximum="35" From="{Binding WindSpeedMin}" To="{Binding WindSpeedMax}" Margin="0 0 0 4" TickFrequency="7"
               TickPlacement="BottomRight" IsSnapToTickEnabled="False" SmallChange="7" LargeChange="7" BindingMode="FromToFixed"
               IsEnabled="{Binding RandomWindSpeed, Converter={StaticResource InvertBooleanConverter}}"
-              mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}" mui:FancyHintsService.HorizontalAlignment="Right"
+              mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}" mui:FancyHintsService.HorizontalContentAlignment="Right"
               mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
         </DockPanel>
 

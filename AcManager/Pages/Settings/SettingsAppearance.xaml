@@ -51,6 +51,10 @@
         <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
       </CheckBox>
 
+      <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}">
+        <Label Content="Larger title links" />
+      </CheckBox>
+
       <DockPanel>
         <mui:ValueLabel Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource PercentageConverter}}"
             mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />

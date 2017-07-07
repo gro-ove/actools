@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Drive;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
@@ -56,5 +57,11 @@ namespace AcManager.Pages.Lists {
             });
         }
         #endregion
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var weather = obj as WeatherObject;
+            if (weather == null) return;
+            QuickDrive.Show(weather: weather);
+        }
     }
 }

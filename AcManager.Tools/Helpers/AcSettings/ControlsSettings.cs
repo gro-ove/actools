@@ -954,8 +954,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
             section = Ini["__EXTRA_CM"];
-            AcSettingsHolder.FfPostProcess.Import(DecodePreset(section.GetNonEmpty("FF_POST_PROCESS")));
-            AcSettingsHolder.System.ImportFfb(DecodePreset(section.GetNonEmpty("SYSTEM")));
+            AcSettingsHolder.FfPostProcess.Import(section.GetNonEmpty("FF_POST_PROCESS").FromCutBase64());
+            AcSettingsHolder.System.ImportFfb(section.GetNonEmpty("SYSTEM").FromCutBase64());
 
             section = Ini["__LAUNCHER_CM"];
             var name = section.GetNonEmpty("PRESET_NAME");
@@ -1030,8 +1030,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
 
             section = Ini["__EXTRA_CM"];
-            section.Set("FF_POST_PROCESS", EncodePreset(AcSettingsHolder.FfPostProcess.Export()));
-            section.Set("SYSTEM", EncodePreset(AcSettingsHolder.System.ExportFfb()));
+            section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());
+            section.Set("SYSTEM", AcSettingsHolder.System.ExportFfb().ToCutBase64());
 
             section = Ini["__LAUNCHER_CM"];
             section.Set("PRESET_NAME", CurrentPresetFilename?.SubstringExt(PresetsDirectory.Length + 1));
@@ -1042,40 +1042,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 #if DEBUG
             Logging.Write($"Controls saving time: {sw.Elapsed.TotalMilliseconds:F2} ms");
 #endif
-        }
-
-        private static string DecodePreset(string encoded) {
-            if (!string.IsNullOrWhiteSpace(encoded)) {
-                try {
-                    if (encoded.Length % 4 != 0) {
-                        var sb = new StringBuilder(encoded, 4);
-                        for (var i = 0; i < encoded.Length % 4; i++) {
-                            sb.Append('=');
-                        }
-
-                        encoded = sb.ToString();
-                    }
-
-                    return Convert.FromBase64String(encoded).ToUtf8String();
-                } catch (Exception e) {
-                    Logging.Debug(">" + encoded + "<");
-                    Logging.Warning(e);
-                }
-            }
-
-            return null;
-        }
-
-        private static string EncodePreset(string decoded) {
-            if (!string.IsNullOrWhiteSpace(decoded)) {
-                try {
-                    return Convert.ToBase64String(Encoding.UTF8.GetBytes(decoded)).TrimEnd('=');
-                } catch (Exception e) {
-                    Logging.Warning(e);
-                }
-            }
-
-            return null;
         }
 
         public void SavePreset(string filename) {

@@ -17,13 +17,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     }
 
     public class FancyHint : NotifyPropertyChanged {
-        #if DEBUG
-        public static TimeSpan OptionMinimumTimeGap = TimeSpan.FromSeconds(10d);
+        public static TimeSpan OptionMinimumDelay = TimeSpan.FromMinutes(30d);
         public static bool OptionDebugMode = false;
-        #else
-        public static TimeSpan OptionMinimumTimeGap = TimeSpan.FromMinutes(30d);
-        public static bool OptionDebugMode = false;
-        #endif
 
         private static readonly string KeyStartup = "__fancyHint:startupId";
         private static readonly int StartupId;
@@ -65,60 +60,64 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
 
         public string Id { get; }
-
         public string Header { get; }
-
         public string Description { get; }
 
         public double Probability { get; }
         public bool CloseOnResize { get; }
 
+        private static void DebugMessage(string msg) {
+            #if DEBUG
+            Logging.Debug(msg);
+            #endif
+        }
+
         public async void Trigger(TimeSpan delay) {
             await Task.Delay(delay);
             ActionExtension.InvokeInMainThreadAsync(() => {
                 if (FancyHintAdorner.IsAnyShown) {
-                    Logging.Debug($"{Id}: something else is being shown right now");
+                    DebugMessage($"{Id}: something else is being shown right now");
                     return;
                 }
 
-                if (!OptionDebugMode && Shown) {
-                    Logging.Debug($"{Id}: already shown");
+                if (Shown) {
+                    DebugMessage($"{Id}: already shown");
                     return;
                 }
 
                 if (!Available) {
-                    Logging.Debug($"{Id}: not available");
+                    DebugMessage($"{Id}: not available");
                     return;
                 }
 
                 if (!OptionDebugMode && RandomInstance.NextDouble() > Probability) {
-                    Logging.Debug($"{Id}: not now, random says so");
+                    DebugMessage($"{Id}: not now, random says so");
                     return;
                 }
 
                 if (_startupsDelay > StartupId) {
-                    Logging.Debug($"{Id}: waiting for a next start up ({_startupsDelay}, current: {StartupId})");
+                    DebugMessage($"{Id}: waiting for a next start up ({_startupsDelay}, current: {StartupId})");
                     return;
                 }
 
                 if (_triggersDelay-- > 0) {
-                    Logging.Debug($"{Id}: waiting for a next ({_triggersDelay + 1}) trigger");
+                    DebugMessage($"{Id}: waiting for a next ({_triggersDelay + 1}) trigger");
                     return;
                 }
 
-                if (!_forced && DateTime.Now - _lastShown < OptionMinimumTimeGap) {
-                    Logging.Debug($"{Id}: gap ({DateTime.Now - _lastShown}, required: {OptionMinimumTimeGap}) is too low");
+                if (!_forced && DateTime.Now - _lastShown < OptionMinimumDelay) {
+                    DebugMessage($"{Id}: gap ({DateTime.Now - _lastShown}, required: {OptionMinimumDelay}) is too low");
                     return;
                 }
 
                 var args = new ShowHintEventArgs();
                 Show?.Invoke(this, args);
                 if (!args.Shown) {
-                    Logging.Warning($"{Id}: cancelled!");
+                    DebugMessage($"{Id}: cancelled!");
                     return;
                 }
 
-                Logging.Warning($"{Id}: shown");
+                DebugMessage($"{Id}: shown");
                 Shown = true;
                 _lastShown = DateTime.Now;
                 ValuesStorage.Set(KeyLastShown, _lastShown);
@@ -141,7 +140,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _available;
 
         public bool Available {
-            get { return _keyAvailable == null || (_available ?? (_available = ValuesStorage.GetBool(_keyAvailable)).Value); }
+            get => _keyAvailable == null || (_available ?? (_available = ValuesStorage.GetBool(_keyAvailable)).Value);
             private set {
                 if (_keyAvailable == null || Equals(value, Available)) return;
                 _available = value;
@@ -153,7 +152,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _shown;
 
         public bool Shown {
-            get { return _shown ?? (_shown = ValuesStorage.GetBool(_keyShown)).Value; }
+            get => _shown ?? (_shown = !OptionDebugMode && ValuesStorage.GetBool(_keyShown)).Value;
             private set {
                 if (Equals(value, Shown)) return;
                 _shown = value;
@@ -173,7 +172,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _enabled;
 
         public bool Enabled {
-            get { return _enabled ?? (_enabled = ValuesStorage.GetBool("Settings.FancyHintsService.Enabled", true)).Value; }
+            get => _enabled ?? (_enabled = ValuesStorage.GetBool("Settings.FancyHintsService.Enabled", true)).Value;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;
@@ -311,7 +310,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnElementLoaded(object sender, RoutedEventArgs routedEventArgs) {
             var e = sender as FrameworkElement;
-            if (e == null || !GetTriggerOnLoad(e)) return;
+            if (e == null || !GetTriggerOnLoad(e) || !e.IsVisible) return;
 
             var id = GetHint(e);
             _nextHint = Tuple.Create(id, e);
@@ -336,7 +335,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty HorizontalAlignmentProperty = DependencyProperty.RegisterAttached("HorizontalAlignment", typeof(HorizontalAlignment),
-                typeof(FancyHintsService), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.None));
+                typeof(FancyHintsService), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalAlignment(DependencyObject obj) {
             return (VerticalAlignment)obj.GetValue(VerticalAlignmentProperty);
@@ -347,7 +346,32 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty VerticalAlignmentProperty = DependencyProperty.RegisterAttached("VerticalAlignment", typeof(VerticalAlignment),
-                typeof(FancyHintsService), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.None));
+                typeof(FancyHintsService), new FrameworkPropertyMetadata(VerticalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
+
+
+        public static HorizontalAlignment GetHorizontalContentAlignment(DependencyObject obj) {
+            return (HorizontalAlignment)obj.GetValue(HorizontalContentAlignmentProperty);
+        }
+
+        public static void SetHorizontalContentAlignment(DependencyObject obj, HorizontalAlignment value) {
+            obj.SetValue(HorizontalContentAlignmentProperty, value);
+        }
+
+        public static readonly DependencyProperty HorizontalContentAlignmentProperty = DependencyProperty.RegisterAttached("HorizontalContentAlignment",
+                typeof(HorizontalAlignment), typeof(FancyHintsService),
+                new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.None));
+
+        public static VerticalAlignment GetVerticalContentAlignment(DependencyObject obj) {
+            return (VerticalAlignment)obj.GetValue(VerticalContentAlignmentProperty);
+        }
+
+        public static void SetVerticalContentAlignment(DependencyObject obj, VerticalAlignment value) {
+            obj.SetValue(VerticalContentAlignmentProperty, value);
+        }
+
+        public static readonly DependencyProperty VerticalContentAlignmentProperty = DependencyProperty.RegisterAttached("VerticalContentAlignment",
+                typeof(VerticalAlignment), typeof(FancyHintsService),
+                new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.None));
 
         public static double GetOffsetX(DependencyObject obj) {
             return (double)obj.GetValue(OffsetXProperty);

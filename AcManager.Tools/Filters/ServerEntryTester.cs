@@ -30,6 +30,10 @@ namespace AcManager.Tools.Filters {
                 case "playerteam":
                     return nameof(ServerEntry.CurrentDrivers);
 
+                case "ext":
+                case "extended":
+                    return nameof(ServerEntry.ExtendedMode);
+
                 case "track":
                 case "trackid":
                     return nameof(ServerEntry.Track);
@@ -77,7 +81,7 @@ namespace AcManager.Tools.Filters {
                 case "connected":
                 case "lastconnected":
                     return nameof(ServerEntry.LastConnected);
-                    
+
                 case "sessionscount":
                 case "connectedtimes":
                     return nameof(ServerEntry.SessionsCount);
@@ -140,6 +144,10 @@ namespace AcManager.Tools.Filters {
                 case "driverteam":
                 case "playerteam":
                     return obj.CurrentDrivers?.Any(x => value.Test(x.Team)) == true;
+
+                case "ext":
+                case "extended":
+                    return value.Test(obj.ExtendedMode);
 
                 case "c":
                 case "cap":

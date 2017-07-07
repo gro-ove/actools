@@ -31,7 +31,9 @@ namespace AcManager.Tools.Miscellaneous {
             Debug.Assert(Instance == null);
 
             PreviousVersion = ValuesStorage.GetString(KeyPreviousVersion);
-            if (PreviousVersion?.IsVersionOlderThan(BuildInformation.AppVersion) == true) {
+            Logging.Write("Previos version: " + PreviousVersion);
+
+            if (PreviousVersion?.IsVersionOlderThan(BuildInformation.AppVersion) != false) {
                 JustUpdated = true;
                 ValuesStorage.Set(KeyPreviousVersion, BuildInformation.AppVersion);
             }
@@ -61,7 +63,7 @@ namespace AcManager.Tools.Miscellaneous {
         private bool _isSupported = true;
 
         public bool IsSupported {
-            get { return _isSupported; }
+            get => _isSupported;
             set {
                 if (Equals(value, _isSupported)) return;
                 _isSupported = value;
@@ -124,7 +126,7 @@ namespace AcManager.Tools.Miscellaneous {
         private string _updateIsReady;
 
         public string UpdateIsReady {
-            get { return _updateIsReady; }
+            get => _updateIsReady;
             set {
                 if (Equals(value, _updateIsReady)) return;
                 _updateIsReady = value;

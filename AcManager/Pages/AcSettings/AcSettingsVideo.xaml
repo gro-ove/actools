@@ -18,7 +18,7 @@
     <ScrollViewer mui:SaveScroll.Key="AcSettingsVideo">
       <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True" Margin="0">
 
-        <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+        <StackPanel Style="{StaticResource SettingsPanel}">
 
           <CheckBox IsChecked="{Binding Video.Fullscreen}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fullscreen}" />
@@ -157,10 +157,10 @@
           </StackPanel>
 
         </StackPanel>
-        <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+        <StackPanel Style="{StaticResource SettingsPanel}">
 
           <!--reflections-->
-          <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_ReflectionsHeader}" />
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_ReflectionsHeader}" />
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ReflectionsResolutionLabel}" />

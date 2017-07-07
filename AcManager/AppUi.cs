@@ -91,7 +91,7 @@ namespace AcManager {
         }
 
         public void Run() {
-            ActionExtension.InvokeInMainThreadAsync(async () => {
+            ActionExtension.InvokeInMainThreadAsync((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
 
                 try {
@@ -124,7 +124,7 @@ namespace AcManager {
                 }
 
                 Logging.Debug("Main loop is finished");
-            });
+            }));
         }
     }
 }

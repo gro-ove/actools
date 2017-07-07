@@ -97,6 +97,28 @@ namespace AcManager.CustomShowroom {
                 ? EnumExtension.GetValues<DarkLightType>()
                 : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.Sphere, DarkLightType.Tube, DarkLightType.LtcTube).ToArray();
 
+        public static void ResetHeavy() {
+            if (!ValuesStorage.Contains(DefaultKey)) return;
+
+            try {
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.GetString(DefaultKey));
+                data.MsaaMode = 0;
+                data.SsaaMode = 1;
+                data.ShadowMapSize = 2048;
+                data.CubemapReflectionMapSize = 1024;
+                data.CubemapReflectionFacesPerFrame = 2;
+                data.UsePcss = false;
+                data.UseSslr = false;
+                data.UseAo = false;
+                data.UseDof = false;
+                data.UseAccumulationDof = false;
+                data.FlatMirrorBlurred = false;
+                ValuesStorage.Set(DefaultKey, JsonConvert.SerializeObject(data));
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
         protected class SaveableData {
             public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(150, 180, 180);
             public virtual Color AmbientUpColor { get; set; } = Color.FromRgb(180, 180, 150);

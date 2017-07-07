@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Drive;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
@@ -15,6 +16,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -83,5 +86,17 @@ namespace AcManager.Pages.Lists {
             }
         }
         #endregion
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var replay = obj as ReplayObject;
+            if (replay == null) return;
+
+            GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                Name = replay.Id,
+                TrackId = replay.TrackId,
+                TrackConfiguration = replay.TrackConfiguration,
+                WeatherId = replay.WeatherId
+            }));
+        }
     }
 }

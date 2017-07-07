@@ -1,135 +1,131 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:mui="clr-namespace:FirstFloor.ModernUI">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="BetterTextBox.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:mui="clr-namespace:FirstFloor.ModernUI">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="BetterTextBox.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="ColorPicker.Borderless" TargetType="controls:ColorPicker" BasedOn="{StaticResource {x:Type controls:ColorPicker}}">
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="controls:ColorPicker">
-                    <controls:AdornedControl x:Name="Outline" IsAdornerVisible="False">
-                        <controls:AdornedControl.AdornerContent>
-                            <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}"
-                                    IsHitTestVisible="False" />
-                        </controls:AdornedControl.AdornerContent>
-                        <controls:Cell>
-                            <controls:BetterTextBox x:Name="PART_TextBox" Style="{StaticResource Borderless}"
-                                    Template="{StaticResource BetterTextBoxControlTemplate.Simple}"
-                                    Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
-                                    Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
-                            <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
-                                    Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static controls:ColorPicker.ColorToBrushConverter}}"
-                                    Style="{StaticResource ColorPickerToggleButton}"
-                                    IsHitTestVisible="{Binding ElementName=PART_Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-                            <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=PART_TextBox}" Placement="Bottom" HorizontalOffset="-4"
-                                    IsOpen="{Binding IsChecked, ElementName=PART_Button, Mode=TwoWay}" VerticalOffset="-5" StaysOpen="False"
-                                    AllowsTransparency="True" PopupAnimation="Slide">
-                                <controls:Cell x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
-                                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                                    <controls:ColorPickerPanel x:Name="PART_Panel" Background="{DynamicResource PopupBackground}" BorderThickness="0" Margin="1"
-                                            Color="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                    <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
-                                </controls:Cell>
-                            </Popup>
-                        </controls:Cell>
-                    </controls:AdornedControl>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_TextBox" Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                        </MultiTrigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                            <Setter TargetName="Outline" Property="Order" Value="5" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                            <Setter TargetName="Outline" Property="Order" Value="5" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="ColorPicker.Borderless" TargetType="controls:ColorPicker" BasedOn="{StaticResource {x:Type controls:ColorPicker}}">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:ColorPicker">
+          <controls:AdornedControl x:Name="Outline" IsAdornerVisible="False">
+            <controls:AdornedControl.AdornerContent>
+              <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
+            </controls:AdornedControl.AdornerContent>
+            <controls:Cell>
+              <controls:BetterTextBox x:Name="PART_TextBox" Style="{StaticResource Borderless}" Template="{StaticResource BetterTextBoxControlTemplate.Simple}"
+                  Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                  Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
+              <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
+                  Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static controls:ColorPicker.ColorToBrushConverter}}"
+                  Style="{StaticResource ColorPickerToggleButton}"
+                  IsHitTestVisible="{Binding ElementName=PART_Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
+              <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=PART_TextBox}" Placement="Bottom" HorizontalOffset="-4"
+                  IsOpen="{Binding IsChecked, ElementName=PART_Button, Mode=TwoWay}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True"
+                  PopupAnimation="Slide">
+                <controls:Cell x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
+                  <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                  <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+                  <controls:ColorPickerPanel x:Name="PART_Panel" Background="{DynamicResource PopupBackground}" BorderThickness="0" Margin="1"
+                      Color="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                  <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
+                </controls:Cell>
+              </Popup>
+            </controls:Cell>
+          </controls:AdornedControl>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsEnabled" Value="True" />
+                <Condition Property="IsMouseOver" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="PART_TextBox" Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+              <Setter TargetName="Outline" Property="Order" Value="5" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+              <Setter TargetName="Outline" Property="Order" Value="5" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style x:Key="ColorPicker.Borderless.White" TargetType="controls:ColorPicker" BasedOn="{StaticResource {x:Type controls:ColorPicker}}">
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="controls:ColorPicker">
-                    <controls:AdornedControl x:Name="Outline" IsAdornerVisible="False">
-                        <controls:AdornedControl.AdornerContent>
-                            <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}"
-                                    IsHitTestVisible="False" />
-                        </controls:AdornedControl.AdornerContent>
-                        <controls:Cell>
-                            <controls:BetterTextBox x:Name="PART_TextBox" Style="{StaticResource Borderless}"
-                                    Template="{StaticResource BetterTextBoxControlTemplate.Simple}"
-                                    Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
-                                    Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
-                            <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
-                                    Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static controls:ColorPicker.ColorToBrushConverter}}"
-                                    Style="{StaticResource ColorPickerToggleButton}"
-                                    IsHitTestVisible="{Binding ElementName=PART_Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-                            <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=PART_TextBox}" Placement="Bottom" HorizontalOffset="-4"
-                                    IsOpen="{Binding IsChecked, ElementName=PART_Button, Mode=TwoWay}" VerticalOffset="-5" StaysOpen="False"
-                                    AllowsTransparency="True" PopupAnimation="Slide">
-                                <controls:Cell x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
-                                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                                    <controls:ColorPickerPanel x:Name="PART_Panel" Background="{DynamicResource PopupBackground}" BorderThickness="0" Margin="1"
-                                            Color="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                    <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
-                                </controls:Cell>
-                            </Popup>
-                        </controls:Cell>
-                    </controls:AdornedControl>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_TextBox" Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                        </MultiTrigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                            <Setter TargetName="Outline" Property="Order" Value="5" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
-                            <Setter TargetName="Outline" Property="Order" Value="5" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="ColorPicker.Borderless.White" TargetType="controls:ColorPicker" BasedOn="{StaticResource {x:Type controls:ColorPicker}}">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:ColorPicker">
+          <controls:AdornedControl x:Name="Outline" IsAdornerVisible="False">
+            <controls:AdornedControl.AdornerContent>
+              <Border Margin="{StaticResource BorderlessOutline}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" />
+            </controls:AdornedControl.AdornerContent>
+            <controls:Cell>
+              <controls:BetterTextBox x:Name="PART_TextBox" Style="{StaticResource Borderless}" Template="{StaticResource BetterTextBoxControlTemplate.Simple}"
+                  Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                  Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
+              <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
+                  Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static controls:ColorPicker.ColorToBrushConverter}}"
+                  Style="{StaticResource ColorPickerToggleButton}"
+                  IsHitTestVisible="{Binding ElementName=PART_Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
+              <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=PART_TextBox}" Placement="Bottom" HorizontalOffset="-4"
+                  IsOpen="{Binding IsChecked, ElementName=PART_Button, Mode=TwoWay}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True"
+                  PopupAnimation="Slide">
+                <controls:Cell x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
+                  <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                  <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+                  <controls:ColorPickerPanel x:Name="PART_Panel" Background="{DynamicResource PopupBackground}" BorderThickness="0" Margin="1"
+                      Color="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                  <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
+                </controls:Cell>
+              </Popup>
+            </controls:Cell>
+          </controls:AdornedControl>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsEnabled" Value="True" />
+                <Condition Property="IsMouseOver" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="PART_TextBox" Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+              <Setter TargetName="Outline" Property="Order" Value="5" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
+              <Setter TargetName="Outline" Property="Order" Value="5" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

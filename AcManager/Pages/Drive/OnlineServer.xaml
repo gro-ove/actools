@@ -141,19 +141,6 @@
           </mui:BooleanSwitch.False>
         </mui:BooleanSwitch>
 
-        <Button Content="Install Missing" ToolTip="Download and install missing content from the server"
-            Visibility="{Binding Entry.IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.AllOfIt}}"
-            Command="{Binding Entry.InstallMissingContentCommand}" />
-        <Button Content="Install Some" ToolTip="Download and install some of missing content from the server"
-            Visibility="{Binding Entry.IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Partially}}"
-            Command="{Binding Entry.InstallMissingContentCommand}" />
-        <Button Content="Install Updates" ToolTip="Download and install updates for content from the server"
-            Visibility="{Binding Entry.IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Updates}}"
-            Command="{Binding Entry.InstallMissingContentCommand}" />
-
         <Separator Visibility="{Binding Entry.AutoJoinAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Content="Wait For This Car" ToolTip="Wait until this car will be available and then join"
             Visibility="{Binding Entry.AutoJoinAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding StartAutoJoinCommand}"
@@ -240,9 +227,9 @@
                       Visibility="{Binding Stats.SessionsCount, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                   <TextBlock c:PropertiesGrid.Label="Total driven:" Text="{Binding Stats.DistanceKm, StringFormat='{}{0:F1} km'}"
                       Visibility="{Binding Stats.DistanceKm, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
-                  <TextBlock c:PropertiesGrid.Label="Max speed:" Text="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1} kph'}"
+                  <TextBlock c:PropertiesGrid.Label="Max speed:" Text="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1} km/h'}"
                       Visibility="{Binding Stats.MaxSpeed, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
-                  <TextBlock c:PropertiesGrid.Label="Avg speed:" Text="{Binding Stats.AverageSpeed, StringFormat='{}{0:F1} kph'}"
+                  <TextBlock c:PropertiesGrid.Label="Avg speed:" Text="{Binding Stats.AverageSpeed, StringFormat='{}{0:F1} km/h'}"
                       Visibility="{Binding Stats.MaxSpeed, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                   <TextBlock c:PropertiesGrid.Label="Crashes:" Text="{Binding Stats.TotalCrashes}"
                       Visibility="{Binding Stats.TotalCrashes, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
@@ -266,6 +253,21 @@
 
               <!--<TextBlock Style="{StaticResource Heading1}" Text="Error" />-->
               <mui:SelectableBbCodeBlock BbCode="{Binding ErrorsString}" Margin="40 0 0 12" />
+
+              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Missing Content" ToolTip="Download and install missing content from the server"
+                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.AllOfIt}}"
+                  Command="{Binding InstallMissingContentCommand}" />
+              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Some Content"
+                  ToolTip="Download and install some of missing content from the server"
+                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Partially}}"
+                  Command="{Binding InstallMissingContentCommand}" />
+              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Updates" ToolTip="Download and install updates for content from the server"
+                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Updates}}"
+                  Command="{Binding InstallMissingContentCommand}" />
+
               <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 0 0" />
             </StackPanel>
 
@@ -305,7 +307,7 @@
               <!--track & car-->
               <mui:SpacingUniformGrid Height="160" Rows="1" HorizontalSpacing="8">
                 <!--track block-->
-                <mui:Cell ClipToBounds="True" Background="#111111">
+                <mui:Cell ClipToBounds="True" Background="{DynamicResource CardBackground}">
                   <mui:Cell.ToolTip>
                     <ToolTip Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                       <StackPanel Margin="4 8">
@@ -318,7 +320,7 @@
                   <mui:BetterImage Filename="{Binding Track.OutlineImage}" ShowBroken="False" IsHitTestVisible="False" />
                   <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding Track.Name}"
                       Foreground="{DynamicResource DarkStripeText}" IsHitTestVisible="False" />
-                  <mui:Cell Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}" Background="#111111">
+                  <mui:Cell Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}" Background="{DynamicResource CardBackground}">
                     <TextBlock Style="{StaticResource Heading1}" Text="Track is missing" Foreground="#444444" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0 0 0 20" />
                     <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding TrackId}"
@@ -327,7 +329,7 @@
                 </mui:Cell>
 
                 <!--car block-->
-                <mui:Cell ClipToBounds="True" Background="#111111">
+                <mui:Cell ClipToBounds="True" Background="{DynamicResource CardBackground}">
                   <!--preview-->
                   <mui:BetterImage Stretch="UniformToFill" Filename="{Binding SelectedCarEntry.PreviewImage}"
                       c:ImageViewerService.Image="{Binding SelectedCarEntry.PreviewImage}" HorizontalAlignment="Center">
@@ -338,14 +340,15 @@
                       </StackPanel>
                     </mui:BetterImage.ToolTip>
                   </mui:BetterImage>
-                  <Border Visibility="{Binding SelectedCarEntry.CarObject, Converter={StaticResource NullToVisibilityConverter}}" Background="#111111">
+                  <Border Visibility="{Binding SelectedCarEntry.CarObject, Converter={StaticResource NullToVisibilityConverter}}"
+                      Background="{DynamicResource CardBackground}">
                     <TextBlock Style="{StaticResource Heading1}" Text="Car is missing" Foreground="#444444" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0 0 0 20" />
                   </Border>
 
                   <!--not-available thing-->
                   <!--<Border Visibility="{Binding Entry.SelectedCarEntry.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
-                                    Background="#111111">
+                                    Background="{DynamicResource CardBackground}">
                                 <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_SkinIsMissing}" Foreground="#444444"
                                         HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
                             </Border>-->
@@ -383,7 +386,8 @@
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
                       <ComboBox x:Name="CarsComboBox" SelectionChanged="CarsComboBox_OnSelectionChanged" Background="{DynamicResource DarkStripeBackground}"
-                          Foreground="{DynamicResource DarkStripeText}" Padding="4" VerticalAlignment="Bottom" BorderThickness="0" ItemTemplate="{StaticResource CarItemDataTemplate}" />
+                          Foreground="{DynamicResource DarkStripeText}" Padding="4" VerticalAlignment="Bottom" BorderThickness="0"
+                          ItemTemplate="{StaticResource CarItemDataTemplate}" />
                     </mui:BooleanSwitch.False>
                   </mui:BooleanSwitch>
                 </mui:Cell>

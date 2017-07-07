@@ -27,6 +27,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
         public const string KeySmallFont = "appearance_smallFont";
+        public const string KeyLargerTitleLinks = "appearance_biggerTitleLinks";
         public const string KeyForceMenuAtTopInFullscreenMode = "appearance_forceMenuAtTopInFullscreenMode";
         public const string KeyBackgroundImage = "appearance_backgroundImage";
         public const string KeyBackgroundOpacity = "appearance_backgroundImageOpacity";
@@ -168,6 +169,7 @@ namespace AcManager.Controls.Presentation {
                 IdealFormattingMode = ValuesStorage.GetBoolNullable(KeyIdealFormattingMode);
                 ForceMenuAtTopInFullscreenMode = ValuesStorage.GetBool(KeyForceMenuAtTopInFullscreenMode);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
+                LargerTitleLinks = ValuesStorage.GetBool(KeyLargerTitleLinks);
                 BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
@@ -368,10 +370,29 @@ namespace AcManager.Controls.Presentation {
             }
         }
 
-        private bool _largeSubMenuFont;
+        private bool? _largerTitleLinks;
+
+        public bool LargerTitleLinks {
+            get => _largerTitleLinks ?? false;
+            set {
+                if (_loading) {
+                    _largerTitleLinks = value;
+                    AppearanceManager.Current.LargerTitleLinks = value;
+                    return;
+                }
+
+                if (Equals(value, _largerTitleLinks)) return;
+                _largerTitleLinks = value;
+                OnPropertyChanged();
+                AppearanceManager.Current.LargerTitleLinks = value;
+                ValuesStorage.Set(KeyLargerTitleLinks, value);
+            }
+        }
+
+        private bool? _largeSubMenuFont;
 
         public bool LargeSubMenuFont {
-            get => _largeSubMenuFont;
+            get => _largeSubMenuFont ?? false;
             set {
                 if (_loading) {
                     _largeSubMenuFont = value;

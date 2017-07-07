@@ -4,59 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Entries;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation {
-    public interface IFileInfo {
-        string Key { get; }
-
-        long Size { get; }
-
-        /// <summary>
-        /// Read data. When returns null, call IAdditionalContentInstallator.LoadMissingContents() and then
-        /// use ReadAsync() again. This way, solid archives should work faster.
-        /// </summary>
-        [ItemCanBeNull]
-        Task<byte[]> ReadAsync();
-
-        /// <summary>
-        /// Is data available now or it’s better to wait for the second pass? If called, data will be prepared
-        /// for it (it’s like ReadAsync(), but without reading, if data is not available).
-        /// </summary>
-        bool IsAvailable();
-
-        Task CopyToAsync(string destination);
-    }
-
-    internal static class ContentInstallationExtension {
-        [CanBeNull]
-        public static IFileInfo GetByKey(this IEnumerable<IFileInfo> list, string key) {
-            return list.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Key, key));
-        }
-    }
-
-    /// <summary>
-    /// Takes file information and, if copy needed, returns destination path.
-    /// </summary>
-    [CanBeNull]
-    public delegate string CopyCallback([NotNull] IFileInfo info);
-
-    public class InstallationDetails {
-        [NotNull]
-        public CopyCallback CopyCallback;
-
-        [NotNull]
-        public string[] ToRemoval;
-
-        public InstallationDetails([NotNull] CopyCallback copyCallback, [CanBeNull] string[] toRemoval) {
-            CopyCallback = copyCallback;
-            ToRemoval = toRemoval ?? new string[0];
-        }
-    }
-
+namespace AcManager.Tools.ContentInstallation.Installators {
     public abstract class ContentInstallatorBase : IAdditionalContentInstallator {
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }
@@ -142,12 +95,5 @@ namespace AcManager.Tools.ContentInstallation {
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             await CopyFileEntries(callback, progress, cancellation);
         }
-
-        /*public async Task InstallEntryToAsync(ContentEntryBase entryBase,
-                IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var callback = await entryBase.GetInstallationDetails(cancellation);
-            if (callback == null) return;
-            await CopyFileEntries(callback, progress, cancellation);
-        }*/
     }
 }

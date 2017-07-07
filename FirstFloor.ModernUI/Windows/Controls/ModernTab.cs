@@ -135,7 +135,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateSelection(bool skipLoading) {
-            if (_linkList == null || Links == null || SavePolicy == SavePolicy.SkipLoading && Frame.Source != null) {
+            if (_linkList == null || Links == null) {
+                return;
+            }
+
+            if (SavePolicy == SavePolicy.SkipLoading && Frame.Source != null) {
+                _linkList.SelectedItem = Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
                 return;
             }
 

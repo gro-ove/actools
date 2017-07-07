@@ -52,6 +52,11 @@ namespace AcManager.Pages.Selected {
                 if (!liteMode) {
                     InitializeLater().Forget();
                 }
+
+                if (acObject.Author != AcCommonObject.AuthorKunos) {
+                    FancyHints.RecalculateCurves.Trigger();
+                    FancyHints.TagsContextMenu.Trigger();
+                }
             }
 
             public async Task InitializeLater() {

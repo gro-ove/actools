@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Drive;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -30,6 +32,16 @@ namespace AcManager.Pages.Lists {
 
             protected override string GetSubject() {
                 return AppStrings.List_ServerPresets;
+            }
+        }
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var server = obj as ServerPresetObject;
+            if (server == null) return;
+            if (server.IsRunning) {
+                server.StopServerCommand.Execute();
+            } else {
+                server.RunServerCommand.Execute();
             }
         }
     }

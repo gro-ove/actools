@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsDebug" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls"
+    mc:Ignorable="d"
     FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDebug+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -34,7 +36,7 @@
       <!--controls test-->
       <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
 
-      <StackPanel Margin="0 20 0 20" TextBlock.Foreground="Cyan">
+      <StackPanel Margin="0 20 20 20" TextBlock.Foreground="Cyan">
         <StackPanel.Resources>
           <Style TargetType="DockPanel">
             <Setter Property="Height" Value="24" />
@@ -48,6 +50,39 @@
                     <Slider Minimum="0" Maximum="60" AutoToolTipPlacement="TopLeft" IsSelectionRangeEnabled="True" TickPlacement="Both" Margin="0 0 20 0"
                             SelectionStart="20" SelectionEnd="40" />
                 </DockPanel>-->
+
+        <DockPanel>
+          <Label Content="Button with menu:" Width="240" DockPanel.Dock="Left" />
+          <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+              Command="{Binding DecryptHelperCommand}" HorizontalAlignment="Left">
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+          </mui:ButtonWithComboBox>
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Button with menu (GO):" Width="240" DockPanel.Dock="Left" />
+          <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+              Command="{Binding DecryptHelperCommand}" HorizontalAlignment="Left" Style="{StaticResource Go.ButtonWithComboBox}">
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+          </mui:ButtonWithComboBox>
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Button with menu (stretch):" Width="240" DockPanel.Dock="Left" />
+          <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+              Command="{Binding DecryptHelperCommand}">
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                InputGestureText="Ctrl+Shift+H" Command="{Binding MagickNetMemoryLeakingCommand}" />
+          </mui:ButtonWithComboBox>
+        </DockPanel>
 
         <DockPanel>
           <Label Content="Double slider (FromTo):" Width="200" DockPanel.Dock="Left" />

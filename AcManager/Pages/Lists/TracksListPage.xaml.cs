@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Windows;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
+using AcManager.Pages.Drive;
 using AcManager.Pages.Windows;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -21,6 +24,7 @@ namespace AcManager.Pages.Lists {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             ((ViewModel)DataContext).Load();
+            FancyHints.DoubleClickToQuickDrive.Trigger();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -67,5 +71,11 @@ namespace AcManager.Pages.Lists {
 
         private static string _selectNextTrack;
         private static string _selectNextTrackLayoutId; // TODO
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var track = obj as TrackObjectBase;
+            if (track == null) return;
+            QuickDrive.Show(track: track);
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private void OnAnySkinsCollectionReady(object sender, SkinsCollectionReadyEventArgs e) {
+        private void OnAnySkinsCollectionReady(object sender, CarSkinsCollectionReadyEventArgs e) {
             if (e.JustReady) return;
 
             for (var i = List.Count - 1; i >= 0; i--) {

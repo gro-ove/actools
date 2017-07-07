@@ -55,7 +55,7 @@ using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
-    public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator {
+    public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator, INavigateUriHandler {
         public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
         public static readonly Uri EnterKeyUrl = new Uri("cmd://enterkey");
 
@@ -402,7 +402,7 @@ namespace AcManager.Pages.Windows {
             UpdateThemeDynamicBackground();
             AppearanceManager.Current.PropertyChanged += (sender, args) => {
                 if (args.PropertyName == nameof(AppearanceManager.CurrentThemeDictionary)) {
-                    ActionExtension.InvokeInMainThreadAsync(UpdateThemeDynamicBackground);
+                    ActionExtension.InvokeInMainThreadAsync((Action)UpdateThemeDynamicBackground);
                 }
             };
         }
@@ -719,11 +719,19 @@ namespace AcManager.Pages.Windows {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
             var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObject;
+            var weatherObject = e.Data.GetData(WeatherObject.DraggableFormat) as WeatherObject;
+            var carSkinObject = e.Data.GetData(CarSkinObject.DraggableFormat) as CarSkinObject;
+
+            if (carSkinObject != null) {
+                carObject = CarsManager.Instance.GetById(carSkinObject.CarId);
+            }
 
             if (raceGridEntry != null || carObject != null) {
-                QuickDrive.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
+                QuickDrive.Show(carObject ?? raceGridEntry.Car, carSkinObject?.Id ?? raceGridEntry?.CarSkin?.Id);
             } else if (trackObject != null) {
                 QuickDrive.Show(track: trackObject);
+            } else if (weatherObject != null) {
+                QuickDrive.Show(weather: weatherObject);
             } else {
                 e.Effects = DragDropEffects.None;
                 return;
@@ -751,6 +759,22 @@ namespace AcManager.Pages.Windows {
             if (IsVisible) {
                 NavigateTo(new Uri("/Pages/Settings/SettingsPage.xaml?Category=SettingsGeneral", UriKind.Relative));
             }
+        }
+
+        public bool HandleUri(Uri uri) {
+            if (uri.ToString().Contains("/Pages/AcSettings/")) {
+                SwitchGroup("settings");
+                NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            if (uri.ToString().Contains("/Pages/Settings/")) {
+                SwitchGroup("settings");
+                NavigateTo(UriExtension.Create("/Pages/Settings/SettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            return false;
         }
     }
 }

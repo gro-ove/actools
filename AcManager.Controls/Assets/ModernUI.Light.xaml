@@ -19,6 +19,8 @@
 	<!-- Underlying color and filter for car upgrade icons -->
 	<SolidColorBrush x:Key="CarIconBackground" Color="Transparent" />
   <mui:InvertKeepColorEffect x:Key="CarIconEffect" />
+	<SolidColorBrush x:Key="TrackOutlineAloneBackground" Color="Transparent" />
+  <mui:InvertKeepColorEffect x:Key="TrackOutlineAloneEffect" />
 
   <!-- For example, on dark stripe car’s and track’s names are written on quick drive page -->
   <SolidColorBrush x:Key="DarkStripeText" Color="#000000" />
@@ -167,6 +169,22 @@
   <SolidColorBrush x:Key="SubMenuText" Color="#99000000" />
   <SolidColorBrush x:Key="SubMenuTextHover" Color="#66000000" />
   <SolidColorBrush x:Key="SubMenuTextSelected" Color="#212122" />
+
+	<!-- Fancy hints -->
+	<SolidColorBrush x:Key="FancyHintBackground" Color="#c4000000" />
+	<SolidColorBrush x:Key="FancyHintText" Color="#ffffff" />
+	<mui:GrayscaleEffect x:Key="FancyHintTextEffect" SaturationFactor="1" />
+	<mui:GrayscaleEffect x:Key="FancyHintButtonsEffect" SaturationFactor="1" />
+	<SolidColorBrush x:Key="FancyHintButtonBackground" Color="#333333" />
+	<SolidColorBrush x:Key="FancyHintButtonBackgroundHover" Color="#3e3e42" />
+	<SolidColorBrush x:Key="FancyHintButtonBackgroundPressed" Color="{DynamicResource AccentColor}" />
+	<SolidColorBrush x:Key="FancyHintButtonBorder" Color="#333333" />
+	<SolidColorBrush x:Key="FancyHintButtonBorderHover" Color="#3e3e42" />
+	<SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
+	<SolidColorBrush x:Key="FancyHintButtonText" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#ffffff" />
+	<SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->
   <system:String x:Key="TextEditorSyntaxIni"><![CDATA[

@@ -129,7 +129,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnContextMenuPreviewClick(object sender, MouseButtonEventArgs e) {
             var menu = Menu as ContextMenu;
             if (menu != null) {
-                ContextMenuAdvancement.Add(menu);
+                ContextMenuAdvancement.Add(this, menu);
             }
         }
 

@@ -37,7 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Popup = GetTemplateChild("PART_Popup") as Popup;
             _panel = GetTemplateChild("PART_Panel") as ColorPickerPanel;
-            
+
             if (Popup != null) {
                 Popup.Opened += Popup_Opened;
             }
@@ -53,8 +53,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(Color.FromRgb(0, 0, 0), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
         public Color Color {
-            get { return (Color)GetValue(ColorProperty); }
-            set { SetValue(ColorProperty, value); }
+            get => (Color)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
         }
 
         private static void OnColorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -74,8 +74,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ColorPicker), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnDisplayColorChanged));
 
         public string DisplayColor {
-            get { return (string)GetValue(DisplayColorProperty); }
-            set { SetValue(DisplayColorProperty, value); }
+            get => (string)GetValue(DisplayColorProperty);
+            set => SetValue(DisplayColorProperty, value);
         }
 
         private static void OnDisplayColorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

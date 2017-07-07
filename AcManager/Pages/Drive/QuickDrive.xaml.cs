@@ -65,7 +65,8 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             OnSizeChanged(null, null);
 
-            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack, mode: _selectNextMode);
+            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack,
+                    mode: _selectNextMode, weatherId: _selectNextWeather?.Id);
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
             this.OnActualUnload(() => {
@@ -111,6 +112,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
+            _selectNextWeather = null;
             _selectNextMode = null;
 
             this.OnActualUnload(() => {
@@ -803,16 +805,23 @@ namespace AcManager.Pages.Drive {
         private static CarObject _selectNextCar;
         private static string _selectNextCarSkinId;
         private static TrackObjectBase _selectNextTrack;
+        private static WeatherObject _selectNextWeather;
         private static Uri _selectNextMode;
 
-        public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, Uri mode = null) {
+        public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, Uri mode = null,
+                WeatherObject weather = null) {
             QuickDrive current;
             if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
                 var vm = current.Model;
                 vm.SelectedCar = car ?? vm.SelectedCar;
-                vm.SelectedTrack = track ?? vm.SelectedTrack;
                 if (vm.SelectedCar != null && carSkinId != null) {
                     vm.SelectedCar.SelectedSkin = vm.SelectedCar.GetSkinById(carSkinId);
+                }
+
+                vm.SelectedTrack = track ?? vm.SelectedTrack;
+
+                if (weather != null) {
+                    vm.SelectedWeather = weather;
                 }
             }
 
@@ -822,6 +831,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = car;
             _selectNextCarSkinId = carSkinId;
             _selectNextTrack = track;
+            _selectNextWeather = weather;
             _selectNextMode = mode;
 
             NavigateToPage();

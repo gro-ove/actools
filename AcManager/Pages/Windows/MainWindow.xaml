@@ -126,7 +126,7 @@
     <mui:TitleLink GroupKey="drive" Source="/Pages/Drive/QuickDrive.xaml">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="OnDriveTitleLinkDrop"
           AllowDrop="True" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DragForContentSection}}"
-          mui:FancyHintsService.HorizontalAlignment="Center" />
+          mui:FancyHintsService.HorizontalContentAlignment="Center" />
     </mui:TitleLink>
     <mui:TitleLink Content="Lap Times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Stats}" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />

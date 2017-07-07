@@ -475,6 +475,9 @@ namespace AcManager.Pages.Drive {
                     Model.Assists.ServerAssists = Model.Entry.AssistsInformation;
                     break;
                 case nameof(ServerEntry.ErrorsString):
+                    ResizingStuff();
+                    UpdateCarsView();
+                    break;
                 case nameof(ServerEntry.PasswordRequired):
                 case nameof(ServerEntry.PortExtended):
                 case nameof(ServerEntry.Description):

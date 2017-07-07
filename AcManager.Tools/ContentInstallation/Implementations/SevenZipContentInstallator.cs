@@ -15,10 +15,9 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation {
+namespace AcManager.Tools.ContentInstallation.Installators {
     public class SevenZipContentInstallator : ContentInstallatorBase {
         public static readonly string PluginId = "7Zip";
 

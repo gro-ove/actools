@@ -18,12 +18,13 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
-    public class CarSkinObject : AcJsonObjectNew {
+    public class CarSkinObject : AcJsonObjectNew, IDraggable {
         [NotNull]
         public string CarId { get; }
 
@@ -332,5 +333,8 @@ namespace AcManager.Tools.Objects {
             return new CarSkinPacker();
         }
         #endregion
+
+        public const string DraggableFormat = "Data-CarSkinObject";
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

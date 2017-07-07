@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.ContentInstallation.Entries;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers.Plugins;
@@ -304,7 +306,6 @@ namespace AcManager.Tools.ContentInstallation {
                         }
                     } else {
                         localFilename = Source;
-                        localLoaded = false;
                     }
 
                     if (_installationParams.Checksum != null) {
@@ -321,7 +322,7 @@ namespace AcManager.Tools.ContentInstallation {
                         progress.Report(AsyncProgressEntry.FromStringIndetermitate("Searching for content…"));
 
                         // Scan for content
-                        using (var installator = await ContentInstallation.FromFile(localFilename, _installationParams, cancellation.Token)) {
+                        using (var installator = await FromFile(localFilename, _installationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
                             if (installator.IsNotSupported) {
@@ -459,5 +460,39 @@ namespace AcManager.Tools.ContentInstallation {
         public void Report(AsyncProgressEntry value) {
             Progress = value;
         }
+
+        #region Creating installator
+        private static Task<IAdditionalContentInstallator> FromFile(string filename, ContentInstallationParams installationParams,
+                CancellationToken cancellation) {
+            if (FileUtils.IsDirectory(filename)) {
+                return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
+            }
+
+            if (/*!IsZipArchive(filename) &&*/ PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsReady == true) {
+                try {
+                    return SevenZipContentInstallator.Create(filename, installationParams, cancellation);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t use 7-Zip to unpack", e);
+                }
+            }
+
+            return SharpCompressContentInstallator.Create(filename, installationParams, cancellation);
+        }
+
+        private const int ZipLeadBytes = 0x04034b50;
+
+        private static bool IsZipArchive(string filename) {
+            try {
+                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    var bytes = new byte[4];
+                    fs.Read(bytes, 0, 4);
+                    return BitConverter.ToInt32(bytes, 0) == ZipLeadBytes;
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return false;
+            }
+        }
+        #endregion
     }
 }

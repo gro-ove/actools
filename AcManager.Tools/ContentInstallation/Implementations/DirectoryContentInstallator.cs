@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 
-namespace AcManager.Tools.ContentInstallation {
+namespace AcManager.Tools.ContentInstallation.Installators {
     internal class DirectoryContentInstallator : ContentInstallatorBase {
         public string Directory { get; }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;

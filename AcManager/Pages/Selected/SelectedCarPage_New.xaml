@@ -25,7 +25,10 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}"
+      mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.ChangeBrandBadge}, Mode=OneTime}" mui:FancyHintsService.TriggerOnLoad="True"
+      mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top" mui:FancyHintsService.HorizontalContentAlignment="Left"
+      mui:FancyHintsService.VerticalContentAlignment="Top" mui:FancyHintsService.OffsetX="12" mui:FancyHintsService.OffsetY="12">
     <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
@@ -84,8 +87,8 @@
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}"
-            mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.AccidentallyRemoved}}" mui:FancyHintsService.HorizontalAlignment="Center"
-            mui:FancyHintsService.VerticalAlignment="Bottom" />
+            mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.AccidentallyRemoved}}"
+            mui:FancyHintsService.HorizontalContentAlignment="Center" mui:FancyHintsService.VerticalContentAlignment="Bottom" />
         <Separator />
         <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />
@@ -136,7 +139,10 @@
                 IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsContainerVirtualizable="True"
                 VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScrollHelper.InvertLocation="True"
-                mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
+                mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}"
+                mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.SkinContextMenu}, Mode=OneTime}"
+                mui:FancyHintsService.TriggerOnLoad="True" mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top"
+                mui:FancyHintsService.OffsetX="18" mui:FancyHintsService.OffsetY="18" mui:FancyHintsService.HorizontalContentAlignment="Right">
               <i:Interaction.Behaviors>
                 <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
               </i:Interaction.Behaviors>
@@ -152,7 +158,9 @@
           <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64"
               PreviewMouseLeftButtonUp="OnUpgradeIconClick" Filename="{Binding SelectedObject.UpgradeIcon}"
               Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Background="{DynamicResource CarIconBackground}" Effect="{DynamicResource CarIconEffect}" />
+              Background="{DynamicResource CarIconBackground}" Effect="{DynamicResource CarIconEffect}"
+              mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.ChangeUpgradeIcon}, Mode=OneTime}"
+              mui:FancyHintsService.TriggerOnLoad="True" />
         </mui:Cell>
 
         <!-- description -->
@@ -167,7 +175,10 @@
       <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
         <!-- tags -->
         <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
-            mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12">
+            mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12"
+            mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.TagsContextMenu}, Mode=OneTime}"
+            mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top" mui:FancyHintsService.OffsetX="16"
+            mui:FancyHintsService.OffsetY="8" mui:FancyHintsService.HorizontalContentAlignment="Left" mui:FancyHintsService.VerticalContentAlignment="Bottom">
           <mui:TagsList.ItemContextMenu>
             <mui:InheritingContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Path=FilterTagCommand}" CommandParameter="{Binding}" />
@@ -192,7 +203,8 @@
           <DockPanel VerticalAlignment="Top">
             <graphs:CarGraphViewer DockPanel.Dock="Bottom" SourceTorque="{Binding SelectedObject.SpecsTorqueCurve}"
                 SourcePower="{Binding SelectedObject.SpecsPowerCurve}" Height="200" />
-            <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick" />
+            <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick"
+                mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.RecalculateCurves}, Mode=OneTime}" />
             <TextBlock Style="{StaticResource Label}" Text="Power graph:" />
           </DockPanel>
 

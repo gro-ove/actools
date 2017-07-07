@@ -1,291 +1,293 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="SystemButtonBase" TargetType="ButtonBase">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="1" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
-                        <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="True" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="SystemButtonBase" TargetType="ButtonBase">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Padding" Value="1" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+              BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
+            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="True" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style x:Key="AlertButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Margin" Value="8" />
-        <Setter Property="Padding" Value="4" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Opacity" Value=".7" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Opacity" Value=".4" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="AlertButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Margin" Value="8" />
+    <Setter Property="Padding" Value="4" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Opacity" Value=".7" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Opacity" Value=".4" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="SystemButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
-        <Setter Property="Width" Value="45" />
-        <Setter Property="Height" Value="29" />
-        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#24aaaaaa" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard FillBehavior="Stop">
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#24aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#48aaaaaa" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard FillBehavior="Stop">
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#48aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
+  <Style x:Key="SystemButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
+    <Setter Property="Width" Value="45" />
+    <Setter Property="Height" Value="29" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#24aaaaaa" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard FillBehavior="Stop">
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#24aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#48aaaaaa" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard FillBehavior="Stop">
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#48aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="SystemCloseButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButton}">
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#e81123" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard FillBehavior="Stop">
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#e81123" To="#00e81123" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#ba3943" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard FillBehavior="Stop">
+              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#ba3943" To="#00ba3943" Duration="0:0:0.1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="SystemButtonLink" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
+    <Setter Property="Foreground" Value="{DynamicResource LinkButtonText}" />
+    <Setter Property="Width" Value="NaN" />
+    <Setter Property="Height" Value="NaN" />
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="Normal" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+              BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                Content="{TemplateBinding Content, Converter={StaticResource ToUpperSpecialConverter}}" TextBlock.FontWeight="{TemplateBinding FontWeight}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextHover}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextDisabled}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="BaseButtonStyle.Control" TargetType="{x:Type Control}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Padding" Value="16 3 16 5" />
+  </Style>
+
+  <Style x:Key="BaseButtonStyle.Nothing" TargetType="{x:Type Button}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border Background="{TemplateBinding Background}">
+            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Border>
+          <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+              <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonTextDisabled}" TargetName="Presenter" />
             </Trigger>
-        </Style.Triggers>
-    </Style>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style x:Key="SystemCloseButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButton}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#e81123" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard FillBehavior="Stop">
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#e81123" To="#00e81123" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#ba3943" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard FillBehavior="Stop">
-                            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#ba3943" To="#00ba3943" Duration="0:0:0.1" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="BaseButtonStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource BaseButtonStyle.Control}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="ToggleButton.IsChecked" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="SystemButtonLink" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
-        <Setter Property="Foreground" Value="{DynamicResource LinkButtonText}" />
-        <Setter Property="Width" Value="NaN" />
-        <Setter Property="Height" Value="NaN" />
-        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                Content="{TemplateBinding Content, Converter={StaticResource ToUpperSpecialConverter}}"
-                                TextBlock.FontWeight="{TemplateBinding FontWeight}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextHover}" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextPressed}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource LinkButtonTextDisabled}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="Go.BaseButtonStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Setter Property="Background" Value="{DynamicResource GoButtonBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorder}" />
+    <Setter Property="Foreground" Value="{DynamicResource GoButtonText}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextHover}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Go}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
-    <Style x:Key="BaseButtonStyle.Control" TargetType="{x:Type Control}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
-        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
-        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="16 3 16 5" />
-    </Style>
+  <Style x:Key="{x:Type ToggleButton}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type ToggleButton}" />
 
-    <Style x:Key="BaseButtonStyle.Nothing" TargetType="{x:Type Button}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonTextDisabled}" TargetName="Presenter" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="{x:Type RepeatButton}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type RepeatButton}">
+    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
+  </Style>
 
-    <Style x:Key="BaseButtonStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource BaseButtonStyle.Control}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
-            </Trigger>
-            <Trigger Property="ToggleButton.IsChecked" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
-                <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+  <Style x:Key="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type Button}" />
 
-    <Style x:Key="Go.BaseButtonStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource BaseButtonStyle}">
-        <Setter Property="Background" Value="{DynamicResource GoButtonBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorder}" />
-        <Setter Property="Foreground" Value="{DynamicResource GoButtonText}" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundHover}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderHover}" />
-                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextHover}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundPressed}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderPressed}" />
-                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextPressed}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Go}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="Go.Button" BasedOn="{StaticResource Go.BaseButtonStyle}" TargetType="{x:Type Button}">
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+  </Style>
 
-    <Style x:Key="{x:Type ToggleButton}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type ToggleButton}" />
-
-    <Style x:Key="{x:Type RepeatButton}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type RepeatButton}">
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
-    </Style>
-
-    <Style x:Key="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}" TargetType="{x:Type Button}" />
-
-    <Style x:Key="Go.Button" BasedOn="{StaticResource Go.BaseButtonStyle}" TargetType="{x:Type Button}">
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
-    </Style>
-
-    <Style x:Key="WrapperButton" TargetType="{x:Type Button}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ButtonBase}">
-                    <ContentPresenter RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style x:Key="WrapperButton" TargetType="{x:Type Button}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <ContentPresenter RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using JetBrains.Annotations;
@@ -7,6 +8,10 @@ namespace FirstFloor.ModernUI {
     public static class ActionExtension {
         public static void InvokeInMainThread(this Action action) {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(action);
+        }
+
+        public static Task InvokeInMainThreadAsync(this Func<Task> action) {
+            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).InvokeAsync(action).Task;
         }
 
         public static T InvokeInMainThread<T>(this Func<T> action) {

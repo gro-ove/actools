@@ -25,6 +25,10 @@ namespace FirstFloor.ModernUI.Presentation {
         public const string KeySubMenuFontSize = "ModernSubMenuFontSize";
         public const string KeySubMenuDraggablePoints = "ModernSubMenuDraggablePoints";
 
+        public const string KeyTitleLinksTemplate = "TitleLinksTemplate";
+        public const string KeyTitleLinksDefaultTemplate = "DefaultTitleLinksTemplate";
+        public const string KeyTitleLinksLargerTemplate = "LargerTitleLinksTemplate";
+
         public event EventHandler ThemeChange;
         public event EventHandler ThemeObsolete;
 
@@ -57,7 +61,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         [CanBeNull]
         public ResourceDictionary CurrentThemeDictionary {
-            get { return _currentThemeDictionary; }
+            get => _currentThemeDictionary;
             private set {
                 if (Equals(value, _currentThemeDictionary)) return;
                 _currentThemeDictionary = value;
@@ -109,7 +113,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public FontSize FontSize {
-            get { return Equals(Application.Current.Resources[KeyDefaultFontSize] as double? ?? 0d, 12D) ? FontSize.Small : FontSize.Large; }
+            get => Equals(Application.Current.Resources[KeyDefaultFontSize] as double? ?? 0d, 12D) ? FontSize.Small : FontSize.Large;
             set {
                 if (FontSize == value) return;
                 Application.Current.Resources[KeyDefaultFontSize] = value == FontSize.Small ? 12D : 13D;
@@ -118,8 +122,21 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        private bool? _largerTitleLinks;
+        public bool LargerTitleLinks {
+            get => _largerTitleLinks ?? false;
+            set {
+                if (_largerTitleLinks == value) return;
+                _largerTitleLinks = value;
+                Application.Current.Resources[KeyTitleLinksTemplate] = value ?
+                        Application.Current.TryFindResource(KeyTitleLinksLargerTemplate) :
+                        Application.Current.TryFindResource(KeyTitleLinksDefaultTemplate);
+                OnPropertyChanged(nameof(LargerTitleLinks));
+            }
+        }
+
         public FontSize SubMenuFontSize {
-            get { return Equals(Application.Current.Resources[KeySubMenuFontSize] as double? ?? 0d, 11D) ? FontSize.Small : FontSize.Large; }
+            get => Equals(Application.Current.Resources[KeySubMenuFontSize] as double? ?? 0d, 11D) ? FontSize.Small : FontSize.Large;
             set {
                 if (SubMenuFontSize == value) return;
                 Application.Current.Resources[KeySubMenuFontSize] = value == FontSize.Small ? 11D : 14D;
@@ -128,7 +145,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public bool SubMenuDraggablePoints {
-            get { return Equals(Application.Current.Resources[KeySubMenuDraggablePoints] as Visibility?, Visibility.Visible); }
+            get => Equals(Application.Current.Resources[KeySubMenuDraggablePoints] as Visibility?, Visibility.Visible);
             set {
                 Application.Current.Resources[KeySubMenuDraggablePoints] = value ? Visibility.Visible : Visibility.Collapsed;
                 OnPropertyChanged(nameof(SubMenuDraggablePoints));
@@ -136,7 +153,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public Color AccentColor {
-            get { return Application.Current.Resources[KeyAccentColor] as Color? ?? Color.FromArgb(0xff, 0x1b, 0xa1, 0xe2); }
+            get => Application.Current.Resources[KeyAccentColor] as Color? ?? Color.FromArgb(0xff, 0x1b, 0xa1, 0xe2);
             set {
                 Application.Current.Resources[KeyAccentColor] = value;
                 Application.Current.Resources[KeyAccent] = new SolidColorBrush(value);
@@ -188,7 +205,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private ResourceDictionary _toolBarModeDictionary;
 
         public bool? PopupToolBars {
-            get { return _toolBarModeDictionary == null ? (bool?)null : _toolBarModeDictionary.Source == PopupToolBarsSource; }
+            get => _toolBarModeDictionary == null ? (bool?)null : _toolBarModeDictionary.Source == PopupToolBarsSource;
             set {
                 if (Equals(value, PopupToolBars)) return;
                 OnPropertyChanged();

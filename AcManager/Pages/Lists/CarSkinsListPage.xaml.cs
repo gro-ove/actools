@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
@@ -77,6 +79,9 @@ namespace AcManager.Pages.Lists {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             ((ViewModel)DataContext).Load();
+            if (((ViewModel)DataContext).MainList.Count > 20){
+                FancyHints.MultiSelectionMode.Trigger();
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -306,5 +311,15 @@ namespace AcManager.Pages.Lists {
             }
         }
         #endregion
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var skin = obj as CarSkinObject;
+            if (skin == null) return;
+
+            var car = CarsManager.Instance.GetById(skin.CarId);
+            if (car != null) {
+                QuickDrive.Show(car, skin.Id);
+            }
+        }
     }
 }

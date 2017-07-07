@@ -2,12 +2,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsSystem+AcSystemViewModel}">
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsSystem+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="AcSettingsSystem">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True" Margin="0">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
 
       <StackPanel Style="{StaticResource SettingsPanel}">
         <DockPanel>
@@ -97,10 +97,10 @@
         </mui:SpacingUniformGrid>
 
       </StackPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+      <StackPanel Style="{StaticResource SettingsPanel}">
 
         <!--skidmarks-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
 
         <DockPanel>
           <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Quantity}" />

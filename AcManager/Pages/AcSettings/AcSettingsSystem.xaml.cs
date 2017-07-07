@@ -6,23 +6,18 @@ namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsSystem {
         public AcSettingsSystem() {
             InitializeComponent();
-            DataContext = new AcSystemViewModel();
+            DataContext = new ViewModel();
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
-        public class AcSystemViewModel : NotifyPropertyChanged {
-            internal AcSystemViewModel() {}
+        public class ViewModel : NotifyPropertyChanged {
+            internal ViewModel() {}
 
             public ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
-
             public SessionInfoSettings SessionInfo => AcSettingsHolder.SessionInfo;
-
             public SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
-
             public SystemSettings System => AcSettingsHolder.System;
-
             public SystemOptionsSettings SystemOptions => AcSettingsHolder.SystemOptions;
-
             public GhostSettings Ghost => AcSettingsHolder.Ghost;
 
             private string _ghostDisplayColor;

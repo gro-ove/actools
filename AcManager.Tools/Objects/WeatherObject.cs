@@ -19,11 +19,12 @@ using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class WeatherObject : AcIniObject, IAcObjectAuthorInformation {
+    public class WeatherObject : AcIniObject, IAcObjectAuthorInformation, IDraggable {
         public WeatherObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {}
 
@@ -712,5 +713,8 @@ namespace AcManager.Tools.Objects {
             return new WeatherPacker();
         }
         #endregion
+
+        public const string DraggableFormat = "Data-WeatherObject";
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

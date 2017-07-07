@@ -84,7 +84,12 @@
       <StackPanel Style="{StaticResource SettingsPanel}"
           Visibility="{Binding Holder.UseOldLiteShowroom, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
         <DockPanel>
-          <Label Content="Reset current parameters:" />
+          <Label Content="Reset heavy options:" />
+          <Button Command="{Binding ResetHeavyCommand}" Content="Reset" ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Reset all:" />
           <Button Command="{Binding ResetCommand}" Content="Reset" ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
         </DockPanel>
       </StackPanel>

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiFileTest.cs" />
+    <Compile Include="CutBase64Test.cs" />
     <Compile Include="DataAnalyzerTest.cs" />
     <Compile Include="DataWrapperTest.cs" />
     <Compile Include="ExifCommentTest.cs" />

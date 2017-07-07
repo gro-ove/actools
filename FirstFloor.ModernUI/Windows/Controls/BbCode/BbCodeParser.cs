@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Shapes;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
@@ -13,7 +15,7 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     internal partial class BbCodeParser : Parser<Span> {
         private static FileCache _imageCache, _emojiCache;
-        
+
         private const string TagBold = "b";
         private const string TagMono = "mono";
         private const string TagColor = "color";
@@ -24,32 +26,27 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         private const string TagUnderline = "u";
         private const string TagUrl = "url";
         private const string TagImage = "img";
+        private const string TagIcon = "ico";
 
         private class ParseContext {
             public ParseContext(Span parent) {
                 Parent = parent;
             }
 
-            public Span Parent { get; private set; }
-
-            public double? FontSize { get; set; }
-
-            public FontWeight? FontWeight { get; set; }
-
-            public FontStyle? FontStyle { get; set; }
-
-            public FontFamily FontFamily { get; set; }
-
-            public Brush Foreground { get; set; }
-
-            public TextDecorationCollection TextDecorations { get; set; }
-
-            public FontVariants? FontVariants { get; set; }
-
-            public string NavigateUri { get; set; }
+            public Span Parent;
+            public double? FontSize;
+            public FontWeight? FontWeight;
+            public FontStyle? FontStyle;
+            public FontFamily FontFamily;
+            public Brush Foreground;
+            public TextDecorationCollection TextDecorations;
+            public FontVariants? FontVariants;
 
             [CanBeNull]
-            public string ImageUri { get; set; }
+            public string NavigateUri, ImageUri;
+
+            [CanBeNull]
+            public Geometry IconGeometry;
 
             /// <summary>
             /// Creates a run reflecting the current context settings.
@@ -142,6 +139,15 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 } else {
                     context.ImageUri = null;
                 }
+            } else if (tag == TagIcon) {
+                if (start) {
+                    var token = La(1);
+                    if (token.TokenType != BbCodeLexer.TokenAttribute) return;
+                    context.IconGeometry = Geometry.Parse(token.Value);
+                    Consume();
+                } else {
+                    context.IconGeometry = null;
+                }
             } else if (tag == TagUrl) {
                 if (start) {
                     var token = La(1);
@@ -169,8 +175,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         ParseTag(token.Value, false, context);
                         break;
                     case BbCodeLexer.TokenText:
-                        var parent = span; 
-                        
+                        var parent = span;
+
                         {
                             Uri uri;
                             string parameter;
@@ -179,6 +185,10 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
                             if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out uri, out parameter, out targetName)) {
                                 var link = new Hyperlink();
+
+                                if (context.IconGeometry != null) {
+                                    link.TextDecorations.Clear();
+                                }
 
                                 // assign ICommand instance if available, otherwise set NavigateUri
                                 ICommand command;
@@ -192,9 +202,47 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                     link.NavigateUri = uri;
                                     link.TargetName = parameter;
                                 }
+
                                 parent = link;
                                 span.Inlines.Add(parent);
                             }
+                        }
+
+                        if (context.IconGeometry != null) {
+                            var icon = new Path {
+                                Stretch = Stretch.Uniform,
+                                Data = context.IconGeometry
+                            };
+
+                            icon.SetBinding(Shape.FillProperty, new Binding {
+                                Path = new PropertyPath("(TextBlock.Foreground)"),
+                                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                            });
+
+                            Logging.Debug(token.Value);
+
+                            var border = new Border {
+                                Background = new SolidColorBrush(Colors.Transparent),
+                                Child = icon,
+                                ToolTip = new ToolTip {
+                                    Content = new TextBlock { Text = token.Value }
+                                }
+                            };
+
+                            border.SetBinding(FrameworkElement.HeightProperty, new Binding {
+                                Path = new PropertyPath("(TextBlock.FontSize)"),
+                                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                                Converter = new MultiplyConverter(),
+                                ConverterParameter = 0.7
+                            });
+
+                            border.SetBinding(FrameworkElement.WidthProperty, new Binding {
+                                Path = new PropertyPath(nameof(Border.Height)),
+                                RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+                            });
+
+                            parent.Inlines.Add(new InlineUIContainer { Child = border });
+                            continue;
                         }
 
                         {
@@ -251,7 +299,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                         Content = new TextBlock { Text = token.Value }
                                     };
                                 }
-                                
+
                                 if (double.IsNaN(maxSize)) {
                                     RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
                                 } else {
@@ -272,12 +320,13 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 if (expand) {
                                     image.Cursor = Cursors.Hand;
                                     image.MouseDown += (sender, args) => {
+                                        args.Handled = true;
                                         BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(new Uri(uri, UriKind.RelativeOrAbsolute)));
                                     };
                                 }
 
                                 var container = new InlineUIContainer { Child = image };
-                                span.Inlines.Add(container);
+                                parent.Inlines.Add(container);
                                 continue;
                             }
                         }
@@ -300,7 +349,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         private class MultiplyConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                var v = value.AsDouble();
+                var v = value.AsDouble() * parameter.AsDouble(1d);
                 if (v < 15) return v * 1.15;
                 if (v < 20) return v * 1.08;
                 return v;

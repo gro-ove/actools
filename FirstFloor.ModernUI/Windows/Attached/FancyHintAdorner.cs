@@ -8,7 +8,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -18,12 +17,28 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FancyHintControl), new FrameworkPropertyMetadata(typeof(FancyHintControl)));
         }
 
+        public static readonly DependencyProperty HorizontalPositionAlignmentProperty = DependencyProperty.Register(nameof(HorizontalPositionAlignment),
+                typeof(HorizontalAlignment), typeof(FancyHintControl));
+
+        public HorizontalAlignment HorizontalPositionAlignment {
+            get { return (HorizontalAlignment)GetValue(HorizontalPositionAlignmentProperty); }
+            set { SetValue(HorizontalPositionAlignmentProperty, value); }
+        }
+
+        public static readonly DependencyProperty VerticalPositionAlignmentProperty = DependencyProperty.Register(nameof(VerticalPositionAlignment),
+                typeof(VerticalAlignment), typeof(FancyHintControl));
+
+        public VerticalAlignment VerticalPositionAlignment {
+            get { return (VerticalAlignment)GetValue(VerticalPositionAlignmentProperty); }
+            set { SetValue(VerticalPositionAlignmentProperty, value); }
+        }
+
         public static readonly DependencyProperty HintProperty = DependencyProperty.Register(nameof(Hint), typeof(FancyHint),
                 typeof(FancyHintControl));
 
         public FancyHint Hint {
-            get { return (FancyHint)GetValue(HintProperty); }
-            set { SetValue(HintProperty, value); }
+            get => (FancyHint)GetValue(HintProperty);
+            set => SetValue(HintProperty, value);
         }
     }
 
@@ -46,13 +61,21 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             var offsetX = FancyHintsService.GetOffsetX(parent);
             var offsetY = FancyHintsService.GetOffsetY(parent);
+            var horizontalAlignment = FancyHintsService.GetHorizontalAlignment(parent);
+            var verticalAlignment = FancyHintsService.GetVerticalAlignment(parent);
 
             _contentPresenter = new FancyHintControl {
                 Style = style,
                 Hint = hint,
-                HorizontalContentAlignment = FancyHintsService.GetHorizontalAlignment(parent),
-                VerticalContentAlignment = FancyHintsService.GetVerticalAlignment(parent),
-                Margin = new Thickness(-4000 + offsetX, -4000 + offsetY, -4000 - offsetX, -4000 - offsetY)
+                HorizontalPositionAlignment = horizontalAlignment,
+                VerticalPositionAlignment = verticalAlignment,
+                HorizontalContentAlignment = FancyHintsService.GetHorizontalContentAlignment(parent),
+                VerticalContentAlignment = FancyHintsService.GetVerticalContentAlignment(parent),
+                Margin = new Thickness(
+                    (horizontalAlignment == HorizontalAlignment.Left ? -36 : -4000) + offsetX,
+                    (verticalAlignment == VerticalAlignment.Top ? -36 : -4000) + offsetY,
+                    (horizontalAlignment == HorizontalAlignment.Right ? -36 : -4000) - offsetX,
+                    (verticalAlignment == VerticalAlignment.Bottom ? -36 : -4000) - offsetY)
             };
 
             SetBinding(VisibilityProperty, new Binding(@"IsVisible") {
@@ -70,6 +93,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private async void Show() {
+            IsAnyShown = true;
             await Task.Delay(1);
             var cell = GetByName("PART_Cell");
             if (cell != null) {
@@ -77,7 +101,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 VisibilityAnimation.SetVisible(cell, true);
 
                 _window.PreviewMouseDown += OnWindowMouseDown;
-                _window.PreviewKeyDown += OnWindowMouseDown;
+                _window.PreviewKeyDown += OnWindowKeyDown;
 
                 if (_hint.CloseOnResize) {
                     _window.SizeChanged += OnWindowSizeChanged;
@@ -92,9 +116,23 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         Close();
                     });
                 }
-
-                IsAnyShown = true;
+            } else {
+                IsAnyShown = false;
             }
+        }
+
+        private void OnWindowKeyDown(object sender, KeyEventArgs args) {
+            switch (args.Key) {
+                case Key.LeftCtrl:
+                case Key.RightCtrl:
+                case Key.LeftShift:
+                case Key.RightShift:
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                    return;
+            }
+
+            Close();
         }
 
         private void OnWindowMouseDown(object sender, EventArgs args) {

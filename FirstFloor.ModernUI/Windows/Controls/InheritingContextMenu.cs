@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static readonly object TemporaryMark = new object();
         private static WeakReference<InheritingContextMenu> _previouslyOpened;
 
-        private List<ContextMenu> _menus;
+        private List<Tuple<ContextMenu, object>> _menus;
         private List<List<FrameworkElement>> _items;
 
         public InheritingContextMenu() {
@@ -26,7 +26,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             foreach (var item in Items.OfType<FrameworkElement>().Where(x => ReferenceEquals(x.Tag, TemporaryMark)).ToList()) {
                 Items.Remove(item);
                 if (item is MenuItem) {
-                    _menus[_items.FindIndex(x => x.Contains(item))].Items.Add(item);
+                    _menus[_items.FindIndex(x => x.Contains(item))].Item1.Items.Add(item);
                     item.Tag = null;
                 }
             }
@@ -54,8 +54,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             _items = new List<List<FrameworkElement>>(_menus.Count);
             foreach (var menu in _menus) {
-                _items.Add(menu.Items.OfType<FrameworkElement>().ToList());
-                menu.Items.Clear();
+                var sub = menu.Item1.Items.OfType<FrameworkElement>().ToList();
+                foreach (var s in sub.OfType<MenuItem>()) {
+                    s.DataContext = menu.Item2;
+                }
+
+                _items.Add(sub);
+                menu.Item1.Items.Clear();
             }
 
             if (OptionInsertInFront) {

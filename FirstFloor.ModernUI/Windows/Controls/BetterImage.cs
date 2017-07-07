@@ -456,6 +456,49 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
         }
 
+        private static async Task<BitmapEntry> LoadRemoteBitmapAsync(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
+            var httpRequest = (HttpWebRequest)WebRequest.Create(uri);
+            httpRequest.Method = "GET";
+
+            if (RemoteUserAgent != null) {
+                httpRequest.UserAgent = RemoteUserAgent;
+            }
+
+            var cache = GetCachedFilename(uri);
+            var cacheFile = cache == null ? null : new FileInfo(cache);
+            if (cacheFile?.Exists == true) {
+                httpRequest.IfModifiedSince = cacheFile.LastWriteTime;
+            }
+
+            try {
+                using (var memory = new MemoryStream())
+                using (var response = (HttpWebResponse)await httpRequest.GetResponseAsync()) {
+                    using (var stream = response.GetResponseStream()) {
+                        if (stream == null) {
+                            return cacheFile == null ? BitmapEntry.Empty :
+                                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                        }
+
+                        await stream.CopyToAsync(memory);
+                    }
+
+                    var bytes = memory.ToArray();
+                    if (cache != null) {
+                        await Task.Run(() => File.WriteAllBytes(cache, bytes));
+                        cacheFile.LastWriteTime = response.LastModified;
+                    }
+
+                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
+                }
+            } catch (WebException e) when ((e.Response as HttpWebResponse)?.StatusCode != HttpStatusCode.NotModified) {
+                Logging.Error(e.Message);
+            } catch (WebException) { }
+
+            if (cacheFile == null) return BitmapEntry.Empty;
+            var cacheBytes = await ReadBytesAsync(cache);
+            return cacheBytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(cacheBytes, decodeWidth, decodeHeight);
+        }
+
         public static BitmapEntry LoadBitmapSource(string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (string.IsNullOrEmpty(filename)) {
                 return BitmapEntry.Empty;
@@ -891,6 +934,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (Filename == null) {
                 SetCurrent(BitmapEntry.Empty);
                 return false;
+            }
+
+            if (Filename.StartsWith("http://") || Filename.StartsWith("https://")) {
+                LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(v => {
+                    ActionExtension.InvokeInMainThread(() => {
+                        SetCurrent(v.IsCompleted ? v.Result : BitmapEntry.Empty);
+                    });
+                });
+                return true;
             }
 
             if (OptionCacheTotalSize > 0 && Filename.Length > 0 && Filename[0] != '/') {

@@ -584,7 +584,6 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         public const string DraggableFormat = "Data-CarObject";
-
         string IDraggable.DraggableFormat => DraggableFormat;
 
         #region Packing

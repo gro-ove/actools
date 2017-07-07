@@ -9,8 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
+using AcManager.Pages.Drive;
 using AcManager.Pages.Selected;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
@@ -47,6 +49,11 @@ namespace AcManager.Pages.Lists {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             Model.Load();
+            FancyHints.DoubleClickToQuickDrive.Trigger();
+
+            if (Model.MainList.Count > 20){
+                FancyHints.MultiSelectionMode.Trigger();
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -539,5 +546,12 @@ namespace AcManager.Pages.Lists {
             }
         }
         #endregion
+
+        protected override void OnItemDoubleClick(AcObjectNew obj) {
+            var car = obj as CarObject;
+            if (car != null) {
+                QuickDrive.Show(car);
+            }
+        }
     }
 }

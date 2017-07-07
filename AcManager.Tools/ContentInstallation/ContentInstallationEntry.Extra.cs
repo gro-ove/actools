@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Entries;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -17,7 +18,7 @@ namespace AcManager.Tools.ContentInstallation {
             private bool _active;
 
             public bool Active {
-                get { return _active; }
+                get => _active;
                 set {
                     if (Equals(value, _active)) return;
                     _active = value;

@@ -14,7 +14,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
         public static TimeSpan OptionSuccessDelay = TimeSpan.FromSeconds(3);
-        public static TimeSpan OptionFailedDelay = TimeSpan.FromSeconds(7);
+        public static TimeSpan OptionFailedDelay = TimeSpan.FromSeconds(10);
 
         public static ContentInstallationManager Instance { get; } = new ContentInstallationManager();
         public static IPluginsNavigator PluginsNavigator { get; set; }
@@ -28,7 +28,7 @@ namespace AcManager.Tools.ContentInstallation {
         private bool _busyDoingSomething;
 
         public bool BusyDoingSomething {
-            get { return _busyDoingSomething; }
+            get => _busyDoingSomething;
             set {
                 if (Equals(value, _busyDoingSomething)) return;
                 _busyDoingSomething = value;
@@ -106,25 +106,5 @@ namespace AcManager.Tools.ContentInstallation {
                 return false;
             }
         }
-    }
-
-    public class ContentInstallationParams {
-        public static readonly ContentInstallationParams Default = new ContentInstallationParams();
-
-        public bool AllowExecutables { get; set; }
-        public string CarId { get; set; }
-        public string FallbackId { get; set; }
-        public string Checksum { get; set; }
-        public string DisplayName { get; set; }
-        public string InformationUrl { get; set; }
-        public string DisplayVersion { get; set; }
-    }
-
-    public enum ContentInstallationEntryState {
-        Loading, PasswordRequired, WaitingForConfirmation, Finished
-    }
-
-    public interface IPluginsNavigator {
-        void ShowPluginsList();
     }
 }

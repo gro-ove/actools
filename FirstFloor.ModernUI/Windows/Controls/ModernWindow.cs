@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -123,7 +124,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             e.CanExecute = true;
         }
 
+        public void SwitchGroup(string groupKey) {
+            _menu?.SwitchToGroupByKey(groupKey);
+        }
+
         public void NavigateTo(Uri uri) {
+            if (_menu == null) return;
             _menu.SelectedSource = uri;
         }
 
@@ -136,12 +142,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            Uri uri;
-            string parameter;
-            string targetName;
-
             var eParameter = (e.Parameter as Link)?.Source ?? e.Parameter;
-            if (NavigationHelper.TryParseUriWithParameters(eParameter, out uri, out parameter, out targetName)) {
+            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var targetName)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -152,12 +154,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (LinkNavigator?.Commands == null) return;
 
             // in case of command uri, check if ICommand.CanExecute is true
-            Uri uri;
-            string parameter;
-            string targetName;
-
-            // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements??
-            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName)) {
+            // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements?
+            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var targetName)) {
                 return;
             }
 
@@ -169,12 +167,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnNavigateLink(object sender, ExecutedRoutedEventArgs e) {
             if (LinkNavigator == null) return;
-
-            Uri uri;
-            string parameter;
-            string targetName;
-
-            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out uri, out parameter, out targetName)) {
+            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var targetName)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }

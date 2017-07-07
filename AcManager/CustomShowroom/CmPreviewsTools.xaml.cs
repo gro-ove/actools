@@ -516,7 +516,7 @@ namespace AcManager.CustomShowroom {
 
             private void PreviewReadyCallback() {
                 if (!_verySingleMode) {
-                    ActionExtension.InvokeInMainThreadAsync(UpdatePreviewImage);
+                    ActionExtension.InvokeInMainThreadAsync((Action)UpdatePreviewImage);
                 }
             }
 
