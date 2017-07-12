@@ -24,13 +24,13 @@ namespace AcManager.Tools {
     public static class TrackPreviewsCreator {
         private const string KeyUpdatePreviewMessageShown = "SelectTrackPage.UpdatePreviewMessageShown";
 
-        public static async Task ShotAndApply(TrackObjectBase track) {
+        private static async Task ShotAndApply(string filename, bool isEnabled, Func<Task> run) {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                await ApplyExisting(track);
+                await ApplyExisting(filename);
                 return;
             }
 
-            if (!track.Enabled) return;
+            if (!isEnabled) return;
             if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
                     ImportantTips.Entries.GetByIdOrDefault(@"trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
                     MessageBoxResult.OK) {
@@ -40,7 +40,7 @@ namespace AcManager.Tools {
             var directory = FileUtils.GetDocumentsScreensDirectory();
             var shots = FileUtils.GetFilesSafe(directory);
 
-            await QuickDrive.RunAsync(track: track);
+            await run();
             if (ScreenshotsConverter.CurrentConversion?.IsCompleted == false) {
                 await ScreenshotsConverter.CurrentConversion;
             }
@@ -62,9 +62,21 @@ namespace AcManager.Tools {
             }.ShowDialogInSelectFileMode();
             if (shot == null) return;
 
+            ApplyExistring(shot, filename);
+        }
+
+        public static Task ShotAndApply(TrackObjectBase track) {
+            return ShotAndApply(track.PreviewImage, track.Enabled, () => QuickDrive.RunAsync(track: track));
+        }
+
+        public static Task ShotAndApply(TrackSkinObject track) {
+            return ShotAndApply(track.PreviewImage, track.Enabled, () => QuickDrive.RunAsync(trackSkin: track));
+        }
+
+        private static void ApplyExistring(string source, string previewImage) {
             try {
-                var cropped = ImageEditor.Proceed(shot, new Size(CommonAcConsts.TrackPreviewWidth, CommonAcConsts.TrackPreviewHeight));
-                using (var t = FileUtils.RecycleOriginal(track.PreviewImage)) {
+                var cropped = ImageEditor.Proceed(source, new Size(CommonAcConsts.TrackPreviewWidth, CommonAcConsts.TrackPreviewHeight));
+                using (var t = FileUtils.RecycleOriginal(previewImage)) {
                     cropped?.SaveAsPng(t.Filename);
                 }
             } catch (Exception e) {
@@ -72,7 +84,7 @@ namespace AcManager.Tools {
             }
         }
 
-        public static Task ApplyExisting(TrackObjectBase track) {
+        private static Task ApplyExisting(string previewImage) {
             var dialog = new OpenFileDialog {
                 Filter = FileDialogFilters.ImagesFilter,
                 Title = AppStrings.Common_SelectImageForPreview,
@@ -81,17 +93,18 @@ namespace AcManager.Tools {
             };
 
             if (dialog.ShowDialog() == true) {
-                try {
-                    var cropped = ImageEditor.Proceed(dialog.FileName, new Size(CommonAcConsts.TrackPreviewWidth, CommonAcConsts.TrackPreviewHeight));
-                    using (var t = FileUtils.RecycleOriginal(track.PreviewImage)) {
-                        cropped?.SaveAsPng(t.Filename);
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
-                }
+                ApplyExistring(dialog.FileName, previewImage);
             }
 
             return Task.Delay(0);
+        }
+
+        public static Task ApplyExisting(TrackObjectBase track) {
+            return ApplyExisting(track.PreviewImage);
+        }
+
+        public static Task ApplyExisting(TrackSkinObject trackSkin) {
+            return ApplyExisting(trackSkin.PreviewImage);
         }
     }
 }

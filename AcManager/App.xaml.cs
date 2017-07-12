@@ -368,16 +368,10 @@ namespace AcManager {
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
 
             // auto-show that thing
-            // TODO: find a way to show a bit of progress bar on main window?
             InstallAdditionalContentDialog.Initialize();
 
-            if (acRootIsFine) {
-                ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                new AppUi(this).Run();
-            } else {
-                ShutdownMode = ShutdownMode.OnMainWindowClose;
-                StartupUri = new Uri(@"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
-            }
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            new AppUi(this).Run();
         }
 
         private class CarSetupsView : ICarSetupsView {
@@ -515,6 +509,10 @@ namespace AcManager {
             DataUpdater.Initialize();
             DataUpdater.Instance.Updated += DataUpdater_Updated;
 
+            if (AcRootDirectory.Instance.IsFirstRun) {
+                AppUpdater.OnFirstRun();
+            }
+
             AppUpdater.Initialize();
             AppUpdater.Instance.Updated += AppUpdater_Updated;
 
@@ -533,7 +531,7 @@ namespace AcManager {
         private void AppUpdater_Updated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_NewVersion,
                     string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
-                        AppUpdater.Instance.FinishUpdateCommand.Execute(null);
+                        AppUpdater.Instance.FinishUpdateCommand.Execute();
                     });
         }
 
@@ -547,6 +545,7 @@ namespace AcManager {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsKunos, @"Custom Previews", @"Kunos");
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsLight, @"Custom Previews", @"Light (for Light CM theme)");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsGt5Like, @"Custom Previews", @"GT5-like");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", ControlsStrings.AssistsPreset_Gamer);
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", ControlsStrings.AssistsPreset_Intermediate);

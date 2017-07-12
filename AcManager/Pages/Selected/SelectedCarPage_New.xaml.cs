@@ -49,7 +49,9 @@ namespace AcManager.Pages.Selected {
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
             public ViewModel([NotNull] CarObject acObject, bool liteMode = false) : base(acObject) {
                 InitializeSpecs();
+
                 if (!liteMode) {
+                    AcContext.Instance.CurrentCar = acObject;
                     InitializeLater().Forget();
                 }
 
@@ -611,8 +613,9 @@ namespace AcManager.Pages.Selected {
                 if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo,
                         "copyNewPowerAndTorque") == MessageBoxResult.Yes) {
                     // MaxY values were updated while creating new GraphData instances above
-                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
-                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                    var postfix = dlg.Multipler == 1d ? "*" : "";
+                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
                 }
             }));
             #endregion

@@ -59,6 +59,7 @@
       <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,6 +70,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AcEnabledOnlyCollectionTest.cs" />
     <Compile Include="FlexibleLoaderTest.cs" />
     <Compile Include="KunosCareerProgressTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

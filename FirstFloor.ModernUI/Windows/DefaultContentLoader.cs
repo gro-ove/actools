@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Windows {
         /// </summary>
         /// <param name="uri">The content uri</param>
         /// <returns>The loaded content.</returns>
-        public object LoadContent(Uri uri) {
+        public virtual object LoadContent(Uri uri) {
             if (ModernUiHelper.IsInDesignMode) return null;
 
             var loaded = Application.LoadComponent(uri);

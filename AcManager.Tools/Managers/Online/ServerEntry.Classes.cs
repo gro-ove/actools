@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
@@ -88,7 +89,7 @@ namespace AcManager.Tools.Managers.Online {
 
             [CanBeNull]
             public AcItemWrapper CarObjectWrapper {
-                get { return _carObjectWrapper; }
+                get => _carObjectWrapper;
                 set {
                     if (Equals(value, _carObjectWrapper)) return;
                     _carObjectWrapper = value;
@@ -128,9 +129,7 @@ namespace AcManager.Tools.Managers.Online {
 
             [CanBeNull]
             public string AvailableSkinId {
-                get {
-                    return _availableSkinId;
-                }
+                get => _availableSkinId;
                 set {
                     if (Equals(value, _availableSkinId)) return;
                     _availableSkinId = value;
@@ -159,7 +158,7 @@ namespace AcManager.Tools.Managers.Online {
 
                     return _availableSkin;
                 }
-                set { AvailableSkinId = value?.Id; }
+                set => AvailableSkinId = value?.Id;
             }
 
             public string PreviewImage => AvailableSkin?.PreviewImage ?? CarObject?.SelectedSkin?.PreviewImage;
@@ -167,7 +166,7 @@ namespace AcManager.Tools.Managers.Online {
             private int _total;
 
             public int Total {
-                get { return _total; }
+                get => _total;
                 set {
                     if (value == _total) return;
                     _total = value;
@@ -178,7 +177,7 @@ namespace AcManager.Tools.Managers.Online {
             private int _available;
 
             public int Available {
-                get { return _available; }
+                get => _available;
                 set {
                     if (value == _available) return;
                     _available = value;
@@ -189,7 +188,7 @@ namespace AcManager.Tools.Managers.Online {
             private bool _isAvailable;
 
             public bool IsAvailable {
-                get { return _isAvailable && CarExists; }
+                get => _isAvailable && CarExists;
                 set {
                     if (Equals(value, _isAvailable)) return;
                     _isAvailable = value;
@@ -381,6 +380,7 @@ namespace AcManager.Tools.Managers.Online {
                     result = new DriverTag(tagId);
                     Tags[tagId] = result;
                 }
+
                 return result;
             }
 
@@ -400,14 +400,14 @@ namespace AcManager.Tools.Managers.Online {
 
             private Color DefaultColor() {
                 // See FavouriteBrush in FavouriteButton.xaml
-                // TODO: Load from resources?
-                return Id == FriendTagId ? Colors.Yellow : Colors.White;
+                return Id == FriendTagId ? ((Application.Current.TryFindResource("FavouriteBrush") as SolidColorBrush)?.Color ?? Colors.Yellow)
+                        : Colors.White;
             }
 
             private string _displayName;
 
             public string DisplayName {
-                get { return _displayName ?? (_displayName = TagsStorage.GetString(_keyName) ?? DefaultName()); }
+                get => _displayName ?? (_displayName = TagsStorage.GetString(_keyName) ?? DefaultName());
                 set {
                     if (Equals(value, DisplayName)) return;
                     _displayName = value;
@@ -419,7 +419,7 @@ namespace AcManager.Tools.Managers.Online {
             private Color? _color;
 
             public Color Color {
-                get { return _color ?? (_color = TagsStorage.GetColor(_keyColor) ?? DefaultColor()).Value; }
+                get => _color ?? (_color = TagsStorage.GetColor(_keyColor) ?? DefaultColor()).Value;
                 set {
                     if (Equals(value, Color)) return;
                     _color = value;
@@ -585,7 +585,7 @@ namespace AcManager.Tools.Managers.Online {
             private bool _value = ValuesStorage.GetBool(KeyHasFriends);
 
             public bool Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;

@@ -322,6 +322,9 @@
     <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
       <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\TrackSkinsDialog.xaml.cs">
+      <DependentUpon>TrackSkinsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\CombinePythonAppsPresetsDialog.xaml.cs">
       <DependentUpon>CombinePythonAppsPresetsDialog.xaml</DependentUpon>
     </Compile>
@@ -361,6 +364,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\TrackSkinsListPage.xaml.cs">
+      <DependentUpon>TrackSkinsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\ToolsListPage.xaml.cs">
       <DependentUpon>ToolsListPage.xaml</DependentUpon>
     </Compile>
@@ -388,6 +394,9 @@
     <Compile Include="Pages\Selected\CarSetupValues.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedTrackSkinPage.xaml.cs">
+      <DependentUpon>SelectedTrackSkinPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedRemoteCarSetupPage.xaml.cs">
       <DependentUpon>SelectedRemoteCarSetupPage.xaml</DependentUpon>
@@ -555,6 +564,7 @@
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
     <Compile Include="Tools\CommonPreviewsTools.cs" />
+    <Compile Include="Tools\ContentRepairUi\CarObsoleteSoundRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteTyresRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
@@ -803,6 +813,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\TrackSkinsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Dialogs\CarUpdatePreviewsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -863,6 +877,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\DriverModelsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -900,6 +918,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Selected\SelectedCarPage_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\SelectedTrackSkinPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1468,6 +1490,7 @@
     <None Include="Assets\Data\Kunos %281.6, Custom%29.cmpreset" />
     <None Include="Assets\Data\Kunos %281.6%29.cmpreset" />
     <None Include="Assets\Data\AssistsPro.cmpreset" />
+    <None Include="Assets\Data\Light.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />
     <None Include="Packages.config" />
@@ -1718,11 +1741,15 @@
     <Content Include="About\Licenses\CachedImage\CachedImage.txt" />
     <Content Include="About\Licenses\EmojiOne\EmojiOne.txt" />
     <Content Include="About\Licenses\FirstFloor.ModernUI\FirstFloor.ModernUI.txt" />
+    <Content Include="About\Licenses\FMOD\FMOD.txt" />
+    <Content Include="About\Licenses\FMOD\LICENSE.TXT" />
     <Content Include="About\Licenses\FXAA\FXAA.txt" />
     <Content Include="About\Licenses\Json.NET\Json.NET.txt" />
     <Content Include="About\Licenses\LevelDB.net\LevelDB.net.txt" />
     <Content Include="About\Licenses\LevelDB\LevelDB.txt" />
     <Content Include="About\Licenses\BokehDOF\BokehDOF.txt" />
+    <Content Include="About\Licenses\LoadingIndicators.WPF\LICENSE" />
+    <Content Include="About\Licenses\LoadingIndicators.WPF\LoadingIndicators.WPF.txt" />
     <Content Include="About\Licenses\LZF\LZF.txt" />
     <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />
     <Content Include="About\Licenses\MoonSharp\MoonSharp.txt" />

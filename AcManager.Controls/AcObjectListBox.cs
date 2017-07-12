@@ -22,24 +22,24 @@ namespace AcManager.Controls {
             typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string BasicFilter {
-            get { return (string)GetValue(BasicFilterProperty); }
-            set { SetValue(BasicFilterProperty, value); }
+            get => (string)GetValue(BasicFilterProperty);
+            set => SetValue(BasicFilterProperty, value);
         }
 
         public static readonly DependencyProperty UserFilterProperty = DependencyProperty.Register(nameof(UserFilter), typeof(string),
             typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string UserFilter {
-            get { return (string)GetValue(UserFilterProperty); }
-            set { SetValue(UserFilterProperty, value); }
+            get => (string)GetValue(UserFilterProperty);
+            set => SetValue(UserFilterProperty, value);
         }
 
         public static readonly DependencyProperty UserFiltersKeyProperty = DependencyProperty.Register(nameof(UserFiltersKey), typeof(string),
                 typeof(AcObjectListBox), new PropertyMetadata(@"AcObjectListBox:FiltersHistory"));
 
         public string UserFiltersKey {
-            get { return (string)GetValue(UserFiltersKeyProperty); }
-            set { SetValue(UserFiltersKeyProperty, value); }
+            get => (string)GetValue(UserFiltersKeyProperty);
+            set => SetValue(UserFiltersKeyProperty, value);
         }
 
         private static void OnFilterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -50,8 +50,8 @@ namespace AcManager.Controls {
             typeof(AcObjectListBox), new PropertyMetadata(true));
 
         public bool IsFilteringEnabled {
-            get { return (bool)GetValue(IsFilteringEnabledProperty); }
-            set { SetValue(IsFilteringEnabledProperty, value); }
+            get => (bool)GetValue(IsFilteringEnabledProperty);
+            set => SetValue(IsFilteringEnabledProperty, value);
         }
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof(SelectedItem), typeof(AcObjectNew),
@@ -78,8 +78,8 @@ namespace AcManager.Controls {
         }
 
         public AcObjectNew SelectedItem {
-            get { return (AcObjectNew)GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
+            get => (AcObjectNew)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IAcObjectList),
@@ -93,39 +93,45 @@ namespace AcManager.Controls {
             typeof(AcObjectListBox), new PropertyMetadata());
 
         public IAcObjectList ItemsSource {
-            get { return (IAcObjectList)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get => (IAcObjectList)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
         }
 
         public AcWrapperCollectionView InnerItemsSource {
-            get { return (AcWrapperCollectionView)GetValue(InnerItemsSourceProperty); }
-            set { SetValue(InnerItemsSourceProperty, value); }
+            get => (AcWrapperCollectionView)GetValue(InnerItemsSourceProperty);
+            set => SetValue(InnerItemsSourceProperty, value);
         }
 
         public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register(nameof(SelectionMode), typeof(SelectionMode),
                 typeof(AcObjectListBox), new PropertyMetadata(SelectionMode.Single));
 
         public SelectionMode SelectionMode {
-            get { return (SelectionMode)GetValue(SelectionModeProperty); }
-            set { SetValue(SelectionModeProperty, value); }
+            get => (SelectionMode)GetValue(SelectionModeProperty);
+            set => SetValue(SelectionModeProperty, value);
         }
 
         public AcObjectListBox() {
-            Loaded += AcObjectListBox_Loaded;
+            Loaded += OnLoaded;
         }
 
         private bool _unloaded;
 
-        private void AcObjectListBox_Loaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_unloaded) {
                 _unloaded = false;
                 UpdateFilter();
             } else {
-                Unloaded += AcObjectListBox_Unloaded;
+                Unloaded += OnUnloaded;
             }
+
+            FocusTextBox();
         }
 
-        internal void AcObjectListBox_Unloaded(object sender, RoutedEventArgs e) {
+        private void FocusTextBox() {
+            (GetTemplateChild("PART_FilterTextBox") as IInputElement)?.Focus();
+        }
+
+        internal void OnUnloaded(object sender, RoutedEventArgs e) {
             if (_unloaded) return;
             _unloaded = true;
             ClearFilter();
@@ -138,21 +144,21 @@ namespace AcManager.Controls {
             ClearFilter();
 
             if (InnerItemsSource != null) {
-                InnerItemsSource.CurrentChanged -= ItemsSource_CurrentChanged;
+                InnerItemsSource.CurrentChanged -= OnItemsSourceCurrentChanged;
             }
-            
+
             _observableCollection = newValue;
             if (newValue == null) return;
 
             InnerItemsSource = new AcWrapperCollectionView(_observableCollection) { CustomSort = this };
-            InnerItemsSource.CurrentChanged += ItemsSource_CurrentChanged;
+            InnerItemsSource.CurrentChanged += OnItemsSourceCurrentChanged;
             UpdateFilter();
         }
 
         private void ClearFilter() {
             if (_filter != null) {
-                _observableCollection.ItemPropertyChanged -= Collection_ItemPropertyChanged;
-                _observableCollection.WrappedValueChanged -= Collection_WrappedValueChanged;
+                _observableCollection.ItemPropertyChanged -= OnCollectionItemPropertyChanged;
+                _observableCollection.WrappedValueChanged -= OnCollectionWrappedValueChanged;
                 _filter = null;
             }
         }
@@ -169,18 +175,18 @@ namespace AcManager.Controls {
             var filter = string.IsNullOrWhiteSpace(baseFilter) ? userFilter
                 : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + @" & (" + userFilter + @")";
 
-            InnerItemsSource.CurrentChanged -= ItemsSource_CurrentChanged;
+            InnerItemsSource.CurrentChanged -= OnItemsSourceCurrentChanged;
             using (listView.DeferRefresh()) {
                 if (string.IsNullOrWhiteSpace(filter)) {
                     listView.Filter = null;
                 } else {
                     _filter = Filter.Create(UniversalAcObjectTester.Instance, filter);
                     listView.Filter = FilterFunc;
-                    _observableCollection.ItemPropertyChanged += Collection_ItemPropertyChanged;
-                    _observableCollection.WrappedValueChanged += Collection_WrappedValueChanged;
+                    _observableCollection.ItemPropertyChanged += OnCollectionItemPropertyChanged;
+                    _observableCollection.WrappedValueChanged += OnCollectionWrappedValueChanged;
                 }
             }
-            InnerItemsSource.CurrentChanged += ItemsSource_CurrentChanged;
+            InnerItemsSource.CurrentChanged += OnItemsSourceCurrentChanged;
 
             listView.MoveCurrentToOrNull(selectObject);
         }
@@ -189,12 +195,12 @@ namespace AcManager.Controls {
             UpdateFilter(SelectedItem);
         }
 
-        private void Collection_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+        private void OnCollectionWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
             if (_filter == null) return;
             _observableCollection.RefreshFilter((AcItemWrapper)sender);
         }
 
-        private void Collection_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (_filter == null || e.PropertyName != string.Empty && !_filter.IsAffectedBy(e.PropertyName)) return;
             _observableCollection.RefreshFilter((AcPlaceholderNew)sender);
         }
@@ -209,14 +215,14 @@ namespace AcManager.Controls {
             return wrapper?.IsLoaded == true && _filter.Test((AcObjectNew)wrapper.Value);
         }
 
-        private void ItemsSource_CurrentChanged(object sender, EventArgs e) {
+        private void OnItemsSourceCurrentChanged(object sender, EventArgs e) {
             UpdateSelected();
         }
 
         private void UpdateSelected() {
             var selected = InnerItemsSource.LoadedCurrent;
             if (selected == null) return;
-            
+
             SelectedItem = selected;
             SelectedAcObjectChanged?.Invoke(this, new AcObjectEventArgs(selected));
         }
@@ -227,7 +233,7 @@ namespace AcManager.Controls {
 
         public override void OnApplyTemplate() {
             if (_listBox != null) {
-                _listBox.SelectionChanged -= ListBox_SelectionChanged;
+                _listBox.SelectionChanged -= OnListBoxSelectionChanged;
             }
 
             base.OnApplyTemplate();
@@ -239,13 +245,13 @@ namespace AcManager.Controls {
                     _listBox.SelectedItems.Add(InnerItemsSource.CurrentItem);
                 }
 
-                _listBox.SelectionChanged += ListBox_SelectionChanged;
+                _listBox.SelectionChanged += OnListBoxSelectionChanged;
             }
         }
 
         private bool _ignoreSelectionChange;
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (_ignoreSelectionChange || SelectionMode == SelectionMode.Single) return;
             SelectedItem = (_listBox?.SelectedItem as AcItemWrapper)?.Loaded();
         }

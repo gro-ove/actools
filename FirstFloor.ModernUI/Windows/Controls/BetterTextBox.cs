@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -9,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
 
@@ -242,17 +240,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
-                    e.Handled = FocusAdvancement.RemoveFocus(this);
+                    e.Handled = this.RemoveFocus();
                     break;
 
                 case Key.Enter:
                     if (!AcceptsReturn) {
-                        e.Handled = FocusAdvancement.MoveFocus(this);
+                        e.Handled = this.MoveFocus();
                     }
                     break;
 
                 case Key.Tab:
-                    if (Keyboard.Modifiers == ModifierKeys.Shift && FocusAdvancement.MoveFocus(this, FocusNavigationDirection.Previous)) {
+                    if (Keyboard.Modifiers == ModifierKeys.Shift && this.MoveFocus(FocusNavigationDirection.Previous)) {
                         e.Handled = true;
                     }
                     break;

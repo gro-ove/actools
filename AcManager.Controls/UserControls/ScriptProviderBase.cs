@@ -58,7 +58,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         public string Prompt(string message, string defaultValue) {
-            return Sync(() => Dialogs.Prompt.Show(message, ControlsStrings.WebBrowser_Prompt, defaultValue));
+            return Sync(() => FirstFloor.ModernUI.Dialogs.Prompt.Show(message, ControlsStrings.WebBrowser_Prompt, defaultValue));
         }
 
         public object CmTest() {

@@ -24,13 +24,14 @@
   </mui:ModernDialog.Resources>
 
   <mui:Switch Value="{Binding CurrentState}">
-    <!--waiting-->
+    <!-- Waiting -->
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Waiting}" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Style="{StaticResource WaveProgressRingStyle}" />
+      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Style="{StaticResource WaveProgressRingStyle}"
+          Effect="{DynamicResource GameLoadingAnimationEffect}" />
       <TextBlock Text="{Binding WaitingStatus}" />
     </StackPanel>
 
-    <!--cancelled (AC might crashed)-->
+    <!-- Cancelled (AC might crashed) -->
     <mui:ReferenceSwitch mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Cancelled}" VerticalAlignment="Center" HorizontalAlignment="Center"
         Value="{Binding ErrorMessage}">
       <mui:ReferenceSwitch.Null>
@@ -48,7 +49,7 @@
       </mui:ReferenceSwitch.NonNull>
     </mui:ReferenceSwitch>
 
-    <!--error-->
+    <!-- Error -->
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Error}" VerticalAlignment="Center" HorizontalAlignment="Center">
       <DockPanel Margin="0 0 0 4">
         <Path Data="{StaticResource AlertIconData}" Width="24" Height="24" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" Margin="4" />
@@ -58,10 +59,10 @@
       <TextBlock Text="{Binding ErrorDescription}" FontStyle="Italic" />
     </StackPanel>
 
-    <!--finished-->
+    <!-- Finished -->
     <ContentControl mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Finished}" Content="{Binding FinishedData}">
       <ContentControl.Resources>
-        <!-- drift -->
+        <!-- Drift -->
         <DataTemplate DataType="{x:Type di:GameDialog+DriftFinishedData}">
           <Viewbox Stretch="Uniform">
             <StackPanel>
@@ -89,7 +90,7 @@
           </Viewbox>
         </DataTemplate>
 
-        <!-- time attack -->
+        <!-- Time attack -->
         <DataTemplate DataType="{x:Type di:GameDialog+TimeAttackFinishedData}">
           <Viewbox Stretch="Uniform">
             <StackPanel>
@@ -119,7 +120,7 @@
           </Viewbox>
         </DataTemplate>
 
-        <!-- hotlap -->
+        <!-- Hotlap -->
         <DataTemplate DataType="{x:Type di:GameDialog+HotlapFinishedData}">
           <Viewbox Stretch="Uniform">
             <StackPanel>
@@ -147,7 +148,7 @@
           </Viewbox>
         </DataTemplate>
 
-        <!-- racing session -->
+        <!-- Racing session -->
         <DataTemplate x:Key="SessionTemplate" DataType="{x:Type di:GameDialog+SessionFinishedData}">
           <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0 -8"
               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
@@ -195,19 +196,19 @@
 
               <DataGrid.RowDetailsTemplate>
                 <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
-                  <!--<ItemsControl ItemsSource="{Binding Laps}" />-->
+                  <!-- <ItemsControl ItemsSource="{Binding Laps}" /> -->
                   <DataGrid ItemsSource="{Binding LapsDataTable.DefaultView}" AutoGenerateColumns="True" Style="{StaticResource DataGrid.ReadOnly}"
                       Margin="20 0 0 0" Loaded="OnLapsTableLoaded"
                       Visibility="{Binding LapsDataTable.DefaultView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}" />
                 </DataTemplate>
               </DataGrid.RowDetailsTemplate>
 
-              <!---->
+              <!-- -->
             </DataGrid>
           </ScrollViewer>
         </DataTemplate>
 
-        <!--drag session-->
+        <!-- Drag session -->
         <DataTemplate DataType="{x:Type di:GameDialog+DragFinishedData}">
           <DockPanel>
             <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading1}" FontSize="24" Padding="20 0 20 20" TextAlignment="Center">
@@ -261,7 +262,7 @@
           <TextBlock Text="{Binding Title, Converter={StaticResource ToUpperConverter}}" />
         </DataTemplate>
 
-        <!-- racing sessions -->
+        <!-- Racing sessions -->
         <DataTemplate DataType="{x:Type di:GameDialog+SessionsFinishedData}">
           <mui:Cell>
             <ContentControl ContentTemplate="{StaticResource SessionTemplate}" Content="{Binding SelectedSession}" />

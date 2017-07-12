@@ -11,6 +11,7 @@ using AcManager.Tools.Managers.Online;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;

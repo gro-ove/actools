@@ -17,7 +17,7 @@
             <DockPanel DockPanel.Dock="Top" Margin="8"
                 Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
               <TextBlock Text="{x:Static ac:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
-              <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
+              <mui:HistoricalTextBox x:Name="PART_FilterTextBox" Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
                   Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}"
                   SaveKey="{TemplateBinding UserFiltersKey}" />
             </DockPanel>

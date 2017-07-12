@@ -171,13 +171,13 @@
 
                 <StackPanel Orientation="Horizontal"
                     Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.SingleEvents}}">
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Gold}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource GoldBrush}" />
                   <TextBlock Text="{Binding FirstPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Silver}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource SilverBrush}" />
                   <TextBlock Text="{Binding SecondPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Bronze}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource BronzeBrush}" />
                   <TextBlock Text="{Binding ThirdPlacesGoal}" FontWeight="Bold" />
                 </StackPanel>
 

@@ -26,7 +26,7 @@ namespace AcTools.Render.Wrapper {
         private bool _editMode;
 
         public bool EditMode {
-            get { return _editMode; }
+            get => _editMode;
             set {
                 if (Equals(value, _editMode)) return;
                 _editMode = value;
@@ -569,6 +569,18 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     if (!args.Control && args.Alt && !args.Shift) {
                         if (dark != null) {
                             dark.ShowDepth = !dark.ShowDepth;
+                        }
+                    }
+                    break;
+
+                case Keys.Y:
+                    if (_renderer.CarNode != null) {
+                        if (!args.Control && !args.Alt && !args.Shift) {
+                            _renderer.CarNode.SoundEngineActive = !_renderer.CarNode.SoundEngineActive;
+                        } else if (args.Control && !args.Alt && !args.Shift) {
+                            _renderer.CarNode.SoundEngineExternal = !_renderer.CarNode.SoundEngineExternal;
+                        } else if (!args.Control && args.Alt && !args.Shift) {
+                            _renderer.CarNode.SoundHorn = !_renderer.CarNode.SoundHorn;
                         }
                     }
                     break;

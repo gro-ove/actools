@@ -409,7 +409,7 @@ namespace AcTools.Utils {
             return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;
         }
 
-        private static bool TryToHardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+        private static bool TryToHardLink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (destination == null) throw new ArgumentNullException(nameof(destination));
 
@@ -421,14 +421,14 @@ namespace AcTools.Utils {
         }
 
         [Obsolete]
-        public static void Hardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
-            if (!TryToHardlink(source, destination, overwrite)) {
+        public static void HardLink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+            if (!TryToHardLink(source, destination, overwrite)) {
                 throw new Exception("Can’t make a hardlink");
             }
         }
 
-        public static void HardlinkOrCopy([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
-            if (!TryToHardlink(source, destination, overwrite)) {
+        public static void HardLinkOrCopy([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+            if (!TryToHardLink(source, destination, overwrite)) {
                 File.Copy(source, destination, overwrite);
             }
         }
@@ -457,7 +457,7 @@ namespace AcTools.Utils {
         public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix, bool forcePostfix, int startFrom = 1) {
             if (!forcePostfix && !Exists(filename)) return filename;
 
-            var ext = Path.GetExtension(filename) ?? "";
+            var ext = Path.GetExtension(filename);
             var start = filename.Substring(0, filename.Length - ext.Length);
 
             for (var i = startFrom; i < 99999; i++) {
@@ -490,7 +490,7 @@ namespace AcTools.Utils {
         }
 
         [Obsolete]
-        public static void HardlinkRecursive(string source, string destination) {
+        public static void HardLinkRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
 
@@ -499,14 +499,14 @@ namespace AcTools.Utils {
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    Hardlink(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    HardLink(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
             } else {
-                Hardlink(source, destination, true);
+                HardLink(source, destination, true);
             }
         }
 
-        public static void HardlinkOrCopyRecursive(string source, string destination) {
+        public static void HardLinkOrCopyRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
 
@@ -515,15 +515,45 @@ namespace AcTools.Utils {
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    HardlinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    HardLinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
             } else {
-                HardlinkOrCopy(source, destination, true);
+                HardLinkOrCopy(source, destination, true);
             }
         }
 
         public static bool Unblock(string fileName) {
             return Kernel32.DeleteFile(fileName + ":Zone.Identifier");
+        }
+
+        [NotNull]
+        public static string GetMountPoint([NotNull] string filename) {
+            const uint stringLength = 256;
+            var sb = new StringBuilder((int)stringLength);
+            Kernel32.GetVolumePathName(filename, sb, stringLength);
+            return sb.ToString();
+        }
+
+        [CanBeNull]
+        public static string[] GetFileSiblingHardLinks([NotNull] string filename, [NotNull] string mountPoint) {
+            var result = new List<string>();
+            uint stringLength = 256;
+            var sb = new StringBuilder((int)stringLength);
+            var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
+            if (findHandle.ToInt32() == -1) return null;
+
+            do {
+                result.Add(mountPoint + sb.ToString().Substring(1));
+                sb.Length = 0;
+                stringLength = 256;
+            } while (Kernel32.FindNextFileNameW(findHandle, ref stringLength, sb));
+            Kernel32.FindClose(findHandle);
+            return result.ToArray();
+        }
+
+        [CanBeNull]
+        public static string[] GetFileSiblingHardLinks([NotNull] string filename) {
+            return GetFileSiblingHardLinks(filename, GetMountPoint(filename));
         }
     }
 }

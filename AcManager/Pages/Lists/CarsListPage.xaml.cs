@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -16,7 +16,6 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Selected;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
-using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
@@ -28,13 +27,10 @@ using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
+using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
-using Microsoft.Win32;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
@@ -102,13 +98,16 @@ namespace AcManager.Pages.Lists {
             return CommonBatchActions.GetDefaultSet<CarObject>().Concat(new BatchAction[] {
                 BatchAction_FixBrand.Instance,
                 BatchAction_FixCarClass.Instance,
+                BatchAction_RecalculateCurves.Instance,
                 BatchAction_SortAndCleanUpTags.Instance,
+                BatchAction_UpdatePwRatio.Instance,
                 BatchAction_FixSpecsFormat.Instance,
                 BatchAction_SetBrandBadge.Instance,
                 BatchAction_SyncCarLogo.Instance,
                 BatchAction_PackCars.Instance,
                 BatchAction_UpdatePreviews.Instance,
                 BatchAction_UpdateAmbientShadows.Instance,
+                BatchAction_AnalyzeCar.Instance,
             });
         }
 
@@ -268,6 +267,152 @@ namespace AcManager.Pages.Lists {
             }
         }
 
+        public class BatchAction_RecalculateCurves : BatchAction<CarObject> {
+            public static readonly BatchAction_RecalculateCurves Instance = new BatchAction_RecalculateCurves();
+            public BatchAction_RecalculateCurves() : base("Recalculate Curves", "I don’t recommend to use it for Kunos cars", "UI", "Batch.RecalculateCurves") {
+                DisplayApply = "Recalculate";
+            }
+
+            private bool _scaleToMaxValues = ValuesStorage.GetBool("_ba.recalculateCurves.scaleToMaxValues", true);
+
+            public bool ScaleToMaxValues {
+                get => _scaleToMaxValues;
+                set {
+                    if (Equals(value, _scaleToMaxValues)) return;
+                    _scaleToMaxValues = value;
+                    ValuesStorage.Set("_ba.recalculateCurves.scaleToMaxValues", value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(UpdateMaxValues));
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            private double _transmissionLoss = ValuesStorage.GetDouble("_ba.recalculateCurves.cleanUp", 0.13);
+
+            public double TransmissionLoss {
+                get => _transmissionLoss;
+                set {
+                    value = value.Clamp(0, 0.5);
+                    if (Equals(value, _transmissionLoss)) return;
+                    _transmissionLoss = value;
+                    ValuesStorage.Set("_ba.recalculateCurves.cleanUp", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _rebuildFromData = ValuesStorage.GetBool("_ba.recalculateCurves.rebuildFromData", true);
+
+            public bool RebuildFromData {
+                get => _rebuildFromData;
+                set {
+                    if (Equals(value, _rebuildFromData)) return;
+                    _rebuildFromData = value;
+                    ValuesStorage.Set("_ba.recalculateCurves.rebuildFromData", value);
+                    OnPropertyChanged();
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            private bool _updateMaxValues = ValuesStorage.GetBool("_ba.recalculateCurves.updateMaxValues", true);
+
+            public bool UpdateMaxValues {
+                get => !_scaleToMaxValues && _updateMaxValues;
+                set {
+                    if (Equals(value, _updateMaxValues)) return;
+                    _updateMaxValues = value;
+                    ValuesStorage.Set("_ba.recalculateCurves.updateMaxValues", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return ScaleToMaxValues || RebuildFromData;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                Lut torqueCurve, powerCurve;
+
+                if (RebuildFromData) {
+                    var data = obj.AcdData;
+                    if (data == null) return;
+
+                    try {
+                        torqueCurve = TorquePhysicUtils.LoadCarTorque(data);
+                        powerCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                        return;
+                    }
+                } else {
+                    powerCurve = obj.SpecsPowerCurve?.ToLut();
+                    torqueCurve = obj.SpecsTorqueCurve?.ToLut();
+                }
+
+                if (ScaleToMaxValues) {
+                    var power = FlexibleParser.TryParseDouble(obj.SpecsBhp);
+                    var torque = FlexibleParser.TryParseDouble(obj.SpecsTorque);
+                    if (!power.HasValue && !torque.HasValue) return;
+
+                    if (!torque.HasValue) {
+                        powerCurve = obj.SpecsPowerCurve?.ToLut();
+                        if (powerCurve != null) {
+                            powerCurve.ScaleToSelf(power.Value);
+
+                            var temporaryCurve = TorquePhysicUtils.PowerToTorque(powerCurve);
+                            temporaryCurve.UpdateBoundingBox();
+                            torque = temporaryCurve.MaxY;
+                        } else return;
+                    } else if (!power.HasValue) {
+                        torqueCurve = obj.SpecsTorqueCurve?.ToLut();
+                        if (torqueCurve != null) {
+                            torqueCurve.ScaleToSelf(torque.Value);
+
+                            var temporaryCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
+                            temporaryCurve.UpdateBoundingBox();
+                            power = temporaryCurve.MaxY;
+                        } else return;
+                    }
+
+                    if (powerCurve == null) {
+                        powerCurve = obj.SpecsPowerCurve?.ToLut();
+                        powerCurve?.ScaleToSelf(power.Value);
+                    }
+
+                    if (torqueCurve == null) {
+                        torqueCurve = obj.SpecsTorqueCurve?.ToLut();
+                        torqueCurve?.ScaleToSelf(torque.Value);
+                    }
+                } else {
+                    var multipler = 1d / (1d - TransmissionLoss);
+                    torqueCurve?.TransformSelf(x => x.Y * multipler);
+                    powerCurve?.TransformSelf(x => x.Y * multipler);
+                }
+
+                if (powerCurve != null) {
+                    obj.SpecsPowerCurve = new GraphData(powerCurve);
+                }
+
+                if (torqueCurve != null) {
+                    obj.SpecsTorqueCurve = new GraphData(torqueCurve);
+                }
+
+                if (UpdateMaxValues) {
+                    // MaxY values were updated while creating new GraphData instances above
+                    var postfix = TransmissionLoss == 0d ? "*" : "";
+
+                    if (torqueCurve != null) {
+                        obj.SpecsTorque = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
+                                torqueCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                    }
+
+                    if (powerCurve != null) {
+                        obj.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
+                                powerCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                    }
+                }
+            }
+        }
+
         public class BatchAction_SortAndCleanUpTags : BatchAction<CarObject> {
             public static readonly BatchAction_SortAndCleanUpTags Instance = new BatchAction_SortAndCleanUpTags();
             public BatchAction_SortAndCleanUpTags() : base("Sort & Clean Tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
@@ -320,6 +465,27 @@ namespace AcManager.Pages.Lists {
             }
         }
 
+        public class BatchAction_UpdatePwRatio : BatchAction<CarObject> {
+            public static readonly BatchAction_UpdatePwRatio Instance = new BatchAction_UpdatePwRatio();
+            public BatchAction_UpdatePwRatio()
+                    : base("Update P/W Ratio", "Simply divide car’s weight by its BHP", "UI", null) {
+                DisplayApply = "Update";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                double power, weight;
+                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out power) ||
+                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out weight)) return;
+
+                var ratio = weight / power;
+                obj.SpecsPwRatio = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
+            }
+        }
+
         public class BatchAction_UpdatePreviews : BatchAction<CarObject> {
             public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
             public BatchAction_UpdatePreviews()
@@ -335,6 +501,25 @@ namespace AcManager.Pages.Lists {
 
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 return OfType(list).Select(obj => new ToUpdatePreview(obj)).Run();
+            }
+        }
+
+        public class BatchAction_AnalyzeCar : BatchAction<CarObject> {
+            public static readonly BatchAction_AnalyzeCar Instance = new BatchAction_AnalyzeCar();
+            public BatchAction_AnalyzeCar()
+                    : base("Analyze", "Check for common issues", null, null) {
+                DisplayApply = "Analyze";
+                InternalWaitingDialog = true;
+                Priority = 1;
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                return ToolsListPage.Launch("Analyze Cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models=True&Rating=True&Filter={0}",
+                        OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
             }
         }
 
@@ -502,7 +687,7 @@ namespace AcManager.Pages.Lists {
                 }
 
                 if (PreferHardlinks) {
-                    FileUtils.HardlinkOrCopy(brandBadge.FullName, logo.FullName, true);
+                    FileUtils.HardLinkOrCopy(brandBadge.FullName, logo.FullName, true);
                 } else {
                     File.Copy(brandBadge.FullName, logo.FullName, true);
                 }

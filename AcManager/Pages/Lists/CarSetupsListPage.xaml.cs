@@ -173,47 +173,23 @@ namespace AcManager.Pages.Lists {
         private static int _remoteLinksStatus;
 
         public static void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
-            var mainWindow = Application.Current?.MainWindow as MainWindow;
-            if (forceNewWindow || mainWindow == null || !mainWindow.IsActive || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            var main = Application.Current?.MainWindow as MainWindow;
+            if (forceNewWindow || main == null || !main.IsActive || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car, forceRemoteSource);
                 return;
             }
 
-            var setupsLinks = mainWindow.MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == "setups").ToList();
-
             var remoteLinksStatus = GetRemoteLinksStatus();
             if (remoteLinksStatus != _remoteLinksStatus) {
                 _remoteLinksStatus = remoteLinksStatus;
-                mainWindow.MenuLinkGroups.RemoveRange(setupsLinks);
-                setupsLinks.Clear();
+                main.MenuLinkGroups.RemoveRange(main.MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == "setups").ToList());
             }
 
-            var uri = UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id);
-            var existing = setupsLinks.FirstOrDefault(x => x.Source == uri);
-            if (existing == null) {
-                existing = new LinkGroupFilterable {
-                    DisplayName = $"Setups for {car.DisplayName}",
-                    GroupKey = "setups",
-                    Source = uri,
-                    AddAllLink = true
-                };
-
-                foreach (var link in GetRemoteLinks(car.Id)) {
-                    existing.FixedLinks.Add(link);
-                }
-
-                if (forceRemoteSource != CarSetupsRemoteSource.None) {
-                    existing.SetSelected(GetRemoteSourceUri(car.Id, forceRemoteSource));
-                }
-
-                if (setupsLinks.Count >= 2) {
-                    mainWindow.MenuLinkGroups.Remove(setupsLinks[0]);
-                }
-
-                mainWindow.MenuLinkGroups.Add(existing);
+            var existing = main.OpenSubGroup("setups", $"Setups for {car.DisplayName}",
+                    UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id));
+            if (forceRemoteSource != CarSetupsRemoteSource.None) {
+                existing.SetSelected(GetRemoteSourceUri(car.Id, forceRemoteSource));
             }
-
-            mainWindow.NavigateTo(uri);
         }
 
         #region Batch actions

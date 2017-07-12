@@ -7,6 +7,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;

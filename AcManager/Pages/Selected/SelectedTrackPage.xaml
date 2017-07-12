@@ -11,8 +11,17 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
-
       <mui:BindingProxy x:Key="Model" Data="{Binding}" />
+      <DockPanel x:Key="ProgressAnimation">
+        <Canvas Width="20" Height="12" DockPanel.Dock="Left" Margin="0 0 8 0">
+          <mui:ModernProgressRing Width="80" Height="80" IsActive="True" Canvas.Top="-4">
+            <mui:ModernProgressRing.RenderTransform>
+              <ScaleTransform ScaleX="0.25" ScaleY="0.25" CenterX="0" CenterY="0" />
+            </mui:ModernProgressRing.RenderTransform>
+          </mui:ModernProgressRing>
+        </Canvas>
+        <TextBlock Text="Applying changes…" Style="{StaticResource Label}" />
+      </DockPanel>
     </ResourceDictionary>
   </UserControl.Resources>
   <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
@@ -31,6 +40,9 @@
           Visibility="{Binding SelectedTrackConfiguration.AiLaneCandidateExists, ConverterParameter={StaticResource BooleanToVisibilityConverter}}">
         <Button Content="Apply AI Lane" ToolTip="New candidates to AI lanes found, apply? Current lanes, if any, will be moved to the Recycle Bin"
             Command="{Binding SelectedTrackConfiguration.ApplyAiLaneCandidatesCommand}" />
+        <Separator />
+        <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
+            ToolTip="{x:Static g:AppStrings.Toolbar_CarSkins_Tooltip}" />
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -269,6 +281,38 @@
 
             <c:BestLapsList TrackId="{Binding SelectedTrackConfiguration.IdWithLayout}" Margin="0 20 0 0" />
           </StackPanel>
+
+          <DockPanel x:Name="SkinsColumn">
+            <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8">
+              <mui:BooleanLazySwitch DockPanel.Dock="Right" Value="{Binding SelectedObject.ApplyingSkins}" TrueResourceKey="ProgressAnimation" Height="20"
+                  Margin="4 0 0 0" />
+              <TextBlock Text="Skins:" Style="{StaticResource Label}" />
+            </DockPanel>
+
+            <mui:Switch Value="{Binding SelectedObject.EnabledOnlySkins.Count}">
+              <TextBlock mui:Switch.When="0" Text="None" FontStyle="Italic" />
+              <DockPanel>
+                <mui:SpacingUniformGrid DockPanel.Dock="Bottom" Rows="1" HorizontalSpacing="4" Margin="0 0 0 0">
+                  <Button Content="Manage" Command="{Binding ManageSkinsCommand}" />
+                  <Button Content="View Result" Command="{Binding ViewSkinsResultCommand}" />
+                </mui:SpacingUniformGrid>
+                <ItemsControl ItemsSource="{Binding SelectedObject.EnabledOnlySkins}" Style="{StaticResource VirtualizingItemsControl}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox IsChecked="{Binding IsActive}" Margin="0 0 0 8" Background="Transparent">
+                        <DockPanel>
+                          <mui:BetterImage Height="32" Width="57" Background="Black" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
+                              Margin="2 2 6 -2" VerticalAlignment="Center" />
+                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                          <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 0 0 0" />
+                        </DockPanel>
+                      </CheckBox>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </DockPanel>
+            </mui:Switch>
+          </DockPanel>
         </mui:SpacingUniformGrid>
       </StackPanel>
     </StackPanel>

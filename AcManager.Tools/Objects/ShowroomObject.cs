@@ -157,7 +157,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"showrooms"]?.Contains(Id) ?? false);
+            return /*base.TestIfKunos() ||*/ (DataProvider.Instance.KunosContent[@"showrooms"]?.Contains(Id) ?? false);
         }
 
         public void ToggleSound() {

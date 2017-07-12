@@ -203,6 +203,7 @@
     <Compile Include="Filters\ServerEntryTester.cs" />
     <Compile Include="Filters\ServerPresetObjectTester.cs" />
     <Compile Include="Filters\SpecialEventObjectTester.cs" />
+    <Compile Include="Filters\TrackSkinObjectTester.cs" />
     <Compile Include="Filters\WeatherObjectTester.cs" />
     <Compile Include="Filters\ShowroomObjectTester.cs" />
     <Compile Include="Filters\TrackObjectBaseTester.cs" />
@@ -342,11 +343,13 @@
     <Compile Include="Managers\TrackSkinsManager.cs" />
     <Compile Include="Managers\TrueTypeFontsManager.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Miscellaneous\AuthenticodeTools.cs" />
     <Compile Include="Miscellaneous\CarUtils.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />
     <Compile Include="Objects\DriverModelObject.cs" />
     <Compile Include="Objects\ServerPresetAssistState.cs" />
@@ -358,6 +361,7 @@
     <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Stats.cs" />
     <Compile Include="Objects\TrackObjectBase.Kunos.cs" />
+    <Compile Include="Objects\TrackSkinObject.cs" />
     <Compile Include="Objects\TrueTypeFontObject.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />
@@ -507,7 +511,7 @@
     <Compile Include="Objects\WeatherObject.cs" />
     <Compile Include="Objects\TrackExtraConfigurationObject.cs" />
     <Compile Include="Objects\TrackObjectBase.cs" />
-    <Compile Include="Objects\TrackObject.Lists.cs" />
+    <Compile Include="Objects\TrackObjectBase.Lists.cs" />
     <Compile Include="Objects\CarSkinObject.cs" />
     <Compile Include="Data\GraphData.cs" />
     <Compile Include="Objects\ShowroomObject.cs" />

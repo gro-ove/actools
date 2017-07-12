@@ -1,0 +1,4 @@
+name: FMOD by Firelight Technologies
+url: http://www.fmod.com/
+content: LICENSE.TXT
+sid: fr996bt9

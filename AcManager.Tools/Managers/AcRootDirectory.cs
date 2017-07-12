@@ -32,7 +32,11 @@ namespace AcManager.Tools.Managers {
             return Instance = new AcRootDirectory(directory);
         }
 
+        public bool IsFirstRun { get; }
+
         private AcRootDirectory(string directory) {
+            if (!ValuesStorage.Contains(Key)) IsFirstRun = true;
+
             Value = directory ?? ValuesStorage.GetString(Key);
             if (Value == null || CheckDirectory(Value)) return;
 

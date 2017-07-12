@@ -74,7 +74,7 @@ namespace AcManager.Tools.Data {
     public class TagsCollection : ObservableCollection<string> {
         public TagsCollection() {}
 
-        public TagsCollection(IEnumerable<string> list) : base(list) { }
+        public TagsCollection([CanBeNull] IEnumerable<string> list) : base(list ?? new string[0]) { }
 
         public string FirstOrDefault(Func<string, bool> fn) {
             return Enumerable.FirstOrDefault(this, fn);

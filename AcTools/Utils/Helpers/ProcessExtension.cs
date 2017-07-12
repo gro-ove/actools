@@ -92,6 +92,9 @@ namespace AcTools.Utils.Helpers {
 
         private static async Task WaitForExitAsyncDeeperFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
             if (process == null) throw new ArgumentNullException(nameof(process));
+
+            AcToolsLogging.Write("Is there an issue?");
+
             var processId = process.Id;
             while (true) {
                 await Task.Delay(300, cancellationToken);
@@ -107,21 +110,27 @@ namespace AcTools.Utils.Helpers {
 
         private static async Task WaitForExitAsyncFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
             if (process == null) throw new ArgumentNullException(nameof(process));
+
+            var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryLimitedInformation | Kernel32.ProcessAccessFlags.Synchronize, false, process.Id);
+            if (handle == IntPtr.Zero || handle == new IntPtr(-1)) {
+                await WaitForExitAsyncDeeperFallback(process, cancellationToken);
+                return;
+            }
+
             try {
-                while (!process.HasExited) {
-                    await Task.Delay(300, cancellationToken);
-                    if (cancellationToken.IsCancellationRequested) return;
+                int exitCode;
+                if (Kernel32.GetExitCodeProcess(handle, out exitCode) && exitCode != Kernel32.STILL_ACTIVE) return;
+                using (var w = new ProcessWrapper.ProcessWaitHandle(handle)) {
+                    AcToolsLogging.Write("Waiting using ProcessWaitHandle…");
+
+                    while (!w.WaitOne(0, false)) {
+                        await Task.Delay(300, cancellationToken);
+                        if (cancellationToken.IsCancellationRequested) return;
+                    }
                 }
-#if DEBUG
-            } catch (Exception e) {
-                AcToolsLogging.Write(e);
-                await WaitForExitAsyncDeeperFallback(process, cancellationToken);
+            } finally {
+                Kernel32.CloseHandle(handle);
             }
-#else
-            } catch (Exception) {
-                await WaitForExitAsyncDeeperFallback(process, cancellationToken);
-            }
-#endif
         }
 
         public static Task WaitForExitAsync([NotNull] this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
@@ -135,16 +144,10 @@ namespace AcTools.Utils.Helpers {
                 }
 
                 return tcs.Task;
-#if DEBUG
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
                 return WaitForExitAsyncFallback(process, cancellationToken);
             }
-#else
-            } catch (Exception) {
-                return WaitForExitAsyncFallback(process, cancellationToken);
-            }
-#endif
         }
 
         /// <summary>
@@ -157,15 +160,33 @@ namespace AcTools.Utils.Helpers {
         public static string GetFilenameSafe([NotNull] this Process process) {
             if (process == null) throw new ArgumentNullException(nameof(process));
             try {
-                return GetProcessPathUsingPsApi(process.Id) ?? GetProcessPathUsingManagement(process.Id) ??
-                        process.MainModule.FileName; // won’t work if processes were compiled for different architectures
-            } catch (Exception) {
+                var path = GetProcessPathUsingPsApi(process.Id);
+                if (path != null) {
+                    AcToolsLogging.Write("PS API: " + path);
+                    return path;
+                }
+
+                // very slow
+                path = GetProcessPathUsingManagement(process.Id);
+                if (path != null) {
+                    AcToolsLogging.Write("Management: " + path);
+                    return path;
+                }
+
+                AcToolsLogging.Write("Management failed!");
+
+                // won’t work if processes were compiled for different architectures
+                path = process.MainModule.FileName;
+                AcToolsLogging.Write("MainModule.FileName: " + path);
+                return path;
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
                 return null;
             }
         }
 
         [DllImport(@"psapi.dll")]
-        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
+        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In, MarshalAs(UnmanagedType.U4)]  int nSize);
 
         private static string GetProcessPathUsingPsApi(int pid) {
             var processHandle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryInformation, false, pid);

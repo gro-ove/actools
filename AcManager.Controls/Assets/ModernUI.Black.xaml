@@ -133,4 +133,7 @@
 
   <x:Null x:Key="WindowBackgroundContentBrush" />
   <x:Null x:Key="DialogBackgroundContentBrush" />
+
+  <DropShadowEffect x:Key="GameLoadingAnimationEffect" Color="{DynamicResource AccentColor}" BlurRadius="40" Direction="0" ShadowDepth="0"
+      RenderingBias="Performance" Opacity="0.8" />
 </ResourceDictionary>

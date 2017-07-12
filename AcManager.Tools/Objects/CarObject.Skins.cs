@@ -1,17 +1,58 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject : IAcManagerScanWrapper {
+        #region Initialization
+        public string SkinsDirectory { get; private set; }
+
+        private CarSkinsManager InitializeSkins() {
+            var manager = new CarSkinsManager(Id, new InheritingAcDirectories(FileAcManager.Directories, SkinsDirectory), OnSkinsCollectionReady) {
+                ScanWrapper = this
+            };
+            manager.Created += OnSkinsManagerCreated;
+            return manager;
+        }
+
+        private void OnSkinsCollectionReady(object sender, EventArgs e) {
+            var any = SkinsManager.GetDefault();
+            ErrorIf(any == null, AcErrorType.CarSkins_SkinsAreMissing);
+            if (any == null) {
+                SelectedSkin = null;
+            } else if (SelectedSkin == null) {
+                SelectedSkin = any;
+            }
+        }
+
+        private readonly CompositeObservableCollection<IAcError> _errors = new CompositeObservableCollection<IAcError>();
+        public override ObservableCollection<IAcError> Errors => _errors;
+
+        private void OnSkinsManagerCreated(object sender, AcObjectEventArgs<CarSkinObject> args) {
+            _errors.Add(args.AcObject.Errors);
+            args.AcObject.AcObjectOutdated += OnAcObjectOutdated;
+        }
+
+        private void OnAcObjectOutdated(object sender, EventArgs e) {
+            var ac = (AcCommonObject)sender;
+            ac.AcObjectOutdated -= OnAcObjectOutdated;
+            _errors.Remove(ac.Errors);
+        }
+        #endregion
+
         /* for UI car’s skins manager */
+
         [NotNull]
         public CarSkinsManager SkinsManager { get; }
 
@@ -19,6 +60,7 @@ namespace AcManager.Tools.Objects {
         public AcEnabledOnlyCollection<CarSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
 
         /* TODO: force sorting by ID! */
+
         [CanBeNull]
         private CarSkinObject _selectedSkin;
 
@@ -60,17 +102,17 @@ namespace AcManager.Tools.Objects {
                 Logging.Write("Car skins unhandled exception: " + e);
                 return;
             }
-            
+
             SelectPreviousOrDefaultSkin();
         }
 
         [CanBeNull]
-        public CarSkinObject GetSkinById([NotNull]string skinId) {
+        public CarSkinObject GetSkinById([NotNull] string skinId) {
             return SkinsManager.GetById(skinId);
         }
 
         [CanBeNull]
-        public CarSkinObject GetSkinByIdFromConfig([NotNull]string skinId) {
+        public CarSkinObject GetSkinByIdFromConfig([NotNull] string skinId) {
             return string.IsNullOrWhiteSpace(skinId) || skinId == @"-" ? GetFirstSkinOrNull() : GetSkinById(skinId);
         }
 
@@ -80,6 +122,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private AcWrapperCollectionView _skinsEnabledWrappersListView;
+
         public AcWrapperCollectionView SkinsEnabledWrappersList {
             get {
                 if (_skinsEnabledWrappersListView != null) return _skinsEnabledWrappersListView;
@@ -88,23 +131,21 @@ namespace AcManager.Tools.Objects {
                     Filter = o => (o as AcItemWrapper)?.Value.Enabled == true
                 };
                 _skinsEnabledWrappersListView.MoveCurrentTo(SelectedSkin);
-                _skinsEnabledWrappersListView.CurrentChanged += (sender, args) => {
-                    SelectedSkin = (_skinsEnabledWrappersListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject;
-                };
+                _skinsEnabledWrappersListView.CurrentChanged +=
+                        (sender, args) => { SelectedSkin = (_skinsEnabledWrappersListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject; };
                 return _skinsEnabledWrappersListView;
             }
         }
 
         private BetterListCollectionView _skinsActualListView;
+
         public BetterListCollectionView SkinsActualList {
             get {
                 if (_skinsActualListView != null) return _skinsActualListView;
 
                 _skinsActualListView = new BetterListCollectionView(SkinsManager.EnabledOnlyCollection);
                 _skinsActualListView.MoveCurrentTo(SelectedSkin);
-                _skinsActualListView.CurrentChanged += (sender, args) => {
-                    SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject;
-                };
+                _skinsActualListView.CurrentChanged += (sender, args) => { SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject; };
                 return _skinsActualListView;
             }
         }

@@ -123,6 +123,16 @@ namespace AcManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] PresetCmPreviewsLight {
+            get {
+                object obj = ResourceManager.GetObject("PresetCmPreviewsLight", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] PresetPreviewsKunos {
             get {
                 object obj = ResourceManager.GetObject("PresetPreviewsKunos", resourceCulture);

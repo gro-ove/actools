@@ -18,7 +18,7 @@ namespace AcManager.ContentRepair {
             Types.Add(typeof(T));
         }
 
-        public static IEnumerable<ContentRepairSuggestion> GetObsoletableAspects([NotNull] CarObject car, bool checkResources) {
+        public static IEnumerable<ContentRepairSuggestion> GetRepairSuggestions([NotNull] CarObject car, bool checkResources) {
             var repairs = Assembly.GetExecutingAssembly().GetTypes()
                                   .Concat(Types)
                                   .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(CarRepairBase)))
@@ -28,7 +28,15 @@ namespace AcManager.ContentRepair {
                 repairs = repairs.Where(x => x.AffectsData);
             }
 
-            return repairs.SelectMany(x => x.GetSuggestions(car)).NonNull().OrderBy(x => x.DisplayName);
+            var list = repairs.OrderByDescending(x => x.Priority).ToList();
+            for (var i = list.Count - 1; i >= 0; i--) {
+                var repair = list[i];
+                if (!repair.IsAvailable(list)) {
+                    list.RemoveAt(i);
+                }
+            }
+
+            return list.SelectMany(x => x.GetSuggestions(car)).NonNull().OrderBy(x => x.DisplayName);
         }
     }
 
@@ -37,6 +45,12 @@ namespace AcManager.ContentRepair {
         public abstract IEnumerable<ContentRepairSuggestion> GetSuggestions([NotNull] CarObject car);
 
         public abstract bool AffectsData { get; }
+
+        public virtual double Priority => 0;
+
+        public virtual bool IsAvailable(IEnumerable<CarRepairBase> repairs) {
+            return true;
+        }
     }
 
     public abstract class CarSimpleRepairBase : CarRepairBase {
@@ -52,7 +66,7 @@ namespace AcManager.ContentRepair {
         }
 
         protected abstract void Fix([NotNull] CarObject car, [NotNull] DataWrapper data);
-        
+
         public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var data = car.AcdData;
             if (data == null || data.IsEmpty) return new ContentRepairSuggestion[0];

@@ -292,6 +292,7 @@
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter TargetName="PART_EditableTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_EditableTextBox}" />
       </Trigger>
       <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
@@ -410,6 +411,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
+        <Setter TargetName="PART_EditableTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_EditableTextBox}" />
       </Trigger>
       <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
@@ -425,7 +427,8 @@
     <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic}" />
     <Style.Triggers>
       <Trigger Property="IsEditable" Value="True">
-        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Focusable" Value="True" />
         <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable}" />
       </Trigger>
     </Style.Triggers>
@@ -439,7 +442,8 @@
     <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
     <Style.Triggers>
       <Trigger Property="IsEditable" Value="True">
-        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Focusable" Value="True" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
       </Trigger>
@@ -453,7 +457,8 @@
     <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
     <Style.Triggers>
       <Trigger Property="IsEditable" Value="True">
-        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Focusable" Value="True" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Editable.Borderless}" />
       </Trigger>

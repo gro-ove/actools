@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BorderyViewbox : Decorator {
@@ -177,7 +178,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ContainerVisual _internalVisual;
 
         #region Converter-related stuff
-        private class ConverterInner : IValueConverter {
+        private class ThicknessConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (!(value is Size)) return parameter;
 
@@ -199,7 +200,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static IValueConverter ThicknessConverter { get; } = new ConverterInner();
+        public static IValueConverter ThicknessConverter { get; } = new ThicknessConverterInner();
+
+        private class InvertConverterInner : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return parameter.AsDouble(1d) / value.AsDouble(1d);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                return parameter.AsDouble(1d) * value.AsDouble(1d);
+            }
+        }
+
+        public static IValueConverter InvertConverter { get; } = new InvertConverterInner();
         #endregion
 
     }

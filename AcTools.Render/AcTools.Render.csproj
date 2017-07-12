@@ -288,7 +288,7 @@
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
-    <Compile Include="Wrapper\BaseFormWrapper.cs" />
+    <Compile Include="Wrapper\FormWrapperBase.cs" />
     <Compile Include="Wrapper\LiteShowroomFormWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

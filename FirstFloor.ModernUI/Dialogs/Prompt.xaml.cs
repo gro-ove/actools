@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Dialogs {
+namespace FirstFloor.ModernUI.Dialogs {
     public partial class Prompt : IValueConverter {
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, bool required,
                 int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed) {
@@ -117,7 +117,7 @@ namespace AcManager.Controls.Dialogs {
             private string _text;
 
             public string Text {
-                get { return _text; }
+                get => _text;
                 set {
                     if (Equals(value, _text)) return;
                     _text = value;
@@ -179,8 +179,10 @@ namespace AcManager.Controls.Dialogs {
         /// <param name="toolTip">Tooltip for the input area</param>
         /// <param name="multiline">Is the input area should be multilined.</param>
         /// <param name="passwordMode">Hide inputting value.</param>
+        /// <param name="required">Value is required.</param>
         /// <param name="maxLength">Length limitation.</param>
         /// <param name="suggestions">Suggestions if needed.</param>
+        /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
@@ -211,8 +213,10 @@ namespace AcManager.Controls.Dialogs {
         /// <param name="toolTip">Tooltip for the input area</param>
         /// <param name="multiline">Is the input area should be multilined.</param>
         /// <param name="passwordMode">Hide inputting value.</param>
+        /// <param name="required">Value is required.</param>
         /// <param name="maxLength">Length limitation.</param>
         /// <param name="suggestions">Suggestions if needed.</param>
+        /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [ItemCanBeNull]

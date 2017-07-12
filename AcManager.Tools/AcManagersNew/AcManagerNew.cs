@@ -24,8 +24,8 @@ namespace AcManager.Tools.AcManagersNew {
         /// </summary>
         /// <param name="id">If null, random/next ID will be used instead.</param>
         /// <exception cref="Exception">Can’t create an object because of whatever reason.</exception>
-        /// <returns>Created object.</returns>
-        [NotNull]
+        /// <returns>Created object if not cancelled.</returns>
+        [CanBeNull]
         IAcObjectNew AddNew([CanBeNull] string id = null);
     }
 

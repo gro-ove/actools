@@ -23,7 +23,6 @@ namespace AcManager.Tools.Objects {
 
         private bool _tsmSetupsCountLoaded;
         private int? _tsmSetupsCount;
-
         public int? TsmSetupsCount {
             get {
                 if (!_tsmSetupsCountLoaded) {
@@ -43,5 +42,9 @@ namespace AcManager.Tools.Objects {
         private async void UpdateTsmSetupsCount() {
             TsmSetupsCount = (await TheSetupMarketApiProvider.GetAvailableSetups(Id))?.Count;
         }
+
+        private double? _dataSteerLock;
+        public double? DataSteerLock => _dataSteerLock ??
+                (_dataSteerLock = AcdData?.GetIniFile("car.ini")["CONTROLS"].GetDouble("STEER_LOCK", 450d) ?? 450).Value;
     }
 }

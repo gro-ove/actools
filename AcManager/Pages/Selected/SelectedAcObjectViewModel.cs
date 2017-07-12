@@ -15,6 +15,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -261,15 +262,15 @@ namespace AcManager.Pages.Selected {
 
         private void FixFormat(string key) {
             var format = GetFormat(key);
-            var value = GetSpecsValue(key);
-            if (value == null) return;
+            var originalValue = GetSpecsValue(key);
+            if (originalValue == null) return;
 
-            value = FixFormatCommon(value);
+            var fixedValue = FixFormatCommon(originalValue);
 
             double actualValue;
-            var replacement = FlexibleParser.TryParseDouble(value, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
-            value = SpecsFormat(format, replacement);
-            SetSpecsValue(key, value);
+            var replacement = FlexibleParser.TryParseDouble(fixedValue, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
+            fixedValue = SpecsFormat(format, replacement);
+            SetSpecsValue(key, originalValue.IndexOf('*') == -1 ? fixedValue : fixedValue + "*");
         }
 
         protected virtual string FixFormatCommon(string value) {

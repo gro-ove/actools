@@ -32,6 +32,9 @@ namespace AcManager.Tools.Managers.Plugins {
         [JsonProperty(PropertyName = @"hidden")]
         private bool _hidden;
 
+        [JsonProperty(PropertyName = @"recommended")]
+        private bool? _isRecommended;
+
         [JsonProperty(PropertyName = @"platform"), CanBeNull]
         private string _platform;
 
@@ -62,11 +65,9 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
-
         public string KeyEnabled => $"_appAddon__{Id}__enabled";
 
         public bool AvailableToInstall => !IsInstalled && !InstallationInProgress;
-
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
@@ -128,6 +129,15 @@ namespace AcManager.Tools.Managers.Plugins {
             set {
                 if (value == _description) return;
                 _description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsRecommended {
+            get => _isRecommended ?? (_isRecommended = Id != "Awesomium" && Id != "VLC").Value;
+            set {
+                if (Equals(value, _isRecommended)) return;
+                _isRecommended = value;
                 OnPropertyChanged();
             }
         }

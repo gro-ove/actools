@@ -46,7 +46,7 @@ namespace AcManager.CustomShowroom {
             if (_starting) return;
             _starting = true;
 
-            await BaseFormWrapper.PrepareAsync();
+            await FormWrapperBase.PrepareAsync();
 
             ForwardKn5ObjectRenderer renderer = null;
             Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);

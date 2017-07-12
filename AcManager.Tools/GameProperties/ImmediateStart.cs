@@ -6,10 +6,12 @@ using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {
         private bool _cancelled;
+        private Process _process;
 
         public override IDisposable Set(Process process) {
             if (SettingsHolder.Drive.WatchForSharedMemory) {
@@ -20,12 +22,19 @@ namespace AcManager.Tools.GameProperties {
             return new ActionAsDisposable(() => _cancelled = true);
         }
 
-        private static bool IsAcWindowActive() {
-            return AcSharedMemory.TryToFindGameProcess()?.MainWindowHandle == User32.GetForegroundWindow();
+        private bool IsAcWindowActive() {
+            if (_cancelled) return false;
+
+            if (_process == null) {
+                _process = AcSharedMemory.TryToFindGameProcess();
+                if (_process == null) return false;
+            }
+
+            return _process.MainWindowHandle == User32.GetForegroundWindow();
         }
 
-        private static async Task PeriodicChecks(bool[] cancellation) {
-            while (!cancellation[0]) {
+        private async Task PeriodicChecks() {
+            while (!_cancelled) {
                 await Task.Delay(1000);
                 if (IsAcWindowActive()) {
                     Run();
@@ -34,24 +43,23 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private IDisposable SetSharedListener() {
-            var cancellation = new[] { false };
-
-            EventHandler handler = null;
-            handler = (sender, args) => {
+            void Handler(object sender, EventArgs args) {
                 if (IsAcWindowActive()) {
                     Run();
                 }
 
-                cancellation[0] = true;
-                AcSharedMemory.Instance.Start -= handler;
-            };
+                _cancelled = true;
+                DisposeHelper.Dispose(ref _process);
+                AcSharedMemory.Instance.Start -= Handler;
+            }
 
-            AcSharedMemory.Instance.Start += handler;
-            PeriodicChecks(cancellation).Forget();
+            AcSharedMemory.Instance.Start += Handler;
+            PeriodicChecks().Forget();
 
             return new ActionAsDisposable(() => {
-                cancellation[0] = true;
-                AcSharedMemory.Instance.Start -= handler;
+                _cancelled = true;
+                DisposeHelper.Dispose(ref _process);
+                AcSharedMemory.Instance.Start -= Handler;
             });
         }
 

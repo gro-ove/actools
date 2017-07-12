@@ -110,7 +110,7 @@
 
   <mui:ModernDialog.ButtonsRowContent>
     <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4">
-      <mui:ButtonWithComboBox Command="{Binding UvCommand}" CommandParameter="2048" Content="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping}"
+      <mui:ButtonWithComboBox Command="{Binding UvCommand}" CommandParameter="-1" Content="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping}"
           ButtonToolTip="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_2048}">
         <mui:ButtonWithComboBox.MenuItems>
           <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_512}" />

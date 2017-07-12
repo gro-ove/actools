@@ -54,8 +54,20 @@ namespace AcManager.Tools.Data {
 
                 var j = FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Miscellaneous, "KunosContent.json");
                 if (j != null) {
+                    var layouts = new List<string>();
+                    var jLayouts = j[@"layouts"] as JObject;
+                    if (jLayouts != null) {
+                        foreach (var pair in jLayouts) {
+                            var jLayoutIds = pair.Value as JArray;
+                            if (jLayoutIds != null) {
+                                layouts.AddRange(jLayoutIds.Select(v => $@"{pair.Key}/{v}"));
+                            }
+                        }
+                    }
+
                     _kunosContent = new Dictionary<string, string[]> {
                         [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                        [@"layouts"] = layouts.ToArray(),
                         [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"drivers"] = (j[@"drivers"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"fonts"] = (j[@"fonts"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
@@ -63,6 +75,7 @@ namespace AcManager.Tools.Data {
                 } else {
                     _kunosContent = new Dictionary<string, string[]> {
                         [@"tracks"] = new string[] { },
+                        [@"layouts"] = new string[] { },
                         [@"showrooms"] = new string[] { },
                         [@"drivers"] = new string[] { },
                         [@"fonts"] = new string[] { },

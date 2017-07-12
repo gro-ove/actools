@@ -68,7 +68,7 @@
           <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
               Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="btchpreviewsupdr.filter">
             <mui:HistoricalTextBox.DefaultItems>
-              <system:String>!author:kunos</system:String>
+              <system:String>kunos-</system:String>
               <system:String>new+</system:String>
             </mui:HistoricalTextBox.DefaultItems>
           </mui:HistoricalTextBox>

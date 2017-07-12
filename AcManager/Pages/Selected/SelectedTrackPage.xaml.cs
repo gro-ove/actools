@@ -15,6 +15,7 @@ using AcManager.Controls.Helpers;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Lists;
 using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
@@ -112,8 +113,6 @@ namespace AcManager.Pages.Selected {
                     });
                 }
             }
-
-            private const string KeyUpdatePreviewMessageShown = "SelectTrackPage.UpdatePreviewMessageShown";
 
             private AsyncCommand _updatePreviewCommand;
 
@@ -288,10 +287,25 @@ namespace AcManager.Pages.Selected {
             }, () => SelectedTrackConfiguration.AiLaneFastExists));
 
             private void InitializeSpecs() {
-                RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => SelectedTrackConfiguration.SpecsLength, v => SelectedTrackConfiguration.SpecsLength = v);
-                RegisterSpec("width", AppStrings.TrackSpecs_Width_FormatTooltip, () => SelectedTrackConfiguration.SpecsWidth, v => SelectedTrackConfiguration.SpecsWidth = v);
-                RegisterSpec("pits", AppStrings.TrackSpecs_Pitboxes_FormatTooltip, () => SelectedTrackConfiguration.SpecsPitboxes, v => SelectedTrackConfiguration.SpecsPitboxes = v);
+                RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => SelectedTrackConfiguration.SpecsLength,
+                        v => SelectedTrackConfiguration.SpecsLength = v);
+                RegisterSpec("width", AppStrings.TrackSpecs_Width_FormatTooltip, () => SelectedTrackConfiguration.SpecsWidth,
+                        v => SelectedTrackConfiguration.SpecsWidth = v);
+                RegisterSpec("pits", AppStrings.TrackSpecs_Pitboxes_FormatTooltip, () => SelectedTrackConfiguration.SpecsPitboxes,
+                        v => SelectedTrackConfiguration.SpecsPitboxes = v);
             }
+
+            private DelegateCommand _manageSkinsCommand;
+
+            public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
+                TrackSkinsListPage.Open(SelectedObject);
+            }));
+
+            private DelegateCommand _viewSkinsResultCommand;
+
+            public DelegateCommand ViewSkinsResultCommand => _viewSkinsResultCommand ?? (_viewSkinsResultCommand = new DelegateCommand(() => {
+                WindowsHelper.ViewDirectory(SelectedObject.DefaultSkinDirectory);
+            }));
         }
 
         protected override void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
@@ -341,6 +355,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
             });
             InitializeComponent();
+            this.AddWidthCondition(640).Add(SkinsColumn);
         }
 
         private ViewModel _model;

@@ -81,7 +81,7 @@
     <Compile Include="Repairs\CarModelRepair.cs" />
     <Compile Include="Repairs\CarPitStopParamsRepair.cs" />
     <Compile Include="CarRepair.cs" />
-    <Compile Include="Repairs\CarSoundRepair.cs" />
+    <Compile Include="Repairs\CarObsoleteTakenSoundRepair.cs" />
     <Compile Include="CommonFixes.cs" />
     <Compile Include="ContentRepairSuggestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

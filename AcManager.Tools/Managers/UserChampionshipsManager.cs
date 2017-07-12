@@ -238,7 +238,7 @@ namespace AcManager.Tools.Managers {
         private string _currentId;
 
         public string CurrentId {
-            get { return _currentId; }
+            get => _currentId;
             set {
                 if (Equals(value, _currentId)) return;
                 _currentId = value;
@@ -253,8 +253,8 @@ namespace AcManager.Tools.Managers {
         }
 
         public UserChampionshipObject Current {
-            get { return GetById(CurrentId); }
-            set { CurrentId = value.Id; }
+            get => GetById(CurrentId);
+            set => CurrentId = value.Id;
         }
         #endregion
     }

@@ -296,7 +296,7 @@
     <value>Can’t remove original file “{0}” to install update. Try to remove it manually and then run “{1}”.</value>
   </data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
-    <value>Can’t process update: {0}. Try to install a new version manually, sorry.</value>
+    <value>Can’t update: {0}. Sorry, but you’ll have to update it manually.</value>
   </data>
   <data name="Shared_CarSetup" xml:space="preserve">
     <value>Car setup</value>

@@ -27,7 +27,7 @@ namespace AcManager.Tools.SemiGui {
                     File.Move(backup, destination);
                 }
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t restore PP-filter after Oculus", e);
+                NonfatalError.NotifyBackground("Canâ€™t restore PP-filter after Oculus", e);
             }
         }
 
@@ -51,9 +51,9 @@ namespace AcManager.Tools.SemiGui {
                     File.Move(destination, backup);
                 }
 
-                FileUtils.HardlinkOrCopy(source, destination);
+                FileUtils.HardLinkOrCopy(source, destination);
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t set PP-filter for Oculus", e);
+                NonfatalError.NotifyBackground("Canâ€™t set PP-filter for Oculus", e);
             }
 
             return this;

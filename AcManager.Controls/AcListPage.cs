@@ -81,7 +81,6 @@ namespace AcManager.Controls {
                 }
             });
 
-            // PreviewMouseRightButtonDown += OnRightMouseDown;
             SizeChanged += OnSizeChanged;
         }
 
@@ -115,9 +114,7 @@ namespace AcManager.Controls {
             set => SetValue(BatchMenuVisibleProperty, value);
         }
 
-        protected virtual void OnItemDoubleClick([NotNull] AcObjectNew item) {
-
-        }
+        protected virtual void OnItemDoubleClick([NotNull] AcObjectNew item) {}
 
         public AcObjectNew GetSelectedItem() {
             return (_list?.SelectedItem as AcItemWrapper)?.Value as AcObjectNew;
@@ -167,6 +164,23 @@ namespace AcManager.Controls {
 
         private void OnRightMouseDown(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
+
+            if (BatchMenuVisible) {
+                var item = _list?.ItemsSource.OfType<AcItemWrapper>().ElementAtOrDefault(_list.GetMouseItemIndex());
+                if (item != null) {
+                    var selected = _list.SelectedItems.OfType<AcItemWrapper>().ToList();
+                    _list.SelectedItem = item;
+                    foreach (var s in selected) {
+                        _list.SelectedItems.Add(s);
+                    }
+                }
+            }
+        }
+
+        private void OnRightMouseUp(object sender, MouseButtonEventArgs e) {
+            if (BatchMenuVisible) {
+                e.Handled = true;
+            }
         }
 
         private Style _baseItemStyle;
@@ -517,6 +531,8 @@ namespace AcManager.Controls {
 
             if (_list != null) {
                 _list.PreviewMouseLeftButtonDown -= OnLeftMouseDown;
+                _list.PreviewMouseRightButtonDown -= OnRightMouseDown;
+                _list.PreviewMouseRightButtonUp -= OnRightMouseUp;
                 _list.PreviewKeyDown -= OnKeyDown;
                 _list.SizeChanged -= OnListSizeChanged;
             }
@@ -560,6 +576,8 @@ namespace AcManager.Controls {
             if (_list != null) {
                 _list.ScrollIntoView(_list.SelectedItem);
                 _list.PreviewMouseLeftButtonDown += OnLeftMouseDown;
+                _list.PreviewMouseRightButtonDown += OnRightMouseDown;
+                _list.PreviewMouseRightButtonUp += OnRightMouseUp;
                 _list.PreviewKeyDown += OnKeyDown;
                 _list.SizeChanged += OnListSizeChanged;
                 _listSizeConditions = new SizeRelatedCondition[] {

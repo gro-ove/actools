@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -39,9 +41,28 @@ namespace AcManager.Pages.Dialogs {
                 ImageHeight = newValue;
             }
 
+            public void AdjustImageWidth() {
+                SetImageWidth(ImageHeight * TargetWidth / TargetHeight);
+            }
+
+            public void AdjustImageHeight() {
+                SetImageHeight(ImageWidth * TargetHeight / TargetWidth);
+            }
+
             public void Scale(double d) {
                 SetImageWidth(ImageWidth * d);
                 SetImageHeight(ImageHeight * d);
+            }
+
+            public void Move(double dx, double dy) {
+                OffsetX += dx;
+                OffsetY += dy;
+            }
+
+            public void MovePercentage(double dx, double dy) {
+                var s = Math.Min(ImageWidth, MaxHeight);
+                OffsetX += s * dx * 0.01;
+                OffsetY += s * dy * 0.01;
             }
 
             public void Check() {
@@ -76,14 +97,12 @@ namespace AcManager.Pages.Dialogs {
                 MinHeight = Math.Min(TargetHeight, MaxHeight * 0.75);
             }
         }
-        
+
         private BetterImage.BitmapEntry _image;
         private readonly CropModel _model;
 
         public BitmapSource Result { get; private set; }
-
         public Rect ResultRectRelative { get; private set; }
-
         public Int32Rect ResultRect { get; private set; }
 
         /// <summary>
@@ -154,6 +173,7 @@ namespace AcManager.Pages.Dialogs {
             };
 
             LoadImage(filename, startRect).Forget();
+            UpdateControlsToScale();
         }
 
         private async Task LoadImage(string filename, Rect? startRect) {
@@ -228,9 +248,178 @@ namespace AcManager.Pages.Dialogs {
             _state = EditorState.Idle;
         }
 
+        private double GetScaleMultiplier() {
+            if (Keyboard.Modifiers == ModifierKeys.Control) return 1.25;
+            if (Keyboard.Modifiers == ModifierKeys.Shift) return 1.025;
+            return 1.1;
+        }
+
+        private double GetMultiplier() {
+            if (Keyboard.Modifiers == ModifierKeys.Control) return 4;
+            if (Keyboard.Modifiers == ModifierKeys.Shift) return 0.25;
+            return 1;
+        }
+
         private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
-            _model.Scale(e.Delta > 0 ? 1.1 : 0.91);
+            _model.Scale(e.Delta > 0 ? GetScaleMultiplier() : 1d / GetScaleMultiplier());
             UpdateView();
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e) {
+            switch (e.Key) {
+                case Key.OemMinus:
+                case Key.Subtract:
+                    _model.Scale(1d / GetScaleMultiplier());
+                    break;
+                case Key.OemPlus:
+                case Key.Add:
+                    _model.Scale(GetScaleMultiplier());
+                    break;
+                case Key.Left:
+                case Key.NumPad4:
+                    _model.MovePercentage(-GetMultiplier(), 0d);
+                    break;
+                case Key.Right:
+                case Key.NumPad6:
+                    _model.MovePercentage(GetMultiplier(), 0d);
+                    break;
+                case Key.Up:
+                case Key.NumPad8:
+                    _model.MovePercentage(0d, -GetMultiplier());
+                    break;
+                case Key.NumPad7:
+                    _model.MovePercentage(-GetMultiplier(), -GetMultiplier());
+                    break;
+                case Key.NumPad9:
+                    _model.MovePercentage(GetMultiplier(), -GetMultiplier());
+                    break;
+                case Key.Down:
+                case Key.NumPad2:
+                    _model.MovePercentage(0d, GetMultiplier());
+                    break;
+                case Key.NumPad1:
+                    _model.MovePercentage(-GetMultiplier(), GetMultiplier());
+                    break;
+                case Key.NumPad3:
+                    _model.MovePercentage(GetMultiplier(), GetMultiplier());
+                    break;
+                default:
+                    return;
+            }
+
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void UpdateControlsToScale() {
+            var scale = Math.Max(Viewbox.Scale.Height, 0.01);
+            CutBorder.BorderThickness = new Thickness(1d / scale);
+            CutBorder.Margin = new Thickness(-1d / scale);
+
+            var size = 8d / scale;
+            var margin = -size / 2d;
+            ResizeTop.Height = size;
+            ResizeTop.Margin = new Thickness(0d, margin, 0d, 0d);
+            ResizeBottom.Height = size;
+            ResizeBottom.Margin = new Thickness(0d, 0d, 0d, margin);
+            ResizeLeft.Width = size;
+            ResizeLeft.Margin = new Thickness(margin, 0d, 0d, 0d);
+            ResizeRight.Width = size;
+            ResizeRight.Margin = new Thickness(0d, 0d, margin, 0d);
+
+            ResizeTopLeft.Width = ResizeTopLeft.Height = size;
+            ResizeTopLeft.Margin = new Thickness(margin, margin, 0d, 0d);
+            ResizeTopRight.Width = ResizeTopRight.Height = size;
+            ResizeTopRight.Margin = new Thickness(0d, margin, margin, 0d);
+            ResizeBottomLeft.Width = ResizeBottomLeft.Height = size;
+            ResizeBottomLeft.Margin = new Thickness(margin, 0d, 0d, margin);
+            ResizeBottomRight.Width = ResizeBottomRight.Height = size;
+            ResizeBottomRight.Margin = new Thickness(0d, 0d, margin, margin);
+        }
+
+        private void OnViewboxSizeChanged(object sender, SizeChangedEventArgs e) {
+            UpdateControlsToScale();
+        }
+
+        private void OnResizeTopDelta(object sender, DragDeltaEventArgs e) {
+            var dy = e.VerticalChange * Viewbox.Scale.Height;
+            _model.ImageHeight -= dy;
+            _model.OffsetY += dy;
+            _model.AdjustImageWidth();
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeBottomDelta(object sender, DragDeltaEventArgs e) {
+            var dy = e.VerticalChange * Viewbox.Scale.Height;
+            _model.ImageHeight += dy;
+            _model.AdjustImageWidth();
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeLeftDelta(object sender, DragDeltaEventArgs e) {
+            var dx = e.HorizontalChange * Viewbox.Scale.Width;
+            _model.ImageWidth -= dx;
+            _model.OffsetX += dx;
+            _model.AdjustImageHeight();
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeRightDelta(object sender, DragDeltaEventArgs e) {
+            var dx = e.HorizontalChange * Viewbox.Scale.Width;
+            _model.ImageWidth += dx;
+            _model.AdjustImageHeight();
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void GetCornerD(DragDeltaEventArgs e, out double dx, out double dy, double invert) {
+            var multiplier = GetScaleMultiplier();
+            dx = e.HorizontalChange * Viewbox.Scale.Width * multiplier;
+            dy = e.VerticalChange * Viewbox.Scale.Height * multiplier;
+            if (dx.Abs() > dy.Abs()) {
+                dx = invert.Sign() * dy * _model.TargetWidth / _model.TargetHeight;
+            } else {
+                dy = invert.Sign() * dx * _model.TargetHeight / _model.TargetWidth;
+            }
+        }
+
+        private void OnResizeTopLeftDelta(object sender, DragDeltaEventArgs e) {
+            GetCornerD(e, out var dx, out var dy, 1d);
+            _model.ImageHeight -= dy;
+            _model.OffsetY += dy;
+            _model.ImageWidth -= dx;
+            _model.OffsetX += dx;
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeTopRightDelta(object sender, DragDeltaEventArgs e) {
+            GetCornerD(e, out var dx, out var dy, -1d);
+            _model.ImageHeight -= dy;
+            _model.OffsetY += dy;
+            _model.ImageWidth += dx;
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeBottomLeftDelta(object sender, DragDeltaEventArgs e) {
+            GetCornerD(e, out var dx, out var dy, -1d);
+            _model.ImageHeight += dy;
+            _model.ImageWidth -= dx;
+            _model.OffsetX += dx;
+            UpdateView();
+            e.Handled = true;
+        }
+
+        private void OnResizeBottomRightDelta(object sender, DragDeltaEventArgs e) {
+            GetCornerD(e, out var dx, out var dy, 1d);
+            _model.ImageHeight += dy;
+            _model.ImageWidth += dx;
+            UpdateView();
+            e.Handled = true;
         }
     }
 }

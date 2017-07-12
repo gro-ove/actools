@@ -4,7 +4,7 @@ using StringBasedFilter;
 namespace AcManager.Tools.Filters {
     public class CarSkinObjectTester : ITester<CarSkinObject> {
         public static CarSkinObjectTester Instance = new CarSkinObjectTester();
-        
+
         public static string InnerParameterFromKey(string key) {
             switch (key) {
                 case "skinname":

@@ -33,20 +33,10 @@ namespace AcManager.Tools.Objects {
             CarId = carId;
         }
 
-        /// <summary>
-        /// So app will get names like “Black” instead of “09 Black” from “09_black”
-        /// </summary>
-        private static readonly Regex IdFix = new Regex(@"^\d\d?_", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-        [NotNull]
-        public static string NameFromId([NotNull] string id) {
-            return AcStringValues.NameFromId(IdFix.Replace(id, ""));
-        }
-
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
-                Name = NameFromId(Id);
+                Name =  AcStringValues.NameFromId(Id);
                 Changed = true;
                 return true;
             }

@@ -31,12 +31,13 @@
             </Ellipse>
         </VisualBrush.Visual>
     </VisualBrush>
-    <VisualBrush x:Key="Ultimate">
+
+    <VisualBrush x:Key="UltimateBrush">
         <VisualBrush.Visual>
             <Canvas Width="8" Height="8">
-                <Rectangle Fill="Yellow" Width="8" Height="8" />
+                <Rectangle Fill="{DynamicResource GoldBrush}" Width="8" Height="8" />
                 <Rectangle Fill="Green" Margin="0 4 0 0" Width="8" Height="4" />
-                <Path Fill="Yellow" Width="8" Height="8">
+                <Path Fill="{DynamicResource GoldBrush}" Width="8" Height="8">
                     <Path.Data>
                         <PathGeometry>
                             <PathGeometry.Figures>
@@ -56,9 +57,6 @@
             </Canvas>
         </VisualBrush.Visual>
     </VisualBrush>
-    <Brush x:Key="Gold">Yellow</Brush>
-    <Brush x:Key="Silver">Silver</Brush>
-    <Brush x:Key="Bronze">Brown</Brush>
 
     <sys:Double x:Key="TileSize">160</sys:Double>
 
@@ -74,8 +72,8 @@
         <Setter Property="Margin" Value="4 0" />
     </Style>
 
-    <con:PlaceToColorConverter x:Key="PlaceToColorConverter" FirstPlaceColor="{StaticResource Gold}" SecondPlaceColor="{StaticResource Silver}"
-            ThirdPlaceColor="{StaticResource Bronze}" DefaultColor="Transparent" />
+    <con:PlaceToBrushConverter x:Key="PlaceToColorConverter" FirstPlaceBrush="{DynamicResource GoldBrush}" SecondPlaceBrush="{DynamicResource SilverBrush}"
+            ThirdPlaceBrush="{DynamicResource BronzeBrush}" DefaultBrush="Transparent" />
     <con:KunosCareerTypeToIconConverter x:Key="KunosCareerTypeToIconConverter" ChampionshipIconData="{StaticResource LeaderboardIconData}"
             SingleEventsIconData="{StaticResource ListCheckIconData}" />
 
@@ -86,7 +84,7 @@
 
     <DataTemplate x:Key="DataGridCell.DriverName" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">
         <DockPanel HorizontalAlignment="Left">
-            <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Right" Margin="8 0 8 4"
+            <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Right" Margin="8 2 8 0"
                     Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
                     Visibility="{Binding TakenPlacePrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{Binding Name}" x:Name="NameTextBlock" TextTrimming="CharacterEllipsis" />

@@ -37,8 +37,7 @@ namespace FirstFloor.ModernUI {
         private List<TWrapper> _items;
 
         protected WrappedCollection([NotNull] IReadOnlyList<TSource> collection) {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
-            _source = collection;
+            _source = collection ?? throw new ArgumentNullException(nameof(collection));
 
             var notify = collection as INotifyCollectionChanged;
             if (notify != null) {
@@ -57,6 +56,33 @@ namespace FirstFloor.ModernUI {
             _items = null;
             OnCountAndIndexerChanged();
             OnCollectionReset();
+        }
+
+        private int IndexOf(TSource value) {
+            for (var i = 0; i < _source.Count; i++) {
+                if (Equals(_source[i], value)) return i;
+            }
+
+            return -1;
+        }
+
+        public void Refresh(TSource source) {
+            var index = IndexOf(source);
+            if (index == -1) return;
+
+            var items = _items;
+            if (items == null) {
+                Reset();
+                return;
+            }
+
+            var oldItem = items[index];
+            var newItem = Wrap(source);
+            if (!Equals(oldItem, newItem)) {
+                items[index] = newItem;
+                OnIndexerChanged();
+                OnCollectionChanged(NotifyCollectionChangedAction.Replace, oldItem, newItem, index);
+            }
         }
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -233,8 +259,8 @@ namespace FirstFloor.ModernUI {
         }
 
         object IList.this[int index] {
-            get { return this[index]; }
-            set { throw new NotSupportedException(); }
+            get => this[index];
+            set => throw new NotSupportedException();
         }
 
         public TWrapper this[int index] {
@@ -242,7 +268,7 @@ namespace FirstFloor.ModernUI {
                 if (_items == null) _items = Rebuild();
                 return _items[index];
             }
-            set { throw new NotSupportedException(); }
+            set => throw new NotSupportedException();
         }
         #endregion
 

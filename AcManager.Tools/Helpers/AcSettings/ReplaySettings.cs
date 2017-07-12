@@ -33,10 +33,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             get {
                 if (_recommendedSize != null) return _recommendedSize;
 
-                var memStatus = new Kernel32.MEMORYSTATUSEX();
+                var memStatus = new Kernel32.MemoryStatusEx();
                 if (!Kernel32.GlobalMemoryStatusEx(memStatus)) return null;
 
-                var installedMemory = memStatus.ullTotalPhys;
+                var installedMemory = memStatus.Total;
                 _recommendedSize = Math.Min((int)(0.1 * installedMemory / 1024 / 1024), 2000);
                 return _recommendedSize;
             }

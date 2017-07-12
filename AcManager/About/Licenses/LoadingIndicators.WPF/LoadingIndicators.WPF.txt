@@ -1,0 +1,4 @@
+name: LoadingIndicators.WPF
+url: https://github.com/100GPing100/LoadingIndicators.WPF
+content: LICENSE
+sid: fa9py14i

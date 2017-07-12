@@ -9,7 +9,7 @@ using SlimDX.Windows;
 using Timer = System.Windows.Forms.Timer;
 
 namespace AcTools.Render.Wrapper {
-    public class BaseFormWrapper {
+    public class FormWrapperBase {
         private readonly string _title;
 
         public readonly BaseRenderer Renderer;
@@ -17,7 +17,7 @@ namespace AcTools.Render.Wrapper {
 
         protected bool Paused { get; private set; }
 
-        private static BaseFormWrapper _current;
+        private static FormWrapperBase _current;
 
         public static bool StopCurrent() {
             if (_current != null && !_current.Renderer.Disposed && !_current._closed) {
@@ -35,7 +35,7 @@ namespace AcTools.Render.Wrapper {
             return Task.Delay(StopCurrent() ? 200 : 0);
         }
 
-        protected BaseFormWrapper(BaseRenderer renderer, string title, int width, int height) {
+        protected FormWrapperBase(BaseRenderer renderer, string title, int width, int height) {
             if (StopCurrent()) {
                 throw new Exception("Can’t have two renderers running at the same time");
             }
@@ -98,12 +98,16 @@ namespace AcTools.Render.Wrapper {
         protected virtual void OnKeyDown(object sender, KeyEventArgs args) {}
 
         protected virtual void OnKeyUp(object sender, KeyEventArgs args) {
-            switch (args.KeyCode) { 
+            switch (args.KeyCode) {
                 case Keys.Escape:
                     args.Handled = true;
                     Form.Close();
                     break;
             }
+        }
+
+        public void OnKeyUp(KeyEventArgs args) {
+            OnKeyUp(Form, args);
         }
 
         private bool _fullscreenEnabled;

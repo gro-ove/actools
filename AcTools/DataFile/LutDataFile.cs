@@ -13,11 +13,11 @@ namespace AcTools.DataFile {
         public LutDataFile(string filename) : base(filename) {}
         public LutDataFile() {}
 
-        public readonly Lut Values = new Lut(); 
+        public readonly Lut Values = new Lut();
 
         protected override void ParseString(string data) {
             Clear();
-            
+
             var started = -1;
             var key = double.NaN;
             var malformed = -1;
@@ -30,13 +30,24 @@ namespace AcTools.DataFile {
                             var next = data[i + 1];
                             if (next == '\n' || next == '\r') continue;
                         }
+
+                        AcToolsLogging.Write($@"Unexpected “\r” at {line}");
                         malformed = line;
                         break;
 
                     case '|':
                         if (started != -1) {
                             if (!double.IsNaN(key) || !FlexibleParser.TryParseDouble(data.Substring(started, i - started), out key)) {
-                                if (malformed == -1) malformed = line;
+                                if (malformed == -1) {
+                                    if (!double.IsNaN(key)) {
+                                        AcToolsLogging.Write($@"Key already defined! But then, there is a second one, at {line}");
+                                    } else {
+                                        AcToolsLogging.Write($@"Failed to parse key “{data.Substring(started, i - started)}” at {line}");
+                                    }
+
+                                    malformed = line;
+                                }
+
                                 SkipLine(data, ref i, ref line);
                                 key = double.NaN;
                             }
@@ -79,13 +90,19 @@ namespace AcTools.DataFile {
         private static void Finish(Lut values, string data, int index, int line, ref double key, ref int started, ref int malformed) {
             if (started != -1) {
                 if (double.IsNaN(key)) {
-                    if (malformed == -1) malformed = line;
+                    if (malformed == -1) {
+                        AcToolsLogging.Write($@"Key is NaN at {line}");
+                        malformed = line;
+                    }
                 } else {
                     double value;
                     if (FlexibleParser.TryParseDouble(data.Substring(started, index - started), out value)) {
                         values.Add(new LutPoint(key, value));
                     } else {
-                        if (malformed == -1) malformed = line;
+                        if (malformed == -1) {
+                            AcToolsLogging.Write($@"Failed to parse key “{data.Substring(started, index - started)}” at {line}");
+                            malformed = line;
+                        }
                     }
                     key = double.NaN;
                 }

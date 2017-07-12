@@ -18,6 +18,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -51,6 +52,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void ResizeMirrorBuffers() {
+            if (DeviceContextHolder == null) return;
             _mirrorBuffer?.Resize(DeviceContextHolder, Width, Height, null);
             _mirrorDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
             _mirrorBlurBuffer?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
@@ -1109,7 +1111,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         }
 
         protected override void DrawOverride() {
-           if (!UseDof || _dof == null || _lastDepthBuffer == null) {
+            if (!UseDof || _dof == null) {
                 base.DrawOverride();
             } else if (_realTimeAccumulationMode) {
                 DrawRealTimeDofAccumulation();

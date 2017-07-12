@@ -97,7 +97,7 @@ namespace AcTools.Render.Wrapper {
         }
     }
 
-    public abstract class BaseMouseFormWrapper : BaseFormWrapper {
+    public abstract class BaseMouseFormWrapper : FormWrapperBase {
         public bool FormMoving;
 
         public BaseMouseFormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {

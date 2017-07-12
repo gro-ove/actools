@@ -231,8 +231,8 @@ namespace AcManager.Pages.Dialogs {
                     MessageBoxResult.Yes) {
                 // MaxY values were updated while creating new GraphData instances above
                 var postfix = dlg.Multipler == 1d ? "*" : "";
-                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture) + postfix);
-                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture) + postfix);
+                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
             }
         }
 

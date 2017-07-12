@@ -30,6 +30,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -70,6 +71,24 @@ namespace AcManager.CustomShowroom {
                 Model.Dispose();
             });
         }
+
+        protected override void OnKeyUp(KeyEventArgs e) {
+            if (Model.Mode != Mode.Main && (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack)) {
+                Model.Mode = Mode.Main;
+                e.Handled = true;
+            }
+
+            base.OnKeyUp(e);
+        }
+
+        /*protected override void OnKeyDown(KeyEventArgs e) {
+            if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack) {
+                Model.Mode = Mode.Main;
+                e.Handled = true;
+            }
+
+            base.OnKeyDown(e);
+        }*/
 
         private bool _loaded;
 

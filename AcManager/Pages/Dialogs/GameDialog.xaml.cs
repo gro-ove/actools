@@ -32,26 +32,7 @@ using JetBrains.Annotations;
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
         public static readonly int DefinitelyNonPrizePlace = 99999;
-
-        [Localizable(false)]
-        private static readonly GoodShuffle<string> ProgressStyles = GoodShuffle.Get(new[] {
-            // from default FirstFloor.ModernUI set
-            "RotatingPlaneProgressRingStyle",
-            "DoubleBounceProgressRingStyle",
-            "WaveProgressRingStyle",
-            "WanderingCubesProgressRingStyle",
-            "PulseProgressRingStyle",
-            "ChasingDotsProgressRingStyle",
-            "ThreeBounceProgressRingStyle",
-            "CircleProgressRingStyle",
-
-            // from LoadingIndicators.WPF
-            "LoadingArcsProgressRingStyle",
-            "LoadingArcsRingProgressRingStyle",
-
-            // custom
-            "BallWithPlatformProgressRingStyle",
-        });
+        private static GoodShuffle<string> _progressStyles;
 
         private ViewModel Model => (ViewModel)DataContext;
 
@@ -61,7 +42,11 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new ViewModel();
             InitializeComponent();
 
-            ProgressRing.Style = FindResource(ProgressStyles.Next) as Style;
+            if (_progressStyles == null) {
+                _progressStyles = GoodShuffle.Get((string[])FindResource("ProgressRingStyles"));
+            }
+
+            ProgressRing.Style = FindResource(_progressStyles.Next) as Style;
 
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;

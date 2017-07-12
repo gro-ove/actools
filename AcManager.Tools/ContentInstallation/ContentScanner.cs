@@ -502,8 +502,24 @@ namespace AcManager.Tools.ContentInstallation {
                         name = AcStringValues.NameFromId(skinId);
                     }
 
-                    return new CarSkinContentEntry(directory.Key ?? "", skinId, carId,
-                            name, icon);
+                    return new CarSkinContentEntry(directory.Key ?? "", skinId, carId, name, icon);
+                }
+            }
+
+            var uiTrackSkin = directory.GetSubFile("ui_track_skin.json");
+            if (uiTrackSkin != null && TracksManager.Instance != null) {
+                var icon = await (directory.GetSubFile("preview.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                cancellation.ThrowIfCancellationRequested();
+
+                var data = await uiTrackSkin.Info.ReadAsync() ?? throw new MissingContentException();
+                var parsed = JsonExtension.Parse(data.ToUtf8String());
+                var skinId = parsed.GetStringValueOnly("id") ?? directory.Name;
+                var trackId = parsed.GetStringValueOnly("track");
+                var name = parsed.GetStringValueOnly("name");
+
+                if (skinId != null && trackId != null) {
+                    return new TrackSkinContentEntry(directory.Key ?? "", skinId, trackId, name,
+                            parsed.GetStringValueOnly("version"), icon);
                 }
             }
 
@@ -539,6 +555,14 @@ namespace AcManager.Tools.ContentInstallation {
             // New textures
             if (directory.NameLowerCase == "damage" && directory.HasSubFile("flatspot_fl.png")) {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "damage");
+            }
+
+            if (directory.NameLowerCase == "clouds" && directory.Files.Any(x => x.NameLowerCase.StartsWith("cloud") && x.NameLowerCase.EndsWith(".dds"))) {
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "clouds");
+            }
+
+            if (directory.NameLowerCase == "people" && (directory.HasSubFile("crowd_sit.dds") || directory.HasSubFile("people_sit.dds"))) {
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "people");
             }
 
             return null;
@@ -623,7 +647,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId,
                 [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Scanning for content…"));
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Scanning…"));
 
             var result = new List<ContentEntryBase>();
             var missingContent = false;

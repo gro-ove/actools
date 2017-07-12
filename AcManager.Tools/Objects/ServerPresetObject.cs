@@ -110,7 +110,7 @@ namespace AcManager.Tools.Objects {
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
             LoopMode = section.GetBool("LOOP_MODE", true);
-            PickupMode = section.GetBool("PICKUP_MODE_ENABLED", false);
+            PickupMode = section.GetBool("PICKUP_MODE_ENABLED", true);
             PickupModeLockedEntryList = section.GetBool("LOCKED_ENTRY_LIST", false);
             Capacity = section.GetInt("MAX_CLIENTS", 3);
 

@@ -15,11 +15,9 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {
         private string _guidsFilename;
-
         public string GuidsFilename => _guidsFilename ?? (_guidsFilename = Path.Combine(Location, @"sfx", @"GUIDs.txt"));
 
         private string _soundbankFilename;
-
         public string SoundbankFilename => _soundbankFilename ?? (_soundbankFilename = Path.Combine(Location, @"sfx", $@"{Id}.bank"));
 
         private static Regex _guidsRegex;

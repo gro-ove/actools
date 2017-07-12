@@ -7,6 +7,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.Settings {

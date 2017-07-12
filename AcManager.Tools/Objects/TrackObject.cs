@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -13,7 +18,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class TrackObject : TrackObjectBase {
+    public partial class TrackObject : TrackObjectBase {
         public sealed override string LayoutId { get; }
 
         [NotNull]
@@ -45,6 +50,8 @@ namespace AcManager.Tools.Objects {
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
                             }).Prepend((TrackObjectBase)this));
+
+                    SkinsManager = InitializeSkins();
                     return;
                 }
             } catch (AcErrorException e) {
@@ -56,6 +63,8 @@ namespace AcManager.Tools.Objects {
             LayoutId = null;
             IdWithLayout = Id;
             MultiLayouts = null;
+
+            SkinsManager = InitializeSkins();
         }
 
         private TrackObjectBase _selectedLayout;
@@ -87,6 +96,9 @@ namespace AcManager.Tools.Objects {
             JsonFilename = Path.Combine(uiDirectory, "ui_track.json");
             PreviewImage = Path.Combine(uiDirectory, "preview.png");
             OutlineImage = Path.Combine(uiDirectory, "outline.png");
+            SkinsDirectory = Path.Combine(Location, "skins", "cm_skins");
+            DefaultSkinDirectory = Path.Combine(Location, "skins", "default");
+            SkinsCombinedFilename = Path.Combine(DefaultSkinDirectory, "cm_skins_active.json");
         }
 
         private class LayoutsInformation {
@@ -155,6 +167,7 @@ namespace AcManager.Tools.Objects {
             }
 
             base.Reload();
+            SkinsManager.Rescan();
 
             if (MultiLayouts == null) return;
             foreach (var layout in MultiLayouts.Skip(1)) {

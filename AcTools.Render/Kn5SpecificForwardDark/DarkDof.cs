@@ -42,8 +42,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         public int? MaxSize {
-            get { return _maxSize; }
-            set { _maxSize = value ?? 960; }
+            get => _maxSize;
+            set => _maxSize = value ?? 960;
         }
 
         private Buffer _buffer;
@@ -99,7 +99,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public void Process(DeviceContextHolder holder, ShaderResourceView depthView, ShaderResourceView colorView, ICamera camera, RenderTargetView target,
                 bool colorIsTarget) {
-            // let’s save original if color is the same as target
+            // letâ€™s save original if color is the same as target
             if (colorIsTarget) {
                 _copyHelper.Draw(holder, colorView, BufferScene.TargetView);
                 _effect.FxInputTexture.SetResource(BufferScene.View);

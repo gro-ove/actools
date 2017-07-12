@@ -51,7 +51,7 @@ namespace AcManager.Tools.GameProperties {
 
                 do {
                     if (!await EnsureRunnedAsync()) {
-                        Logging.Error("Can’t keep RHM service running");
+                        Logging.Error("Canâ€™t keep RHM service running");
                         break;
                     }
 
@@ -208,7 +208,7 @@ namespace AcManager.Tools.GameProperties {
                 await Task.Delay(10);
             }
 
-            NonfatalError.Notify("Can’t find app’s window");
+            NonfatalError.Notify("Canâ€™t find appâ€™s window");
             EnsureStopped();
             return false;
         }
@@ -241,7 +241,7 @@ namespace AcManager.Tools.GameProperties {
             if (!CheckSettings()) return;
 
             if (NonCmInstanceRunned()) {
-                NonfatalError.Notify("Can’t show RHM settings", "Real Head Motion already started, but not by CM.");
+                NonfatalError.Notify("Canâ€™t show RHM settings", "Real Head Motion already started, but not by CM.");
                 return;
             }
 

@@ -51,6 +51,7 @@ namespace AcManager.Pages.ContentTools {
             CarRepair.AddType<CarWeightRepair>();
             CarRepair.AddType<CarTorqueRepair>();
             CarRepair.AddType<CarWronglyTakenSoundRepair>();
+            CarRepair.AddType<CarObsoleteSoundRepair>();
         }
 
         public class BrokenDetails : NotifyPropertyChanged {
@@ -61,7 +62,7 @@ namespace AcManager.Pages.ContentTools {
             private int _leftUnsolved;
 
             public int LeftUnsolved {
-                get { return _leftUnsolved; }
+                get => _leftUnsolved;
                 set {
                     if (Equals(value, _leftUnsolved)) return;
                     _leftUnsolved = value;
@@ -96,7 +97,7 @@ namespace AcManager.Pages.ContentTools {
 
             public AsyncCommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new AsyncCommand(async () => {
                 try {
-                    var list = await Task.Run(() => CarRepair.GetObsoletableAspects(Car, true).ToList());
+                    var list = await Task.Run(() => CarRepair.GetRepairSuggestions(Car, true).ToList());
                     Aspects.ReplaceEverythingBy(list);
                     UpdateLeftUnsolved();
                 } catch (Exception e) {
@@ -159,7 +160,7 @@ namespace AcManager.Pages.ContentTools {
             private bool _ratingLoading;
 
             public bool RatingLoading {
-                get { return _ratingLoading; }
+                get => _ratingLoading;
                 set {
                     if (Equals(value, _ratingLoading)) return;
                     _ratingLoading = value;
@@ -185,7 +186,7 @@ namespace AcManager.Pages.ContentTools {
             private static async Task<SimularEntry> Wrap(CarObject car, HashStorage.Simular baseSimular) {
                 var found = await CarsManager.Instance.GetByIdAsync(baseSimular.CarId);
                 if (found == null) return null;
-                
+
                 var parent = car.Parent ?? car;
                 if (parent == (found.Parent ?? found)) {
                     // let’s just ignore cases when cars are in the same group
@@ -341,7 +342,7 @@ All found similarities:
                         };
                     }
                 }
-                
+
                 if (similarFront.Count > 0) {
                     result.Add(new RatingEntry(
                             frontGeometry ? $"Front suspension geometry is similar to {similarFront[0].Car}" : $"Front suspension is similar to {similarFront[0].Car}",
@@ -353,7 +354,7 @@ All found similarities:
 {similarFront.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
                             }));
                 }
-                
+
                 if (similarRear.Count > 0) {
                     result.Add(new RatingEntry(
                             rearGeometry ? $"Rear suspension geometry is similar to {similarRear[0].Car}" : $"Rear suspension is similar to {similarRear[0].Car}",
@@ -480,7 +481,7 @@ All found similarities:
             private async Task CollectRatings() {
                 if (_collectingRatings) return;
                 _collectingRatings = true;
-                
+
                 RatingLoading = true;
 
                 try {
@@ -614,8 +615,8 @@ All found similarities:
         [CanBeNull]
         private static BrokenDetails GetDetails(CarObject car, bool models, bool allowEmpty, bool ratingMode) {
             if (car.AcdData?.IsEmpty != false) return null;
-            
-            var list = CarRepair.GetObsoletableAspects(car, models).ToList();
+
+            var list = CarRepair.GetRepairSuggestions(car, models).ToList();
             return allowEmpty || list.Count > 0 ? new BrokenDetails(car, list, ratingMode) : null;
         }
 
@@ -668,7 +669,7 @@ All found similarities:
         private List<BrokenDetails> _brokenCars;
 
         public List<BrokenDetails> BrokenCars {
-            get { return _brokenCars; }
+            get => _brokenCars;
             set {
                 if (Equals(value, _brokenCars)) return;
                 _brokenCars = value;
@@ -681,7 +682,7 @@ All found similarities:
         private BrokenDetails _brokenCar;
 
         public BrokenDetails BrokenCar {
-            get { return _brokenCar; }
+            get => _brokenCar;
             set {
                 if (Equals(value, _brokenCar)) return;
                 _brokenCar = value;

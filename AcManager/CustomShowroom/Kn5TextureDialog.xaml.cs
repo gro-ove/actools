@@ -168,17 +168,19 @@ namespace AcManager.CustomShowroom {
 
             private const string KeyDimensions = "__CarTextureDialog.Dimensions";
 
-            private CommandBase _uvCommand;
+            private AsyncCommand<string> _uvCommand;
 
-            public ICommand UvCommand => _uvCommand ?? (_uvCommand = new AsyncCommand<string>(async o => {
+            public AsyncCommand<string> UvCommand => _uvCommand ?? (_uvCommand = new AsyncCommand<string>(async o => {
+                var size = FlexibleParser.TryParseInt(o);
                 var filename = FilesStorage.Instance.GetTemporaryFilename(
                         FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName)) + " UV.png");
 
                 int width, height;
-                switch (o) {
-                    case "custom":
+                switch (size) {
+                    case null:
                         var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
-                                ValuesStorage.GetString(KeyDimensions, ""), @"2048x2048");
+                                ValuesStorage.GetString(KeyDimensions, PreviewImage != null ? $"{PreviewImage?.PixelWidth}x{PreviewImage?.PixelHeight}" : ""),
+                                @"2048x2048");
                         if (string.IsNullOrWhiteSpace(result)) return;
 
                         ValuesStorage.Set(KeyDimensions, result);
@@ -199,8 +201,13 @@ namespace AcManager.CustomShowroom {
                         }
                         break;
 
+                    case -1:
+                        width = PreviewImage?.PixelWidth ?? 1024;
+                        height = PreviewImage?.PixelHeight ?? 1024;
+                        break;
+
                     default:
-                        width = height = FlexibleParser.TryParseInt(o) ?? 2048;
+                        width = height = size ?? 1024;
                         break;
                 }
 

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -65,8 +66,10 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             OnSizeChanged(null, null);
 
-            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack,
-                    mode: _selectNextMode, weatherId: _selectNextWeather?.Id);
+            DataContext = new ViewModel(null, true,
+                    _selectNextCar, _selectNextCarSkinId,
+                    track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
+                    weatherId: _selectNextWeather?.Id, mode: _selectNextMode);
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
             this.OnActualUnload(() => {
@@ -112,6 +115,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
+            _selectNextTrackSkin = null;
             _selectNextWeather = null;
             _selectNextMode = null;
 
@@ -377,13 +381,19 @@ namespace AcManager.Pages.Drive {
             private readonly string _carSetupId, _weatherId;
             private readonly int? _forceTime;
 
-            internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
-                    TrackObjectBase trackObject = null, string carSetupId = null, string weatherId = null, int? time = null, bool savePreset = false,
+            internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
+                    TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
                 _weatherId = weatherId;
                 _forceTime = time;
+
+                if (trackSkin != null) {
+                    var mainLayout = TracksManager.Instance.GetById(trackSkin.TrackId);
+                    mainLayout?.ForceSkinEnabled(trackSkin);
+                    track = mainLayout;
+                }
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
@@ -525,8 +535,8 @@ namespace AcManager.Pages.Drive {
                     // TODO: skin?
                 }
 
-                if (trackObject != null) {
-                    SelectedTrack = trackObject;
+                if (track != null) {
+                    SelectedTrack = track;
                 }
 
                 if (mode != null) {
@@ -537,7 +547,7 @@ namespace AcManager.Pages.Drive {
 
                 //UpdateHierarchicalWeatherList().Forget();
                 //WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
-                 //       nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
+                //       nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
 
                 FancyHints.MoreDriveAssists.Trigger(TimeSpan.FromSeconds(1d));
 
@@ -760,25 +770,33 @@ namespace AcManager.Pages.Drive {
             public void Unload() {}
         }
 
-        public static bool Run(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null, Uri mode = null) {
-            return new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId, mode: mode).Run();
+        public static bool Run(
+                CarObject car = null, string carSkinId = null,  string carSetupId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
+                Uri mode = null) {
+            return new ViewModel(string.Empty, false, car, carSkinId, carSetupId, track, trackSkin, mode: mode).Run();
         }
 
-        public static bool RunHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null) {
-            return Run(car, carSkinId, track, carSetupId, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
+        public static bool RunHotlap(
+                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
+            return Run(car, carSkinId, carSetupId, track, trackSkin, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
         }
 
-        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null,
+        public static async Task<bool> RunAsync(
+                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
                 string weatherId = null, int? time = null) {
-            var model = new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId, time);
+            var model = new ViewModel(string.Empty, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time);
             if (!model.GoCommand.CanExecute(null)) return false;
             await model.Go();
             return true;
         }
 
-        public static bool RunPreset(string presetFilename, CarObject car = null, string carSkinId = null, TrackObjectBase track = null,
-                string carSetupId = null) {
-            return new ViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track, carSetupId).Run();
+        public static bool RunPreset(string presetFilename,
+                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
+            return new ViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, carSetupId, track, trackSkin).Run();
         }
 
         public static bool RunSerializedPreset(string preset) {
@@ -805,11 +823,13 @@ namespace AcManager.Pages.Drive {
         private static CarObject _selectNextCar;
         private static string _selectNextCarSkinId;
         private static TrackObjectBase _selectNextTrack;
+        private static TrackSkinObject _selectNextTrackSkin;
         private static WeatherObject _selectNextWeather;
         private static Uri _selectNextMode;
 
-        public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, Uri mode = null,
-                WeatherObject weather = null) {
+        public static void Show(CarObject car = null, string carSkinId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
+                Uri mode = null, WeatherObject weather = null) {
             QuickDrive current;
             if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
                 var vm = current.Model;
@@ -831,14 +851,15 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = car;
             _selectNextCarSkinId = carSkinId;
             _selectNextTrack = track;
+            _selectNextTrackSkin = trackSkin;
             _selectNextWeather = weather;
             _selectNextMode = mode;
 
             NavigateToPage();
         }
 
-        public static void ShowHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null) {
-            Show(car, carSkinId, track, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
+        public static void ShowHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
+            Show(car, carSkinId, track, trackSkin, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
         }
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
@@ -896,17 +917,41 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnTrackContextMenu(object sender, ContextMenuButtonEventArgs e) {
-            e.Menu = new ContextMenu()
+            var menu = new ContextMenu()
                     .AddItem("Change track", Model.ChangeTrackCommand)
                     .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
-                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
-                    .AddSeparator()
+                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+
+            var track = Model.SelectedTrack.MainTrackObject;
+            track.SkinsManager.EnsureLoaded();
+            if (track.EnabledOnlySkins.Count > 0) {
+                menu.AddSeparator();
+                foreach (var skinObject in track.EnabledOnlySkins) {
+                    var item = new MenuItem {
+                        Header = skinObject.DisplayName.ToTitle(),
+                        IsCheckable = true,
+                        StaysOpenOnClick = true,
+                        ToolTip = skinObject.Description
+                    };
+
+                    item.SetBinding(MenuItem.IsCheckedProperty, new Binding {
+                        Path = new PropertyPath(nameof(skinObject.IsActive)),
+                        Source = skinObject
+                    });
+
+                    menu.Items.Add(item);
+                }
+            }
+
+            menu.AddSeparator()
                     .AddItem("Open track in Content tab", () => {
                         TracksListPage.Show(Model.SelectedTrack);
                     }, isEnabled: AppKeyHolder.IsAllRight)
                     .AddItem(AppStrings.Toolbar_Folder, () => {
                         Model.SelectedTrack.ViewInExplorer();
                     });
+
+            e.Menu = menu;
         }
 
         private void OnCarBlockClick(object sender, RoutedEventArgs e) {

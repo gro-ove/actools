@@ -153,17 +153,17 @@
                         <TextBlock Text=", " />
 
                         <DockPanel>
-                            <Ellipse Fill="{StaticResource Gold}" />
+                            <Ellipse Fill="{DynamicResource GoldBrush}" />
                             <TextBlock Text="{Binding FirstPlaces, StringFormat='{}{0}, '}" FontWeight="Bold" />
                         </DockPanel>
 
                         <DockPanel>
-                            <Ellipse Fill="{StaticResource Silver}" />
+                            <Ellipse Fill="{DynamicResource SilverBrush}" />
                             <TextBlock Text="{Binding SecondPlaces, StringFormat='{}{0}, '}" FontWeight="Bold" />
                         </DockPanel>
 
                         <DockPanel>
-                            <Ellipse Fill="{StaticResource Bronze}" />
+                            <Ellipse Fill="{DynamicResource BronzeBrush}" />
                             <TextBlock Text="{Binding ThirdPlaces}" FontWeight="Bold" />
                         </DockPanel>
                     </StackPanel>

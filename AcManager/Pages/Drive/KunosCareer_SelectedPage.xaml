@@ -117,13 +117,13 @@
 
                           <StackPanel Orientation="Horizontal"
                               Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.SingleEvents}}">
-                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Gold}" />
+                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource GoldBrush}" />
                             <TextBlock Text="{Binding FirstPlacesNeeded, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Silver}" />
+                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource SilverBrush}" />
                             <TextBlock Text="{Binding SecondPlacesNeeded, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Bronze}" />
+                            <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource BronzeBrush}" />
                             <TextBlock Text="{Binding ThirdPlacesNeeded}" FontWeight="Bold" />
                           </StackPanel>
 
@@ -147,13 +147,13 @@
 
                 <StackPanel Orientation="Horizontal"
                     Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.SingleEvents}}">
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Gold}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource GoldBrush}" />
                   <TextBlock Text="{Binding FirstPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Silver}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource SilverBrush}" />
                   <TextBlock Text="{Binding SecondPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
 
-                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Bronze}" />
+                  <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{DynamicResource BronzeBrush}" />
                   <TextBlock Text="{Binding ThirdPlacesGoal}" FontWeight="Bold" />
                 </StackPanel>
 
@@ -428,15 +428,15 @@
           <StackPanel Visibility="{Binding ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
             <TextBlock Style="{StaticResource Heading2}" Text="{Binding ConditionType}" />
             <StackPanel Orientation="Horizontal">
-              <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
+              <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{DynamicResource GoldBrush}" VerticalAlignment="Center" />
               <TextBlock Text="{Binding FirstPlaceTarget}" Style="{StaticResource TargetValue}"
                   IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
 
-              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Silver}" VerticalAlignment="Center" />
+              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource SilverBrush}" VerticalAlignment="Center" />
               <TextBlock Text="{Binding SecondPlaceTarget}" Style="{StaticResource TargetValue}"
                   IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
 
-              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Bronze}" VerticalAlignment="Center" />
+              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource BronzeBrush}" VerticalAlignment="Center" />
               <TextBlock Text="{Binding ThirdPlaceTarget}" Style="{StaticResource TargetValue}"
                   IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
             </StackPanel>

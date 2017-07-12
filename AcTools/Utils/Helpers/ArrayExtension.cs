@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
@@ -14,6 +15,13 @@ namespace AcTools.Utils.Helpers {
                 subset[i] = array[indices[i]];
             }
             return subset;
+        }
+
+        [DllImport("msvcrt.dll", CallingConvention=CallingConvention.Cdecl)]
+        private static extern int memcmp(byte[] b1, byte[] b2, long count);
+
+        public static bool EqualsTo(this byte[] b1, byte[] b2) {
+            return b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
     }
 }

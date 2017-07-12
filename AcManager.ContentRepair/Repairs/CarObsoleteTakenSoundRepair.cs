@@ -11,7 +11,7 @@ using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
-    public class CarSoundRepair : CarRepairBase {
+    public class CarObsoleteTakenSoundRepair : CarRepairBase {
         private static readonly int OptionChecksumFastSize = 16000;
 
         [CanBeNull]
@@ -58,7 +58,7 @@ namespace AcManager.ContentRepair.Repairs {
 
             return new[] {
                 new ContentObsoleteSuggestion("Sound might be obsolete",
-                        $"Judging by GUIDs, it looks like sound for this car is taken from {soundDonorObject.DisplayName}, but soundbank is different. Most likely, it was taken before some update and might not work now properly.",
+                        $"Judging by GUIDs, it looks like sound for this car is taken from {soundDonorObject.DisplayName}, but soundbank is different. Most likely, it was taken before some update and might not work properly now.",
                         (p, c) => FixAsync(car, soundDonorObject, p, c))
             };
         }

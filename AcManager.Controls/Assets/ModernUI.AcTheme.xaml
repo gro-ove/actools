@@ -8,4 +8,6 @@
   <ImageBrush x:Key="WindowBackgroundContentBrush" Opacity=".2" ImageSource="/AcManager.Controls;component/Assets/Background.jpg" Stretch="UniformToFill"
       AlignmentX="Center" AlignmentY="Center" />
   <x:Null x:Key="DialogBackgroundContentBrush" />
+  <DropShadowEffect x:Key="GameLoadingAnimationEffect" Color="{DynamicResource AccentColor}" BlurRadius="40" Direction="0" ShadowDepth="0"
+      RenderingBias="Performance" Opacity="0.8" />
 </ResourceDictionary>

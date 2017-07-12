@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcObjectNew : AcPlaceholderNew {
-        public readonly IAcManagerNew Manager;
+        protected readonly IAcManagerNew Manager;
 
         protected AcObjectNew(IAcManagerNew manager, string id, bool enabled)
                 : base(id, enabled) {

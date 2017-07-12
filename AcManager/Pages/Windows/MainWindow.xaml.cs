@@ -83,6 +83,7 @@ namespace AcManager.Pages.Windows {
                 return;
             }
 
+            InitializeSubGroups();
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
@@ -775,6 +776,61 @@ namespace AcManager.Pages.Windows {
             }
 
             return false;
+        }
+
+        private const string KeySubGroupKeys = "MainWindow.SubGroups";
+
+        private static string GetSubGroupLinksKey(string groupKey) {
+            return $@"MainWindow.SubGroup:{groupKey}";
+        }
+
+        private List<string> _subGroupKeys;
+
+        private void InitializeSubGroups() {
+            _subGroupKeys = ValuesStorage.GetStringList(KeySubGroupKeys).ToList();
+            foreach (var groupKey in _subGroupKeys) {
+                foreach (var p in ValuesStorage.GetStringList(GetSubGroupLinksKey(groupKey))) {
+                    var v = Storage.DecodeList(p).ToList();
+                    if (v.Count != 2) continue;
+
+                    MenuLinkGroups.Add(new LinkGroupFilterable {
+                        DisplayName = v[0],
+                        GroupKey = groupKey,
+                        Source = new Uri(v[1], UriKind.RelativeOrAbsolute)
+                    });
+                }
+            }
+        }
+
+        public LinkGroupFilterable OpenSubGroup(string groupKey, string displayName, Uri uri, int limit = 2) {
+            var groupLinks = MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == groupKey).ToList();
+            var existingLink = groupLinks.FirstOrDefault(x => x.Source == uri);
+            if (existingLink == null) {
+                existingLink = new LinkGroupFilterable {
+                    DisplayName = displayName,
+                    GroupKey = groupKey,
+                    Source = uri
+                };
+
+                while (groupLinks.Count >= limit) {
+                    MenuLinkGroups.Remove(groupLinks[0]);
+                    groupLinks.RemoveAt(0);
+                }
+
+                groupLinks.Add(existingLink);
+                MenuLinkGroups.Add(existingLink);
+
+                if (!_subGroupKeys.Contains(groupKey)) {
+                    _subGroupKeys.Add(groupKey);
+                    ValuesStorage.Set(KeySubGroupKeys, _subGroupKeys);
+                }
+
+                ValuesStorage.Set(GetSubGroupLinksKey(groupKey),
+                        groupLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source.OriginalString)));
+            }
+
+            NavigateTo(uri);
+            return existingLink;
         }
     }
 }

@@ -36,13 +36,17 @@ namespace AcManager.Tools.ContentRepairUi {
             var valueStr = Math.Abs(driverWeight) < 0.1 ? "nothing" : driverWeight < 1 ? $"{driverWeight} kg" : $"only {driverWeight} kg";
             return new CommonErrorSuggestion("Invalid weight",
                     $"In car.ini, TOTALMASS should include driver weight (+{CommonAcConsts.DriverWeight} kg) as well, " +
-                            $"but according to these TOTALMASS and mass in UI file, driver weights {valueStr}. Could be a mistake.\n\nIf you want to specify weight without driver in UI, add “*”.",
+                            $"but according to these TOTALMASS and mass in UI file, driver weights {valueStr}. Could be a mistake.\n\nIf you want to specify weight with driver in UI, add “*”.",
                     (p, c) => FixAsync(car, p, c)) {
                         AffectsData = true,
                         FixCaption = "Fix Data"
                     }.AlternateFix("Fix UI", (progress, token) => {
                         car.SpecsWeight = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
                                 weight.ToString(@"F0", CultureInfo.InvariantCulture));
+                        return Task.FromResult(true);
+                    }, false).AlternateFix("Add “*”", (progress, token) => {
+                        car.SpecsWeight = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
+                                withDriver.ToString(@"F0", CultureInfo.InvariantCulture)) + "*";
                         return Task.FromResult(true);
                     }, false);
         }

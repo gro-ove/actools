@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {

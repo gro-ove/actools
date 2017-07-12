@@ -504,6 +504,21 @@ namespace FirstFloor.ModernUI.Helpers {
             return Encoding.UTF8.GetString(base64EncodedBytes);
         }
 
+        [NotNull, Pure]
+        public static string EncodeList([CanBeNull, ItemCanBeNull] params string[] list) {
+            return EncodeList((IEnumerable<string>)list);
+        }
+
+        [NotNull, Pure]
+        public static string EncodeList([CanBeNull, ItemCanBeNull] IEnumerable<string> list) {
+            return list == null ? "" : string.Join("\n", list.Where(x => !string.IsNullOrEmpty(x)).Select(Encode));
+        }
+
+        [NotNull, ItemNotNull, Pure]
+        public static IEnumerable<string> DecodeList([CanBeNull] string encoded) {
+            return encoded?.Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(Decode) ?? new string[0];
+        }
+
         public static string Encode([NotNull] string s) {
             if (s == null) throw new ArgumentNullException(nameof(s));
             var result = new StringBuilder(s.Length + 5);

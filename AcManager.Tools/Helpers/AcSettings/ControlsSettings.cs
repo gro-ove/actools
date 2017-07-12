@@ -964,6 +964,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public void SaveControllers() {
+            FileUtils.EnsureDirectoryExists(PresetsDirectory);
+
             foreach (var device in Devices) {
                 var filename = Path.Combine(PresetsDirectory, device.Device.InstanceGuid + ".ini");
 

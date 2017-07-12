@@ -16,7 +16,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id;
         }
 
-        internal AcPlaceholderNew([NotNull] string id, bool enabled) {
+        public AcPlaceholderNew([NotNull] string id, bool enabled) {
             Id = id;
             Enabled = enabled;
         }

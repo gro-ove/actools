@@ -144,7 +144,8 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             private string GetKey(string name) {
-                return FileUtils.NormalizePath(_basePath == null ? name : Path.Combine(_basePath, name));
+                return name.StartsWith("/") ? name.Substring(1) :
+                    FileUtils.NormalizePath(_basePath == null ? name : Path.Combine(_basePath, name));
             }
 
             private IWriter _writer;

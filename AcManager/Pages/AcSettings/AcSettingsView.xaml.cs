@@ -1,6 +1,7 @@
 ﻿using AcManager.Controls;
 using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsView {

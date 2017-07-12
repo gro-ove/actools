@@ -113,7 +113,7 @@ namespace AcManager.Tools.AcErrors {
                     ToolsStrings.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
-                            [@"skinname"] = CarSkinObject.NameFromId(e.Target.Id),
+                            [@"skinname"] = AcStringValues.NameFromId(e.Target.Id),
                             [@"drivername"] = "",
                             [@"country"] = "",
                             [@"team"] = "",

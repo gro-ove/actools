@@ -151,7 +151,6 @@
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
-    <Compile Include="SizeRelatedCondition.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
@@ -212,7 +211,7 @@
       <DependentUpon>WebBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
-    <Compile Include="Converters\PlaceToColorConverter.cs" />
+    <Compile Include="Converters\PlaceToBrushConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
     <Compile Include="Converters\CountryIdToImageConverter.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
@@ -223,9 +222,6 @@
     </Compile>
     <Compile Include="Dialogs\KunosCareerIntro.xaml.cs">
       <DependentUpon>KunosCareerIntro.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\Prompt.xaml.cs">
-      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\VideoViewer.xaml.cs">
       <DependentUpon>VideoViewer.xaml</DependentUpon>
@@ -350,10 +346,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\KunosCareerIntro.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

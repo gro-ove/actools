@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
+using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Application = System.Windows.Application;
 
 namespace AcManager {
     public class AppUi {
@@ -76,6 +79,8 @@ namespace AcManager {
         }
 
         private async void HandleMessagesAsync(IEnumerable<string> obj) {
+            if (AcRootDirectory.Instance?.IsReady != true) return;
+
             _additionalProcessing++;
             _showMainWindow |= await ArgumentsHandler.ProcessArguments(obj);
             if (--_additionalProcessing == 0) {
@@ -91,10 +96,16 @@ namespace AcManager {
         }
 
         public void Run() {
-            ActionExtension.InvokeInMainThreadAsync((Action)(async () => {
+            ((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
 
                 try {
+                    if ((!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded()) &&
+                            new AcRootDirectorySelector().ShowDialog() != true) {
+                        Logging.Debug("AC root selection cancelled, exit");
+                        return;
+                    }
+
                     if (!AppArguments.Values.Any() || await ArgumentsHandler.ProcessArguments(AppArguments.Values)) {
                         _showMainWindow = true;
                     }
@@ -124,7 +135,7 @@ namespace AcManager {
                 }
 
                 Logging.Debug("Main loop is finished");
-            }));
+            })).InvokeInMainThreadAsync();
         }
     }
 }

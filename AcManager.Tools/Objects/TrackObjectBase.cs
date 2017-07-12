@@ -113,7 +113,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string City {
-            get { return _city; }
+            get => _city;
             set {
                 if (value == _city) return;
                 _city = value;
@@ -131,7 +131,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public GeoTagsEntry GeoTags {
-            get { return _geoTags; }
+            get => _geoTags;
             set {
                 if (value == _geoTags) return;
                 _geoTags = value;
@@ -148,7 +148,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsLength {
-            get { return _specsLength; }
+            get => _specsLength;
             set {
                 value = value?.Trim();
                 if (value == _specsLength) return;
@@ -170,7 +170,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsWidth {
-            get { return _specsWidth; }
+            get => _specsWidth;
             set {
                 value = value?.Trim();
                 if (value == _specsWidth) return;
@@ -190,7 +190,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SpecsPitboxes {
-            get { return _specsPitboxes; }
+            get => _specsPitboxes;
             set {
                 value = value?.Trim();
                 if (value == _specsPitboxes) return;
@@ -373,7 +373,10 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
+            return LayoutId != null ?
+                    (DataProvider.Instance.KunosContent[@"layouts"]?.Contains(IdWithLayout) ?? false) :
+                    (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
+            // return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
         }
 
         public override void SaveData(JObject json) {

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -7,7 +6,7 @@ using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls {
+namespace FirstFloor.ModernUI.Windows {
     public static class SizeRelatedConditionExtension {
         /*public static SizeRelatedCondition AddSizeCondition<T, TParent>([NotNull] this TParent parent, [NotNull] Func<TParent, T> getChild,
                 double widthThreshold, [NotNull] Action<T, Visibility> action) where TParent : FrameworkElement {

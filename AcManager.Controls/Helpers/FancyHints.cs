@@ -52,7 +52,7 @@ namespace AcManager.Controls.Helpers {
         public static readonly FancyHint MultiSelectionMode = new FancyHint(
                 "multiselection-mode",
                 "Hold [i]Ctrl[/i] or [i]Shift[/i] and click here for multi-selection mode",
-                "In multi-selection mode, you can run commands for several objects at once. [i]Ctrl+A[/i] and [i]Ctrl+D[/i] shortcuts work as well. Press [i]Escape[/i] to disable multi-selection mode.",
+                "In multi-selection mode, you can run commands for several objects at once. [i]Ctrl+A[/i] and [i]Ctrl+D[/i] shortcuts work as well. Press [i]Escape[/i] to disable multi-selection mode. Also, to change current object in multi-selection mode, click on it using right mouse button.",
                 startupsDelay: 2, probability: 0.4);
 
         public static readonly FancyHint DoubleClickToQuickDrive = new FancyHint(

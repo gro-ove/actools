@@ -50,12 +50,6 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => {
-                    if (Model.FirstRun || Model.ReviewMode) {
-                        new MainWindow {
-                            Owner = null
-                        }.Show();
-                    }
-
                     CloseWithResult(MessageBoxResult.OK);
                 }))),
                 CancelButton
@@ -121,7 +115,7 @@ namespace AcManager.Pages.Dialogs {
             private string _previousInacceptanceReason;
 
             public bool IsValueAcceptable {
-                get { return _isValueAcceptable; }
+                get => _isValueAcceptable;
                 set {
                     if (value == _isValueAcceptable) return;
                     _isValueAcceptable = value;
@@ -134,7 +128,7 @@ namespace AcManager.Pages.Dialogs {
             private string _value;
 
             public string Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -149,7 +143,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public SteamProfile SteamProfile {
-                get { return _steamProfile; }
+                get => _steamProfile;
                 set {
                     if (Equals(value, _steamProfile)) return;
                     _steamProfile = value;

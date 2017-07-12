@@ -31,7 +31,7 @@ namespace AcManager.CustomShowroom {
             return Instances.FirstOrDefault(x => ReferenceEquals(x._wrapper.Renderer, renderer));
         }
 
-        private readonly BaseFormWrapper _wrapper;
+        private readonly FormWrapperBase _wrapper;
         private readonly RenderForm _parent;
 
         [CanBeNull]
@@ -53,7 +53,7 @@ namespace AcManager.CustomShowroom {
         private readonly bool _limitHeight;
         private readonly int _offset;
 
-        public AttachedHelper([NotNull] BaseFormWrapper parent, [NotNull] Window window, int offset = -1, int padding = 10, bool limitHeight = true) {
+        public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] Window window, int offset = -1, int padding = 10, bool limitHeight = true) {
             _padding = padding;
             _limitHeight = limitHeight;
 
@@ -87,6 +87,7 @@ namespace AcManager.CustomShowroom {
             child.Activated += ChildActivated;
             child.Deactivated += ChildDeactivated;
             child.Closed += ChildClosed;
+            child.PreviewKeyDown += ChildKeyDown;
             child.KeyUp += ChildKeyUp;
             child.LocationChanged += ChildLocationChanged;
             child.SizeChanged += ChildSizeChanged;
@@ -104,7 +105,7 @@ namespace AcManager.CustomShowroom {
                 _child = null;
             }
 
-            foreach (var window in _attached) {
+            foreach (var window in _attached.ToList()) {
                 try {
                     window.Close();
                 } catch {
@@ -155,11 +156,24 @@ namespace AcManager.CustomShowroom {
             UpdatePosition(e.NewSize.Width, e.NewSize.Height);
         }
 
+        private void ChildKeyDown(object sender, KeyEventArgs e) {}
+
         private void ChildKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.H && Keyboard.Modifiers == ModifierKeys.Control) {
                 _visible = !_visible;
                 UpdateVisibility(true);
                 e.Handled = true;
+            }
+
+            if (!e.Handled) {
+                var key = (Keys)KeyInterop.VirtualKeyFromKey(e.Key);
+                var modifiers = Keyboard.Modifiers;
+                if ((modifiers & ModifierKeys.Alt) != 0) key |= Keys.Alt;
+                if ((modifiers & ModifierKeys.Control) != 0) key |= Keys.Control;
+                if ((modifiers & ModifierKeys.Shift) != 0) key |= Keys.Shift;
+                var args = new System.Windows.Forms.KeyEventArgs(key);
+                _wrapper.OnKeyUp(args);
+                e.Handled = args.Handled;
             }
         }
 

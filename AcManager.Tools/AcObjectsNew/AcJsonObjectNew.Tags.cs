@@ -13,19 +13,19 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [NotNull]
         public TagsCollection Tags {
-            get { return _tags; }
+            get => _tags;
             set {
                 if (value == null) throw new ArgumentNullException(nameof(value));
                 if (value == _tags || _tags != null && value.SequenceEqual(_tags)) return;
 
                 if (_tags != null) {
-                    _tags.CollectionChanged -= Tags_CollectionChanged;
+                    _tags.CollectionChanged -= OnTagsCollectionChanged;
                 }
 
                 _tags = value;
                 OnPropertyChanged();
 
-                _tags.CollectionChanged += Tags_CollectionChanged;
+                _tags.CollectionChanged += OnTagsCollectionChanged;
 
                 if (Loaded) {
                     Changed = true;
@@ -34,11 +34,11 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        protected virtual void RebuildTagsList() {
+        protected void RebuildTagsList() {
             GetTagsList().ReplaceEverythingBy(Manager.OfType<AcJsonObjectNew>().SelectMany(x => x.Tags));
         }
 
-        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+        private void OnTagsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (Loaded) {
                 RebuildTagsList();
                 Changed = true;

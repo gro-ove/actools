@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -7,19 +10,24 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Managers {
     public class TrackSkinsCollectionReadyEventArgs : CollectionReadyEventArgs {
         public readonly string TrackId;
 
-        public TrackSkinsCollectionReadyEventArgs(string carId, CollectionReadyEventArgs baseArgs) {
-            TrackId = carId;
+        public TrackSkinsCollectionReadyEventArgs(string trackId, CollectionReadyEventArgs baseArgs) {
+            TrackId = trackId;
             JustReady = baseArgs.JustReady;
         }
     }
 
-    public class TTrackSkinsManager : AcManagerNew<TrackSkinObject> {
+    public class TrackSkinsManager : AcManagerNew<TrackSkinObject>, ICreatingManager {
         public static event EventHandler<TrackSkinsCollectionReadyEventArgs> AnySkinsCollectionReady;
         private readonly EventHandler<CollectionReadyEventArgs> _collectionReadyHandler;
 
@@ -27,9 +35,9 @@ namespace AcManager.Tools.Managers {
 
         public override IAcDirectories Directories { get; }
 
-        internal TrackSkinsManager(string carId, AcDirectoriesBase directories, EventHandler<CollectionReadyEventArgs> collectionReadyHandler) {
+        internal TrackSkinsManager(string trackId, AcDirectoriesBase directories, EventHandler<CollectionReadyEventArgs> collectionReadyHandler) {
             _collectionReadyHandler = collectionReadyHandler;
-            TrackId = carId;
+            TrackId = trackId;
             Directories = directories;
             InnerWrappersList.CollectionReady += OnCollectionReady;
         }
@@ -91,6 +99,86 @@ namespace AcManager.Tools.Managers {
 
             if (LoadingReset) {
                 Load();
+            }
+        }
+
+        #region Update ID in JSON-file
+        private static void FixId(string location, string id) {
+            var file = Path.Combine(location, "ui_track_skin.json");
+            if (!File.Exists(file)) return;
+
+            try {
+                var json = JsonExtension.Parse(File.ReadAllText(file));
+                json["id"] = id;
+                File.WriteAllText(file, json.ToString(Formatting.Indented));
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
+        protected override async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
+            AssertId(newId);
+
+            await Task.Run(() => {
+                FileUtils.Move(oldLocation, newLocation);
+                foreach (var tuple in attachedOldNew.Where(x => FileUtils.Exists(x.Item1))) {
+                    FileUtils.Move(tuple.Item1, tuple.Item2);
+                }
+
+                FixId(newLocation, newId);
+            });
+
+            var obj = CreateAndLoadAcObject(newId, newEnabled);
+            obj.PreviousId = oldId;
+            ReplaceInList(oldId, new AcItemWrapper(this, obj));
+        }
+
+        protected override async Task CloneOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
+            AssertId(newId);
+
+            await Task.Run(() => {
+                FileUtils.Copy(oldLocation, newLocation);
+                foreach (var tuple in attachedOldNew.Where(x => FileUtils.Exists(x.Item1))) {
+                    FileUtils.Copy(tuple.Item1, tuple.Item2);
+                }
+
+                FixId(newLocation, newId);
+            });
+
+            AddInList(new AcItemWrapper(this, CreateAndLoadAcObject(newId, newEnabled)));
+        }
+        #endregion
+
+        public IAcObjectNew AddNew(string id = null) {
+            var mainDirectory = Directories.GetMainDirectory();
+            var uniqueId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(mainDirectory, "skin")));
+
+            if (id == null) {
+                id = Prompt.Show("Choose a name for a new track skin:", "New track skin", required: true, maxLength: 80, watermark: "?",
+                        defaultValue: uniqueId);
+                if (id == null) return null;
+            }
+
+            var directory = Directories.GetLocation(id, true);
+            if (Directory.Exists(directory)) {
+                throw new InformativeException("Can’t add a new object", $"ID “{id}” is already taken.");
+            }
+
+            using (IgnoreChanges()) {
+                Directory.CreateDirectory(directory);
+                File.WriteAllText(Path.Combine(directory, "ui_track_skin.json"), new JObject {
+                    ["name"] = AcStringValues.NameFromId(id),
+                    ["track"] = TrackId,
+                    ["id"] = id,
+                }.ToString(Formatting.Indented));
+
+                var obj = CreateAndLoadAcObject(id, true);
+                InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                UpdateList(true);
+
+                return obj;
             }
         }
     }

@@ -28,7 +28,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using StringBasedFilter;
-using Prompt = AcManager.Controls.Dialogs.Prompt;
+using Prompt = FirstFloor.ModernUI.Dialogs.Prompt;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 using FirstFloor.ModernUI.Windows.Navigation;
 

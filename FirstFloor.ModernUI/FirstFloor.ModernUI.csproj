@@ -112,6 +112,9 @@
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
       <DependentUpon>NonfatalErrorsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
@@ -364,6 +367,7 @@
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
     <Compile Include="Windows\ShellLink.cs" />
+    <Compile Include="Windows\SizeRelatedCondition.cs" />
     <Compile Include="Windows\Stored.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
     <Compile Include="Windows\Toast.cs" />
@@ -439,6 +443,10 @@
     <Page Include="Dialogs\NonfatalErrorsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Prompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\ScreenColorPickerDialog.xaml">
       <SubType>Designer</SubType>

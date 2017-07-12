@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -26,15 +22,10 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
-using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
-using SharpCompress.Writers;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Objects {
@@ -44,30 +35,16 @@ namespace AcManager.Tools.Objects {
 
         public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             InitializeLocationsOnce();
-            SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory), Skins_CollectionReady) {
-                ScanWrapper = this
-            };
-            SkinsManager.Created += SkinsManager_Created;
+            SkinsManager = InitializeSkins();
         }
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
-
             LogoIcon = Path.Combine(Location, "logo.png");
             BrandBadge = Path.Combine(Location, @"ui", @"badge.png");
             UpgradeIcon = Path.Combine(Location, @"ui", @"upgrade.png");
             SkinsDirectory = Path.Combine(Location, "skins");
             JsonFilename = Path.Combine(Location, @"ui", @"ui_car.json");
-        }
-
-        private void Skins_CollectionReady(object sender, EventArgs e) {
-            var any = SkinsManager.GetDefault();
-            ErrorIf(any == null, AcErrorType.CarSkins_SkinsAreMissing);
-            if (any == null) {
-                SelectedSkin = null;
-            } else if (SelectedSkin == null) {
-                SelectedSkin = any;
-            }
         }
 
         public override string DisplayName => Name == null ? Id :
@@ -88,21 +65,6 @@ namespace AcManager.Tools.Objects {
             return SuggestionLists.CarTagsList;
         }
 
-        private readonly CompositeObservableCollection<IAcError> _errors = new CompositeObservableCollection<IAcError>();
-
-        public override ObservableCollection<IAcError> Errors => _errors;
-
-        private void SkinsManager_Created(object sender, AcObjectEventArgs<CarSkinObject> args) {
-            _errors.Add(args.AcObject.Errors);
-            args.AcObject.AcObjectOutdated += AcObject_AcObjectOutdated;
-        }
-
-        private void AcObject_AcObjectOutdated(object sender, EventArgs e) {
-            var ac = (AcCommonObject)sender;
-            ac.AcObjectOutdated -= AcObject_AcObjectOutdated;
-            _errors.Remove(ac.Errors);
-        }
-
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
             CheckBrandBadge();
@@ -120,7 +82,7 @@ namespace AcManager.Tools.Objects {
         public override void PastLoad() {
             base.PastLoad();
 
-            _errors.CollectionChanged += CarObject_CollectionChanged;
+            _errors.CollectionChanged += OnCarObjectCollectionChanged;
             _errors.Add(InnerErrors);
 
             if (!Enabled) return;
@@ -129,7 +91,7 @@ namespace AcManager.Tools.Objects {
             UpdateParentValues();
         }
 
-        private void CarObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+        private void OnCarObjectCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             OnPropertyChanged(nameof(HasErrors));
         }
 
@@ -500,12 +462,8 @@ namespace AcManager.Tools.Objects {
 
         #region Paths
         public string LogoIcon { get; private set; }
-
         public string BrandBadge { get; private set; }
-
         public string UpgradeIcon { get; private set; }
-
-        public string SkinsDirectory { get; private set; }
         #endregion
 
         #region Loading
@@ -550,7 +508,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return base.TestIfKunos() || TestIfKunosUsingGuids(Id);
+            return /*base.TestIfKunos() ||*/ TestIfKunosUsingGuids(Id);
         }
 
         [Localizable(false)]

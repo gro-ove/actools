@@ -218,7 +218,7 @@
               <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
             </CheckBox>
             <CheckBox IsChecked="{Binding IdealConditions}">
-              <Label Content="Ideal Conditions" />
+              <Label Content="Ideal conditions" />
             </CheckBox>
           </UniformGrid>
         </DockPanel>

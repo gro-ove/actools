@@ -13,8 +13,9 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <c:PlaceToColorConverter x:Key="RacePlaceToColorConverter" FirstPlaceColor="{StaticResource Ultimate}" SecondPlaceColor="{StaticResource Gold}"
-          ThirdPlaceColor="{StaticResource Silver}" ForthPlaceColor="{StaticResource Bronze}" DefaultColor="Transparent" />
+      <c:PlaceToBrushConverter x:Key="RacePlaceToColorConverter" FirstPlaceBrush="{StaticResource UltimateBrush}"
+          SecondPlaceBrush="{DynamicResource GoldBrush}" ThirdPlaceBrush="{DynamicResource SilverBrush}" ForthPlaceBrush="{DynamicResource BronzeBrush}"
+          DefaultBrush="Transparent" />
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
         <Grid Background="Black" ClipToBounds="True" MinHeight="100">
@@ -299,26 +300,30 @@
                 Fill="{Binding Selected.TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}"
                 Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}}" />
           </Grid>
+
           <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.DisplayType}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
-          <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" Margin="0 0 0 12" />
+          <mui:SpacingStackPanel Spacing="4">
+            <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" />
+            <c:BestLapsList CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}" VerticalAlignment="Top" />
+          </mui:SpacingStackPanel>
         </ScrollViewer>
 
         <StackPanel Grid.Row="2" Margin="0 0 0 24"
             Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType, Converter={StaticResource EnumToDescriptionConverter}}" />
           <StackPanel Orientation="Horizontal">
-            <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
+            <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{DynamicResource GoldBrush}" VerticalAlignment="Center" />
             <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"
                 IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
 
-            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Silver}" VerticalAlignment="Center" />
+            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource SilverBrush}" VerticalAlignment="Center" />
             <TextBlock Text="{Binding Selected.DisplaySecondPlaceTarget}" Style="{StaticResource TargetValue}"
                 IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
 
-            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Bronze}" VerticalAlignment="Center" />
+            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource BronzeBrush}" VerticalAlignment="Center" />
             <TextBlock Text="{Binding Selected.DisplayThirdPlaceTarget}" Style="{StaticResource TargetValue}"
                 IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
           </StackPanel>

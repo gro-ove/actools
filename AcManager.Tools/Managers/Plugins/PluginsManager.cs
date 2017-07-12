@@ -29,6 +29,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public BetterObservableCollection<PluginEntry> List { get; }
         public BetterListCollectionView ListView { get; }
+        public BetterListCollectionView RecommendedListView { get; }
 
         private bool _locallyLoaded;
 
@@ -45,6 +46,9 @@ namespace AcManager.Tools.Managers.Plugins {
             List = new BetterObservableCollection<PluginEntry>();
             ListView = new BetterListCollectionView(List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
+            RecommendedListView = new BetterListCollectionView(List);
+            RecommendedListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
+            RecommendedListView.Filter = o => (o as PluginEntry)?.IsRecommended == true;
             ReloadLocalList();
             // TODO: Directory watching
         }

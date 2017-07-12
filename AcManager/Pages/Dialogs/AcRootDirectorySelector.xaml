@@ -4,7 +4,7 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_ContentManager}" ShowInTaskbar="True"
     WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
-    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}">
+    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
     <mui:BbCodeBlock BbCode="Content Manager was updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
         Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-    <!--AC root-->
+    <!-- AC root -->
     <StackPanel Visibility="{Binding ChangeAcRoot, Converter={StaticResource BooleanToVisibilityConverter}}">
       <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
       <DockPanel Margin="20 8 0 0">
@@ -27,7 +27,7 @@
       </DockPanel>
     </StackPanel>
 
-    <!--Steam ID-->
+    <!-- Steam ID -->
     <StackPanel Visibility="{Binding ChangeSteamId, Converter={StaticResource BooleanToVisibilityConverter}}">
       <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
       <DockPanel Margin="20 8 0 0">
@@ -37,7 +37,7 @@
       </DockPanel>
     </StackPanel>
 
-    <!--shortcut-->
+    <!-- Shortcut -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
       <TextBlock Text="Add a shortcut to Start Menu?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
       <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
@@ -47,13 +47,14 @@
       </StackPanel>
     </StackPanel>
 
-    <!--plugins-->
+    <!-- Plugins -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
       <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
-          Visibility="{Binding List.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
+          Visibility="{Binding RecommendedListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
       <DockPanel Margin="20 8 0 0">
-        <ScrollViewer MaxHeight="200">
-          <ItemsControl ItemsSource="{Binding ListView, Source={x:Static t:PluginsManager.Instance}}" ItemTemplate="{StaticResource PluginItemTemplate}" />
+        <ScrollViewer MaxHeight="240">
+          <ItemsControl ItemsSource="{Binding RecommendedListView, Source={x:Static t:PluginsManager.Instance}}"
+              ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" />
         </ScrollViewer>
       </DockPanel>
     </StackPanel>

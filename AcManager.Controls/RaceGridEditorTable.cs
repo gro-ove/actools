@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 

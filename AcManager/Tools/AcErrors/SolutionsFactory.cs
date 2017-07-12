@@ -15,6 +15,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 

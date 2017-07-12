@@ -81,19 +81,31 @@ namespace AcManager.Tools.ContentRepairUi {
                 Logging.Warning(e);
                 return null;
             }
-            
+
             var loss = 1d - torque.MaxY / maxUiTorque;
             if (loss > 0.01) return null;
 
-            var actual = loss.Abs() < 0.002 ? "same" : loss > 0 ? $"{loss:F1}% smaller" : $"{-loss:F1}% bigger";
+            var actual = loss.Abs() < 0.002 ? "same" : loss > 0 ? $"{loss * 100:F1}% smaller" : $"{-loss * 100:F1}% bigger";
             return new CommonErrorSuggestion("Suspiciously low transmission power loss",
                     $"Usually, in UI torque & power are taken from crankshaft, but data should contain torque at wheels, which is about 10–20% smaller. " +
-                            $"Here, although, it’s {actual}. It might be a mistake.\n\nIf you want to specify weight without driver in UI, add “*”.",
+                            $"Here, although, it’s {actual}. It might be a mistake.\n\nIf you want to specify power at the wheels in UI, add “*”.",
                     (p, c) => FixAsync(car, p, c)) {
                         AffectsData = false,
                         ShowProgressDialog = false,
                         FixCaption = "Fix UI"
-                    };
+                    }.AlternateFix("Add “*”", (progress, token) => {
+                        if (FlexibleParser.TryParseDouble(car.SpecsBhp, out var uiBhp)) {
+                            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
+                                    uiBhp.ToString(@"F0", CultureInfo.InvariantCulture)) + "*";
+                        }
+
+                        if (FlexibleParser.TryParseDouble(car.SpecsTorque, out var uiTorque)) {
+                            car.SpecsTorque = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
+                                    uiTorque.ToString(@"F0", CultureInfo.InvariantCulture)) + "*";
+                        }
+
+                        return Task.FromResult(true);
+                    }, false);
         }
     }
 }

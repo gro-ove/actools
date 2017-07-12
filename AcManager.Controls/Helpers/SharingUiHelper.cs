@@ -12,6 +12,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;

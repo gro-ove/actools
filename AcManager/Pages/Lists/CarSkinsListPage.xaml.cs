@@ -122,31 +122,13 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Open(CarObject car) {
-            var mainWindow = Application.Current?.MainWindow as MainWindow;
-
-            if (mainWindow == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            var main = Application.Current?.MainWindow as MainWindow;
+            if (main == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSkinsDialog.Show(car);
-                return;
+            } else {
+                main.OpenSubGroup("skins", $"Skins for {car.DisplayName}",
+                        UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id));
             }
-
-            var uri = UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id);
-            var setupsLinks = mainWindow.MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == "skins").ToList();
-            var existing = setupsLinks.FirstOrDefault(x => x.Source == uri);
-            if (existing == null) {
-                existing = new LinkGroupFilterable {
-                    DisplayName = $"Skins for {car.DisplayName}",
-                    GroupKey = "skins",
-                    Source = uri
-                };
-
-                if (setupsLinks.Count >= 2) {
-                    mainWindow.MenuLinkGroups.Remove(setupsLinks[0]);
-                }
-
-                mainWindow.MenuLinkGroups.Add(existing);
-            }
-
-            mainWindow.NavigateTo(uri);
         }
 
         #region Batch actions
