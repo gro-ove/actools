@@ -190,7 +190,6 @@
     <Compile Include="Kn5File\Kn5Header.cs" />
     <Compile Include="Kn5File\Kn5.cs" />
     <Compile Include="Kn5File\Kn5.ExportCollada.cs" />
-    <Compile Include="Kn5File\Kn5.FromDirectory.cs" />
     <Compile Include="Kn5File\Kn5.Save.cs" />
     <Compile Include="Kn5File\Kn5.FromFile.cs" />
     <Compile Include="Kn5File\Kn5Reader.cs" />

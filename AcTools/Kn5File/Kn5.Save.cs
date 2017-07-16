@@ -9,8 +9,8 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
-        private void SaveInner(string filename, bool saveNodes, bool replaceIfExists) {
-            using (var writer = new Kn5Writer(File.Open(filename, replaceIfExists ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite))) {
+        private void SaveInner(string filename) {
+            using (var writer = new Kn5Writer(File.Open(filename, FileMode.Create, FileAccess.ReadWrite))) {
                 writer.Write(Header);
 
                 writer.Write(Textures.Count);
@@ -26,15 +26,7 @@ namespace AcTools.Kn5File {
                     writer.Write(material);
                 }
 
-                if (saveNodes) {
-                    Save_Node(writer, RootNode);
-                } else {
-                    if (NodesBytes == null) {
-                        throw new Exception("NodesBytes = null");
-                    }
-
-                    writer.Write(NodesBytes);
-                }
+                Save_Node(writer, RootNode);
             }
         }
 
@@ -46,12 +38,12 @@ namespace AcTools.Kn5File {
         }
 
         public void SaveNew(string filename) {
-            SaveInner(filename, true, true);
+            SaveInner(filename);
         }
 
         public void SaveRecyclingOriginal(string filename) {
             using (var f = FileUtils.RecycleOriginal(filename)) {
-                SaveInner(f.Filename, true, true);
+                SaveInner(f.Filename);
             }
         }
     }

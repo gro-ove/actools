@@ -141,35 +141,6 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
-        [Obsolete]
-        public static Kn5 FromFile(string filename, bool skipTextures, bool readNodesAsBytes = true) {
-            if (!File.Exists(filename)) {
-                throw new FileNotFoundException(filename);
-            }
-
-            var kn5 = new Kn5(filename);
-
-            using (var reader = new Kn5Reader(filename)) {
-                kn5.FromFile_Header(reader);
-
-                if (skipTextures) {
-                    kn5.FromFile_Textures(reader, SkippingTextureLoader.Instance);
-                } else {
-                    kn5.FromFile_Textures(reader, DefaultKn5TextureLoader.Instance);
-                }
-
-                kn5.FromFile_Materials(reader, DefaultKn5MaterialLoader.Instance);
-
-                if (readNodesAsBytes) {
-                    kn5.FromFile_NodeBytes(reader);
-                }
-
-                kn5.FromFile_Nodes(reader, DefaultKn5NodeLoader.Instance);
-            }
-
-            return kn5;
-        }
-
         public static Kn5 FromFile(string filename, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
                 IKn5NodeLoader nodeLoader = null) {
             if (!File.Exists(filename)) {
@@ -258,13 +229,6 @@ namespace AcTools.Kn5File {
             } catch (NotImplementedException) {
                 Materials = null;
             }
-        }
-
-        private void FromFile_NodeBytes(Kn5Reader reader) {
-            var nodesStart = reader.BaseStream.Position;
-            var nodesLength = reader.BaseStream.Length - nodesStart;
-            NodesBytes = reader.ReadBytes((int)nodesLength);
-            reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
         }
 
         public IKn5NodeLoader NodeLoader { get; private set; }

@@ -13,7 +13,6 @@ namespace AcTools.Kn5File {
             Textures = new Dictionary<string, Kn5Texture>();
             TexturesData = new Dictionary<string, byte[]>();
             Materials = new Dictionary<string, Kn5Material>();
-            NodesBytes = new byte[0];
         }
 
         private Kn5(string filename) {
@@ -31,9 +30,6 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5Node RootNode;
-
-        [CanBeNull]
-        public byte[] NodesBytes;
 
         public IEnumerable<Kn5Node> Nodes {
             get {
