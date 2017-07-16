@@ -125,6 +125,10 @@ namespace AcManager.Tools.ContentInstallation {
                 return _directories.ContainsKey(name.ToLowerInvariant());
             }
 
+            public bool HasAnySubDirectory([NotNull] params string[] name) {
+                return name.Any(HasSubDirectory);
+            }
+
             #region Creating the tree
             private static void Split([NotNull] string relativePath, [CanBeNull] out string firstDirectory, [NotNull] out string anythingLeft) {
                 if (string.IsNullOrEmpty(relativePath)) throw new Exception("Relative path is null or empty");
@@ -563,6 +567,24 @@ namespace AcManager.Tools.ContentInstallation {
 
             if (directory.NameLowerCase == "people" && (directory.HasSubFile("crowd_sit.dds") || directory.HasSubFile("people_sit.dds"))) {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "people");
+            }
+
+            // Mod
+            if (directory.Parent?.NameLowerCase == "mods" && directory.HasAnySubDirectory("content", "apps", "system", "launcher")) {
+                var name = directory.Name;
+                if (name != null) {
+                    var description = directory.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));
+                    if (description == null && directory.HasSubDirectory("documentation")) {
+                        description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));
+                    }
+
+                    if (description != null) {
+                        var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
+                        return new GenericModConfigEntry(directory.Key ?? "", name, data.ToUtf8String());
+                    }
+
+                    return new GenericModConfigEntry(directory.Key ?? "", name);
+                }
             }
 
             return null;

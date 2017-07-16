@@ -12,6 +12,7 @@ using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5SkinnableTexturesProvider : Kn5OverrideableTexturesProvider {
@@ -193,7 +194,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 }
             });
 
-            UpdateOverridesAsync().Forget();
+            TaskExtension.Forget(UpdateOverridesAsync());
         }
 
         public virtual void SetOverridesDirectory([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
@@ -359,7 +360,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
                 result.Exists = true;
                 if (AsyncLoading) {
-                    result.LoadAsync(contextHolder, data).Forget();
+                    TaskExtension.Forget(result.LoadAsync(contextHolder, data));
                 } else {
                     result.Load(contextHolder, data);
                 }
@@ -386,7 +387,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private async Task<bool> LoadOverrideAsync(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
             var overrided = await GetOverridedDataAsync(textureName);
             if (overrided == null) return false;
-            texture.LoadOverrideAsync(contextHolder, overrided).Forget();
+            TaskExtension.Forget(texture.LoadOverrideAsync(contextHolder, overrided));
             return true;
         }
 

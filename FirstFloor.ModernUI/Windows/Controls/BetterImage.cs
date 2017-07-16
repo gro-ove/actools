@@ -645,7 +645,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
-                    Logging.Debug($"{filename}: {stream}");
                     if (stream != null) {
                         using (stream) {
                             var result = new byte[stream.Length];

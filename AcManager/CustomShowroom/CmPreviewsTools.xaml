@@ -7,8 +7,9 @@
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/CustomShowroom/LiteShowroomSettings.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresets.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -76,8 +77,8 @@
     </mui:ModernTab>
 
     <StackPanel Grid.Row="1">
-      <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Settings}" Margin="0 4" Style="{StaticResource CompactUserPresetsControl}"
-          Width="238" />
+      <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Settings}" Margin="0 4"
+          Style="{StaticResource UserPresetsControl.Compact.Share}" Width="238" />
       <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Height="24">
         <Button Padding="4 2 4 3" ToolTip="Update selected skin (with confirmation)" Command="{Binding TestCommand}">
           <Path Width="16" Height="16" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"

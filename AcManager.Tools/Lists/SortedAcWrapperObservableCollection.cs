@@ -32,8 +32,20 @@ namespace AcManager.Tools.Lists {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public override bool ReplaceIfDifferBy(IEnumerable<AcItemWrapper> range) {
-            return base.ReplaceIfDifferBy(range.Sort(this));
+        public override void AddRange(IEnumerable<AcItemWrapper> range) {
+            throw new NotSupportedException();
+        }
+
+        public override void AddRange_Direct(IEnumerable<AcItemWrapper> range) {
+            throw new NotSupportedException();
+        }
+
+        public override bool ReplaceIfDifferBy(IEnumerable<AcItemWrapper> range, IEqualityComparer<AcItemWrapper> comparer) {
+            return base.ReplaceIfDifferBy(range.Sort(this), comparer);
+        }
+
+        public override void ReplaceEverythingBy_Direct(IEnumerable<AcItemWrapper> range) {
+            base.ReplaceEverythingBy(range.Sort(this));
         }
 
         public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {

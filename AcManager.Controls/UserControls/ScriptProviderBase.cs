@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 

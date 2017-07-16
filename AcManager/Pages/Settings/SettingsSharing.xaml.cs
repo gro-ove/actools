@@ -8,6 +8,7 @@ using System.Windows.Input;
 using AcManager.LargeFilesSharing;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;

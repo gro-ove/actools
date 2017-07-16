@@ -38,6 +38,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         [CanBeNull]
         public byte[] IconData { get; protected set; }
 
+        [CanBeNull]
+        public string Description { get; }
+
         private bool _singleEntry;
 
         public bool SingleEntry {
@@ -49,17 +52,31 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
         }
 
-        public abstract string NewFormat { get; }
+        private bool _installAsGenericMod;
 
+        public bool InstallAsGenericMod {
+            get { return _installAsGenericMod; }
+            set {
+                if (Equals(value, _installAsGenericMod)) return;
+                _installAsGenericMod = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public abstract bool GenericModSupported { get; }
+        [CanBeNull]
+        public abstract string GenericModTypeName { get; }
+        public abstract string NewFormat { get; }
         public abstract string ExistingFormat { get; }
 
         protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null,
-                byte[] iconData = null) {
+                byte[] iconData = null, string description = null) {
             EntryPath = path ?? throw new ArgumentNullException(nameof(path));
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Name = name ?? id;
             Version = version;
             IconData = iconData;
+            Description = description;
         }
 
         private bool _installEntry;
@@ -139,11 +156,12 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         protected virtual CopyCallback GetCopyCallback([NotNull] string destination) {
             var filter = SelectedOption?.Filter;
+            var path = EntryPath;
             return fileInfo => {
                 var filename = fileInfo.Key;
-                if (EntryPath != string.Empty && !FileUtils.IsAffected(EntryPath, filename)) return null;
+                if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
 
-                var subFilename = FileUtils.GetRelativePath(filename, EntryPath);
+                var subFilename = FileUtils.GetRelativePath(filename, path);
                 return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
             };
         }
@@ -153,7 +171,11 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var destination = await GetDestination(cancellation);
             return destination != null ?
                     new InstallationDetails(GetCopyCallback(destination),
-                            SelectedOption?.CleanUp?.Invoke(destination)?.ToArray()) :
+                            SelectedOption?.CleanUp?.Invoke(destination)?.ToArray(),
+                            SelectedOption?.BeforeTask,
+                            SelectedOption?.AfterTask) {
+                                OriginalEntry = this
+                            } :
                     null;
         }
 
@@ -196,7 +218,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             IsOlder = Version.IsVersionOlderThan(ExistingVersion);
         }
 
-        [ItemCanBeNull]
+        [NotNull, ItemCanBeNull]
         protected abstract Task<Tuple<string, string>> GetExistingNameAndVersionAsync();
 
         public bool IsNew { get; set; }
@@ -256,8 +278,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public abstract class ContentEntryBase<T> : ContentEntryBase where T : AcCommonObject {
-        public ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
+        protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
+
+        public sealed override bool GenericModSupported => true;
 
         public abstract FileAcManager<T> GetManager();
 

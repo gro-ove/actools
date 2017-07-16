@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils;
@@ -17,7 +18,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation.Installators {
+namespace AcManager.Tools.ContentInstallation.Implementations {
     public class SevenZipContentInstallator : ContentInstallatorBase {
         public static readonly string PluginId = "7Zip";
 
@@ -84,6 +85,25 @@ namespace AcManager.Tools.ContentInstallation.Installators {
                     UseShellExecute = false
                 }
             };
+        }
+
+        private class SevenZipList : IDisposable {
+            private readonly string _filename;
+
+            public string Value => $@"@{_filename}";
+
+            public SevenZipList(IEnumerable<string> items) {
+                _filename = Path.GetTempFileName();
+                File.WriteAllLines(_filename, items);
+            }
+
+            public void Dispose() {
+                try {
+                    File.Delete(_filename);
+                } catch {
+                    // ignored
+                }
+            }
         }
 
         [ItemCanBeNull]
@@ -185,13 +205,14 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         }
 
         private async Task GetFiles([NotNull] IEnumerable<string> keys, Func<Stream, Task> streamCallback, CancellationToken c) {
-            var o = await ExecuteBinary(new[] {
-                "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
-                Path.GetFileName(_filename)
-            }.Concat(keys), Path.GetDirectoryName(_filename), streamCallback, c);
-            if (o == null) return;
-
-            CheckForErrors(o.Error);
+            using (var list = new SevenZipList(keys)) {
+                var o = await ExecuteBinary(new[] {
+                    "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
+                    Path.GetFileName(_filename)
+                }.Append(list.Value), Path.GetDirectoryName(_filename), streamCallback, c);
+                if (o == null) return;
+                CheckForErrors(o.Error);
+            }
         }
         #endregion
 
@@ -363,8 +384,6 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             await GetFiles(filtered.Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
-
-                    Logging.Debug(entry.Item1 + "→" + entry.Item3);
 
                     FileUtils.EnsureFileDirectoryExists(entry.Item3);
                     progress?.Report(Path.GetFileName(entry.Item3), i, filtered.Count);

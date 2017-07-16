@@ -12,7 +12,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         PositionRange
     }
 
-    public class DoubleThumb : Thumb {
+    public class DoubleThumb : ThumbExt {
         static DoubleThumb() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DoubleThumb), new FrameworkPropertyMetadata(typeof(DoubleThumb)));
         }
@@ -266,7 +266,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateThumbValues() {
-            _internalValuesBusy.Do((Action)ForceUpdateThumbValues);
+            _internalValuesBusy.Do(ForceUpdateThumbValues);
         }
         #endregion
 

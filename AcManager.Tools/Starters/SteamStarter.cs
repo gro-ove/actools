@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;

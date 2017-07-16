@@ -24,8 +24,8 @@ namespace AcManager {
                 var restore = new MenuItem { Header = UiStrings.Restore };
                 var close = new MenuItem { Header = UiStrings.Close };
 
-                restore.Click += RestoreMenuItem_Click;
-                close.Click += CloseMenuItem_Click;
+                restore.Click += OnRestoreMenuItemClick;
+                close.Click += OnCloseMenuItemClick;
 
                 _icon = new TaskbarIcon {
                     Icon = AppIconService.GetTrayIcon(),

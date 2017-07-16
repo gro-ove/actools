@@ -17,6 +17,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SharpCompress.Common;
 using SharpCompress.Writers;

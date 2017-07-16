@@ -27,15 +27,26 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
   </Style>
 
+  <Style x:Key="HighlightedBackground" TargetType="Border">
+    <Style.Resources>
+      <SolidColorBrush x:Key="Error">#ffffff</SolidColorBrush>
+    </Style.Resources>
+  </Style>
+
   <Style x:Key="FlatListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBase}">
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ListBoxItem">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-              Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+          <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
           </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="PART_Border" Property="Style" Value="{StaticResource HighlightedBackground}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

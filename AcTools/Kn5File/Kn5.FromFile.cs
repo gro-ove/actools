@@ -21,7 +21,7 @@ namespace AcTools.Kn5File {
         }
     }
 
-    internal class DefaultKn5TextureLoader : IKn5TextureLoader {
+    public class DefaultKn5TextureLoader : IKn5TextureLoader {
         public static readonly DefaultKn5TextureLoader Instance = new DefaultKn5TextureLoader();
 
         private DefaultKn5TextureLoader() { }
@@ -49,7 +49,7 @@ namespace AcTools.Kn5File {
         }
     }
 
-    internal class DefaultKn5MaterialLoader : IKn5MaterialLoader {
+    public class DefaultKn5MaterialLoader : IKn5MaterialLoader {
         public static readonly DefaultKn5MaterialLoader Instance = new DefaultKn5MaterialLoader();
 
         private DefaultKn5MaterialLoader() { }
@@ -115,7 +115,7 @@ namespace AcTools.Kn5File {
         }
     }
 
-    internal class DefaultKn5NodeLoader : IKn5NodeLoader {
+    public class DefaultKn5NodeLoader : IKn5NodeLoader {
         public static readonly DefaultKn5NodeLoader Instance = new DefaultKn5NodeLoader();
 
         private DefaultKn5NodeLoader() { }
@@ -216,7 +216,11 @@ namespace AcTools.Kn5File {
             Header = reader.ReadHeader();
         }
 
+        public IKn5TextureLoader TextureLoader { get; private set; }
+
         private void FromFile_Textures(Kn5Reader reader, [NotNull] IKn5TextureLoader textureLoader) {
+            TextureLoader = textureLoader;
+
             try {
                 var count = reader.ReadInt32();
 
@@ -236,7 +240,11 @@ namespace AcTools.Kn5File {
             }
         }
 
+        public IKn5MaterialLoader MaterialLoader { get; private set; }
+
         private void FromFile_Materials(Kn5Reader reader, [NotNull] IKn5MaterialLoader materialLoader) {
+            MaterialLoader = materialLoader;
+
             try {
                 var count = reader.ReadInt32();
 
@@ -259,7 +267,10 @@ namespace AcTools.Kn5File {
             reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
         }
 
+        public IKn5NodeLoader NodeLoader { get; private set; }
+
         private void FromFile_Nodes(Kn5Reader reader, [NotNull] IKn5NodeLoader nodeLoader) {
+            NodeLoader = nodeLoader;
             RootNode = nodeLoader.LoadNode(reader);
         }
     }

@@ -163,13 +163,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             return new SubrangeTupleProgress(baseProgress, from, range, forceMessage, ignoreIndeterminate);
         }
 
-        public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, double? value) {
+        /*public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, double? value) {
             progress?.Report(new Tuple<string, double?>(message, value));
         }
 
         public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, int i, int total) {
             const double x = 0.000001;
             progress?.Report(new Tuple<string, double?>(message, (double)i / total * (1d - 2d * x) + x));
-        }
+        }*/
     }
 }

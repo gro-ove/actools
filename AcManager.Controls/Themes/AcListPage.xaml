@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:c="clr-namespace:AcManager.Controls.Helpers"
-    mc:Ignorable="d">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:c="clr-namespace:AcManager.Controls.Helpers" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Easing.xaml" />
@@ -199,8 +197,8 @@
                 <mui:ModernButton x:Name="AddNewButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
                     Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
-                <mui:ModernButton x:Name="SaveAllButton" DockPanel.Dock="Right" IconData="{StaticResource SaveIconData}"
-                    ToolTip="Save all (Ctrl+Shift+S)" IconWidth="10" IconHeight="10" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                <mui:ModernButton x:Name="SaveAllButton" DockPanel.Dock="Right" IconData="{StaticResource SaveIconData}" ToolTip="Save all (Ctrl+Shift+S)"
+                    IconWidth="10" IconHeight="10" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
                     ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
@@ -345,15 +343,17 @@
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="ac:AcListPage">
-              <mui:Cell>
-                <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <mui:ModernButton DockPanel.Dock="Left" x:Name="AddNewButton" IconData="{StaticResource AddIconData}"
-                      ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 0 8 0" Style="{StaticResource NonTransparent}"
-                      Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Width="24"
-                      Height="24" EllipseDiameter="22" />
-                  <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
-                </DockPanel>
-              </mui:Cell>
+              <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button DockPanel.Dock="Bottom" x:Name="AddNewButton" Padding="8 3 8 5" ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 8 0 0"
+                    Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <DockPanel>
+                    <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource AddIconData}"
+                        DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                    <TextBlock Text="Create a New One" VerticalAlignment="Center" Margin="4 0 0 0" />
+                  </DockPanel>
+                </Button>
+                <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+              </DockPanel>
             </ControlTemplate>
           </Setter.Value>
         </Setter>

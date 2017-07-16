@@ -9,10 +9,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentInstallation.Entries;
+using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.DataFile;
+using AcTools.GenericMods;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -22,6 +26,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Steamworks;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry : NotifyPropertyChanged, IProgress<AsyncProgressEntry> {
@@ -394,6 +399,10 @@ namespace AcManager.Tools.ContentInstallation {
                                                           .Select(x => x.GetInstallationDetails(cancellation.Token)).WhenAll(15)).ToList();
                             if (toInstall.Count == 0 || CheckCancellation()) return false;
 
+                            string GetToInstallName(InstallationDetails details) {
+                                return details.OriginalEntry?.DisplayName;
+                            }
+
                             foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
                                 await extra(progress, cancellation.Token);
                                 if (CheckCancellation()) return false;
@@ -402,11 +411,26 @@ namespace AcManager.Tools.ContentInstallation {
                             await Task.Run(() => FileUtils.Recycle(toInstall.SelectMany(x => x.ToRemoval).ToArray()));
                             if (CheckCancellation()) return false;
 
-                            var preventExecutables = !_installationParams.AllowExecutables;
-                            await installator.InstallEntryToAsync(info => {
-                                if (preventExecutables && ExecutablesRegex.IsMatch(info.Key)) return null;
-                                return toInstall.Select(x => x.CopyCallback(info)).FirstOrDefault(x => x != null);
-                            }, progress, cancellation.Token);
+                            try {
+                                foreach (var t in toInstall) {
+                                    if (t.BeforeTask == null) continue;
+
+                                    progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Preparing to install {GetToInstallName(t)}…"));
+                                    await t.BeforeTask(cancellation.Token);
+                                    if (CheckCancellation()) return false;
+                                }
+
+                                await InstallAsync(installator, toInstall, progress, cancellation);
+                            } finally {
+                                foreach (var t in toInstall) {
+                                    if (t.AfterTask == null) continue;
+
+                                    progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Finishing installation {GetToInstallName(t)}…"));
+                                    await t.AfterTask(cancellation.Token);
+                                    if (CheckCancellation()) break;
+                                }
+                            }
+
                             if (CheckCancellation()) return false;
 
                             foreach (var extra in ExtraOptions.Select(x => x.PostInstallation).NonNull()) {
@@ -440,6 +464,130 @@ namespace AcManager.Tools.ContentInstallation {
                     }
                 }
             }
+        }
+
+        private Dictionary<string, string[]> _modsPreviousLogs;
+        private Dictionary<string, List<string>> _modsToInstall;
+
+        private async Task InstallAsync(IAdditionalContentInstallator installator, List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
+                CancellationTokenSource cancellation) {
+            _modsPreviousLogs = new Dictionary<string, string[]>();
+            _modsToInstall = new Dictionary<string, List<string>>();
+
+            try {
+                var preventExecutables = !_installationParams.AllowExecutables;
+                await installator.InstallAsync(info => {
+                    if (preventExecutables && ExecutablesRegex.IsMatch(info.Key)) return null;
+                    return toInstall.Select(x => {
+                        var destination = x.CopyCallback(info);
+                        if (destination == null) return null;
+
+                        if (x.OriginalEntry.InstallAsGenericMod) {
+                            var modName = $"[{x.OriginalEntry.GenericModTypeName}] {x.OriginalEntry.Name}";
+                            if (!_modsToInstall.TryGetValue(modName, out var list)) {
+                                list = _modsToInstall[modName] = new List<string>();
+                            }
+
+                            list.Add(destination);
+                            SaveModBackup(modName, destination);
+                        }
+
+                        return destination;
+                    }).FirstOrDefault(x => x != null);
+                }, progress, cancellation.Token);
+            } finally {
+                await FinishSettingMods();
+            }
+        }
+
+        private void SaveModBackup(string modName, string destination) {
+            if (!File.Exists(destination)) return;
+
+            var root = AcRootDirectory.Instance.RequireValue;
+            if (!FileUtils.IsAffected(root, destination)) return;
+
+            var modsDirectory = SettingsHolder.GenericMods.GetModsDirectory();
+
+            if (!_modsPreviousLogs.TryGetValue(modName, out var list)) {
+                var installationLog = GenericModsEnabler.GetInstallationLogFilename(modsDirectory, modName);
+                list = _modsPreviousLogs[modName] = File.Exists(installationLog) ? File.ReadAllLines(installationLog) : new string[0];
+            }
+
+            var relative = FileUtils.GetRelativePath(destination, root);
+            if (list.Contains(relative)) return;
+
+            var backupFilename = GenericModsEnabler.GetBackupFilename(modsDirectory, modName, relative);
+            if (!File.Exists(backupFilename)) {
+                FileUtils.EnsureFileDirectoryExists(backupFilename);
+
+                try {
+                    File.Move(destination, backupFilename);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+
+                    try {
+                        FileUtils.HardLinkOrCopy(destination, backupFilename);
+                    } catch (Exception eSerious) {
+                        Logging.Error(eSerious);
+                    }
+                }
+            }
+        }
+
+        private async Task FinishSettingMods() {
+            if (_modsToInstall == null || _modsToInstall.Count == 0) return;
+
+            var root = AcRootDirectory.Instance.RequireValue;
+            var modsDirectory = SettingsHolder.GenericMods.GetModsDirectory();
+
+            // Copying installed files as new mods
+            foreach (var p in _modsToInstall) {
+                var destination = Path.Combine(modsDirectory, p.Key);
+                if (Directory.Exists(destination)) {
+                    try {
+                        await Task.Run(() => FileUtils.Recycle(destination));
+                        Directory.Delete(destination, true);
+                    } catch {
+                        // ignored
+                    }
+                }
+
+                await Task.Run(() => {
+                    Directory.CreateDirectory(destination);
+
+                    var files = p.Value.Where(x => FileUtils.IsAffected(root, x)).ToList();
+                    foreach (var v in files) {
+                        var relative = FileUtils.GetRelativePath(v, root);
+                        var modFilename = Path.Combine(destination, relative);
+                        FileUtils.EnsureFileDirectoryExists(modFilename);
+                        FileUtils.HardLinkOrCopy(v, modFilename);
+                    }
+
+                    // Faking installation log
+                    File.WriteAllLines(GenericModsEnabler.GetInstallationLogFilename(modsDirectory, p.Key),
+                            files.Select(x => FileUtils.GetRelativePath(x, root)));
+                });
+            }
+
+            // Marking mods as installed
+            var config = new IniFile(Path.Combine(modsDirectory, GenericModsEnabler.ConfigFileName));
+            foreach (var p in _modsToInstall) {
+                var dependancies = config["DEPENDANCIES"];
+                var dependsOn = dependancies.GetGenericModDependancies(p.Key);
+                if (dependsOn?.Length > 0) {
+                    // Uh-oh
+                    foreach (var d in dependsOn) {
+                        var v = dependancies.GetGenericModDependancies(d);
+                        if (v?.Contains(p.Key) == true) continue;
+                        dependancies.SetGenericModDependancies(d, (v ?? new string[0]).Append(p.Key));
+                    }
+                }
+
+                config["MODS"].Set(p.Key, int.MaxValue);
+                GenericModsEnabler.UpdateApplyOrder(config);
+            }
+
+            config.Save();
         }
 
         #region Found entries

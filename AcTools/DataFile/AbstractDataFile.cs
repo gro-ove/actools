@@ -20,7 +20,7 @@ namespace AcTools.DataFile {
 
         [NotNull]
         public readonly string Name;
-        
+
         [CanBeNull]
         public readonly string Filename;
 
@@ -133,7 +133,7 @@ namespace AcTools.DataFile {
             } else {
                 var filename = Filename;
                 if (filename == null) {
-                    throw new Exception("File wasn’t loaded to be saved like this");
+                    throw new Exception("File wasnâ€™t loaded to be saved like this");
                 }
 
                 acd = Acd.FromFile(filename);

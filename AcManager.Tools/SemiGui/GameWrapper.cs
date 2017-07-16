@@ -158,6 +158,10 @@ namespace AcManager.Tools.SemiGui {
                 SidekickHelper.UpdateSidekickDatabase(properties.BasicProperties.CarId);
             }
 
+            if (SettingsHolder.Drive.RaceEssentialsIntegration && properties.BasicProperties?.CarId != null) {
+                RaceEssentialsHelper.UpdateRaceEssentialsDatabase(properties.BasicProperties.CarId, false);
+            }
+
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());

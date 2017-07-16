@@ -78,8 +78,7 @@
     <!-- Content -->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml" />
     <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml" />
-    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Showrooms}"
-        Source="/Pages/Lists/ShowroomsListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
@@ -88,9 +87,10 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
         <mui:Link DisplayName="User Championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
-        <!-- <mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" /> -->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
+    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="Mods"
+        Source="/Pages/Lists/GenericModsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />

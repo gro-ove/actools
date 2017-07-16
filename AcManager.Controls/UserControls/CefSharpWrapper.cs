@@ -16,6 +16,7 @@ using CefSharp.Wpf;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using LogSeverity = CefSharp.LogSeverity;
 

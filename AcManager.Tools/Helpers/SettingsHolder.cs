@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
@@ -813,6 +814,45 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _sidekickUpdateExistingMods)) return;
                     _sidekickUpdateExistingMods = value;
                     ValuesStorage.Set("Settings.DriveSettings.SidekickUpdateExistingMods", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _raceEssentialsIntegration;
+
+            public bool RaceEssentialsIntegration {
+                get => _raceEssentialsIntegration ??
+                        (_raceEssentialsIntegration = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsIntegration", true)).Value;
+                set {
+                    if (Equals(value, _raceEssentialsIntegration)) return;
+                    _raceEssentialsIntegration = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RaceEssentialsIntegration", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _raceEssentialsUpdateExistingKunos;
+
+            public bool RaceEssentialsUpdateExistingKunos {
+                get => _raceEssentialsUpdateExistingKunos ??
+                        (_raceEssentialsUpdateExistingKunos = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", false)).Value;
+                set {
+                    if (Equals(value, _raceEssentialsUpdateExistingKunos)) return;
+                    _raceEssentialsUpdateExistingKunos = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _raceEssentialsUpdateExistingMods;
+
+            public bool RaceEssentialsUpdateExistingMods {
+                get => _raceEssentialsUpdateExistingMods ??
+                        (_raceEssentialsUpdateExistingMods = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", true)).Value;
+                set {
+                    if (Equals(value, _raceEssentialsUpdateExistingMods)) return;
+                    _raceEssentialsUpdateExistingMods = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", value);
                     OnPropertyChanged();
                 }
             }
@@ -2289,5 +2329,66 @@ namespace AcManager.Tools.Helpers {
         private static PluginsSettings _plugins;
 
         public static PluginsSettings Plugins => _plugins ?? (_plugins = new PluginsSettings());
+
+        public class GenericModsSettings : NotifyPropertyChanged {
+            internal GenericModsSettings() { }
+
+            private bool? _useHardLinks;
+
+            public bool UseHardLinks {
+                get => _useHardLinks ?? (_useHardLinks = ValuesStorage.GetBool("Settings.GenericModsSettings.UseHardLinks", true)).Value;
+                set {
+                    if (Equals(value, _useHardLinks)) return;
+                    _useHardLinks = value;
+                    ValuesStorage.Set("Settings.GenericModsSettings.UseHardLinks", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _detectWhileInstalling;
+
+            public bool DetectWhileInstalling {
+                get => _detectWhileInstalling ??
+                        (_detectWhileInstalling = ValuesStorage.GetBool("Settings.GenericModsSettings.DetectWhileInstalling", true)).Value;
+                set {
+                    if (Equals(value, _detectWhileInstalling)) return;
+                    _detectWhileInstalling = value;
+                    ValuesStorage.Set("Settings.GenericModsSettings.DetectWhileInstalling", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _modsDirectory;
+
+            public string ModsDirectory {
+                get => _modsDirectory ??
+                        (_modsDirectory = ValuesStorage.GetString("Settings.GenericModsSettings.ModsDirectory", "mods"));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _modsDirectory)) return;
+                    _modsDirectory = value;
+                    ValuesStorage.Set("Settings.GenericModsSettings.ModsDirectory", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public string GetModsDirectory() {
+                var value = ModsDirectory;
+
+                if (string.IsNullOrWhiteSpace(value)) {
+                    value = "mods";
+                }
+
+                if (!Path.IsPathRooted(value)) {
+                    value = Path.Combine(AcRootDirectory.Instance.RequireValue, value);
+                }
+
+                return value;
+            }
+        }
+
+        private static GenericModsSettings _genericMods;
+
+        public static GenericModsSettings GenericMods => _genericMods ?? (_genericMods = new GenericModsSettings());
     }
 }

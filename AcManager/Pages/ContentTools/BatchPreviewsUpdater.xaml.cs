@@ -19,6 +19,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;

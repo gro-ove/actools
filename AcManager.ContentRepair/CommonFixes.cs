@@ -41,7 +41,7 @@ namespace AcManager.ContentRepair {
                 }
 
                 cancellation.ThrowIfCancellationRequested();
-                kn5.Save(filename);
+                kn5.SaveRecyclingOriginal(filename);
             }, cancellation);
         }
 

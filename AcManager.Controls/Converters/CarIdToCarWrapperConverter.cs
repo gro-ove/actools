@@ -4,6 +4,7 @@ using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Controls.Converters {
     [ValueConversion(typeof(string), typeof(AcItemWrapper))]

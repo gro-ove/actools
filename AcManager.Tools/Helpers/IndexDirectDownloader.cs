@@ -6,6 +6,7 @@ using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 

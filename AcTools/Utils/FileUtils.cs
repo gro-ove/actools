@@ -555,5 +555,35 @@ namespace AcTools.Utils {
         public static string[] GetFileSiblingHardLinks([NotNull] string filename) {
             return GetFileSiblingHardLinks(filename, GetMountPoint(filename));
         }
+
+        public static bool IsDirectoryEmpty([NotNull] string path) {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(path);
+            if (!Directory.Exists(path)) throw new DirectoryNotFoundException();
+
+            var last = path[path.Length - 1];
+            if (last == Path.DirectorySeparatorChar || last == Path.AltDirectorySeparatorChar) {
+                path += "*";
+            } else {
+                path += Path.DirectorySeparatorChar + "*";
+            }
+
+            Kernel32.Win32FindData findData;
+            var handle = Kernel32.FindFirstFile(path, out findData);
+            if (handle != Kernel32.InvalidHandleValue) {
+                try {
+                    do {
+                        if (findData.FileName != "." && findData.FileName != "..") {
+                            return false;
+                        }
+                    } while (Kernel32.FindNextFile(handle, out findData));
+                    return true;
+                } finally {
+                    Kernel32.FindClose(handle);
+                }
+            }
+
+            throw new Exception("Failed to get directory first file",
+                    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        }
     }
 }

@@ -132,6 +132,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        private bool _vrCameraShake;
+
+        public bool VrCameraShake {
+            get => _vrCameraShake;
+            set {
+                if (Equals(value, _vrCameraShake)) return;
+                _vrCameraShake = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Experimental FFB
@@ -176,6 +187,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void LoadFfbFromIni(IniFile ini) {
             SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
+            VrCameraShake = ini["VR"].GetBool("ENABLE_CAMERA_SHAKE", false);
             //FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
 
             var section = ini["FF_EXPERIMENTAL"];
@@ -186,6 +198,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void SaveFfbToIni(IniFile ini) {
             ini["SOFT_LOCK"].Set("ENABLED", SoftLock);
+            ini["VR"].Set("ENABLE_CAMERA_SHAKE", VrCameraShake);
             //ini["FORCE_FEEDBACK"].Set("FF_SKIP_STEPS", FfbSkipSteps);
 
             var section = ini["FF_EXPERIMENTAL"];

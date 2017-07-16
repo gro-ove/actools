@@ -171,18 +171,6 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <!--sidekick-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
-        <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
-          <Label Content="Extend Sidekick’s tyres information if needed" />
-        </CheckBox>
-        <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingKunos}">
-          <Label Content="Update entries for Kunos cars if different" />
-        </CheckBox>
-        <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
-          <Label Content="Update entries for mods if different" />
-        </CheckBox>
-
         <!--game-related events-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 

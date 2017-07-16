@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsGenericMods" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance settings:SettingsGenericMods+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer mui:SaveScroll.Key="SettingsReplays">
+    <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
+      <CheckBox IsChecked="{Binding GenericMods.UseHardLinks}"
+          ToolTip="The only possible issue here is that in some cases, if you change file from mod folder or placed modded file, the other one will change as well">
+        <Label Content="Use hard links to save disk space (recommended)" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding GenericMods.DetectWhileInstalling}" ToolTip="Allow to install content as a new mod">
+        <Label Content="Extend content installation" />
+      </CheckBox>
+
+      <DockPanel>
+        <Label Content="Mods directory:" />
+        <Button Command="{Binding ChangeModsDirectoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+        <Button Command="{Binding OpenModsDirectoryCommand}" Content="Open" />
+        <mui:PathTrimmingTextBlock Text="{Binding ModsDirectory}" />
+      </DockPanel>
+
+      <c:MessageBlock Visibility="{Binding ModsDirectoryWrong, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:BbCodeBlock
+            BbCode="Selected directory is located on a different drive! Hard links won’t work, which will cause whole process of enabling and disabling mods marginally slower and will lead to wasting space." />
+      </c:MessageBlock>
+
+      <!--<DockPanel ToolTip="Will be created if missing">
+        <Label Content="Mods directory name:" />
+        <mui:BetterComboBox x:Name="DirectoryNames" Text="{Binding GenericMods.ModsDirectoryName}" Placeholder="mods" />
+      </DockPanel>-->
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

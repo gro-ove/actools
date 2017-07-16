@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 
@@ -59,18 +61,22 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             var u = d as FrameworkElement;
             if (u != null) {
-                u.Loaded += Control_Loaded;
+                u.Loaded += OnControlLoaded;
             }
         }
 
-        private static void Control_Loaded(object sender, RoutedEventArgs e) {
+        private static void OnControlLoaded(object sender, RoutedEventArgs e) {
             if (OptionNonLimited) return;
 
             var c = (FrameworkElement)sender;
-            c.Loaded -= Control_Loaded;
+            c.Loaded -= OnControlLoaded;
             if (GetLimited(c)) {
-                AdornerLayer.GetAdornerLayer(c)?.Add(new LimitedMarkAdorner(c));
+                // AdornerLayer.GetAdornerLayer(c)?.Add(new LimitedMarkAdorner(c));
                 c.IsEnabled = false;
+                c.ToolTip = "Not available in the Lite version yet";
+                c.SetValue(ToolTipService.ShowOnDisabledProperty, true);
+                c.SetValue(ToolTipService.PlacementProperty, PlacementMode.Bottom);
+                c.SetValue(ToolTipService.InitialShowDelayProperty, 100);
             }
         }
     }

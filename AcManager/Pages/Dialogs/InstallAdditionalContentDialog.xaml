@@ -2,10 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" 
-    xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
-    mc:Ignorable="d" Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400"
-    MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent"
+    xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
+    xmlns:internal="http://acstuff.ru/app/internal" mc:Ignorable="d" Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320"
+    Width="540" Height="480" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent"
     d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop"
     DragEnter="OnDragEnter" ButtonRowContentAlignment="Stretch" Closed="OnClosed">
   <mui:ModernDialog.Resources>
@@ -20,11 +19,13 @@
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
-          <!--name and some information-->
+          <!-- Name and some information -->
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
             <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" />
+            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
+                Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
@@ -50,7 +51,21 @@
             </mui:SpacingUniformGrid>
           </DockPanel>
 
-          <!--update options-->
+          <mui:BooleanSwitch DockPanel.Dock="Top">
+            <mui:BooleanSwitch.Value>
+              <MultiBinding Converter="{StaticResource AndConverter}">
+                <Binding Source="{x:Static internal:AppKeyHolder.IsAllRight}" />
+                <Binding Path="DetectWhileInstalling" Source="{x:Static t:SettingsHolder.GenericMods}" />
+                <Binding Path="InstallAsGenericMod" />
+              </MultiBinding>
+            </mui:BooleanSwitch.Value>
+            <CheckBox IsChecked="{Binding InstallAsGenericMod}" ToolTip="Install as a generic mod as well, allowing to disable/remove it later"
+                Margin="0 4 0 0">
+              <Label Content="Install as a mod as well" />
+            </CheckBox>
+          </mui:BooleanSwitch>
+
+          <!-- Update options -->
           <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
         </DockPanel>
@@ -77,7 +92,7 @@
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
-          <!--name and some information-->
+          <!-- Name and some information -->
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
             <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -106,9 +121,8 @@
               </DockPanel>
             </mui:SpacingUniformGrid>
 
-            <!--layouts-->
-            <mui:ReferenceSwitch Value="{Binding Layouts}" d:DataContext="{d:DesignInstance entries:TrackContentEntry}"
-                DockPanel.Dock="Top">
+            <!-- Layouts -->
+            <mui:ReferenceSwitch Value="{Binding Layouts}" d:DataContext="{d:DesignInstance entries:TrackContentEntry}" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Label}" Text="Layouts to install:" DockPanel.Dock="Top" Margin="0 12 0 0" />
                 <ItemsControl ItemsSource="{Binding Layouts}">
@@ -154,7 +168,7 @@
             </CheckBox>
           </DockPanel>
 
-          <!--update options-->
+          <!-- Update options -->
           <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
 
@@ -215,15 +229,15 @@
             </Button>
 
             <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom">
-              <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0" >
+              <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
                 <TextBlock Style="{StaticResource Small}" Text="Name: " />
                 <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayNameWithUrl, Mode=OneWay}" />
               </DockPanel>
-              <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0" >
+              <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
                 <TextBlock Style="{StaticResource Small}" Text="File name: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />
               </DockPanel>
-              <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0" >
+              <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
                 <TextBlock Style="{StaticResource Small}" Text="Version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" />
               </DockPanel>
@@ -234,7 +248,7 @@
           </DockPanel>
 
           <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-            <!--loading thing-->
+            <!-- Loading thing -->
             <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
               <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}"
                   DockPanel.Dock="Top" Height="4"
@@ -243,7 +257,7 @@
                   Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
             </DockPanel>
 
-            <!--finished-->
+            <!-- Finished -->
             <DockPanel>
               <mui:ReferenceSwitch Value="{Binding Failed}">
                 <mui:ReferenceSwitch.Null>
@@ -263,7 +277,7 @@
               </mui:ReferenceSwitch>
             </DockPanel>
 
-            <!--password input-->
+            <!-- Password input -->
             <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
               <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
               <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
@@ -272,7 +286,7 @@
               <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
             </mui:SpacingStackPanel>
 
-            <!--waiting for confirmation-->
+            <!-- Waiting for confirmation -->
             <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
               <mui:Switch Value="{Binding Entries.Length}">
                 <StackPanel mui:Switch.When="0">
@@ -315,7 +329,7 @@
                 </DockPanel>
               </mui:Switch>
 
-              <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 12 0 0" />
+              <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
             </StackPanel>
           </mui:Switch>
 
@@ -323,46 +337,4 @@
       </DataTemplate>
     </ItemsControl.ItemTemplate>
   </ItemsControl>
-
-
-  <!--<Grid>
-    <mui:ModernProgressRing x:Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
-    <Grid x:Name="MainContent" Visibility="Collapsed">
-      <ItemsControl ItemsSource="{Binding Entries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
-          VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Grid Margin="0 8 0 0">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-              </Grid.RowDefinitions>
-              <CheckBox x:Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
-              <StackPanel Grid.Row="0" Grid.Column="1">
-                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                <TextBlock Style="{StaticResource Small}" Text="{Binding Id, StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}}" />
-                <TextBlock Style="{StaticResource Small}" Text="{Binding Path, StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}}" />
-              </StackPanel>
-              <StackPanel x:Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
-                  IsEnabled="{Binding IsChecked, ElementName=InstallEntry}">
-                <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_WhatToUpdateLabel}" Style="{StaticResource Label.Padding}" />
-                <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />
-              </StackPanel>
-            </Grid>
-            <DataTemplate.Triggers>
-              <DataTrigger Binding="{Binding IsNew}" Value="True">
-                <DataTrigger.Setters>
-                  <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
-                </DataTrigger.Setters>
-              </DataTrigger>
-            </DataTemplate.Triggers>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </Grid>
-  </Grid>-->
 </mui:ModernDialog>

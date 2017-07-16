@@ -27,6 +27,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
+using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class CarDescription {
@@ -173,7 +174,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             SuspensionModifiers.PropertyChanged += OnSuspensionModifiersChanged;
 
             if (soundFactory != null) {
-                InitializeSoundAsync(soundFactory).Forget();
+                TaskExtension.Forget(InitializeSoundAsync(soundFactory));
             }
         }
 
@@ -456,7 +457,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             InitializeCrewMain();
             InitializeCrewTyres();
-            InitializeCrewStuff().Forget();
+            TaskExtension.Forget(InitializeCrewStuff());
 
             ObjectsChanged?.Invoke(this, EventArgs.Empty);
             UpdateCrewDebugMode();

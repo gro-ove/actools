@@ -25,10 +25,10 @@ namespace AcTools.Tests {
             var kn5 = Kn5.FromFile(f);
 
             File.Delete(t);
-            kn5.Save(t);
+            kn5.SaveNew(t);
 
             kn5 = Kn5.FromFile(t);
-            kn5.Save(t + "2");
+            kn5.SaveNew(t + "2");
 
             Assert.IsTrue(File.ReadAllBytes(t + "2").SequenceEqual(File.ReadAllBytes(f)), "I admit, this test is hardcore, but it’s not an excuse");
         }

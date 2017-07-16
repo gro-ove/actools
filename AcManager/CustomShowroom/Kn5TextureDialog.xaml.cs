@@ -260,7 +260,10 @@ namespace AcManager.CustomShowroom {
                 var dialog = new OpenFileDialog {
                     InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
                     Filter = FileDialogFilters.TexturesFilter,
-                    FileName = TextureName
+                    FileName = TextureName,
+                    CustomPlaces = {
+                        new FileDialogCustomPlace(_activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename))
+                    }
                 };
 
                 if (dialog.ShowDialog() != true) return;

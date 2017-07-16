@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -17,6 +18,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
                 : base(path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
 
+        public override bool GenericModSupported => false;
+        public override string GenericModTypeName => null;
         public override string NewFormat => "New CM theme {0}";
         public override string ExistingFormat => "Update for a CM theme {0}";
 
@@ -68,8 +71,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", id);
         }
 
-        public override string NewFormat => "New set of textures {0}";
-        public override string ExistingFormat => "Update for a set of textures {0}";
+        public override bool GenericModSupported => true;
+        public override string GenericModTypeName => "Set Of Textures";
+        public override string NewFormat => "New set of textures “{0}”";
+        public override string ExistingFormat => "Update for the set of textures “{0}”";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
             yield return new UpdateOption("Install") {
@@ -79,8 +84,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         protected override CopyCallback GetCopyCallback(string destination) {
             var path = EntryPath;
-            if (string.IsNullOrWhiteSpace(path)) return info => null;
-            return info => FileUtils.IsAffected(path, info.Key) ? Path.Combine(_destination, FileUtils.GetRelativePath(info.Key, path)) : null;
+            return fileInfo => {
+                var filename = fileInfo.Key;
+                if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
+
+                var subFilename = FileUtils.GetRelativePath(filename, path);
+                return Path.Combine(destination, subFilename);
+            };
         }
 
         protected override Task<string> GetDestination(CancellationToken cancellation) {
@@ -100,6 +110,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(FileUtils.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
         }
 
+        public override bool GenericModSupported => true;
+        public override string GenericModTypeName => "AC Config";
         public override string NewFormat => "New AC config {0}";
         public override string ExistingFormat => "Update for a AC config {0}";
 

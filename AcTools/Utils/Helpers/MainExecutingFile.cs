@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace AcManager.Tools.Helpers {
+namespace AcTools.Utils.Helpers {
     public static class MainExecutingFile {
         private static string _location;
         private static string _name;

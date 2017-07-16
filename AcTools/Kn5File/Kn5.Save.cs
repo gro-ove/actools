@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IO;
 using AcTools.Utils;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
+    public interface IKn5TextureProvider {
+        void GetTexture([NotNull] string textureName, Func<long, Stream> writer);
+    }
+
     public partial class Kn5 {
         private void SaveInner(string filename, bool saveNodes, bool replaceIfExists) {
             using (var writer = new Kn5Writer(File.Open(filename, replaceIfExists ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite))) {
@@ -33,34 +38,20 @@ namespace AcTools.Kn5File {
             }
         }
 
-        /// <summary>
-        /// Saves file under a new name and then renames it back to “filename” to avoid
-        /// breaking stuff if saving goes wrong. Optionally, will move original file
-        /// to the Recycle Bin.
-        /// </summary>
-        public void Save(string filename, bool backup = true) {
-            var newFilename = FileUtils.EnsureUnique(filename);
-            if (newFilename != filename) {
-                if (backup) {
-                    FileUtils.Recycle(newFilename);
-                }
-            }
-
-            SaveInner(newFilename, true, true);
-
-            if (newFilename != filename) {
-                if (File.Exists(filename)) {
-                    File.Delete(filename);
-                }
-
-                File.Move(newFilename, filename);
-            }
-        }
-
         private static void Save_Node(Kn5Writer writer, Kn5Node node) {
             writer.Write(node);
             foreach (var t in node.Children) {
                 Save_Node(writer, t);
+            }
+        }
+
+        public void SaveNew(string filename) {
+            SaveInner(filename, true, true);
+        }
+
+        public void SaveRecyclingOriginal(string filename) {
+            using (var f = FileUtils.RecycleOriginal(filename)) {
+                SaveInner(f.Filename, true, true);
             }
         }
     }

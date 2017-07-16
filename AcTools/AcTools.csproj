@@ -122,7 +122,9 @@
     <Compile Include="Utils\AcKunosContent.cs" />
     <Compile Include="Utils\AcLocaleProvider.cs" />
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
+    <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
+    <Compile Include="Utils\Helpers\TaskExtension.cs" />
     <Compile Include="Utils\MemoryChunk.cs" />
     <Compile Include="KnhFile\Knh.cs" />
     <Compile Include="KnhFile\Knh.FromFile.cs" />

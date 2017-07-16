@@ -11,6 +11,32 @@ using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace AcTools.Windows {
     public static class Kernel32 {
+        public static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct Win32FindData {
+            public uint FileAttributes;
+            public FileTime CreationTime;
+            public FileTime LastAccessTime;
+            public FileTime LastWriteTime;
+            public uint FileSizeHigh;
+            public uint FileSizeLow;
+            public uint Reserved0;
+            public uint Reserved1;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string FileName;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+            public string AlternateFileName;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr FindFirstFile(string lpFileName, out Win32FindData lpFindFileData);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        public static extern bool FindNextFile(IntPtr hFindFile, out Win32FindData lpFindFileData);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct ByHandleFileInformation {
             public uint FileAttributes;
@@ -42,10 +68,10 @@ namespace AcTools.Windows {
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseHandle(SafeHandle hObject);
 
-        [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr FindFirstFileNameW(string lpFileName, uint dwFlags, ref uint stringLength, StringBuilder fileName);
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool FindNextFileNameW(IntPtr hFindStream, ref uint stringLength, StringBuilder fileName);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -95,7 +121,7 @@ namespace AcTools.Windows {
         [DllImport("kernel32.dll")]
         public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
 
-        public  enum SymbolicLink {
+        public enum SymbolicLink {
             File = 0,
             Directory = 1
         }
@@ -141,7 +167,6 @@ namespace AcTools.Windows {
         [DllImport("kernel32.dll")]
         public static extern bool GetExitCodeProcess(IntPtr processHandle, out int exitCode);
 
-
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, uint nSize, out int lpNumberOfBytesWritten);
 
@@ -174,10 +199,7 @@ namespace AcTools.Windows {
         [CanBeNull]
         public static string GetDllDirectory() {
             var sb = new StringBuilder(500);
-            if (GetDllDirectory(sb.Capacity, sb) == 0) {
-                return null;
-            }
-            return sb.ToString();
+            return GetDllDirectory(sb.Capacity, sb) == 0 ? null : sb.ToString();
         }
     }
 }

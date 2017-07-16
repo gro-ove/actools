@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="AcManager.Pages.Lists.GenericModsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:lists="clr-namespace:AcManager.Pages.Lists" xmlns:genericMods="clr-namespace:AcTools.GenericMods;assembly=AcTools.GenericMods"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance lists:GenericModsListPage+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresets.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <DataTemplate x:Key="ItemTemplate" DataType="genericMods:GenericMod">
+        <DockPanel Margin="4" Background="Transparent" PreviewMouseLeftButtonDown="OnItemClick">
+          <DockPanel.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Explore" Command="{Binding ExploreCommand}" />
+              <Separator />
+              <MenuItem Header="Delete" Command="{Binding DeleteCommand}" />
+              <MenuItem Header="Rename" Command="{Binding RenameCommand}" />
+            </ContextMenu>
+          </DockPanel.ContextMenu>
+          <mui:ReferenceSwitch DockPanel.Dock="Bottom" Value="{Binding DependsOn}">
+            <TextBlock Text="{Binding DisplayDependsOn, StringFormat='Some files are overwritten by {0}'}" Style="{StaticResource Small}" Margin="20 2 0 0"
+                Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
+          </mui:ReferenceSwitch>
+          <mui:ReferenceSwitch DockPanel.Dock="Bottom" Value="{Binding Description.Value}">
+            <TextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="20 2 0 0" TextWrapping="Wrap" />
+          </mui:ReferenceSwitch>
+          <TextBlock Text="{Binding DisplayName}" />
+        </DockPanel>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <mui:BooleanSwitch Value="{Binding IsNothing}">
+    <mui:BooleanSwitch.True>
+      <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <mui:SpacingUniformGrid DockPanel.Dock="Bottom" Margin="0 8 0 0" Rows="1" HorizontalSpacing="8">
+          <Button Padding="8 3 8 5" Click="CreateDirectoryButtonClick">
+            <DockPanel>
+              <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource AddIconData}"
+                  DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+              <TextBlock Text="Create It" VerticalAlignment="Center" Margin="4 0 0 0" />
+            </DockPanel>
+          </Button>
+          <Button Padding="8 3 8 5" Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/Settings/SettingsGenericMods.xaml">
+            <DockPanel>
+              <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource GearIconData}"
+                  DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+              <TextBlock Text="Open Settings" VerticalAlignment="Center" Margin="4 0 0 0" />
+            </DockPanel>
+          </Button>
+        </mui:SpacingUniformGrid>
+        <TextBlock Text="Mods directory is missing" Style="{StaticResource Heading1}" />
+      </DockPanel>
+    </mui:BooleanSwitch.True>
+    <mui:BooleanSwitch.False>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="9" />
+          <ColumnDefinition Width="240" />
+          <ColumnDefinition Width="9" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0">
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Available mods:" Margin="20 20 0 8" />
+          <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Disabled}" />
+        </DockPanel>
+
+        <DockPanel Grid.Column="4">
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Installed mods:" Margin="20 20 0 8" />
+          <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Enabled}" />
+        </DockPanel>
+
+        <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+            Margin="0 20 0 0" />
+        <Rectangle Grid.Column="3" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+            Margin="0 20 0 0" />
+
+        <mui:SpacingStackPanel Grid.Column="2" Spacing="4" Margin="0 40 0 0">
+          <Button Padding="2 4" ToolTip="Enable selected mod" Command="{Binding EnableCommand}">
+            <DockPanel>
+              <Path Width="32" Height="12" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Data="F1 M 19.0002,34L 19.0002,42L 43.7502,42L 33.7502,52L 44.2502,52L 58.2502,38L 44.2502,24L 33.7502,24L 43.7502,34L 19.0002,34 Z"
+                  DockPanel.Dock="Top" Margin="0 4 0 4" />
+              <TextBlock Text="Enable" />
+            </DockPanel>
+          </Button>
+          <Button Padding="2 4" ToolTip="Disable selected mod" Command="{Binding DisableCommand}">
+            <DockPanel>
+              <Path Width="32" Height="12" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Data="F1 M 57,42L 57,34L 32.25,34L 42.25,24L 31.75,24L 17.75,38L 31.75,52L 42.25,52L 32.25,42L 57,42 Z" DockPanel.Dock="Top" Margin="0 4 0 4" />
+              <TextBlock Text="Disable" />
+            </DockPanel>
+          </Button>
+          <Button Padding="2 4" ToolTip="Disable all mods" Command="{Binding DisableAllCommand}">
+            <DockPanel>
+              <Path Width="32" Height="12" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Data="F1 M 56.5,18L 31.75,18L 41.75,28L 31.25,28L 17.25,14L 31.25,0L 41.75,0L 31.75,10L 56.5,10L 56.5,18 Z M 14.5,18L 24.5,28L 14,28L 0,14L 14,0L 24.5,0L 14.5,10L 19.25,10L 15.25,14L 19.25,18L 14.5,18 Z"
+                  DockPanel.Dock="Top" Margin="0 4 0 4" />
+              <TextBlock Text="Disable All" />
+            </DockPanel>
+          </Button>
+          <c:UserPresetsControl UserPresetable="{Binding}" Style="{StaticResource UserPresetsControl.Compact}" Width="240" />
+
+          <c:MessageBlock Margin="0 0 0 0">
+            <mui:BbCodeBlock
+                BbCode="This page allows you to manage mods in JSGME way. All JSGME-related warnings are still actual. Also, it’s not integrated with other parts of CM, so, please, use it carefully. If needed, settings are [url=&quot;/Pages/Settings/SettingsGenericMods.xaml|_top&quot;]here[/url]."
+                Style="{StaticResource Small}" />
+          </c:MessageBlock>
+        </mui:SpacingStackPanel>
+      </Grid>
+    </mui:BooleanSwitch.False>
+  </mui:BooleanSwitch>
+</UserControl>

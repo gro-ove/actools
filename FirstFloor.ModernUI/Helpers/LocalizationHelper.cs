@@ -234,7 +234,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToSentence(this string s) {
-            return s.Length == 0 ? string.Empty : char.IsLetterOrDigit(s[s.Length - 1]) ? $@"{s}." : s;
+            if (s.Length == 0) return string.Empty;
+
+            var l = s[s.Length - 1];
+            return l == ';' ? $@"{s.Substring(0, s.Length - 1)}." :
+                    char.IsLetterOrDigit(l) ? $@"{s}." : s;
         }
 
         public static string ToReadableKey(this Keys key) {

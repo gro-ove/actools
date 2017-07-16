@@ -162,8 +162,9 @@
     <Compile Include="ContentInstallation\ContentInstallationParams.cs" />
     <Compile Include="ContentInstallation\ContentScanner.cs" />
     <Compile Include="ContentInstallation\Entries\AcContentEntries.cs" />
-    <Compile Include="ContentInstallation\Entries\ContentEntryBase.cs" />
+    <Compile Include="ContentInstallation\Entries\ContentEntries.cs" />
     <Compile Include="ContentInstallation\Entries\ExtraEntries.cs" />
+    <Compile Include="ContentInstallation\Entries\GenericModConfigEntry.cs" />
     <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SharpCompressContentInstallator.cs" />
@@ -311,8 +312,8 @@
     <Compile Include="Helpers\CustomUriRequest.cs" />
     <Compile Include="Helpers\Loaders\RedirectingLoader.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
-    <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
+    <Compile Include="Helpers\RaceEssentialsHelper.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\SharpCompressExtension.cs" />
     <Compile Include="Helpers\Vdf.cs" />
@@ -453,7 +454,6 @@
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
     <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
     <Compile Include="Helpers\HashAlgorithmExtension.cs" />
-    <Compile Include="Helpers\TaskExtension.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
     <Compile Include="Helpers\TimeSpanExtension.cs" />
     <Compile Include="ContentInstallation\PasswordException.cs" />
@@ -535,6 +535,10 @@
       <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
       <Name>AcManager.Internal</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.GenericMods\AcTools.GenericMods.csproj">
+      <Project>{11EAD82E-0325-44A8-9785-B02BAACD1D3E}</Project>
+      <Name>AcTools.GenericMods</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
       <Project>{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}</Project>

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AcManager.Tools.Helpers {
+namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
         public static void Forget(this Task task) { }
 
@@ -66,3 +66,4 @@ namespace AcManager.Tools.Helpers {
         }
     }
 }
+

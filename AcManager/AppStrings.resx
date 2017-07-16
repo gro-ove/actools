@@ -3277,7 +3277,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Can’t send logs</value>
   </data>
   <data name="About_Footer" xml:space="preserve">
-    <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source software[/url].
+    <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source and not only software[/url].
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">

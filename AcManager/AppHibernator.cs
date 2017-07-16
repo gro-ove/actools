@@ -34,26 +34,26 @@ namespace AcManager {
                 if (!_added) {
                     AcSharedMemory.Instance.Start += OnStart;
                     AcSharedMemory.Instance.Finish += OnFinish;
-                    GameWrapper.Started += GameWrapper_Started;
-                    GameWrapper.Ended += GameWrapper_Ended;
+                    GameWrapper.Started += OnGameWrapperStarted;
+                    GameWrapper.Ended += OnGameWrapperEnded;
                     _added = true;
                 }
             } else if (_added) {
                 AcSharedMemory.Instance.Start -= OnStart;
                 AcSharedMemory.Instance.Finish -= OnFinish;
-                GameWrapper.Started -= GameWrapper_Started;
-                GameWrapper.Ended -= GameWrapper_Ended;
+                GameWrapper.Started -= OnGameWrapperStarted;
+                GameWrapper.Ended -= OnGameWrapperEnded;
                 _added = false;
             }
         }
 
         private bool _raceStartedByCm;
 
-        private void GameWrapper_Started(object sender, GameStartedArgs e) {
+        private void OnGameWrapperStarted(object sender, GameStartedArgs e) {
             _raceStartedByCm = true;
         }
 
-        private async void GameWrapper_Ended(object sender, GameEndedArgs e) {
+        private async void OnGameWrapperEnded(object sender, GameEndedArgs e) {
             await Task.Delay(5000);
             _raceStartedByCm = false;
         }
@@ -73,14 +73,14 @@ namespace AcManager {
                 Icon = AppIconService.GetTrayIcon(),
                 Text = AppStrings.Hibernate_TrayText
             };
-            
-            _trayIcon.DoubleClick += TrayIcon_DoubleClick;
+
+            _trayIcon.DoubleClick += OnTrayIconDoubleClick;
 
             var restoreMenuItem = new MenuItem { Text = UiStrings.Restore };
-            restoreMenuItem.Click += RestoreMenuItem_Click;
+            restoreMenuItem.Click += OnRestoreMenuItemClick;
 
             var closeMenuItem = new MenuItem { Text = UiStrings.Close };
-            closeMenuItem.Click += CloseMenuItem_Click;
+            closeMenuItem.Click += OnCloseMenuItemClick;
 
             _trayIcon.ContextMenu = new ContextMenu(new[] {
                 restoreMenuItem,
@@ -97,11 +97,11 @@ namespace AcManager {
             }
         }
 
-        private void RestoreMenuItem_Click(object sender, EventArgs e) {
+        private void OnRestoreMenuItemClick(object sender, EventArgs e) {
             WakeUp();
         }
 
-        private void CloseMenuItem_Click(object sender, EventArgs e) {
+        private void OnCloseMenuItemClick(object sender, EventArgs e) {
             var app = Application.Current;
             if (app == null) {
                 Environment.Exit(0);
@@ -110,7 +110,7 @@ namespace AcManager {
             }
         }
 
-        private void TrayIcon_DoubleClick(object sender, EventArgs e) {
+        private void OnTrayIconDoubleClick(object sender, EventArgs e) {
             Hibernated = false;
         }
 
@@ -122,7 +122,7 @@ namespace AcManager {
         private bool _hibernated;
 
         public bool Hibernated {
-            get { return _hibernated; }
+            get => _hibernated;
             set {
                 if (Equals(value, _hibernated)) return;
                 _hibernated = value;

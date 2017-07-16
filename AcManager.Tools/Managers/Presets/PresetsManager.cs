@@ -132,7 +132,10 @@ namespace AcManager.Tools.Managers.Presets {
             var dialog = new SaveFileDialog {
                 InitialDirectory = presetsDirectory,
                 Filter = string.Format(ToolsStrings.Presets_FileFilter, category.Extension),
-                DefaultExt = category.Extension
+                DefaultExt = category.Extension,
+                CustomPlaces = {
+                    new FileDialogCustomPlace(presetsDirectory)
+                }
             };
 
             if (filename != null) {

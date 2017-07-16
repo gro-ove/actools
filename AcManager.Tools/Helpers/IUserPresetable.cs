@@ -7,17 +7,17 @@ namespace AcManager.Tools.Helpers {
         bool CanBeSaved { get; }
 
         [NotNull]
-        PresetsCategory PresetableCategory { get; }
-
-        [NotNull]
         string PresetableKey { get; }
 
-        [CanBeNull]
-        string ExportToPresetData();
+        [NotNull]
+        PresetsCategory PresetableCategory { get; }
 
         event EventHandler Changed;
 
         void ImportFromPresetData([NotNull] string data);
+
+        [CanBeNull]
+        string ExportToPresetData();
     }
 
     public interface IPresetsPreviewProvider {

@@ -30,12 +30,12 @@ namespace AcTools.Utils {
 
             var kn5 = Kn5.FromFile(kn5File);
             var fixedNodes = 0;
-            
+
             foreach (var node in kn5.Nodes) {
                 if (node.NodeClass != Kn5NodeClass.Base) continue;
 
                 if (!node.Active && (
-                        node.Name == "STEER_HR" || 
+                        node.Name == "STEER_HR" ||
                         node.Name == "COCKPIT_HR" ||
                         node.Name == "STEER_LR" && FixLrHrNodes_HasParentWithName(kn5.RootNode, node, "COCKPIT_LR")
                     )) {
@@ -54,8 +54,8 @@ namespace AcTools.Utils {
             if (fixedNodes == 0){
                 return false;
             }
-            
-            kn5.Save(kn5File);
+
+            kn5.SaveRecyclingOriginal(kn5File);
             return true;
         }
 
@@ -77,14 +77,14 @@ namespace AcTools.Utils {
                         blurredRimsList.Add(section.GetPossiblyEmpty("NAME"));
                     }
                 }
-                    
+
                 normalRims = normalRimsList.ToArray();
                 blurredRims = blurredRimsList.ToArray();
             } catch (Exception) {
                 normalRims = new []{ "RIM_LF", "RIM_RF", "RIM_LR", "RIM_RR" };
                 blurredRims = new []{ "RIM_BLUR_LF", "RIM_BLUR_RF", "RIM_BLUR_LR", "RIM_BLUR_RR" };
             }
-            
+
             foreach (var node in kn5.Nodes.Where(node => node.NodeClass == Kn5NodeClass.Base)) {
                 if (!node.Active && normalRims.Contains(node.Name)) {
                     node.Active = true;
@@ -98,8 +98,8 @@ namespace AcTools.Utils {
             if (wheels == 0){
                 return false;
             }
-            
-            kn5.Save(kn5File);
+
+            kn5.SaveRecyclingOriginal(kn5File);
             return true;
         }
 
@@ -117,8 +117,8 @@ namespace AcTools.Utils {
             if (added == 0){
                 return false;
             }
-            
-            kn5.Save(kn5File);
+
+            kn5.SaveRecyclingOriginal(kn5File);
             return true;
         }
 

@@ -9,6 +9,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/CustomShowroom/LiteShowroomSettings.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresets.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
@@ -313,7 +314,7 @@
 
   <DockPanel Margin="-4 -8 -4 -20">
     <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
-        Style="{StaticResource CompactUserPresetsControl}" Margin="0 20 0 0" Width="208" />
+        Style="{StaticResource UserPresetsControl.Compact}" Margin="0 20 0 0" Width="208" />
 
     <mui:LazySwitch Value="{Binding Mode}">
       <FrameworkElement.Resources>

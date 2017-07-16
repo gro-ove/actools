@@ -763,6 +763,8 @@ namespace AcManager.Pages.Windows {
         }
 
         public bool HandleUri(Uri uri) {
+            Logging.Debug(uri);
+
             if (uri.ToString().Contains("/Pages/AcSettings/")) {
                 SwitchGroup("settings");
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));

@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
   <Style x:Key="SliderRepeatButtonStyle" TargetType="RepeatButton">
     <Setter Property="OverridesDefaultStyle" Value="True" />
     <Setter Property="IsTabStop" Value="False" />
@@ -86,7 +87,7 @@
                   <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}" />
                 </Track.IncreaseRepeatButton>
                 <Track.Thumb>
-                  <Thumb x:Name="Thumb" Style="{StaticResource HorizontalSliderThumbStyle}" />
+                  <controls:ThumbExt x:Name="Thumb" Style="{StaticResource HorizontalSliderThumbStyle}" />
                 </Track.Thumb>
               </Track>
             </Grid>
@@ -147,7 +148,7 @@
                       <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}" />
                     </Track.IncreaseRepeatButton>
                     <Track.Thumb>
-                      <Thumb x:Name="Thumb" Style="{StaticResource VerticalSliderThumbStyle}" />
+                      <controls:ThumbExt x:Name="Thumb" Style="{StaticResource VerticalSliderThumbStyle}" />
                     </Track.Thumb>
                   </Track>
                 </Grid>

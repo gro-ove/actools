@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
 

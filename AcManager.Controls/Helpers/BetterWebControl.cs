@@ -10,6 +10,7 @@ using Awesomium.Core;
 using Awesomium.Windows.Controls;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using ContextMenuEventArgs = Awesomium.Core.ContextMenuEventArgs;
 

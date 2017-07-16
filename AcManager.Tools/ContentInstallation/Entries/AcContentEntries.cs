@@ -23,6 +23,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public CarContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
 
+        public override string GenericModTypeName => "Car";
         public override string NewFormat => ToolsStrings.ContentInstallation_CarNew;
         public override string ExistingFormat => ToolsStrings.ContentInstallation_CarExisting;
 
@@ -408,6 +409,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
         }
 
+        public override string GenericModTypeName => "Track";
         public override string NewFormat => ToolsStrings.ContentInstallation_TrackNew;
 
         private string _existingFormat = ToolsStrings.ContentInstallation_TrackExisting;
@@ -495,6 +497,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public ShowroomContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
 
+        public override string GenericModTypeName => "Showroom";
         public override string NewFormat => ToolsStrings.ContentInstallation_ShowroomNew;
         public override string ExistingFormat => ToolsStrings.ContentInstallation_ShowroomExisting;
 
@@ -530,6 +533,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _car.DisplayName);
         }
 
+        public override string GenericModTypeName => "Car Skin";
         public override string NewFormat { get; }
         public override string ExistingFormat { get; }
 
@@ -565,6 +569,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _track.DisplayName);
         }
 
+        public override string GenericModTypeName => "Track Skin";
         public override string NewFormat { get; }
         public override string ExistingFormat { get; }
 
@@ -593,6 +598,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public FontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
+        public override string GenericModTypeName => "Font";
         public override string NewFormat => ToolsStrings.ContentInstallation_FontNew;
         public override string ExistingFormat => ToolsStrings.ContentInstallation_FontExisting;
 
@@ -626,6 +632,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public TrueTypeFontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
+        public override string GenericModTypeName => "TrueType Font";
         public override string NewFormat => "New TrueType font {0}";
         public override string ExistingFormat => "Update for a TrueType font {0}";
 
@@ -647,6 +654,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _icons = icons?.ToList();
         }
 
+        public override string GenericModTypeName => "App";
         public override string NewFormat => "New app {0}";
         public override string ExistingFormat => "Update for a app {0}";
 
@@ -672,6 +680,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public WeatherContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
+        public override string GenericModTypeName => "Weather";
         public override string NewFormat => ToolsStrings.ContentInstallation_WeatherNew;
         public override string ExistingFormat => ToolsStrings.ContentInstallation_WeatherExisting;
 
@@ -706,6 +715,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public PpFilterContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
+        public override string GenericModTypeName => "PP-Filter";
         public override string NewFormat => "New PP-filter {0}";
         public override string ExistingFormat => "Update for a PP-filter {0}";
 
@@ -722,6 +732,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public DriverModelContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
+        public override string GenericModTypeName => "Driver Model";
         public override string NewFormat => "New driver model {0}";
         public override string ExistingFormat => "Update for a driver model {0}";
 

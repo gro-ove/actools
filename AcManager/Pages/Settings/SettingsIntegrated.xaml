@@ -74,7 +74,7 @@
         </DockPanel>
       </StackPanel>
 
-      <!--sidekick-->
+      <!-- Sidekick -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
       <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
         <Label Content="Extend Sidekick’s tyres information if needed" />
@@ -86,11 +86,23 @@
         <Label Content="Update entries for mods if different" />
       </CheckBox>
 
-      <!--real head motion-->
+      <!-- Race Essentials -->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Race Essentials:" />
+      <CheckBox IsChecked="{Binding Drive.RaceEssentialsIntegration}">
+        <Label Content="Extend RaceEssentials’s tyres information if needed" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingKunos}">
+        <Label Content="Update entries for Kunos cars if different" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingMods}">
+        <Label Content="Update entries for mods if different" />
+      </CheckBox>
+
+      <!-- Real head motion -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
         <Run Text="Real Head Motion:" />
         <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
-                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink>-->
+                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->
       </TextBlock>
 
       <CheckBox IsChecked="{Binding Drive.RhmIntegration}">

@@ -36,7 +36,7 @@ namespace AcManager.Tools.Helpers {
         [CanBeNull]
         private static Tuple<double, double> GetOptimalRange([CanBeNull] Lut lut) {
             if (lut == null) return null;
-            
+
             double? fromX = null, toX = null;
             for (var i = 0; i < lut.Count; i++) {
                 var point = lut[i];
@@ -51,16 +51,21 @@ namespace AcManager.Tools.Helpers {
             return fromX.HasValue ? new Tuple<double, double>(fromX.Value, toX.Value) : null;
         }
 
-        private static bool SetRange(IniFileSection section, string key1, string key2, [CanBeNull] Tuple<double, double> range) {
+        private static bool SetRange(IniFileSection section, string minKey, string maxKey, [CanBeNull] Tuple<double, double> range) {
+            if (range == null) return false;
+
+            var min = Math.Min(range.Item1, range.Item2);
+            var max = Math.Max(range.Item1, range.Item2);
+
             var changed = false;
 
-            if (range != null && !Equals(section.GetDouble(key1, 0d), range.Item1)) {
-                section.Set(key1, range.Item1);
+            if (!Equals(section.GetDouble(maxKey, 0d), max)) {
+                section.Set(maxKey, max);
                 changed = true;
             }
 
-            if (range != null && !Equals(section.GetDouble(key2, 0d), range.Item2)) {
-                section.Set(key2, range.Item2);
+            if (!Equals(section.GetDouble(minKey, 0d), min)) {
+                section.Set(minKey, min);
                 changed = true;
             }
 

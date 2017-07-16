@@ -16,6 +16,7 @@ using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -207,7 +208,7 @@ namespace AcManager.Tools.AcErrors {
                                 AppStrings.Solution_MakeEmptyModel,
                                 AppStrings.Solution_MakeEmptyModel_Details,
                                 e => {
-                                    Kn5.CreateEmpty().Save(((ShowroomObject)e.Target).Kn5Filename);
+                                    Kn5.CreateEmpty().SaveRecyclingOriginal(((ShowroomObject)e.Target).Kn5Filename);
                                 })
                     }.Concat(Solve.TryToFindAnyFile(error.Target.Location, ((ShowroomObject)error.Target).Kn5Filename, @"*.kn5")).Where(x => x != null);
 

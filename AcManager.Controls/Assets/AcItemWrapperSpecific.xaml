@@ -54,7 +54,7 @@
   <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate" DataType="{x:Type t:AcItemWrapper}">
     <ContentControl DataContext="{Binding Value}" Content="{Binding}">
       <ContentControl.Resources>
-        <!-- placeholder -->
+        <!-- Placeholder -->
         <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
           <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
               HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
@@ -65,14 +65,14 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- acobjectnew -->
+        <!-- AcObjectnew -->
         <DataTemplate DataType="{x:Type t:AcObjectNew}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <!--<Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />-->
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
-                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" />
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <controls:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
@@ -109,14 +109,14 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- accommonobject -->
+        <!-- AccommonObject -->
         <DataTemplate DataType="{x:Type t:AcCommonObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
-                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" />
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <controls:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
@@ -163,7 +163,7 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- serverpreset -->
+        <!-- Serverpreset -->
         <DataTemplate DataType="{x:Type t:ServerPresetObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
@@ -172,7 +172,7 @@
                 Visibility="Collapsed" x:Name="RunningIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
-                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" />
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <controls:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
@@ -222,7 +222,7 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- carskinobject -->
+        <!-- CarSkinObject -->
         <DataTemplate DataType="{x:Type t:CarSkinObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 4 0" Filename="{Binding LiveryImage}" />
@@ -230,7 +230,7 @@
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
-                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" />
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <controls:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
@@ -277,7 +277,7 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- fontobject -->
+        <!-- FontObject -->
         <DataTemplate DataType="{x:Type t:FontObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 0 0" Source="{Binding IconBitmap}" Background="Black" />
@@ -285,7 +285,7 @@
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
-                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" />
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <controls:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
@@ -342,12 +342,12 @@
   <DataTemplate x:Key="AcItemWrapperSpecific.CarSkinItemTemplate" DataType="{x:Type t:AcItemWrapper}">
     <ContentControl Content="{Binding Value}" Width="32" Height="32" Background="Transparent">
       <ContentControl.Resources>
-        <!-- placeholder -->
+        <!-- Placeholder -->
         <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
           <TextBlock Text="{Binding Id}" Style="{StaticResource Label}" />
         </DataTemplate>
 
-        <!-- accommonobject -->
+        <!-- AccommonObject -->
         <DataTemplate DataType="{x:Type t:CarSkinObject}">
           <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True" />
         </DataTemplate>

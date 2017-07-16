@@ -91,7 +91,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             }
         }
 
-        public async Task InstallEntryToAsync([NotNull] CopyCallback callback,
+        public async Task InstallAsync([NotNull] CopyCallback callback,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             await CopyFileEntries(callback, progress, cancellation);
         }

@@ -11,6 +11,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;

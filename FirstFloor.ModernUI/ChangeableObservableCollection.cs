@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI {
     public class ChangeableObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged where T : INotifyPropertyChanged {
         public ChangeableObservableCollection(){ }
-        
+
         public ChangeableObservableCollection(IEnumerable<T> collection) {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             CopyFrom(collection);
@@ -44,14 +44,14 @@ namespace FirstFloor.ModernUI {
         public void Move(int oldIndex, int newIndex) {
             MoveItem(oldIndex, newIndex);
         }
-        
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
             add { PropertyChanged += value; }
             remove { PropertyChanged -= value; }
         }
 
         public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
-        
+
         protected override void ClearItems() {
             CheckReentrancy();
             foreach (var item in Items) {
@@ -63,7 +63,7 @@ namespace FirstFloor.ModernUI {
             OnPropertyChanged(IndexerName);
             OnCollectionReset();
         }
-        
+
         protected override void RemoveItem(int index) {
             CheckReentrancy();
             var removedItem = this[index];
@@ -110,13 +110,13 @@ namespace FirstFloor.ModernUI {
             OnPropertyChanged(IndexerName);
             OnCollectionChanged(NotifyCollectionChangedAction.Move, removedItem, newIndex, oldIndex);
         }
-        
+
         protected void OnPropertyChanged(PropertyChangedEventArgs e) {
             PropertyChanged?.Invoke(this, e);
         }
-        
+
         protected event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             var c = CollectionChanged;
             if (c == null) return;
@@ -129,7 +129,7 @@ namespace FirstFloor.ModernUI {
             _monitor.Enter();
             return _monitor;
         }
-        
+
         protected void CheckReentrancy() {
             if (_monitor.Busy && CollectionChanged != null && CollectionChanged.GetInvocationList().Length > 1) {
                 throw new InvalidOperationException();
@@ -139,15 +139,15 @@ namespace FirstFloor.ModernUI {
         private void OnPropertyChanged(string propertyName) {
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
-        
+
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index) {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index));
         }
-        
+
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index, int oldIndex) {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index, oldIndex));
         }
-        
+
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem, int index) {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, newItem, oldItem, index));
         }
@@ -175,13 +175,18 @@ namespace FirstFloor.ModernUI {
             private int _busyCount;
         }
 
+        public void RefreshFilter([NotNull] T obj) {
+            CollectionChanged?.Invoke(this,
+                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj, IndexOf(obj)));
+        }
+
         #region Additional methods
-        public void AddRange(IEnumerable<T> range) {
+        public virtual void AddRange(IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             var list = range.ToList();
             if (list.Count > 3 && list.Count > Count) {
-                _AddRangeDirect(list);
+                AddRange_Direct(list);
             } else {
                 foreach (var item in list) {
                     Add(item);
@@ -194,7 +199,7 @@ namespace FirstFloor.ModernUI {
         /// Will call Reset event afterwards, so don’t use it for small collections.
         /// </summary>
         /// <param name="range">Range.</param>
-        public void _AddRangeDirect(IEnumerable<T> range) {
+        public virtual void AddRange_Direct(IEnumerable<T> range) {
             foreach (var item in range) {
                 Subscribe(item);
                 Items.Add(item);
@@ -205,7 +210,7 @@ namespace FirstFloor.ModernUI {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        private void ReplaceEverythingBy([NotNull] IList<T> list) {
+        private void ReplaceEverythingByInner([NotNull] IEnumerable<T> list) {
             foreach (var item in Items) {
                 Unsubscribe(item);
             }
@@ -221,21 +226,64 @@ namespace FirstFloor.ModernUI {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public virtual bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {
+        private void ReplaceEverythingByInner([NotNull] IList<T> list) {
+            var items = Items;
+
+            foreach (var item in Items) {
+                Unsubscribe(item);
+            }
+
+            Items.Clear();
+
+            for (int i = 0, c = list.Count; i < c; i++) {
+                var item = list[i];
+                Subscribe(item);
+                items.Add(item);
+            }
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        public virtual bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range, IEqualityComparer<T> comparer) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             var list = range as IList<T> ?? range.ToList();
-            if (Items.SequenceEqual(list)) return false;
+            var items = Items;
 
-            ReplaceEverythingBy(list);
-            return true;
+            if (items.Count != list.Count) {
+                ReplaceEverythingByInner(list);
+                return true;
+            }
+
+            for (var i = list.Count - 1; i >= 0; i--) {
+                if (!comparer.Equals(list[i], items[i])) {
+                    ReplaceEverythingByInner(list);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {
+            return ReplaceIfDifferBy(range, EqualityComparer<T>.Default);
         }
 
         public virtual void ReplaceEverythingBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             // for cases when range is somehow created from Items
-            ReplaceEverythingBy(range as IList<T> ?? range.ToList());
+            ReplaceEverythingByInner(range as IList<T> ?? range.ToList());
+        }
+
+        /// <summary>
+        /// Please, use it only if you’re absolutely sure IEnumerable in no way
+        /// origins from this collection.
+        /// </summary>
+        public virtual void ReplaceEverythingBy_Direct([NotNull] IEnumerable<T> range) {
+            ReplaceEverythingByInner(range);
         }
         #endregion
     }

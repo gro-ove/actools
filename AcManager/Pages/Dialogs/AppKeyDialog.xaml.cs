@@ -12,6 +12,7 @@ using AcManager.Tools.Helpers.Api;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AppKeyDialog {
@@ -45,7 +46,7 @@ namespace AcManager.Pages.Dialogs {
             var key = ValuesStorage.GetEncryptedString(AppKeyRevokedKey);
             if (key == null) return;
 
-            Process.Start($"mailto:smpcsht@yahoo.com?subject={Uri.EscapeDataString(@"My Key Is Got Revoked")}&body={Uri.EscapeDataString(@"Key: " + key)}");
+            Process.Start($"mailto:illvdg13@gmail.com?subject={Uri.EscapeDataString(@"My Key Is Got Revoked")}&body={Uri.EscapeDataString(@"Key: " + key)}");
         }
 
         private AppKeyDialogViewModel Model => (AppKeyDialogViewModel)DataContext;

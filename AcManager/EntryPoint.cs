@@ -18,6 +18,7 @@ using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using MessageBox = System.Windows.Forms.MessageBox;
 

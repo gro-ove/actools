@@ -7,6 +7,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {

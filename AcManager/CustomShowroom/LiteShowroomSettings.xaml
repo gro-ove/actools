@@ -33,58 +33,6 @@
     </Style.Resources>
   </Style>
 
-  <Style x:Key="CompactUserPresetsControl" TargetType="c:UserPresetsControl" BasedOn="{StaticResource {x:Type c:UserPresetsControl}}">
-    <Setter Property="Width" Value="210" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="c:UserPresetsControl">
-          <DockPanel>
-            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" DockPanel.Dock="Bottom" Margin="0 4 0 0" Height="24">
-              <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"
-                  Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" Padding="4 2 4 3" />
-              <Button Command="{Binding Settings.ShareCommand}" Content="Share" Padding="4 2 4 3" />
-            </mui:SpacingUniformGrid>
-            <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False" Height="24">
-              <mui:HierarchicalComboBox.SelectedContent>
-                <DataTemplate>
-                  <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"
-                      Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
-                </DataTemplate>
-              </mui:HierarchicalComboBox.SelectedContent>
-            </mui:HierarchicalComboBox>
-          </DockPanel>
-          <ControlTemplate.Triggers>
-            <Trigger Property="Changed" Value="True">
-              <Setter TargetName="PART_ComboBox" Property="SelectedContent">
-                <Setter.Value>
-                  <DataTemplate>
-                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic"
-                        Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
-                  </DataTemplate>
-                </Setter.Value>
-              </Setter>
-            </Trigger>
-            <Trigger Property="CurrentUserPreset" Value="{x:Null}">
-              <Setter TargetName="PART_ComboBox" Property="SelectedContent">
-                <Setter.Value>
-                  <DataTemplate>
-                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic" Text="{x:Static c:ControlsStrings.Presets_Unsaved}" />
-                  </DataTemplate>
-                </Setter.Value>
-              </Setter>
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-    <Style.Triggers>
-      <Trigger Property="ShowSaveButton" Value="True">
-        <Setter Property="MinWidth" Value="100" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
   <DataTemplate x:Key="VisualSettings.ShowroomItem" DataType="t:ShowroomObject">
     <DockPanel Height="18">
       <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding PreviewImage}" Width="18" Height="18" HideBroken="True" />

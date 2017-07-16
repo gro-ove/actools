@@ -318,7 +318,7 @@ namespace AcManager.Tools.Managers.Online {
                         _list.Add(entry);
                     }
                 } else {
-                    target._AddRangeDirect(newEntries);
+                    target.AddRange_Direct(newEntries);
                 }
             } else {
                 var list = informations.ToIReadOnlyListIfItIsNot();

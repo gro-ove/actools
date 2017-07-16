@@ -70,7 +70,7 @@
                 <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}" />
               </Track.IncreaseRepeatButton>
               <Track.Thumb>
-                <Thumb x:Name="Thumb" Style="{StaticResource BaseSliderThumbStyle.Double.InnerSlider}" Height="22"
+                <c:ThumbExt x:Name="Thumb" Style="{StaticResource BaseSliderThumbStyle.Double.InnerSlider}" Height="22"
                     Width="{Binding ThumbSubSize, RelativeSource={RelativeSource AncestorType=c:DoubleSlider}}" />
               </Track.Thumb>
             </Track>
@@ -92,7 +92,7 @@
                     <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}" />
                   </Track.IncreaseRepeatButton>
                   <Track.Thumb>
-                    <Thumb x:Name="Thumb" Style="{StaticResource BaseSliderThumbStyle.Double.InnerSlider}" Width="22"
+                    <c:ThumbExt x:Name="Thumb" Style="{StaticResource BaseSliderThumbStyle.Double.InnerSlider}" Width="22"
                         Height="{Binding (c:DoubleSlider.ThumbSubSize), RelativeSource={RelativeSource Self}}" />
                   </Track.Thumb>
                 </Track>
@@ -278,7 +278,7 @@
                       <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}" />
                     </Track.IncreaseRepeatButton>
                     <Track.Thumb>
-                      <Thumb x:Name="Thumb" Style="{StaticResource VerticalSliderThumbStyle}" />
+                      <c:ThumbExt x:Name="Thumb" Style="{StaticResource VerticalSliderThumbStyle}" />
                     </Track.Thumb>
                   </Track>
                 </Grid>

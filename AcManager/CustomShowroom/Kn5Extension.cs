@@ -13,7 +13,12 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.CustomShowroom {
     public static class Kn5Extension {
         public static async Task UpdateKn5(this Kn5 kn5, BaseRenderer renderer = null, CarSkinObject skin = null) {
+            if (kn5.MaterialLoader != DefaultKn5MaterialLoader.Instance || kn5.NodeLoader != DefaultKn5NodeLoader.Instance) {
+                throw new Exception("Can’t save KN5 loaded unusually");
+            }
+
             var backup = kn5.OriginalFilename + ".backup";
+
             try {
                 if (!File.Exists(backup)) {
                     File.Copy(kn5.OriginalFilename, backup);
@@ -24,7 +29,11 @@ namespace AcManager.CustomShowroom {
 
             await Task.Run(() => {
                 using (var f = FileUtils.RecycleOriginal(kn5.OriginalFilename)) {
-                    kn5.Save(f.Filename);
+                    if (kn5.TextureLoader == DefaultKn5TextureLoader.Instance) {
+                        kn5.SaveNew(f.Filename);
+                    } else {
+                        kn5.SaveNew();
+                    }
                 }
             });
 

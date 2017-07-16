@@ -364,6 +364,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\GenericModsListPage.xaml.cs">
+      <DependentUpon>GenericModsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\TrackSkinsListPage.xaml.cs">
       <DependentUpon>TrackSkinsListPage.xaml</DependentUpon>
     </Compile>
@@ -530,6 +533,9 @@
     </Compile>
     <Compile Include="Pages\Settings\SettingsLocale.xaml.cs">
       <DependentUpon>SettingsLocale.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsGenericMods.xaml.cs">
+      <DependentUpon>SettingsGenericMods.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsReplays.xaml.cs">
       <DependentUpon>SettingsReplays.xaml</DependentUpon>
@@ -877,6 +883,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\GenericModsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1205,6 +1215,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Settings\SettingsGenericMods.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Settings\SettingsReplays.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1527,6 +1541,10 @@
     <ProjectReference Include="..\AcManager.Controls\AcManager.Controls.csproj">
       <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
       <Name>AcManager.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.GenericMods\AcTools.GenericMods.csproj">
+      <Project>{11EAD82E-0325-44A8-9785-B02BAACD1D3E}</Project>
+      <Name>AcTools.GenericMods</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
       <Project>{38a04388-fc0c-4e96-bed5-1dc5c6c0b18f}</Project>

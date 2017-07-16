@@ -35,6 +35,10 @@
           <Label Content="Disable teleporting at the end of race" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding System.VrCameraShake}">
+          <Label Content="VR camera shake" />
+        </CheckBox>
+
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.AcSettings_System_ScreenshotsFormatLabel}" />
           <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
@@ -48,14 +52,14 @@
           </StackPanel>
         </Grid>
 
-        <!--proximity indicator-->
+        <!-- Proximity indicator -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_ProximityIndicator}" />
 
         <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
           <Label Content="{x:Static g:AppStrings.AcSettings_ProximityIndicator_ShowNearestOpponents}" />
         </CheckBox>
 
-        <!--session information-->
+        <!-- Session information -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_SessionInformation}" />
 
         <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
@@ -99,7 +103,7 @@
       </StackPanel>
       <StackPanel Style="{StaticResource SettingsPanel}">
 
-        <!--skidmarks-->
+        <!-- Skidmarks -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
 
         <DockPanel>
@@ -113,7 +117,7 @@
           <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <!--mirrors-->
+        <!-- Mirrors -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Mirrors}" />
 
         <DockPanel>
@@ -139,7 +143,7 @@
           <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <!--ghost-->
+        <!-- Ghost -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_GhostCar}" />
 
         <DockPanel>

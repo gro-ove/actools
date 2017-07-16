@@ -6,6 +6,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Miscellaneous {

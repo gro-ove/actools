@@ -69,6 +69,7 @@
     <Compile Include="IniParsingTest.cs" />
     <Compile Include="Kn5ExportTest.cs" />
     <Compile Include="Kn5ReadWriteTest.cs" />
+    <Compile Include="LazierTest.cs" />
     <Compile Include="LutTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="PhysicsTest.cs" />
