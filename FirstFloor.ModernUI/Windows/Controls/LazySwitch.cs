@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 

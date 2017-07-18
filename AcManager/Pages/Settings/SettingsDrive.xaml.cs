@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using Microsoft.Win32;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsDrive {

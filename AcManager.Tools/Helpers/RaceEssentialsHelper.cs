@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;

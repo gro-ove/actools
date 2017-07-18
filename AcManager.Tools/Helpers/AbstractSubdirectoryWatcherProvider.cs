@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows;
 using AcTools.Utils;
 using FirstFloor.ModernUI;
 using JetBrains.Annotations;

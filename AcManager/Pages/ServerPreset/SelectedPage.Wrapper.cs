@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -16,11 +15,9 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using StringBasedFilter;
 
 namespace AcManager.Pages.ServerPreset {
     public enum ShareMode {

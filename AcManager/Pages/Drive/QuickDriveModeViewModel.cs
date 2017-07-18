@@ -1,9 +1,7 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;

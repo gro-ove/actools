@@ -1,13 +1,11 @@
 // #define REFLECTION_DEBUG
 
 using AcTools.Render.Base;
-using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
-using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleReflective : Kn5MaterialSimple {

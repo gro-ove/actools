@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;

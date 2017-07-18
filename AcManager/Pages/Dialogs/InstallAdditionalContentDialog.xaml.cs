@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.ContentInstallation.Entries;
-using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 

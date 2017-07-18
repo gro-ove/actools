@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;

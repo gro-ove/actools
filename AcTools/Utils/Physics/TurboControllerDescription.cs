@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AcTools.DataFile;
+﻿using AcTools.DataFile;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Physics {

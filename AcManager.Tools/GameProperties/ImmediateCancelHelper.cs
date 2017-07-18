@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -7,10 +6,8 @@ using System.Windows.Forms;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
-using AcTools.Render.Temporary;
 using AcTools.Utils.Helpers;
 using AcTools.Windows.Input;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {

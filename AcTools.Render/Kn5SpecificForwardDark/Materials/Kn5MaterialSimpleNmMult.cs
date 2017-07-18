@@ -4,7 +4,6 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleNmMult : Kn5MaterialSimpleNm {

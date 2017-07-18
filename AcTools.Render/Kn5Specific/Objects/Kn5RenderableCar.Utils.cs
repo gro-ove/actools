@@ -1,7 +1,6 @@
 ﻿// #define BB_PERF_PROFILE
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcTools.Render.Base.Objects;

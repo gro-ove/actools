@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;

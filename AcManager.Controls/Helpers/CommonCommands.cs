@@ -5,7 +5,6 @@ using AcManager.Tools.Profile;
 using AcTools.LapTimes;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
     public interface ISomeCommonCommandsHelper {

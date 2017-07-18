@@ -4,7 +4,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls {
     public partial class KunosCareerBlock {

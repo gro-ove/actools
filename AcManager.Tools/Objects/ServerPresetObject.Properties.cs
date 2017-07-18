@@ -12,7 +12,6 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {

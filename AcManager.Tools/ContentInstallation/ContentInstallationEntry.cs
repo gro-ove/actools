@@ -7,7 +7,6 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.ContentInstallation.Installators;
@@ -26,7 +25,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Steamworks;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry : NotifyPropertyChanged, IProgress<AsyncProgressEntry> {

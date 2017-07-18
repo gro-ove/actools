@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Controls;
 using AcManager.CustomShowroom;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;

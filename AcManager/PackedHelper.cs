@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
-using AcManager.Tools.Managers;
 using AcTools.Utils;
 using JetBrains.Annotations;
 using Microsoft.Win32;

@@ -10,7 +10,6 @@ using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {

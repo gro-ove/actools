@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AcTools.Render.Base;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;

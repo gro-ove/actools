@@ -5,7 +5,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;

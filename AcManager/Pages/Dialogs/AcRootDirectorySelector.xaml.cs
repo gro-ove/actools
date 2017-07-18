@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Internal;
-using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;

@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class InputBindingBehavior {

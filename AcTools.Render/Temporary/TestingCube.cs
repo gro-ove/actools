@@ -3,7 +3,6 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using SlimDX;
 

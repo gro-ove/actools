@@ -7,7 +7,6 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Controls.ViewModels {
     public class TrackStateViewModelBase : NotifyPropertyChanged {

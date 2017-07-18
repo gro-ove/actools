@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AcManager.Controls.Dialogs;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcErrors.Solutions;
@@ -16,7 +13,6 @@ using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 

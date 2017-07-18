@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -12,7 +11,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers.Online {
     public enum RaceMode {

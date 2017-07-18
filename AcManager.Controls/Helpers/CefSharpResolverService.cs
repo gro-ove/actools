@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -84,7 +83,7 @@ namespace AcManager.Controls.Helpers {
                 if (Dependencies.Contains(id)) {
                     var dependencyPath = Path.Combine(_cefSharpPath, $"{id}{DllExtension}");
                     if (!File.Exists(dependencyPath)) {
-                        Logging.Error($"CefSharp library not found: ì{id}î");
+                        Logging.Error($"CefSharp library not found: ‚Äú{id}‚Äù");
                         return null;
                     }
 

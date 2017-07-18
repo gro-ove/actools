@@ -18,7 +18,6 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.Direct3D11;
-using SlimDX.DirectWrite;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public interface IDarkLightsDescriptionProvider {

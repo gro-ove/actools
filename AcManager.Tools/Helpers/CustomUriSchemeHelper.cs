@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;

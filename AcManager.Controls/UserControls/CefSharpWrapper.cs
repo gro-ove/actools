@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
@@ -16,7 +15,6 @@ using CefSharp.Wpf;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using LogSeverity = CefSharp.LogSeverity;
 

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;

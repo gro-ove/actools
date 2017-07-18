@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

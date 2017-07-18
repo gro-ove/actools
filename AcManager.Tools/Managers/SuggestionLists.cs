@@ -5,7 +5,6 @@ using System.Windows.Data;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
     public static class SuggestionLists {

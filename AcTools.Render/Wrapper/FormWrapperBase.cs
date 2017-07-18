@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using AcTools.Render.Base;
 using JetBrains.Annotations;
 using SlimDX.Windows;
-using Timer = System.Windows.Forms.Timer;
 
 namespace AcTools.Render.Wrapper {
     public class FormWrapperBase {

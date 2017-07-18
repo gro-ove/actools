@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
@@ -49,7 +48,7 @@ namespace AcManager.Tools.Managers.Online {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
-            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Applying list…"));
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Applying listâ€¦"));
             callback(data);
             return true;
         }

@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.GameProperties;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;

@@ -12,7 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
-using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;

@@ -1,17 +1,13 @@
-using System;
 using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkAreaSphereLight : DarkAreaLightBase {

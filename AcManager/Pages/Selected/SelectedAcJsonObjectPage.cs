@@ -4,8 +4,6 @@ using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcJsonObjectPage : SelectedAcObjectPage {

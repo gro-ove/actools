@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {

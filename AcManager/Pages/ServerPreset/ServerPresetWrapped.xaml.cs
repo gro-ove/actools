@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Controls;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.ServerPreset {

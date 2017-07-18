@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Graphs;
 using AcManager.Controls.Helpers;

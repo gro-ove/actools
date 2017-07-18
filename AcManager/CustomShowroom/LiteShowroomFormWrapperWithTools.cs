@@ -16,7 +16,6 @@ using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;

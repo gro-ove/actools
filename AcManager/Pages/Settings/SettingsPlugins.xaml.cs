@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using AcManager.Tools.Helpers;
+﻿using System.ComponentModel;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;

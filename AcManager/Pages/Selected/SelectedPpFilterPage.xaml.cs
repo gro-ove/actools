@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;

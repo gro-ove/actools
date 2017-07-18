@@ -1,4 +1,3 @@
-using System;
 using AcTools.Render.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

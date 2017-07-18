@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Pages.Lists;
 using AcManager.Tools.Managers;

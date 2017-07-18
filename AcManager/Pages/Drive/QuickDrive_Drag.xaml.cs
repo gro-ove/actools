@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;

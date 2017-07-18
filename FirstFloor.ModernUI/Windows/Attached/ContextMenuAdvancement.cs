@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class ContextMenuAdvancement {

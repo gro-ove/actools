@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using AcManager.Tools.Helpers.AcSettings;
-using FirstFloor.ModernUI;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsControls_Wheel_Buttons {

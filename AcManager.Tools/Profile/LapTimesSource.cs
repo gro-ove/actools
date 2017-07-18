@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
 using AcTools.LapTimes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -56,7 +55,7 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        public LapTimesSource([NotNull] string id, string displayName, string description, string enabledKey, bool enabledByDefault, 
+        public LapTimesSource([NotNull] string id, string displayName, string description, string enabledKey, bool enabledByDefault,
                 bool autoAddAllowed, [CanBeNull] Func<ILapTimesReader> readerFunc, Func<Task> preparationFunc) {
             _changeId = id.GetHashCode();
 
@@ -226,7 +225,7 @@ namespace AcManager.Tools.Profile {
 
         public void ClearCache() {
             if (_readerFunc == null) return;
-            // if reader is null, storage is the only source of lap times — don’t clear it!
+            // if reader is null, storage is the only source of lap times â€” donâ€™t clear it!
 
             var filename = _storage.Filename;
             _storage.Dispose();
@@ -275,18 +274,18 @@ namespace AcManager.Tools.Profile {
                 return reader.CanExport;
             }
         }
-    
+
         private ICommand _exportCommand;
 
         public ICommand ExportCommand => _exportCommand ?? (_exportCommand = ReadOnly ? UnavailableCommand.Instance : new AsyncCommand(async () => {
             try {
-                using (var waiting = WaitingDialog.Create("Loading lap times…")) {
+                using (var waiting = WaitingDialog.Create("Loading lap timesâ€¦")) {
                     await LapTimesManager.Instance.UpdateAsync();
-                    waiting.Report("Exporting…");
+                    waiting.Report("Exportingâ€¦");
                     await AddEntriesAsync(LapTimesManager.Instance.Entries);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t export lap times", e);
+                NonfatalError.Notify("Canâ€™t export lap times", e);
             }
         }));
 

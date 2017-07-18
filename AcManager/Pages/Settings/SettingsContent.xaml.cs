@@ -1,14 +1,10 @@
 ﻿using System.IO;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsContent {

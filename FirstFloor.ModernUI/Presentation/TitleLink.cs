@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Presentation {

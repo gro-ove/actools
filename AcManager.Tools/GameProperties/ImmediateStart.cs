@@ -6,7 +6,6 @@ using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {

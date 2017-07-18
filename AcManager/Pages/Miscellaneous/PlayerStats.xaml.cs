@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Profile;
 using AcTools.Utils;

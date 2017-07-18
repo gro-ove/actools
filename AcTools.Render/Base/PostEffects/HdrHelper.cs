@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using AcTools.Render.Base.TargetTextures;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using SlimDX;
 using SlimDX.Direct3D11;

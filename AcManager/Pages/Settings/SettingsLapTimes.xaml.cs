@@ -1,5 +1,4 @@
-﻿using AcManager.Tools.Helpers;
-using AcManager.Tools.Profile;
+﻿using AcManager.Tools.Profile;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 

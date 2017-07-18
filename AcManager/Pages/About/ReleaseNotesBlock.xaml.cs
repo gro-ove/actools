@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.About;
-using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 
 namespace AcManager.Pages.About {

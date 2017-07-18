@@ -1,6 +1,4 @@
-using System.IO;
 using System.Threading.Tasks;
-using AcTools.AiFile;
 using AcTools.Utils;
 using NUnit.Framework;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using AcTools.Utils;
 using JetBrains.Annotations;
 

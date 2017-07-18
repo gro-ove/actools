@@ -1,5 +1,4 @@
 ﻿using System;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX.Direct3D11;
 

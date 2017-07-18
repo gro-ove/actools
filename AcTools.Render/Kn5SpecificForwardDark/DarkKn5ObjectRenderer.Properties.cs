@@ -1,31 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Threading;
-using AcTools.Render.Base;
-using AcTools.Render.Base.Cameras;
-using AcTools.Render.Base.Materials;
-using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.PostEffects;
-using AcTools.Render.Base.PostEffects.AO;
-using AcTools.Render.Base.Reflections;
-using AcTools.Render.Base.Shadows;
-using AcTools.Render.Base.TargetTextures;
-using AcTools.Render.Base.Utils;
-using AcTools.Render.Forward;
-using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5SpecificForward;
-using AcTools.Render.Kn5SpecificForwardDark.Lights;
-using AcTools.Render.Kn5SpecificForwardDark.Materials;
-using AcTools.Render.Shaders;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum AoType {

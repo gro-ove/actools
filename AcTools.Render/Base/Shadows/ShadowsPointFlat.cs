@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using AcTools.Render.Base.Cameras;
-using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;

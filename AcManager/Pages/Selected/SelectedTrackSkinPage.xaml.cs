@@ -1,25 +1,18 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
-using AcManager.CustomShowroom;
-using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedTrackSkinPage : ILoadableContent, IParametrizedUriContent {

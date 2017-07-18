@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
@@ -9,7 +8,6 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
-using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 

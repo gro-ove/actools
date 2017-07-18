@@ -1,14 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Objects;
-using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {

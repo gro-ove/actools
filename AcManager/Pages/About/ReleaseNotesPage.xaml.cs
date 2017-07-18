@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.About;
 using AcManager.Internal;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers.Api;

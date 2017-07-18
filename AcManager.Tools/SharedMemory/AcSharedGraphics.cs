@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcManager.Tools.SharedMemory {

@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
-using AcManager.Controls.Dialogs;
-using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;

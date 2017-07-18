@@ -12,7 +12,6 @@ using AcManager.Tools.Helpers.Api;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AppKeyDialog {

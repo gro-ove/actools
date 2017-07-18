@@ -1,13 +1,3 @@
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using AcManager.Tools.Data;
-using AcTools.DataFile;
-using AcTools.Utils.Helpers;
-using NUnit.Framework;
-
 namespace AcManager.Tools.Tests {
     // TODO: what’s that?
     /*[TestFixture]

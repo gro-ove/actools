@@ -1,5 +1,4 @@
-﻿using System;
-using AcTools.Processes;
+﻿using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;

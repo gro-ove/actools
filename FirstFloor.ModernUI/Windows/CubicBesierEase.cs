@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media.Animation;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows {
     public class CubicBesierEase : EasingFunctionBase {

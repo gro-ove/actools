@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
+﻿using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 

@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(double), typeof(bool))]

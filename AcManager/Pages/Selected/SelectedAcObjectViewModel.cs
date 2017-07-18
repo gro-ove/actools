@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
 using JetBrains.Annotations;
-using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils;

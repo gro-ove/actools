@@ -1,22 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using AcManager.Tools.GameProperties;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcLog;
-using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Helpers.Api.Kunos;
-using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.Objects;
-using AcManager.Tools.Profile;
-using AcManager.Tools.SemiGui;
-using AcTools.Processes;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
+﻿using System.Linq;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {

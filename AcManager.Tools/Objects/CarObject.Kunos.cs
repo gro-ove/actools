@@ -6,7 +6,6 @@ using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {

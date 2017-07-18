@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
-using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SlimDX;

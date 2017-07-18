@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
 

@@ -12,8 +12,6 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Win32;
-using Action = System.Action;
 
 namespace AcTools.GenericMods {
     public class GenericMod : INotifyPropertyChanged {

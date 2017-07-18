@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 

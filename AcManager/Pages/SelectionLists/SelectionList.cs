@@ -15,7 +15,6 @@ using System.Windows.Threading;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -23,7 +22,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using BooleanToVisibilityConverter = System.Windows.Controls.BooleanToVisibilityConverter;
 
 namespace AcManager.Pages.SelectionLists {
     internal class NothingFoundAdorner : Adorner {

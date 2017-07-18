@@ -1,4 +1,3 @@
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 

@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AcManager.Tools.Helpers;
+﻿using AcManager.Tools.Helpers;
 using AcManager.Tools.Profile;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;

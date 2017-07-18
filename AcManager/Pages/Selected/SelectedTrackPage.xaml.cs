@@ -2,27 +2,21 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.About;
-using AcManager.Controls;
-using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Tools;
-using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
-using AcTools;
 using AcTools.AiFile;
 using AcTools.DataFile;
 using AcTools.Kn5File;
@@ -35,7 +29,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Windows.Controls;

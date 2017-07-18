@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class UniformGridWithOrientation : SpacingUniformGrid {

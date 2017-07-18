@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
 using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;

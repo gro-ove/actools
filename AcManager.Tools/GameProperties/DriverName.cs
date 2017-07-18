@@ -1,6 +1,5 @@
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;

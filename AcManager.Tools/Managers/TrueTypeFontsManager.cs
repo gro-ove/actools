@@ -1,18 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
-using AcTools.DataFile;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {

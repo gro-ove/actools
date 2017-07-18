@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.AcErrors.Solutions {
     using AsyncAction = Func<IAcError, Task>;

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using JetBrains.Annotations;
@@ -17,21 +14,16 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Converters;
-using FirstFloor.ModernUI.Windows.Navigation;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {

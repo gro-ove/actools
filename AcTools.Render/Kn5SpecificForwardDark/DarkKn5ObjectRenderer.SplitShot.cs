@@ -2,9 +2,7 @@
 using System.IO;
 using System.Threading;
 using AcTools.Render.Special;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
-using ImageMagick;
 using JetBrains.Annotations;
 using SlimDX;
 

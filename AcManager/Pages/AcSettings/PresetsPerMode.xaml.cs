@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
-using AcManager.Pages.SelectionLists;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.PresetsPerMode;
@@ -16,7 +15,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Pages.AcSettings {
     public partial class PresetsPerMode {

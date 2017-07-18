@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;

@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
 using FlowDirection = System.Windows.FlowDirection;
 using Panel = System.Windows.Controls.Panel;

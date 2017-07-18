@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using FirstFloor.ModernUI.Windows.Converters;
 
 // ReSharper disable InconsistentNaming
 

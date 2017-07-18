@@ -1,33 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Controls.Helpers;
-using AcManager.Pages.Dialogs;
-using AcManager.Pages.Drive;
 using AcManager.Tools;
-using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcTools.DataFile;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {

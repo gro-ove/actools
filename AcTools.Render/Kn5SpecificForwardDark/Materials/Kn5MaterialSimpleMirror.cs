@@ -5,7 +5,6 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleMirror : Kn5MaterialSimpleBase {

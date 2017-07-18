@@ -10,7 +10,6 @@ using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 

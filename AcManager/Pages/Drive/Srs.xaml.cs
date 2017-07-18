@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Internal;

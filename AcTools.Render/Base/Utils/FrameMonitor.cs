@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using AcTools.Render.Temporary;
 
 namespace AcTools.Render.Base.Utils {
     public class FrameMonitor {

@@ -12,7 +12,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
-using AcManager.Controls.Dialogs;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Filters;

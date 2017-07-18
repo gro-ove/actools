@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

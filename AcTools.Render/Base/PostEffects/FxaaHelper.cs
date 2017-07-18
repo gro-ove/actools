@@ -1,4 +1,3 @@
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using SlimDX;
 using SlimDX.Direct3D11;
