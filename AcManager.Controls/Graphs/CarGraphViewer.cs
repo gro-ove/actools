@@ -15,7 +15,6 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;
-using SlimDX.DirectWrite;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
 
