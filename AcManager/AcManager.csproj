@@ -1773,6 +1773,8 @@
     <Content Include="About\Licenses\LoadingIndicators.WPF\LICENSE" />
     <Content Include="About\Licenses\LoadingIndicators.WPF\LoadingIndicators.WPF.txt" />
     <Content Include="About\Licenses\LZF\LZF.txt" />
+    <Content Include="About\Licenses\MegaApiClient\LICENSE" />
+    <Content Include="About\Licenses\MegaApiClient\MegaApiClient.txt" />
     <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />
     <Content Include="About\Licenses\MoonSharp\MoonSharp.txt" />
     <Content Include="About\Licenses\OxyPlot\OxyPlot.txt" />

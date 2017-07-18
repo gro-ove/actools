@@ -1,0 +1,4 @@
+name: MegaApiClient
+url: https://github.com/gpailler/MegaApiClient
+content: LICENSE
+sid: 1s0grpb9
