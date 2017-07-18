@@ -83,8 +83,10 @@
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <TextBlock Text="{Binding}" Background="{DynamicResource ButtonBackground}" Foreground="{DynamicResource ButtonText}" Margin="0 0 4 0"
-                          Padding="4" />
+                      <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}" Margin="0 0 4 4"
+                          Padding="4 2">
+                        <TextBlock Text="{Binding}" Background="{DynamicResource ButtonBackground}" Foreground="{DynamicResource ButtonText}" />
+                      </Border>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>

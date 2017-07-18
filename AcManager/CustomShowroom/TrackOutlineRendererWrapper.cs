@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.CustomShowroom {
-    public class TrackOutlineRendererWrapper : BaseMouseFormWrapper {
+    public class TrackOutlineRendererWrapper : FormWrapperMouseBase {
         private AttachedHelper _helper;
 
         public new TrackOutlineRenderer Renderer => (TrackOutlineRenderer)base.Renderer;
@@ -36,12 +36,6 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected override void OnRender() {
-            if (!Renderer.IsDirty) return;
-            Renderer.Draw();
-            InvokeFirstFrameCallback();
-        }
-
         public static async Task Run(TrackObjectBase track) {
             if (!File.Exists(track.MapImage)) {
                 ModernDialog.ShowMessage("Map not found");
@@ -58,7 +52,7 @@ namespace AcManager.CustomShowroom {
                     wrapper.Run();
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t update outline", e);
+                NonfatalError.Notify("Canâ€™t update outline", e);
             }
         }
 
@@ -69,7 +63,7 @@ namespace AcManager.CustomShowroom {
             }
 
             try {
-                using (WaitingDialog.Create("Saving…")) {
+                using (WaitingDialog.Create("Savingâ€¦")) {
                     var maps = track.MainTrackObject.MultiLayouts?.Select(x => x.MapImage).ToArray() ?? new[] { track.MapImage };
                     await Task.Run(() => {
                         using (var renderer = new TrackOutlineRenderer(maps, track.MapImage, track.PreviewImage) {
@@ -87,7 +81,7 @@ namespace AcManager.CustomShowroom {
                     });
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t update outline", e);
+                NonfatalError.Notify("Canâ€™t update outline", e);
             }
         }
 

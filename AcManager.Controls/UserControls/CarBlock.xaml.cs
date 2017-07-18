@@ -3,20 +3,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using AcManager.Controls.Dialogs;
+using AcManager.Controls.Graphs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     public interface ICustomShowroomWrapper {
-        Task StartAsync(string kn5, string skinId = null, string presetFilename = null);
+        // Task StartAsync(string kn5, string skinId = null, string presetFilename = null);
 
         Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null);
 
@@ -38,6 +43,9 @@ namespace AcManager.Controls.UserControls {
         public CarBlock() {
             InitializeComponent();
             InnerCarBlockPanel.DataContext = this;
+            this.DataContextChanged += (sender, args) => {
+                UpdateDescription();
+            };
         }
 
         public FrameworkElement BrandArea => InnerBrandArea;
@@ -49,48 +57,93 @@ namespace AcManager.Controls.UserControls {
                 typeof(CarBlock), new PropertyMetadata(true));
 
         public bool ShowSkinsAndPreview {
-            get { return (bool)GetValue(ShowSkinsAndPreviewProperty); }
-            set { SetValue(ShowSkinsAndPreviewProperty, value); }
+            get => (bool)GetValue(ShowSkinsAndPreviewProperty);
+            set => SetValue(ShowSkinsAndPreviewProperty, value);
         }
 
         public static readonly DependencyProperty SelectSkinProperty = DependencyProperty.Register(nameof(SelectSkin), typeof(bool),
                 typeof(CarBlock));
 
         public bool SelectSkin {
-            get { return (bool)GetValue(SelectSkinProperty); }
-            set { SetValue(SelectSkinProperty, value); }
+            get => (bool)GetValue(SelectSkinProperty);
+            set => SetValue(SelectSkinProperty, value);
         }
 
         public static readonly DependencyProperty OpenShowroomProperty = DependencyProperty.Register(nameof(OpenShowroom), typeof(bool),
                 typeof(CarBlock));
 
         public bool OpenShowroom {
-            get { return (bool)GetValue(OpenShowroomProperty); }
-            set { SetValue(OpenShowroomProperty, value); }
+            get => (bool)GetValue(OpenShowroomProperty);
+            set => SetValue(OpenShowroomProperty, value);
         }
 
         public static readonly DependencyProperty CarProperty = DependencyProperty.Register(nameof(Car), typeof(CarObject),
-                typeof(CarBlock));
+                typeof(CarBlock), new PropertyMetadata(OnCarChanged));
 
         public CarObject Car {
-            get { return (CarObject)GetValue(CarProperty); }
-            set { SetValue(CarProperty, value); }
+            get => (CarObject)GetValue(CarProperty);
+            set => SetValue(CarProperty, value);
+        }
+
+        private static void OnCarChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((CarBlock)o).OnCarChanged((CarObject)e.NewValue);
+        }
+
+        private void OnCarChanged(CarObject newValue) {
+            try {
+                UpdateDescription();
+                newValue?.SubscribeWeak((s, e) => {
+                    if (e.PropertyName == nameof(CarObject.Description) || e.PropertyName == nameof(CarObject.SpecsTorqueCurve)
+                            || e.PropertyName == nameof(CarObject.SpecsPowerCurve)) {
+                        UpdateDescription();
+                    }
+                });
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
+        private void UpdateDescription() {
+            var car = Car;
+            var description = car?.Description?.Trim();
+            Description.Document.Blocks.Clear();
+            Description.Document.Blocks.Add(new Paragraph {
+                Inlines = {
+                    new Floater {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Blocks = {
+                            new Paragraph(new InlineUIContainer {
+                                Child = new CarGraphViewer {
+                                    Car = car,
+                                    Margin = new Thickness(0, 0, 8, 0),
+                                    Padding = new Thickness(0, 0, 0, 0),
+                                    Width = 240,
+                                    Height = 160
+                                }
+                            })
+                        }
+                    },
+                    string.IsNullOrEmpty(description) ?
+                            PlaceholderTextBlock.GetPlaceholder(Description, "Description is missing.") :
+                            new Run(description)
+                }
+            });
         }
 
         public static readonly DependencyProperty SelectedSkinProperty = DependencyProperty.Register(nameof(SelectedSkin), typeof(CarSkinObject),
                 typeof(CarBlock));
 
         public CarSkinObject SelectedSkin {
-            get { return (CarSkinObject)GetValue(SelectedSkinProperty); }
-            set { SetValue(SelectedSkinProperty, value); }
+            get => (CarSkinObject)GetValue(SelectedSkinProperty);
+            set => SetValue(SelectedSkinProperty, value);
         }
 
         public static readonly DependencyProperty PreviewContentProperty = DependencyProperty.Register(nameof(PreviewContent), typeof(object),
                 typeof(CarBlock));
 
         public object PreviewContent {
-            get { return GetValue(PreviewContentProperty); }
-            set { SetValue(PreviewContentProperty, value); }
+            get => GetValue(PreviewContentProperty);
+            set => SetValue(PreviewContentProperty, value);
         }
 
         private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {

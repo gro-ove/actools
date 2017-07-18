@@ -8,6 +8,7 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/SelectableBbCodeBlock.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -31,11 +32,11 @@
           Click="OnShowroomButtonClick" PreviewMouseRightButtonDown="OnShowroomContextMenu" Margin="12" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
     </mui:Cell>
 
-    <!-- data section -->
+    <!-- Data section -->
     <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 8 -8 0"
         HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0">
       <DockPanel>
-        <!-- tags -->
+        <!-- Tags -->
         <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
 
         <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
@@ -72,7 +73,7 @@
               <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- first row -->
+            <!-- First row -->
             <DockPanel x:Name="InnerBrandArea" Background="Transparent" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
               <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource Label.Padding}" Width="80" DockPanel.Dock="Left" />
               <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
@@ -83,7 +84,7 @@
               <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
             </DockPanel>
 
-            <!-- second row -->
+            <!-- Second row -->
             <DockPanel x:Name="InnerClassArea" Background="Transparent" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
               <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label.Padding}" />
               <mui:PlaceholderTextBlock Text="{Binding CarClass}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
@@ -94,7 +95,7 @@
               <mui:PlaceholderTextBlock Text="{Binding Year, TargetNullValue=''}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
             </DockPanel>
 
-            <!-- third row -->
+            <!-- Third row -->
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}" />
             <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
               <TextBlock.Text>
@@ -111,17 +112,34 @@
             <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
                 TextTrimming="CharacterEllipsis" />
 
-            <!-- last row -->
+            <!-- Last row -->
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource Label.Padding}" />
             <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" TextWrapping="NoWrap"
                 TextTrimming="CharacterEllipsis" />
           </Grid>
 
-          <graphs:CarGraphViewer Car="{Binding}" Margin="0 8 0 0"
-              Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          <!--<FlowDocument xmlns="http://schemas.microsoft.com/winfx/avalon/2005"
+              xmlns:x="http://schemas.microsoft.com/winfx/xaml/2005" TextAlignment="Left">
+            <Paragraph>
+              To celebrate the release of Xbox 360 and usher in the next generation of gaming, ...
+              <Floater  BorderBrush="black" BorderThickness="2"  >
+                <Paragraph>
+                  <Image Source="e:\xbox.bmp" Height="100"/>
+                </Paragraph>
+              </Floater>
+              From sundown Nov. 20 through 12:01 a.m. Nov. 22 – ...
 
-          <!-- description -->
-          <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+            </Paragraph>
+
+          </FlowDocument>-->
+
+          <!--<graphs:CarGraphViewer Car="{Binding}" Margin="0 8 0 0"
+              Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+
+          <RichTextBox x:Name="Description" Margin="0 8 0 0" Style="{StaticResource RichTextBox.Small}" />
+
+          <!-- Description -->
+          <!--<TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" />-->
         </StackPanel>
       </DockPanel>
     </ScrollViewer>

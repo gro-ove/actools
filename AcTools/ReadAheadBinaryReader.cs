@@ -83,12 +83,78 @@ namespace AcTools {
             _left = 0;
         }
 
-        public async Task CopyToAsync(Stream stream) {
+        public void CopyTo(Stream stream) {
             if (_left > 0) {
-                await _stream.WriteAsync(_buffer, _total - _left, _left).ConfigureAwait(false);
+                stream.Write(_buffer, _total - _left, _left);
+                _left = 0;
+                _total = 0;
             }
 
-            await _baseSteam.CopyToAsync(stream).ConfigureAwait(false);
+            var baseStream = BaseStream;
+            baseStream.CopyTo(stream);
+        }
+
+        public void CopyTo(Stream stream, int count) {
+            if (_left > 0) {
+                var taken = Math.Min(count, _left);
+                stream.Write(_buffer, _total - _left, taken);
+
+                count -= taken;
+                _left -= taken;
+                if (_left == 0) {
+                    _total = 0;
+                }
+
+                if (count == 0) return;
+            }
+
+            var baseStream = BaseStream;
+            var buffer = new byte[81920];
+            int read;
+            while (count > 0 &&
+                    (read = baseStream.Read(buffer, 0, Math.Min(buffer.Length, count))) > 0) {
+                stream.Write(buffer, 0, read);
+                count -= read;
+            }
+
+            _left = 0;
+            _total = 0;
+        }
+
+        public async Task CopyToAsync(Stream stream) {
+            if (_left > 0) {
+                await stream.WriteAsync(_buffer, _total - _left, _left).ConfigureAwait(false);
+                _left = 0;
+                _total = 0;
+            }
+
+            var baseStream = BaseStream;
+            await baseStream.CopyToAsync(stream).ConfigureAwait(false);
+        }
+
+        public async Task CopyToAsync(Stream stream, int count) {
+            if (_left > 0) {
+                var taken = Math.Min(count, _left);
+                await stream.WriteAsync(_buffer, _total - _left, taken).ConfigureAwait(false);
+
+                count -= taken;
+                _left -= taken;
+                if (_left == 0) {
+                    _total = 0;
+                }
+
+                if (count == 0) return;
+            }
+
+            var baseStream = BaseStream;
+            var buffer = new byte[81920];
+            int read;
+            while (count > 0 &&
+                    (read = await baseStream.ReadAsync(buffer, 0, Math.Min(buffer.Length, count)).ConfigureAwait(false)) > 0) {
+                await stream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                count -= read;
+            }
+
             _left = 0;
             _total = 0;
         }
@@ -223,13 +289,26 @@ namespace AcTools {
             }
         }
 
+        /// <summary>
+        /// Require a specific amount of bytes, throw exception if not enough.
+        /// </summary>
+        /// <param name="count">Bytes to read.</param>
+        /// <returns>Bytes array.</returns>
+        /// <exception cref="Exception">Not enough bytes!</exception>
         public byte[] ReadBytes(int count) {
             var result = new byte[count];
-            ReadBytes(result, 0, count);
+            ReadBytesTo(result, 0, count);
             return result;
         }
 
-        public int ReadBytes(byte[] destination, int offset, int count) {
+        /// <summary>
+        /// Require a specific amount of bytes, throw exception if not enough.
+        /// </summary>
+        /// <param name="destination">Destination array.</param>
+        /// <param name="offset">Offset in destination array.</param>
+        /// <param name="count">Bytes to read.</param>
+        /// <exception cref="Exception">Not enough bytes!</exception>
+        public void ReadBytesTo(byte[] destination, int offset, int count) {
             if (_left >= count) {
                 Array.Copy(_buffer, GetPosAndMove(count), destination, offset, count);
             } else {
@@ -242,8 +321,26 @@ namespace AcTools {
 
                 _left = _total = 0;
             }
+        }
 
-            return count;
+        /// <summary>
+        /// More common version, just try to read a specific amount of bytes and return how much of them
+        /// were able to be read.
+        /// </summary>
+        /// <param name="destination">Destination array.</param>
+        /// <param name="offset">Offset in destination array.</param>
+        /// <param name="count">Bytes to read.</param>
+        /// <returns>Amount of bytes read.</returns>
+        public int ReadBytes(byte[] destination, int offset, int count) {
+            if (_left >= count) {
+                Array.Copy(_buffer, GetPosAndMove(count), destination, offset, count);
+                return count;
+            }
+
+            var buffer = _left;
+            Array.Copy(_buffer, _total - _left, destination, offset, buffer);
+            _left = _total = 0;
+            return buffer + _stream.Read(destination, offset + buffer, count - buffer);
         }
 
         public void Dispose() {

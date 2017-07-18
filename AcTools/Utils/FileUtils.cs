@@ -585,5 +585,15 @@ namespace AcTools.Utils {
             throw new Exception("Failed to get directory first file",
                     Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
         }
+
+        public static void TryToDelete(string filename) {
+            try {
+                if (File.Exists(filename)) {
+                    File.Delete(filename);
+                }
+            } catch {
+                // ignored
+            }
+        }
     }
 }

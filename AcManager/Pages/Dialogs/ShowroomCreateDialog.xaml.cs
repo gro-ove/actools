@@ -162,7 +162,7 @@ namespace AcManager.Pages.Dialogs {
                     if (diffuse != null) diffuse.ValueA = InShadow ? 0f : 2f;
 
                     // TODO
-                    kn5.SaveNew(Path.Combine(location, ResultId + ".kn5"));
+                    kn5.Save(Path.Combine(location, ResultId + ".kn5"));
                 }
             }
         }

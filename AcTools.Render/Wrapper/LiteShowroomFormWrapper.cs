@@ -59,7 +59,7 @@ namespace AcTools.Render.Wrapper {
             _renderer.StopMovement();
         }
 
-        protected override bool SleepMode => base.SleepMode && !Form.Focused;
+        protected override bool SleepMode => base.SleepMode && Paused;
 
         protected override void OnMouseMove(object sender, MouseEventArgs e) {
             if (!Form.Focused) {

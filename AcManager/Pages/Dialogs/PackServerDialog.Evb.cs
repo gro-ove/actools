@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -19,10 +20,8 @@ namespace AcManager.Pages.Dialogs {
     public partial class PackServerDialog {
         public partial class ViewModel {
             [ItemCanBeNull]
-            private async Task<string> PackIntoSingleAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                var result = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
-                        FileUtils.EnsureFileNameIsValid($@"Packed {Server.DisplayName}.exe")));
-                var list = await Server.PackServerData(IncludeExecutable, false, true, cancellation);
+            private async Task<string> PackIntoSingleAsync(string destination, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                var list = await Server.PackServerData(IncludeExecutable, ServerPresetPackMode.Windows, true, cancellation);
                 if (list == null || cancellation.IsCancellationRequested) return null;
 
                 var temporary = FilesStorage.Instance.GetTemporaryFilename("EVB Package");
@@ -41,7 +40,7 @@ namespace AcManager.Pages.Dialogs {
                     // <InputFile>, <OutputFile>
                     rootTag.AppendChild(doc.CreateElement("InputFile")).InnerText = executable.GetFilename(temporary) ??
                             throw new Exception("Main executable not in the list");
-                    rootTag.AppendChild(doc.CreateElement("OutputFile")).InnerText = result;
+                    rootTag.AppendChild(doc.CreateElement("OutputFile")).InnerText = destination;
 
                     // <Files>
                     var filesTag = (XmlElement)rootTag.AppendChild(doc.CreateElement("Files"));
@@ -150,11 +149,11 @@ namespace AcManager.Pages.Dialogs {
                     Logging.Debug("STDOUT: " + output);
                     Logging.Debug("STDERR: " + error);
 
-                    if (process.ExitCode != 0 && !File.Exists(result)) {
+                    if (process.ExitCode != 0 && !File.Exists(destination)) {
                         throw new Exception($@"Exit code={process.ExitCode}");
                     }
 
-                    return result;
+                    return destination;
                 } finally {
                     try {
                         //list.DisposeEverything();

@@ -2,7 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}"
+    PreviewMouseWheel="OnPreviewMouseWheel">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -11,7 +12,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <ItemsPanelTemplate x:Key="ChildSharedItemsPanel">
-        <mui:SpacingStackPanel Spacing="8" />
+        <mui:SpacingStackPanel Spacing="4" />
       </ItemsPanelTemplate>
 
       <ItemsPanelTemplate x:Key="SharedItemsPanel">
@@ -19,72 +20,177 @@
       </ItemsPanelTemplate>
 
       <DataTemplate x:Key="SharedItemChildTemplate" DataType="{x:Type local:WrapperContentObject}">
-        <DockPanel Margin="0" x:Name="DockPanel">
-          <TextBlock Text="{Binding AcObject.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+        <DockPanel x:Name="DockPanel" Margin="0">
+          <TextBlock x:Name="PART_Name" Text="{Binding AcObject.DisplayName}" DockPanel.Dock="Left" Margin="0 0 8 0" MaxWidth="100" MinWidth="100"
+              TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-          <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="Download URL" Margin="8 0 0 0" DockPanel.Dock="Right"
-              Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource SumConverter}, ConverterParameter=-140}"
-              Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Url}}" />
+          <mui:Switch x:Name="ParamCell" Margin="8 0 0 0" DockPanel.Dock="Right" Value="{Binding ShareMode}"
+              Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource SumConverter}, ConverterParameter=-240}">
+            <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="Download URL" Style="{StaticResource Borderless.Small}"
+                mui:Switch.When="{x:Static local:ShareMode.Url}" />
+            <DockPanel mui:Switch.When="{x:Static local:ShareMode.Directly}">
+              <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
+                <ContextMenu>
+                  <MenuItem Header="Select Existing Archive" Command="{Binding SelectFileCommand}" />
+                  <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
+                </ContextMenu>
+              </mui:ContextMenuButton>
+              <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Margin="8 0 0 0" DockPanel.Dock="Right"
+                  Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
+                  VerticalAlignment="Center" Style="{StaticResource Small}" />
+              <mui:PathTrimmingTextBlock Text="{Binding DisplayFilename}" Placeholder="Packed archive is missing" VerticalAlignment="Center"
+                  Style="{StaticResource RichTextBox.Small}"
+                  Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
+                  Margin="-4 0 0 0" />
+            </DockPanel>
+          </mui:Switch>
 
-          <mui:PlaceholderTextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Placeholder="?" Margin="8 0 0 0" DockPanel.Dock="Right"
-              Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
-              VerticalAlignment="Center" />
-
-          <ComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}">
-            <ComboBox.ItemTemplate>
+          <mui:BetterComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
+              Style="{StaticResource BetterComboBox.Borderless.Small}" IsEditable="False">
+            <mui:BetterComboBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
               </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
         </DockPanel>
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding ShareMode}" Value="{x:Static local:ShareMode.None}">
+            <Setter TargetName="ParamCell" Property="Visibility" Value="Collapsed" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding ActualWidth, ElementName=DockPanel, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=440}"
+              Value="True">
+            <Setter TargetName="PART_Name" Property="DockPanel.Dock" Value="Top" />
+            <Setter TargetName="PART_Name" Property="Margin" Value="0 0 0 2" />
+            <Setter TargetName="PART_Name" Property="MaxWidth" Value="999999" />
+            <Setter TargetName="PART_Name" Property="MinWidth" Value="0" />
+            <Setter TargetName="ParamCell" Property="Width"
+                Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource SumConverter}, ConverterParameter=-140}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
       </DataTemplate>
 
+      <Style x:Key="SettingsMoreCompactPanel" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0 0 20 20" />
+        <Setter Property="MinWidth" Value="200" />
+
+        <Style.Resources>
+          <Style TargetType="{x:Type DockPanel}">
+            <Setter Property="Margin" Value="0 0 0 8" />
+
+            <Style.Resources>
+              <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                <Setter Property="Margin" Value="0 0 16 0" />
+                <Setter Property="Width" Value="100" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+              </Style>
+
+              <Style TargetType="{x:Type mui:ValueLabel}" BasedOn="{StaticResource {x:Type mui:ValueLabel}}">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0 0 16 0" />
+                <Setter Property="Width" Value="100" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+              </Style>
+
+              <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Margin" Value="8 0 0 0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="DockPanel.Dock" Value="Right" />
+              </Style>
+
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+              </Style>
+
+              <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}" />
+            </Style.Resources>
+          </Style>
+
+          <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}">
+            <Setter Property="Margin" Value="0 0 0 8" />
+          </Style>
+        </Style.Resources>
+      </Style>
+
       <DataTemplate x:Key="SharedItemTemplate" DataType="{x:Type local:WrapperContentObject}">
-        <StackPanel Style="{StaticResource SettingsCompactPanel}" Margin="0">
-          <TextBlock Text="{Binding DisplayName}" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <StackPanel Style="{StaticResource SettingsMoreCompactPanel}" Margin="20 0 0 0">
+          <TextBlock Text="{Binding DisplayName}" Style="{StaticResource SettingsPanel.Heading2.First}" Margin="-20 0 0 8" />
+
+          <DockPanel>
+            <Label Content="ID:" />
+            <Button Padding="12 0 12 2" Margin="0 -5 0 -1" Content="Open" Command="{Binding AcObject.ViewInExplorerCommand}" />
+            <mui:BetterTextBox IsReadOnly="True" Style="{StaticResource Borderless.Small}" Text="{Binding AcObject.Id, Mode=OneWay}" />
+          </DockPanel>
 
           <DockPanel>
             <Label Content="Share mode:" />
-            <ComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}">
-              <ComboBox.ItemTemplate>
+            <mui:BetterComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
+                Style="{StaticResource BetterComboBox.Borderless.Small}" IsEditable="False">
+              <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
                 </DataTemplate>
-              </ComboBox.ItemTemplate>
-            </ComboBox>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
           </DockPanel>
 
           <DockPanel
               Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}">
-            <Label Content="Estimate size:" />
-            <mui:PlaceholderTextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Placeholder="?" Margin="0 0 0 4" />
+            <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
+              <ContextMenu>
+                <MenuItem Header="Select Existing Archive" Command="{Binding SelectFileCommand}" />
+                <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
+              </ContextMenu>
+            </mui:ContextMenuButton>
+            <Label Content="Packed archive:" />
+            <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                Margin="8 0 4 0" VerticalAlignment="Center" Visibility="{Binding FileIsMissing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                ToolTip="File is missing! Select “Repack” from the menu on the right or select an existing archive." />
+            <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Margin="8 0 0 0" DockPanel.Dock="Right"
+                Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
+                VerticalAlignment="Center" Style="{StaticResource Small}" />
+            <mui:PathTrimmingTextBlock Text="{Binding DisplayFilename}" Placeholder="Missing" VerticalAlignment="Center"
+                Style="{StaticResource RichTextBox.Small}"
+                Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
+                Margin="-4 0 0 0" />
           </DockPanel>
 
           <DockPanel Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Url}}">
             <Label Content="Download from:" />
-            <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="None" />
+            <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="None" Style="{StaticResource Borderless.Small}" />
           </DockPanel>
 
           <DockPanel Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠None'}"
-              Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-            <DockPanel.ContextMenu>
+              Background="Transparent">
+            <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0">
               <ContextMenu>
                 <MenuItem Header="Reset To Content Version" Command="{Binding ResetToContentVersionCommand}" />
               </ContextMenu>
-            </DockPanel.ContextMenu>
+            </mui:ContextMenuButton>
             <Label Content="Version required:" />
             <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Margin="8 0 4 0" VerticalAlignment="Center" ToolTip="Version is different to installed content"
                 Visibility="{Binding VersionsDiffer, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <mui:BetterTextBox Text="{Binding Version}" Placeholder="Any" />
+            <mui:BetterTextBox Text="{Binding Version}" Placeholder="Any" Style="{StaticResource Borderless.Small}" />
           </DockPanel>
 
-          <DockPanel Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+          <mui:RememberingExpander DefaultValue="False" Key="{Binding AcObject.Id, StringFormat='{}.serverwrapper_{0}', Mode=OneTime}"
+              Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+              Style="{StaticResource Expander.Animated}" Margin="-16 0 0 0">
+            <Expander.Header>
+              <Label Content="{Binding ChildrenName}" ContentStringFormat="{}{0}:" DockPanel.Dock="Top" HorizontalAlignment="Left" />
+            </Expander.Header>
+            <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{StaticResource SharedItemChildTemplate}"
+                ItemsPanel="{StaticResource ChildSharedItemsPanel}" Margin="24 4 0 0" />
+          </mui:RememberingExpander>
+
+          <!--<DockPanel Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
             <Label Content="{Binding ChildrenName}" ContentStringFormat="{}{0}:" DockPanel.Dock="Top" HorizontalAlignment="Left" />
             <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{StaticResource SharedItemChildTemplate}"
                 ItemsPanel="{StaticResource ChildSharedItemsPanel}" Margin="20 8 0 0" />
-          </DockPanel>
+          </DockPanel>-->
         </StackPanel>
       </DataTemplate>
     </ResourceDictionary>
@@ -150,7 +256,7 @@
       </ScrollViewer>
 
       <ScrollViewer Padding="0 0 0 20">
-        <mui:SpacingStackPanel Spacing="20" Margin="0 0 20 0">
+        <mui:SpacingStackPanel Spacing="20" Margin="0 0 20 200">
           <ItemsControl ItemsSource="{Binding WrapperContentCars}" ItemTemplate="{StaticResource SharedItemTemplate}"
               ItemsPanel="{StaticResource SharedItemsPanel}" />
           <ItemsControl ItemsSource="{Binding WrapperContentTracks}" ItemTemplate="{StaticResource SharedItemTemplate}"

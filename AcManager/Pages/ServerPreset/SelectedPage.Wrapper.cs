@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
@@ -11,10 +13,12 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using StringBasedFilter;
 
@@ -26,7 +30,7 @@ namespace AcManager.Pages.ServerPreset {
         [Description("Download URL")]
         Url,
 
-        [Description("Share Directly From Server")]
+        [Description("Share From Server")]
         Directly
     }
 
@@ -54,15 +58,14 @@ namespace AcManager.Pages.ServerPreset {
     }
 
     public class WrapperContentObject : Displayable {
-        public WrapperContentObject(AcCommonObject acObject) {
+        private readonly List<string> _toRemove = new List<string>();
+        private readonly string _contentDirectory;
+
+        public WrapperContentObject(AcCommonObject acObject, string contentDirectory) {
+            _contentDirectory = contentDirectory;
+
             AcObject = acObject;
             Version = ContentVersion = (acObject as IAcObjectVersionInformation)?.Version;
-
-            try {
-                Size = Directory.GetFiles(acObject.Location, "*", SearchOption.AllDirectories).Sum(t => new FileInfo(t).Length);
-            } catch (Exception) {
-                Size = null;
-            }
 
             AcObject.SubscribeWeak((sender, args) => {
                 switch (args.PropertyName) {
@@ -81,6 +84,17 @@ namespace AcManager.Pages.ServerPreset {
             });
 
             UpdateDisplayName();
+            _sizeLazy = Lazier.Create(GetSize);
+            _fileIsMissingLazy = Lazier.Create(() => ShareMode == ShareMode.Directly && Filename != null && !File.Exists(Filename));
+        }
+
+        private long? GetSize() {
+            try {
+                return ShareMode != ShareMode.Directly ? null :
+                        Filename != null && File.Exists(Filename) ? new FileInfo(Filename).Length : (long?)null;
+            } catch (Exception) {
+                return null;
+            }
         }
 
         private void UpdateDisplayName() {
@@ -106,24 +120,30 @@ namespace AcManager.Pages.ServerPreset {
         }
 
         public AcCommonObject AcObject { get; }
-        public long? Size { get; }
+
+        private readonly Lazier<long?> _sizeLazy;
+        public long? Size => _sizeLazy.Value;
+
+        private readonly Lazier<bool> _fileIsMissingLazy;
+        public bool FileIsMissing => _fileIsMissingLazy.Value;
 
         public void LoadFrom([CanBeNull] JToken e, string childrenKey = null) {
             if (e == null) {
                 ShareMode = ShareMode.None;
             } else {
-                if (e["url"] != null) {
+                if ((string)e["url"] != null) {
                     DownloadUrl = (string)e["url"];
-                    FileName = null;
+                    Filename = null;
                     ShareMode = ShareMode.Url;
-                } else if (e["file"] != null) {
+                } else if ((string)e["file"] != null) {
+                    var fileName = (string)e["file"];
+                    DownloadUrl = null;
+                    Filename = Path.IsPathRooted(fileName) ? fileName : Path.Combine(_contentDirectory, fileName);
                     ShareMode = ShareMode.Directly;
-                    FileName = (string)e["file"];
-                    DownloadUrl = null;
                 } else {
-                    ShareMode = ShareMode.None;
-                    FileName = null;
                     DownloadUrl = null;
+                    Filename = null;
+                    ShareMode = ShareMode.None;
                 }
 
                 Version = (string)e["version"];
@@ -140,7 +160,7 @@ namespace AcManager.Pages.ServerPreset {
             if (ShareMode == ShareMode.Url) {
                 j["url"] = string.IsNullOrWhiteSpace(DownloadUrl) ? null : DownloadUrl;
             } else if (ShareMode == ShareMode.Directly) {
-                j["file"] = string.IsNullOrWhiteSpace(FileName) ? null : FileName;
+                j["file"] = string.IsNullOrWhiteSpace(Filename) ? null : Filename;
             }
 
             if (childrenKey != null) {
@@ -159,17 +179,39 @@ namespace AcManager.Pages.ServerPreset {
             set {
                 if (Equals(value, _shareMode)) return;
                 _shareMode = value;
+                _sizeLazy.Reset();
+                _fileIsMissingLazy.Reset();
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Size));
+                OnPropertyChanged(nameof(FileIsMissing));
             }
         }
 
-        private string _fileName;
+        private string _filename;
 
-        public string FileName {
-            get => _fileName;
+        [CanBeNull]
+        public string Filename {
+            get => _filename;
             set {
-                if (Equals(value, _fileName)) return;
-                _fileName = value;
+                if (Equals(value, _filename)) return;
+                _filename = value;
+                _sizeLazy.Reset();
+                _fileIsMissingLazy.Reset();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Size));
+                OnPropertyChanged(nameof(FileIsMissing));
+                DisplayFilename = value == null ? null : FileUtils.GetRelativePath(value, _contentDirectory);
+            }
+        }
+
+        private string _displayFilename;
+
+        [CanBeNull]
+        public string DisplayFilename {
+            get => _displayFilename;
+            set {
+                if (Equals(value, _displayFilename)) return;
+                _displayFilename = value;
                 OnPropertyChanged();
             }
         }
@@ -268,6 +310,73 @@ namespace AcManager.Pages.ServerPreset {
         private void OnChildPropertyChanged(object sender1, PropertyChangedEventArgs propertyChangedEventArgs) {
             OnPropertyChanged(nameof(ChildrenValues));
         }
+
+        private DelegateCommand _selectFileCommand;
+
+        public DelegateCommand SelectFileCommand => _selectFileCommand ?? (_selectFileCommand = new DelegateCommand(() => {
+            var dialog = new OpenFileDialog {
+                Title = "Select Packed Archive",
+                CheckFileExists = true,
+                Filter = FileDialogFilters.ArchivesFilter,
+                InitialDirectory = _contentDirectory,
+                Multiselect = false,
+                RestoreDirectory = false,
+                CustomPlaces = new List<FileDialogCustomPlace>(new[] {
+                    new FileDialogCustomPlace(_contentDirectory)
+                }.Where(x => x != null))
+            };
+
+            if (dialog.ShowDialog() == true) {
+                RemoveCurrentIfNeeded();
+                Filename = dialog.FileName;
+            }
+        }));
+
+        private string GetTypePrefix() {
+            switch (AcObject) {
+                case CarObject car:
+                    return $"car-{car.Id}-{car.Version}";
+                case CarSkinObject skin:
+                    return $"skin-{skin.CarId}-{skin.Id}";
+                case TrackObject track:
+                    return $"track-{track.Id}-{track.Version}";
+                case WeatherObject weather:
+                    return $"weather-{weather.Id}";
+                default:
+                    return $"something-{AcObject.Id}";
+            }
+        }
+
+        public async Task Repack(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+            var filename = Filename;
+            var newFilename = FileUtils.EnsureUnique(Path.Combine(_contentDirectory, GetTypePrefix()), "-{0}.zip", true, 0);
+
+            if (!await AcObject.TryToPack(new AcCommonObject.AcCommonObjectPackerParams {
+                Destination = newFilename,
+                ShowInExplorer = false,
+                Progress = progress,
+                Cancellation = cancellation
+            }) || filename != Filename) return;
+
+            RemoveCurrentIfNeeded();
+            Filename = newFilename;
+        }
+
+        private AsyncCommand _repackCommand;
+        public AsyncCommand RepackCommand => _repackCommand ?? (_repackCommand = new AsyncCommand(() => Repack()));
+
+        private void RemoveCurrentIfNeeded() {
+            var filename = Filename;
+            if (filename != null && FileUtils.IsAffected(_contentDirectory, filename) && Path.GetFileName(filename).StartsWith(GetTypePrefix())) {
+                _toRemove.Add(filename);
+            }
+        }
+
+        public IEnumerable<string> GetFilesToRemove() {
+            var result = _toRemove.ToList();
+            _toRemove.Clear();
+            return result;
+        }
     }
 
     public partial class SelectedPage {
@@ -288,10 +397,10 @@ namespace AcManager.Pages.ServerPreset {
                        let car = CarsManager.Instance.GetById(c.Key)
                        where car?.CanBePacked() == true
                        let skins = c.Select(x => x.CarSkinId).NonNull().Distinct().Select(car.GetSkinById).NonNull()
-                                    .Where(x => x.CanBePacked()).Select(x => new WrapperContentObject(x) {
+                                    .Where(x => x.CanBePacked()).Select(x => new WrapperContentObject(x, SelectedObject.WrapperContentDirectory) {
                                         ShareMode = ShareMode.None
                                     }).ToList()
-                       select new WrapperContentObject(car) {
+                       select new WrapperContentObject(car, SelectedObject.WrapperContentDirectory) {
                            ChildrenName = "Skins",
                            Children = skins
                        };
@@ -317,7 +426,7 @@ namespace AcManager.Pages.ServerPreset {
                 if (SelectedObject.TrackId == null) return new WrapperContentObject[0];
                 return from track in new[] { TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId) }
                        where track?.CanBePacked() == true
-                       select new WrapperContentObject(track);
+                       select new WrapperContentObject(track, SelectedObject.WrapperContentDirectory);
             }
 
             private void UpdateWrapperContentTracks() {
@@ -330,7 +439,7 @@ namespace AcManager.Pages.ServerPreset {
                 return from c in SelectedObject.Weather.GroupBy(x => x.WeatherId)
                        let weather = WeatherManager.Instance.GetById(c.Key)
                        where weather?.CanBePacked() == true
-                       select new WrapperContentObject(weather);
+                       select new WrapperContentObject(weather, SelectedObject.WrapperContentDirectory);
             }
 
             private void UpdateWrapperContentWeather() {

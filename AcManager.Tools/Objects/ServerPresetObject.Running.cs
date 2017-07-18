@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -25,6 +27,17 @@ using Newtonsoft.Json.Linq;
 using Steamworks;
 
 namespace AcManager.Tools.Objects {
+    public enum ServerPresetPackMode {
+        [Description("Windows")]
+        Windows,
+
+        [Description("Linux (32-bit)")]
+        Linux32,
+
+        [Description("Linux (64-bit)")]
+        Linux64,
+    }
+
     public partial class ServerPresetObject {
         private static readonly string[] TrackDataToKeep = {
             @"surfaces.ini", @"drs_zones.ini"
@@ -82,17 +95,27 @@ namespace AcManager.Tools.Objects {
         }
 
         [ItemCanBeNull]
-        public async Task<List<PackedEntry>> PackServerData(bool saveExecutable, bool linuxMode, bool evbMode, CancellationToken cancellation) {
+        public async Task<List<PackedEntry>> PackServerData(bool saveExecutable, ServerPresetPackMode mode, bool evbMode, CancellationToken cancellation) {
             var result = new List<PackedEntry>();
 
             // Wrapper
             if (WrapperUsed) {
                 if (saveExecutable) {
-                    if (linuxMode) {
-                        throw new InformativeException("Can’t pack server", "Linux mode with wrapper not supported yet.");
+                    string wrapper;
+                    switch (mode) {
+                        case ServerPresetPackMode.Linux32:
+                            wrapper = await LoadLinux32Wrapper(cancellation);
+                            break;
+                        case ServerPresetPackMode.Linux64:
+                            wrapper = await LoadLinux64Wrapper(cancellation);
+                            break;
+                        case ServerPresetPackMode.Windows:
+                            wrapper = await LoadWinWrapper(cancellation);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                     }
 
-                    var wrapper = await LoadWinWrapper(cancellation);
                     if (cancellation.IsCancellationRequested) return null;
 
                     if (wrapper == null) {
@@ -101,7 +124,7 @@ namespace AcManager.Tools.Objects {
 
                     // Actual wrapper, compiled to a single exe-file
                     result.Add(PackedEntry.FromFile(
-                            linuxMode ? "acServerWrapper" : "acServerWrapper.exe",
+                            mode == ServerPresetPackMode.Windows ? "acServerWrapper.exe" : "acServerWrapper",
                             wrapper));
 
                     // For EVB
@@ -118,15 +141,48 @@ namespace AcManager.Tools.Objects {
                 result.Add(PackedEntry.FromContent("cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
 
                 // Content
-                result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", WrapperContentJObject?.ToString(Formatting.Indented) ?? "{}"));
+                if (WrapperContentJObject != null) {
+                    void ProcessPiece(JObject piece) {
+                        var file = (string)piece?["file"];
+                        if (piece == null || file == null) return;
+
+                        var filename = Path.IsPathRooted(file) ? file : Path.Combine(WrapperContentDirectory, file);
+                        if (!FileUtils.ArePathsEqual(WrapperContentDirectory, Path.GetDirectoryName(filename))) {
+                            piece["file"] = Path.GetFileName(filename);
+                        }
+
+                        result.Add(PackedEntry.FromFile($"cfg/cm_content/{Path.GetFileName(filename)}", filename));
+                    }
+
+                    void ProcessPieces(JToken token, string childrenKey = null) {
+                        var o = token as JObject;
+                        if (o == null) return;
+                        foreach (var t in o) {
+                            var b = (JObject)t.Value;
+                            if (b == null) continue;
+                            ProcessPiece(b);
+                            if (childrenKey != null) {
+                                ProcessPieces(b[childrenKey]);
+                            }
+                        }
+                    }
+
+                    var content = WrapperContentJObject.DeepClone();
+                    ProcessPieces(content["cars"], "skins");
+                    ProcessPiece(content["track"] as JObject);
+                    ProcessPieces(content["weather"]);
+                    result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", content.ToString(Formatting.Indented)));
+                } else {
+                    result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", "{}"));
+                }
             }
 
             // Executable
             if (saveExecutable) {
                 var serverDirectory = ServerPresetsManager.ServerDirectory;
                 result.Add(PackedEntry.FromFile(
-                        linuxMode ? "acServer" : "acServer.exe",
-                        Path.Combine(serverDirectory, linuxMode ? "acServer" : "acServer.exe")));
+                        mode == ServerPresetPackMode.Windows ? "acServer.exe" : "acServer",
+                        Path.Combine(serverDirectory, mode == ServerPresetPackMode.Windows ? "acServer.exe" : "acServer")));
             }
 
             // Welcome message
@@ -331,6 +387,16 @@ namespace AcManager.Tools.Objects {
             }
 
             return File.Exists(wrapperFilename) ? wrapperFilename : null;
+        }
+
+        [ItemCanBeNull]
+        private async Task<string> LoadLinux32Wrapper(CancellationToken cancellation) {
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x86"))?.Item1;
+        }
+
+        [ItemCanBeNull]
+        private async Task<string> LoadLinux64Wrapper(CancellationToken cancellation) {
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64"))?.Item1;
         }
 
         private async Task RunWrapper(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {

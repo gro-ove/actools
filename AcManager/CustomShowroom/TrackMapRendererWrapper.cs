@@ -56,12 +56,6 @@ namespace AcManager.CustomShowroom {
             _helper = new AttachedHelper(this, new TrackMapRendererTools(track, renderer), 240);
         }
 
-        protected override void OnRender() {
-            if (!Renderer.IsDirty) return;
-            Renderer.Draw();
-            InvokeFirstFrameCallback();
-        }
-
         protected override void OnMouseWheel(object sender, MouseEventArgs e) {
             var value = e.Delta > 0 ? 100f : -100f;
             Helper.CameraMouseZoom(Kn5ObjectRenderer, 0f, value, Form.ClientSize.Height, Form.ClientSize.Width);
@@ -92,7 +86,7 @@ namespace AcManager.CustomShowroom {
 
             TrackMapPreparationRenderer renderer = null;
             try {
-                using (WaitingDialog.Create("Loading model…")) {
+                using (WaitingDialog.Create("Loading modelâ€¦")) {
                     renderer = aiLaneFilename == null ?
                             modelsFilename == null ?
                                     new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename))) :
@@ -104,7 +98,7 @@ namespace AcManager.CustomShowroom {
                 wrapper.Form.Icon = AppIconService.GetAppIcon();
                 wrapper.Run();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t update map", e);
+                NonfatalError.Notify("Canâ€™t update map", e);
             } finally {
                 renderer?.Dispose();
             }

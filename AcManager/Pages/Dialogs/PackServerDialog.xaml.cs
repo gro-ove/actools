@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using System.Windows.Controls;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
@@ -29,14 +30,6 @@ using SharpCompress.Writers;
 using SharpCompress.Writers.GZip;
 
 namespace AcManager.Pages.Dialogs {
-    public enum PackMode {
-        [Description("Windows")]
-        Windows,
-
-        [Description("Linux")]
-        Linux
-    }
-
     public partial class PackServerDialog {
         public PackServerDialog(ServerPresetObject server) {
             DataContext = new ViewModel(null, server);
@@ -51,7 +44,7 @@ namespace AcManager.Pages.Dialogs {
 
         public partial class ViewModel : NotifyPropertyChanged, IUserPresetable {
             private class SaveableData {
-                public PackMode Mode = PackMode.Windows;
+                public ServerPresetPackMode Mode = ServerPresetPackMode.Windows;
                 public bool IncludeExecutable = true;
                 public bool PackIntoSingle;
             }
@@ -88,23 +81,20 @@ namespace AcManager.Pages.Dialogs {
             #region Read-only stuff
             public ServerPresetObject Server { get; }
 
-            public PackMode[] Modes { get; } = EnumExtension.GetValues<PackMode>();
+            public ServerPresetPackMode[] Modes { get; } = EnumExtension.GetValues<ServerPresetPackMode>();
             #endregion
 
             #region Properies
-            private PackMode _mode;
+            private ServerPresetPackMode _mode;
 
-            public PackMode Mode {
+            public ServerPresetPackMode Mode {
                 get => _mode;
                 set {
                     if (Equals(value, _mode)) return;
                     _mode = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(PackIntoSingle));
                     SaveLater();
-
-                    if (Mode == PackMode.Linux) {
-                        PackIntoSingle = false;
-                    }
                 }
             }
 
@@ -127,7 +117,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _packIntoSingle;
 
             public bool PackIntoSingle {
-                get => _packIntoSingle;
+                get => _mode == ServerPresetPackMode.Windows && _packIntoSingle;
                 set {
                     if (Equals(value, _packIntoSingle)) return;
                     _packIntoSingle = value;
@@ -160,72 +150,75 @@ namespace AcManager.Pages.Dialogs {
 
             #region Actions
             [ItemCanBeNull]
-            private async Task<string> PackAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                var linuxMode = Mode == PackMode.Linux;
-
+            private async Task<string> PackAsync(string destination, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 progress.Report(AsyncProgressEntry.FromStringIndetermitate("Packing…"));
-                if (!linuxMode && PackIntoSingle) {
-                    return await PackIntoSingleAsync(progress, cancellation);
+                if (PackIntoSingle) {
+                    return await PackIntoSingleAsync(destination, progress, cancellation);
                 }
 
-                var result = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
-                        FileUtils.EnsureFileNameIsValid($@"Packed {Server.DisplayName}.{(linuxMode ? "tar.gz" : "zip")}")));
-
-                var list = await Server.PackServerData(IncludeExecutable, linuxMode, false, cancellation);
+                var list = await Server.PackServerData(IncludeExecutable, Mode, false, cancellation);
                 if (cancellation.IsCancellationRequested || list == null) return null;
 
                 await Task.Run(() => {
-                    try {
-                        using (var memory = new MemoryStream()) {
-                            using (var writer = WriterFactory.Open(memory,
-                                    linuxMode ? ArchiveType.Tar : ArchiveType.Zip,
-                                    linuxMode ? CompressionType.None : CompressionType.Deflate)) {
-                                for (var i = 0; i < list.Count; i++) {
-                                    var e = list[i];
-                                    progress.Report(new AsyncProgressEntry(e.Key, i, list.Count));
-                                    if (cancellation.IsCancellationRequested) return;
+                    var memory = new MemoryStream();
 
-                                    var data = e.GetContent();
-                                    if (data != null) {
-                                        writer.WriteBytes(e.Key, data);
-                                    } else {
-                                        throw new InformativeException("Can’t pack server", $"File “{e.Key}” not found.");
-                                    }
+                    try {
+                        using (var writer = WriterFactory.Open(memory,
+                                Mode != ServerPresetPackMode.Windows ? ArchiveType.Tar : ArchiveType.Zip,
+                                new WriterOptions(Mode != ServerPresetPackMode.Windows ? CompressionType.None : CompressionType.Deflate) {
+                                    LeaveStreamOpen = true
+                                })) {
+                            for (var i = 0; i < list.Count; i++) {
+                                var e = list[i];
+                                progress.Report(new AsyncProgressEntry(e.Key, i, list.Count));
+                                if (cancellation.IsCancellationRequested) return;
+
+                                var data = e.GetContent();
+                                if (data != null) {
+                                    writer.WriteBytes(e.Key, data);
+                                } else {
+                                    throw new InformativeException("Can’t pack server", $"File “{e.Key}” not found.");
                                 }
                             }
 
-                            if (linuxMode) {
+                            if (Mode == ServerPresetPackMode.Windows) {
+                                memory.AddZipDescription(Server.Name);
+                                File.WriteAllBytes(destination, memory.ToArray());
+                            } else {
                                 memory.Position = 0;
 
                                 using (var actualMemory = new MemoryStream()) {
-                                    using (var writer = new GZipWriter(actualMemory)) {
-                                        writer.Write(@"tar.tar", memory);
+                                    using (var writer2 = new GZipWriter(actualMemory)) {
+                                        writer2.Write(@"tar.tar", memory);
                                     }
 
-                                    File.WriteAllBytes(result, actualMemory.ToArray());
+                                    File.WriteAllBytes(destination, actualMemory.ToArray());
                                 }
-                            } else {
-                                File.WriteAllBytes(result, memory.ToArray());
                             }
                         }
                     } finally {
                         // not needed here actually, but if it’s IDisposable, let’s keep it clean
                         list.DisposeEverything();
+                        memory.Dispose();
                     }
                 });
 
-                return result;
+                return destination;
             }
 
             private AsyncCommand _packCommand;
 
             public AsyncCommand PackCommand => _packCommand ?? (_packCommand = new AsyncCommand(async () => {
                 try {
+                    var destination = CommonBatchActions.GetPackedFilename(Server, Mode == ServerPresetPackMode.Windows ?
+                            PackIntoSingle && !Server.WrapperUsed ? ".exe" : ".zip" : ".tar.gz");
+                    if (destination == null) return;
+
                     using (var waiting = new WaitingDialog()) {
                         await EnsurePacked(Server, waiting);
                         if (waiting.CancellationToken.IsCancellationRequested) return;
 
-                        var result = await PackAsync(waiting, waiting.CancellationToken);
+                        var result = await PackAsync(destination, waiting, waiting.CancellationToken);
                         if (waiting.CancellationToken.IsCancellationRequested || result == null) return;
 
                         WindowsHelper.ViewFile(result);

@@ -75,6 +75,7 @@
     <Compile Include="PhysicsTest.cs" />
     <Compile Include="ProcessExtensionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadAheadBinaryReaderTest.cs" />
     <Compile Include="SortedListTest.cs" />
     <Compile Include="StringExtensionTest.cs" />
     <Compile Include="SublistTest.cs" />

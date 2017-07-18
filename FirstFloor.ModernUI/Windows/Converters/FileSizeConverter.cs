@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(long), typeof(string))]
     public class FileSizeConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value.AsLong().ToReadableSize();
+            return value?.AsLong().ToReadableSize();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

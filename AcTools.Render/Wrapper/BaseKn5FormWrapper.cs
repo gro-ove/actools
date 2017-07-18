@@ -97,10 +97,10 @@ namespace AcTools.Render.Wrapper {
         }
     }
 
-    public abstract class BaseMouseFormWrapper : FormWrapperBase {
+    public abstract class FormWrapperMouseBase : FormWrapperBase {
         public bool FormMoving;
 
-        public BaseMouseFormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
+        public FormWrapperMouseBase(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
             Form.MouseMove += OnMouseMove;
             Form.MouseDown += OnMouseDown;
             Form.MouseUp += OnMouseUp;
@@ -170,7 +170,7 @@ namespace AcTools.Render.Wrapper {
         }
     }
 
-    public class BaseKn5FormWrapper : BaseMouseFormWrapper {
+    public class BaseKn5FormWrapper : FormWrapperMouseBase {
         public readonly IKn5ObjectRenderer Kn5ObjectRenderer;
 
         public bool AutoAdjustTargetOnReset = true;

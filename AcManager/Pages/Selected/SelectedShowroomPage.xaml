@@ -28,7 +28,7 @@
       </ToolBar>
       <ToolBar Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_CreateNewShowroom}" Command="{Binding CreateNewShowroomCommand}"
-            ToolTip="{x:Static g:AppStrings.Toolbar_CreateNewShowroom_Tooltip}" />
+            ToolTip="{x:Static g:AppStrings.Toolbar_CreateNewShowroom_Tooltip}" mui:LimitedService.Limited="True" />
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"

@@ -309,40 +309,59 @@ namespace AcManager.Controls {
                     var objs = OfType(list).ToList();
                     if (objs.Count == 0) return;
 
-                    var last = $"-{DateTime.Now:yyyyMMdd-HHmmss}.zip";
-                    var name = objs.Count == 1 ? $"{objs[0]}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
-                            $"{objs.Select(x => x.Id).OrderBy(x => x).JoinToString('-')}{last}";
-                    if (name.Length > 160) {
-                        name = name.Substring(0, 160 - last.Length) + last;
-                    }
-
-                    var dialog = new SaveFileDialog {
-                        Title = objs.Count == 1 ? $"Pack {objs[0].DisplayName}" : $"Pack {objs.Count} {PluralizingConverter.Pluralize(objs.Count, "Object")}",
-                        InitialDirectory = ValuesStorage.GetString("_packDir"),
-                        Filter = FileDialogFilters.ZipFilter,
-                        DefaultExt = ".zip",
-                        FileName = name
-                    };
-
-                    if (dialog.ShowDialog() != true) return;
+                    var filename = GetPackedFilename(objs, ".zip");
+                    if (filename == null) return;
 
                     using (var waiting = WaitingDialog.Create("Packing…")) {
                         await Task.Run(() => {
-                            ValuesStorage.Set("_packDir", Path.GetDirectoryName(dialog.FileName));
-                            using (var output = File.Create(dialog.FileName)) {
+                            using (var output = File.Create(filename)) {
                                 AcCommonObject.Pack(objs, output, GetParams(),
                                         new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
                                         waiting.CancellationToken);
                             }
 
                             if (waiting.CancellationToken.IsCancellationRequested) return;
-                            WindowsHelper.ViewFile(dialog.FileName);
+                            WindowsHelper.ViewFile(filename);
                         });
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t pack", e);
                 }
             }
+        }
+        #endregion
+
+        #region Utils
+        [CanBeNull]
+        public static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension) {
+            var objs = o.ToIReadOnlyListIfItIsNot();
+            if (objs.Count == 0) return null;
+
+            var last = $"-{DateTime.Now:yyyyMMdd-HHmmss}{extension}";
+            var name = objs.Count == 1 ? $"{objs[0]}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
+                    $"{objs.Select(x => x.Id).OrderBy(x => x).JoinToString('-')}{last}";
+            if (name.Length > 160) {
+                name = name.Substring(0, 160 - last.Length) + last;
+            }
+
+            var dialog = new SaveFileDialog {
+                Title = objs.Count == 1 ? $"Pack {objs[0].DisplayName}" : $"Pack {objs.Count} {PluralizingConverter.Pluralize(objs.Count, "Object")}",
+                InitialDirectory = ValuesStorage.GetString("_packDir"),
+                Filter = extension == ".zip" ? FileDialogFilters.ZipFilter : extension == ".exe" ? FileDialogFilters.ApplicationsFilter :
+                        extension == ".tar.gz" ? FileDialogFilters.TarGzFilter : FileDialogFilters.ArchivesFilter,
+                DefaultExt = extension,
+                FileName = name
+            };
+
+            if (dialog.ShowDialog() != true) return null;
+            ValuesStorage.Set("_packDir", Path.GetDirectoryName(dialog.FileName));
+
+            return dialog.FileName;
+        }
+
+        [CanBeNull]
+        public static string GetPackedFilename([NotNull] AcObjectNew o, string extension) {
+            return GetPackedFilename(new[] { o }, extension);
         }
         #endregion
     }

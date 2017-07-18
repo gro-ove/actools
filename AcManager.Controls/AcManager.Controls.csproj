@@ -188,6 +188,7 @@
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="StatEntry.cs" />
+    <Compile Include="ToolTips.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
@@ -334,6 +335,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\SelectedObjectToolBarTray\Fixed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ToolTips.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

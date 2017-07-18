@@ -96,9 +96,7 @@ namespace AcManager.CustomShowroom {
                                     VisibleUi = true,
                                     UseSprite = true
                                 });
-
                         formWrapper = new LiteShowroomFormWrapper(renderer);
-
                         if (skinId != null) {
                             renderer.SelectSkin(skinId);
                         }
@@ -126,9 +124,9 @@ namespace AcManager.CustomShowroom {
             return StartAsync(FileUtils.GetMainCarFilename(car.Location, car.AcdData), skin?.Id, presetFilename);
         }
 
-        Task ICustomShowroomWrapper.StartAsync(string kn5, string skinId, string presetFilename) {
+        /*Task ICustomShowroomWrapper.StartAsync(string kn5, string skinId, string presetFilename) {
             return StartAsync(kn5, skinId, presetFilename);
-        }
+        }*/
 
         Task ICustomShowroomWrapper.StartAsync(CarObject car, CarSkinObject skin, string presetFilename) {
             return StartAsync(car, skin, presetFilename);

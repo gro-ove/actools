@@ -12,6 +12,8 @@
     <Setter Property="ContextMenu" Value="{StaticResource TextBoxReadOnlyContextMenu}" />
     <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />
     <Setter Property="AllowDrop" Value="True" />
+    <Setter Property="IsUndoEnabled" Value="False" />
+    <Setter Property="UndoLimit" Value="0" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
     <Setter Property="Stylus.IsFlicksEnabled" Value="False" />

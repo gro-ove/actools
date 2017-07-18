@@ -324,7 +324,7 @@ namespace AcManager.CustomShowroom {
 
             public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, CarObject carObject, string skinId) {
                 Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
-                renderer.PropertyChanged += OnRendererPropertyChanged;
+                Renderer.PropertyChanged += OnRendererPropertyChanged;
                 Renderer.CameraMoved += OnCameraMoved;
                 OnCarNodeUpdated();
 

@@ -28,7 +28,7 @@ namespace AcTools.Kn5File {
 
         public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
             var result = MemoryChunk.Bytes(textureSize).Execute(() => new byte[textureSize]);
-            reader.ReadBytes(result, 0, textureSize);
+            reader.ReadBytesTo(result, 0, textureSize);
             return result;
         }
     }

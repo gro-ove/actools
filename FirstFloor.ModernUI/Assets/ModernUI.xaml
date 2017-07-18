@@ -12,6 +12,7 @@
     <ResourceDictionary Source="DataGrid.xaml" />
     <ResourceDictionary Source="DatePicker.xaml" />
     <ResourceDictionary Source="Easing.xaml" />
+    <ResourceDictionary Source="Expander.xaml" />
     <ResourceDictionary Source="Fonts.xaml" />
     <ResourceDictionary Source="GridSplitter.xaml" />
     <ResourceDictionary Source="Hyperlink.xaml" />
@@ -43,6 +44,9 @@
     <ResourceDictionary Source="BetterTextBox.xaml" />
     <ResourceDictionary Source="{x:Static presentation:AppearanceManager.DefaultValuesSource}" />
   </ResourceDictionary.MergedDictionaries>
+
+  <!-- ToolTips fix -->
+  <PopupAnimation x:Key="{x:Static SystemParameters.ToolTipPopupAnimationKey}">None</PopupAnimation>
 
   <!-- Basic color brushes -->
   <SolidColorBrush x:Key="Accent" Color="{DynamicResource AccentColor}" />

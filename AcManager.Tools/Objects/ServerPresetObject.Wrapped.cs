@@ -167,6 +167,8 @@ namespace AcManager.Tools.Objects {
             destination["publishPasswordChecksum"] = WrapperPublishPasswordChecksum;
         }
 
+        public event EventHandler SaveWrapperContent;
+
         public void SaveWrapperParams() {
             SetWrapperParams(ref _wrapperParamsJson);
 
@@ -188,6 +190,8 @@ namespace AcManager.Tools.Objects {
                 } else if (File.Exists(WrapperContentFilename)) {
                     File.Delete(WrapperContentFilename);
                 }
+
+                SaveWrapperContent?.Invoke(this, EventArgs.Empty);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t save server wrapper content description", e);
             }

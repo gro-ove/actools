@@ -113,7 +113,7 @@ namespace AcTools.Render.Wrapper {
         private bool _fullscreenEnabled;
 
         public bool FullscreenEnabled {
-            get { return _fullscreenEnabled; }
+            get => _fullscreenEnabled;
             set {
                 if (Equals(value, _fullscreenEnabled)) return;
                 _fullscreenEnabled = value;
@@ -147,7 +147,12 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual bool SleepMode => !Renderer.IsDirty && !Renderer.AccumulationMode;
 
-        protected virtual void OnRender() {
+        protected virtual void RenderOverride() {
+            Renderer.Draw();
+            InvokeFirstFrameCallback();
+        }
+
+        protected void OnRender() {
             if (_closed) return;
 
             Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
@@ -156,34 +161,8 @@ namespace AcTools.Render.Wrapper {
                 return;
             }
 
-            Renderer.Draw();
-            InvokeFirstFrameCallback();
+            RenderOverride();
             Thread.Sleep(1);
-        }
-
-        private Timer _toastTimer;
-
-        public void Toast(string message) {
-            if (Form == null) return;
-
-            Action action = delegate {
-                if (_toastTimer == null) {
-                    _toastTimer = new Timer { Interval = 3000 };
-                    _toastTimer.Tick += ToastTimer_Tick;
-                }
-
-                Form.Text = Form.Text == _title ? message : Form.Text + ", " + message;
-                _toastTimer.Enabled = false;
-                _toastTimer.Enabled = true;
-            };
-
-            Form.Invoke(action);
-        }
-
-        void ToastTimer_Tick(object sender, EventArgs e) {
-            if (Form == null) return;
-            Form.Text = _title;
-            _toastTimer.Enabled = false;
         }
 
         private bool _closed;

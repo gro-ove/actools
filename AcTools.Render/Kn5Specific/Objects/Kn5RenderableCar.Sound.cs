@@ -125,7 +125,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _soundHorn;
 
         public bool SoundHorn {
-            get { return _soundHorn; }
+            get => _soundHorn;
             set {
                 if (Equals(value, _soundHorn)) return;
                 _soundHorn = value;

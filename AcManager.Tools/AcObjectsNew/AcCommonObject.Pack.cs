@@ -106,7 +106,17 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public class AcCommonObjectPackerParams {}
+        public class AcCommonObjectPackerParams {
+            [CanBeNull]
+            public string Destination { get; set; }
+
+            public bool ShowInExplorer { get; set; } = true;
+
+            [CanBeNull]
+            public IProgress<AsyncProgressEntry> Progress { get; set; }
+
+            public CancellationToken Cancellation { get; set; }
+        }
 
         protected abstract class AcCommonObjectPacker {
             private List<string> _added = new List<string>();
@@ -351,28 +361,38 @@ namespace AcManager.Tools.AcObjectsNew {
             packer.Pack(outputZipStream, list);
         }
 
+        public async Task<bool> TryToPack(AcCommonObjectPackerParams packerParams) {
+            try {
+                using (var waiting = packerParams.Progress == null ? WaitingDialog.Create("Packing…") : null) {
+                    var progress = waiting ?? packerParams.Progress;
+                    var cancellation = waiting?.CancellationToken ?? packerParams.Cancellation;
+
+                    await Task.Run(() => {
+                        var destination = packerParams.Destination ?? Path.Combine(Location,
+                                $"{Id}-{(this as IAcObjectVersionInformation)?.Version ?? "0"}-{DateTime.Now.ToUnixTimestamp()}.zip");
+                        using (var output = File.Create(destination)) {
+                            Pack(output, packerParams,
+                                    new Progress<string>(x => progress?.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
+                                    cancellation);
+                        }
+
+                        if (cancellation.IsCancellationRequested) return;
+                        if (packerParams.ShowInExplorer) {
+                            WindowsHelper.ViewFile(destination);
+                        }
+                    });
+                }
+
+                return true;
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t pack", e);
+                return false;
+            }
+        }
+
         private AsyncCommand<AcCommonObjectPackerParams> _packCommand;
 
         public AsyncCommand<AcCommonObjectPackerParams> PackCommand
-            => _packCommand ?? (_packCommand = new AsyncCommand<AcCommonObjectPackerParams>(async packerParams => {
-                try {
-                    using (var waiting = WaitingDialog.Create("Packing…")) {
-                        await Task.Run(() => {
-                            var destination = Path.Combine(Location,
-                                    $"{Id}-{(this as IAcObjectVersionInformation)?.Version ?? "0"}-{DateTime.Now.ToUnixTimestamp()}.zip");
-                            using (var output = File.Create(destination)) {
-                                Pack(output, packerParams,
-                                        new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
-                                        waiting.CancellationToken);
-                            }
-
-                            if (waiting.CancellationToken.IsCancellationRequested) return;
-                            WindowsHelper.ViewFile(destination);
-                        });
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t pack", e);
-                }
-            }, packerParams => CanBePacked()));
+            => _packCommand ?? (_packCommand = new AsyncCommand<AcCommonObjectPackerParams>(TryToPack, packerParams => CanBePacked()));
     }
 }

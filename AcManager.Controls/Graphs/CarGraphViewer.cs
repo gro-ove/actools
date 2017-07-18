@@ -11,6 +11,7 @@ using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -79,6 +80,12 @@ namespace AcManager.Controls.Graphs {
                 PlotAreaBorderColor = OxyColors.Transparent,
                 LegendTextColor = BaseLegendTextColor,
                 LegendPosition = LegendPosition.RightBottom,
+
+                Padding = new OxyThickness(0d),
+                LegendPadding = 0d,
+                TitlePadding = 0d,
+                LegendMargin = 0d,
+                PlotMargins = new OxyThickness(40d, 0d, 40d, 32d),
 
                 Axes = {
                     new LinearAxis {

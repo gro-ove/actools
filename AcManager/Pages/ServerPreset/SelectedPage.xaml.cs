@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -8,16 +9,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -118,6 +118,7 @@ namespace AcManager.Pages.ServerPreset {
                 SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
                 SelectedObject.DriverEntryPropertyChanged += OnDriverEntryPropertyChanged;
                 SelectedObject.WeatherCollectionChanged += OnWeatherCollectionChanged;
+                SelectedObject.SaveWrapperContent += OnSaveWrapperContent;
 
                 Track = track;
                 Cars = new BetterObservableCollection<CarObject>(cars);
@@ -129,6 +130,57 @@ namespace AcManager.Pages.ServerPreset {
                 UpdateWrapperContentWeather();
                 UpdateWrapperContentState();
             }
+
+            private IEnumerable<WrapperContentObject> Wrappers() {
+                return WrapperContentCars.SelectMany(x => x.Children)
+                                         .Concat(WrapperContentCars)
+                                         .Concat(WrapperContentTracks)
+                                         .Concat(WrapperContentWeather);
+            }
+
+            private void OnSaveWrapperContent(object sender, EventArgs eventArgs) {
+                var f = Wrappers().Select(x => x.Filename).NonNull().Distinct().ToList();
+                var l = Wrappers().SelectMany(x => x.GetFilesToRemove().Where(y => f.All(z => !FileUtils.ArePathsEqual(y, z)))).ToArray();
+                if (l.Length == 0) return;
+
+                Logging.Debug("To recycle:\n" + l.JoinToString('\n'));
+                FileUtils.Recycle(l);
+            }
+
+            private AsyncCommand _wrapperRepackAllCommand;
+
+            public AsyncCommand WrapperRepackAllCommand => _wrapperRepackAllCommand ?? (_wrapperRepackAllCommand = new AsyncCommand(async () => {
+                using (var waiting = WaitingDialog.Create("Repacking…")) {
+                    var list = Wrappers().Where(x => x.ShareMode == ShareMode.Directly).ToList();
+                    for (var i = 0; i < list.Count; i++) {
+                        var w = list[i];
+                        waiting.Report(w.DisplayName, i, list.Count);
+                        await w.Repack(waiting.Subrange((double)i / list.Count, 1d / list.Count, $"Packing: {w.DisplayName} ({{0}})…", false),
+                                waiting.CancellationToken);
+                        if (waiting.CancellationToken.IsCancellationRequested) return;
+                    }
+                }
+            }));
+
+            private AsyncCommand _wrapperRemoveUnusedCommand;
+
+            public AsyncCommand WrapperRemoveUnusedCommand => _wrapperRemoveUnusedCommand ?? (_wrapperRemoveUnusedCommand = new AsyncCommand(async () => {
+                try {
+                    using (WaitingDialog.Create("Recycling…")) {
+                        await Task.Run(() => {
+                            var f = Wrappers().Select(x => x.Filename).NonNull().Distinct().ToList();
+                            var l = Directory.GetFiles(SelectedObject.WrapperContentDirectory).Where(x => !string.Equals(Path.GetFileName(x), "content.json",
+                                    StringComparison.OrdinalIgnoreCase) && f.All(y => !FileUtils.ArePathsEqual(x, y))).ToArray();
+                            if (l.Length == 0) return;
+
+                            Logging.Debug("To recycle:\n" + l.JoinToString('\n'));
+                            FileUtils.Recycle(l);
+                        });
+                    }
+                } catch (Exception e) {
+                    Logging.Debug(e);
+                }
+            }));
 
             public override void Unload() {
                 base.Unload();
@@ -246,7 +298,7 @@ namespace AcManager.Pages.ServerPreset {
             private string _savedDriversFilter;
 
             public string SavedDriversFilter {
-                get { return _savedDriversFilter; }
+                get => _savedDriversFilter;
                 set {
                     if (Equals(value, _savedDriversFilter)) return;
                     _savedDriversFilter = value;
@@ -480,11 +532,14 @@ namespace AcManager.Pages.ServerPreset {
             var source = Tab.SelectedSource;
             var runningLogTab = source == TryFindResource(@"RunningLogUri") as Uri;
             var entryListTab = !runningLogTab && source == TryFindResource(@"EntryListUri") as Uri;
+            var wrappedTab = !runningLogTab && !entryListTab && source == TryFindResource(@"WrappedUri") as Uri;
 
             IsRunningMessage.Visibility = runningLogTab ? Visibility.Collapsed : Visibility.Visible;
             RandomizeSkinsButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
             RemoveEntriesButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
-            ExtraButtonsSeparator.Visibility = RandomizeSkinsButton.Visibility;
+            ClearUnusedArchivesButton.Visibility = wrappedTab ? Visibility.Visible : Visibility.Collapsed;
+            RepackAllArchivesButton.Visibility = wrappedTab ? Visibility.Visible : Visibility.Collapsed;
+            ExtraButtonsSeparator.Visibility = entryListTab || wrappedTab ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void OnPackServerButtonMouseDown(object sender, MouseButtonEventArgs e) {

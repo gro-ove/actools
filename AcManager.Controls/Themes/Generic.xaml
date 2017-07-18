@@ -70,10 +70,24 @@
   </Style>
 
   <Style TargetType="graphs:GraphDataViewerBase">
-    <Setter Property="Background" Value="Transparent" />
+    <!--<Setter Property="Background" Value="Transparent" />-->
     <Setter Property="IsManipulationEnabled" Value="False" />
     <Setter Property="IsMouseWheelEnabled" Value="False" />
     <Setter Property="Height" Value="200" />
+
+    <!--<Setter Property="PlotMargins" Value="0" />
+    <Setter Property="AxisTierDistance" Value="0" />
+    <Setter Property="LegendMaxWidth" Value="0" />
+    <Setter Property="LegendBorder" Value="Blue" />
+    <Setter Property="LegendBorderThickness" Value="2" />
+    <Setter Property="LegendColumnSpacing" Value="0" />
+    <Setter Property="LegendPadding" Value="0" />
+    <Setter Property="LegendPlacement" Value="Outside" />
+    <Setter Property="PlotAreaBorderColor" Value="Peru" />
+    <Setter Property="PlotAreaBorderThickness" Value="2" />
+    <Setter Property="LegendItemSpacing" Value="0" />
+    <Setter Property="PlotType" Value="Polar" />-->
+
     <Setter Property="ContextMenu">
       <Setter.Value>
         <ContextMenu>
@@ -102,8 +116,8 @@
               <Grid x:Name="PART_Grid" />
               <mui:BooleanSwitch Value="{TemplateBinding IsEmpty}">
                 <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" VerticalAlignment="Center"
-                    Padding="20">
-                  <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" TextAlignment="Center" />
+                    Padding="20" Margin="0 -40 0 0">
+                  <TextBlock Text="Nothing to display" Style="{StaticResource Title}" TextAlignment="Center" />
                 </Border>
               </mui:BooleanSwitch>
             </mui:Cell>

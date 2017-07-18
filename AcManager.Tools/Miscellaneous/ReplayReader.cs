@@ -38,12 +38,12 @@ namespace AcManager.Tools.Miscellaneous {
             for (var j = 0;; j++) {
                 try {
                     if (j == 0) {
-                        ReadBytes(p, 0, p.Length);
+                        ReadBytesTo(p, 0, p.Length);
                     } else {
                         Array.Copy(b, b.Length - 4, p, 0, 4);
                     }
 
-                    ReadBytes(b, 4, bufferSize);
+                    ReadBytesTo(b, 4, bufferSize);
                 } catch (EndOfStreamException) {
                     return null;
                 }

@@ -14,6 +14,7 @@
       <CollectionViewSource x:Key="PackServerPresetsItems" Source="{Binding PackServerPresets}" />
       <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/ServerPresetRunningLog.xaml</system:Uri>
       <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/ServerPresetEntryList.xaml</system:Uri>
+      <system:Uri x:Key="WrappedUri">/Pages/ServerPreset/ServerPresetWrapped.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -64,6 +65,9 @@
         <Separator x:Name="ExtraButtonsSeparator" />
         <Button x:Name="RandomizeSkinsButton" Content="Randomize Skins" Command="{Binding SelectedObject.RandomizeSkinsCommand}" />
         <Button x:Name="RemoveEntriesButton" Content="Delete All Entries" Command="{Binding SelectedObject.DeleteAllEntriesCommand}" />
+        <Button x:Name="RepackAllArchivesButton" Content="Repack All" Command="{Binding WrapperRepackAllCommand}" />
+        <Button x:Name="ClearUnusedArchivesButton" Content="Remove Unused Archives" Command="{Binding WrapperRemoveUnusedCommand}"
+            ToolTip="Unused files from content subfolder will be moved to the Recycle Bin" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
@@ -79,7 +83,7 @@
           <mui:Link x:Name="AssistsLink" DisplayName="Rules" Source="/Pages/ServerPreset/ServerPresetAssists.xaml" />
           <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
           <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />
-          <mui:Link DisplayName="Wrapper" Source="/Pages/ServerPreset/ServerPresetWrapped.xaml" />
+          <mui:Link DisplayName="Wrapper" Source="{StaticResource WrappedUri}" />
         </mui:ModernTab.Links>
       </mui:ModernTab>
 

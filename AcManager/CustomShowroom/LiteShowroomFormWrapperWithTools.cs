@@ -206,7 +206,7 @@ namespace AcManager.CustomShowroom {
                 // For pre-smoothed files, in case somebody would want to use super-resolution with SSLR/SSAO
                 DarkKn5ObjectRenderer.OptionTemporaryDirectory = destination;
 
-                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress.Subrange(0.001, 0.95, "Rendering ({0})…"), cancellation);
+                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress.SubrangeTuple(0.001, 0.95, "Rendering ({0})…"), cancellation);
 
                 progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.97));
 
@@ -316,10 +316,7 @@ namespace AcManager.CustomShowroom {
             base.OnKeyUp(sender, args);
         }
 
-        protected override void OnRender() {
-            if (Renderer == null || Paused && !_helper.IsActive && !Renderer.IsDirty || _busy) return;
-            Renderer.Draw();
-        }
+        protected override bool SleepMode => base.SleepMode && !_helper.IsActive;
 
         protected override void OnResize(object sender, EventArgs e) {
             base.OnResize(sender, e);

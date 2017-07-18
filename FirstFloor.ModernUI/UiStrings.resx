@@ -268,7 +268,7 @@
     <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
-    <value>DDS Files|*.dds|All files (*.*)|*.*</value>
+    <value>DDS Files (*.dds)|*.dds|All files (*.*)|*.*</value>
   </data>
   <data name="KeyAlt" xml:space="preserve">
     <value>Alt</value>

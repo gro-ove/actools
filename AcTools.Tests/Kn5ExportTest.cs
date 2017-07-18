@@ -7,7 +7,6 @@ namespace AcTools.Tests {
     [TestFixture]
     public class Kn5ExportTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
-
         private static string TestDir => GetTestDir();
 
         [Test]
