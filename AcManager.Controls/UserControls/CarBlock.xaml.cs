@@ -107,27 +107,31 @@ namespace AcManager.Controls.UserControls {
             var car = Car;
             var description = car?.Description?.Trim();
             Description.Document.Blocks.Clear();
-            Description.Document.Blocks.Add(new Paragraph {
-                Inlines = {
-                    new Floater {
-                        HorizontalAlignment = HorizontalAlignment.Right,
-                        Blocks = {
-                            new Paragraph(new InlineUIContainer {
-                                Child = new CarGraphViewer {
-                                    Car = car,
-                                    Margin = new Thickness(0, 0, 8, 0),
-                                    Padding = new Thickness(0, 0, 0, 0),
-                                    Width = 240,
-                                    Height = 160
-                                }
-                            })
-                        }
-                    },
-                    string.IsNullOrEmpty(description) ?
-                            PlaceholderTextBlock.GetPlaceholder(Description, "Description is missing.") :
-                            new Run(description)
-                }
-            });
+
+            var item = new Paragraph();
+
+            if (SettingsHolder.Content.CurversInDrive) {
+                item.Inlines.Add(new Floater {
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Blocks = {
+                        new Paragraph(new InlineUIContainer {
+                            Child = new CarGraphViewer {
+                                Car = car,
+                                Margin = new Thickness(0, 0, 8, 0),
+                                Padding = new Thickness(0, 0, 0, 0),
+                                Width = 240,
+                                Height = 160
+                            }
+                        })
+                    }
+                });
+            }
+
+            item.Inlines.Add(string.IsNullOrEmpty(description) ?
+                    PlaceholderTextBlock.GetPlaceholder(Description, "Description is missing.") :
+                    new Run(description));
+
+            Description.Document.Blocks.Add(item);
         }
 
         public static readonly DependencyProperty SelectedSkinProperty = DependencyProperty.Register(nameof(SelectedSkin), typeof(CarSkinObject),

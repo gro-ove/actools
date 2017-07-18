@@ -42,7 +42,7 @@
         <!--power and torque curves-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Power and torque curves:" />
 
-        <CheckBox IsChecked="{Binding Holder.CurversInDrive}" ToolTip="Might be enabled by default soon">
+        <CheckBox IsChecked="{Binding Holder.CurversInDrive}">
           <Label Content="Show curves in Drive section" />
         </CheckBox>
 

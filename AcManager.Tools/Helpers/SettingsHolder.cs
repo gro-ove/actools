@@ -1433,7 +1433,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _curversInDrive;
 
             public bool CurversInDrive {
-                get => _curversInDrive ?? (_curversInDrive = ValuesStorage.GetBool("Settings.ContentSettings.CurversInDrive", false)).Value;
+                get => _curversInDrive ?? (_curversInDrive = ValuesStorage.GetBool("Settings.ContentSettings.CurversInDrive", true)).Value;
                 set {
                     if (Equals(value, _curversInDrive)) return;
                     _curversInDrive = value;
