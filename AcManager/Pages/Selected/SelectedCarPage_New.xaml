@@ -72,10 +72,10 @@
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
       </ToolBar>
-      <!--<ToolBar Band="0" BandIndex="0"
+      <!-- <ToolBar Band="0" BandIndex="0"
           Visibility="{Binding SelectedObject.PackCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button Content="Pack Car" Command="{Binding SelectedObject.PackCommand}" ToolTip="Pack important files for easy distribution" />
-      </ToolBar>-->
+      </ToolBar> -->
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
@@ -163,7 +163,7 @@
               mui:FancyHintsService.TriggerOnLoad="True" />
         </mui:Cell>
 
-        <!-- description -->
+        <!-- Description -->
         <DockPanel Grid.Column="1" Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}}" Margin="20 0 0 0">
           <c:RatingBar Rating="{Binding SelectedObject.Rating}" DockPanel.Dock="Bottom" Margin="0 12 0 0" HorizontalAlignment="Center" />
           <Border DockPanel.Dock="Top" x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" MaxHeight="180" Visibility="Collapsed" />
@@ -171,9 +171,9 @@
         </DockPanel>
       </Grid>
 
-      <!-- data section -->
+      <!-- Data section -->
       <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <!-- tags -->
+        <!-- Tags -->
         <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
             mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12"
             mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.TagsContextMenu}, Mode=OneTime}"
@@ -292,7 +292,7 @@
               </c:PropertiesGrid>
 
               <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
-                <!--power-->
+                <!-- Power -->
                 <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PowerLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}"
@@ -310,7 +310,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" />
                 </Border>
 
-                <!--torque-->
+                <!-- Torque -->
                 <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_TorqueLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}"
@@ -328,7 +328,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}" />
                 </Border>
 
-                <!--weight-->
+                <!-- Weight -->
                 <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_WeightLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}"
@@ -348,7 +348,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}" />
                 </Border>
 
-                <!--max speed-->
+                <!-- Max speed -->
                 <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
@@ -366,7 +366,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" />
                 </Border>
 
-                <!--acceleration-->
+                <!-- Acceleration -->
                 <Border c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}"
@@ -384,7 +384,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
                 </Border>
 
-                <!--pw ratio-->
+                <!-- Pw ratio -->
                 <DockPanel c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"

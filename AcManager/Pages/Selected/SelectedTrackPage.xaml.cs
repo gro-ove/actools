@@ -82,7 +82,7 @@ namespace AcManager.Pages.Selected {
             }, () => SelectedTrackConfiguration.Enabled));
 
             public HierarchicalItemsView QuickDrivePresets {
-                get { return _quickDrivePresets; }
+                get => _quickDrivePresets;
                 set {
                     if (Equals(value, _quickDrivePresets)) return;
                     _quickDrivePresets = value;

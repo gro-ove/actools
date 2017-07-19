@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
@@ -72,7 +73,8 @@ namespace AcManager.CustomShowroom {
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
-            if (Model.Mode != Mode.Main && (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack)) {
+            if (!(Keyboard.FocusedElement is TextBoxBase) && !(Keyboard.FocusedElement is CheckBox) &&
+                    Model.Mode != Mode.Main && (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack)) {
                 Model.Mode = Mode.Main;
                 e.Handled = true;
             }

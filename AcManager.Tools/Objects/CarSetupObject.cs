@@ -231,7 +231,7 @@ namespace AcManager.Tools.Objects {
             }
 
             if (_oldName != Name || _oldTrackId != TrackId) {
-                RenameAsync();
+                RenameAsync().Forget();
             }
 
             Changed = false;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using AcTools.Utils.Helpers;
 
@@ -26,7 +27,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private Color _lightColor = Color.FromArgb(200, 180, 180);
 
         public Color LightColor {
-            get { return _lightColor; }
+            get => _lightColor;
             set {
                 if (value.Equals(_lightColor)) return;
                 _lightColor = value;
@@ -39,7 +40,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _lightBrightness = 1.5f;
 
         public float LightBrightness {
-            get { return _lightBrightness; }
+            get => _lightBrightness;
             set {
                 if (Equals(value, _lightBrightness)) return;
                 _lightBrightness = value;
@@ -52,7 +53,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _ambientBrightness = 2f;
 
         public float AmbientBrightness {
-            get { return _ambientBrightness; }
+            get => _ambientBrightness;
             set {
                 if (Equals(value, _ambientBrightness)) return;
                 _ambientBrightness = value;
@@ -65,7 +66,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private Color _ambientDown = Color.FromArgb(150, 180, 180);
 
         public Color AmbientDown {
-            get { return _ambientDown; }
+            get => _ambientDown;
             set {
                 if (value.Equals(_ambientDown)) return;
                 _ambientDown = value;
@@ -78,7 +79,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private Color _ambientUp = Color.FromArgb(180, 180, 150);
 
         public Color AmbientUp {
-            get { return _ambientUp; }
+            get => _ambientUp;
             set {
                 if (value.Equals(_ambientUp)) return;
                 _ambientUp = value;
@@ -93,7 +94,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _anyGround = true;
 
         public bool AnyGround {
-            get { return _anyGround; }
+            get => _anyGround;
             set {
                 if (Equals(value, _anyGround)) return;
                 _anyGround = value;
@@ -110,7 +111,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _flatMirror;
 
         public bool FlatMirror {
-            get { return _flatMirror; }
+            get => _flatMirror;
             set {
                 if (value == _flatMirror) return;
                 _flatMirror = value;
@@ -129,7 +130,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _flatMirrorBlurred;
 
         public bool FlatMirrorBlurred {
-            get { return _flatMirrorBlurred; }
+            get => _flatMirrorBlurred;
             set {
                 if (Equals(value, _flatMirrorBlurred)) return;
                 _flatMirrorBlurred = value;
@@ -142,7 +143,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _opaqueGround = true;
 
         public bool OpaqueGround {
-            get { return _opaqueGround; }
+            get => _opaqueGround;
             set {
                 if (Equals(value, _opaqueGround)) return;
                 _opaqueGround = value;
@@ -155,7 +156,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _flatMirrorReflectiveness = 0.6f;
 
         public float FlatMirrorReflectiveness {
-            get { return _flatMirrorReflectiveness; }
+            get => _flatMirrorReflectiveness;
             set {
                 if (Equals(value, _flatMirrorReflectiveness)) return;
                 _flatMirrorReflectiveness = value;
@@ -167,7 +168,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _flatMirrorReflectedLight;
 
         public bool FlatMirrorReflectedLight {
-            get { return _flatMirrorReflectedLight; }
+            get => _flatMirrorReflectedLight;
             set {
                 if (Equals(value, _flatMirrorReflectedLight)) return;
                 _flatMirrorReflectedLight = value;
@@ -182,7 +183,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _gBufferMsaa = true;
 
         public bool GBufferMsaa {
-            get { return _gBufferMsaa; }
+            get => _gBufferMsaa;
             set {
                 if (value == _gBufferMsaa) return;
                 _gBufferMsaa = value;
@@ -195,7 +196,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _aoOpacity = 0.3f;
 
         public float AoOpacity {
-            get { return _aoOpacity; }
+            get => _aoOpacity;
             set {
                 if (Equals(value, _aoOpacity)) return;
                 _aoOpacity = value;
@@ -207,7 +208,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _useAo;
 
         public bool UseAo {
-            get { return _useAo; }
+            get => _useAo;
             set {
                 if (Equals(value, _useAo)) return;
                 _useAo = value;
@@ -225,7 +226,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             get { return _aoType; }
             set {
 #if !DEBUG
-                if (!ProductionReadyAo.Contains(value)) value = AoType.Ssao;
+                if (Array.IndexOf(ProductionReadyAo, value) == -1) value = AoType.Ssao;
 #endif
 
                 if (Equals(value, _aoType)) return;
@@ -239,7 +240,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _aoDebug;
 
         public bool AoDebug {
-            get { return _aoDebug; }
+            get => _aoDebug;
             set {
                 if (Equals(value, _aoDebug)) return;
                 _aoDebug = value;
@@ -253,7 +254,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _useCorrectAmbientShadows;
 
         public bool UseCorrectAmbientShadows {
-            get { return _useCorrectAmbientShadows && ShowroomNode != null; }
+            get => _useCorrectAmbientShadows && ShowroomNode != null;
             set {
                 if (Equals(value, _useCorrectAmbientShadows)) return;
                 _useCorrectAmbientShadows = value;
@@ -268,7 +269,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _blurCorrectAmbientShadows;
 
         public bool BlurCorrectAmbientShadows {
-            get { return _blurCorrectAmbientShadows; }
+            get => _blurCorrectAmbientShadows;
             set {
                 if (Equals(value, _blurCorrectAmbientShadows)) return;
                 _blurCorrectAmbientShadows = value;
@@ -283,7 +284,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private DarkSslr _sslr;
 
         public bool UseSslr {
-            get { return _useSslr; }
+            get => _useSslr;
             set {
                 if (Equals(value, _useSslr)) return;
                 _useSslr = value;
@@ -306,7 +307,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private int _shadowMapSize = 2048;
 
         public int ShadowMapSize {
-            get { return _shadowMapSize; }
+            get => _shadowMapSize;
             set {
                 if (Equals(value, _shadowMapSize)) return;
                 _shadowMapSize = value;
@@ -321,7 +322,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _materialsReflectiveness = 1f;
 
         public float MaterialsReflectiveness {
-            get { return _materialsReflectiveness; }
+            get => _materialsReflectiveness;
             set {
                 if (Equals(value, _materialsReflectiveness)) return;
                 _materialsReflectiveness = value;
@@ -334,7 +335,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _reflectionsWithShadows;
 
         public bool ReflectionsWithShadows {
-            get { return _reflectionsWithShadows; }
+            get => _reflectionsWithShadows;
             set {
                 if (Equals(value, _reflectionsWithShadows)) return;
                 _reflectionsWithShadows = value;
@@ -347,7 +348,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _cubemapAmbientWhite = true;
 
         public bool CubemapAmbientWhite {
-            get { return _cubemapAmbientWhite; }
+            get => _cubemapAmbientWhite;
             set {
                 if (Equals(value, _cubemapAmbientWhite)) return;
                 _cubemapAmbientWhite = value;
@@ -359,7 +360,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _cubemapAmbient = 0.5f;
 
         public float CubemapAmbient {
-            get { return _cubemapAmbient; }
+            get => _cubemapAmbient;
             set {
                 if (Equals(value, _cubemapAmbient)) return;
                 _cubemapAmbient = value;
@@ -371,7 +372,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _reflectionsWithMultipleLights;
 
         public bool ReflectionsWithMultipleLights {
-            get { return _reflectionsWithMultipleLights; }
+            get => _reflectionsWithMultipleLights;
             set {
                 if (Equals(value, _reflectionsWithMultipleLights)) return;
                 _reflectionsWithMultipleLights = value;
@@ -386,7 +387,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _pcssLightScale = 2f;
 
         public float PcssLightScale {
-            get { return _pcssLightScale; }
+            get => _pcssLightScale;
             set {
                 if (Equals(value, _pcssLightScale)) return;
                 _pcssLightScale = value;
@@ -399,7 +400,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float _pcssSceneScale = 0.06f;
 
         public float PcssSceneScale {
-            get { return _pcssSceneScale; }
+            get => _pcssSceneScale;
             set {
                 if (Equals(value, _pcssSceneScale)) return;
                 _pcssSceneScale = value;

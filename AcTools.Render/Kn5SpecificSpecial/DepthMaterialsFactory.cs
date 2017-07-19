@@ -19,7 +19,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public IRenderableMaterial CreateMaterial(object key) {
             if (BasicMaterials.DepthOnlyKey.Equals(key)) {
                 /* Model is loaded directly without using Kn5RenderableFile as a wrapper, so all materials
-                 * keys won’t be converted to Kn5MaterialDescription. We don’t need any information about
+                 * keys wonâ€™t be converted to Kn5MaterialDescription. We donâ€™t need any information about
                  * materials anyway. */
                 return new Kn5MaterialDepth();
             }

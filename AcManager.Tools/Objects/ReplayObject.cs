@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
 
         public override void Save() {
             if (EditableCategory != Category) {
-                RenameAsync();
+                RenameAsync().Forget();
             }
 
             base.Save();

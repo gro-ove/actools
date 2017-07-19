@@ -175,20 +175,20 @@ namespace AcManager.Pages.Dialogs {
                                     throw new InformativeException("Can’t pack server", $"File “{e.Key}” not found.");
                                 }
                             }
+                        }
 
-                            if (Mode == ServerPresetPackMode.Windows) {
-                                memory.AddZipDescription(Server.Name);
-                                File.WriteAllBytes(destination, memory.ToArray());
-                            } else {
-                                memory.Position = 0;
+                        if (Mode == ServerPresetPackMode.Windows) {
+                            memory.AddZipDescription(Server.Name);
+                            File.WriteAllBytes(destination, memory.ToArray());
+                        } else {
+                            memory.Position = 0;
 
-                                using (var actualMemory = new MemoryStream()) {
-                                    using (var writer2 = new GZipWriter(actualMemory)) {
-                                        writer2.Write(@"tar.tar", memory);
-                                    }
-
-                                    File.WriteAllBytes(destination, actualMemory.ToArray());
+                            using (var actualMemory = new MemoryStream()) {
+                                using (var writer2 = new GZipWriter(actualMemory)) {
+                                    writer2.Write(@"tar.tar", memory);
                                 }
+
+                                File.WriteAllBytes(destination, actualMemory.ToArray());
                             }
                         }
                     } finally {

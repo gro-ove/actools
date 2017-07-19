@@ -621,16 +621,18 @@ namespace AcManager.Tools.Objects {
             CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
         }
 
-        private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+        public event NotifyCollectionChangedEventHandler DriverCollectionChanged;
+        public event PropertyChangedEventHandler DriverPropertyChanged;
+
+        private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             UpdateCarIds();
             UpdateIndexes();
 
             if (Loaded) {
                 Changed = true;
+                DriverCollectionChanged?.Invoke(sender, e);
             }
         }
-
-        public event PropertyChangedEventHandler DriverEntryPropertyChanged;
 
         private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
@@ -649,10 +651,9 @@ namespace AcManager.Tools.Objects {
                     return;
             }
 
-            DriverEntryPropertyChanged?.Invoke(sender, e);
-
             if (Loaded) {
                 Changed = true;
+                DriverPropertyChanged?.Invoke(sender, e);
             }
         }
         #endregion
@@ -755,14 +756,14 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+        public event NotifyCollectionChangedEventHandler WeatherCollectionChanged;
+        public event PropertyChangedEventHandler WeatherEntryPropertyChanged;
 
-        public event EventHandler WeatherCollectionChanged;
-
-        private void OnWeatherCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
-            WeatherCollectionChanged?.Invoke(this, EventArgs.Empty);
+        private void OnWeatherCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             UpdateWeatherIndexes();
             if (Loaded) {
                 Changed = true;
+                WeatherCollectionChanged?.Invoke(sender, e);
             }
         }
 
@@ -787,6 +788,7 @@ namespace AcManager.Tools.Objects {
 
             if (Loaded) {
                 Changed = true;
+                WeatherEntryPropertyChanged?.Invoke(sender, e);
             }
         }
         #endregion

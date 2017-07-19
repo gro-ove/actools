@@ -5,6 +5,7 @@ using System.Linq;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -110,9 +111,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var getDummyByName = c != null ? (Func<string, RenderableList>)c.GetDummyByName :
                 ((RenderableList)parent).GetDummyByName;
 
+            var susp = $@"SUSP_{namePostfix}";
+            var hub = $@"HUB_{namePostfix}";
+            var skipHub = getDummyByName(susp).GetAllChildren().Any(x => x.Name == hub);
+
             var animatedDisc = $@"DISC_{namePostfix}_ANIM";
             return new[] {
-                $@"WHEEL_{namePostfix}", $@"SUSP_{namePostfix}", $@"HUB_{namePostfix}",
+                $@"WHEEL_{namePostfix}", susp, skipHub ? null : hub,
                 getDummyByName(animatedDisc) != null ? null : $@"DISC_{namePostfix}"
             }.NonNull();
         }
@@ -137,11 +142,25 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             foreach (var node in
                     (c?.Dummies ?? ((RenderableList)parent).GetAllChildren().OfType<Kn5RenderableList>()).Where(x => names.NonNull().Contains(x.Name))) {
-                Vector3 translation, scale;
-                Quaternion rotation;
-                node.OriginalNode.Transform.ToMatrix().Decompose(out scale, out rotation, out translation);
-                node.LocalMatrix = Matrix.Scaling(scale) * (callback(node) ?? wheelMatrix.Value) *
+                /*AcToolsLogging.Write(node.Name);
+                AcToolsLogging.Write(node.LocalMatrix);
+                AcToolsLogging.Write(node.GetOriginalScale().ToString());
+                AcToolsLogging.Write((node[0] as Kn5RenderableList)?.GetOriginalScale().ToString());
+
+                AcToolsLogging.Write("original: " + node.GetOriginalScale());
+                AcToolsLogging.Write("callback: " + callback(node));
+                AcToolsLogging.Write("wm: " + wheelMatrix.Value);
+                AcToolsLogging.Write("parent: " + node.ParentMatrix);
+                AcToolsLogging.Write("mmi: " + node.ModelMatrixInverted);
+                AcToolsLogging.Write("parent×mmi: " + node.ParentMatrix * node.ModelMatrixInverted);
+                AcToolsLogging.Write("inv: " + Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted));
+                AcToolsLogging.Write("res: " + (callback(node) ?? wheelMatrix.Value) *
+                        Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted));*/
+
+                node.LocalMatrix = /*Matrix.Scaling(node.GetOriginalScale()) **/ (callback(node) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
+                AcToolsLogging.Write(node.LocalMatrix);
+
                 if (collectNodes) {
                     result.Add(node);
                 }

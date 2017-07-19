@@ -434,14 +434,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         #region Quickly add or remove extra lights
         public void AddLight() {
-            var color = new Vector3((float)MathUtils.Random(), (float)MathUtils.Random(),
+            /*var color = new Vector3((float)MathUtils.Random(), (float)MathUtils.Random(),
                     (float)MathUtils.Random());
-            color.Normalize();
+            color.Normalize();*/
 
             AddLight(new DarkPointLight {
                 UseShadows = true,
                 UseHighQualityShadows = true,
-                Color = color.ToDrawingColor(),
+                Color = Color.White,
                 Range = 20f,
                 Position = Vector3.UnitY * 2f,
                 Brightness = 1.5f

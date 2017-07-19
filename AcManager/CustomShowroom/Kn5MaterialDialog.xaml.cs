@@ -537,10 +537,6 @@ namespace AcManager.CustomShowroom {
                         throw new InformativeException("Can’t fork material", "Name’s already taken.");
                     }
 
-                    if (_kn5.Materials.Count == uint.MaxValue) {
-                        throw new InformativeException("Can’t fork material", "Limit reached.");
-                    }
-
                     using (WaitingDialog.Create("Forking…")) {
                         var newMaterialId = (uint)_kn5.Materials.Count;
                         var newMaterial = material.Clone();

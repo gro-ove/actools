@@ -20,7 +20,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         protected readonly Kn5MaterialDescription Description;
 
         // [NotNull]
-        // It’s actually not null, but Resharper won’t allow it.
+        // Itâ€™s actually not null, but Resharper wonâ€™t allow it.
         protected Kn5Material Kn5Material => Description.Material;
 
         protected EffectDarkMaterial Effect { get; private set; }

@@ -46,8 +46,8 @@ namespace FirstFloor.ModernUI {
         }
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
-            add { PropertyChanged += value; }
-            remove { PropertyChanged -= value; }
+            add => PropertyChanged += value;
+            remove => PropertyChanged -= value;
         }
 
         public virtual event NotifyCollectionChangedEventHandler CollectionChanged;

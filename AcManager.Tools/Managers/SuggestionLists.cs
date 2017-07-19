@@ -11,7 +11,11 @@ namespace AcManager.Tools.Managers {
         public static AutocompleteValuesList CarBrandsList { get; }
         public static ListCollectionView CarBrandsListView => CarBrandsList.View;
 
-        public static AutocompleteValuesList CarClassesList { get; } = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarClassesList { get; } = new AutocompleteValuesList {
+            @"street",
+            @"race"
+        };
+
         public static ListCollectionView CarClassesListView => CarClassesList.View;
 
         public static AutocompleteValuesList CarTagsList { get; } = new AutocompleteValuesList();
@@ -57,7 +61,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public static void RebuildCarClassesList() {
-            CarClassesList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.CarClass);
+            // CarClassesList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.CarClass);
         }
 
         public static void RebuildCarTagsList() {

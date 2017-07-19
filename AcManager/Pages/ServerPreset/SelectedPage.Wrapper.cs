@@ -57,9 +57,11 @@ namespace AcManager.Pages.ServerPreset {
     public class WrapperContentObject : Displayable {
         private readonly List<string> _toRemove = new List<string>();
         private readonly string _contentDirectory;
+        public bool CanBePacked { get; }
 
         public WrapperContentObject(AcCommonObject acObject, string contentDirectory) {
             _contentDirectory = contentDirectory;
+            CanBePacked = acObject.CanBePacked();
 
             AcObject = acObject;
             Version = ContentVersion = (acObject as IAcObjectVersionInformation)?.Version;
@@ -125,7 +127,7 @@ namespace AcManager.Pages.ServerPreset {
         public bool FileIsMissing => _fileIsMissingLazy.Value;
 
         public void LoadFrom([CanBeNull] JToken e, string childrenKey = null) {
-            if (e == null) {
+            if (e == null || !CanBePacked) {
                 ShareMode = ShareMode.None;
             } else {
                 if ((string)e["url"] != null) {
@@ -234,7 +236,8 @@ namespace AcManager.Pages.ServerPreset {
                 if (Equals(value, _version)) return;
                 _version = value;
                 OnPropertyChanged();
-                VersionsDiffer = value != _contentVersion;
+                VersionsDiffer = _version != null && _version != _contentVersion;
+                _resetToContentVersionCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -246,7 +249,7 @@ namespace AcManager.Pages.ServerPreset {
                 if (Equals(value, _contentVersion)) return;
                 _contentVersion = value;
                 OnPropertyChanged();
-                VersionsDiffer = value != _contentVersion;
+                VersionsDiffer = _version != null && _version != _contentVersion;
             }
         }
 
@@ -265,7 +268,7 @@ namespace AcManager.Pages.ServerPreset {
         private DelegateCommand _resetToContentVersionCommand;
 
         public DelegateCommand ResetToContentVersionCommand => _resetToContentVersionCommand ??
-                (_resetToContentVersionCommand = new DelegateCommand(() => { Version = ContentVersion; }, () => VersionsDiffer));
+                (_resetToContentVersionCommand = new DelegateCommand(() => { Version = ContentVersion; }, () => VersionsDiffer || _version == null));
 
         private string _childrenName;
 
@@ -346,14 +349,37 @@ namespace AcManager.Pages.ServerPreset {
 
         public async Task Repack(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             var filename = Filename;
+
+            FileUtils.EnsureDirectoryExists(_contentDirectory);
             var newFilename = FileUtils.EnsureUnique(Path.Combine(_contentDirectory, GetTypePrefix()), "-{0}.zip", true, 0);
 
-            if (!await AcObject.TryToPack(new AcCommonObject.AcCommonObjectPackerParams {
-                Destination = newFilename,
-                ShowInExplorer = false,
-                Progress = progress,
-                Cancellation = cancellation
-            }) || filename != Filename) return;
+            AcCommonObject.AcCommonObjectPackerParams packParams;
+            switch (AcObject) {
+                case CarObject _:
+                    packParams = new CarObject.CarPackerParams {
+                        IncludeTemplates = false,
+                        PackData = true
+                    };
+                    break;
+
+                case CarSkinObject _:
+                    packParams = new CarSkinObject.CarSkinPackerParams {
+                        CmForFlag = false,
+                        CmPaintShopValues = false
+                    };
+                    break;
+
+                default:
+                    packParams = new AcCommonObject.AcCommonObjectPackerParams();
+                    break;
+            }
+
+            packParams.Destination = newFilename;
+            packParams.ShowInExplorer = false;
+            packParams.Progress = progress;
+            packParams.Cancellation = cancellation;
+
+            if (!await AcObject.TryToPack(packParams) || filename != Filename) return;
 
             RemoveCurrentIfNeeded();
             Filename = newFilename;
@@ -389,20 +415,6 @@ namespace AcManager.Pages.ServerPreset {
             [NotNull]
             public ChangeableObservableCollection<WrapperContentObject> WrapperContentWeather { get; } = new ChangeableObservableCollection<WrapperContentObject>();
 
-            private IEnumerable<WrapperContentObject> GetContentCars() {
-                return from c in SelectedObject.DriverEntries.GroupBy(x => x.CarId)
-                       let car = CarsManager.Instance.GetById(c.Key)
-                       where car?.CanBePacked() == true
-                       let skins = c.Select(x => x.CarSkinId).NonNull().Distinct().Select(car.GetSkinById).NonNull()
-                                    .Where(x => x.CanBePacked()).Select(x => new WrapperContentObject(x, SelectedObject.WrapperContentDirectory) {
-                                        ShareMode = ShareMode.None
-                                    }).ToList()
-                       select new WrapperContentObject(car, SelectedObject.WrapperContentDirectory) {
-                           ChildrenName = "Skins",
-                           Children = skins
-                       };
-            }
-
             private void InitializeWrapperContent() {
                 WrapperContentCars.ItemPropertyChanged += OnWrapperContentPropertyChanged;
                 WrapperContentTracks.ItemPropertyChanged += OnWrapperContentPropertyChanged;
@@ -413,9 +425,35 @@ namespace AcManager.Pages.ServerPreset {
                 SetWrapperContentState();
             }
 
+            private IEnumerable<WrapperContentObject> GetContentCars() {
+                return from c in SelectedObject.DriverEntries.GroupBy(x => x.CarId)
+                       let car = CarsManager.Instance.GetById(c.Key)
+                       let skins = c.Select(x => x.CarSkinId).NonNull().Distinct().Select(car.GetSkinById).NonNull()
+                                    .Where(x => x.CanBePacked()).Select(x => new WrapperContentObject(x, SelectedObject.WrapperContentDirectory) {
+                                        ShareMode = ShareMode.None
+                                    }).ToList()
+                       where car?.CanBePacked() == true || skins.Count > 0
+                       select new WrapperContentObject(car, SelectedObject.WrapperContentDirectory) {
+                           ChildrenName = "Skins",
+                           Children = skins
+                       };
+            }
+
+            private void SetWrapperContentCars() {
+                WrapperContentCars.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(
+                        GetContentCars().OrderBy(x => x.DisplayName)));
+            }
+
+            private void LoadWrapperContentCars() {
+                WrapperContentCars.LoadFrom(SelectedObject.WrapperContentJObject?["cars"], "skins");;
+            }
+
+            private readonly Busy _wrapperContentCarsBusy = new Busy();
+
             private void UpdateWrapperContentCars() {
-                _wrapperContentState.Do(() => {
-                    WrapperContentCars.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(GetContentCars()));
+                _wrapperContentCarsBusy.Do(() => {
+                    SetWrapperContentCars();
+                    LoadWrapperContentCars();
                 });
             }
 
@@ -426,9 +464,20 @@ namespace AcManager.Pages.ServerPreset {
                        select new WrapperContentObject(track, SelectedObject.WrapperContentDirectory);
             }
 
+            private void SetWrapperContentTracks() {
+                WrapperContentTracks.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(GetContentTracks()));
+            }
+
+            private void LoadWrapperContentTracks() {
+                WrapperContentTracks.FirstOrDefault()?.LoadFrom(SelectedObject.WrapperContentJObject?["track"]);
+            }
+
+            private readonly Busy _wrapperContentTracksBusy = new Busy();
+
             private void UpdateWrapperContentTracks() {
-                _wrapperContentState.Do(() => {
-                    WrapperContentTracks.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(GetContentTracks()));
+                _wrapperContentTracksBusy.Do(() => {
+                    SetWrapperContentTracks();
+                    LoadWrapperContentTracks();
                 });
             }
 
@@ -439,39 +488,43 @@ namespace AcManager.Pages.ServerPreset {
                        select new WrapperContentObject(weather, SelectedObject.WrapperContentDirectory);
             }
 
-            private void UpdateWrapperContentWeather() {
-                _wrapperContentState.Do(() => {
-                    WrapperContentWeather.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(GetContentWeather()));
-                });
+            private void SetWrapperContentWeather() {
+                WrapperContentWeather.ReplaceEverythingBy(new ChangeableObservableCollection<WrapperContentObject>(
+                        GetContentWeather().OrderBy(x => x.DisplayName)));
             }
 
-            private readonly Busy _wrapperContentState = new Busy();
+            private void LoadWrapperContentWeather() {
+                WrapperContentWeather.LoadFrom(SelectedObject.WrapperContentJObject?["weather"]);
+            }
 
-            private void UpdateWrapperContentState() {
-                _wrapperContentState.Do(() => {
-                    var jObj = SelectedObject.WrapperContentJObject;
-                    WrapperContentCars.LoadFrom(jObj?["cars"], "skins");
-                    WrapperContentTracks.FirstOrDefault()?.LoadFrom(jObj?["track"]);
-                    WrapperContentWeather.LoadFrom(jObj?["weather"]);
+            private readonly Busy _wrapperContentWeatherBusy = new Busy();
+
+            private void UpdateWrapperContentWeather() {
+                _wrapperContentWeatherBusy.Do(() => {
+                    SetWrapperContentWeather();
+                    LoadWrapperContentWeather();
                 });
             }
 
             private void SetWrapperContentState() {
-                _wrapperContentState.Do(() => {
-                    var jObj = new JObject();
-                    WrapperContentCars.SaveTo(jObj, "cars", "skins");
+                // Building new JObject:
+                var jObj = new JObject();
+                WrapperContentCars.SaveTo(jObj, "cars", "skins");
 
-                    var track = new JObject();
-                    WrapperContentTracks.FirstOrDefault()?.SaveTo(track);
-                    if (track.Count > 0) {
-                        jObj["track"] = track;
-                    } else {
-                        jObj.Remove("track");
-                    }
+                var track = new JObject();
+                WrapperContentTracks.FirstOrDefault()?.SaveTo(track);
+                if (track.Count > 0) {
+                    jObj["track"] = track;
+                } else {
+                    jObj.Remove("track");
+                }
 
-                    WrapperContentWeather.SaveTo(jObj, "weather");
+                WrapperContentWeather.SaveTo(jObj, "weather");
+
+                // Updating SelectedObject value:
+                _wrapperContentCarsBusy.Do(() => _wrapperContentTracksBusy.Do(() => _wrapperContentWeatherBusy.Do(() => {
                     SelectedObject.WrapperContentJObject = jObj;
-                });
+                })));
             }
         }
     }

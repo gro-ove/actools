@@ -116,7 +116,8 @@ namespace AcManager.Pages.ServerPreset {
 
             public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
                 SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
-                SelectedObject.DriverEntryPropertyChanged += OnDriverEntryPropertyChanged;
+                SelectedObject.DriverPropertyChanged += OnDriverPropertyChanged;
+                SelectedObject.DriverCollectionChanged += OnDriverCollectionChanged;
                 SelectedObject.WeatherCollectionChanged += OnWeatherCollectionChanged;
                 SelectedObject.SaveWrapperContent += OnSaveWrapperContent;
 
@@ -128,7 +129,17 @@ namespace AcManager.Pages.ServerPreset {
                 UpdateWrapperContentCars();
                 UpdateWrapperContentTracks();
                 UpdateWrapperContentWeather();
-                UpdateWrapperContentState();
+            }
+
+            public override void Unload() {
+                base.Unload();
+                SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
+                SelectedObject.DriverPropertyChanged -= OnDriverPropertyChanged;
+                SelectedObject.DriverCollectionChanged -= OnDriverCollectionChanged;
+                SelectedObject.WeatherCollectionChanged -= OnWeatherCollectionChanged;
+                SelectedObject.SaveWrapperContent -= OnSaveWrapperContent;
+                _helper.Dispose();
+                PackServerPresets = null;
             }
 
             private IEnumerable<WrapperContentObject> Wrappers() {
@@ -182,13 +193,8 @@ namespace AcManager.Pages.ServerPreset {
                 }
             }));
 
-            public override void Unload() {
-                base.Unload();
-                SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
-                SelectedObject.DriverEntryPropertyChanged -= OnDriverEntryPropertyChanged;
-                SelectedObject.WeatherCollectionChanged -= OnWeatherCollectionChanged;
-                _helper.Dispose();
-                PackServerPresets = null;
+            private void OnDriverCollectionChanged(object sender, EventArgs eventArgs) {
+                UpdateWrapperContentCars();
             }
 
             private void OnWeatherCollectionChanged(object sender, EventArgs eventArgs) {
@@ -354,12 +360,14 @@ namespace AcManager.Pages.ServerPreset {
                         break;
 
                     case nameof(SelectedObject.WrapperContentJObject):
-                        UpdateWrapperContentState();
+                        _wrapperContentCarsBusy.Do(LoadWrapperContentCars);
+                        _wrapperContentTracksBusy.Do(LoadWrapperContentTracks);
+                        _wrapperContentWeatherBusy.Do(LoadWrapperContentWeather);
                         break;
                 }
             }
 
-            private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnDriverPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(ServerPresetDriverEntry.CarId):
                     case nameof(ServerPresetDriverEntry.CarSkinId):

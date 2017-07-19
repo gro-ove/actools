@@ -33,14 +33,14 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Expander}">
           <DockPanel SnapsToDevicePixels="True">
-            <DockPanel x:Name="PART_Header">
+            <DockPanel x:Name="PART_Header" DockPanel.Dock="Top">
               <ToggleButton DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ExpandCollapseToggleStyle}"
                   IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
               <ContentPresenter ContentSource="Header" RecognizesAccessKey="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             </DockPanel>
             <Border x:Name="PART_ExpandSite" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ClipToBounds="True">
               <Border.LayoutTransform>
-                <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="1" />
+                <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
               </Border.LayoutTransform>
               <ContentPresenter x:Name="PART_Content"
                   RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}" />
@@ -64,79 +64,12 @@
           </ControlTemplate.Resources>
           <ControlTemplate.Triggers>
             <Trigger Property="IsExpanded" Value="True">
-              <Setter TargetName="PART_ExpandSite" Property="Visibility" Value="Visible" />
-            </Trigger>
-
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsExpanded" Value="True" />
-                <Condition Property="ExpandDirection" Value="Up" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
+              <Trigger.EnterActions>
                 <BeginStoryboard Storyboard="{StaticResource ScaleYUp}" />
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
                 <BeginStoryboard Storyboard="{StaticResource ScaleYDown}" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
-
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsExpanded" Value="True" />
-                <Condition Property="ExpandDirection" Value="Down" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleYUp}" />
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleYDown}" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
-
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsExpanded" Value="True" />
-                <Condition Property="ExpandDirection" Value="Left" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
-
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsExpanded" Value="True" />
-                <Condition Property="ExpandDirection" Value="Right" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
-
-            <Trigger Property="ExpandDirection" Value="Down">
-              <Setter Property="DockPanel.Dock" TargetName="PART_ExpandSite" Value="Bottom" />
-              <Setter Property="DockPanel.Dock" TargetName="PART_Header" Value="Top" />
-            </Trigger>
-
-            <Trigger Property="ExpandDirection" Value="Up">
-              <Setter Property="DockPanel.Dock" TargetName="PART_ExpandSite" Value="Top" />
-              <Setter Property="DockPanel.Dock" TargetName="PART_Header" Value="Bottom" />
-            </Trigger>
-
-            <Trigger Property="ExpandDirection" Value="Right">
-              <Setter Property="DockPanel.Dock" TargetName="PART_ExpandSite" Value="Right" />
-              <Setter Property="DockPanel.Dock" TargetName="PART_Header" Value="Left" />
-            </Trigger>
-
-            <Trigger Property="ExpandDirection" Value="Left">
-              <Setter Property="DockPanel.Dock" TargetName="PART_ExpandSite" Value="Left" />
-              <Setter Property="DockPanel.Dock" TargetName="PART_Header" Value="Right" />
+              </Trigger.ExitActions>
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

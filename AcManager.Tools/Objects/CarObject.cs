@@ -87,7 +87,7 @@ namespace AcManager.Tools.Objects {
 
             if (!Enabled) return;
 
-            SuggestionLists.CarClassesList.AddUnique(CarClass);
+            // SuggestionLists.CarClassesList.AddUnique(CarClass);
             UpdateParentValues();
         }
 

@@ -25,7 +25,7 @@ namespace AcManager.Tools.Managers.Online {
         /// For extended information via CM-wrapper.
         /// </summary>
         public int? PortExtended {
-            get { return _portExtended; }
+            get => _portExtended;
             set {
                 if (Equals(value, _portExtended)) return;
                 _portExtended = value;
@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _extendedMode;
 
         public bool ExtendedMode {
-            get { return _extendedMode; }
+            get => _extendedMode;
             set {
                 if (Equals(value, _extendedMode)) return;
                 _extendedMode = value;
@@ -47,7 +47,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _city;
 
         public string City {
-            get { return _city; }
+            get => _city;
             set {
                 if (Equals(value, _city)) return;
                 _city = value;
@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _description;
 
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (Equals(value, _description)) return;
                 _description = value;
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public string TrackBaseId {
-            get { return _trackBaseId; }
+            get => _trackBaseId;
             set {
                 if (Equals(value, _trackBaseId)) return;
                 _trackBaseId = value;
@@ -81,7 +81,7 @@ namespace AcManager.Tools.Managers.Online {
         private int _frequencyHz;
 
         public int FrequencyHz {
-            get { return _frequencyHz; }
+            get => _frequencyHz;
             set {
                 if (Equals(value, _frequencyHz)) return;
                 _frequencyHz = value;
@@ -93,7 +93,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public string WeatherId {
-            get { return _weatherId; }
+            get => _weatherId;
             set {
                 if (Equals(value, _weatherId)) return;
                 _weatherId = value;
@@ -126,7 +126,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _ambientTemperature;
 
         public double? AmbientTemperature {
-            get { return _ambientTemperature; }
+            get => _ambientTemperature;
             set {
                 if (Equals(value, _ambientTemperature)) return;
                 _ambientTemperature = value;
@@ -137,7 +137,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _roadTemperature;
 
         public double? RoadTemperature {
-            get { return _roadTemperature; }
+            get => _roadTemperature;
             set {
                 if (Equals(value, _roadTemperature)) return;
                 _roadTemperature = value;
@@ -148,7 +148,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _windDirection;
 
         public double? WindDirection {
-            get { return _windDirection; }
+            get => _windDirection;
             set {
                 if (Equals(value, _windDirection)) return;
                 _windDirection = value;
@@ -162,7 +162,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _windSpeed;
 
         public double? WindSpeed {
-            get { return _windSpeed; }
+            get => _windSpeed;
             set {
                 if (Equals(value, _windSpeed)) return;
                 _windSpeed = value;
@@ -174,7 +174,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public string[] PasswordChecksum {
-            get { return _passwordChecksum; }
+            get => _passwordChecksum;
             set {
                 if (Equals(value, _passwordChecksum)) return;
                 _passwordChecksum = value;
@@ -186,7 +186,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _grip;
 
         public double? Grip {
-            get { return _grip; }
+            get => _grip;
             set {
                 if (Equals(value, _grip)) return;
                 _grip = value;
@@ -197,7 +197,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _gripTransfer;
 
         public double? GripTransfer {
-            get { return _gripTransfer; }
+            get => _gripTransfer;
             set {
                 if (Equals(value, _gripTransfer)) return;
                 _gripTransfer = value;
@@ -208,7 +208,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _maxContactsPerKm;
 
         public double? MaxContactsPerKm {
-            get { return _maxContactsPerKm; }
+            get => _maxContactsPerKm;
             set {
                 if (Equals(value, _maxContactsPerKm)) return;
                 _maxContactsPerKm = value;
@@ -219,7 +219,7 @@ namespace AcManager.Tools.Managers.Online {
         private ServerInformationExtendedAssists _assistsInformation;
 
         public ServerInformationExtendedAssists AssistsInformation {
-            get { return _assistsInformation; }
+            get => _assistsInformation;
             set {
                 if (Equals(value, _assistsInformation)) return;
                 _assistsInformation = value;
@@ -295,7 +295,7 @@ namespace AcManager.Tools.Managers.Online {
                     var car = CarsManager.Instance.GetById(carPair.Key);
 
                     if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
-                        if (carPair.Value.GetBoolValueOnly("unavailable") == true) continue;
+                        if (!IsAvailableToInstall(carPair.Value)) continue;
                         var url = carPair.Value.GetStringValueOnly("url") ??
                                 $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
                         yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
@@ -306,7 +306,8 @@ namespace AcManager.Tools.Managers.Online {
                         var skins = carPair.Value["skins"] as JObject;
                         if (skins != null) {
                             foreach (var skinPair in skins) {
-                                if (car.SkinsManager.GetWrapperById(skinPair.Key) != null) continue;
+                                if (car.SkinsManager.GetWrapperById(skinPair.Key) != null ||
+                                        !IsAvailableToInstall(skinPair.Value)) continue;
 
                                 var url = skinPair.Value.GetStringValueOnly("url") ??
                                         $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
@@ -324,7 +325,8 @@ namespace AcManager.Tools.Managers.Online {
             var weather = mref["weather"] as JObject;
             if (weather != null) {
                 foreach (var weatherPair in weather) {
-                    if (WeatherManager.Instance.GetWrapperById(weatherPair.Key) != null) continue;
+                    if (WeatherManager.Instance.GetWrapperById(weatherPair.Key) != null ||
+                            !IsAvailableToInstall(weatherPair.Value)) continue;
 
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
                             $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
@@ -336,7 +338,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var track = mref["track"] as JObject;
-            if (track != null && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version))) {
+            if (track != null && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
                 var url = track.GetStringValueOnly("url") ??
                         $"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
@@ -366,7 +368,7 @@ namespace AcManager.Tools.Managers.Online {
         private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
 
         public IsAbleToInstallMissingContent IsAbleToInstallMissingContentState {
-            get { return _isAbleToInstallMissingContentState; }
+            get => _isAbleToInstallMissingContentState;
             set {
                 if (Equals(value, _isAbleToInstallMissingContentState)) return;
                 _isAbleToInstallMissingContentState = value;
@@ -375,12 +377,28 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        [Pure]
+        private static bool IsAvailableToInstall([CanBeNull] JToken token) {
+            if (token == null) return false;
+            if ((string)token["url"] != null) return true;
+
+            try {
+                if ((bool?)token["direct"] == false) return false;
+            } catch (Exception e) {
+                Logging.Warning(e.Message);
+            }
+
+            return true;
+        }
+
         private static IEnumerable<string> GetKeys([CanBeNull] JToken token) {
             var obj = token as JObject;
             if (obj == null) yield break;
 
             foreach (var p in obj) {
-                yield return p.Key;
+                if (IsAvailableToInstall(p.Value)) {
+                    yield return p.Key;
+                }
             }
         }
 
@@ -427,7 +445,7 @@ namespace AcManager.Tools.Managers.Online {
                     var skins = carPair.Value["skins"] as JObject;
                     if (skins != null) {
                         foreach (var skinPair in skins) {
-                            if (car.SkinsManager.GetWrapperById(skinPair.Key) == null) {
+                            if (IsAvailableToInstall(skinPair.Value) && car.SkinsManager.GetWrapperById(skinPair.Key) == null) {
                                 missingSkins.Add($"“{skinPair.Key}” ({car.DisplayName})");
                             }
                         }
@@ -445,7 +463,7 @@ namespace AcManager.Tools.Managers.Online {
             if (Track != null) {
                 var track = mref["track"];
                 var version = track?.GetStringValueOnly("version");
-                if (version.IsVersionNewerThan(Track.Version)) {
+                if (IsAvailableToInstall(track) && version.IsVersionNewerThan(Track.Version)) {
                     _updateMissingExtendedErrors.Add($"{Track.Name} is obsolete (installed: {Track.Version}; server runs: {version})");
                     _trackVersionIsWrong = true;
                     somethingIsObsolete = true;
@@ -474,7 +492,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (Track == null) {
-                    trackAvailable = mref["track"] != null;
+                    trackAvailable = IsAvailableToInstall(mref["track"]);
                 }
 
                 state = allCarsAvailable && trackAvailable

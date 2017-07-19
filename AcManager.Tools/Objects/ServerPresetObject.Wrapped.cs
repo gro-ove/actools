@@ -92,7 +92,7 @@ namespace AcManager.Tools.Objects {
 
         public string DisplayWrapperDownloadSpeedLimit {
             get => _wrapperDownloadSpeedLimit <= 0 ? "None" :
-                    _wrapperDownloadSpeedLimit.ToReadableSize();
+                    $"{_wrapperDownloadSpeedLimit.ToReadableSize()}/s";
             set => WrapperDownloadSpeedLimit = LocalizationHelper.TryParseReadableSize(value,
                     _wrapperDownloadSpeedLimit.ToReadableSize().Split(' ').LastOrDefault(), out long parsed) ? parsed : 0;
         }
@@ -131,7 +131,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public JObject WrapperContentJObject {
-            get { return _wrapperContentJObject; }
+            get => _wrapperContentJObject;
             set {
                 if (Equals(value, _wrapperContentJObject)) return;
                 _wrapperContentJObject = value;

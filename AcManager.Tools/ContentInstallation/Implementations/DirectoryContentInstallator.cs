@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.ContentInstallation.Installators {
     internal class DirectoryContentInstallator : ContentInstallatorBase {
@@ -41,6 +42,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
                     try {
                         return _size ?? (_size = new FileInfo(_filename).Length).Value;
                     } catch (Exception e) {
+                        Logging.Warning(e.Message);
                         _size = 0;
                         return _size.Value;
                     }
@@ -79,7 +81,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         }
 
         protected override Task LoadMissingContents(CancellationToken cancellation) {
-            throw new System.NotSupportedException();
+            throw new NotSupportedException();
         }
     }
 }

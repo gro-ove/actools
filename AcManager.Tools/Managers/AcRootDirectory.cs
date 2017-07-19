@@ -195,10 +195,10 @@ namespace AcManager.Tools.Managers {
                 }
             }
 
-            if (!File.Exists(launcher)) {
+            /*if (!File.Exists(launcher)) {
                 reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
                 return false;
-            }
+            }*/
 
             reason = null;
             return true;

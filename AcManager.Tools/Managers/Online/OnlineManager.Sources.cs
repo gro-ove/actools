@@ -11,7 +11,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public static void Register(IOnlineSource source) {
             if (Sources.ContainsKey(source.Id)) {
-                Logging.Warning($"Source ì{source.Id}î already registered");
+                Logging.Warning($"Source ‚Äú{source.Id}‚Äù already registered");
                 return;
             }
 

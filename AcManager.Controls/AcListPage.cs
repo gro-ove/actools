@@ -82,6 +82,9 @@ namespace AcManager.Controls {
             });
 
             SizeChanged += OnSizeChanged;
+            InputBindings.Add(new InputBinding(new DelegateCommand(() => {
+                OnScrollToSelectedButtonClick(null, null);
+            }), new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)));
         }
 
         private BatchAction[] _batchActionsArray;
@@ -496,10 +499,9 @@ namespace AcManager.Controls {
         }
 
         private void OnAddNewCommandChanged(ICommand newValue) {
-            InputBindings.Clear();
+            InputBindings.Remove(InputBindings.OfType<InputBinding>().FirstOrDefault(x => (x.Gesture as KeyGesture)?.Key == Key.N));
             InputBindings.Add(new InputBinding(newValue, new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
         }
-
 
         [CanBeNull]
         private ListBox _list;
@@ -637,8 +639,8 @@ namespace AcManager.Controls {
 
         private readonly Busy _batchActionRunBusy = new Busy();
         private void OnBatchActionRunButtonClick(object sender, RoutedEventArgs args) {
-            try {
-                _batchActionRunBusy.Task(async () => {
+            _batchActionRunBusy.Task(async () => {
+                try {
                     if (_selectedBatchAction == null || _list == null) return;
 
                     if (_selectedBatchAction.InternalWaitingDialog) {
@@ -654,10 +656,10 @@ namespace AcManager.Controls {
                     if (!Stored.GetValue(KeepBatchActionsPanelOpenKey, true).AsBoolean()) {
                         SetMultiSelectionMode(false);
                     }
-                });
-            } catch (Exception e) {
-                NonfatalError.Notify("Batch processing failed", e);
-            }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Batch processing failed", e);
+                }
+            }).Forget();
         }
 
         private void OnListSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {

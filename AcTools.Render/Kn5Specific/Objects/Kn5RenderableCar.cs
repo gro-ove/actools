@@ -1248,7 +1248,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Extra animations
-        public class ExtraAnimationEntry : AnimationEntry {
+        public class ExtraAnimationEntry : AnimationEntryBase {
             public ExtraAnimationEntry(Kn5RenderableCar carNode, string ksAnimName, float duration) : base(carNode, ksAnimName, duration) {}
 
             protected override void OnActiveChanged(bool newValue) {
@@ -1439,12 +1439,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Wings
-        public abstract class AnimationEntry : INotifyPropertyChanged {
+        public abstract class AnimationEntryBase : INotifyPropertyChanged {
             private readonly Lazier<KsAnimAnimator> _animator;
             protected readonly Kn5RenderableCar CarNode;
             internal float Value;
 
-            public AnimationEntry(Kn5RenderableCar carNode, string ksAnimName, float duration) {
+            protected AnimationEntryBase(Kn5RenderableCar carNode, string ksAnimName, float duration) {
                 _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(carNode._rootDirectory, ksAnimName, duration));
                 CarNode = carNode;
                 DisplayName = GetKsAnimDisplayName(ksAnimName);
@@ -1500,7 +1500,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return b.JoinToString(' ');
         }
 
-        public class SpoilerEntry : AnimationEntry {
+        public class SpoilerEntry : AnimationEntryBase {
             public readonly CarData.WingAnimation Description;
 
             public SpoilerEntry(Kn5RenderableCar carNode, CarData.WingAnimation description) : base(carNode,

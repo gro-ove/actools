@@ -63,7 +63,7 @@ namespace LicensePlates {
             return state;
         }
 
-        private class TextSize {
+        public class TextSize {
             public double X, Y;
 
             public TextSize(double x, double y) {
@@ -72,25 +72,21 @@ namespace LicensePlates {
             }
         }
 
+        // ReSharper disable UnusedMember.Local
         private class MoonSharpFsHelper {
             public string[] ReadDir(string directory, string filter = "*") => Directory.GetFiles(directory, filter);
-
             public string ReadFile(string filename) => File.ReadAllText(filename);
-
             public bool Exists(string filename) => File.Exists(filename) || Directory.Exists(filename);
-
             public bool FileExists(string filename) => File.Exists(filename);
-
             public bool DirExists(string filename) => Directory.Exists(filename);
         }
 
         private class MoonSharpPathHelper {
             public string Combine(params string[] args) => Path.Combine(args);
-
             public string GetFileName(string filename) => Path.GetFileName(filename);
-
             public string GetFileNameWithoutExtension(string filename) => Path.GetFileNameWithoutExtension(filename);
         }
+        // ReSharper restore UnusedMember.Local
 
         private static object DefaultValue(DynValue value) {
             if (value == null) return null;
@@ -470,9 +466,9 @@ namespace LicensePlates {
             return Enum.GetValues(typeof(T)).OfType<T>().Distinct().ToDictionary(x => x.ToString(), x => (int)(object)x);
         }
 
-        private class PlateParams {
+        public class PlateParams {
             [CanBeNull]
-            public int[] Size = null;
+            public int[] Size;
             public double SizeMultipler = 1.0;
             public string Background = "background.png";
             public string Normals = "nm.png";
@@ -480,7 +476,7 @@ namespace LicensePlates {
             public double Light = -90;
         }
 
-        private class TextParams {
+        public class TextParams {
             [CanBeNull]
             public object Spaces = null;
             public string Font = "default.ttf";

@@ -47,7 +47,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 for (var i = 0; Pinged < List.Count && i < 10 && !linked.IsCancellationRequested; i++) {
                     if (i > 0) {
-                        Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
+                        Logging.Write("Not everying was pinged in the previous iteration, letâ€™s try again");
                     }
 
                     await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).ToList().Select(async x => {

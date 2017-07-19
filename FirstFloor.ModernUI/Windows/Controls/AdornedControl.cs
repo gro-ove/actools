@@ -333,7 +333,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Adorner’s order.
+        /// Adornerâ€™s order.
         /// </summary>
         public int Order {
             get { return (int)GetValue(OrderProperty); }
@@ -491,7 +491,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Update adorner’s order.
+        /// Update adornerâ€™s order.
         /// </summary>
         private void UpdateOrder() {
             if (_adornerLayer == null || _adorner == null) return;

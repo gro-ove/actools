@@ -18,15 +18,17 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsSharing {
         public class SharingViewModel : NotifyPropertyChanged {
             public SettingsHolder.SharingSettings Sharing => SettingsHolder.Sharing;
-
             public BetterObservableCollection<SharedEntry> History => SharingHelper.Instance.History;
-
             public ILargeFileUploader[] UploadersList => Uploaders.List;
+
+            public SharingViewModel() {
+                SelectedUploader = UploadersList.FirstOrDefault();
+            }
 
             private ILargeFileUploader _selectedUploader;
 
             public ILargeFileUploader SelectedUploader {
-                get { return _selectedUploader; }
+                get => _selectedUploader;
                 set {
                     if (Equals(value, _selectedUploader)) return;
                     _selectedUploader = value;
@@ -42,7 +44,7 @@ namespace AcManager.Pages.Settings {
             private DirectoryEntry _uploaderDirectory;
 
             public DirectoryEntry UploaderDirectory {
-                get { return _uploaderDirectory; }
+                get => _uploaderDirectory;
                 set {
                     if (Equals(value, _uploaderDirectory)) return;
                     _uploaderDirectory = value;
@@ -54,7 +56,7 @@ namespace AcManager.Pages.Settings {
             private DirectoryEntry[] _uploaderDirectories;
 
             public DirectoryEntry[] UploaderDirectories {
-                get { return _uploaderDirectories; }
+                get => _uploaderDirectories;
                 set {
                     if (Equals(value, _uploaderDirectories)) return;
                     _uploaderDirectories = value;
@@ -98,25 +100,21 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t load list of directories", "Make sure Internet-connection works.", e);
                 }
             }, () => SelectedUploader?.SupportsDirectories == true && SelectedUploader.IsReady));
-
-            public SharingViewModel() {
-                SelectedUploader = UploadersList.FirstOrDefault();
-            }
         }
 
         public SettingsSharing() {
             InitializeComponent();
             DataContext = new SharingViewModel();
-            Model.PropertyChanged += Model_PropertyChanged;
+            Model.PropertyChanged += OnPropertyChanged;
         }
 
         public SharingViewModel Model => (SharingViewModel)DataContext;
 
-        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+        private void OnTreeSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
             Model.UploaderDirectory = UploaderDirectoriesTreeView.SelectedItem as DirectoryEntry ?? Model.UploaderDirectories?.FirstOrDefault();
         }
 
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(SharingViewModel.UploaderDirectories):
                     break;
@@ -127,13 +125,13 @@ namespace AcManager.Pages.Settings {
             }
         }
 
-        private void ScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+        private void OnScrollMouseWheel(object sender, MouseWheelEventArgs e) {
             var scrollViewer = (ScrollViewer)sender;
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
-        private void History_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+        private void OnHistoryDoubleClick(object sender, MouseButtonEventArgs e) {
             var value = HistoryDataGrid.SelectedValue as SharedEntry;
             if (value != null) {
                 Process.Start(value.Url + "#noauto");

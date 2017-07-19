@@ -241,7 +241,7 @@
               ItemTemplate="{StaticResource CarItemDataTemplate}" Margin="8 0 -16 0" TextSearch.TextPath="DisplayName" />
         </DockPanel>
 
-        <ScrollViewer x:Name="ScrollViewer" Padding="0 0 8 8" Margin="0 0 -8 0">
+        <ScrollViewer x:Name="ScrollViewer" Padding="0 0 8 8" Margin="0 0 -8 0" mui:FancyScrollHelper.Outside="True">
           <DockPanel DataContext="{Binding Entry}">
             <StackPanel DockPanel.Dock="Top" Margin="0 0 0 20" Visibility="{Binding Errors.Count, Converter={StaticResource MoreToVisibilityConverter}}"
                 x:Name="ErrorsPanel">
@@ -254,21 +254,21 @@
               <!--<TextBlock Style="{StaticResource Heading1}" Text="Error" />-->
               <mui:SelectableBbCodeBlock BbCode="{Binding ErrorsString}" Margin="40 0 0 12" />
 
-              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Missing Content" ToolTip="Download and install missing content from the server"
-                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+              <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" Margin="20 0 0 0" DockPanel.Dock="Top">
+                <Button Content="Install Missing Content" ToolTip="Download and install missing content from the server"
+                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.AllOfIt}}"
-                  Command="{Binding InstallMissingContentCommand}" />
-              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Some Content"
-                  ToolTip="Download and install some of missing content from the server"
-                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+                    Command="{Binding InstallMissingContentCommand}" />
+                <Button Content="Install Some Content" ToolTip="Download and install some of missing content from the server"
+                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Partially}}"
-                  Command="{Binding InstallMissingContentCommand}" />
-              <Button DockPanel.Dock="Top" Margin="20 0 0 4" Content="Install Updates" ToolTip="Download and install updates for content from the server"
-                  Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
+                    Command="{Binding InstallMissingContentCommand}" />
+                <Button Content="Install Updates" ToolTip="Download and install updates for content from the server"
+                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Updates}}"
-                  Command="{Binding InstallMissingContentCommand}" />
-
-              <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 0 0" />
+                    Command="{Binding InstallMissingContentCommand}" />
+                <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" />
+              </mui:SpacingUniformGrid>
             </StackPanel>
 
             <!--password-->

@@ -13,6 +13,7 @@ using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -22,7 +23,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
     public abstract partial class TrackObjectBase : AcJsonObjectNew, IDraggable {
-        protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
+        protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         public override void PastLoad() {
             base.PastLoad();
@@ -412,10 +413,14 @@ namespace AcManager.Tools.Objects {
         public string AiLanePitFilename => _aiLanePitFilename ?? (_aiLanePitFilename = Path.Combine(LayoutDataDirectory, @"ai", @"pit_lane.ai"));
 
         private string _aiLaneFastCandidateFilename;
-        public string AiLaneFastCandidateFilename => _aiLaneFastCandidateFilename ?? (_aiLaneFastCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"fast_lane.ai.candidate"));
+
+        public string AiLaneFastCandidateFilename
+            => _aiLaneFastCandidateFilename ?? (_aiLaneFastCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"fast_lane.ai.candidate"));
 
         private string _aiLanePitCandidateFilename;
-        public string AiLanePitCandidateFilename => _aiLanePitCandidateFilename ?? (_aiLanePitCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"pit_lane.ai.candidate"));
+
+        public string AiLanePitCandidateFilename
+            => _aiLanePitCandidateFilename ?? (_aiLanePitCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"pit_lane.ai.candidate"));
 
         private bool? _aiLaneFastExists;
         public bool AiLaneFastExists => _aiLaneFastExists ?? (_aiLaneFastExists = File.Exists(AiLaneFastFilename)).Value;
@@ -449,5 +454,9 @@ namespace AcManager.Tools.Objects {
 
         string IDraggable.DraggableFormat => DraggableFormat;
         #endregion
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            throw new InformativeException("Can’t pack track", "At the moment, tracks packing is not implemented.");
+        }
     }
 }
