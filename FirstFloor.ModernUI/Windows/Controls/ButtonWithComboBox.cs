@@ -81,8 +81,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                                 await asyncCommand.ExecuteAsync(CommandParameter);
                                 break;
                         }
-                    } catch (TaskCanceledException) {
-                    } catch (OperationCanceledException) {
+                    } catch (Exception e) when (e.IsCanceled()) {
+                    } catch (Exception e) when (e.IsCanceled()) {
                     } finally {
                         _cancellation = null;
                         SetValue(IsProcessingPropertyKey, false);

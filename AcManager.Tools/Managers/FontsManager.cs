@@ -114,7 +114,7 @@ namespace AcManager.Tools.Managers {
                 }
 
                 return list.SelectMany(x => x.FontIds).Distinct().Where(id => GetWrapperById(id + FontObject.FontExtension) == null).ToList();
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return null;
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Fonts_RescanUsings, e);

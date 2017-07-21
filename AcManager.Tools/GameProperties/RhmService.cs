@@ -96,8 +96,8 @@ namespace AcManager.Tools.GameProperties {
 
                         try {
                             await Task.Delay(timeout, token);
-                        } catch (TaskCanceledException) {}
-                        
+                        } catch (Exception e) when (e.IsCanceled()) {}
+
                         _keptAlive += s.Elapsed;
 
                         if (!token.IsCancellationRequested && id == _stoppingLaterId && !Active) {
@@ -120,7 +120,7 @@ namespace AcManager.Tools.GameProperties {
                     if (_keepAliveTask != null) {
                         await _keepAliveTask;
                     }
-                    
+
                     _keepAliveTask = KeepAlive(SettingsHolder.Drive.RhmKeepAlivePeriod.TimeSpan - _keptAlive);
                 }
             } catch (Exception e) {

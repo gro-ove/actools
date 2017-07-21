@@ -20,7 +20,7 @@ namespace AcManager.Tools.Starters {
         protected virtual string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
 
         protected string AcsFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, AcsName);
-        
+
         public abstract void Run();
 
         protected StarterBase() {
@@ -89,7 +89,7 @@ namespace AcManager.Tools.Starters {
                 return GameProcess;
             }
 
-            Logging.Debug("waiting for game…");
+            Logging.Debug("waiting for gameï¿½");
 
             try {
                 var nothing = 0;
@@ -106,7 +106,7 @@ namespace AcManager.Tools.Starters {
                     await Task.Delay(100, cancellation);
                     if (cancellation.IsCancellationRequested) return null;
                 }
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return null;
             }
 

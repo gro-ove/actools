@@ -27,7 +27,7 @@ namespace AcManager.Tools.Helpers.Api {
                     return JsonConvert.DeserializeObject<AcServerStatus>(await killer.Victim.DownloadStringTaskAsync(
                             $"http://{ip}:{port}/api/control/acserver?password={EncodePassword(password)}&_method=STATUS"));
                 }
-            } catch (OperationCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }

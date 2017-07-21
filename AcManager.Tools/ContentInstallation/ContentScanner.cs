@@ -693,7 +693,7 @@ namespace AcManager.Tools.ContentInstallation {
                 try {
                     found = await CheckDirectoryNode(directory, cancellation).ConfigureAwait(false); // WHY IT DOES NOT WORK?
                     if (cancellation.IsCancellationRequested) break;
-                } catch (OperationCanceledException) {
+                } catch (Exception e) when (e.IsCanceled()) {
                     break;
                 } catch (MissingContentException) {
                     missingContent = true;
@@ -715,7 +715,7 @@ namespace AcManager.Tools.ContentInstallation {
                         try {
                             found = await CheckFileNode(value, cancellation).ConfigureAwait(false);
                             if (cancellation.IsCancellationRequested) break;
-                        } catch (OperationCanceledException) {
+                        } catch (Exception e) when (e.IsCanceled()) {
                             break;
                         } catch (MissingContentException) {
                             missingContent = true;

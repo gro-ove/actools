@@ -253,7 +253,7 @@ namespace AcManager.Tools.SemiGui {
                     }
 
                     return result;
-                } catch (TaskCanceledException) {
+                } catch (Exception e) when (e.IsCanceled()) {
                     // ui.OnError(new UserCancelledException());
                     ui.OnResult(null, null);
                     return null;

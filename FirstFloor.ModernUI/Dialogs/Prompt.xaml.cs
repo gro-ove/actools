@@ -231,7 +231,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                     suggestionsFixed);
             try {
                 await dialog.ShowAsync(cancellation);
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return null;
             }
 

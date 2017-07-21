@@ -39,13 +39,13 @@ namespace FirstFloor.ModernUI.Helpers {
         protected override async Task ExecuteInner() {
             try {
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Solving the issue…");
+                    waiting.Report("Solving the issueï¿½");
                     await _execute(waiting.CancellationToken);
                 }
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return;
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t solve the issue", e);
+                NonfatalError.Notify("Canï¿½t solve the issue", e);
                 return;
             }
 

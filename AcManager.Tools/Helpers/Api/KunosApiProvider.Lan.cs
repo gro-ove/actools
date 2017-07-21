@@ -139,7 +139,7 @@ namespace AcManager.Tools.Helpers.Api {
                         Interlocked.Increment(ref progress.Current);
                     }
                 });
-            } catch (OperationCanceledException) {}
+            } catch (Exception e) when (e.IsCanceled()) {}
         }
 
         public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports) {

@@ -66,7 +66,7 @@ namespace AcManager.Tools.Helpers.Api {
                 using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation.Token).ConfigureAwait(false)) {
                     return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-            } catch (OperationCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Helpers.Api {
                         ServerTimeStamp = GetServerTime(response)
                     };
                 }
-            } catch (OperationCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }
@@ -118,7 +118,7 @@ namespace AcManager.Tools.Helpers.Api {
                 using (var stream = response.Content.ReadAsStreamAsync().Result) {
                     return deserializationFn(stream);
                 }
-            } catch (OperationCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
             }
         }

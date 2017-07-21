@@ -204,7 +204,7 @@ namespace AcManager.Pages.Dialogs {
                         if (!_cancellationTokenSource.IsCancellationRequested && packed.Code != null) {
                             SetPacked(packed.Code);
                         }
-                    } catch (TaskCanceledException) { } catch (Exception e) {
+                    } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
                         NonfatalError.Notify("Can’t get Steam ID", e);
                     }
                 }

@@ -293,7 +293,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     cancellation: cancellation.Token);
                             localLoaded = true;
                             if (CheckCancellation()) return false;
-                        } catch (OperationCanceledException) {
+                        } catch (Exception e) when (e.IsCanceled()) {
                             CheckCancellation(true);
                             return false;
                         } catch (WebException e) when (e.Response is HttpWebResponse) {
@@ -438,7 +438,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         return true;
-                    } catch (TaskCanceledException) {
+                    } catch (Exception e) when (e.IsCanceled()) {
                         Failed = "Cancelled";
                         return false;
                     } catch (Exception e) {
@@ -447,7 +447,7 @@ namespace AcManager.Tools.ContentInstallation {
                         return false;
                     }
                 }
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 Failed = "Cancelled";
                 return false;
             } finally {

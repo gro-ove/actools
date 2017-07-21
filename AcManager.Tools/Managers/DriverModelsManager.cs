@@ -95,7 +95,7 @@ namespace AcManager.Tools.Managers {
                 }
 
                 return list.Select(x => x.DriverModelId).Distinct().Where(id => GetWrapperById(id + DriverModelObject.FileExtension) == null).ToList();
-            } catch (TaskCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return null;
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Fonts_RescanUsings, e);

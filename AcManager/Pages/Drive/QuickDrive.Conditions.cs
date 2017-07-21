@@ -540,7 +540,7 @@ namespace AcManager.Pages.Drive {
                                         WindSpeedMin = weather.WindSpeed * 3.6;
                                         WindSpeedMax = weather.WindSpeed * 3.6;
                                     }, cancellation.Token);
-                        } catch (TaskCanceledException) {} catch (Exception e) {
+                        } catch (Exception e) when (e.IsCanceled()) {} catch (Exception e) {
                             Logging.Warning(e);
                         }
 

@@ -402,7 +402,7 @@ namespace AcManager.Pages.ServerPreset {
                         if (waiting.CancellationToken.IsCancellationRequested) return;
                         await SelectedObject.RunServer(waiting, waiting.CancellationToken);
                     }
-                } catch (OperationCanceledException) { } catch (Exception e) {
+                } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t run server", e);
                 }
             }, () => SelectedObject.RunServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RunServerCommand));

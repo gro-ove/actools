@@ -144,7 +144,7 @@ namespace AcManager.Tools {
                         NonfatalError.Notify(string.Format(AppStrings.Main_NotSupportedRequest, custom.Path), AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
-            } catch (OperationCanceledException) {
+            } catch (Exception e) when (e.IsCanceled()) {
                 return ArgumentHandleResult.Failed;
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotProcessRequest, AppStrings.Arguments_CannotProcessRequest_Commentary, e);
