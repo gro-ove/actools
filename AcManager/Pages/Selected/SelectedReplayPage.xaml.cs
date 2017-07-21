@@ -50,34 +50,34 @@ namespace AcManager.Pages.Selected {
                 using (var waiting = new WaitingDialog(ControlsStrings.Common_Uploading)) {
                     waiting.Report(ControlsStrings.Common_Preparing);
 
-                    var uploader = Uploaders.List.First();
+                    var uploader = LargeFileUploaderParams.Sharing.SelectedUploader;
                     await uploader.SignIn(waiting.CancellationToken);
 
                     waiting.Report(ControlsStrings.Common_Compressing);
 
-                    byte[] data = null;
-                    await Task.Run(() => {
-                        using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        using (var memory = new MemoryStream()) {
-                            using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(car, track),
-                                        Path.GetFileName(filename));
-                                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
-                                    writer.Write(@"ReadMe.txt", stream);
+                    using (var memory = new MemoryStream()) {
+                        await Task.Run(() => {
+                            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                                using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                                    var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(car, track),
+                                            Path.GetFileName(filename));
+                                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
+                                        writer.Write(@"ReadMe.txt", stream);
+                                    }
+
+                                    writer.Write(Path.GetFileName(filename), file, new FileInfo(filename).CreationTime);
                                 }
 
-                                writer.Write(Path.GetFileName(filename), file, new FileInfo(filename).CreationTime);
+                                Logging.Write($"Compressed: {file.Length.ToReadableSize()} to {memory.Position.ToReadableSize()}");
                             }
+                        });
 
-                            data = memory.ToArray();
-                            Logging.Write($"Compressed: {file.Length.ToReadableSize()} to {data.LongLength.ToReadableSize()}");
-                        }
-                    });
-
-                    result = await uploader.Upload(name ?? AppStrings.Replay_DefaultUploadedName,
-                            Path.GetFileNameWithoutExtension(filename) + @".zip",
-                            @"application/zip", GetDescription(car, track), data, waiting,
-                            waiting.CancellationToken);
+                        memory.Position = 0;
+                        result = await uploader.Upload(name ?? AppStrings.Replay_DefaultUploadedName,
+                                Path.GetFileNameWithoutExtension(filename) + @".zip",
+                                @"application/zip", GetDescription(car, track), memory, UploadAs.Replay, waiting,
+                                waiting.CancellationToken);
+                    }
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);

@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AcManager.LargeFilesSharing.GoogleDrive {
+namespace AcManager.LargeFilesSharing {
     internal static class Request {
         internal static byte[] GetBytes(this string s) {
             return Encoding.UTF8.GetBytes(s);
@@ -60,14 +60,14 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 return result;
             } catch (WebException e) {
                 using (var stream = e.Response.GetResponseStream()) {
-                    Logging.Warning($"Send('{url}') error: {e}");
+                    Logging.Warning(e);
                     if (stream != null) {
-                        Logging.Warning($"Send('{url}') response: {new StreamReader(stream, Encoding.UTF8).ReadToEnd()}");
+                        Logging.Warning(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
                     }
                 }
                 return null;
             } catch (Exception e) {
-                Logging.Warning($"Send('{url}') error: {e}");
+                Logging.Warning(e);
                 return null;
             }
         }
@@ -152,14 +152,14 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 return JsonConvert.DeserializeObject<T>(result);
             } catch (WebException e) {
                 using (var stream = e.Response.GetResponseStream()) {
-                    Logging.Warning("Prepare() error: " + e);
+                    Logging.Warning(e);
                     if (stream != null) {
-                        Logging.Warning("Prepare() response: " + new StreamReader(stream, Encoding.UTF8).ReadToEnd());
+                        Logging.Warning(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
                     }
                 }
                 return default(T);
             } catch (Exception e) {
-                Logging.Warning("Prepare() error: " + e);
+                Logging.Warning(e);
                 return default(T);
             }
         }

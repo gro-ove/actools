@@ -50,6 +50,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
+    </Reference>
+    <Reference Include="MegaApiClient, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
@@ -77,11 +85,15 @@
     <Compile Include="DirectoryEntry.cs" />
     <Compile Include="DirectoryEntryLinqExtension.cs" />
     <Compile Include="FileUploaderBase.cs" />
-    <Compile Include="GoogleDrive\GoogleDriveUploader.cs" />
-    <Compile Include="GoogleDrive\Request.cs" />
     <Compile Include="ILargeFileUploader.cs" />
+    <Compile Include="Implementations\DropboxUploader.cs" />
+    <Compile Include="PromptCodeFromBrowser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="UploadAs.cs" />
     <Compile Include="Uploaders.cs" />
+    <Compile Include="Implementations\GoogleDriveUploader.cs" />
+    <Compile Include="Implementations\MegaUploader.cs" />
     <Compile Include="UploadResult.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -92,11 +104,6 @@
     <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
       <Project>{e1c50bb6-5b63-4917-b5e0-836f38061811}</Project>
       <Name>AcManager.Internal</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\AcManager.Controls\AcManager.Controls.csproj">
-      <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
-      <Name>AcManager.Controls</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">

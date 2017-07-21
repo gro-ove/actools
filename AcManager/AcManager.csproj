@@ -581,6 +581,7 @@
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
+    <Compile Include="Tools\LargeFileUploaderParams.cs" />
     <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />

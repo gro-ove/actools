@@ -8,24 +8,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, OnChildDefiningPropertyChanged));
 
         public bool Value {
-            get { return (bool)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => (bool)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
         }
 
         public static readonly DependencyProperty TrueProperty = DependencyProperty.Register(nameof(True), typeof(UIElement),
                 typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement True {
-            get { return (UIElement)GetValue(TrueProperty); }
-            set { SetValue(TrueProperty, value); }
+            get => (UIElement)GetValue(TrueProperty);
+            set => SetValue(TrueProperty, value);
         }
 
         public static readonly DependencyProperty FalseProperty = DependencyProperty.Register(nameof(False), typeof(UIElement),
                 typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement False {
-            get { return (UIElement)GetValue(FalseProperty); }
-            set { SetValue(FalseProperty, value); }
+            get => (UIElement)GetValue(FalseProperty);
+            set => SetValue(FalseProperty, value);
         }
 
         protected override UIElement GetChild() {
@@ -50,8 +50,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _collapseOnFalse;
 
         public bool CollapseOnFalse {
-            get { return _collapseOnFalse; }
-            set { SetValue(CollapseOnFalseProperty, value); }
+            get => _collapseOnFalse;
+            set => SetValue(CollapseOnFalseProperty, value);
         }
     }
 }

@@ -12,7 +12,7 @@ using AcTools.Windows;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Dialogs {
+namespace AcManager.LargeFilesSharing {
     public static class PromptCodeFromBrowser {
         /// <summary>
         /// Hard to describe, but that thing will show a prompt, but also load a web-page and wait for a response code which will

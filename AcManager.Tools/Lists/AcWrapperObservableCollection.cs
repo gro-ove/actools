@@ -75,6 +75,8 @@ namespace AcManager.Tools.Lists {
         }
 
         public void RefreshFilter([NotNull] AcPlaceholderNew valueObject) {
+            Logging.Debug(valueObject.DisplayName);
+
             var wrapperObject = Items.FirstOrDefault(x => x.Value == valueObject);
             if (wrapperObject == null) {
                 Logging.Warning("Wrapper object is null");
@@ -84,8 +86,7 @@ namespace AcManager.Tools.Lists {
             RefreshFilter(wrapperObject);
         }
 
-        public int ListenersCount { get; private set; }
-
+        private int _listenersCount;
         public bool HasListeners => CollectionChangedInner != null;
 
         protected void CollectionChangedInnerInvoke(NotifyCollectionChangedEventArgs eventArgs) {
@@ -99,13 +100,13 @@ namespace AcManager.Tools.Lists {
         public override event NotifyCollectionChangedEventHandler CollectionChanged {
             add {
                 CollectionChangedInner += value;
-                ListenersCount++;
-                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(ListenersCount, ListenersCount - 1));
+                _listenersCount++;
+                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount - 1));
             }
             remove {
                 CollectionChangedInner -= value;
-                ListenersCount--;
-                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(ListenersCount, ListenersCount + 1));
+                _listenersCount--;
+                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount + 1));
             }
         }
 

@@ -168,7 +168,6 @@
     <Compile Include="Dialogs\UserChampionshipIntro.xaml.cs">
       <DependentUpon>UserChampionshipIntro.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="FavouriteButton.cs" />
     <Compile Include="FlexibleDataTemplateSelector.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
@@ -197,6 +196,9 @@
     </Compile>
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\CefSharpWrapper.cs" />
+    <Compile Include="UserControls\UploaderBlock.xaml.cs">
+      <DependentUpon>UploaderBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UserChampionshipBlock.xaml.cs">
       <DependentUpon>UserChampionshipBlock.xaml</DependentUpon>
     </Compile>
@@ -266,6 +268,7 @@
     <Compile Include="ViewModels\RealismLevel.cs" />
     <Compile Include="ViewModels\TrackStateViewModel.cs" />
     <Compile Include="ViewModels\TrackStateViewModelBase.cs" />
+    <Compile Include="ViewModels\UploaderParams.cs" />
     <Compile Include="WeatherComboBox.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -460,6 +463,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\UploaderBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\UserChampionshipBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -506,6 +513,10 @@
     <ProjectReference Include="..\AcManager.ContentRepair\AcManager.ContentRepair.csproj">
       <Project>{CC98A959-9317-4C44-A2AF-4361F1BA167C}</Project>
       <Name>AcManager.ContentRepair</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.LargeFilesSharing\AcManager.LargeFilesSharing.csproj">
+      <Project>{FB438F1B-BE94-494A-BD40-B6C08F0A5598}</Project>
+      <Name>AcManager.LargeFilesSharing</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>

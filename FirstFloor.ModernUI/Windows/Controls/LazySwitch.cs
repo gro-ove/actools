@@ -16,7 +16,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 key = string.Format(format, key);
             }
 
-            return key == null ? null : TryFindResource(key) as UIElement;
+            var result = key == null ? null : TryFindResource(key) as UIElement;
+            if (CollapseIfMissing) {
+                Visibility = result == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            return result;
         }
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
@@ -57,6 +62,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public string FalseResourceKeyStringFormat {
             get => (string)GetValue(FalseResourceKeyStringFormatProperty);
             set => SetValue(FalseResourceKeyStringFormatProperty, value);
+        }
+
+        public static readonly DependencyProperty CollapseIfMissingProperty = DependencyProperty.Register(nameof(CollapseIfMissing), typeof(bool),
+                typeof(BooleanLazySwitch), new PropertyMetadata(false, (o, e) => {
+                    ((BooleanLazySwitch)o)._collapseIfMissing = (bool)e.NewValue;
+                }));
+
+        private bool _collapseIfMissing = false;
+
+        public bool CollapseIfMissing {
+            get => _collapseIfMissing;
+            set => SetValue(CollapseIfMissingProperty, value);
         }
     }
 

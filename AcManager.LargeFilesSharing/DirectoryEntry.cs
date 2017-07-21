@@ -4,6 +4,7 @@ using FirstFloor.ModernUI.Presentation;
 namespace AcManager.LargeFilesSharing {
     public class DirectoryEntry : Displayable, IWithId {
         public string Id { get; set; }
+        public long? Size { get; set; }
 
         public DirectoryEntry[] Children { get; set; }
 

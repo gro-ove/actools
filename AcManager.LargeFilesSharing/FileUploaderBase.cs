@@ -9,11 +9,15 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.LargeFilesSharing {
-    internal abstract class FileUploaderBase : ILargeFileUploader {
-        protected FileUploaderBase(string name, bool supportsSigning, bool supportsDirectories) {
+    public abstract class FileUploaderBase : ILargeFileUploader {
+        protected readonly IStorage Storage;
+
+        protected FileUploaderBase(IStorage storage, string name, bool supportsSigning, bool supportsDirectories) {
+            Storage = storage;
+
             Id = GetType().Name;
             _keyDestinationDirectoryId = @"fub.ddi." + Id;
-            _destinationDirectoryId = ValuesStorage.GetString(_keyDestinationDirectoryId);
+            _destinationDirectoryId = Storage.GetString(_keyDestinationDirectoryId);
 
             DisplayName = name;
             SupportsSigning = supportsSigning;
@@ -21,11 +25,8 @@ namespace AcManager.LargeFilesSharing {
         }
 
         public string Id { get; }
-
         public bool SupportsSigning { get; }
-
         public bool SupportsDirectories { get; }
-
         public string DisplayName { get; }
 
         private readonly string _keyDestinationDirectoryId;
@@ -33,19 +34,19 @@ namespace AcManager.LargeFilesSharing {
         private string _destinationDirectoryId;
 
         public string DestinationDirectoryId {
-            get { return _destinationDirectoryId; }
+            get => _destinationDirectoryId;
             set {
                 if (Equals(value, _destinationDirectoryId)) return;
                 _destinationDirectoryId = value;
                 OnPropertyChanged();
-                ValuesStorage.Set(_keyDestinationDirectoryId, value);
+                Storage.Set(_keyDestinationDirectoryId, value);
             }
         }
 
         private bool _isReady;
 
         public bool IsReady {
-            get { return _isReady; }
+            get => _isReady;
             protected set {
                 if (Equals(value, _isReady)) return;
                 _isReady = value;
@@ -53,7 +54,10 @@ namespace AcManager.LargeFilesSharing {
             }
         }
 
-        public abstract void Reset();
+        public virtual Task Reset() {
+            IsReady = false;
+            return Task.Delay(0);
+        }
 
         public abstract Task Prepare(CancellationToken cancellation);
 
@@ -61,8 +65,8 @@ namespace AcManager.LargeFilesSharing {
 
         public abstract Task<DirectoryEntry[]> GetDirectories(CancellationToken cancellation);
 
-        public abstract Task<UploadResult> Upload(string name, string originalName, string mimeType, string description, byte[] data, IProgress<AsyncProgressEntry> progress,
-                CancellationToken cancellation);
+        public abstract Task<UploadResult> Upload(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
+                IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
 
         protected static string GetMimeType(string filename) {
             var ext = Path.GetExtension(filename)?.ToLower();

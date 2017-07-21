@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="AcManager.Controls.UserControls.UploaderBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels"
+    xmlns:lfs="clr-namespace:AcManager.LargeFilesSharing;assembly=AcManager.LargeFilesSharing"
+    mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:UploaderParams}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Expander.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+    <DockPanel>
+      <mui:BooleanSwitch x:Name="UploaderParams" Value="{Binding SelectedUploader.IsReady}"
+          Visibility="{Binding SelectedUploader.SupportsSigning, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:BooleanSwitch.True>
+          <Button Margin="0" Content="Log Out" Command="{Binding LogOutCommand}" Padding="16 1 16 3" />
+        </mui:BooleanSwitch.True>
+        <mui:BooleanSwitch.False>
+          <DockPanel DockPanel.Dock="Left" Margin="0">
+            <mui:BooleanLazySwitch x:Name="UploaderParamsSwitch" TrueResourceKey="{Binding Id}" TrueResourceKeyStringFormat="UploaderSettings.{0}" Value="True"
+                DataContext="{Binding SelectedUploader}" DockPanel.Dock="Left" CollapseIfMissing="True" Margin="0 0 4 0" />
+            <Button Margin="0" Content="Sign In" Command="{Binding SignInCommand}" Padding="16 1 16 3" /><!-- {x:Static g:AppStrings.Common_SignIn} -->
+          </DockPanel>
+        </mui:BooleanSwitch.False>
+      </mui:BooleanSwitch>
+
+      <Label Content="Destination:" /><!-- {x:Static g:AppStrings.Settings_Sharing_BigFilesDestinationLabel} -->
+      <ComboBox ItemsSource="{Binding UploadersList}" SelectedItem="{Binding SelectedUploader}" DisplayMemberPath="DisplayName" />
+    </DockPanel>
+
+    <DockPanel Visibility="{Binding SelectedUploader.SupportsDirectories, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <Label Content="Folder:" /><!-- {x:Static g:AppStrings.Settings_Sharing_BigFilesFolderLabel} -->
+      <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top" Content="Update"
+          Padding="16 1 16 3" ToolTip="Press “Update” to reload list of folders" />
+      <!-- {x:Static g:AppStrings.Common_Update} {x:Static g:AppStrings.Settings_Sharing_BigFilesFoldersUpdate_Tooltip} -->
+      <mui:ReferenceSwitch Value="{Binding UploaderDirectories}" Height="240">
+        <mui:ReferenceSwitch.Null>
+          <mui:Switch Value="{Binding IsBusy}" Height="20" VerticalAlignment="Top">
+            <TextBlock mui:Switch.When="0" Text="N/A" VerticalAlignment="Center" />
+            <DockPanel Margin="0" Height="20">
+              <Canvas Width="20" Height="20" DockPanel.Dock="Left" Margin="0 0 8 0">
+                <mui:ModernProgressRing Width="80" Height="80" IsActive="True">
+                  <mui:ModernProgressRing.RenderTransform>
+                    <ScaleTransform ScaleX="0.25" ScaleY="0.25" CenterX="0" CenterY="0" />
+                  </mui:ModernProgressRing.RenderTransform>
+                </mui:ModernProgressRing>
+              </Canvas>
+              <TextBlock Text="Loading…" VerticalAlignment="Center" Foreground="{DynamicResource WindowText}" />
+            </DockPanel>
+          </mui:Switch>
+        </mui:ReferenceSwitch.Null>
+        <mui:ReferenceSwitch.NonNull>
+          <TreeView x:Name="UploaderDirectoriesTreeView" ItemsSource="{Binding UploaderDirectories}" SelectedItemChanged="OnTreeSelectedItemChanged"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False"
+              Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <TreeView.Resources>
+              <Style TargetType="TreeViewItem">
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <mui:RememberingExpander Header="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header}"
+                          Style="{StaticResource Expander.Animated}" DefaultValue="False"
+                          Key="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header, StringFormat='{}.sharing_dir_{0}', Mode=OneTime}">
+                        <ItemsPresenter x:Name="ItemsHost" Margin="20 0 0 0" />
+                      </mui:RememberingExpander>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Items.Count}" Value="0">
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate>
+                          <ContentPresenter Content="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header}" Margin="16 0 0 0" />
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+              <HierarchicalDataTemplate DataType="{x:Type lfs:DirectoryEntry}" ItemsSource="{Binding Children}">
+                <Border x:Name="Panel" Padding="4 2">
+                  <DockPanel>
+                    <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Style="{StaticResource Small}" VerticalAlignment="Center"
+                        Visibility="{Binding Size, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" DockPanel.Dock="Right" />
+                    <TextBlock Text="{Binding DisplayName}">
+                      <TextBlock.ToolTip>
+                        <TextBlock Text="{Binding Id, StringFormat='{}ID: {0}', TargetNullValue='?'}" /><!-- {x:Static g:AppStrings.Common_IdFormat} -->
+                      </TextBlock.ToolTip>
+                    </TextBlock>
+                  </DockPanel>
+                </Border>
+                <HierarchicalDataTemplate.Triggers>
+                  <DataTrigger Value="True">
+                    <DataTrigger.Binding>
+                      <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                        <Binding Path="DataContext.UploaderDirectory.Id" RelativeSource="{RelativeSource AncestorType=local:UploaderBlock}" />
+                        <Binding Path="Id" />
+                      </MultiBinding>
+                    </DataTrigger.Binding>
+                    <Setter TargetName="Panel" Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
+                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                    <Setter TargetName="Panel" Property="TextBlock.FontWeight" Value="Bold" />
+                  </DataTrigger>
+                </HierarchicalDataTemplate.Triggers>
+              </HierarchicalDataTemplate>
+            </TreeView.Resources>
+          </TreeView>
+        </mui:ReferenceSwitch.NonNull>
+      </mui:ReferenceSwitch>
+    </DockPanel>
+
+  </StackPanel>
+</UserControl>

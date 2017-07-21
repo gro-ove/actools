@@ -29,20 +29,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnKeyChanged(string newValue) {
-            IsExpanded = ValuesStorage.GetBool(newValue, DefaultValue);
+            if (newValue != null) {
+                IsExpanded = ValuesStorage.GetBool(newValue, DefaultValue);
+            }
         }
 
         protected override void OnExpanded() {
             base.OnExpanded();
             if (Key != null) {
-                ValuesStorage.Set(Key, true);
+                if (DefaultValue) {
+                    ValuesStorage.Remove(Key);
+                } else {
+                    ValuesStorage.Set(Key, true);
+                }
             }
         }
 
         protected override void OnCollapsed() {
             base.OnCollapsed();
             if (Key != null) {
-                ValuesStorage.Set(Key, false);
+                if (!DefaultValue) {
+                    ValuesStorage.Remove(Key);
+                } else {
+                    ValuesStorage.Set(Key, false);
+                }
             }
         }
     }

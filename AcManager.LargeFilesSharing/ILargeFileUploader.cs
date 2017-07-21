@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
@@ -16,11 +17,11 @@ namespace AcManager.LargeFilesSharing {
         bool SupportsSigning { get; }
 
         bool SupportsDirectories { get; }
-        
+
         [CanBeNull]
         string DestinationDirectoryId { get; set; }
 
-        void Reset();
+        Task Reset();
 
         Task Prepare(CancellationToken cancellation);
 
@@ -30,7 +31,7 @@ namespace AcManager.LargeFilesSharing {
         Task<DirectoryEntry[]> GetDirectories(CancellationToken cancellation);
 
         [ItemNotNull]
-        Task<UploadResult> Upload([NotNull] string name, [NotNull] string originalName, [NotNull] string mimeType, [CanBeNull] string description, [NotNull] byte[] data,
-                [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        Task<UploadResult> Upload([NotNull] string name, [NotNull] string originalName, [NotNull] string mimeType, [CanBeNull] string description,
+                [NotNull] Stream data, UploadAs uploadAs, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 }

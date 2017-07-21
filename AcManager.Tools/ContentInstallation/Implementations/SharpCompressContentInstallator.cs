@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcTools;
 using AcTools.Utils;
@@ -15,7 +16,7 @@ using SharpCompress.Archives;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 
-namespace AcManager.Tools.ContentInstallation.Installators {
+namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class SharpCompressContentInstallator : ContentInstallatorBase {
         public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams, CancellationToken cancellation) {
             var result = new SharpCompressContentInstallator(filename, installationParams);

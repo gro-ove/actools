@@ -149,9 +149,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         protected virtual void PrepareCamera(CameraBase camera) { }
 
         public bool AsyncTexturesLoading { get; set; } = true;
-
         public bool AsyncOverridesLoading { get; set; } = false;
-
         public bool AllowSkinnedObjects { get; set; } = false;
 
         private readonly string _showroomKn5Filename;

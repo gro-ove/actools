@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -243,6 +246,33 @@ namespace FirstFloor.ModernUI.Windows {
             }
 
             _children.Add(h);
+            return this;
+        }
+
+        public SizeRelatedCondition<TParent, TValue> ListenOnProperty(INotifyPropertyChanged source, string propertyName) {
+            source.SubscribeWeak((sender, args) => {
+                if (args.PropertyName == propertyName) {
+                    Update();
+                }
+            });
+            return this;
+        }
+
+        public SizeRelatedCondition<TParent, TValue> ListenOnProperty<TSource>(TSource source, DependencyProperty property) {
+            DependencyPropertyDescriptor.FromProperty(property, typeof(TSource)).AddValueChanged(source, (sender, args) => Update());
+            return this;
+        }
+
+        public SizeRelatedCondition<TParent, TValue> ListenOn<TEventSource>(TEventSource source, string eventName) {
+            GetType().GetMethods().First(m => m.Name == nameof(ListenOn) && m.GetGenericArguments().Length == 2)
+                     .MakeGenericMethod(typeof(TEventSource),
+                             typeof(TEventSource).GetEvent(eventName).EventHandlerType.GetMethod("Invoke").GetParameters()[1].ParameterType)
+                     .Invoke(this, new object[] { source, eventName });
+            return this;
+        }
+
+        public SizeRelatedCondition<TParent, TValue> ListenOn<TEventSource, TEventArgs>(TEventSource source, string eventName) where TEventArgs : EventArgs {
+            WeakEventManager<TEventSource, TEventArgs>.AddHandler(source, eventName, (sender, args) => Update());
             return this;
         }
 

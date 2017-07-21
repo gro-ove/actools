@@ -36,7 +36,7 @@ namespace AcManager.Tools.Profile {
 
             _server.RegisterModule(new WebApiModule());
             _server.Module<WebApiModule>().RegisterController(() => new IndexPageController(pages));
-            
+
             if (Directory.Exists(pages.StaticDirectory)) {
                 _server.RegisterModule(new StaticFilesModule(new Dictionary<string, string> {
                     [@"/"] = pages.StaticDirectory
@@ -60,9 +60,9 @@ namespace AcManager.Tools.Profile {
             try {
                 _server.RunAsync();
             } catch (HttpListenerException e) {
-                NonfatalError.NotifyBackground("Can’t start web server",
-                        $"Don’t forget to allow port’s usage with something like “netsh http add urlacl url=\"http://+:{port}/\" user=everyone”.", e, new[] {
-                            new NonfatalErrorSolution($"Use “netsh” to allow usage of port {port}", null, token => {
+                NonfatalError.NotifyBackground("Canâ€™t start web server",
+                        $"Donâ€™t forget to allow portâ€™s usage with something like â€œnetsh http add urlacl url=\"http://+:{port}/\" user=everyoneâ€.", e, new[] {
+                            new NonfatalErrorSolution($"Use â€œnetshâ€ to allow usage of port {port}", null, token => {
                                 Process.Start(new ProcessStartInfo {
                                     FileName = "cmd",
                                     Arguments = $"/C netsh http add urlacl url=\"http://+:{port}/\" user=everyone & pause",
@@ -262,7 +262,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
             }
 
             protected override void OnMessageReceived(WebSocketContext context, byte[] rxBuffer, WebSocketReceiveResult rxResult) {}
-            
+
             public override string ServerName { get; }
 
             protected override void OnClientConnected(WebSocketContext context) {
@@ -278,7 +278,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
 
                 _connected++;
             }
-            
+
             protected override void OnFrameReceived(WebSocketContext context, byte[] rxBuffer, WebSocketReceiveResult rxResult) {}
 
             protected override void OnClientDisconnected(WebSocketContext context) {

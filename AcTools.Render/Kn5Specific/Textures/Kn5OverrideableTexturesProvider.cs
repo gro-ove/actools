@@ -192,7 +192,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 }
             });
 
-            TaskExtension.Forget(UpdateOverridesAsync());
+            UpdateOverridesAsync().Forget();
         }
 
         public virtual void SetOverridesDirectory([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
@@ -203,7 +203,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private bool _liveReload = true;
 
         public bool LiveReload {
-            get { return _liveReload; }
+            get => _liveReload;
             set {
                 if (Equals(value, _liveReload)) return;
                 _liveReload = value;
@@ -214,7 +214,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private bool _magickOverride;
 
         public bool MagickOverride {
-            get { return _magickOverride; }
+            get => _magickOverride;
             set {
                 if (Equals(value, _magickOverride)) return;
                 _magickOverride = value;
@@ -357,8 +357,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
                 result.Exists = true;
-                if (AsyncLoading) {
-                    TaskExtension.Forget(result.LoadAsync(contextHolder, data));
+                if (AsyncLoading && data.Length > 100000) {
+                    result.LoadAsync(contextHolder, data).Forget();
                 } else {
                     result.Load(contextHolder, data);
                 }
@@ -385,7 +385,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private async Task<bool> LoadOverrideAsync(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
             var overrided = await GetOverridedDataAsync(textureName);
             if (overrided == null) return false;
-            TaskExtension.Forget(texture.LoadOverrideAsync(contextHolder, overrided));
+            texture.LoadOverrideAsync(contextHolder, overrided).Forget();
             return true;
         }
 

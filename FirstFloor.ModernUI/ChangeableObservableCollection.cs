@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
@@ -176,8 +177,7 @@ namespace FirstFloor.ModernUI {
         }
 
         public void RefreshFilter([NotNull] T obj) {
-            CollectionChanged?.Invoke(this,
-                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj, IndexOf(obj)));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj, IndexOf(obj)));
         }
 
         #region Additional methods

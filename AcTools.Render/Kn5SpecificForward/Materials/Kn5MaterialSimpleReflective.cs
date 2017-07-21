@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Kn5Specific.Materials;
@@ -17,7 +18,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
             _material = new EffectSimpleMaterial.ReflectiveMaterial {
                 FresnelC = Kn5Material.GetPropertyValueAByName("fresnelC"),
-                FresnelExp = Kn5Material.GetPropertyValueAByName("fresnelEXP"),
+                FresnelExp = Math.Max(Kn5Material.GetPropertyValueAByName("fresnelEXP"), 1f),
                 FresnelMaxLevel = Kn5Material.GetPropertyValueAByName("fresnelMaxLevel")
             };
 

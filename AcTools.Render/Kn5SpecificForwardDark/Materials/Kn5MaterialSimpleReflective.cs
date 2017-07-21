@@ -1,5 +1,6 @@
 // #define REFLECTION_DEBUG
 
+using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
@@ -40,7 +41,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             _material = new EffectDarkMaterial.ReflectiveMaterial {
                 FresnelC = Kn5Material.GetPropertyValueAByName("fresnelC"),
-                FresnelExp = Kn5Material.GetPropertyValueAByName("fresnelEXP"),
+                FresnelExp = Math.Max(Kn5Material.GetPropertyValueAByName("fresnelEXP"), 1f),
                 FresnelMaxLevel = Kn5Material.GetPropertyValueAByName("fresnelMaxLevel")
             };
 

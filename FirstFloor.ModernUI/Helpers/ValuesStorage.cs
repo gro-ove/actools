@@ -25,6 +25,11 @@ namespace FirstFloor.ModernUI.Helpers {
             return Storage.GetString(key, defaultValue);
         }
 
+        [CanBeNull, Pure]
+        public static byte[] GetBytes([NotNull, LocalizationRequired(false)] string key, byte[] defaultValue = null) {
+            return Storage.GetBytes(key, defaultValue);
+        }
+
         [Pure]
         public static T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) where T : struct, IConvertible {
             return Storage.GetEnum(key, defaultValue);
@@ -144,6 +149,10 @@ namespace FirstFloor.ModernUI.Helpers {
             Storage.Set(key, value);
         }
 
+        public static void Set([NotNull, LocalizationRequired(false)] string key, byte[] value) {
+            Storage.Set(key, value);
+        }
+
         public static void Set([NotNull, LocalizationRequired(false)] string key, int value) {
             Storage.Set(key, value);
         }
@@ -200,12 +209,20 @@ namespace FirstFloor.ModernUI.Helpers {
             Storage.SetEncryptedString(key, value);
         }
 
+        public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, byte[] value) {
+            Storage.SetEncrypted(key, Convert.ToBase64String(value));
+        }
+
         public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, bool value) {
             Storage.SetEncrypted(key, value);
         }
 
         public static string GetEncryptedString([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] string defaultValue = null) {
             return Storage.GetEncryptedString(key, defaultValue);
+        }
+
+        public static byte[] GetEncryptedBytes([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] byte[] defaultValue = null) {
+            return Storage.GetEncryptedBytes(key, defaultValue);
         }
 
         public static bool GetEncryptedBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {

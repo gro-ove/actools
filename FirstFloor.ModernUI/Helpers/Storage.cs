@@ -138,6 +138,19 @@ namespace FirstFloor.ModernUI.Helpers {
 
     public static class StorageMethods {
         [Pure]
+        public static byte[] GetBytes([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, byte[] defaultValue = null) {
+            var v = storage.GetString(key);
+            if (v == null) return defaultValue;
+
+            try {
+                return Convert.FromBase64String(v);
+            } catch (Exception e) {
+                Logging.Error(e.Message);
+                return defaultValue;
+            }
+        }
+
+        [Pure]
         public static T GetEnum<T>([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) where T : struct, IConvertible {
             return GetEnumNullable<T>(storage, key) ?? defaultValue;
         }
@@ -279,6 +292,10 @@ namespace FirstFloor.ModernUI.Helpers {
             storage.SetString(key, value);
         }
 
+        public static void Set([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, byte[] value) {
+            storage.SetString(key, Convert.ToBase64String(value));
+        }
+
         public static void Set([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, IEnumerable<string> value) {
             storage.SetStringList(key, value);
         }
@@ -330,8 +347,17 @@ namespace FirstFloor.ModernUI.Helpers {
             storage.SetString(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static string GetEncrypted([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, string defaultValue = null) {
-            return storage.GetEncryptedString(key, defaultValue);
+        [Pure]
+        public static byte[] GetEncryptedBytes([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, byte[] defaultValue = null) {
+            var v = storage.GetEncryptedString(key);
+            if (v == null) return defaultValue;
+
+            try {
+                return Convert.FromBase64String(v);
+            } catch (Exception e) {
+                Logging.Error(e.Message);
+                return defaultValue;
+            }
         }
 
         public static bool GetEncryptedBool([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {
@@ -341,6 +367,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public static void SetEncrypted([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, string value) {
             storage.SetEncryptedString(key, value);
+        }
+
+        public static void SetEncrypted([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, byte[] value) {
+            storage.SetEncryptedString(key, Convert.ToBase64String(value));
         }
 
         public static void SetEncrypted([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, bool value) {
