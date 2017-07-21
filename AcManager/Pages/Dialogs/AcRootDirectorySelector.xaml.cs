@@ -16,6 +16,7 @@ using AcManager.LargeFilesSharing;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -98,8 +99,11 @@ namespace AcManager.Pages.Dialogs {
 
                 ReviewMode = !FirstRun && IsReviewNeeded();
                 Value = AcRootDirectory.Instance.IsReady ? AcRootDirectory.Instance.Value : AcRootDirectory.TryToFind();
+
 #if DEBUG
-                Value = Value?.Replace("D:", "C:");
+                if (changeAcRoot) {
+                    Value = Value?.Replace("D:", "C:");
+                }
 #endif
 
                 var steamId = SteamIdHelper.Instance.Value;
@@ -195,13 +199,14 @@ namespace AcManager.Pages.Dialogs {
             public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async () => {
                 using (_cancellationTokenSource = new CancellationTokenSource()) {
                     try {
-                        var packed = await PromptCodeFromBrowser.Show($"http://acstuff.ru/u/steam?s={AdditionalSalt}",
-                                new Regex(@"CM Steam ID Helper: (\w+)", RegexOptions.Compiled),
-                                "Enter the authentication code:", "Steam (via acstuff.ru)", cancellation: _cancellationTokenSource.Token);
-                        if (!_cancellationTokenSource.IsCancellationRequested && packed != null) {
-                            SetPacked(packed);
+                        var packed = await OAuth.GetCode("Steam", $"http://acstuff.ru/u/steam?s={AdditionalSalt}", null,
+                                @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)");
+                        if (!_cancellationTokenSource.IsCancellationRequested && packed.Code != null) {
+                            SetPacked(packed.Code);
                         }
-                    } catch (TaskCanceledException) { }
+                    } catch (TaskCanceledException) { } catch (Exception e) {
+                        NonfatalError.Notify("Can’t get Steam ID", e);
+                    }
                 }
 
                 _cancellationTokenSource = null;

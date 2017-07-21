@@ -72,6 +72,12 @@
             <Setter Property="DockPanel.Dock" Value="Right" />
           </Style>
 
+          <Style TargetType="{x:Type mui:AsyncButton}" BasedOn="{StaticResource {x:Type mui:AsyncButton}}">
+            <Setter Property="Margin" Value="8 0 0 0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="DockPanel.Dock" Value="Right" />
+          </Style>
+
           <Style TargetType="{x:Type mui:LabeledToggleButton}" BasedOn="{StaticResource {x:Type mui:LabeledToggleButton}}">
             <Setter Property="Margin" Value="8 0 0 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -121,6 +127,12 @@
           </Style>
 
           <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="8 0 0 0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="DockPanel.Dock" Value="Right" />
+          </Style>
+
+          <Style TargetType="{x:Type mui:AsyncButton}" BasedOn="{StaticResource {x:Type mui:AsyncButton}}">
             <Setter Property="Margin" Value="8 0 0 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="DockPanel.Dock" Value="Right" />

@@ -2,42 +2,58 @@
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using AcManager.Internal;
-using AcManager.LargeFilesSharing.GoogleDrive;
 using AcManager.Tools;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
-using Unosquare.Labs.EmbedIO;
 
 namespace AcManager.LargeFilesSharing.Implementations {
-    internal class GoogleDriveUploader : FileUploaderBase {
-        public GoogleDriveUploader(IStorage storage) : base(storage, ToolsStrings.Uploader_GoogleDrive, true, true) { }
+    public class GoogleDriveUploader : GoogleDriveUploaderBase {
+        public GoogleDriveUploader(IStorage storage) : base(storage, ToolsStrings.Uploader_GoogleDrive,
+                "15 GB of space, but sadly without any API to download shared files, so CM might break any moment. This version requires an access to all files, but allows to select destination.",
+                true, true) {
+            Scopes = new[] { @"https://www.googleapis.com/auth/drive", @"https://www.googleapis.com/auth/drive.file" };
+        }
+
+        protected override Tuple<string, string> GetCredentials() {
+            return InternalUtils.GetGoogleDriveCredentials();
+        }
+    }
+
+    public class GoogleDriveAppFolderUploader : GoogleDriveUploaderBase {
+        public GoogleDriveAppFolderUploader(IStorage storage) : base(storage, "Google Drive (Upload To Root)",
+                "15 GB of space, but sadly without any API to download shared files, so CM might break any moment. This version do not require an access to all files, but uploads files only to root directory.",
+                true, false) {
+            Scopes = new[] { @"https://www.googleapis.com/auth/drive.file" };
+        }
+
+        protected override Tuple<string, string> GetCredentials() {
+            return InternalUtils.GetGoogleDriveAppFolderCredentials();
+        }
+    }
+
+    public abstract class GoogleDriveUploaderBase : FileUploaderBase {
+        protected GoogleDriveUploaderBase(IStorage storage, string name, string description, bool supportsSigning, bool supportsDirectories) :
+                base(storage, name, description, supportsSigning, supportsDirectories) { }
 
         private const string RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
-        private static readonly string[] Scopes = {
-            @"https://www.googleapis.com/auth/drive",
-            @"https://www.googleapis.com/auth/drive.file"
-        };
+        protected string[] Scopes;
+        private const string KeyAuthToken = "token";
+        private const string KeyAuthExpiration = "expiration";
 
-        private static Task<string> GetAuthenticationCode(string clientId, CancellationToken cancellation) {
-            using (var server = new WebServer($"http://+:{port}/", log, RoutingStrategy.Wildcard)) {
-
-            }
-
-            return PromptCodeFromBrowser.Show($"https://accounts.google.com/o/oauth2/v2/auth?scope={Uri.EscapeDataString(Scopes.JoinToString(' '))}&" +
-                    $"redirect_uri={RedirectUrl}&response_type=code&" +
-                    $"client_id={clientId}", new Regex(@"Success code=(\S+)", RegexOptions.Compiled),
-                    ToolsStrings.Uploader_EnterGoogleDriveAuthenticationCode, ToolsStrings.Uploader_GoogleDrive, cancellation: cancellation);
+        private Task<OAuthCode> GetAuthenticationCode(string clientId, CancellationToken cancellation) {
+            return OAuth.GetCode("Google Drive", $"https://accounts.google.com/o/oauth2/v2/auth?scope={Uri.EscapeDataString(Scopes.JoinToString(' '))}&" +
+                    $"response_type=code&client_id={Uri.EscapeDataString(clientId)}", RedirectUrl, cancellation: cancellation);
         }
 
-#pragma warning disable 0649
+#pragma warning disable 649
         internal class AuthResponse {
             [JsonProperty(@"access_token")]
             public string AccessToken;
@@ -62,25 +78,25 @@ namespace AcManager.LargeFilesSharing.Implementations {
             [JsonProperty(@"token_type")]
             public string TokenType;
         }
-#pragma warning restore 0649
+#pragma warning restore 649
 
         private AuthResponse _authToken;
         private DateTime _authExpiration;
-        private const string KeyAuthToken = "GD.at";
-        private const string KeyAuthExpiration = "GD.ex";
 
-        public override async Task Reset() {
-            await base.Reset();
+        public override async Task ResetAsync(CancellationToken cancellation) {
+            await base.ResetAsync(cancellation);
             _authToken = null;
             _authExpiration = default(DateTime);
             Storage.Remove(KeyAuthToken);
             Storage.Remove(KeyAuthExpiration);
         }
 
-        public override async Task Prepare(CancellationToken cancellation) {
+        protected abstract Tuple<string, string> GetCredentials();
+
+        public override async Task PrepareAsync(CancellationToken cancellation) {
             if (IsReady && DateTime.Now < _authExpiration) return;
 
-            var data = InternalUtils.GetGoogleDriveCredentials();
+            var data = GetCredentials();
             var clientId = data.Item1.Substring(2);
             var clientSecret = data.Item2.Substring(2);
 
@@ -105,8 +121,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 { @"client_secret", clientSecret },
                 { @"refresh_token", _authToken.RefreshToken },
                 { @"grant_type", @"refresh_token" }
-            }.GetQuery(), null, cancellation);
-            if (cancellation.IsCancellationRequested) return;
+            }, null, cancellation: cancellation);
+            cancellation.ThrowIfCancellationRequested();
 
             if (refresh == null) {
                 Storage.Remove(KeyAuthToken);
@@ -119,29 +135,33 @@ namespace AcManager.LargeFilesSharing.Implementations {
             }
         }
 
-        public override async Task SignIn(CancellationToken cancellation) {
-            await Prepare(cancellation);
+        public override async Task SignInAsync(CancellationToken cancellation) {
+            await PrepareAsync(cancellation);
+            cancellation.ThrowIfCancellationRequested();
             if (IsReady && DateTime.Now < _authExpiration) return;
 
-            var data = InternalUtils.GetGoogleDriveCredentials();
+            var data = GetCredentials();
             var clientId = data.Item1.Substring(2);
             var clientSecret = data.Item2.Substring(2);
 
             var code = await GetAuthenticationCode(clientId, cancellation);
-            if (cancellation.IsCancellationRequested) return;
+#if DEBUG
+            Logging.Debug(code);
+#endif
+            cancellation.ThrowIfCancellationRequested();
 
             if (code == null) {
                 throw new UserCancelledException();
             }
 
             var response = await Request.Post<AuthResponse>(@"https://www.googleapis.com/oauth2/v4/token", new NameValueCollection {
-                { @"code", code },
+                { @"code", code.Code },
                 { @"client_id", clientId },
                 { @"client_secret", clientSecret },
-                { @"redirect_uri", RedirectUrl },
+                { @"redirect_uri", code.RedirectUri },
                 { @"grant_type", @"authorization_code" }
-            }.GetQuery(), null, cancellation);
-            if (cancellation.IsCancellationRequested) return;
+            }, null, cancellation: cancellation);
+            cancellation.ThrowIfCancellationRequested();
 
             _authToken = response ?? throw new Exception(ToolsStrings.Uploader_CannotFinishAuthorization);
             _authExpiration = DateTime.Now + TimeSpan.FromSeconds(response.ExpiresIn) - TimeSpan.FromSeconds(20);
@@ -176,8 +196,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
         }
 #pragma warning restore 0649
 
-        public override async Task<DirectoryEntry[]> GetDirectories(CancellationToken cancellation) {
-            await Prepare(cancellation);
+        public override async Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation) {
+            await PrepareAsync(cancellation);
+            cancellation.ThrowIfCancellationRequested();
 
             if (_authToken == null) {
                 throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
@@ -188,7 +209,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
             var data = await Request.Get<SearchResult>(
                     @"https://www.googleapis.com/drive/v2/files?maxResults=1000&orderBy=title&" +
                             $"q={HttpUtility.UrlEncode(query)}&fields={HttpUtility.UrlEncode(fields)}",
-                    _authToken.AccessToken, cancellation);
+                    _authToken.AccessToken, cancellation: cancellation);
+            cancellation.ThrowIfCancellationRequested();
 
             if (data == null) {
                 throw new Exception(ToolsStrings.Uploader_RequestFailed);
@@ -204,7 +226,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                                          .Select(x => directories.GetById(x.Id)).ToArray();
             }
 
-            return new [] {
+            return new[] {
                 new DirectoryEntry {
                     Id = null,
                     DisplayName = ToolsStrings.Uploader_RootDirectory,
@@ -253,15 +275,17 @@ namespace AcManager.LargeFilesSharing.Implementations {
         }
 #pragma warning restore 0649
 
-        public override async Task<UploadResult> Upload(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
+        public override async Task<UploadResult> UploadAsync(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            await Prepare(cancellation);
+            await PrepareAsync(cancellation);
 
             if (_authToken == null) {
                 throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
 
             var bytes = await data.ReadAsBytesAsync();
+            cancellation.ThrowIfCancellationRequested();
+
             var entry = await Request.PostMultipart<InsertResult>(@"https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart",
                     new InsertParams {
                         Title = name,
@@ -277,17 +301,18 @@ namespace AcManager.LargeFilesSharing.Implementations {
                     mimeType,
                     progress,
                     cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
             if (entry == null) {
-                throw new InformativeException(ToolsStrings.Uploader_CannotUploadToGoogleDrive, ToolsStrings.Common_MakeSureThereIsEnoughSpace);
+                RaiseUploadFailedException();
             }
 
             var shared = await Request.Post<PermissionResult>($"https://www.googleapis.com/drive/v2/files/fileId/permissions?fileId={entry.Id}",
-                    JsonConvert.SerializeObject(new {
-                        role = @"reader",
-                        type = @"anyone"
-                    }).GetBytes(), _authToken.AccessToken, cancellation);
+                    new { role = @"reader", type = @"anyone" }, _authToken.AccessToken, cancellation: cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
             if (shared == null) {
-                throw new Exception(ToolsStrings.Uploader_CannotShareGoogleDrive);
+                RaiseShareFailedException();
             }
 
             return new UploadResult {

@@ -66,16 +66,14 @@ namespace AcManager.Tools {
 
                 case "open":
                     var address = Convert.FromBase64String(param).ToUtf8String();
-                    var path = await LoadRemoveFile(address, query?.Get(@"name"));
-                    if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
-
                     try {
-                        if (!FileUtils.Exists(path)) return ArgumentHandleResult.FailedShow;
-                    } catch (Exception) {
+                        return await ProcessInputFile(await LoadRemoveFile(address, query?.Get(@"name")));
+                    } catch (Exception e) when (e.IsCanceled()) {
+                        return ArgumentHandleResult.Failed;
+                    } catch (Exception e) {
+                        Logging.Warning(e);
                         return ArgumentHandleResult.FailedShow;
                     }
-
-                    return await ProcessInputFile(path);
 
                 case "install":
                     return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams {
@@ -101,6 +99,8 @@ namespace AcManager.Tools {
             CustomUriRequest custom;
             try {
                 custom = CustomUriRequest.Parse(uri);
+            } catch (Exception e) when (e.IsCanceled()) {
+                return ArgumentHandleResult.Failed;
             } catch (Exception) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
                 return ArgumentHandleResult.Failed;
@@ -144,6 +144,8 @@ namespace AcManager.Tools {
                         NonfatalError.Notify(string.Format(AppStrings.Main_NotSupportedRequest, custom.Path), AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
+            } catch (OperationCanceledException) {
+                return ArgumentHandleResult.Failed;
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotProcessRequest, AppStrings.Arguments_CannotProcessRequest_Commentary, e);
                 return ArgumentHandleResult.Failed;
@@ -156,10 +158,7 @@ namespace AcManager.Tools {
             }
 
             var url = around ? $@"http://acstuff.ru/u/around?id={id}" : $@"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
-            var path = await LoadRemoveFileTo(url, LocaleHelper.GetGoogleSheetsFilename());
-            if (string.IsNullOrWhiteSpace(path)) {
-                throw new InformativeException("Can’t load file");
-            }
+            await LoadRemoveFileToNew(url, LocaleHelper.GetGoogleSheetsFilename());
 
             SettingsHolder.Locale.LoadUnpacked = true;
             if (locale != null) {
@@ -176,7 +175,6 @@ namespace AcManager.Tools {
 
         private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
             var path = await LoadRemoveFile(url, extension: compressed ? @".zip" : @".acreplay");
-            if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
 
             try {
                 if (!FileUtils.Exists(path)) return ArgumentHandleResult.FailedShow;
@@ -243,7 +241,7 @@ namespace AcManager.Tools {
 
             var car = CarsManager.Instance.GetById(details.Item1.CarId);
             var track = details.Item1.TrackKunosId == null ? null : TracksManager.Instance.GetLayoutByKunosId(details.Item1.TrackKunosId);
-            var setupId = details.Item1.FileName ?? "thesetupmarket.ini";
+            var setupId = details.Item1.FileName;
 
             var result = ShowDialog(new SharedEntry {
                 Author = details.Item1.Author,

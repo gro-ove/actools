@@ -1,12 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsSharing" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:lfs="clr-namespace:AcManager.LargeFilesSharing;assembly=AcManager.LargeFilesSharing"
-    xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:tools="clr-namespace:AcManager.Tools"
-    xmlns:uploaders="clr-namespace:AcManager.LargeFilesSharing.Uploaders;assembly=AcManager.LargeFilesSharing"
-    mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:h="http://acstuff.ru/app/sharing" xmlns:tools="clr-namespace:AcManager.Tools" mc:Ignorable="d"
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -19,11 +16,6 @@
           <TextBlock Text="{Binding EntryType, Converter={StaticResource EnumToDescriptionConverter}}" TextTrimming="CharacterEllipsis" />
         </DockPanel>
       </DataTemplate>
-
-      <mui:SpacingUniformGrid x:Key="UploaderSettings.MegaUploader" HorizontalSpacing="4" Rows="1" d:DataContext="{d:DesignInstance uploaders:MegaUploader}">
-        <mui:BetterTextBox Text="{Binding UserEmail}" Placeholder="E-mail" />
-        <mui:ProperPasswordBox Password="{Binding UserPassword}" Placeholder="Password" />
-      </mui:SpacingUniformGrid>
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsSharing">

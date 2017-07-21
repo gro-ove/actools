@@ -51,7 +51,7 @@ namespace AcManager.Pages.Selected {
                     waiting.Report(ControlsStrings.Common_Preparing);
 
                     var uploader = LargeFileUploaderParams.Sharing.SelectedUploader;
-                    await uploader.SignIn(waiting.CancellationToken);
+                    await uploader.SignInAsync(waiting.CancellationToken);
 
                     waiting.Report(ControlsStrings.Common_Compressing);
 
@@ -73,12 +73,14 @@ namespace AcManager.Pages.Selected {
                         });
 
                         memory.Position = 0;
-                        result = await uploader.Upload(name ?? AppStrings.Replay_DefaultUploadedName,
+                        result = await uploader.UploadAsync(name ?? AppStrings.Replay_DefaultUploadedName,
                                 Path.GetFileNameWithoutExtension(filename) + @".zip",
                                 @"application/zip", GetDescription(car, track), memory, UploadAs.Replay, waiting,
                                 waiting.CancellationToken);
                     }
                 }
+            } catch (Exception e) when (e.IsCanceled()) {
+                return;
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);
                 return;

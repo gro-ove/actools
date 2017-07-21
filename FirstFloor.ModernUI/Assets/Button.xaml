@@ -1,7 +1,10 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:system="clr-namespace:System;assembly=mscorlib">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Easing.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernProgressRing.Special.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style x:Key="SystemButtonBase" TargetType="ButtonBase">
@@ -163,7 +166,7 @@
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
-    <Setter Property="Padding" Value="16 3 16 5" />
+    <Setter Property="Padding" Value="16 1 16 2" />
   </Style>
 
   <Style x:Key="BaseButtonStyle.Nothing" TargetType="{x:Type Button}">
@@ -286,6 +289,120 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ButtonBase}">
           <ContentPresenter RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type c:AsyncButton}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:AsyncButton}">
+          <c:AdornedControl x:Name="PART_Adorned">
+            <c:AdornedControl.AdornerContent>
+              <Border ClipToBounds="True" Margin="0 0 1 0">
+                <Border HorizontalAlignment="Right" Margin="0 0 -1 0">
+                  <Border.RenderTransform>
+                    <TranslateTransform x:Name="PART_CancelTranslate" X="20" />
+                  </Border.RenderTransform>
+                  <Button x:Name="PART_CancelButton" Content="×" ToolTip="Cancel" Padding="4 1 4 2" />
+                </Border>
+              </Border>
+            </c:AdornedControl.AdornerContent>
+            <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+              <DockPanel x:Name="PART_PaddingPanel" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                <Border Width="12" Height="12" Margin="0 -3 4 -4" DockPanel.Dock="Left" VerticalAlignment="Center" ClipToBounds="True">
+                  <Border.LayoutTransform>
+                    <ScaleTransform x:Name="PART_ProgressScale" ScaleX="0" />
+                  </Border.LayoutTransform>
+                  <c:BooleanSwitch x:Name="PART_Progress"
+                      RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
+                    <Canvas>
+                      <c:ModernProgressRing Width="80" Height="80" IsActive="True" Style="{StaticResource CompactProgressRingStyle}">
+                        <c:ModernProgressRing.RenderTransform>
+                          <ScaleTransform ScaleX="0.15" ScaleY="0.15" CenterX="0" CenterY="0" />
+                        </c:ModernProgressRing.RenderTransform>
+                      </c:ModernProgressRing>
+                    </Canvas>
+                  </c:BooleanSwitch>
+                </Border>
+                <ContentPresenter x:Name="Presenter" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+              </DockPanel>
+            </Border>
+          </c:AdornedControl>
+          <ControlTemplate.Resources>
+            <ResourceDictionary>
+              <Storyboard x:Key="ScaleXUp">
+                <DoubleAnimation To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressScale" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                    EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_CancelTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource DecelerationEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetName="PART_Progress" Storyboard.TargetProperty="(c:BooleanSwitch.Value)">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0.0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Boolean>True</system:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="ScaleXDown">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressScale" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                    EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation To="20" Duration="0:0:0.22" Storyboard.TargetName="PART_CancelTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource AccelerationEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.22" Storyboard.TargetName="PART_Progress" Storyboard.TargetProperty="(c:BooleanSwitch.Value)">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0.0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Boolean>False</system:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="PaddingDown">
+                <ThicknessAnimation To="8 1 24 2" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingPanel" Storyboard.TargetProperty="Margin"
+                    EasingFunction="{StaticResource StandartEase}" />
+              </Storyboard>
+              <Storyboard x:Key="PaddingUp">
+                <ThicknessAnimation To="16 1 16 2" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingPanel" Storyboard.TargetProperty="Margin"
+                    EasingFunction="{StaticResource StandartEase}" />
+              </Storyboard>
+            </ResourceDictionary>
+          </ControlTemplate.Resources>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsProcessing" Value="True">
+              <!--<Setter TargetName="PART_Progress" Property="Value" Value="True" />-->
+              <Trigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="Cancellable" Value="True">
+              <Setter TargetName="PART_Adorned" Property="IsAdornerVisible" Value="True" />
+              <!--<Trigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
+              </Trigger.ExitActions>-->
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsProcessing" Value="True" />
+                <Condition Property="Cancellable" Value="True" />
+                <Condition Property="Padding" Value="16 1 16 2" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource PaddingDown}" />
+              </MultiTrigger.EnterActions>
+              <MultiTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource PaddingUp}" />
+              </MultiTrigger.ExitActions>
+            </MultiTrigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

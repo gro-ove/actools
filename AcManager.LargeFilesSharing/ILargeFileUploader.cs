@@ -12,6 +12,9 @@ namespace AcManager.LargeFilesSharing {
         [NotNull]
         string DisplayName { get; }
 
+        [NotNull]
+        string Description { get; }
+
         bool IsReady { get; }
 
         bool SupportsSigning { get; }
@@ -21,17 +24,17 @@ namespace AcManager.LargeFilesSharing {
         [CanBeNull]
         string DestinationDirectoryId { get; set; }
 
-        Task Reset();
+        Task PrepareAsync(CancellationToken cancellation);
 
-        Task Prepare(CancellationToken cancellation);
+        Task SignInAsync(CancellationToken cancellation);
 
-        Task SignIn(CancellationToken cancellation);
-
-        [ItemNotNull]
-        Task<DirectoryEntry[]> GetDirectories(CancellationToken cancellation);
+        Task ResetAsync(CancellationToken cancellation);
 
         [ItemNotNull]
-        Task<UploadResult> Upload([NotNull] string name, [NotNull] string originalName, [NotNull] string mimeType, [CanBeNull] string description,
+        Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation);
+
+        [ItemNotNull]
+        Task<UploadResult> UploadAsync([NotNull] string name, [NotNull] string originalName, [NotNull] string mimeType, [CanBeNull] string description,
                 [NotNull] Stream data, UploadAs uploadAs, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 }

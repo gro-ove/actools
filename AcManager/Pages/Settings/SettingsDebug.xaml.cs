@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,7 +34,6 @@ namespace AcManager.Pages.Settings {
 
             public ICommand DecryptHelperCommand {
                 get {
-                    Logging.Here();
                     return _decryptHelperCommand ?? (_decryptHelperCommand = new DelegateCommand(() => {
                         var m = Prompt.Show("DH:", "DH", watermark: "<key>=<value>");
                         if (m == null) return;
@@ -45,6 +45,15 @@ namespace AcManager.Pages.Settings {
                     }));
                 }
             }
+
+            private AsyncCommand _asyncBaseCommand;
+
+            public AsyncCommand AsyncBaseCommand => _asyncBaseCommand ?? (_asyncBaseCommand = new AsyncCommand(() => Task.Delay(2000)));
+
+            private AsyncCommand<CancellationToken?> _asyncCancelCommand;
+
+            public AsyncCommand<CancellationToken?> AsyncCancelCommand
+                => _asyncCancelCommand ?? (_asyncCancelCommand = new AsyncCommand<CancellationToken?>(c => Task.Delay(2000, c ?? default(CancellationToken))));
 
             private ICommand _magickNetMemoryLeakingCommand;
 

@@ -16,6 +16,7 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools {
@@ -106,9 +107,18 @@ namespace AcManager.Tools {
             return await ProcessInputFile(argument);
         }
 
+        /// <summary>
+        /// Loads remote file using FlexibleLoader.
+        /// </summary>
+        /// <param name="argument">Remote source.</param>
+        /// <param name="name">Preferable name.</param>
+        /// <param name="extension">Extension for loaded file.</param>
+        /// <returns>Path to loaded file.</returns>
+        /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
+        [ItemNotNull]
         private static async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.TryToLoadAsync(argument, name, extension, true, null, waiting, information => {
+                return await FlexibleLoader.LoadAsync(argument, name, extension, true, null, waiting, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
@@ -116,9 +126,17 @@ namespace AcManager.Tools {
             }
         }
 
-        private static async Task<string> LoadRemoveFileTo(string argument, string destination) {
+        /// <summary>
+        /// Loads remote file using FlexibleLoader.
+        /// </summary>
+        /// <param name="argument">Remote source.</param>
+        /// <param name="destination">Destination.</param>
+        /// <returns>Path to loaded file.</returns>
+        /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
+        [ItemNotNull]
+        private static async Task<string> LoadRemoveFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.TryToLoadAsyncTo(argument, destination, waiting, information => {
+                return await FlexibleLoader.LoadAsyncTo(argument, destination, waiting, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }

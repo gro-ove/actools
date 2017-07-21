@@ -105,10 +105,11 @@ namespace AcManager.Pages.Settings {
             private DelegateCommand _changeSteamIdCommand;
 
             public DelegateCommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new DelegateCommand(() => {
-                if (ModernDialog.ShowMessage("Do you want to change Steam ID? App will be restarted; also, RSR and SRS progress will be nulled.",
+                if (ModernDialog.ShowMessage("Do you want to change Steam ID? RSR and SRS progress are linked to it. Also, app will be restarted.",
                                 "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-                new AcRootDirectorySelector(false, true).ShowDialog();
-                WindowsHelper.RestartCurrentApplication();
+                if (new AcRootDirectorySelector(false, true).ShowDialog() == true) {
+                    WindowsHelper.RestartCurrentApplication();
+                }
             }));
 
             private DelegateCommand _changeAppKeyCommand;

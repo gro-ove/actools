@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
-    /// Represents a control that indicates that an operation is ongoing. 
+    /// Represents a control that indicates that an operation is ongoing.
     /// </summary>
     [TemplateVisualState(GroupName = GroupActiveStates, Name = StateInactive), TemplateVisualState(GroupName = GroupActiveStates, Name = StateActive)]
     public class ModernProgressRing : Control {
@@ -35,7 +35,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
-
             GotoCurrentState(false);
         }
 
@@ -47,8 +46,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets or sets a value that indicates whether the <see cref="ModernProgressRing"/> is showing progress.
         /// </summary>
         public bool IsActive {
-            get { return (bool)GetValue(IsActiveProperty); }
-            set { SetValue(IsActiveProperty, value); }
+            get => (bool)GetValue(IsActiveProperty);
+            set => SetValue(IsActiveProperty, value);
         }
     }
 }

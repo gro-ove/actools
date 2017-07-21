@@ -4,7 +4,12 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
-    public class AsyncCommand : CommandExt {
+    public interface IAsyncCommand {
+        bool IsInProcess { get; }
+        Task ExecuteAsync([CanBeNull] object parameter);
+    }
+
+    public class AsyncCommand : CommandExt, IAsyncCommand {
         [NotNull]
         private readonly Func<Task> _execute;
 
@@ -12,12 +17,17 @@ namespace FirstFloor.ModernUI.Commands {
         private readonly Func<bool> _canExecute;
 
         private bool _inProcess;
+        public bool IsInProcess => _inProcess;
+
+        public Task ExecuteAsync(object parameter) {
+            return ExecuteAsync();
+        }
+
         private readonly TimeSpan _additionalDelay;
-        
+
         public AsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute, TimeSpan additionalDelay = default(TimeSpan), bool isAutomaticRequeryDisabled = false)
                 : base(false, isAutomaticRequeryDisabled) {
-            if (execute == null) throw new ArgumentNullException(nameof(execute));
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
             _additionalDelay = additionalDelay;
         }
@@ -57,7 +67,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
     }
 
-    public class AsyncCommand<T> : CommandExt<T> {
+    public class AsyncCommand<T> : CommandExt<T>, IAsyncCommand {
         [NotNull]
         private readonly Func<T, Task> _execute;
 
@@ -65,12 +75,18 @@ namespace FirstFloor.ModernUI.Commands {
         private readonly Func<T, bool> _canExecute;
 
         private bool _inProcess;
+        public bool IsInProcess => _inProcess;
+
+        public Task ExecuteAsync(object parameter) {
+            if (parameter == null) return ExecuteAsync(default(T));
+            return ConvertXamlCompatible(parameter, out T value) ? ExecuteAsync(value) : Task.Delay(0);
+        }
+
         private readonly int _additionalDelay;
-        
+
         public AsyncCommand([NotNull] Func<T, Task> execute, Func<T, bool> canExecute = null, int additionalDelay = 0, bool isAutomaticRequeryDisabled = false)
                 : base(false, isAutomaticRequeryDisabled) {
-            if (execute == null) throw new ArgumentNullException(nameof(execute));
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
             _additionalDelay = additionalDelay;
         }
@@ -79,9 +95,12 @@ namespace FirstFloor.ModernUI.Commands {
             return !_inProcess && (_canExecute == null || _canExecute(parameter));
         }
 
+        public T CurrentParameter;
+
         public async Task ExecuteAsync(T parameter) {
             try {
                 _inProcess = true;
+                CurrentParameter = parameter;
                 RaiseCanExecuteChanged();
 
                 await _execute(parameter);
@@ -94,6 +113,7 @@ namespace FirstFloor.ModernUI.Commands {
                 throw;
             } finally {
                 _inProcess = false;
+                CurrentParameter = default(T);
                 RaiseCanExecuteChanged();
             }
         }

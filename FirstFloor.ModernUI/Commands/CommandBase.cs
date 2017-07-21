@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -103,11 +104,18 @@ namespace FirstFloor.ModernUI.Commands {
 
         protected CommandExt(bool alwaysCanExecute, bool isAutomaticRequeryDisabled) : base(alwaysCanExecute, isAutomaticRequeryDisabled) {}
 
-        private bool ConvertXamlCompatible([NotNull] object parameter, out T result) {
+        protected bool ConvertXamlCompatible([NotNull] object parameter, out T result) {
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+
             if (typeof(T) == typeof(string)) {
                 /* we don’t need to check on null or if it’s already a string — those
                  * cases would be solved before, by Convert() */
                 result = (T)(object)parameter.ToString();
+                return true;
+            }
+
+            if (typeof(T) == parameter.GetType()) {
+                result = (T)parameter;
                 return true;
             }
 

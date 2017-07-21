@@ -81,7 +81,7 @@ namespace AcManager.Controls.ViewModels {
         private void OnUploaderPropertyChanged(object sender, PropertyChangedEventArgs args) {
             if (args.PropertyName != nameof(SelectedUploader.IsReady)) return;
             if (SelectedUploader.IsReady) {
-                UpdateDirectoriesCommand.Execute();
+                UpdateDirectoriesCommand.Execute(default(CancellationToken));
             } else {
                 UploaderDirectories = null;
             }
@@ -100,13 +100,13 @@ namespace AcManager.Controls.ViewModels {
 
         public async Task Prepare() {
             if (SelectedUploader.IsReady && UploaderDirectories == null) {
-                UpdateDirectoriesCommand.Execute();
+                UpdateDirectoriesCommand.Execute(default(CancellationToken));
                 return;
             }
 
             try {
                 IsBusy++;
-                await SelectedUploader.Prepare(default(CancellationToken));
+                await SelectedUploader.PrepareAsync(default(CancellationToken));
             } finally {
                 IsBusy--;
             }
@@ -120,7 +120,7 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _uploaderDirectory)) return;
                 _uploaderDirectory = value;
                 OnPropertyChanged();
-                SelectedUploader.DestinationDirectoryId = value.Id;
+                SelectedUploader.DestinationDirectoryId = value?.Id;
             }
         }
 
@@ -136,11 +136,12 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private AsyncCommand _logOutCommand;
+        private AsyncCommand<CancellationToken?> _logOutCommand;
 
-        public AsyncCommand LogOutCommand => _logOutCommand ?? (_logOutCommand = new AsyncCommand(async () => {
+        public AsyncCommand<CancellationToken?> LogOutCommand => _logOutCommand ?? (_logOutCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
-                await SelectedUploader.Reset();
+                await SelectedUploader.ResetAsync(c ?? default(CancellationToken));
+            } catch (Exception e) when (e.IsCanceled()) {
             } catch (WebException e) {
                 NonfatalError.Notify("Can’t log out", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {
@@ -150,13 +151,14 @@ namespace AcManager.Controls.ViewModels {
             _signInCommand?.RaiseCanExecuteChanged();
             _logOutCommand?.RaiseCanExecuteChanged();
             _updateDirectoriesCommand?.RaiseCanExecuteChanged();
-        }, () => SelectedUploader.IsReady));
+        }, c => SelectedUploader.IsReady));
 
-        private AsyncCommand _signInCommand;
+        private AsyncCommand<CancellationToken?> _signInCommand;
 
-        public AsyncCommand SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand(async () => {
+        public AsyncCommand<CancellationToken?> SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
-                await SelectedUploader.SignIn(default(CancellationToken));
+                await SelectedUploader.SignInAsync(c ?? default(CancellationToken));
+            } catch (Exception e) when (e.IsCanceled()) {
             } catch (WebException e) {
                 NonfatalError.Notify("Can’t sign in", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {
@@ -166,20 +168,21 @@ namespace AcManager.Controls.ViewModels {
             _signInCommand?.RaiseCanExecuteChanged();
             _logOutCommand?.RaiseCanExecuteChanged();
             _updateDirectoriesCommand?.RaiseCanExecuteChanged();
-        }, () => !SelectedUploader.IsReady));
+        }, c => !SelectedUploader.IsReady));
 
-        private AsyncCommand _updateDirectoriesCommand;
+        private AsyncCommand<CancellationToken?> _updateDirectoriesCommand;
 
-        public AsyncCommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new AsyncCommand(async () => {
-            try {
-                IsBusy++;
-                UploaderDirectories = await SelectedUploader.GetDirectories(default(CancellationToken));
-                UploaderDirectory = UploaderDirectories.GetChildByIdOrDefault(SelectedUploader.DestinationDirectoryId);
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t load list of directories", ToolsStrings.Common_MakeSureInternetWorks, e);
-            } finally {
-                IsBusy--;
-            }
-        }, () => SelectedUploader.SupportsDirectories && SelectedUploader.IsReady));
+        public AsyncCommand<CancellationToken?> UpdateDirectoriesCommand
+            => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new AsyncCommand<CancellationToken?>(async c => {
+                try {
+                    IsBusy++;
+                    UploaderDirectories = await SelectedUploader.GetDirectoriesAsync(c ?? default(CancellationToken));
+                    UploaderDirectory = UploaderDirectories.GetChildByIdOrDefault(SelectedUploader.DestinationDirectoryId);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load list of directories", ToolsStrings.Common_MakeSureInternetWorks, e);
+                } finally {
+                    IsBusy--;
+                }
+            }, c => SelectedUploader.SupportsDirectories && SelectedUploader.IsReady));
     }
 }

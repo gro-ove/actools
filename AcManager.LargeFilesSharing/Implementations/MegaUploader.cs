@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools;
@@ -12,15 +13,17 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.LargeFilesSharing.Implementations {
     public class MegaUploader : FileUploaderBase {
-        public MegaUploader(IStorage storage) : base(storage, "Mega", true, true) {
+        public MegaUploader(IStorage storage) : base(storage, "Mega",
+                "50 GB of space, but with floating download quota. Has proper API for downloading shared files, so it works with CM, but files might get damaged due to poor network connection.",
+                true, true) {
             _userEmail = Storage.GetEncryptedString(KeyUserEmail);
         }
 
         private MegaApiClient.LogonSessionToken _token;
         private bool IsTokenValid => _token?.MasterKey != null && _token.SessionId != null;
 
-        public override async Task Reset() {
-            await base.Reset();
+        public override async Task ResetAsync(CancellationToken cancellation) {
+            await base.ResetAsync(cancellation);
             UserEmail = null;
             UserPassword = null;
             _token = null;
@@ -28,7 +31,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
             Storage.Remove(KeyToken);
         }
 
-        public override Task Prepare(CancellationToken cancellation) {
+        public override Task PrepareAsync(CancellationToken cancellation) {
             if (!IsReady) {
                 _token = new MegaApiClient.LogonSessionToken(
                         Storage.GetEncryptedString(KeySession),
@@ -43,9 +46,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
             return Task.Delay(0);
         }
 
-        private const string KeyUserEmail = "umebokzkt9";
-        private const string KeySession = "um7x4dkj4i";
-        private const string KeyToken = "um3x2sm7vi";
+        private const string KeyUserEmail = "email";
+        private const string KeySession = "session";
+        private const string KeyToken = "token";
 
         private string _userEmail;
         public string UserEmail {
@@ -68,8 +71,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
             }
         }
 
-        public override async Task SignIn(CancellationToken cancellation) {
-            await Prepare(cancellation);
+        public override async Task SignInAsync(CancellationToken cancellation) {
+            await PrepareAsync(cancellation);
             if (IsReady || cancellation.IsCancellationRequested) return;
 
             var client = new MegaApiClient();
@@ -131,14 +134,18 @@ namespace AcManager.LargeFilesSharing.Implementations {
             return root.Select(x => x.Result);
         }
 
-        public override async Task<DirectoryEntry[]> GetDirectories(CancellationToken cancellation) {
-            await Prepare(cancellation);
+        public override async Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation) {
+            await PrepareAsync(cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
             if (!IsTokenValid) {
                 throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
 
             var client = new MegaApiClient();
             await client.LoginAsync(_token);
+            cancellation.ThrowIfCancellationRequested();
+
             return HierarchicalNodes<INode, DirectoryEntry>(
                     (await client.GetNodesAsync()).Where(x => x.Type == NodeType.Root || x.Id != null && x.Name != null && x.Type == NodeType.Directory),
                     (node, nodes) => nodes.FirstOrDefault(x => x.Id == node.ParentId),
@@ -149,22 +156,30 @@ namespace AcManager.LargeFilesSharing.Implementations {
                     }).ToArray();
         }
 
-        public override async Task<UploadResult> Upload(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
+        public override async Task<UploadResult> UploadAsync(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var client = new MegaApiClient();
             await client.LoginAsync(_token);
+            cancellation.ThrowIfCancellationRequested();
 
             var totalLength = data.Length;
             var nodes = (await client.GetNodesAsync()).ToList();
+            cancellation.ThrowIfCancellationRequested();
+
             var node = nodes.FirstOrDefault(x => x.Id == DestinationDirectoryId) ?? nodes.First(x => x.Type == NodeType.Root);
             var result = await client.UploadAsync(data, name, node, new Progress<double>(v => {
                 progress?.Report(AsyncProgressEntry.CreateUploading((long)(v / 100d * totalLength), totalLength));
             }), null, cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
             var url = (await client.GetDownloadLinkAsync(result)).ToString();
-            return new UploadResult {
-                Id = $"{(uploadAs == UploadAs.Content ? "I6" : "Ii")}{Convert.ToBase64String(Encoding.UTF8.GetBytes(url))}",
-                DirectUrl = url
-            };
+            cancellation.ThrowIfCancellationRequested();
+
+            Logging.Debug(url);
+            var id = Regex.Match(url, @"#!(.+)");
+            return id.Success ?
+                    new UploadResult { Id = $"{(uploadAs == UploadAs.Content ? "Ei" : "RE")}{id.Groups[1].Value}", DirectUrl = url } :
+                    WrapUrl(url, uploadAs);
         }
     }
 }

@@ -114,7 +114,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public string GetEncryptedString(string key, string defaultValue = null) {
-            return _baseStorage.GetString(_prefix + key, defaultValue);
+            return _baseStorage.GetEncryptedString(_prefix + key, defaultValue);
         }
 
         public void SetString(string key, string value) {

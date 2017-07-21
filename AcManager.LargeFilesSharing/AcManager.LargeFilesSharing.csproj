@@ -87,7 +87,6 @@
     <Compile Include="FileUploaderBase.cs" />
     <Compile Include="ILargeFileUploader.cs" />
     <Compile Include="Implementations\DropboxUploader.cs" />
-    <Compile Include="PromptCodeFromBrowser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="UploadAs.cs" />

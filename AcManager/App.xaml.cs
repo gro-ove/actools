@@ -78,6 +78,7 @@ namespace AcManager {
                         InternalUtils.GetValuesStorageEncryptionKey(),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {

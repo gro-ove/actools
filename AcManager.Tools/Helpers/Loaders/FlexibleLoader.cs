@@ -46,61 +46,6 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        [ItemCanBeNull]
-        public static async Task<string> TryToLoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
-                string directory = null, IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            var fixedDirectory = directory != null;
-            if (!fixedDirectory) {
-                directory = SettingsHolder.Content.TemporaryFilesLocationValue;
-            }
-
-            if (useCachedIfAny) {
-                var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
-                var destination = Path.Combine(directory, fileName);
-                if (File.Exists(destination)) return destination;
-
-                var temporary = destination + ".tmp";
-                if (await TryToLoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation) == null ||
-                        !File.Exists(temporary)) {
-                    return null;
-                }
-
-                File.Move(temporary, destination);
-                return destination;
-            } else {
-                string destination;
-                if (name != null) {
-                    destination = Path.Combine(directory, name);
-                    if (!fixedDirectory && File.Exists(destination)) {
-                        destination = FileUtils.GetTempFileNameFixed(directory, name);
-                    }
-                } else {
-                    destination = extension == null
-                            ? FileUtils.GetTempFileName(directory)
-                            : FileUtils.GetTempFileName(directory, extension);
-                }
-
-                File.WriteAllBytes(destination, new byte[0]);
-                return await TryToLoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
-            }
-        }
-
-        [ItemCanBeNull]
-        public static async Task<string> TryToLoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
-                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
-            try {
-                return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
-            } catch (TaskCanceledException) {
-                return null;
-            } catch (WebException) when (cancellation.IsCancellationRequested) {
-                return null;
-            } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.Common_CannotDownloadFile_Commentary, e);
-                return null;
-            }
-        }
-
         [ItemNotNull]
         public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
                 string directory = null, IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
@@ -117,6 +62,8 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 var temporary = destination + ".tmp";
                 await LoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation);
+                cancellation.ThrowIfCancellationRequested();
+
                 if (File.Exists(temporary)) {
                     File.Move(temporary, destination);
                     return destination;
@@ -169,36 +116,54 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         [ItemNotNull]
-        private static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
                 Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
 
-            using (var order = KillerOrder.Create(new CookieAwareWebClient {
-                Headers = {
-                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                }
-            }, TimeSpan.FromMinutes(10))) {
-                var client = order.Victim;
+            try {
+                using (var order = KillerOrder.Create(new CookieAwareWebClient {
+                    Headers = {
+                        [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
+                    }
+                }, TimeSpan.FromMinutes(10))) {
+                    var client = order.Victim;
 
-                if (_proxy != null) {
-                    client.Proxy = _proxy;
-                }
+                    if (_proxy != null) {
+                        client.Proxy = _proxy;
+                    }
 
-                progress?.Report(AsyncProgressEntry.Indetermitate);
+                    progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                cancellation.ThrowIfCancellationRequested();
-                cancellation.Register(client.CancelAsync);
+                    cancellation.ThrowIfCancellationRequested();
+                    cancellation.Register(client.CancelAsync);
 
-                if (!await loader.PrepareAsync(client, cancellation)) {
-                    throw new InformativeException("Can’t load file", "Loader preparation failed.");
-                }
+                    if (!await loader.PrepareAsync(client, cancellation)) {
+                        throw new InformativeException("Can’t load file", "Loader preparation failed.");
+                    }
 
-                cancellation.ThrowIfCancellationRequested();
-                metaInformationCallback?.Invoke(new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version));
+                    cancellation.ThrowIfCancellationRequested();
+                    metaInformationCallback?.Invoke(new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version));
 
-                var s = Stopwatch.StartNew();
-                if (loader.UsesClientToDownload) {
-                    client.DownloadProgressChanged += (sender, args) => {
+                    var s = Stopwatch.StartNew();
+                    if (loader.UsesClientToDownload) {
+                        client.DownloadProgressChanged += (sender, args) => {
+                            if (s.Elapsed.TotalMilliseconds > 20) {
+                                order.Delay();
+                                s.Restart();
+                            } else {
+                                return;
+                            }
+
+                            var total = args.TotalBytesToReceive;
+                            if (total == -1 && loader.TotalSize != -1) {
+                                total = Math.Max(loader.TotalSize, args.BytesReceived);
+                            }
+
+                            progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
+                        };
+                    }
+
+                    await loader.DownloadAsync(client, destination, loader.UsesClientToDownload ? null : new Progress<double>(p => {
                         if (s.Elapsed.TotalMilliseconds > 20) {
                             order.Delay();
                             s.Restart();
@@ -206,29 +171,15 @@ namespace AcManager.Tools.Helpers.Loaders {
                             return;
                         }
 
-                        var total = args.TotalBytesToReceive;
-                        if (total == -1 && loader.TotalSize != -1) {
-                            total = Math.Max(loader.TotalSize, args.BytesReceived);
-                        }
-
-                        progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
-                    };
+                        var total = loader.TotalSize;
+                        progress?.Report(total == -1 ?
+                                new AsyncProgressEntry("Loading…", p) :
+                                AsyncProgressEntry.CreateDownloading((long)(p * total), total));
+                    }), cancellation);
+                    cancellation.ThrowIfCancellationRequested();
                 }
-
-                await loader.DownloadAsync(client, destination, loader.UsesClientToDownload ? null : new Progress<double>(p => {
-                    if (s.Elapsed.TotalMilliseconds > 20) {
-                        order.Delay();
-                        s.Restart();
-                    } else {
-                        return;
-                    }
-
-                    var total = loader.TotalSize;
-                    progress?.Report(total == -1 ?
-                            new AsyncProgressEntry("Loading…", p) :
-                            AsyncProgressEntry.CreateDownloading((long)(p * total), total));
-                }), cancellation);
-                cancellation.ThrowIfCancellationRequested();
+            } catch (Exception) when (cancellation.IsCancellationRequested) {
+                throw new OperationCanceledException();
             }
 
             return destination;
