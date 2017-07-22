@@ -52,7 +52,7 @@
               <ItemsControl.ItemsSource>
                 <CompositeCollection>
                   <CollectionContainer Collection="{Binding Source={StaticResource TagsCollection}}" />
-                  <Border BorderThickness="1" BorderBrush="Transparent" Background="{DynamicResource ButtonBackground}" Margin="0 0 0 4" Padding="2">
+                  <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}" Margin="0 0 0 4" Padding="2">
                     <c:BetterComboBox x:Name="PART_NewTagTextBox" MinWidth="100" Style="{StaticResource BetterComboBox.Borderless}"
                         ItemsSource="{Binding SuggestionsSource, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" />
                   </Border>

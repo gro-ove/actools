@@ -55,7 +55,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private bool _installAsGenericMod;
 
         public bool InstallAsGenericMod {
-            get { return _installAsGenericMod; }
+            get => _installAsGenericMod;
             set {
                 if (Equals(value, _installAsGenericMod)) return;
                 _installAsGenericMod = value;
@@ -64,6 +64,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         public abstract bool GenericModSupported { get; }
+
         [CanBeNull]
         public abstract string GenericModTypeName { get; }
         public abstract string NewFormat { get; }

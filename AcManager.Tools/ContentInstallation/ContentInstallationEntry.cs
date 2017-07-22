@@ -465,12 +465,12 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         private Dictionary<string, string[]> _modsPreviousLogs;
-        private Dictionary<string, List<string>> _modsToInstall;
+        private Dictionary<string, Tuple<string, List<string>>> _modsToInstall;
 
         private async Task InstallAsync(IAdditionalContentInstallator installator, List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
                 CancellationTokenSource cancellation) {
             _modsPreviousLogs = new Dictionary<string, string[]>();
-            _modsToInstall = new Dictionary<string, List<string>>();
+            _modsToInstall = new Dictionary<string, Tuple<string, List<string>>>();
 
             try {
                 var preventExecutables = !_installationParams.AllowExecutables;
@@ -480,13 +480,13 @@ namespace AcManager.Tools.ContentInstallation {
                         var destination = x.CopyCallback(info);
                         if (destination == null) return null;
 
-                        if (x.OriginalEntry.InstallAsGenericMod) {
-                            var modName = $"[{x.OriginalEntry.GenericModTypeName}] {x.OriginalEntry.Name}";
+                        if (x.OriginalEntry.GenericModSupported && x.OriginalEntry.InstallAsGenericMod) {
+                            var modName = $"({x.OriginalEntry.GenericModTypeName}) {x.OriginalEntry.Id}";
                             if (!_modsToInstall.TryGetValue(modName, out var list)) {
-                                list = _modsToInstall[modName] = new List<string>();
+                                list = _modsToInstall[modName] = Tuple.Create(x.OriginalEntry.Name, new List<string>());
                             }
 
-                            list.Add(destination);
+                            list.Item2.Add(destination);
                             SaveModBackup(modName, destination);
                         }
 
@@ -553,7 +553,9 @@ namespace AcManager.Tools.ContentInstallation {
                 await Task.Run(() => {
                     Directory.CreateDirectory(destination);
 
-                    var files = p.Value.Where(x => FileUtils.IsAffected(root, x)).ToList();
+                    var files = p.Value.Item2.Where(x => FileUtils.IsAffected(root, x)).ToList();
+                    File.WriteAllText(Path.Combine(destination, "name.jsgme"), p.Value.Item1);
+
                     foreach (var v in files) {
                         var relative = FileUtils.GetRelativePath(v, root);
                         var modFilename = Path.Combine(destination, relative);

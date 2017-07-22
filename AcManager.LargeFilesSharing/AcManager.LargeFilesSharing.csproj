@@ -132,7 +132,7 @@
     <Resource Include="Assets\Icons\Mega.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Icons\OneDrive.png" />
+    <Resource Include="Assets\Icons\OneDrive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

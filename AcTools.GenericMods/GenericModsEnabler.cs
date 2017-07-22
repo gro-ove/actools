@@ -88,7 +88,6 @@ namespace AcTools.GenericMods {
         }
 
         private void ScanMods() {
-            Logging.Debug(this.GetHashCode());
             _operationBusy.Do(() => {
                 Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory)
                                                          .Where(x => Path.GetFileName(x)?.StartsWith("!") == false)

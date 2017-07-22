@@ -7,6 +7,9 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 - ### [AcTools](https://github.com/gro-ove/actools/tree/master/AcTools)
     Main library, used by any other project (including [Cars Manager](https://ascobash.wordpress.com/2015/06/14/actools-uijson/) and even [modded KsEditor](https://ascobash.wordpress.com/2015/07/22/kseditor/)). Contains methods to work with common AC files, launches game and stuff.
     
+- ### [AcTools.GenericMods](https://github.com/gro-ove/actools/tree/master/AcTools.GenericMods)
+    Small library for managing JSGME mods, fully compatible, but with optional hard links support.
+
 - ### [AcTools.LapTimes](https://github.com/gro-ove/actools/tree/master/AcTools.LapTimes)
     Thing for reading best lap times from different sources. Uses LevelDb for reading from the original launcher (which saves times using Chromium’s IndexedDB).
     
@@ -40,8 +43,11 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 - ### [AcManager.Tools](https://github.com/gro-ove/actools/tree/master/AcManager.Tools)
     Library with logic, almost without any UI parts (like CarsManager and CarObject, for instance).
 
+- ### [AcManager.AcSound](https://github.com/gro-ove/actools/tree/master/AcManager.AcSound)
+    Wrapper for AcTools.SoundbankPlayer, which is, in its turn, just a very small thing built around FMOD library to play FMOD soundbanks.
+
 - ### [AcManager.LargeFilesSharing](https://github.com/gro-ove/actools/tree/master/AcManager.LargeFilesSharing)
-    Small sub-library for uploading big files into clouds (only Google Drive for now). Could weight more than 2 MB with official Google library, but self-written takes only about 35 KB.
+    Small sub-library for uploading big files into various clouds. Could weight more than 2 MB with only official Google library, but self-written takes much less.
 
 - ### [AcManager.ContentRepair](https://github.com/gro-ove/actools/tree/master/AcManager.ContentRepair)
     Contains a bunch of diagnostics and repairs for common custom cars’ issues in AC.

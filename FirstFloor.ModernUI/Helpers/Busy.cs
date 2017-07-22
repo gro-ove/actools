@@ -41,44 +41,56 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        private void DoUi(Action a) {
+            if (Is) return;
+            using (Set()) {
+                a();
+            }
+        }
+
         public void Do(Action a) {
-            if (Is) return;
-            using (Set()) {
-                if (_invokeInUiThread) {
-                    a.InvokeInMainThread();
-                } else {
-                    a();
-                }
+            if (_invokeInUiThread) {
+                ActionExtension.InvokeInMainThread(() => DoUi(a));
+            } else {
+                DoUi(a);
             }
         }
 
-        public async Task Task(Func<Task> a) {
+        private async Task TaskUi(Func<Task> a) {
             if (Is) return;
             using (Set()) {
-                if (_invokeInUiThread) {
-                    await a.InvokeInMainThreadAsync();
-                } else {
-                    await a();
-                }
+                await a();
             }
         }
 
-        public async Task Delay(TimeSpan delay, bool force = false) {
+        public Task Task(Func<Task> a) {
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => TaskUi(a)) : TaskUi(a);
+        }
+
+        private async Task DelayUi(TimeSpan delay, bool force) {
             if (!force && Is) return;
             using (Set()) {
                 await System.Threading.Tasks.Task.Delay(delay);
             }
         }
 
-        public async Task Delay(int millisecondsDelay, bool force = false) {
+        public Task Delay(TimeSpan delay, bool force = false) {
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => DelayUi(delay, force)) : DelayUi(delay, force);
+        }
+
+        private async Task DelayUi(int millisecondsDelay, bool force) {
             if (!force && Is) return;
             using (Set()) {
                 await System.Threading.Tasks.Task.Delay(millisecondsDelay);
             }
         }
+
+        public Task Delay(int delay, bool force = false) {
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => DelayUi(delay, force)) : DelayUi(delay, force);
+        }
     }
 
-    public static class BysyExtension {
+    public static class BusyExtension {
         public static void Delay([NotNull] this Busy busy, Action a, int millisecondsDelay, bool force = false) {
             using (busy.Set()) {
                 a();

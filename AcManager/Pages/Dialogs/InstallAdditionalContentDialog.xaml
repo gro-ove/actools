@@ -56,7 +56,7 @@
               <MultiBinding Converter="{StaticResource AndConverter}">
                 <Binding Source="{x:Static internal:AppKeyHolder.IsAllRight}" />
                 <Binding Path="DetectWhileInstalling" Source="{x:Static t:SettingsHolder.GenericMods}" />
-                <Binding Path="InstallAsGenericMod" />
+                <Binding Path="GenericModSupported" />
               </MultiBinding>
             </mui:BooleanSwitch.Value>
             <CheckBox IsChecked="{Binding InstallAsGenericMod}" ToolTip="Install as a generic mod as well, allowing to disable/remove it later"
