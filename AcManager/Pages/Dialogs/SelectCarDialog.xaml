@@ -160,7 +160,7 @@
 
     <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
       <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
-          FrameNavigated="Tabs_OnFrameNavigated" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible"
+          FrameNavigated="OnTabsNavigated" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible"
           LinksHorizontalAlignment="Stretch">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>

@@ -221,9 +221,8 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new [] { OkButton, CancelButton };
 
-            Logging.Debug(defaultFilter);
             if (defaultFilter != null) {
-                Tabs.SavePolicy = SavePolicy.SkipLoading;
+                Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
                 Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", defaultFilter);
             }
         }
@@ -265,18 +264,18 @@ namespace AcManager.Pages.Dialogs {
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
-            CarsManager.Instance.WrappersList.ItemPropertyChanged += List_ItemPropertyChanged;
-            CarsManager.Instance.WrappersList.WrappedValueChanged += List_WrappedValueChanged;
+            CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
+            CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
-            CarsManager.Instance.WrappersList.ItemPropertyChanged -= List_ItemPropertyChanged;
-            CarsManager.Instance.WrappersList.WrappedValueChanged -= List_WrappedValueChanged;
+            CarsManager.Instance.WrappersList.ItemPropertyChanged -= OnListItemPropertyChanged;
+            CarsManager.Instance.WrappersList.WrappedValueChanged -= OnListWrappedValueChanged;
         }
 
-        void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(CarObject.ParentId)) return;
 
             var car = sender as CarObject;
@@ -287,7 +286,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        void List_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+        void OnListWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
             var car = e.NewValue as CarObject;
             if (car == null || SelectedCar == null) return;
 
@@ -300,7 +299,7 @@ namespace AcManager.Pages.Dialogs {
         private ISelectedItemPage<AcObjectNew> _list;
         private IChoosingItemControl<AcObjectNew> _choosing;
 
-        private void Tabs_OnFrameNavigated(object sender, NavigationEventArgs e) {
+        private void OnTabsNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
