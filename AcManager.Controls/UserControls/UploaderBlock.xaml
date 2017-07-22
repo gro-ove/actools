@@ -32,8 +32,8 @@
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
           <DockPanel DockPanel.Dock="Left" Margin="0">
-            <mui:BooleanLazySwitch x:Name="UploaderParamsSwitch" TrueResourceKey="{Binding Id}" TrueResourceKeyStringFormat="UploaderCredentials.{0}" Value="True"
-                DataContext="{Binding SelectedUploader}" DockPanel.Dock="Left" CollapseIfMissing="True" Margin="0 0 4 0" />
+            <mui:BooleanLazySwitch x:Name="UploaderParamsSwitch" TrueResourceKey="{Binding Id}" TrueResourceKeyStringFormat="UploaderCredentials.{0}"
+                Value="True" DataContext="{Binding SelectedUploader}" DockPanel.Dock="Left" CollapseIfMissing="True" Margin="0 0 4 0" />
             <mui:AsyncButton Margin="0" Content="Sign In" Command="{Binding SignInCommand}" Padding="16 1 16 3" /><!-- {x:Static g:AppStrings.Common_SignIn} -->
           </DockPanel>
         </mui:BooleanSwitch.False>
@@ -43,7 +43,14 @@
       <ComboBox ItemsSource="{Binding UploadersList}" SelectedItem="{Binding SelectedUploader}" Height="23">
         <ComboBox.ItemTemplate>
           <DataTemplate>
-            <DockPanel x:Name="Panel" Margin="0 4" MaxWidth="320">
+            <DockPanel x:Name="Panel" Margin="0 4" MaxWidth="320" HorizontalAlignment="Left">
+              <mui:BetterImage ImageSource="{Binding Icon}" Margin="0 0 6 0" ShowBroken="False" Width="16" Height="16" VerticalAlignment="Center"
+                  RenderOptions.BitmapScalingMode="Linear">
+                <mui:BetterImage.Effect>
+                  <mui:OverlayColorEffect
+                      OverlayColor="{Binding Path=(TextBlock.Foreground).(SolidColorBrush.Color), RelativeSource={RelativeSource AncestorType=DockPanel}}" />
+                </mui:BetterImage.Effect>
+              </mui:BetterImage>
               <mui:BbCodeBlock x:Name="Description" Margin="0 4 0 0" BbCode="{Binding Description}" DockPanel.Dock="Bottom" TextWrapping="Wrap"
                   Style="{StaticResource Small}" />
               <TextBlock Text="{Binding DisplayName}" />
@@ -86,7 +93,7 @@
         <mui:ReferenceSwitch.NonNull>
           <TreeView x:Name="UploaderDirectoriesTreeView" ItemsSource="{Binding UploaderDirectories}" SelectedItemChanged="OnTreeSelectedItemChanged"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False"
-              Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+              Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="-17 -1 -4 0">
             <TreeView.Resources>
               <Style TargetType="TreeViewItem">
                 <Setter Property="Template">
@@ -94,7 +101,7 @@
                     <ControlTemplate>
                       <mui:RememberingExpander Header="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header}"
                           Style="{StaticResource Expander.Animated}" DefaultValue="False"
-                          Key="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header, StringFormat='{}.sharing_dir_{0}', Mode=OneTime}">
+                          Key="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Id, StringFormat='{}.sharing_dir_{0}', Mode=OneTime}">
                         <ItemsPresenter x:Name="ItemsHost" Margin="20 0 0 0" />
                       </mui:RememberingExpander>
                     </ControlTemplate>
@@ -113,7 +120,7 @@
                 </Style.Triggers>
               </Style>
               <HierarchicalDataTemplate DataType="{x:Type h:DirectoryEntry}" ItemsSource="{Binding Children}">
-                <Border x:Name="Panel" Padding="4 2">
+                <Border x:Name="Panel" Padding="4 3">
                   <DockPanel>
                     <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Style="{StaticResource Small}" VerticalAlignment="Center"
                         Visibility="{Binding Size, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" DockPanel.Dock="Right" />

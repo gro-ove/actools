@@ -62,7 +62,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnClick() {
             var asyncCommand = Command as IAsyncCommand;
             if (asyncCommand != null) {
-                _busy.Do(async () => {
+                _busy.Task(async () => {
                     try {
                         SetValue(IsProcessingPropertyKey, true);
 
@@ -83,11 +83,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         }
                     } catch (Exception e) when (e.IsCanceled()) {
                     } catch (Exception e) when (e.IsCanceled()) {
+                    } catch (Exception e){
+                        NonfatalError.Notify("Unhandled error", e);
                     } finally {
                         _cancellation = null;
                         SetValue(IsProcessingPropertyKey, false);
                     }
-                });
+                }).Forget();
             } else {
                 base.OnClick();
             }

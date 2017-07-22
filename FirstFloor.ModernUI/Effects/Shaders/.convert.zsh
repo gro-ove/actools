@@ -8,5 +8,9 @@ function fxc(){
 }
 
 for n in *.fx; do
-    fxc /T ps_2_0 /E main /Fo${n%fx}ps $n || read _
+  if [[ -e ${n%fx}ext ]]; then
+    fxc /T ps_3_0 /O3 /E main /Fo${n%fx}ps $n || read _
+  else
+    fxc /T ps_2_0 /O3 /E main /Fo${n%fx}ps $n || read _
+  fi
 done

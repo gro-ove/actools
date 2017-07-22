@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools;
+using AcTools.Utils.Helpers;
 using CG.Web.MegaApiClient;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -14,6 +15,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.LargeFilesSharing.Implementations {
     public class MegaUploader : FileUploaderBase {
         public MegaUploader(IStorage storage) : base(storage, "Mega",
+                new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/Mega.png", UriKind.Relative),
                 "50 GB of space, but with floating download quota. Has proper API for downloading shared files, so it works with CM, but files might get damaged due to poor network connection.",
                 true, true) {
             _userEmail = Storage.GetEncryptedString(KeyUserEmail);
@@ -76,9 +78,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
             if (IsReady || cancellation.IsCancellationRequested) return;
 
             var client = new MegaApiClient();
-            var token = await client.LoginAsync(MegaApiClient.GenerateAuthInfos(UserEmail, UserPassword));
-            Storage.SetEncrypted(KeySession, token.SessionId);
-            Storage.SetEncrypted(KeyToken, token.MasterKey);
+            _token = await client.LoginAsync(MegaApiClient.GenerateAuthInfos(UserEmail, UserPassword));
+            Storage.SetEncrypted(KeySession, _token.SessionId);
+            Storage.SetEncrypted(KeyToken, _token.MasterKey);
             IsReady = true;
         }
 
@@ -178,7 +180,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
             Logging.Debug(url);
             var id = Regex.Match(url, @"#!(.+)");
             return id.Success ?
-                    new UploadResult { Id = $"{(uploadAs == UploadAs.Content ? "Ei" : "RE")}{id.Groups[1].Value}", DirectUrl = url } :
+                    new UploadResult { Id = $"{(uploadAs == UploadAs.Content ? "Ei" : "RE")}{id.Groups[1].Value.ToCutBase64()}", DirectUrl = url } :
                     WrapUrl(url, uploadAs);
         }
     }

@@ -10,6 +10,7 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -21,8 +22,26 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
             Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
         <Separator />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="Use car and track in a Quick Drive session (Ctrl+Alt+G)"
+            Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.MenuItems>
+            <CompositeCollection>
+              <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+            </CompositeCollection>
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
+        <Separator />
         <Button Content="{x:Static g:AppStrings.Toolbar_UploadAndShare}" Command="{Binding ShareCommand}"
-            ToolTip="{x:Static g:AppStrings.Toolbar_UploadAndShare_ReplayTooltip}" />
+            ToolTip="{x:Static g:AppStrings.Toolbar_UploadAndShare_ReplayTooltip}"
+            Visibility="{Binding AlreadyShared, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UploadAndShare}"
+            ButtonToolTip="{x:Static g:AppStrings.Toolbar_UploadAndShare_ReplayTooltip}" Command="{Binding ShareCommand}"
+            Visibility="{Binding AlreadyShared, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <mui:ButtonWithComboBox.MenuItems>
+            <MenuItem Header="Reupload" Command="{Binding ShareCommand}" CommandParameter="True" />
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
+
         <Button Content="{x:Static g:AppStrings.Toolbar_Play}" Command="{Binding PlayCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Play_Tooltip}"
             Style="{StaticResource Go.ToolBarButton}" />
       </ToolBar>
@@ -40,7 +59,7 @@
           <Label Content="Category:" />
           <Button Command="{Binding ClearCategoryCommand}" Content="{x:Static c:ControlsStrings.Common_Clear}" />
           <Button Command="{Binding ChangeCategoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding SelectedObject.Category, Mode=OneWay}" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding SelectedObject.EditableCategory, Mode=OneWay}" />
         </DockPanel>
 
         <DockPanel>
@@ -68,20 +87,21 @@
               Foreground="{DynamicResource DarkStripeText}" />
         </Grid>
 
-        <Grid Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
+        <mui:Cell Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
             Background="Black" services:ImageViewerService.Image="{Binding Track.PreviewImage}"
             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
             Margin="10 0 0 0">
-          <Grid.ContextMenu>
+          <mui:Cell.ContextMenu>
             <ContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByTrack}" Command="{Binding FilterCommand}" CommandParameter="track" />
+              <MenuItem Header="Open In Quick Drive" Command="{Binding FilterCommand}" />
             </ContextMenu>
-          </Grid.ContextMenu>
-          <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding Track.PreviewImage}" MaxWidth="355" />
-          <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding Track.OutlineImage}" MaxWidth="355" ShowBroken="False" />
+          </mui:Cell.ContextMenu>
+          <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.PreviewImage}" Width="355" Height="200" Stretch="UniformToFill" />
+          <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.OutlineImage}" Width="365" Height="192" Stretch="Uniform" Margin="-5 0 -5 8" />
           <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding Track.Name}"
               Foreground="{DynamicResource DarkStripeText}" />
-        </Grid>
+        </mui:Cell>
       </Grid>
 
       <Grid Margin="0 0 8 8">
@@ -136,23 +156,23 @@
       <mui:BooleanSwitch Value="{Binding SelectedObject.IsAutoSave}">
         <mui:Cell Margin="0 20 0 8">
           <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-          <mui:BooleanSwitch Value="{Binding UseOldReplaysAutoSaveSystem, Source={x:Static t:SettingsHolder.Drive}}" Margin="8">
-            <mui:BooleanSwitch.True>
+          <mui:BooleanSwitch Value="{Binding Autosave, Source={x:Static t:AcSettingsHolder.Replay}}" Margin="8">
+            <mui:BooleanSwitch.False>
               <StackPanel>
                 <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
                 <TextBlock TextWrapping="Wrap" Margin="0 4 0 0" Text="{x:Static c:ControlsStrings.Replay_CrMessage}" />
                 <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage_Commentary}"
                     Visibility="{Binding AutoSaveReplays, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
               </StackPanel>
-            </mui:BooleanSwitch.True>
-            <mui:BooleanSwitch.False>
+            </mui:BooleanSwitch.False>
+            <mui:BooleanSwitch.True>
               <StackPanel>
                 <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
                 <TextBlock TextWrapping="Wrap" Margin="0 4 0 0"
                     Text="This replay was saved automatically and it will be overwritten soon. Move it from “Autosave” category to keep it." />
                 <Button Command="{Binding KeepReplayCommand}" Content="Keep Replay" Visibility="{Binding KeepReplayCommand}" Margin="0 8 0 0" />
               </StackPanel>
-            </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch.True>
           </mui:BooleanSwitch>
         </mui:Cell>
       </mui:BooleanSwitch>

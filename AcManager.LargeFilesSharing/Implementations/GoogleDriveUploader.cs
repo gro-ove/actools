@@ -40,7 +40,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
     public abstract class GoogleDriveUploaderBase : FileUploaderBase {
         protected GoogleDriveUploaderBase(IStorage storage, string name, string description, bool supportsSigning, bool supportsDirectories) :
-                base(storage, name, description, supportsSigning, supportsDirectories) { }
+                base(storage, name,
+                        new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/GoogleDrive.png", UriKind.Relative),
+                        description, supportsSigning, supportsDirectories) { }
 
         private const string RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 

@@ -16,25 +16,26 @@ namespace AcManager.Controls.UserControls {
         [CanBeNull]
         private UploaderParams Model => DataContext as UploaderParams;
 
+        private SizeRelatedCondition<UploaderBlock, double> _sizeRelatedCondition;
+
         public UploaderBlock() {
             InitializeComponent();
-            this.AddSizeCondition(x => (x.ActualWidth - 640) / 400)
-                .Add(x => {
-                    if (UploaderParamsSwitch.Visibility == Visibility.Visible && Model?.SelectedUploader.IsReady != true) {
-                        var v = x > 0d ? 200 * (x.Saturate() + 1.5) : double.NaN;
-                        UploaderParams.Width = v;
-                        UploaderParamsSwitch.Width = Math.Max(double.IsNaN(v) ? ActualWidth - 144d : v - 124d, 1d);
-                        UploaderParams.SetValue(DockPanel.DockProperty, x > 0d ? Dock.Right : Dock.Bottom);
-                        UploaderParams.Margin = x > 0d ? new Thickness(4, 0, 0, 0) : new Thickness(0, 8, 0, 0);
-                    } else {
-                        UploaderParams.Width = 120d;
-                        UploaderParams.SetValue(DockPanel.DockProperty, Dock.Right);
-                        UploaderParams.Margin = new Thickness(4, 0, 0, 0);
-                    }
-                })
-                .ListenOnProperty(Model, nameof(Model.SelectedUploader))
-                .ListenOnProperty(UploaderParams, BooleanSwitch.ValueProperty)
-                .ListenOnProperty(UploaderParamsSwitch, IsVisibleProperty);
+            _sizeRelatedCondition = this.AddSizeCondition(x => (x.ActualWidth - 640) / 400)
+                                        .Add(x => {
+                                            if (UploaderParamsSwitch.Visibility == Visibility.Visible && Model?.SelectedUploader.IsReady != true) {
+                                                var v = x > 0d ? 200 * (x.Saturate() + 1.5) : double.NaN;
+                                                UploaderParams.Width = v;
+                                                UploaderParamsSwitch.Width = Math.Max(double.IsNaN(v) ? ActualWidth - 144d : v - 124d, 1d);
+                                                UploaderParams.SetValue(DockPanel.DockProperty, x > 0d ? Dock.Right : Dock.Bottom);
+                                                UploaderParams.Margin = x > 0d ? new Thickness(4, 0, 0, 0) : new Thickness(0, 8, 0, 0);
+                                            } else {
+                                                UploaderParams.Width = 120d;
+                                                UploaderParams.SetValue(DockPanel.DockProperty, Dock.Right);
+                                                UploaderParams.Margin = new Thickness(4, 0, 0, 0);
+                                            }
+                                        })
+                                        .ListenOnProperty(UploaderParams, BooleanSwitch.ValueProperty)
+                                        .ListenOnProperty(UploaderParamsSwitch, IsVisibleProperty);
             Loaded += OnLoaded;
         }
 
@@ -53,6 +54,7 @@ namespace AcManager.Controls.UserControls {
             if (Model != null) {
                 Model.PropertyChanged += OnPropertyChanged;
                 Model.Prepare().Forget();
+                _sizeRelatedCondition.ListenOnProperty(Model, nameof(Model.SelectedUploader));
             }
         }
 

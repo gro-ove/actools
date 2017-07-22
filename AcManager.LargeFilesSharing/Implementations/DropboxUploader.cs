@@ -2,16 +2,14 @@
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI.WebControls.WebParts;
 using AcManager.Internal;
 using AcManager.Tools;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -20,6 +18,7 @@ using Newtonsoft.Json;
 namespace AcManager.LargeFilesSharing.Implementations {
     public class DropboxUploader : FileUploaderBase {
         public DropboxUploader(IStorage storage) : base(storage, "Dropbox (App Folder)",
+                new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/Dropbox.png", UriKind.Relative),
                 "2 GB of space by default, allows to use direct links, so CM can download files easily. This version uploads to app’s folder.", true, false) { }
 
         private static Task<OAuthCode> GetAuthenticationCode(string clientId, CancellationToken cancellation) {
@@ -29,8 +28,6 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
 #pragma warning disable 0649
         internal class AuthResponse {
-            // {"access_token": "ABCDEFG", "token_type": "bearer", "account_id": "dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc", "uid": "12345"}
-
             [JsonProperty(@"access_token")]
             public string AccessToken;
 
@@ -43,17 +40,6 @@ namespace AcManager.LargeFilesSharing.Implementations {
             [JsonProperty(@"token_type")]
             public string TokenType;
         }
-
-        internal class RefreshResponse {
-            [JsonProperty(@"access_token")]
-            public string AccessToken;
-
-            [JsonProperty(@"expires_in")]
-            public int ExpiresIn;
-
-            [JsonProperty(@"token_type")]
-            public string TokenType;
-        }
 #pragma warning restore 0649
 
         private AuthResponse _authToken;
@@ -62,7 +48,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
         public override async Task ResetAsync(CancellationToken cancellation) {
             if (_authToken != null) {
-                await Request.Post("https://api.dropboxapi.com/2/auth/token/revoke", null, _authToken.AccessToken, cancellation: cancellation);
+                Request.Post("https://api.dropboxapi.com/2/auth/token/revoke", null, _authToken.AccessToken, cancellation: cancellation).Ignore();
             }
 
             await base.ResetAsync(cancellation);
@@ -79,7 +65,6 @@ namespace AcManager.LargeFilesSharing.Implementations {
                         IsReady = true;
                     } catch (Exception e) {
                         Logging.Warning(e);
-                        Logging.Warning(enc);
                     }
                 }
             }
@@ -115,67 +100,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
             IsReady = true;
         }
 
-#pragma warning disable 0649
-        internal class SearchResult {
-            [JsonProperty(@"items")]
-            public SearchResultFile[] Items;
-        }
-
-        internal class SearchResultFile {
-            [JsonProperty(@"id")]
-            public string Id;
-
-            [JsonProperty(@"title")]
-            public string Title;
-
-            [JsonProperty(@"parents")]
-            public SearchResultParent[] Parents;
-        }
-
-        internal class SearchResultParent {
-            [JsonProperty(@"id")]
-            public string Id;
-
-            [JsonProperty(@"isRoot")]
-            public bool IsRoot;
-        }
-#pragma warning restore 0649
-
-        public override async Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation) {
-            await PrepareAsync(cancellation);
-
-            if (_authToken == null) {
-                throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
-            }
-
-            const string query = "mimeType='application/vnd.google-apps.folder' and trashed = false and 'me' in writers";
-            const string fields = "items(id,parents(id,isRoot),title)";
-            var data = await Request.Get<SearchResult>(
-                    @"https://www.googleapis.com/drive/v2/files?maxResults=1000&orderBy=title&" +
-                            $"q={HttpUtility.UrlEncode(query)}&fields={HttpUtility.UrlEncode(fields)}",
-                    _authToken.AccessToken, cancellation: cancellation);
-
-            if (data == null) {
-                throw new Exception(ToolsStrings.Uploader_RequestFailed);
-            }
-
-            var directories = data.Items.Select(x => new DirectoryEntry {
-                Id = x.Id,
-                DisplayName = x.Title
-            }).ToList();
-
-            foreach (var directory in directories) {
-                directory.Children = data.Items.Where(x => x.Parents.Any(y => !y.IsRoot && y.Id == directory.Id))
-                                         .Select(x => directories.GetById(x.Id)).ToArray();
-            }
-
-            return new [] {
-                new DirectoryEntry {
-                    Id = null,
-                    DisplayName = ToolsStrings.Uploader_RootDirectory,
-                    Children = data.Items.Where(x => x.Parents.All(y => y.IsRoot)).Select(x => directories.GetById(x.Id)).ToArray()
-                }
-            };
+        public override Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation) {
+            throw new NotSupportedException();
         }
 
         private bool? _muteUpload;
@@ -283,70 +209,88 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
 
-            var ended = false;
+            var commitParams = new CommitParams { Path = "/" + name, Mute = MuteUpload };
             var total = data.Length;
-            var buffer = new byte[Math.Min(total, 50 * 1024 * 1024)];
-            var uploaded = 0;
+            var bufferSize = Math.Min(total, 50 * 1024 * 1024);
+            var totalPieces = ((double)total / bufferSize).Ceiling();
 
-            async Task<int> NextPiece() {
-                if (ended) return 0;
-                var piece = await data.ReadAsync(buffer, 0, buffer.Length);
+            UploadFinishResult result;
+            if (totalPieces == 1) {
+                var bytes = await data.ReadAsBytesAsync();
                 cancellation.ThrowIfCancellationRequested();
-                ended = piece == 0 || uploaded + piece == total;
-                return piece;
-            }
+                result = await Request.Post<UploadFinishResult>(@"https://content.dropboxapi.com/2/files/upload", bytes,
+                        _authToken.AccessToken, progress, cancellation, new NameValueCollection {
+                            ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(commitParams)
+                        });
+            } else {
+                var ended = false;
+                var buffer = new byte[bufferSize];
+                var uploaded = 0;
 
-            progress.Report("Starting upload session…", 0.00001d);
-            var initialPiece = await NextPiece();
-            var session = await Request.Post<SessionOpenedResult>(@"https://content.dropboxapi.com/2/files/upload_session/start",
-                    buffer.Slice(0, initialPiece), _authToken.AccessToken,
-                    progress.Subrange((double)uploaded / total, (double)initialPiece / total, $"Uploading piece #1 ({{0}})…"), cancellation,
-                    new NameValueCollection {
-                        ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new StartParams())
-                    });
-            uploaded += initialPiece;
-            Logging.Debug(session?.SessionId);
-
-            try {
-                cancellation.ThrowIfCancellationRequested();
-                if (session == null) {
-                    RaiseUploadFailedException("Upload session start failed.");
-                }
-
-                for (var index = 2; index < 10000 && !ended; index++) {
-                    var piece = await NextPiece();
-                    await Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/append_v2", buffer.Slice(0, piece), _authToken.AccessToken,
-                            progress.Subrange((double)uploaded / total, (double)piece / total, $"Uploading piece #{index} ({{0}})…"), cancellation,
-                            new NameValueCollection {
-                                ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new UploadParams {
-                                    Cursor = new CursorParams { Offset = uploaded, SessionId = session.SessionId }
-                                })
-                            });
-                    uploaded += piece;
+                async Task<int> NextPiece() {
+                    if (ended) return 0;
+                    var piece = await data.ReadAsync(buffer, 0, buffer.Length);
                     cancellation.ThrowIfCancellationRequested();
-                }
-            } catch (Exception) when (session != null) {
-                try {
-                    Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/start", new byte[0], _authToken.AccessToken,
-                            cancellation: cancellation, extraHeaders: new NameValueCollection {
-                                ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new StartParams { Close = true })
-                            }).Ignore();
-                } catch {
-                    // ignored
+
+                    // ReSharper disable once AccessToModifiedClosure
+                    ended = piece == 0 || uploaded + piece == total;
+                    return piece;
                 }
 
-                throw;
+                progress.Report("Starting upload session…", 0.00001d);
+                var initialPiece = await NextPiece();
+                var session = await Request.Post<SessionOpenedResult>(@"https://content.dropboxapi.com/2/files/upload_session/start",
+                        buffer.Slice(0, initialPiece), _authToken.AccessToken,
+                        progress.Subrange((double)uploaded / total, (double)initialPiece / total, $"Uploading piece #1 out of {totalPieces} ({{0}})…"),
+                        cancellation,
+                        new NameValueCollection {
+                            ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new StartParams())
+                        });
+                uploaded += initialPiece;
+                Logging.Debug(session?.SessionId);
+
+                try {
+                    cancellation.ThrowIfCancellationRequested();
+                    if (session == null) {
+                        RaiseUploadFailedException("Upload session start failed.");
+                    }
+
+                    for (var index = 2; index < 10000 && !ended; index++) {
+                        var piece = await NextPiece();
+                        await Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/append_v2", buffer.Slice(0, piece), _authToken.AccessToken,
+                                progress.Subrange((double)uploaded / total, (double)piece / total, $"Uploading piece #{index} out of {totalPieces} ({{0}})…"),
+                                cancellation,
+                                new NameValueCollection {
+                                    ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new UploadParams {
+                                        Cursor = new CursorParams { Offset = uploaded, SessionId = session.SessionId }
+                                    })
+                                });
+                        uploaded += piece;
+                        cancellation.ThrowIfCancellationRequested();
+                    }
+                } catch (Exception) when (session != null) {
+                    try {
+                        Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/start", new byte[0], _authToken.AccessToken,
+                                extraHeaders: new NameValueCollection {
+                                    ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new StartParams { Close = true })
+                                }).Ignore();
+                    } catch {
+                        // ignored
+                    }
+
+                    throw;
+                }
+
+                progress.Report("Finishing upload session…", 0.999999d);
+                result = await Request.Post<UploadFinishResult>(@"https://content.dropboxapi.com/2/files/upload_session/finish",
+                        new byte[0], _authToken.AccessToken, null, cancellation, new NameValueCollection {
+                            ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new UploadFinishParams {
+                                Cursor = new CursorParams { Offset = uploaded, SessionId = session.SessionId },
+                                Commit = commitParams
+                            })
+                        });
             }
 
-            progress.Report("Finishing upload session…", 0.999999d);
-            var result = await Request.Post<UploadFinishResult>(@"https://content.dropboxapi.com/2/files/upload_session/finish",
-                    new byte[0],
-                    _authToken.AccessToken, null, cancellation, new NameValueCollection {
-                        ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new UploadFinishParams {
-                            Cursor = new CursorParams { Offset = uploaded, SessionId = session.SessionId },
-                            Commit = new CommitParams { Path = "/" + name, Mute = MuteUpload }
-                        })
-                    });
             cancellation.ThrowIfCancellationRequested();
             if (result == null) {
                 RaiseUploadFailedException();
@@ -362,9 +306,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
             }
 
             Logging.Debug(url);
-            var id = Regex.Match(url, @"/s/(\w+)");
+            var id = Regex.Match(url, @"/s/([\w_!-]+)");
             return id.Success ?
-                    new UploadResult { Id = $"{(uploadAs == UploadAs.Content ? "Bi" : "RB")}{id.Groups[1].Value}", DirectUrl = url } :
+                    new UploadResult { Id = $"{(uploadAs == UploadAs.Content ? "Bi" : "RB")}{id.Groups[1].Value.ToCutBase64()}", DirectUrl = url } :
                     WrapUrl(url, uploadAs);
         }
     }

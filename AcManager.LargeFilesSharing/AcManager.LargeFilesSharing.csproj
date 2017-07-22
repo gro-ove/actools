@@ -87,6 +87,7 @@
     <Compile Include="FileUploaderBase.cs" />
     <Compile Include="ILargeFileUploader.cs" />
     <Compile Include="Implementations\DropboxUploader.cs" />
+    <Compile Include="Implementations\YandexDiskUploader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="UploadAs.cs" />
@@ -120,6 +121,14 @@
       <Name>FirstFloor.ModernUI</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\YandexDisk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\Dropbox.png" />
+    <Resource Include="Assets\Icons\GoogleDrive.png" />
+    <Resource Include="Assets\Icons\Mega.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

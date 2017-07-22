@@ -46,7 +46,17 @@
             BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Shijie Zhang (St3fan), Stanislav Minakov." />
 
         <TextBlock Style="{StaticResource Heading2}" Text="Special thanks for ideas and testing to:" />
-        <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}" BbCode="MadMat, MicaLovesKPOP, Peter Boese, Topuz, Zkirtaem." />
+        <mui:SelectableBbCodeBlock Margin="0 8 0 20" FontSize="{DynamicResource SmallFontSize}" BbCode="MadMat, MicaLovesKPOP, Peter Boese, Topuz, Zkirtaem." />
+
+        <TextBlock Style="{StaticResource Heading2}" Text="Services used:" />
+        <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}" BbCode="
+[url=&quot;https://www.dropbox.com&quot;]Dropbox[/url],
+[url=&quot;https://www.google.com/drive/&quot;]Google Drive[/url],
+[url=&quot;https://maps.google.com/&quot;]Google Maps[/url],
+[url=&quot;https://openweathermap.org/&quot;]OpenWeatherMap[/url],
+[url=&quot;https://mega.nz/&quot;]Mega[/url],
+[url=&quot;https://www.yahoo.com/&quot;]Yahoo[/url],
+[url=&quot;https://disk.yandex.ru&quot;]Yandex.Disk[/url]." />
       </StackPanel>
     </ScrollViewer>
 

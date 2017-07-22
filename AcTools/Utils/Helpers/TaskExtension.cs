@@ -8,11 +8,9 @@ using JetBrains.Annotations;
 namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
         public static bool IsCanceled([CanBeNull] this Exception e) {
-            while (e != null) {
+            for (; e != null; e = (e as AggregateException)?.GetBaseException()) {
                 if (e is OperationCanceledException) return true;
-                e = (e as AggregateException)?.GetBaseException();
             }
-
             return false;
         }
 
@@ -20,11 +18,15 @@ namespace AcTools.Utils.Helpers {
         public static void Forget<T>(this Task<T> task) { }
 
         public static void Ignore(this Task task) {
-            task.ContinueWith(x => { }, TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(x => {
+                AcToolsLogging.Write(x.Exception?.Flatten());
+            }, TaskContinuationOptions.NotOnRanToCompletion);
         }
 
         public static void Ignore<T>(this Task<T> task) {
-            task.ContinueWith(x => { }, TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(x => {
+                AcToolsLogging.Write(x.Exception?.Flatten());
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         public static async Task WhenAll(this IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {

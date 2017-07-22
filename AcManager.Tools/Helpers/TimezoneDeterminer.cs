@@ -22,10 +22,10 @@ namespace AcManager.Tools.Helpers {
                 CacheStorage.Set(key, result);
                 return result;
             } catch (WebException e) {
-                Logging.Warning("TryToDetermineAsync(): " + e.Message);
+                Logging.Warning(e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("TryToDetermineAsync(): " + e);
+                Logging.Warning(e);
                 CacheStorage.Set(key, "");
                 return null;
             }

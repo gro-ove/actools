@@ -99,11 +99,6 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public async Task Prepare() {
-            if (SelectedUploader.IsReady && UploaderDirectories == null) {
-                UpdateDirectoriesCommand.Execute(default(CancellationToken));
-                return;
-            }
-
             try {
                 IsBusy++;
                 await SelectedUploader.PrepareAsync(default(CancellationToken));
@@ -128,7 +123,13 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         public DirectoryEntry[] UploaderDirectories {
-            get => _uploaderDirectories;
+            get {
+                if (_uploaderDirectories == null && SelectedUploader.IsReady) {
+                    UpdateDirectoriesCommand.Execute(default(CancellationToken));
+                }
+
+                return _uploaderDirectories;
+            }
             set {
                 if (Equals(value, _uploaderDirectories)) return;
                 _uploaderDirectories = value;

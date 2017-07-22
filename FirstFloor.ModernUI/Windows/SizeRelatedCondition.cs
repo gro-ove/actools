@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows {
@@ -129,10 +130,10 @@ namespace FirstFloor.ModernUI.Windows {
 
         private readonly Busy _updateLater = new Busy();
         public void UpdateLater() {
-            _updateLater.DoDelay(Update, 1);
+            _updateLater.DoDelay(Update, 10);
         }
 
-        private static readonly Action EmptyDelegate = delegate {};
+        protected static readonly Action EmptyDelegate = delegate {};
 
         public async void UpdateAfterRender() {
             await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
@@ -173,7 +174,6 @@ namespace FirstFloor.ModernUI.Windows {
 
         private abstract class ChildHolderBase {
             public abstract void Update(TParent parent);
-
             public abstract void Apply(TValue value);
         }
 
@@ -249,17 +249,39 @@ namespace FirstFloor.ModernUI.Windows {
             return this;
         }
 
-        public SizeRelatedCondition<TParent, TValue> ListenOnProperty(INotifyPropertyChanged source, string propertyName) {
-            source.SubscribeWeak((sender, args) => {
-                if (args.PropertyName == propertyName) {
+        private Busy _renderAndUpdateBusy = new Busy();
+        public void RenderAndUpdate() {
+            _renderAndUpdateBusy.Task(async () => {
+                try {
+                    _parent.InvalidateMeasure();
+                    _parent.InvalidateArrange();
+                    _parent.ApplyTemplate();
+                    _parent.UpdateLayout();
+                    await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
                     Update();
+                } catch (Exception e) {
+                    Logging.Error(e);
                 }
-            });
+            }).Forget();
+        }
+
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly List<EventHandler<PropertyChangedEventArgs>> _handlers = new List<EventHandler<PropertyChangedEventArgs>>();
+
+        public SizeRelatedCondition<TParent, TValue> ListenOnProperty(INotifyPropertyChanged source, string propertyName) {
+            void OnPropertyChanged(object sender, PropertyChangedEventArgs args) {
+                if (args.PropertyName == propertyName) {
+                    RenderAndUpdate();
+                }
+            }
+
+            _handlers.Add(OnPropertyChanged);
+            source.SubscribeWeak(OnPropertyChanged);
             return this;
         }
 
         public SizeRelatedCondition<TParent, TValue> ListenOnProperty<TSource>(TSource source, DependencyProperty property) {
-            DependencyPropertyDescriptor.FromProperty(property, typeof(TSource)).AddValueChanged(source, (sender, args) => Update());
+            DependencyPropertyDescriptor.FromProperty(property, typeof(TSource)).AddValueChanged(source, (sender, args) => RenderAndUpdate());
             return this;
         }
 
@@ -272,7 +294,7 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public SizeRelatedCondition<TParent, TValue> ListenOn<TEventSource, TEventArgs>(TEventSource source, string eventName) where TEventArgs : EventArgs {
-            WeakEventManager<TEventSource, TEventArgs>.AddHandler(source, eventName, (sender, args) => Update());
+            WeakEventManager<TEventSource, TEventArgs>.AddHandler(source, eventName, (sender, args) => RenderAndUpdate());
             return this;
         }
 

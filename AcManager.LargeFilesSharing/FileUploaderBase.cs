@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -13,16 +14,18 @@ using JetBrains.Annotations;
 namespace AcManager.LargeFilesSharing {
     public abstract class FileUploaderBase : ILargeFileUploader {
         protected readonly IStorage Storage;
+        internal readonly Request Request = new Request();
 
         private const string KeyDestinationDirectoryId = "directoryId";
 
-        protected FileUploaderBase(IStorage storage, string name, string description, bool supportsSigning, bool supportsDirectories) {
+        protected FileUploaderBase(IStorage storage, string name, [CanBeNull] Uri icon, string description, bool supportsSigning, bool supportsDirectories) {
             Id = GetType().Name;
             Storage = storage.GetSubstorage(Id + ":");
             _destinationDirectoryId = Storage.GetString(KeyDestinationDirectoryId);
 
             DisplayName = name;
             Description = description;
+            Icon = icon;
             SupportsSigning = supportsSigning;
             SupportsDirectories = supportsDirectories;
         }
@@ -32,6 +35,9 @@ namespace AcManager.LargeFilesSharing {
         public bool SupportsDirectories { get; }
         public string DisplayName { get; }
         public string Description { get; }
+
+        [CanBeNull]
+        public Uri Icon { get; }
 
         private string _destinationDirectoryId;
 
@@ -95,7 +101,7 @@ namespace AcManager.LargeFilesSharing {
 
         protected UploadResult WrapUrl(string url, UploadAs uploadAs) {
             return new UploadResult {
-                Id = $"{(uploadAs == UploadAs.Content ? "I6" : "Ii")}{Convert.ToBase64String(Encoding.UTF8.GetBytes(url))}",
+                Id = $"{(uploadAs == UploadAs.Content ? "I6" : "Ii")}{url.ToCutBase64()}",
                 DirectUrl = url
             };
         }

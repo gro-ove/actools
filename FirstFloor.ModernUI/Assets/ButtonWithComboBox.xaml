@@ -177,7 +177,7 @@
           <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
               BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
             <DockPanel KeyboardNavigation.TabNavigation="Local">
-              <c:Cell DockPanel.Dock="Right">
+              <c:Cell DockPanel.Dock="Right" TextBlock.FontWeight="Normal">
                 <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                     Foreground="{TemplateBinding Foreground}">
                   <c:LazyMenuItem x:Name="PART_MenuItem" Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"

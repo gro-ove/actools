@@ -141,6 +141,16 @@
     <Setter Property="Foreground" Value="{DynamicResource InputText}" />
     <Setter Property="Background" Value="{DynamicResource InputBackground}" />
     <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
+    <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="VirtualizingStackPanel.ScrollUnit" Value="Pixel" />
+    <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ComboBox}">

@@ -19,16 +19,16 @@ namespace FirstFloor.ModernUI.Effects {
         public static readonly DependencyProperty InputProperty = RegisterPixelShaderSamplerProperty("Input", typeof(GrayscaleEffect), 0);
 
         public Brush Input {
-            get { return (Brush)GetValue(InputProperty); }
-            set { SetValue(InputProperty, value); }
+            get => (Brush)GetValue(InputProperty);
+            set => SetValue(InputProperty, value);
         }
 
         public static readonly DependencyProperty SaturationFactorProperty = DependencyProperty.Register("SaturationFactor", typeof(double),
                 typeof(GrayscaleEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(0), CoerceSaturationFactor));
 
         public double SaturationFactor {
-            get { return (double)GetValue(SaturationFactorProperty); }
-            set { SetValue(SaturationFactorProperty, value); }
+            get => (double)GetValue(SaturationFactorProperty);
+            set => SetValue(SaturationFactorProperty, value);
         }
 
         private static object CoerceSaturationFactor(DependencyObject d, object value) {

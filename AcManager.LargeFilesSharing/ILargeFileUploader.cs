@@ -15,6 +15,9 @@ namespace AcManager.LargeFilesSharing {
         [NotNull]
         string Description { get; }
 
+        [CanBeNull]
+        Uri Icon { get; }
+
         bool IsReady { get; }
 
         bool SupportsSigning { get; }

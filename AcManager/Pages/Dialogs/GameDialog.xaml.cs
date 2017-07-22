@@ -448,7 +448,7 @@ namespace AcManager.Pages.Dialogs {
                                         CarsManager.Instance.GetById(_properties.BasicProperties.CarId);
                                 var track = _properties?.BasicProperties?.TrackId == null ? null :
                                         TracksManager.Instance.GetById(_properties.BasicProperties.TrackId);
-                                return SelectedReplayPage.ShareReplay(replayHelper.Name, replayHelper.Filename, car, track);
+                                return SelectedReplayPage.ShareReplay(replayHelper.Name, replayHelper.Filename, car, track, false);
                             })
                         },
                     }

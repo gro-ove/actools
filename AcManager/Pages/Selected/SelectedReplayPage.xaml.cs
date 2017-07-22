@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,10 +10,12 @@ using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.LargeFilesSharing;
+using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -23,7 +26,9 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using OxyPlot;
 using SharpCompress.Common;
 using SharpCompress.Writers;
 using StringBasedFilter;
@@ -43,7 +48,15 @@ namespace AcManager.Pages.Selected {
                             : $"{ToolsStrings.Common_AcReplay} ({car.DisplayName}, {track.Name})");
         }
 
-        public static async Task ShareReplay(string name, string filename, [CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track) {
+        public static async Task ShareReplay(string name, string filename, [CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track, bool forceUpload) {
+            if (!forceUpload) {
+                var existing = GetShared(filename);
+                if (existing != null) {
+                    SharingUiHelper.ShowShared(SharedEntryType.Replay, existing);
+                    return;
+                }
+            }
+
             UploadResult result;
 
             try {
@@ -81,17 +94,54 @@ namespace AcManager.Pages.Selected {
                 }
             } catch (Exception e) when (e.IsCanceled()) {
                 return;
-            } catch (Exception e) {
+            } catch (WebException e) {
                 NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);
+                return;
+            } catch (Exception e) {
+                NonfatalError.Notify(AppStrings.Replay_CannotShare, e);
                 return;
             }
 
             SharingHelper.Instance.AddToHistory(SharedEntryType.Replay, name, car?.DisplayName, result);
             SharingUiHelper.ShowShared(SharedEntryType.Replay, result.Url);
+            SetShared(filename, result.Url);
+        }
+
+        [CanBeNull]
+        public static string GetShared(string filename) {
+            var name = Path.GetFileName(filename)?.ApartFromLast(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase);
+            var info = new FileInfo(filename);
+            return name == null || !info.Exists ? null : CacheStorage.GetString($@"sharedReplay:{name.ToLowerInvariant()}:{info.Length}");
+        }
+
+        public static void SetShared(string filename, string url) {
+            var name = Path.GetFileName(filename)?.ApartFromLast(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase);
+            var info = new FileInfo(filename);
+            if (name == null || !info.Exists) {
+            } else {
+                CacheStorage.Set($@"sharedReplay:{name.ToLowerInvariant()}:{info.Length}", url);
+            }
         }
 
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
-            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) { }
+            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {
+                UpdateAlreadyShared();
+            }
+
+            public void UpdateAlreadyShared() {
+                AlreadyShared = GetShared(SelectedObject.Location) != null;
+            }
+
+            private bool _alreadyShared;
+
+            public bool AlreadyShared {
+                get => _alreadyShared;
+                private set {
+                    if (Equals(value, _alreadyShared)) return;
+                    _alreadyShared = value;
+                    OnPropertyChanged();
+                }
+            }
 
             private WeatherObject _weather;
 
@@ -137,9 +187,9 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private CommandBase _changeCategoryCommand;
+            private DelegateCommand _changeCategoryCommand;
 
-            public ICommand ChangeCategoryCommand => _changeCategoryCommand ?? (_changeCategoryCommand = new DelegateCommand(() => {
+            public DelegateCommand ChangeCategoryCommand => _changeCategoryCommand ?? (_changeCategoryCommand = new DelegateCommand(() => {
                 const string key = "__replayLastUsedCategory";
                 var newCategory = Prompt.Show("Where to move selected replay?", "Change Replay’s Category",
                         ValuesStorage.GetString(key), "?", required: true, maxLength: 60,
@@ -150,9 +200,51 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.EditableCategory = FileUtils.EnsureFileNameIsValid(newCategory);
             }));
 
-            private CommandBase _clearCategoryCommand;
+            #region Presets
+            public override void Unload() {
+                base.Unload();
+                _helper.Dispose();
+            }
 
-            public ICommand ClearCategoryCommand => _clearCategoryCommand ?? (_clearCategoryCommand = new DelegateCommand(() => {
+            public HierarchicalItemsView QuickDrivePresets {
+                get => _quickDrivePresets;
+                set {
+                    if (Equals(value, _quickDrivePresets)) return;
+                    _quickDrivePresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private HierarchicalItemsView _quickDrivePresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public void InitializeQuickDrivePresets() {
+                if (QuickDrivePresets == null) {
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
+                        QuickDrive.RunPreset(p.Filename, Car, CarSkin?.Id, track: Track);
+                    });
+                }
+            }
+            #endregion
+
+            private DelegateCommand _driveCommand;
+
+            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !QuickDrive.Run(Car, CarSkin?.Id, track: Track)) {
+                    DriveOptionsCommand.Execute();
+                }
+            }));
+
+            private DelegateCommand _driveOptionsCommand;
+
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+                QuickDrive.Show(Car, CarSkin?.Id, track: Track);
+            }));
+
+            private DelegateCommand _clearCategoryCommand;
+
+            public DelegateCommand ClearCategoryCommand => _clearCategoryCommand ?? (_clearCategoryCommand = new DelegateCommand(() => {
                 SelectedObject.EditableCategory = null;
             }, () => SelectedObject.EditableCategory != null))
                     .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
@@ -199,14 +291,16 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private CommandBase _shareCommand;
+            private AsyncCommand<bool?> _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() =>
-                    ShareReplay(SelectedObject.Name, SelectedObject.Location, Car, Track)));
+            public AsyncCommand<bool?> ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand<bool?>(async v => {
+                await ShareReplay(SelectedObject.Name, SelectedObject.Location, Car, Track, v ?? false);
+                UpdateAlreadyShared();
+            }));
 
-            private ICommand _playCommand;
+            private AsyncCommand _playCommand;
 
-            public ICommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async () => {
+            public AsyncCommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async () => {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Name = SelectedObject.Id,
                     TrackId = SelectedObject.TrackId,
@@ -335,8 +429,15 @@ namespace AcManager.Pages.Selected {
 
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.PlayCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
+                new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+
+                new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
             });
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeQuickDrivePresets();
         }
     }
 }

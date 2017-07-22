@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,174 +13,163 @@ using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.LargeFilesSharing {
-    internal static class Request {
-        private static byte[] GetBytes(this string s) {
+    public class ApiException : Exception {
+        public ApiException(HttpStatusCode status, string statusDescription, string response, Exception e)
+                : base(response == null ? $"{statusDescription} ({(int)status})" : $"{statusDescription} ({(int)status}): " + response, e) {
+            Status = status;
+            Response = response;
+        }
+
+        public HttpStatusCode Status { get; }
+        public string Response { get; }
+
+        public static Exception Wrap(Exception e, CancellationToken cancellation = default(CancellationToken)) {
+            cancellation.ThrowIfCancellationRequested();
+
+            var w = e as WebException;
+            var r = w?.Response as HttpWebResponse;
+            if (r != null) {
+                string response = null;
+                using (var stream = r.GetResponseStream()) {
+                    if (stream != null) {
+                        response = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+
+                        try {
+                            var jObj = JObject.Parse(response);
+                            response = jObj.ToString(Formatting.Indented);
+                        } catch (Exception) {
+                            // ignored
+                        }
+                    }
+                }
+
+                var message = HttpWorkerRequest.GetStatusDescription((int)r.StatusCode);
+                if (string.IsNullOrWhiteSpace(message)) {
+                    message = r.StatusDescription;
+                }
+
+                return new ApiException(r.StatusCode, message, response, w);
+            }
+
+            return e;
+        }
+    }
+
+    internal class Request {
+        public string AuthorizationTokenType { get; set; } = "Bearer";
+
+        private byte[] GetBytes(string s) {
             return Encoding.UTF8.GetBytes(s);
         }
 
-        private static byte[] GetQuery(this NameValueCollection data) {
-            return data.Keys.OfType<string>().Where(x => data[x] != null)
-                       .Select(x => $"{HttpUtility.UrlEncode(x)}={HttpUtility.UrlEncode(data[x])}").JoinToString('&').GetBytes();
+        private byte[] GetQuery(NameValueCollection data) {
+            return GetBytes(data.Keys.OfType<string>().Where(x => data[x] != null)
+                       .Select(x => $"{HttpUtility.UrlEncode(x)}={HttpUtility.UrlEncode(data[x])}").JoinToString('&'));
         }
 
         [NotNull]
-        private static byte[] GetBytes([NotNull] object data, out string contentType) {
+        private byte[] GetBytes([NotNull] object data, out string contentType) {
             switch (data) {
                 case NameValueCollection nv:
                     contentType = @"application/x-www-form-urlencoded";
-                    return nv.GetQuery();
+                    return GetQuery(nv);
                 case byte[] bytes:
                     contentType = @"application/octet-stream";
                     return bytes;
                 default:
                     contentType = @"application/json";
-                    return JsonConvert.SerializeObject(data).GetBytes();
+                    return GetBytes(JsonConvert.SerializeObject(data));
             }
         }
 
         [ItemCanBeNull]
-        private static Task<string> Send([Localizable(false)] string method, string url, object data, string authToken,
+        public async Task<string> Send([Localizable(false)] string method, string url, object data, string authToken,
                 [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation, NameValueCollection extraHeaders) {
             try {
                 using (var order = KillerOrder.Create(new CookieAwareWebClient {
-                    Headers = { [@"Authorization"] = @"Bearer " + authToken }
+                    Headers = { [@"Accept"] = @"application/json" }
                 }, TimeSpan.FromMinutes(10))) {
                     var client = order.Victim;
+
+                    if (authToken != null) {
+                        client.Headers[@"Authorization"] = $@"{AuthorizationTokenType} {authToken}";
+                    }
+
                     client.SetUserAgent(InternalUtils.GetKunosUserAgent());
                     cancellation.Register(client.CancelAsync);
 
-                    foreach (string header in extraHeaders) {
-                        client.Headers[header] = extraHeaders[header];
+                    if (extraHeaders != null){
+                        foreach (string header in extraHeaders) {
+                            client.Headers[header] = extraHeaders[header];
+                        }
                     }
 
                     if (data == null) {
                         client.SetMethod(method);
                         client.SetDownloadProgress(progress, null, order.Delay);
-                        return Task.Run(() => client.DownloadData(url))
-                                   .ContinueWith(x => x.Result.ToUtf8String(), TaskContinuationOptions.OnlyOnRanToCompletion);
-                    } else {
-                        var bytes = GetBytes(data, out var contentType);
-                        client.SetContentType(contentType);
-                        client.SetUploadProgress(progress, bytes.Length, order.Delay);
-                        return Task.Run(() => client.UploadData(url, method, bytes))
-                                   .ContinueWith(x => x.Result.ToUtf8String(), TaskContinuationOptions.OnlyOnRanToCompletion);
+                        return (await client.DownloadDataTaskAsync(url)).ToUtf8String();
                     }
+
+                    var bytes = GetBytes(data, out var contentType);
+                    client.SetContentType(contentType);
+                    client.SetUploadProgress(progress, bytes.Length, order.Delay);
+                    return (await client.UploadDataTaskAsync(url, method, bytes)).ToUtf8String();
                 }
-            } catch (Exception) when (cancellation.IsCancellationRequested) {
-                return null;
-            } catch (WebException e) {
-                Logging.Warning(e);
-                using (var stream = e.Response?.GetResponseStream()) {
-                    if (stream != null) {
-                        Logging.Warning(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
-                    }
-                }
-                return null;
             } catch (Exception e) {
-                Logging.Warning(e);
-                return null;
+                throw ApiException.Wrap(e, cancellation);
             }
-
-
-
-            /*try {
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.SendChunked = true;
-                request.AllowWriteStreamBuffering = false;
-
-                request.Method = method;
-                request.UserAgent = InternalUtils.GetKunosUserAgent();
-
-                if (authToken != null) {
-                    request.Headers[@"Authorization"] = @"Bearer " + authToken;
-                }
-
-                if (extraHeaders != null) {
-                    foreach (string header in extraHeaders) {
-                        request.Headers[header] = extraHeaders[header];
-                    }
-                }
-
-                if (data != null) {
-                    request.ContentType = GetContentType(data, index, count);
-                    using (var stream = await request.GetRequestStreamAsync()) {
-                        if (cancellation.IsCancellationRequested) return null;
-
-                        var total = data.Length;
-                        const int blockSize = 51200;
-                        for (var i = 0; i < count; i += blockSize) {
-                            progress?.Report(AsyncProgressEntry.CreateUploading(i, total));
-                            await stream.WriteAsync(data, i + index, Math.Min(blockSize, count - i), cancellation);
-                            if (cancellation.IsCancellationRequested) return null;
-                        }
-                    }
-
-                    Logging.Here();
-                }
-
-                string result;
-                using (var response = (HttpWebResponse)await request.GetResponseAsync())
-                using (var stream = response.GetResponseStream()) {
-                    if (cancellation.IsCancellationRequested) return null;
-                    if (stream == null) return null;
-                    using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-                        result = await reader.ReadToEndAsync();
-                    }
-                }
-
-                return result;
-            } catch (WebException e) {
-                Logging.Warning(e);
-                using (var stream = e.Response?.GetResponseStream()) {
-                    if (stream != null) {
-                        Logging.Warning(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
-                    }
-                }
-                return null;
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return null;
-            }*/
         }
 
         [ItemCanBeNull]
-        private static Task<T> Send<T>([Localizable(false)] string method, string url, [CanBeNull] object data, string authToken,
+        public async Task<T> Send<T>([Localizable(false)] string method, string url, [CanBeNull] object data, string authToken,
                 NameValueCollection extraHeaders, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            return Send(method, url, data, authToken, progress, cancellation, extraHeaders)
-                    .ContinueWith(x => x.Result == null ? default(T) : JsonConvert.DeserializeObject<T>(x.Result));
+            var result = await Send(method, url, data, authToken, progress, cancellation, extraHeaders);
+            return result == null ? default(T) : JsonConvert.DeserializeObject<T>(result);
         }
 
         [ItemCanBeNull]
-        public static Task<string> Get(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
+        public Task<string> Get(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
             return Send("GET", url, null, authToken, progress, cancellation, extraHeaders);
         }
 
         [ItemCanBeNull]
-        public static Task<T> Get<T>(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
+        public Task<T> Get<T>(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
             return Send<T>("GET", url, null, authToken, extraHeaders, progress, cancellation);
         }
 
-        public static Task<string> Post(string url, [CanBeNull] object data, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
+        public Task<string> Post(string url, [CanBeNull] object data, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
             return Send("POST", url, data, authToken, progress, cancellation, extraHeaders);
         }
 
         [ItemCanBeNull]
-        public static Task<T> Post<T>(string url, [CanBeNull] object data, [CanBeNull] string authToken,
+        public Task<T> Post<T>(string url, [CanBeNull] object data, [CanBeNull] string authToken,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
                 NameValueCollection extraHeaders = null) {
             return Send<T>("POST", url, data, authToken, extraHeaders, progress, cancellation);
         }
 
+        public Task<string> Put(string url, [CanBeNull] object data, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
+            return Send("PUT", url, data, authToken, progress, cancellation, extraHeaders);
+        }
+
+        [ItemCanBeNull]
+        public Task<T> Put<T>(string url, [CanBeNull] object data, [CanBeNull] string authToken,
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
+                NameValueCollection extraHeaders = null) {
+            return Send<T>("PUT", url, data, authToken, extraHeaders, progress, cancellation);
+        }
+
         [ItemCanBeNull, Localizable(false)]
-        public static async Task<string> PostMultipart(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
+        public async Task<string> PostMultipart(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
                 NameValueCollection extraHeaders = null) {
             try {
@@ -237,35 +225,17 @@ namespace AcManager.LargeFilesSharing {
                 }
 
                 return result;
-            } catch (WebException e) {
-                if (cancellation.IsCancellationRequested) {
-                    return null;
-                }
-
-                Logging.Warning(e);
-                using (var stream = e.Response?.GetResponseStream()) {
-                    if (stream != null) {
-                        Logging.Warning(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
-                    }
-                }
-
-                return null;
             } catch (Exception e) {
-                if (cancellation.IsCancellationRequested) {
-                    return null;
-                }
-
-                Logging.Warning(e);
-                return null;
+                throw ApiException.Wrap(e, cancellation);
             }
         }
 
         [ItemCanBeNull, Localizable(false)]
-        public static Task<T> PostMultipart<T>(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
+        public Task<T> PostMultipart<T>(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
                 NameValueCollection extraHeaders = null) {
             return PostMultipart(url, metadata, authToken, data, contentType, progress, cancellation, extraHeaders)
-                    .ContinueWith(x => x.Result == null ? default(T) : JsonConvert.DeserializeObject<T>(x.Result));
+                    .ContinueWith(x => x.Result == null ? default(T) : JsonConvert.DeserializeObject<T>(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 }

@@ -118,12 +118,12 @@ namespace AcManager.Tools.Helpers {
                 callback?.Invoke();
                 s.Restart();
 
-                var total = args.TotalBytesToReceive;
+                var total = args.TotalBytesToSend;
                 if (total == -1 && suggestedTotal != null && suggestedTotal > 0) {
-                    total = Math.Max(suggestedTotal.Value, args.BytesReceived);
+                    total = Math.Max(suggestedTotal.Value, args.BytesSent);
                 }
 
-                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesReceived, total));
+                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesSent, total));
             }
 
             UploadProgressChanged += Handler;

@@ -221,6 +221,7 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new [] { OkButton, CancelButton };
 
+            Logging.Debug(defaultFilter);
             if (defaultFilter != null) {
                 Tabs.SavePolicy = SavePolicy.SkipLoading;
                 Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", defaultFilter);

@@ -123,6 +123,7 @@
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Effects\InvertEffect.cs" />
     <Compile Include="Effects\InvertKeepColorEffect.cs" />
+    <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="NotifyExtension.cs" />
     <Compile Include="TaskExtension.cs" />
@@ -669,6 +670,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Effects\Shaders\OverlayColorEffect.ps" />
     <Resource Include="Fonts\Segoe Condensed Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -676,6 +678,7 @@
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
     <None Include="Effects\Shaders\InvertEffect.fx" />
     <None Include="Effects\Shaders\InvertKeepColorEffect.fx" />
+    <None Include="Effects\Shaders\OverlayColorEffect.fx" />
     <None Include="packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />
     <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
