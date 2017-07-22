@@ -153,7 +153,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                     (node, nodes) => nodes.FirstOrDefault(x => x.Id == node.ParentId),
                     (node, results) => new DirectoryEntry {
                         Id = node.Id,
-                        DisplayName = node.Name ?? "Root",
+                        DisplayName = node.Name ?? ToolsStrings.Uploader_RootDirectory,
                         Children = results.ToArray()
                     }).ToArray();
         }

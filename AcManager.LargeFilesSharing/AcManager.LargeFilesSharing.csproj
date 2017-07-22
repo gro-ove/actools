@@ -87,6 +87,7 @@
     <Compile Include="FileUploaderBase.cs" />
     <Compile Include="ILargeFileUploader.cs" />
     <Compile Include="Implementations\DropboxUploader.cs" />
+    <Compile Include="Implementations\OneDriveUploader.cs" />
     <Compile Include="Implementations\YandexDiskUploader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
@@ -129,6 +130,9 @@
     <Resource Include="Assets\Icons\Dropbox.png" />
     <Resource Include="Assets\Icons\GoogleDrive.png" />
     <Resource Include="Assets\Icons\Mega.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\OneDrive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

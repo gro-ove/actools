@@ -89,8 +89,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="Mods"
-        Source="/Pages/Lists/GenericModsListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="Mods" Source="/Pages/Lists/GenericModsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />

@@ -12,7 +12,9 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using SlimDX.Windows;
+using CheckBox = System.Windows.Controls.CheckBox;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 
 namespace AcManager.CustomShowroom {
     internal class AttachedHelper {
@@ -158,6 +160,10 @@ namespace AcManager.CustomShowroom {
         private void ChildKeyDown(object sender, KeyEventArgs e) {}
 
         private void ChildKeyUp(object sender, KeyEventArgs e) {
+            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is CheckBox) {
+                return;
+            }
+
             if (e.Key == Key.H && Keyboard.Modifiers == ModifierKeys.Control) {
                 _visible = !_visible;
                 UpdateVisibility(true);

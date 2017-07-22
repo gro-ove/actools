@@ -347,7 +347,7 @@ namespace AcTools.Utils {
             var i = 0;
             string result;
             do {
-                result = Path.Combine(dir, "__tmp_" + i++);
+                result = Path.Combine(dir, "__cm_tmp_" + i++);
             } while (Exists(result));
             return result;
         }
@@ -362,7 +362,7 @@ namespace AcTools.Utils {
             var i = 0;
             string result;
             do {
-                result = Path.Combine(dir, "__tmp_" + i++ + extension);
+                result = Path.Combine(dir, "__cm_tmp_" + i++ + extension);
             } while (Exists(result));
             return result;
         }

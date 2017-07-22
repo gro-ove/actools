@@ -7,6 +7,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.AcManagersNew {
     public abstract class AcManagerFileSpecific<T> : AcManagerNew<T> where T : AcCommonObject {
@@ -27,11 +28,16 @@ namespace AcManager.Tools.AcManagersNew {
         protected override void OnCreatedIgnored(string filename) {
             if (!MultiDirectoryMode) return;
 
-            foreach (var objectLocation in Directory.GetFiles(filename, SearchPattern, SearchOption.AllDirectories)) {
-                var objectId = Directories.GetId(objectLocation);
-                if (Filter(objectId, objectLocation)) {
-                    GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Created, null, objectLocation);
+            try {
+                foreach (var objectLocation in Directory.GetFiles(filename, SearchPattern, SearchOption.AllDirectories)) {
+                    var objectId = Directories.GetId(objectLocation);
+                    if (Filter(objectId, objectLocation)) {
+                        GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Created, null, objectLocation);
+                    }
                 }
+            } catch (Exception e) {
+                Logging.Error(e);
+                Logging.Debug(filename);
             }
         }
 

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -47,6 +48,7 @@ using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using OxyPlot.Reporting;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
@@ -93,7 +95,28 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
                 new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
                 new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
-                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4))
+                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4)),
+                new InputBinding(new DelegateCommand(() => {
+                    if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is CheckBox) {
+                        return;
+                    }
+
+                    try {
+                        if (Clipboard.ContainsData(DataFormats.FileDrop)) {
+                            var data = Clipboard.GetFileDropList().OfType<string>().ToList();
+                            Dispatcher.InvokeAsync(() => {
+                                ProcessDroppedFiles(data);
+                            });
+                        } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
+                            var list = Clipboard.GetText().SplitLines();
+                            Dispatcher.InvokeAsync(() => {
+                                ProcessDroppedFiles(list);
+                            });
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }), new KeyGesture(Key.V, ModifierKeys.Control)),
             });
             InitializeComponent();
 

@@ -40,7 +40,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         [ItemNotNull]
         public static Task<OAuthCode> GetCode(
-                string name, string requestUrl, string noRedirectUrl,
+                string name, string requestUrl, [CanBeNull] string noRedirectUrl,
                 string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
                 string responseError = "error", string responseCode = "code",
                 string description = null, string title = null,

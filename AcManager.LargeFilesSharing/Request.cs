@@ -28,6 +28,7 @@ namespace AcManager.LargeFilesSharing {
         public HttpStatusCode Status { get; }
         public string Response { get; }
 
+        [CanBeNull]
         public static Exception Wrap(Exception e, CancellationToken cancellation = default(CancellationToken)) {
             cancellation.ThrowIfCancellationRequested();
 
@@ -56,7 +57,7 @@ namespace AcManager.LargeFilesSharing {
                 return new ApiException(r.StatusCode, message, response, w);
             }
 
-            return e;
+            return null;
         }
     }
 
@@ -69,7 +70,7 @@ namespace AcManager.LargeFilesSharing {
 
         private byte[] GetQuery(NameValueCollection data) {
             return GetBytes(data.Keys.OfType<string>().Where(x => data[x] != null)
-                       .Select(x => $"{HttpUtility.UrlEncode(x)}={HttpUtility.UrlEncode(data[x])}").JoinToString('&'));
+                                .Select(x => $"{HttpUtility.UrlEncode(x)}={HttpUtility.UrlEncode(data[x])}").JoinToString('&'));
         }
 
         [NotNull]
@@ -103,9 +104,12 @@ namespace AcManager.LargeFilesSharing {
                     client.SetUserAgent(InternalUtils.GetKunosUserAgent());
                     cancellation.Register(client.CancelAsync);
 
-                    if (extraHeaders != null){
+                    if (extraHeaders != null) {
                         foreach (string header in extraHeaders) {
                             client.Headers[header] = extraHeaders[header];
+#if DEBUG
+                            Logging.Debug($"Header: {header}: {extraHeaders[header]}");
+#endif
                         }
                     }
 
@@ -121,7 +125,9 @@ namespace AcManager.LargeFilesSharing {
                     return (await client.UploadDataTaskAsync(url, method, bytes)).ToUtf8String();
                 }
             } catch (Exception e) {
-                throw ApiException.Wrap(e, cancellation);
+                var wrapped = ApiException.Wrap(e, cancellation);
+                if (wrapped == null) throw;
+                throw wrapped;
             }
         }
 
@@ -129,6 +135,10 @@ namespace AcManager.LargeFilesSharing {
         public async Task<T> Send<T>([Localizable(false)] string method, string url, [CanBeNull] object data, string authToken,
                 NameValueCollection extraHeaders, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var result = await Send(method, url, data, authToken, progress, cancellation, extraHeaders);
+#if DEBUG
+            Logging.Debug(url);
+            Logging.Debug(result);
+#endif
             return result == null ? default(T) : JsonConvert.DeserializeObject<T>(result);
         }
 
@@ -226,7 +236,9 @@ namespace AcManager.LargeFilesSharing {
 
                 return result;
             } catch (Exception e) {
-                throw ApiException.Wrap(e, cancellation);
+                var wrapped = ApiException.Wrap(e, cancellation);
+                if (wrapped == null) throw;
+                throw wrapped;
             }
         }
 

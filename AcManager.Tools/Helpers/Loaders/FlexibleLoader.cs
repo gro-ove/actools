@@ -31,6 +31,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
             if (MediaFireLoader.Test(uri)) return new MediaFireLoader(uri);
             if (DropboxLoader.Test(uri)) return new DropboxLoader(uri);
+            if (OneDriveLoader.Test(uri)) return new OneDriveLoader(uri);
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
             if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);

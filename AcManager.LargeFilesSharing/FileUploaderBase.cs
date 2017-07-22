@@ -100,6 +100,10 @@ namespace AcManager.LargeFilesSharing {
         }
 
         protected UploadResult WrapUrl(string url, UploadAs uploadAs) {
+            if (url == null) {
+                RaiseShareFailedException();
+            }
+
             return new UploadResult {
                 Id = $"{(uploadAs == UploadAs.Content ? "I6" : "Ii")}{url.ToCutBase64()}",
                 DirectUrl = url
