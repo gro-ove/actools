@@ -818,6 +818,32 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _sidekickOdometerImportValues;
+
+            public bool SidekickOdometerImportValues {
+                get => _sidekickOdometerImportValues ??
+                        (_sidekickOdometerImportValues = ValuesStorage.GetBool("Settings.DriveSettings.sidekickOdometerImportValues", true)).Value;
+                set {
+                    if (Equals(value, _sidekickOdometerImportValues)) return;
+                    _sidekickOdometerImportValues = value;
+                    ValuesStorage.Set("Settings.DriveSettings.sidekickOdometerImportValues", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sidekickOdometerExportValues;
+
+            public bool SidekickOdometerExportValues {
+                get => _sidekickOdometerExportValues ??
+                        (_sidekickOdometerExportValues = ValuesStorage.GetBool("Settings.DriveSettings.sidekickOdometerExportValues", true)).Value;
+                set {
+                    if (Equals(value, _sidekickOdometerExportValues)) return;
+                    _sidekickOdometerExportValues = value;
+                    ValuesStorage.Set("Settings.DriveSettings.sidekickOdometerExportValues", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _raceEssentialsIntegration;
 
             public bool RaceEssentialsIntegration {
@@ -853,6 +879,32 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _raceEssentialsUpdateExistingMods)) return;
                     _raceEssentialsUpdateExistingMods = value;
                     ValuesStorage.Set("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _stereoOdometerImportValues;
+
+            public bool StereoOdometerImportValues {
+                get => _stereoOdometerImportValues ??
+                        (_stereoOdometerImportValues = ValuesStorage.GetBool("Settings.DriveSettings.stereoOdometerImportValues", true)).Value;
+                set {
+                    if (Equals(value, _stereoOdometerImportValues)) return;
+                    _stereoOdometerImportValues = value;
+                    ValuesStorage.Set("Settings.DriveSettings.stereoOdometerImportValues", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _stereoOdometerExportValues;
+
+            public bool StereoOdometerExportValues {
+                get => _stereoOdometerExportValues ??
+                        (_stereoOdometerExportValues = ValuesStorage.GetBool("Settings.DriveSettings.stereoOdometerExportValues", true)).Value;
+                set {
+                    if (Equals(value, _stereoOdometerExportValues)) return;
+                    _stereoOdometerExportValues = value;
+                    ValuesStorage.Set("Settings.DriveSettings.stereoOdometerExportValues", value);
                     OnPropertyChanged();
                 }
             }
@@ -1330,6 +1382,20 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _rhmSettingsLocation;
+
+            public string RhmSettingsLocation {
+                get => _rhmSettingsLocation ?? (_rhmSettingsLocation = ValuesStorage.GetString("Settings.DriveSettings.RhmSettingsLocation",
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RealHeadMotion", "Settings.xml")));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _rhmSettingsLocation)) return;
+                    _rhmSettingsLocation = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmSettingsLocation", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private DelayEntry[] _rhmKeepAlivePeriods;
 
             public DelayEntry[] RhmKeepAlivePeriods => _rhmKeepAlivePeriods ?? (_rhmKeepAlivePeriods = new[] {
@@ -1363,13 +1429,31 @@ namespace AcManager.Tools.Helpers {
             public DelegateCommand SelectRhmLocationCommand => _selectRhmLocationCommand ?? (_selectRhmLocationCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
-                    Title = "Select Real Head Motion Application"
+                    Title = "Select Real Head Motion Application",
+                    InitialDirectory = Path.GetDirectoryName(RhmLocation),
+                    FileName = Path.GetFileName(RhmLocation)
                 };
 
                 if (dialog.ShowDialog() == true) {
-                    Drive.RhmLocation = dialog.FileName;
+                    RhmLocation = dialog.FileName;
                 }
             }));
+
+            private DelegateCommand _selectRhmSettingsLocationCommand;
+
+            public DelegateCommand SelectRhmSettingsLocationCommand
+                => _selectRhmSettingsLocationCommand ?? (_selectRhmSettingsLocationCommand = new DelegateCommand(() => {
+                    var dialog = new OpenFileDialog {
+                        Filter = "Real Head Motion Settings|Settings.xml|XML Files (*.xml)|*.xml|All files (*.*)|*.*",
+                        Title = "Select Real Head Motion Settings",
+                        InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation),
+                        FileName = Path.GetFileName(RhmSettingsLocation)
+                    };
+
+                    if (dialog.ShowDialog() == true) {
+                        RhmSettingsLocation = dialog.FileName;
+                    }
+                }));
         }
 
         private static DriveSettings _drive;

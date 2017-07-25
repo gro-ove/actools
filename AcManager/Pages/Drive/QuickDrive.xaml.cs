@@ -30,6 +30,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
+using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -686,8 +687,9 @@ namespace AcManager.Pages.Drive {
 
                 var temperature = RandomTemperature ? GetRandomTemperature() : Temperature;
                 var weather = SelectedWeatherObject ?? GetRandomWeather(temperature);
+                var time = _forceTime ?? (RandomTime ? MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum) : Time);
                 var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue :
-                        Game.ConditionProperties.GetRoadTemperature(Time, Temperature, weather?.TemperatureCoefficient ?? 0.0);
+                        Game.ConditionProperties.GetRoadTemperature(time, Temperature, weather?.TemperatureCoefficient ?? 0.0);
 
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
@@ -700,7 +702,7 @@ namespace AcManager.Pages.Drive {
                         AmbientTemperature = temperature,
                         RoadTemperature = roadTemperature,
 
-                        SunAngle = Game.ConditionProperties.GetSunAngle(_forceTime ?? Time),
+                        SunAngle = Game.ConditionProperties.GetSunAngle(time),
                         TimeMultipler = TimeMultiplier,
                         CloudSpeed = 0.2,
 

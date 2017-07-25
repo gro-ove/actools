@@ -152,12 +152,23 @@ namespace AcManager.Tools.SemiGui {
                 PrepareRaceModeRsr(properties);
             }
 
-            if (SettingsHolder.Drive.SidekickIntegration && properties.BasicProperties?.CarId != null) {
-                SidekickHelper.UpdateSidekickDatabase(properties.BasicProperties.CarId);
-            }
+            var carId = properties.BasicProperties?.CarId;
+            if (carId != null) {
+                if (SettingsHolder.Drive.SidekickIntegration) {
+                    SidekickHelper.UpdateSidekickDatabase(carId);
+                }
 
-            if (SettingsHolder.Drive.RaceEssentialsIntegration && properties.BasicProperties?.CarId != null) {
-                RaceEssentialsHelper.UpdateRaceEssentialsDatabase(properties.BasicProperties.CarId, false);
+                if (SettingsHolder.Drive.SidekickOdometerExportValues) {
+                    SidekickHelper.OdometerExport(carId);
+                }
+
+                if (SettingsHolder.Drive.RaceEssentialsIntegration) {
+                    RaceEssentialsHelper.UpdateRaceEssentialsDatabase(carId, false);
+                }
+
+                if (SettingsHolder.Drive.StereoOdometerExportValues) {
+                    StereoOdometerHelper.Export(carId);
+                }
             }
 
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());

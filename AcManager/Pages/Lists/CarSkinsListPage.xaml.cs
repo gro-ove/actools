@@ -131,6 +131,8 @@ namespace AcManager.Pages.Lists {
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
             return CommonBatchActions.GetDefaultSet<CarSkinObject>().Concat(new BatchAction[] {
+                BatchAction_NameFromId.Instance,
+                BatchAction_AddNamePrefix.Instance,
                 BatchAction_UpdateLivery.Instance,
                 BatchAction_UpdatePreviews.Instance,
                 BatchAction_ResetPriority.Instance,
@@ -139,6 +141,108 @@ namespace AcManager.Pages.Lists {
                 BatchAction_CreateMissingUiSkinJson.Instance,
                 BatchAction_PackSkins.Instance,
             });
+        }
+
+        public class BatchAction_AddNamePrefix : BatchAction<CarSkinObject> {
+            public static readonly BatchAction_AddNamePrefix Instance = new BatchAction_AddNamePrefix();
+            public BatchAction_AddNamePrefix()
+                    : base("Add Prefix Or Postfix", "Add prefix or postfix to skins’ names", "UI", "Batch.AddNamePrefix") {
+                DisplayApply = "Add";
+                Priority = 0;
+            }
+
+            private string _prefix = ValuesStorage.GetString("_ba.addNamePrefix.prefix", "");
+
+            public string Prefix {
+                get => _prefix;
+                set {
+                    if (Equals(value, _prefix)) return;
+                    _prefix = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.addNamePrefix.prefix", value);
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            private bool _postfixMode = ValuesStorage.GetBool("_ba.addNamePrefix.postfixMode", true);
+
+            public bool PostfixMode {
+                get => _postfixMode;
+                set {
+                    if (Equals(value, _postfixMode)) return;
+                    _postfixMode = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.addNamePrefix.postfixMode", value);
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            private bool _skipExisting = ValuesStorage.GetBool("_ba.addNamePrefix.skipExisting", true);
+
+            public bool SkipExisting {
+                get => _skipExisting;
+                set {
+                    if (Equals(value, _skipExisting)) return;
+                    _skipExisting = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.addNamePrefix.skipExisting", value);
+                    RaiseAvailabilityChanged();
+                }
+            }
+
+            private bool _keepSpace = ValuesStorage.GetBool("_ba.addNamePrefix.keepSpace", true);
+
+            public bool KeepSpace {
+                get => _keepSpace;
+                set {
+                    if (Equals(value, _keepSpace)) return;
+                    _keepSpace = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("_ba.addNamePrefix.keepSpace", value);
+                }
+            }
+
+            private bool IsSet(CarSkinObject obj) {
+                if (string.IsNullOrWhiteSpace(Prefix)) return true;
+                if (!SkipExisting) return false;
+                return (PostfixMode ? obj.NameEditable?.EndsWith(Prefix) : obj.NameEditable?.StartsWith(Prefix)) == true;
+            }
+
+            public override bool IsAvailable(CarSkinObject obj) {
+                return !IsSet(obj);
+            }
+
+            protected override void ApplyOverride(CarSkinObject obj) {
+                if (IsSet(obj)) return;
+
+                var v = Prefix;
+                if (KeepSpace) {
+                    v = PostfixMode ? " " + v.Trim() : v.Trim() + " ";
+                }
+
+                if (PostfixMode) {
+                    obj.NameEditable = obj.NameEditable + v;
+                } else {
+                    obj.NameEditable = v + obj.NameEditable;
+                }
+            }
+        }
+
+        public class BatchAction_NameFromId : BatchAction<CarSkinObject> {
+            public static readonly BatchAction_NameFromId Instance = new BatchAction_NameFromId();
+            public BatchAction_NameFromId()
+                    : base("Set Name From ID", "Update name based on skins’ IDs", "UI", null) {
+                DisplayApply = "Update";
+                Priority = 0;
+            }
+
+            public override bool IsAvailable(CarSkinObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarSkinObject obj) {
+                obj.NameEditable = AcStringValues.NameFromId(obj.Id);
+            }
         }
 
         public class BatchAction_UpdateLivery : BatchAction<CarSkinObject> {

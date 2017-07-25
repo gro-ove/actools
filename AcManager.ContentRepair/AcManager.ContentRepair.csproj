@@ -87,6 +87,7 @@
     <Compile Include="CommonFixes.cs" />
     <Compile Include="ContentRepairSuggestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repairs\EmptyErsRepair.cs" />
     <Compile Include="Repairs\RodLengthHeaveRepair.cs" />
   </ItemGroup>
   <ItemGroup>

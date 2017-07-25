@@ -36,7 +36,7 @@ namespace AcManager.Pages.SelectionLists {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            
+
             _contentPresenter.SetResourceReference(TextBlock.ForegroundProperty, "WindowText");
 
             /*SetBinding(VisibilityProperty, new Binding(@"IsVisible") {
@@ -230,7 +230,7 @@ namespace AcManager.Pages.SelectionLists {
                 }
             }
         }
-        
+
         protected abstract void AddNewIfMissing([NotNull] IList<TItem> list, [NotNull] TObject obj);
 
         [CanBeNull]
@@ -313,9 +313,9 @@ namespace AcManager.Pages.SelectionLists {
                 SyncSelected(true);
             }
 
-            _baseCollection.WrappedValueChanged += WrappersList_WrappedValueChanged;
-            _baseCollection.CollectionChanged += WrappersList_CollectionChanged;
-            _baseCollection.ItemPropertyChanged += WrappersList_ItemPropertyChanged;
+            _baseCollection.WrappedValueChanged += OnWrappersListValueChanged;
+            _baseCollection.CollectionChanged += OnWrappersListCollectionChanged;
+            _baseCollection.ItemPropertyChanged += OnWrappersListItemPropertyChanged;
 
             if (_nothingFound == null) {
                 _nothingFound = new NothingFoundAdorner(this);
@@ -329,29 +329,29 @@ namespace AcManager.Pages.SelectionLists {
             if (!_loaded) return;
             _loaded = false;
 
-            _baseCollection.WrappedValueChanged -= WrappersList_WrappedValueChanged;
-            _baseCollection.CollectionChanged -= WrappersList_CollectionChanged;
-            _baseCollection.ItemPropertyChanged -= WrappersList_ItemPropertyChanged;
+            _baseCollection.WrappedValueChanged -= OnWrappersListValueChanged;
+            _baseCollection.CollectionChanged -= OnWrappersListCollectionChanged;
+            _baseCollection.ItemPropertyChanged -= OnWrappersListItemPropertyChanged;
 
             if (_nothingFound != null) {
                 _adornerLayer.Remove(_nothingFound);
             }
         }
-        
+
         protected abstract bool OnObjectPropertyChanged([NotNull] TObject obj, [NotNull] PropertyChangedEventArgs e);
 
-        private void WrappersList_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnWrappersListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             var obj = (TObject)sender;
             if (obj.Enabled && OnObjectPropertyChanged(obj, e)) {
                 UpdateIfNeeded();
             }
         }
 
-        private void WrappersList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+        private void OnWrappersListCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             UpdateIfNeeded();
         }
 
-        private void WrappersList_WrappedValueChanged(object sender, WrappedValueChangedEventArgs args) {
+        private void OnWrappersListValueChanged(object sender, WrappedValueChangedEventArgs args) {
             var newValue = args.NewValue as TObject;
             var oldValue = args.OldValue as TObject;
 
@@ -398,7 +398,7 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         int IComparer<TItem>.Compare(TItem x, TItem y) {
-            return string.Compare(x?.DisplayName, y?.DisplayName, StringComparison.Ordinal);
+            return string.Compare(x?.DisplayName, y?.DisplayName, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -25,8 +25,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public QuickDriveModeViewModel Model {
-            get { return ActualModel; }
-            set { DataContext = value; }
+            get => ActualModel;
+            set => DataContext = value;
         }
 
         public ViewModel ActualModel => (ViewModel)DataContext;

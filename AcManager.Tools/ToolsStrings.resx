@@ -325,6 +325,9 @@
   <data name="Shared_TrackStatePreset" xml:space="preserve">
     <value>Track state preset</value>
   </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Real Head Motion preset</value>
+  </data>
   <data name="Shared_Replay" xml:space="preserve">
     <value>Replay</value>
   </data>

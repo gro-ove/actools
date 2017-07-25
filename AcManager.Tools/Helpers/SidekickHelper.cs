@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -189,5 +193,86 @@ namespace AcManager.Tools.Helpers {
 
             UpdateSidekickDatabase(car, separateFiles);
         }
+
+        #region Odometer
+        public static readonly string OdometerDataFileName = Path.Combine("odometers", "odometers.ini");
+
+        static SidekickHelper() {
+            PlayerStatsManager.Instance.NewSessionAdded += OnNewSessionAdded;
+        }
+
+        private static void OnNewSessionAdded(object sender, PlayerStatsManager.SessionStatsEventArgs sessionStatsEventArgs) {
+            if (!SettingsHolder.Drive.SidekickOdometerExportValues) return;
+            if (sessionStatsEventArgs.Stats.CarId != null) {
+                OdometerImport(sessionStatsEventArgs.Stats.CarId);
+            }
+        }
+
+        /// <summary>
+        /// Meters!
+        /// </summary>
+        private static IEnumerable<Tuple<string, double>> LoadDistances() {
+            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            if (!File.Exists(filename)) yield break;
+            foreach (var v in new IniFile(filename)) {
+                var carId = v.Key;
+                var value = v.Value.GetDouble("odometer", 0d);
+                if (value > 0) {
+                    yield return Tuple.Create(carId, value);
+                }
+            }
+        }
+
+        private static void OdometerImportIfNeeded(string carId, double appDistance) {
+            var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
+            if (cmDistance >= appDistance - 100) return;
+
+            PlayerStatsManager.Instance.SetDistanceDrivenByCar(carId, appDistance);
+            (CarsManager.Instance.GetWrapperById(carId)?.Value as CarObject)?.RaiseTotalDrivenDistanceChanged();
+            Logging.Debug($"Driven distance for {carId} updated: CM had {cmDistance / 1e3:F1} km, app has {appDistance / 1e3:F1} km, which is more.");
+        }
+
+        public static void OdometerImportAll() {
+            foreach (var v in LoadDistances()) {
+                OdometerImportIfNeeded(v.Item1, v.Item2);
+            }
+        }
+
+        public static void OdometerImport([NotNull] string carId) {
+            if (carId == null) throw new ArgumentNullException(nameof(carId));
+
+            var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
+            if (cmDistance <= 0d) return;
+
+            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            if (!File.Exists(filename)) return;
+
+            OdometerImportIfNeeded(carId, new IniFile(filename)[carId].GetDouble("odometer", 0d));
+        }
+
+        public static void OdometerExport([NotNull] string carId) {
+            if (carId == null) throw new ArgumentNullException(nameof(carId));
+
+            var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
+            if (!(cmDistance > 0d)) return;
+
+            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            if (!File.Exists(filename)) return;
+
+            var ini = new IniFile(filename);
+            var section = ini[carId];
+            var appDistance = section.GetDouble("odometer", 0d);
+            if (cmDistance <= appDistance + 100) return;
+
+            section.Set("odometer", cmDistance);
+
+            if (!section.ContainsKey("odometer.originalvalue")) {
+                section.Set("odometer.originalvalue", appDistance);
+            }
+
+            ini.Save();
+            Logging.Debug($"Driven distance for {carId} updated: app had {appDistance / 1e3:F1} km, CM has {cmDistance / 1e3:F1} km, which is more.");
+        }
+        #endregion
     }
 }

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
@@ -14,7 +16,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.GameProperties {
-    public class RhmService : NotifyPropertyChanged, IDisposable {
+    public class RhmService : NotifyPropertyChanged, IDisposable, IUserPresetable {
         private static RhmService _instance;
 
         public static RhmService Instance => _instance ?? (_instance = new RhmService());
@@ -30,7 +32,7 @@ namespace AcManager.Tools.GameProperties {
         private bool _active;
 
         public bool Active {
-            get { return _active; }
+            get => _active;
             set {
                 if (Equals(value, _active)) return;
                 _active = value;
@@ -169,6 +171,17 @@ namespace AcManager.Tools.GameProperties {
         [CanBeNull]
         private Process _process;
 
+        private bool? CheckVisibility() {
+            if (_process != null) {
+                var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith(@"Real Head Motion for Assetto Corsa "));
+                if (handle != default(IntPtr)) {
+                    return (User32.GetWindowLong(handle, User32.GwlStyle) & (int)User32.WindowShowStyle.Hide) == 0;
+                }
+            }
+
+            return null;
+        }
+
         private bool SetVisibility(bool visible) {
             if (_process != null) {
                 var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith(@"Real Head Motion for Assetto Corsa "));
@@ -235,6 +248,13 @@ namespace AcManager.Tools.GameProperties {
             DisposeHelper.Dispose(ref _process);
         }
 
+        private void TryToRestart() {
+            if (_process?.HasExitedSafe() != false) return;
+            var visiblity = CheckVisibility();
+            EnsureStopped();
+            EnsureRunnedAsync(visiblity == true).Forget();
+        }
+
         private AsyncCommand _showSettingsCommand;
 
         public AsyncCommand ShowSettingsCommand => _showSettingsCommand ?? (_showSettingsCommand = new AsyncCommand(async () => {
@@ -252,5 +272,41 @@ namespace AcManager.Tools.GameProperties {
         public void Dispose() {
             EnsureStopped();
         }
+
+        #region Presets
+        public bool CanBeSaved {
+            get {
+                if (!string.IsNullOrWhiteSpace(SettingsHolder.Drive.RhmSettingsLocation)) {
+                    return false;
+                }
+
+                try {
+                    new FileInfo(SettingsHolder.Drive.RhmSettingsLocation).Refresh();
+                    return true;
+                } catch (Exception) {
+                    return false;
+                }
+            }
+        }
+
+        public string PresetableKey => "rhmPresets";
+        public PresetsCategory PresetableCategory => new PresetsCategory("Real Head Motion Presets", ".xml");
+        public event EventHandler Changed;
+        public void ImportFromPresetData(string data) {
+            var filename = SettingsHolder.Drive.RhmSettingsLocation;
+            FileUtils.EnsureFileDirectoryExists(filename);
+            File.WriteAllText(filename, data);
+            TryToRestart();
+        }
+
+        public string ExportToPresetData() {
+            var filename = SettingsHolder.Drive.RhmSettingsLocation;
+            if (File.Exists(filename)) {
+                return File.ReadAllText(filename);
+            }
+
+            throw new InformativeException("RHM settings file is missing", "Try to run RHM first or load some preset.");
+        }
+        #endregion
     }
 }

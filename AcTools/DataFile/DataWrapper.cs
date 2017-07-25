@@ -20,7 +20,7 @@ namespace AcTools.DataFile {
 
     public class DataDirectoryWrapper : IDataWrapper {
         private readonly string _directory;
-        
+
         public DataDirectoryWrapper(string directory) {
             if (!Directory.Exists(directory)) {
                 throw new DirectoryNotFoundException(directory);
@@ -109,10 +109,29 @@ namespace AcTools.DataFile {
             }
         }
 
+        public bool Contains(string key) {
+            return !IsEmpty && _acd?.GetEntry(key) != null;
+        }
+
+        public void Delete(string key) {
+            _cache.Remove(key);
+            if (IsEmpty || _acd?.GetEntry(key) == null) return;
+
+            if (IsPacked) {
+                _acd.RemoveEntry(key);
+                _acd.Save(Path.Combine(_carDirectory, "data.acd"));
+            } else {
+                var filename = _acd.GetFilename(key);
+                if (File.Exists(filename)) {
+                    File.Delete(filename);
+                }
+            }
+        }
+
         private bool _isPacked;
 
         public bool IsPacked {
-            get { return _isPacked; }
+            get => _isPacked;
             private set {
                 if (value == _isPacked) return;
                 _isPacked = value;
@@ -123,7 +142,7 @@ namespace AcTools.DataFile {
         private bool _isEmpty;
 
         public bool IsEmpty {
-            get { return _isEmpty; }
+            get => _isEmpty;
             private set {
                 if (value == _isEmpty) return;
                 _isEmpty = value;

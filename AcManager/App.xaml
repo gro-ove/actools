@@ -1,12 +1,12 @@
 ﻿<Application x:Class="AcManager.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mui="http://firstfloorsoftware.com/ModernUI">
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/ModernUI.AcTheme.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/ModernUI.AcTheme.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
 </Application>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
@@ -28,6 +29,7 @@ namespace AcTools.AcdFile {
         }
 
         private readonly Dictionary<string, AcdEntry> _entries;
+        private bool _fullyLoaded;
 
         [CanBeNull]
         public AcdEntry GetEntry([NotNull] string entryName) {
@@ -39,19 +41,13 @@ namespace AcTools.AcdFile {
                     entry = File.Exists(filename) ? new AcdEntry {
                         Name = entryName,
                         Data =  File.ReadAllBytes(filename)
-                    } : new AcdEntry {
-                        Name = entryName,
-                        Data = new byte[0]
-                    };
+                    } : null;
                 } else {
                     var data = ReadPacked(entryName);
                     entry = data != null ? new AcdEntry {
                         Name = entryName,
                         Data = data
-                    } : new AcdEntry {
-                        Name = entryName,
-                        Data = new byte[0]
-                    };
+                    } : null;
                 }
 
                 _entries[entryName] = entry;
@@ -84,12 +80,19 @@ namespace AcTools.AcdFile {
             SetEntry(entryName, Encoding.UTF8.GetBytes(entryData));
         }
 
+        public void RemoveEntry([NotNull] string entryName) {
+            _entries[entryName] = null;
+        }
+
         public static Acd FromFile([NotNull] string filename) {
             if (!File.Exists(filename)) throw new FileNotFoundException(filename);
             return new Acd(filename, null);
         }
 
-        public void EnsureFullyLoaded() {
+        private void EnsureFullyLoaded() {
+            if (_fullyLoaded) return;
+            _fullyLoaded = true;
+
             if (_packedFile != null) {
                 using (var reader = new AcdReader(_packedFile)) {
                     while (reader.BaseStream.Position < reader.BaseStream.Length) {
@@ -102,7 +105,7 @@ namespace AcTools.AcdFile {
             } else if (_unpackedDirectory != null) {
                 foreach (var file in Directory.GetFiles(_unpackedDirectory)) {
                     var name = Path.GetFileName(file);
-                    if (name != null && (!_entries.ContainsKey(name) || _entries[name] == null)) {
+                    if (name != null && !_entries.ContainsKey(name)) {
                         _entries[name] = new AcdEntry {
                             Name = name,
                             Data = File.ReadAllBytes(file)
@@ -117,7 +120,7 @@ namespace AcTools.AcdFile {
 
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename)) {
-                foreach (var entry in _entries.Values) {
+                foreach (var entry in _entries.Values.NonNull()) {
                     writer.Write(entry);
                 }
             }
@@ -133,7 +136,7 @@ namespace AcTools.AcdFile {
 
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename, outputStream)) {
-                foreach (var entry in _entries.Values) {
+                foreach (var entry in _entries.Values.NonNull()) {
                     writer.Write(entry);
                 }
             }
@@ -157,7 +160,7 @@ namespace AcTools.AcdFile {
 
         public void ExportDirectory([NotNull] string dir) {
             EnsureFullyLoaded();
-            foreach (var entry in _entries.Values) {
+            foreach (var entry in _entries.Values.NonNull()) {
                 var destination = Path.Combine(dir, entry.Name);
                 Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
                 File.WriteAllBytes(destination, entry.Data);

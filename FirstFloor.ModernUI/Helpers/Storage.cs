@@ -252,7 +252,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public static TimeZoneInfo GetTimeZoneInfo([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key) {
             try {
                 var value = storage.GetString(key);
-                return value == null ? null : TimeZoneInfo.FromSerializedString(value);
+                return string.IsNullOrWhiteSpace(value) ? null : TimeZoneInfo.FromSerializedString(value);
             } catch (Exception e) {
                 Logging.Error(e);
                 return null;

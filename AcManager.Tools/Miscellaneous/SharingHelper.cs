@@ -48,6 +48,9 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription(nameof(ToolsStrings.Shared_TrackStatePreset))]
         TrackStatePreset,
 
+        [LocalizedDescription(nameof(ToolsStrings.Shared_RhmPreset))]
+        RhmPreset,
+
         [LocalizedDescription(nameof(ToolsStrings.Shared_Replay))]
         Replay,
 
@@ -147,6 +150,9 @@ namespace AcManager.Tools.Miscellaneous {
 
                 case SharedEntryType.Replay:
                     return @".lnk";
+
+                case SharedEntryType.RhmPreset:
+                    return @".xml";
 
                 case SharedEntryType.Weather:
                 case SharedEntryType.UserChampionship:

@@ -277,6 +277,10 @@ namespace AcManager.Tools.Profile {
             Overall.CopyFrom(newOverall);
             newStorage.SetObject(KeyOverall, Overall);
             GetMainStorage().CopyFrom(newStorage);
+
+            if (SettingsHolder.Drive.StereoOdometerImportValues) {
+                StereoOdometerHelper.ImportAll();
+            }
         }
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {
@@ -444,8 +448,18 @@ Gone offroad: {current.GoneOffroad} time(s)");
                                    .Select(x => x.Key.Substring(KeyDistancePerCarPrefix.Length));
         }
 
+        /// <summary>
+        /// Meters!
+        /// </summary>
         public double GetDistanceDrivenByCar(string carId) {
             return GetMainStorage().GetDouble(KeyDistancePerCarPrefix + carId);
+        }
+
+        /// <summary>
+        /// Meters!
+        /// </summary>
+        public void SetDistanceDrivenByCar(string carId, double value) {
+            GetMainStorage().Set(KeyDistancePerCarPrefix + carId, value);
         }
 
         public double GetMaxSpeedByCar(string carId) {

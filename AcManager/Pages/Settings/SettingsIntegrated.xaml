@@ -85,6 +85,16 @@
       <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
         <Label Content="Update entries for mods if different" />
       </CheckBox>
+      <DockPanel>
+        <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+            Command="{Binding ImportSidekickOdometerCommand}" />
+        <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
+          <Label Content="Import driven distance from Sidekick app if bigger" />
+        </CheckBox>
+      </DockPanel>
+      <CheckBox IsChecked="{Binding Drive.StereoOdometerExportValues}">
+        <Label Content="Export driven distance to Sidekick app if bigger" />
+      </CheckBox>
 
       <!-- Race Essentials -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Race Essentials:" />
@@ -98,7 +108,23 @@
         <Label Content="Update entries for mods if different" />
       </CheckBox>
 
-      <!-- Real head motion -->
+      <!-- Odometer by Stereo -->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Odometer by Stereo:" />
+      <DockPanel>
+        <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+            Command="{Binding ImportStereoOdometerCommand}" />
+        <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
+          <Label Content="Import driven distance from Odometer app if bigger" />
+        </CheckBox>
+      </DockPanel>
+      <CheckBox IsChecked="{Binding Drive.StereoOdometerExportValues}">
+        <Label Content="Export driven distance to Odometer app if bigger" />
+      </CheckBox>
+      <c:MessageBlock>
+        <mui:BbCodeBlock Text="Please, keep in mind that Odometer calculates distance made by wheels, while CM stores the distance car moved in space. If you want to remove imported values, simply uncheck “Import driven distance …” checkbox and use “Recalculate” button in stats section." />
+      </c:MessageBlock>
+
+      <!-- Real Head Motion -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
         <Run Text="Real Head Motion:" />
         <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
@@ -113,6 +139,12 @@
         <Label Content="RHM location:" />
         <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
         <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+        <Label Content="RHM settings location:" />
+        <Button Content="Browse" Command="{Binding Drive.SelectRhmSettingsLocationCommand}" />
+        <mui:BetterTextBox Text="{Binding Drive.RhmSettingsLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </DockPanel>
 
       <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">

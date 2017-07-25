@@ -228,9 +228,9 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        private static void CheckSignature(string filename) {
+        private static void CheckSignatureOrThrow(string filename) {
             var certificate = X509Certificate.CreateFromSignedFile(filename);
-            if (new X509Certificate2(certificate.Handle).RawData.EqualsTo(Decompress(Convert.FromBase64String(Certificate)))) {
+            if (!new X509Certificate2(certificate.Handle).RawData.EqualsTo(Decompress(Convert.FromBase64String(Certificate)))) {
                 throw new Exception("Signature is wrong");
             }
 
@@ -254,6 +254,15 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
+        private static void CheckSignature(string filename) {
+            try {
+                CheckSignatureOrThrow(filename);
+                Logging.Write("Update: signature is fine");
+            } catch (Exception e) {
+                Logging.Unexpected("Update: signature is wrong");
+            }
+        }
+
         public static bool OnStartup(string[] args) {
             try {
                 if (MainExecutingFile.Location.EndsWith(UpdatePostfix)) {
@@ -264,8 +273,7 @@ namespace AcManager.Tools.Miscellaneous {
                 var updateLocation = UpdateLocation;
                 if (File.Exists(updateLocation)) {
                     if (FileVersionInfo.GetVersionInfo(updateLocation).FileVersion.IsVersionNewerThan(BuildInformation.AppVersion)) {
-                        // TODO: Enable signature check
-                        // CheckSignature(updateLocation);
+                        CheckSignature(updateLocation);
 
                         Thread.Sleep(200);
                         RunUpdateExeAndExitIfExists();

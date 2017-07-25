@@ -24,8 +24,8 @@ namespace FirstFloor.ModernUI.Helpers {
                     Stretch = Stretch.Uniform
                 };
                 path.SetBinding(Shape.FillProperty, new Binding {
-                    Path = new PropertyPath(nameof(MenuItem.Foreground)),
-                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1)
+                    Path = new PropertyPath("(Control.Foreground)"),
+                    RelativeSource = new RelativeSource(RelativeSourceMode.Self)
                 });
                 icon = path;
             }
@@ -51,6 +51,12 @@ namespace FirstFloor.ModernUI.Helpers {
         public static ContextMenu AddItem([NotNull] this ContextMenu menu, ICommand command) {
             if (menu == null) throw new ArgumentNullException(nameof(menu));
             menu.Items.Add(new MenuItem { Command = command });
+            return menu;
+        }
+
+        public static ContextMenu AddItem([NotNull] this ContextMenu menu, MenuItem item) {
+            if (menu == null) throw new ArgumentNullException(nameof(menu));
+            menu.Items.Add(item);
             return menu;
         }
 

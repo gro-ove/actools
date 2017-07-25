@@ -21,7 +21,7 @@ using StringBasedFilter.Parsing;
 namespace AcManager.Tools.Objects {
     public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation {
         public static readonly string[] VersionSources = { "version.txt", "changelog.txt", "readme.txt", "read me.txt" };
-        private static readonly Regex VersionRegex = new Regex(@"^\s*(?:-\s*)?v?(\d+(?:\.\d+)+)", RegexOptions.Compiled);
+        private static readonly Regex VersionRegex = new Regex(@"^\s{0,4}(?:-\s*)?v?(\d+(?:\.\d+)+)", RegexOptions.Compiled);
 
         [CanBeNull]
         public static string GetVersion(string fileData) {
@@ -731,7 +731,7 @@ namespace AcManager.Tools.Objects {
         public string Postfix { get; }
 
         public new double Value {
-            get { return FlexibleParser.TryParseDouble(base.Value) ?? (Minimum + Maximum) / 2; }
+            get => FlexibleParser.TryParseDouble(base.Value) ?? (Minimum + Maximum) / 2;
             set {
                 value = value.Clamp(Minimum, Maximum).Round(RoundTo);
                 if (Equals(value, Value)) return;

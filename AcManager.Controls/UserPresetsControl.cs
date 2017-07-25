@@ -50,6 +50,13 @@ namespace AcManager.Controls {
             return ValuesStorage.GetString("__userpresets_p_" + key);
         }
 
+        public static void SetCurrentFilename(string key, string filename, bool resetIsChanged = true) {
+            ValuesStorage.Set("__userpresets_p_" + key, filename);
+            if (resetIsChanged) {
+                ValuesStorage.Remove("__userpresets_c_" + key);
+            }
+        }
+
         public static bool IsChanged(string key) {
             return ValuesStorage.GetBool("__userpresets_c_" + key);
         }
@@ -115,7 +122,13 @@ namespace AcManager.Controls {
 
                 var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
                 c.CurrentUserPreset = entry;
-                c.UserPresetable?.ImportFromPresetData(serialized);
+
+                try {
+                    c.UserPresetable?.ImportFromPresetData(serialized);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load preset", e);
+                }
+
                 c.SetChanged(changed);
                 r = true;
             }
@@ -130,7 +143,13 @@ namespace AcManager.Controls {
             var r = false;
             foreach (var c in GetInstance(key)) {
                 c.CurrentUserPreset = null;
-                c.UserPresetable?.ImportFromPresetData(serialized);
+
+                try {
+                    c.UserPresetable?.ImportFromPresetData(serialized);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load preset", e);
+                }
+
                 r = true;
             }
 
@@ -241,14 +260,18 @@ namespace AcManager.Controls {
 
         public ICommand SaveCommand { get; }
 
-        public bool SaveCanExecute() {
+        private bool SaveCanExecute() {
             return _presetable != null && _presetable.CanBeSaved;
         }
 
-        public void SaveExecute() {
+        private void SaveExecute() {
             if (_presetable == null) return;
-            PresetsManager.Instance.SavePresetUsingDialog(_presetable.PresetableKey, _presetable.PresetableCategory,
-                    _presetable.ExportToPresetData(), CurrentUserPreset?.Filename);
+            try {
+                PresetsManager.Instance.SavePresetUsingDialog(_presetable.PresetableKey, _presetable.PresetableCategory,
+                        _presetable.ExportToPresetData(), CurrentUserPreset?.Filename);
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t save preset", e);
+            }
         }
 
         public void SwitchToNext() {

@@ -97,8 +97,13 @@ namespace AcTools.Windows {
             };
         }
 
+        public static int GwlStyle = -16;
+
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, WindowShowStyle nCmdShow);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindowAsync(IntPtr hWnd, WindowShowStyle nCmdShow);

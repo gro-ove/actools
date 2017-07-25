@@ -5,6 +5,7 @@ using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Drive;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
@@ -63,6 +64,9 @@ namespace AcManager.Tools {
 
                 case SharedEntryType.RaceGridPreset:
                     return ProcessSharedRaceGridPreset(shared, data);
+
+                case SharedEntryType.RhmPreset:
+                    return ProcessSharedRhmPreset(shared, data);
 
                 case SharedEntryType.UserChampionship:
                     return OptionUserChampionshipExtMode ? ProcessSharedUserChampionshipExt(shared, data) :
@@ -161,6 +165,29 @@ namespace AcManager.Tools {
                 case Choise.Apply:
                     RaceGridViewModel.LoadSerializedPreset(data.ToUtf8String());
                     QuickDrive.NavigateToPage();
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private static ArgumentHandleResult ProcessSharedRhmPreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared);
+            switch (result) {
+                case Choise.Save:
+                case Choise.ApplyAndSave:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(RhmService.Instance.PresetableCategory), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
+                    if (result == Choise.ApplyAndSave) {
+                        RhmService.Instance.ImportFromPresetData(data.ToUtf8String());
+                        UserPresetsControl.SetCurrentFilename(RhmService.Instance.PresetableKey, filename);
+                    }
+                    return ArgumentHandleResult.SuccessfulShow;
+                case Choise.Apply:
+                    RhmService.Instance.ImportFromPresetData(data.ToUtf8String());
+                    UserPresetsControl.SetCurrentFilename(RhmService.Instance.PresetableKey, null);
                     return ArgumentHandleResult.SuccessfulShow;
                 default:
                     return ArgumentHandleResult.Failed;

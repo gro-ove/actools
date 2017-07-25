@@ -266,7 +266,7 @@ namespace AcManager.Tools.Profile {
         }
 
         /// <summary>
-        /// Doesn’t spawn PropertyChanged event — don’t bind while game is still running.
+        /// Doesnâ€™t spawn PropertyChanged event â€” donâ€™t bind while game is still running.
         /// </summary>
         public class WatchingSessionStats : SessionStats {
             internal WatchingSessionStats() {
@@ -346,7 +346,7 @@ namespace AcManager.Tools.Profile {
             [CanBeNull]
             private string ThisOr([CanBeNull] string s, int limit, ref IniFile raceIni, string key) {
                 if (s?.Length == limit) {
-                    // ID could be shorten, let’s try to find a longer version
+                    // ID could be shorten, letâ€™s try to find a longer version
                     var actual = (raceIni ?? (raceIni = new IniFile(FileUtils.GetRaceIniFilename())))["RACE"].GetNonEmpty(key);
                     if (actual != null && actual.StartsWith(s)) {
                         return actual;
@@ -409,7 +409,7 @@ namespace AcManager.Tools.Profile {
                     }
                 }
 
-                /* AI-controlled? doesn’t count */
+                /* AI-controlled? doesnâ€™t count */
                 if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
                     CurrentStatus = Status.NotLive;
                     return;
@@ -427,7 +427,7 @@ namespace AcManager.Tools.Profile {
                 var distance = graphics.CarCoordinates - previous.Graphics.CarCoordinates;
                 var calcSpeed = distance.Length() / 1e3 / time.TotalHours;
 
-                /* compare calculated from coordinates speed with actual speed — if much more, 
+                /* compare calculated from coordinates speed with actual speed â€” if much more, 
                  * assume that car was teleported */
                 var jumped = calcSpeed > physics.SpeedKmh * 3d + 10;
                 if (jumped) {
@@ -470,7 +470,7 @@ namespace AcManager.Tools.Profile {
                 for (var i = 0; i < 4; i++) {
                     var d = previous.Physics.TyreWear[i] - physics.TyreWear[i];
                     if (d > 0 && d < 0.1) {
-                        /* TyreWear’ range is from 0.0 to 100.0 */
+                        /* TyreWearâ€™ range is from 0.0 to 100.0 */
                         TotalTyreWear += d / 100d;
                     }
                 }

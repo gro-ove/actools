@@ -48,5 +48,28 @@
         </mui:SpacingUniformGrid>
       </mui:SpacingStackPanel>
     </DataTemplate>
+
+    <DataTemplate x:Key="Batch.AddNamePrefix" DataType="{x:Type li:CarSkinsListPage+BatchAction_AddNamePrefix}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Prefix or postfix to add:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding Prefix}" />
+        </DockPanel>
+        <mui:SpacingUniformGrid Columns="2" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PostfixMode}">
+            <Label Content="Add as postfix" />
+          </CheckBox>
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SkipExisting}">
+            <Label Content="Skip if already added" />
+          </CheckBox>
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding KeepSpace}">
+            <Label Content="Make sure there is a space between" />
+          </CheckBox>
+        </mui:SpacingUniformGrid>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
   </c:AcListPage.Resources>
 </c:AcListPage>
