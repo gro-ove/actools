@@ -39,19 +39,29 @@
         </StackPanel>
 
         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ContactUsHeader}" />
-        <mui:BbCodeBlock Margin="0 8 0 40" BbCode="{x:Static g:AppStrings.About_ContactInformation}" />
+        <mui:BbCodeBlock Margin="0 8 0 40" FontSize="{DynamicResource SmallFontSize}" BbCode="{x:Static g:AppStrings.About_ContactInformation}" />
 
-        <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ThanksForTranslationHeader}" />
-        <mui:SelectableBbCodeBlock Margin="0 8 0 20"
+        <TextBlock Style="{StaticResource Heading2}" Text="Thanks to:" />
+
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Translation:" Margin="0 12 0 0" />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
             BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Shijie Zhang (St3fan), Stanislav Minakov." />
 
-        <TextBlock Style="{StaticResource Heading2}" Text="Special thanks for ideas and testing to:" />
-        <mui:SelectableBbCodeBlock Margin="0 8 0 20" BbCode="MadMat, MicaLovesKPOP, Peter Boese, Topuz, Zkirtaem." />
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas and testing:" />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
+            BbCode="dr8008, MadMat, MicaLovesKPOP, Peter Boese, Topuz, Zkirtaem." />
 
-        <TextBlock Style="{StaticResource Heading2}" Text="And, of course, to used services:" />
-        <mui:SelectableBbCodeBlock Margin="0 8 0 0"
-            BbCode="
-[url=&quot;https://www.dropbox.com&quot;]Dropbox[/url],
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas for animations:" />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
+            BbCode="[url=&quot;https://twitter.com/beesandbombs&quot;]Bees &amp; Bombs (/u/davebees)[/url],
+[url=&quot;https://www.reddit.com/user/blueconcepts&quot;]/u/blueconcepts[/url],
+[url=&quot;https://www.reddit.com/user/FastAsUcan&quot;]/u/FastAsUcan[/url],
+[url=&quot;https://twitter.com/tobiasahlin&quot;]tobiasahlin[/url],
+[url=&quot;https://codepen.io/tomhazledine/&quot;]Tom Hazledine[/url]." />
+
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Services used:" />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
+            BbCode="[url=&quot;https://www.dropbox.com&quot;]Dropbox[/url],
 [url=&quot;https://www.google.com/drive/&quot;]Google Drive[/url],
 [url=&quot;https://maps.google.com/&quot;]Google Maps[/url],
 [url=&quot;https://icons8.com/&quot;]Icons8[/url],

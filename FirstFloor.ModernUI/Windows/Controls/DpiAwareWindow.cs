@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -16,68 +17,12 @@ using Application = System.Windows.Application;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class AppScaleProperty : NotifyPropertyChanged {
-        private readonly Busy _busy = new Busy();
-
-        private bool _scaleLoaded;
-        private double _scale;
-
-        private void EnsureLoaded() {
-            if (!_scaleLoaded) {
-                _scaleLoaded = true;
-                _scale = _delayed = ValuesStorage.GetDouble("__uiScale_2", 1d);
-            }
-
-            if (_scale < 0.1 || _scale > 4d || double.IsNaN(_scale) || double.IsInfinity(_scale)) {
-                _scale = _delayed = 1d;
-            }
-        }
-
-        public double Scale {
-            get {
-                EnsureLoaded();
-                return _scale;
-            }
-            set {
-                EnsureLoaded();
-                value = Math.Min(Math.Max(value, 0.2), 10d);
-                if (Equals(value, _scale)) return;
-                var delta = value / _scale;
-                _scale = value;
-                _delayed = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Delayed));
-                ValuesStorage.Set("__uiScale_2", value);
-
-                foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
-                    window.UpdateSizeLimits();
-                    window.Width *= delta;
-                    window.Height *= delta;
-                }
-            }
-        }
-
-        private double _delayed;
-
-        public double Delayed {
-            get {
-                EnsureLoaded();
-                return _delayed;
-            }
-            set {
-                EnsureLoaded();
-                if (Equals(value, _delayed)) return;
-                _delayed = value;
-                OnPropertyChanged(nameof(Delayed));
-                _busy.DoDelay(() => Scale = _delayed, 500);
-            }
-        }
-    }
-
     /// <summary>
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
     public abstract class DpiAwareWindow : Window {
+        public static event EventHandler NewWindowOpened;
+
         private const double BaseDpi = 96d;
         public static readonly AppScaleProperty AppScale = new AppScaleProperty();
 
@@ -103,6 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SizeChanged += OnSizeChanged;
             StateChanged += OnStateChanged;
             Loaded += OnLoaded;
+            Closing += OnClosing;
 
             // WM_DPICHANGED is not send when window is minimized, do listen to global display setting changes
             SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
@@ -121,6 +67,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                                                       .Where(x => x.Key == Key.Back && x.Modifiers == ModifierKeys.None)
                                                       .ToList()) {
                 NavigationCommands.BrowseBack.InputGestures.Remove(gesture);
+            }
+        }
+
+        private void OnClosing(object sender, CancelEventArgs cancelEventArgs) {
+            try {
+                if (IsActive) {
+                    Owner?.Activate();
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
         }
 
@@ -183,6 +139,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public double OriginalMinWidth, OriginalMinHeight, OriginalMaxWidth, OriginalMaxHeight;
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            NewWindowOpened?.Invoke(this, EventArgs.Empty);
             OriginalMinWidth = MinWidth;
             OriginalMinHeight = MinHeight;
             OriginalMaxWidth = MaxWidth;

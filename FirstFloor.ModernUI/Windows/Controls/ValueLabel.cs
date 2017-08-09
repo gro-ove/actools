@@ -96,8 +96,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             OnRelativeRangeValuesChanged();
         }
 
-        public static readonly DependencyProperty RelativeRangeStringFormatProperty = DependencyProperty.Register(nameof(RelativeRangeStringFormat), typeof(string),
-                typeof(DoubleValueLabel), new PropertyMetadata("", (o, e) => {
+        public static readonly DependencyProperty RelativeRangeStringFormatProperty = DependencyProperty.Register(nameof(RelativeRangeStringFormat),
+                typeof(string), typeof(DoubleValueLabel), new PropertyMetadata("", (o, e) => {
                     ((DoubleValueLabel)o)._relativeRangeStringFormat = (string)e.NewValue;
                 }));
 

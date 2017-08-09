@@ -8,13 +8,16 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Steamworks;
+using Application = System.Windows.Application;
 
 namespace AcManager.Tools.Starters {
     public class SteamStarter : StarterBase {
@@ -57,6 +60,10 @@ namespace AcManager.Tools.Starters {
 
             RunCallbacks().Forget();
             SteamUtils.SetOverlayNotificationPosition(ENotificationPosition.k_EPositionBottomLeft);
+
+            AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
+                SteamAPI.Shutdown();
+            };
         }
 
         private static bool AreFilesSame(string a, string b) {
@@ -81,6 +88,8 @@ namespace AcManager.Tools.Starters {
             }
         }
 
+        public static bool IsInitialized { get; private set; }
+
         private static void InitializeLibraries() {
             // Environment.SetEnvironmentVariable("PATH", $"{Environment.GetEnvironmentVariable("PATH")};{_dllsPath}");
             // LoadLibrary(Path.Combine(_dllsPath, "CSteamworks.dll"));
@@ -91,6 +100,10 @@ namespace AcManager.Tools.Starters {
         }
 
         public static bool Initialize(string acRoot) {
+            if (IsInitialized) {
+                return true;
+            }
+
             _acRoot = acRoot;
             _dllsPath = Path.Combine(_acRoot, "launcher", "support");
 
@@ -107,6 +120,7 @@ namespace AcManager.Tools.Starters {
 
             try {
                 InitializeInner();
+                IsInitialized = true;
                 return true;
             } catch (Exception e) {
                 Logging.Warning(e);

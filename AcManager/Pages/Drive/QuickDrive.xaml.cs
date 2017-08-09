@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
@@ -17,6 +19,7 @@ using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
 using AcManager.Internal;
+using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
@@ -31,6 +34,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
 using AcTools;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -84,21 +88,29 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
 
                 new InputBinding(new DelegateCommand(() => {
-                    CustomShowroomWrapper.StartAsync(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+                    var selectedCar = Model.SelectedCar;
+                    if (selectedCar == null) return;
+                    CustomShowroomWrapper.StartAsync(selectedCar, selectedCar.SelectedSkin);
                 }), new KeyGesture(Key.H, ModifierKeys.Alt)),
                 new InputBinding(new DelegateCommand(() => {
-                    CarOpenInShowroomDialog.Run(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                    var selectedCar = Model.SelectedCar;
+                    if (selectedCar == null) return;
+                    CarOpenInShowroomDialog.Run(selectedCar, selectedCar.SelectedSkin?.Id);
                 }), new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => {
-                    new CarOpenInShowroomDialog(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id).ShowDialog();
+                    var selectedCar = Model.SelectedCar;
+                    if (selectedCar == null) return;
+                    new CarOpenInShowroomDialog(selectedCar, selectedCar.SelectedSkin?.Id).ShowDialog();
                 }), new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
 
 #if DEBUG
-                new InputBinding(new AsyncCommand(() =>
-                        LapTimesManager.Instance.AddEntry(
-                                Model.SelectedCar.Id, Model.SelectedTrack.IdWithLayout,
-                                DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)))),
-                        new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
+                new InputBinding(new AsyncCommand(() => {
+                    var selectedCar = Model.SelectedCar;
+                    if (selectedCar == null) return Task.Delay(0);
+                    return LapTimesManager.Instance.AddEntry(
+                            selectedCar.Id, Model.SelectedTrack.IdWithLayout,
+                            DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)));
+                }), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
 #endif
 
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
@@ -287,10 +299,17 @@ namespace AcManager.Pages.Drive {
                 RandomTemperatureCommand.Execute();
             }));
 
+            [CanBeNull]
             public CarObject SelectedCar {
                 get => _selectedCar;
                 set {
                     if (Equals(value, _selectedCar)) return;
+
+                    if (_selectedCar != null && _selectedCar.Author != AcCommonObject.AuthorKunos && _selectedCar.AcdData != null) {
+                        WeakEventManager<DataWrapper, DataChangedEventArgs>.RemoveHandler(_selectedCar.AcdData, nameof(DataWrapper.DataChanged),
+                                OnCarDataChanged);
+                    }
+
                     _selectedCar = value;
                     // _selectedCar?.LoadSkins();
                     OnPropertyChanged();
@@ -299,8 +318,44 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
 
                     AcContext.Instance.CurrentCar = value;
+                    if (value != null && value.Author != AcCommonObject.AuthorKunos) {
+                        SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, false, true).ToList();
+                        if (value.AcdData != null) {
+                            WeakEventManager<DataWrapper, DataChangedEventArgs>.AddHandler(value.AcdData, nameof(DataWrapper.DataChanged),
+                                    OnCarDataChanged);
+                        }
+                    } else {
+                        SelectedCarRepairSuggestions = null;
+                    }
                 }
             }
+
+            private void OnCarDataChanged(object sender, DataChangedEventArgs dataChangedEventArgs) {
+                Logging.Here();
+                var car = SelectedCar;
+                SelectedCarRepairSuggestions = car != null && car.Author != AcCommonObject.AuthorKunos ?
+                        CarRepair.GetRepairSuggestions(car, false, true).ToList() : null;
+            }
+
+            private List<ContentRepairSuggestion> _selectedCarRepairSuggestions;
+
+            [CanBeNull]
+            public List<ContentRepairSuggestion> SelectedCarRepairSuggestions {
+                get => _selectedCarRepairSuggestions;
+                set {
+                    if (Equals(value, _selectedCarRepairSuggestions)) return;
+                    _selectedCarRepairSuggestions = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelegateCommand _repairCarCommand;
+
+            public DelegateCommand RepairCarCommand => _repairCarCommand ?? (_repairCarCommand = new DelegateCommand(() => {
+                if (SelectedCar != null) {
+                    CarAnalyzer.Run(SelectedCar);
+                }
+            }));
 
             private static T GetRandomObject<T>(BaseAcManager<T> manager, string currentId) where T : AcObjectNew {
                 var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault() ?? currentId;
@@ -348,9 +403,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public int TimeMultiplerMinimum => 0;
-
             public int TimeMultiplerMaximum => 360;
-
             public int TimeMultiplerMaximumLimited => 60;
 
             private int _timeMultiplier;
@@ -604,7 +657,9 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _manageCarSetupsCommand;
 
             public DelegateCommand ManageCarSetupsCommand => _manageCarSetupsCommand ?? (_manageCarSetupsCommand = new DelegateCommand(() => {
-                CarSetupsListPage.Open(SelectedCar);
+                if (SelectedCar != null) {
+                    CarSetupsListPage.Open(SelectedCar);
+                }
             }));
 
             private DelegateCommand _manageCarCommand;
@@ -670,8 +725,9 @@ namespace AcManager.Pages.Drive {
             }
 
             internal async Task Go() {
+                var selectedCar = SelectedCar;
                 var selectedMode = SelectedModeViewModel;
-                if (selectedMode == null) return;
+                if (selectedCar == null || selectedMode == null) return;
 
                 if (SettingsHolder.Drive.QuickDriveCheckTrack) {
                     var doesNotFit = selectedMode.TrackDoesNotFit;
@@ -693,8 +749,8 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
-                        CarId = SelectedCar.Id,
-                        CarSkinId = SelectedCar.SelectedSkin?.Id,
+                        CarId = selectedCar.Id,
+                        CarSkinId = selectedCar.SelectedSkin?.Id,
                         CarSetupId = _carSetupId,
                         TrackId = SelectedTrack.Id,
                         TrackConfigurationId = SelectedTrack.LayoutId
@@ -891,6 +947,9 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnCarContextMenu(object sender, ContextMenuButtonEventArgs e) {
+            var selectedCar = Model.SelectedCar;
+            if (selectedCar == null) return;
+
             var menu = new ContextMenu()
                     .AddItem("Change car", Model.ChangeCarCommand)
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
@@ -898,19 +957,19 @@ namespace AcManager.Pages.Drive {
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Manage setups", () => {
-                        CarSetupsListPage.Open(Model.SelectedCar);
+                        CarSetupsListPage.Open(selectedCar);
                     })
                     .AddItem("Manage skins", () => {
-                        CarSkinsListPage.Open(Model.SelectedCar);
+                        CarSkinsListPage.Open(selectedCar);
                     })
                     .AddSeparator();
-            CarBlock.OnShowroomContextMenu(menu, Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+            CarBlock.OnShowroomContextMenu(menu, selectedCar, selectedCar.SelectedSkin);
             menu.AddSeparator()
                 .AddItem("Open car in Content tab", () => {
-                    CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                    CarsListPage.Show(selectedCar, selectedCar.SelectedSkin?.Id);
                 })
                 .AddItem(AppStrings.Toolbar_Folder, () => {
-                    Model.SelectedCar.ViewInExplorer();
+                    selectedCar.ViewInExplorer();
                 });
             e.Menu = menu;
         }
@@ -987,11 +1046,15 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnShowroomButtonClick(object sender, RoutedEventArgs e) {
-            CarBlock.OnShowroomButtonClick(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+            var selectedCar = Model.SelectedCar;
+            if (selectedCar == null) return;
+            CarBlock.OnShowroomButtonClick(Model.SelectedCar, selectedCar.SelectedSkin);
         }
 
         private void OnShowroomContextMenu(object sender, MouseButtonEventArgs e) {
-            CarBlock.OnShowroomContextMenu(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+            var selectedCar = Model.SelectedCar;
+            if (selectedCar == null) return;
+            CarBlock.OnShowroomContextMenu(Model.SelectedCar, selectedCar.SelectedSkin);
         }
     }
 }

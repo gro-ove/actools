@@ -51,7 +51,7 @@ technique10 Copy {
 	}
 }
 
-// find average around — stupid, but works
+// find average around â€” stupid, but works
 float4 ps_Average(PS_IN pin) : SV_Target{
 	float4 result = 0;
 	float v = 0;

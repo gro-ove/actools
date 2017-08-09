@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
@@ -30,6 +31,7 @@ namespace AcTools.GenericMods {
     }
 
     public class GenericModsEnabler : IDisposable {
+        public static bool OptionLoggingEnabled;
         public static readonly string ConfigFileName = "JSGME.ini";
 
         private readonly FileSystemWatcher _watcher;
@@ -161,6 +163,8 @@ namespace AcTools.GenericMods {
             }
 
             return _busy.Delay(() => Task.Run(() => _operationBusy.Do(() => {
+                Debug($"Enabling {mod.DisplayName}…");
+
                 var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName));
                 iniFile["MODS"].Set(mod.DisplayName, int.MaxValue);
                 var dependancies = iniFile["DEPENDANCIES"];
@@ -172,6 +176,8 @@ namespace AcTools.GenericMods {
                 SaveApplyOrder(iniFile, true);
 
                 var installationLog = GetInstallationLogFilename(ModsDirectory, mod.DisplayName);
+                Debug($"Installation log: {installationLog}");
+
                 if (File.Exists(installationLog)) {
                     throw new InformativeException("Can’t enable mod", "Mod is already enabled.");
                 }
@@ -180,17 +186,22 @@ namespace AcTools.GenericMods {
                     var files = mod.Files;
                     for (var i = 0; i < files.Length; i++) {
                         var file = files[i];
+                        Debug($"File, src={file.Source}, dst={file.Destination})");
+
                         if (cancellation.IsCancellationRequested) return;
                         progress?.Report(Tuple.Create(file.RelativeName, (double?)(0.001 + 0.998 * i / files.Length)));
 
                         try {
                             if (File.Exists(file.Destination)) {
+                                Debug($"Already exists, moving to {file.Backup}");
                                 FileUtils.EnsureFileDirectoryExists(file.Backup);
                                 File.Move(file.Destination, file.Backup);
                             }
 
                             if (file.Source != null) {
                                 FileUtils.EnsureFileDirectoryExists(file.Destination);
+                                Debug($"Copying to {file.Destination}");
+
                                 if (_useHardLinks) {
                                     FileUtils.HardLinkOrCopy(file.Source, file.Destination, true);
                                 } else {
@@ -222,6 +233,8 @@ namespace AcTools.GenericMods {
             }
 
             return _busy.Delay(() => Task.Run(() => _operationBusy.Do(() => {
+                Debug($"Disabling {mod.DisplayName}…");
+
                 // var dependants = Mods.Where(x => x.DependsOn?.Contains(mod.DisplayName) == true).ToList();
                 if (mod.DependsOn?.Length > 0) {
                     throw new InformativeException("Can’t disable mod",
@@ -239,15 +252,20 @@ namespace AcTools.GenericMods {
                 SaveApplyOrder(iniFile, true);
 
                 var installationLog = GetInstallationLogFilename(ModsDirectory, mod.DisplayName);
+                Debug($"Installation log: {installationLog}");
+
                 if (!File.Exists(installationLog)) {
                     throw new InformativeException("Can’t disable mod", "Mod is already disabled.");
                 }
 
                 var lines = File.ReadAllLines(installationLog);
+                Debug($"Lines in log: {lines.Length}");
                 File.Delete(installationLog);
 
                 for (var i = 0; i < lines.Length; i++) {
                     var line = lines[i];
+                    Debug($"Line #{i + 1}: {line}");
+
                     if (cancellation.IsCancellationRequested) return;
                     progress?.Report(Tuple.Create(line, (double?)(0.001 + 0.998 * i / lines.Length)));
 
@@ -255,14 +273,21 @@ namespace AcTools.GenericMods {
                         var backup = GetBackupFilename(ModsDirectory, mod.DisplayName, line);
                         var destination = Path.Combine(RootDirectory, line);
 
+                        Debug($"Backup: {backup}");
+                        Debug($"Destination: {destination}");
+
                         if (File.Exists(destination)) {
+                            Debug("Removing existing destination…");
                             File.Delete(destination);
-                            DeleteIfEmpty(Path.GetDirectoryName(destination));
                         }
 
                         if (File.Exists(backup)) {
+                            Debug("Restoring existing backup…");
+                            FileUtils.EnsureFileDirectoryExists(destination);
                             File.Move(backup, destination);
                             DeleteIfEmpty(Path.GetDirectoryName(backup));
+                        } else {
+                            DeleteIfEmpty(Path.GetDirectoryName(destination));
                         }
                     } catch (Exception e) {
                         Logging.Warning(e);
@@ -285,6 +310,12 @@ namespace AcTools.GenericMods {
             if (mod.IsEnabled) throw new InformativeException("Can’t rename mod", "Mod should be disabled first.");
             _busy.Delay(() => Directory.Move(mod.ModDirectory, newLocation), 300, true);
             ScanMods();
+        }
+
+        private static void Debug(string message, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            if (OptionLoggingEnabled) {
+                Logging.Debug(message, m, p, l);
+            }
         }
     }
 }

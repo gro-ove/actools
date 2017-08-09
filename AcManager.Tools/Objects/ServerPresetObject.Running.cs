@@ -406,6 +406,10 @@ namespace AcManager.Tools.Objects {
             }
 
             try {
+                var now = DateTime.Now;
+                var logName = FileUtils.EnsureFileNameIsValid(
+                        $"Server_{DisplayName}_{now.Year % 100:D2}{now.Month:D2}{now.Day:D2}_{now.Hour:D2}{now.Minute:D2}{now.Second:D2}.log");
+                using (var writer = new StreamWriter(FilesStorage.Instance.GetFilename("Logs", logName), false))
                 using (var process = ProcessExtension.Start(wrapperFilename, new[] {
                     "-e", serverExecutable, $"presets/{Id}"
                 }, new ProcessStartInfo {
@@ -415,7 +419,7 @@ namespace AcManager.Tools.Objects {
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     StandardOutputEncoding = Encoding.UTF8,
-                    StandardErrorEncoding =  Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8,
                 })) {
                     process.Start();
                     SetRunning(process);
@@ -427,12 +431,14 @@ namespace AcManager.Tools.Objects {
 
                     process.OutputDataReceived += (sender, args) => {
                         if (!string.IsNullOrWhiteSpace(args.Data)) {
+                            writer.WriteLine(args.Data);
                             ActionExtension.InvokeInMainThread(() => log.Add(Regex.Replace(args.Data, @"\b(WARNING: .+)", @"[color=#ff8800]$1[/color]")));
                         }
                     };
 
                     process.ErrorDataReceived += (sender, args) => {
                         if (!string.IsNullOrWhiteSpace(args.Data)) {
+                            writer.WriteLine(args.Data);
                             ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
                         }
                     };

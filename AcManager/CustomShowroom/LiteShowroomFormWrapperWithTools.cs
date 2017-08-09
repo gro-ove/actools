@@ -1,29 +1,17 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
-using AcTools.Render.Base;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Render.Kn5SpecificForwardDark;
-using AcTools.Render.Special;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
-using Size = System.Drawing.Size;
 
 namespace AcManager.CustomShowroom {
-    public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapper {
+    public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots {
         private readonly AttachedHelper _helper;
         private readonly LiteShowroomTools _tools;
 
@@ -39,22 +27,10 @@ namespace AcManager.CustomShowroom {
             Form.Move += OnMove;
         }
 
-        protected override void OnClick() {
-            if (_busy) return;
-            base.OnClick();
+        protected override void OnClickOverride() {
             if (_tools.CanSelectNodes && !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
                 Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
             }
-        }
-
-        protected override void OnMouseWheel(object sender, MouseEventArgs e) {
-            if (_busy) return;
-            base.OnMouseWheel(sender, e);
-        }
-
-        protected override void OnTick(object sender, TickEventArgs args) {
-            if (_busy) return;
-            base.OnTick(sender, args);
         }
 
         private bool _switchingInProgress;
@@ -145,123 +121,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private bool _busy;
-
-        protected override void UpdateSize() {
-            if (_busy) return;
-            base.UpdateSize();
-        }
-
-        private async void ShotAsync(Action<IProgress<Tuple<string, double?>>, CancellationToken> action) {
-            if (_busy) return;
-            _busy = true;
-
-            try {
-                using (var waiting = new WaitingDialog {
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Owner = null
-                }) {
-                    waiting.Report(AsyncProgressEntry.Indetermitate);
-
-                    var cancellation = waiting.CancellationToken;
-                    Renderer.IsPaused = true;
-
-                    try {
-                        await Task.Run(() => {
-                            // ReSharper disable once AccessToDisposedClosure
-                            action(waiting, cancellation);
-                        });
-                    } finally {
-                        Renderer.IsPaused = false;
-                    }
-                }
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t build image", e);
-            } finally {
-                _busy = false;
-                UpdateSize();
-            }
-        }
-
-        private static bool _warningShown;
-
-        protected override void SplitShotPieces(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            PiecesBlender.OptionMaxCacheSize = SettingsHolder.Plugins.MontageVramCache;
-
-            var plugin = PluginsManager.Instance.GetById("ImageMontage");
-            if (plugin == null || !plugin.IsReady) {
-                if (!_warningShown) {
-                    _warningShown = true;
-                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
-                }
-
-                OptionMontageMemoryLimit = SettingsHolder.Plugins.MontageMemoryLimit;
-                base.SplitShotPieces(size, downscale, filename, progress, cancellation);
-            } else {
-                var dark = (DarkKn5ObjectRenderer)Renderer;
-                var destination = Path.Combine(SettingsHolder.Plugins.MontageTemporaryDirectory, Path.GetFileNameWithoutExtension(filename) ?? "image");
-
-                // For pre-smoothed files, in case somebody would want to use super-resolution with SSLR/SSAO
-                DarkKn5ObjectRenderer.OptionTemporaryDirectory = destination;
-
-                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress.SubrangeTuple(0.001, 0.95, "Rendering ({0})…"), cancellation);
-
-                progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.97));
-
-                var magick = plugin.GetFilename("magick.exe");
-                if (!File.Exists(magick)) {
-                    magick = plugin.GetFilename("montage.exe");
-                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Is Obsolete", "Please, update it, and it’ll consume twice less power");
-                }
-
-                Environment.SetEnvironmentVariable("MAGICK_TMPDIR", destination);
-                using (var process = new Process {
-                    StartInfo = {
-                    FileName = magick,
-                    WorkingDirectory = destination,
-                    Arguments = $"montage piece-*-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg",
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false
-                },
-                    EnableRaisingEvents = true
-                }) {
-                    process.Start();
-                    process.WaitForExit(600000);
-                    if (!process.HasExited) {
-                        process.Kill();
-                    }
-                }
-
-                progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.99));
-
-                var result = Path.Combine(destination, "out.jpg");
-                if (!File.Exists(result)) {
-                    throw new Exception("Combining failed, file not found");
-                }
-
-                File.Move(result, filename);
-                Directory.Delete(destination, true);
-            }
-        }
-
-        protected override void SplitShot(Size size, bool downscale, string filename) {
-            ShotAsync((progress, token) => {
-                SplitShotInner(size, downscale, filename, progress, token);
-            });
-        }
-
-        protected override void Shot(Size size, bool downscale, string filename) {
-            ShotAsync((progress, token) => {
-                ShotInner(size, downscale, filename, progress, token);
-            });
-        }
-
-        protected override void OnKeyUp(object sender, KeyEventArgs args) {
-            if (_busy) return;
-
+        protected override void OnKeyUpOverride(KeyEventArgs args) {
             switch (args.KeyCode) {
                 case Keys.H:
                     if (args.Alt) {
@@ -269,8 +129,10 @@ namespace AcManager.CustomShowroom {
                         if (tools != null) {
                             if (!args.Control && !args.Shift) {
                                 tools.ToggleSelected();
+                                args.Handled = true;
                             } else if (!args.Control && args.Shift) {
                                 tools.UnhideAll();
+                                args.Handled = true;
                             }
                         }
                     } else if (args.Control && !args.Shift) {
@@ -282,6 +144,7 @@ namespace AcManager.CustomShowroom {
                 case Keys.D:
                     if (args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.Deselect();
+                        args.Handled = true;
                     }
                     break;
 
@@ -289,7 +152,6 @@ namespace AcManager.CustomShowroom {
                     if (Kn5ObjectRenderer.SelectedObject != null) {
                         Kn5ObjectRenderer.Deselect();
                         args.Handled = true;
-                        return;
                     }
                     break;
 
@@ -307,12 +169,10 @@ namespace AcManager.CustomShowroom {
 
                     if (args.Control && !args.Alt && args.Shift) {
                         Renderer.SyncInterval = !Renderer.SyncInterval;
+                        args.Handled = true;
                     }
                     break;
             }
-
-
-            base.OnKeyUp(sender, args);
         }
 
         protected override bool SleepMode => base.SleepMode && !_helper.IsActive;

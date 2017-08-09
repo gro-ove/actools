@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+    xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -29,5 +30,70 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+  </Style>
+
+  <Style x:Key="ContextMenuButton.AsButton" TargetType="c:ContextMenuButton" BasedOn="{StaticResource BaseButtonStyle.Control}">
+    <Setter Property="a:IsPressedAdvancement.AttachIsPressed" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:ContextMenuButton}">
+          <Border x:Name="PART_Button" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" Padding="{TemplateBinding Padding}">
+            <!--<ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />-->
+
+            <Path x:Name="PART_Icon" Fill="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Width="8"
+                Height="8" Stretch="Uniform"
+                Data="F1 M 0,47C 0,51 3,55 7,55C 12,55 15,51 15,47C 15,42 12,39 7,39C 3,39 0,42 0,47 Z M 0,27C 0,31 3,35 8,35C 12,35 15,31 15,27C 15,23 12,19 8,19C 3,19 0,23 0,27 Z M 0,7C 0,12 3,15 7,15C 12,15 15,12 15,7C 15,3 12,0 7,0C 3,0 0,3 0,7 Z" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
+      </Trigger>
+      <Trigger Property="a:IsPressedAdvancement.IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="ToggleButton.IsChecked" Value="True">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+      </Trigger>
+    </Style.Triggers>
+
+    <!--<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="4" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:ContextMenuButton}">
+          <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" x:Name="PART_Button">
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource ButtonTextDisabled}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="PART_Icon" Property="Fill" Value="{DynamicResource Accent}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>-->
   </Style>
 </ResourceDictionary>

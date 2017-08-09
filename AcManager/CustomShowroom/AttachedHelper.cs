@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -85,6 +86,8 @@ namespace AcManager.CustomShowroom {
 
             UpdatePosition();
 
+            child.Closing += OnChildClosing;
+            child.WindowStyle = WindowStyle.ToolWindow;
             child.Activated += ChildActivated;
             child.Deactivated += ChildDeactivated;
             child.Closed += ChildClosed;
@@ -100,7 +103,17 @@ namespace AcManager.CustomShowroom {
             Instances.Add(this);
         }
 
+        private bool _closed;
+
+        private void OnChildClosing(object o, CancelEventArgs cancelEventArgs) {
+            if (!_closed) {
+                cancelEventArgs.Cancel = true;
+            }
+        }
+
         private void OnClosed(object sender, EventArgs e) {
+            _closed = true;
+
             if (_child != null) {
                 _child.Close();
                 _child = null;

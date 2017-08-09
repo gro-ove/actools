@@ -90,5 +90,17 @@ namespace AcManager.Controls.Helpers {
                 "Update skin’s preview or livery via context menu",
                 "Each skin’s icon here has a context menu with some options. Or, if needed, just open Skins Manager with [i]Ctrl+K[/i].",
                 startupsDelay: 4, probability: 0.2);
+
+        public static readonly FancyHint GameDialogTableSize = new FancyHint(
+                "game-dialog-table-size",
+                "Make dialog wider for best laps",
+                "In case you want to see best laps per driver, simply make this dialog window wider.",
+                startupsDelay: 0);
+
+        public static readonly FancyHint OnlineCarContextMenu = new FancyHint(
+                "online-car-context-menu",
+                "Prepare car setups using context menu",
+                "Before the race, prepare car setups and more using context menu from here.",
+                startupsDelay: 1, probability: 0.5);
     }
 }

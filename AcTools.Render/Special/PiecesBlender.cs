@@ -59,8 +59,8 @@ namespace AcTools.Render.Special {
         }
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
-        protected override void ResizeInner() {}
-        protected override void OnTickOverride(float dt) {}
+        protected override void ResizeInner() { }
+        protected override void OnTickOverride(float dt) { }
 
         private EffectSpecialPiecesBlender _effect;
 
@@ -73,11 +73,13 @@ namespace AcTools.Render.Special {
             public readonly ShaderResourceView Value;
             public readonly long Size;
             public int UsedId;
+            public bool Locked;
 
             public CacheEntry(string key, ShaderResourceView value) {
                 Key = key;
                 Value = value;
                 Size = value.GetBytesSize();
+                Locked = true;
             }
 
             public void Dispose() {
@@ -85,7 +87,15 @@ namespace AcTools.Render.Special {
             }
         }
 
-        private long _totalSize = 0;
+        private void UnlockTexture(string filename) {
+            if (_cache.TryGetValue(filename, out var cacheEntry)) {
+                if (cacheEntry != null) {
+                    cacheEntry.Locked = false;
+                }
+            }
+        }
+
+        private long _totalSize;
         public static long OptionMaxCacheSize = 256 * 1024 * 1024; // 256 MB
 
         private readonly Dictionary<string, CacheEntry> _cache = new Dictionary<string, CacheEntry>();
@@ -93,10 +103,19 @@ namespace AcTools.Render.Special {
 
         [CanBeNull]
         private ShaderResourceView LoadTexture(string filename) {
+#if DEBUG
+            AcToolsLogging.Write($"Loading: {filename}");
+#endif
+
             if (_cache.TryGetValue(filename, out var cacheEntry)) {
+#if DEBUG
+                AcToolsLogging.Write("Taken from cache: " + cacheEntry);
+#endif
+
                 if (cacheEntry == null) return null;
 
                 cacheEntry.UsedId = ++_usedId;
+                cacheEntry.Locked = true;
                 return cacheEntry.Value;
             }
 
@@ -106,10 +125,16 @@ namespace AcTools.Render.Special {
             }
 
             if (_totalSize > OptionMaxCacheSize) {
-                // AcToolsLogging.Write($"Limit exceeded: {_totalSize.ToReadableSize()} out of {OptionMaxCacheSize.ToReadableSize()} (cached: {_cache.Count})");
+#if DEBUG
+                AcToolsLogging.Write($"Limit exceeded: {_totalSize.ToReadableSize()} out of {OptionMaxCacheSize.ToReadableSize()} (cached: {_cache.Count})");
+#endif
 
-                var e = _cache.Values.NonNull().Where(x => x.Key != filename).MinEntryOrDefault(x => x.UsedId);
+                var e = _cache.Values.NonNull().Where(x => !x.Locked && x.Key != filename).MinEntryOrDefault(x => x.UsedId);
                 if (e != null) {
+#if DEBUG
+                    AcToolsLogging.Write($"Removing: {e.Key}");
+#endif
+
                     _totalSize -= e.Size;
                     _cache.Remove(e.Key);
                     e.Dispose();
@@ -137,14 +162,25 @@ namespace AcTools.Render.Special {
         public void Process(Pieces pieces, [NotNull] Stream stream) {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            var textures = pieces.ToArray().Select(LoadTexture).ToArray();
-            _effect.FxInputMaps.SetResourceArray(textures);
-            _effect.FxTexMultiplier.Set(new Vector2(1f / _padding));
-            _effect.FxPaddingSize.Set(new Vector2(2f / (_padding - 1f)));
+#if DEBUG
+            AcToolsLogging.Write(pieces.CentralPiece);
+#endif
 
-            Draw();
+            var array = pieces.ToArray();
 
-            Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
+            try {
+                var textures = array.Select(LoadTexture).ToArray();
+                _effect.FxInputMaps.SetResourceArray(textures);
+                _effect.FxTexMultiplier.Set(new Vector2(1f / _padding));
+                _effect.FxPaddingSize.Set(new Vector2(2f / (_padding - 1f)));
+
+                Draw();
+                Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
+            } finally {
+                foreach (var texture in array) {
+                    UnlockTexture(texture);
+                }
+            }
         }
 
         protected override void DisposeOverride() {

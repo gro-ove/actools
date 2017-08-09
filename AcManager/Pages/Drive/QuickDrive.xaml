@@ -507,6 +507,12 @@
       <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
       <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
           Content="{x:Static g:AppStrings.Common_Share}" />
+      <mui:BooleanSwitch Value="{Binding SelectedCarRepairSuggestions.Count, Converter={StaticResource MoreConverter}, FallbackValue=False}">
+        <Button Command="{Binding RepairCarCommand}" Margin="0 0 4 0" Style="{StaticResource Error.Button}"
+            ToolTip="{Binding SelectedCarRepairSuggestions.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {important issue} found'}">
+          <TextBlock Text="Fix Car" />
+        </Button>
+      </mui:BooleanSwitch>
       <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">
         <Button.ToolTip>
           <mui:ReferenceSwitch Value="{Binding SelectedModeViewModel.TrackDoesNotFit}">

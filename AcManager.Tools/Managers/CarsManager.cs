@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -27,12 +28,20 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override bool Filter(string id, string filename) {
+            if (id.StartsWith(@"__cm_tmp_")) {
+                return false;
+            }
+
             if (id.StartsWith(@"ks_")) {
                 var uiCarJson = Path.Combine(filename, @"ui", @"ui_car.json");
                 if (!File.Exists(uiCarJson)) return false;
             }
 
             return base.Filter(id, filename);
+        }
+
+        protected override TaskbarHolder GetTaskbarProgress() {
+            return TaskbarService.Create(5);
         }
 
         private static readonly string[] WatchedFiles = {
@@ -58,8 +67,8 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (inner.StartsWith(@"data\") && (inner.EndsWith(@".ini") || inner.EndsWith(@".lut") || inner.EndsWith(@".rto")) ||
-                inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
+            if (inner.StartsWith(@"data\") ||
+                    inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
 
             if (!inner.StartsWith(@"skins\") || // texture\…
                     inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png

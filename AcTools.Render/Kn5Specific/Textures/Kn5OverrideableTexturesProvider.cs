@@ -93,7 +93,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             ClearOverridesDirectory();
 
             ContentTexturesDirectory = GetContentTexturesDirectory(directory);
-            _contentTexturesWatching = DirectoryWatcher.Watch(ContentTexturesDirectory, filename => {
+            _contentTexturesWatching = DirectoryWatcher.WatchDirectory(ContentTexturesDirectory, filename => {
                 if (CurrentDirectory != null) {
                     UpdateOverrideLater(Path.Combine(CurrentDirectory, "skin.ini"));
                 }
@@ -184,7 +184,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected void SetOverridesDirectoryInner([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
             _holder = holder;
             CurrentDirectory = directory;
-            _watching = DirectoryWatcher.Watch(directory, filename => {
+            _watching = DirectoryWatcher.WatchDirectory(directory, filename => {
                 if (filename == null) {
                     UpdateOverridesLater();
                 } else {

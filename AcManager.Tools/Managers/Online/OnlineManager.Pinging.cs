@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
@@ -37,43 +38,51 @@ namespace AcManager.Tools.Managers.Online {
             var cancellation = new CancellationTokenSource();
             var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancellation.Token);
 
-            try {
-                _currentPinging = cancellation;
-                OnPropertyChanged(nameof(PingingInProcess));
-                Pinged = List.Count(x => x.Status != ServerStatus.Unloaded);
+            using (var pinging = TaskbarService.Create(10)) {
+                void SetPinged(int value) {
+                    Pinged = value;
+                    pinging.Set(TaskbarState.Normal, (double)value / List.Count);
+                }
 
-                var w = Stopwatch.StartNew();
-                var pingedNow = 0;
+                try {
+                    _currentPinging = cancellation;
+                    OnPropertyChanged(nameof(PingingInProcess));
+                    SetPinged(List.Count(x => x.Status != ServerStatus.Unloaded));
 
-                for (var i = 0; Pinged < List.Count && i < 10 && !linked.IsCancellationRequested; i++) {
-                    if (i > 0) {
-                        Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
+                    var w = Stopwatch.StartNew();
+                    var pingedNow = 0;
+
+                    for (var i = 0; Pinged < List.Count && i < 10 && !linked.IsCancellationRequested; i++) {
+                        if (i > 0) {
+                            Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
+                        }
+
+                        await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).ToList().Select
+                                (async x => {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    if (linked.IsCancellationRequested) return;
+
+                                    if (x.Status == ServerStatus.Unloaded) {
+                                        await x.Update(ServerEntry.UpdateMode.Lite);
+                                        SetPinged(Pinged + 1);
+                                        pingedNow++;
+                                    }
+                                }).WhenAll(SettingsHolder.Online.PingConcurrency, linked.Token);
+                        SetPinged(List.Count(x => x.Status != ServerStatus.Unloaded));
                     }
 
-                    await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).ToList().Select(async x => {
-                        // ReSharper disable once AccessToDisposedClosure
-                        if (linked.IsCancellationRequested) return;
+                    if (!linked.IsCancellationRequested && pingedNow > 0) {
+                        Logging.Write($"Pinging {pingedNow} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
+                    }
+                } finally {
+                    if (ReferenceEquals(_currentPinging, cancellation)) {
+                        _currentPinging = null;
+                        OnPropertyChanged(nameof(PingingInProcess));
+                    }
 
-                        if (x.Status == ServerStatus.Unloaded) {
-                            await x.Update(ServerEntry.UpdateMode.Lite);
-                            Pinged++;
-                            pingedNow++;
-                        }
-                    }).WhenAll(SettingsHolder.Online.PingConcurrency, linked.Token);
-                    Pinged = List.Count(x => x.Status != ServerStatus.Unloaded);
+                    linked.Dispose();
+                    cancellation.Dispose();
                 }
-
-                if (!linked.IsCancellationRequested && pingedNow > 0) {
-                    Logging.Write($"Pinging {pingedNow} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
-                }
-            } finally {
-                if (ReferenceEquals(_currentPinging, cancellation)) {
-                    _currentPinging = null;
-                    OnPropertyChanged(nameof(PingingInProcess));
-                }
-
-                linked.Dispose();
-                cancellation.Dispose();
             }
         }
     }

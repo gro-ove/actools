@@ -384,7 +384,7 @@
                       Placeholder="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
                 </Border>
 
-                <!-- Pw ratio -->
+                <!-- P/W ratio -->
                 <DockPanel c:PropertiesGrid.Label="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <FrameworkElement.ToolTip>
                     <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
@@ -444,6 +444,10 @@
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>
+
+                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Steer lock:" Placeholder="…"
+                    Text="{Binding SelectedObject.SteerLock, StringFormat='{}{0:F0}°'}"
+                    Visibility="{Binding DisplaySteerLock, Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static t:SettingsHolder.Content}}" />
 
                 <DockPanel c:PropertiesGrid.Label="Sound:" Background="Transparent" PreviewMouseLeftButtonUp="OnSoundBlockClick"
                     Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">

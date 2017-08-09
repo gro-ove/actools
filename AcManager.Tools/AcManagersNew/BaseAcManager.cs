@@ -12,6 +12,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
@@ -237,29 +238,38 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
+        [CanBeNull]
+        protected virtual TaskbarHolder GetTaskbarProgress() {
+            return null;
+        }
+
         protected virtual async Task LoadAsync() {
             var start = Stopwatch.StartNew();
 
             LoadingReset = false;
 
-            bool anyLoaded;
-            do {
-                anyLoaded = false;
-                await WrappersList.ToList().Select(async x => {
-                    try {
-                        if (x.IsLoaded) return;
-                        anyLoaded = true;
+            using (var taskbar = GetTaskbarProgress()) {
+                bool anyLoaded;
+                do {
+                    anyLoaded = false;
+                    var list = WrappersList.ToList();
+                    await list.Select(async x => {
+                        try {
+                            if (x.IsLoaded) return;
+                            anyLoaded = true;
 
-                        var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
-                        if (x.IsLoaded) return;
+                            var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
+                            if (x.IsLoaded) return;
 
-                        x.Value = loaded;
-                        loaded.PastLoad();
-                    } finally {
-                        LoadedCount++;
-                    }
-                }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
-            } while (anyLoaded);
+                            x.Value = loaded;
+                            loaded.PastLoad();
+                        } finally {
+                            taskbar?.Set(TaskbarState.Normal, (double)LoadedCount / list.Count);
+                            LoadedCount++;
+                        }
+                    }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
+                } while (anyLoaded);
+            }
 
             IsLoaded = true;
             ListReady();

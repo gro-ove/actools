@@ -342,19 +342,25 @@ namespace AcTools.Render.Base {
 
         [CanBeNull]
         protected Tuple<Texture2D, DepthStencilView> CreateDepthBuffer(int width, int height) {
-            var tex = new Texture2D(Device, new Texture2DDescription {
-                Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
-                ArraySize = 1,
-                MipLevels = 1,
-                Width = width,
-                Height = height,
-                SampleDescription = SampleDescription,
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            });
-            return Tuple.Create(tex, new DepthStencilView(Device, tex));
+            try {
+                var tex = new Texture2D(Device, new Texture2DDescription {
+                    Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
+                    ArraySize = 1,
+                    MipLevels = 1,
+                    Width = width,
+                    Height = height,
+                    SampleDescription = SampleDescription,
+                    Usage = ResourceUsage.Default,
+                    BindFlags = BindFlags.DepthStencil,
+                    CpuAccessFlags = CpuAccessFlags.None,
+                    OptionFlags = ResourceOptionFlags.None
+                });
+
+                return Tuple.Create(tex, new DepthStencilView(Device, tex));
+            } catch (Exception) {
+                AcToolsLogging.Write($"{width}×{height}");
+                throw;
+            }
         }
 
         protected void Resize() {
@@ -631,16 +637,27 @@ namespace AcTools.Render.Base {
 
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture, _shotCutTexture;
 
-        protected bool ShotInProcess { get; private set; }
+        private int _shotInProcessValue;
+
+        protected int ShotInProcessValue {
+            get => _shotInProcessValue;
+            set {
+                _shotInProcessValue = value;
+                AcToolsLogging.Write($"value = {value}");
+            }
+        }
+
+        public bool ShotInProcess => ShotInProcessValue > 0;
+        public bool ShotDrawInProcess { get; private set; }
 
         protected virtual void DrawShot([CanBeNull] RenderTargetView target, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             try {
-                ShotInProcess = true;
+                ShotDrawInProcess = true;
                 using (ReplaceRenderView(target)) {
                     DrawInner();
                 }
             } finally {
-                ShotInProcess = false;
+                ShotDrawInProcess = false;
             }
         }
 
@@ -651,6 +668,7 @@ namespace AcTools.Render.Base {
                 CancellationToken cancellation = default(CancellationToken)) {
             AcToolsLogging.Write($"{baseWidth}×{baseHeight}, downscale={downscale}, crop={crop}");
 
+            ShotInProcessValue++;
             var original = new { Width, Height, ResolutionMultiplier };
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
@@ -667,7 +685,7 @@ namespace AcTools.Render.Base {
                     }
 
                     DrawShot(null, progress.Subrange(0.05, 0.9), cancellation);
-                    Texture2D.ToStream(DeviceContext, _renderBuffer, format, outputStream);
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Png, outputStream);
 
                     var desc = _renderBuffer.Description;
                     LastShotWidth = desc.Width;
@@ -757,10 +775,21 @@ namespace AcTools.Render.Base {
                         RecreateSwapChain();
                     }
                 }
+            } catch (Exception e) {
+                AcToolsLogging.Write("Error: " + e);
+                throw;
             } finally {
                 Width = original.Width;
                 Height = original.Height;
                 ResolutionMultiplier = original.ResolutionMultiplier;
+
+                if (_resized) {
+                    Resize();
+                    _resized = false;
+                }
+
+                AcToolsLogging.Write("Finished");
+                ShotInProcessValue--;
             }
         }
 

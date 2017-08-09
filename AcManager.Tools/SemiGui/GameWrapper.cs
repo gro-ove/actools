@@ -1,14 +1,21 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Objects;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
@@ -119,6 +126,16 @@ namespace AcManager.Tools.SemiGui {
 
         private static bool _nationCodesProviderSet;
 
+        private static void StartAsync_AdjustProperties(Game.StartProperties properties) {
+            if (SettingsHolder.Integrated.RsrLimitTemperature && properties.ConditionProperties != null &&
+                    (properties.ConditionProperties.AmbientTemperature < 10d || properties.ConditionProperties.RoadTemperature < 10d) &&
+                    AcSettingsHolder.Python.IsActivated("RsrLiveTime")) {
+                Toast.Show("Temperature Set To 10 °C", "RSR is active, and there is rumour it’s gonna ban all users which use temperatures lower than 10 °C");
+                properties.ConditionProperties.AmbientTemperature = 10d;
+                properties.ConditionProperties.RoadTemperature = 10d;
+            }
+        }
+
         private static void StartAsync_Prepare(Game.StartProperties properties) {
             if (!_nationCodesProviderSet) {
                 _nationCodesProviderSet = true;
@@ -171,8 +188,8 @@ namespace AcManager.Tools.SemiGui {
                 }
             }
 
-            properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new ModeSpecificPresetsHelper());
+            properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
         }
 
@@ -200,6 +217,27 @@ namespace AcManager.Tools.SemiGui {
             }
         }
 
+        private static async Task PrepareReplay(Game.StartProperties properties, IGameUi ui, CancellationToken cancellation) {
+            var replayProperties = properties.ReplayProperties;
+            if (replayProperties != null) {
+                var replayFilename = replayProperties.Filename ?? Path.Combine(FileUtils.GetReplaysDirectory(), replayProperties.Name);
+                ui.OnProgress("Checking replay for fake cars…");
+
+                var fakes = await FakeCarsHelper.GetFakeCarsIds(replayFilename);
+                if (fakes.Count > 0) {
+                    Logging.Debug("Fakes found: " + fakes.Select(x => $"{x.FakeId} ({x.SourceId})").JoinToString(", "));
+                    foreach (var fake in fakes) {
+                        var car = CarsManager.Instance.GetById(fake.SourceId);
+                        if (car != null) {
+                            FakeCarsHelper.CreateFakeCar(car, fake.FakeId, null);
+                        } else {
+                            Logging.Warning("Original not found: " + fake.SourceId);
+                        }
+                    }
+                }
+            }
+        }
+
         private static async Task<Game.Result> StartAsync_Ui(Game.StartProperties properties, GameMode mode) {
             using (var ui = _uiFactory.Create()) {
                 Logging.Write($"Starting game: {properties.GetDescription()}");
@@ -224,14 +262,16 @@ namespace AcManager.Tools.SemiGui {
                         }
 
                         var cancellationToken = ui.CancellationToken;
-
                         if (SettingsHolder.Drive.ImmediateCancel) {
                             var cancelHelper = new ImmediateCancelHelper();
                             linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancelHelper.GetCancellationToken());
                             cancellationToken = linked.Token;
-
                             properties.SetAdditional(cancelHelper);
                             properties.SetKeyboardListener = true;
+                        }
+
+                        if (mode == GameMode.Replay) {
+                            await PrepareReplay(properties, ui, cancellationToken);
                         }
 
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), cancellationToken);
@@ -243,14 +283,12 @@ namespace AcManager.Tools.SemiGui {
                         return null;
                     }
 
-                    if (mode == GameMode.Race) {
-                        if (result == null) {
-                            var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
-                            if (whatsGoingOn != null) {
-                                properties.SetAdditional(whatsGoingOn);
-                            }
-                        }
+                    var whatsGoingOn = mode != GameMode.Race || result == null ? AcLogHelper.TryToDetermineWhatsGoingOn() : null;
+                    if (whatsGoingOn != null) {
+                        properties.SetAdditional(whatsGoingOn);
+                    }
 
+                    if (mode == GameMode.Race) {
                         var param = new GameEndedArgs(properties, result);
                         Ended?.Invoke(null, param);
                         /* TODO: should set result to null if param.Cancel is true? */
@@ -280,6 +318,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static Task<Game.Result> StartAsync(Game.StartProperties properties, GameMode mode) {
+            StartAsync_AdjustProperties(properties);
             StartAsync_Prepare(properties);
             // properties.SetAdditional(new FocusHelper());
 

@@ -7,7 +7,6 @@ namespace AcTools.Render.Base.Cameras {
         public bool RhMode { get; set; } = true;
 
         public Vector3 Position { get; set; }
-
         public Vector3 Right;
         public Vector3 Up;
         public Vector3 Look;
@@ -15,6 +14,7 @@ namespace AcTools.Render.Base.Cameras {
         public float? FarZ;
         public float Aspect;
         public float FovY;
+        public float Tilt;
 
         private float _nearZFovY, _nearZCached;
 
@@ -83,25 +83,30 @@ namespace AcTools.Render.Base.Cameras {
             SetProj(Matrix.Identity);
         }
 
-        public abstract void LookAt(Vector3 pos, Vector3 target, Vector3 up);
-
         public abstract void Strafe(float d);
-
         public abstract void Walk(float d);
-
         public abstract void Pitch(float angle);
-
         public abstract void Yaw(float angle);
-
         public abstract void Zoom(float dr);
-
         public abstract void UpdateViewMatrix();
-
-        public abstract void Save();
-
-        public abstract void Restore();
-
         public abstract CameraBase Clone();
+
+        public void LookAt(Vector3 pos, Vector3 target, float tilt) {
+            Tilt = tilt;
+            LookAtOverride(pos, target, Vector3.UnitY);
+        }
+
+        public void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
+            Tilt = 0f;
+            LookAtOverride(pos, target, up);
+        }
+
+        protected Vector3 GetUpTilt(Vector3 target, Vector3 defaultValue) {
+            return Tilt == 0f ? defaultValue :
+                    Vector3.TransformNormal(Vector3.UnitY, Matrix.RotationAxis(Vector3.Normalize(target - Position), Tilt));
+        }
+
+        protected abstract void LookAtOverride(Vector3 pos, Vector3 target, Vector3 up);
 
         public virtual void SetLens(float aspect) {
             Aspect = aspect;
@@ -146,9 +151,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         Vector3 ICamera.Up => Up;
-
         Vector3 ICamera.Right => Right;
-
         Vector3 ICamera.Look => Look;
     }
 }

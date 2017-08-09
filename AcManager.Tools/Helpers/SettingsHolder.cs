@@ -236,6 +236,14 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private SettingEntry[] _fixNamesMode;
+
+            public SettingEntry[] FixNamesMode => _fixNamesMode ?? (_fixNamesMode = new[] {
+                new SettingEntry(0, "Disabled"),
+                new SettingEntry(1, "Leading letters “A”"),
+                new SettingEntry(1, "Deep cleaning")
+            });
+
             private bool? _fixNames;
 
             public bool FixNames {
@@ -1167,6 +1175,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveAiLimitations;
+
+            public bool QuickDriveAiLimitations {
+                get => _quickDriveAiLimitations ?? (_quickDriveAiLimitations = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveAiLimitations", false)).Value;
+                set {
+                    if (Equals(value, _quickDriveAiLimitations)) return;
+                    _quickDriveAiLimitations = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveAiLimitations", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _quickDriveAiLevelInName;
 
             public bool QuickDriveAiLevelInName {
@@ -1462,6 +1482,18 @@ namespace AcManager.Tools.Helpers {
 
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
+
+            private bool? _displaySteerLock;
+
+            public bool DisplaySteerLock {
+                get => _displaySteerLock ?? (_displaySteerLock = ValuesStorage.GetBool("Settings.ContentSettings.DisplaySteerLock", false)).Value;
+                set {
+                    if (Equals(value, _displaySteerLock)) return;
+                    _displaySteerLock = value;
+                    ValuesStorage.Set("Settings.ContentSettings.DisplaySteerLock", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _oldLayout;
 
@@ -2334,6 +2366,18 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _rsrLimitTemperature;
+
+            public bool RsrLimitTemperature {
+                get => _rsrLimitTemperature ?? (_rsrLimitTemperature = ValuesStorage.GetBool("Settings.IntegratedSettings.RsrLimitTemperature", true)).Value;
+                set {
+                    if (Equals(value, _rsrLimitTemperature)) return;
+                    _rsrLimitTemperature = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.RsrLimitTemperature", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static IntegratedSettings _integrated;
@@ -2370,7 +2414,7 @@ namespace AcManager.Tools.Helpers {
             private long? _montageVramCache;
 
             public long MontageVramCache {
-                get => _montageVramCache ?? (_montageVramCache = ValuesStorage.GetLong("Settings.PluginsSettings.MontageVramCache", 268435456L)).Value;
+                get => _montageVramCache ?? (_montageVramCache = ValuesStorage.GetLong("Settings.PluginsSettings.MontageVramCache", 536870912L)).Value;
                 set {
                     if (Equals(value, _montageVramCache)) return;
                     _montageVramCache = value;

@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _units;
 
         public SettingEntry Units {
-            get { return _units; }
+            get => _units;
             set {
                 if (!UnitsTypes.Contains(value)) value = UnitsTypes[0];
                 if (Equals(value, _units)) return;
@@ -26,7 +26,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _allowOverlapping;
 
         public bool AllowOverlapping {
-            get { return _allowOverlapping; }
+            get => _allowOverlapping;
             set {
                 if (Equals(value, _allowOverlapping)) return;
                 _allowOverlapping = value;
@@ -37,7 +37,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _displayTimeGap;
 
         public bool DisplayTimeGap {
-            get { return _displayTimeGap; }
+            get => _displayTimeGap;
             set {
                 if (Equals(value, _displayTimeGap)) return;
                 _displayTimeGap = value;
@@ -48,7 +48,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _displayDamage;
 
         public bool DisplayDamage {
-            get { return _displayDamage; }
+            get => _displayDamage;
             set {
                 if (Equals(value, _displayDamage)) return;
                 _displayDamage = value;
@@ -59,7 +59,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _displayLeaderboard;
 
         public bool DisplayLeaderboard {
-            get { return _displayLeaderboard; }
+            get => _displayLeaderboard;
             set {
                 if (Equals(value, _displayLeaderboard)) return;
                 _displayLeaderboard = value;
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _displayMirror;
 
         public bool DisplayMirror {
-            get { return _displayMirror; }
+            get => _displayMirror;
             set {
                 if (Equals(value, _displayMirror)) return;
                 _displayMirror = value;
@@ -81,7 +81,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _displayDriverNames;
 
         public bool DisplayDriverNames {
-            get { return _displayDriverNames; }
+            get => _displayDriverNames;
             set {
                 if (Equals(value, _displayDriverNames)) return;
                 _displayDriverNames = value;
@@ -92,7 +92,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _downshiftProtectionNotification;
 
         public bool DownshiftProtectionNotification {
-            get { return _downshiftProtectionNotification; }
+            get => _downshiftProtectionNotification;
             set {
                 if (Equals(value, _downshiftProtectionNotification)) return;
                 _downshiftProtectionNotification = value;
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _steeringWheelLimit;
 
         public int SteeringWheelLimit {
-            get { return _steeringWheelLimit; }
+            get => _steeringWheelLimit;
             set {
                 value = value.Clamp(0, 450);
                 if (Equals(value, _steeringWheelLimit)) return;

@@ -170,7 +170,7 @@
             <mui:BindingProxy x:Key="TableSectionProxy" Data="{Binding ActualWidth, ElementName=TableSection}" />
           </ScrollViewer.Resources>
 
-          <DataGrid ItemsSource="{Binding AcObject.ChampionshipDriversView}" Style="{StaticResource DataGrid.ReadOnly}" HeadersVisibility="None">
+          <DataGrid ItemsSource="{Binding AcObject.ChampionshipDriversView}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True" HeadersVisibility="None">
             <DataGrid.Columns>
               <DataGridTextColumn Width="40" Header="" Binding="{Binding Points}" SortDirection="Ascending" SortMemberPath="Points" />
               <DataGridTemplateColumn Width="1.5*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"

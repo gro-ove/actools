@@ -20,7 +20,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Expander}">
           <StackPanel SnapsToDevicePixels="True">
-            <DockPanel x:Name="PART_Header" Margin="8 20 8 4">
+            <DockPanel x:Name="PART_Header" Margin="8 0 8 4">
               <ToggleButton DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ExpandCollapseToggleStyle}"
                   IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
               <ContentPresenter ContentSource="Header" RecognizesAccessKey="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -66,14 +66,14 @@
               <DataTrigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
-                    <DoubleAnimation To="22" Duration="0:0:0.2" EasingFunction="{StaticResource StandartEase}" Storyboard.TargetName="PART_CheckBox" />
+                    <DoubleAnimation To="22" Duration="0:0:0.2" EasingFunction="{StaticResource StandardEase}" Storyboard.TargetName="PART_CheckBox" />
                   </Storyboard>
                 </BeginStoryboard>
               </DataTrigger.EnterActions>
               <DataTrigger.ExitActions>
                 <BeginStoryboard>
                   <Storyboard FillBehavior="HoldEnd" TargetProperty="Width">
-                    <DoubleAnimation To="0" Duration="0:0:0.2" EasingFunction="{StaticResource StandartEase}" Storyboard.TargetName="PART_CheckBox" />
+                    <DoubleAnimation To="0" Duration="0:0:0.2" EasingFunction="{StaticResource StandardEase}" Storyboard.TargetName="PART_CheckBox" />
                   </Storyboard>
                 </BeginStoryboard>
               </DataTrigger.ExitActions>
@@ -119,7 +119,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ac:AcListPage">
-          <Grid>
+          <Grid ClipToBounds="True">
             <Grid.ColumnDefinitions>
               <ColumnDefinition MinWidth="50" MaxWidth="400" />
               <ColumnDefinition Width="9" />
@@ -150,7 +150,7 @@
                         <Setter Property="Template">
                           <Setter.Value>
                             <ControlTemplate TargetType="GroupItem">
-                              <mui:RememberingExpander Key="{Binding Name, StringFormat='{}.content_category_{0}', Mode=OneTime}" Margin="0"
+                              <mui:RememberingExpander Key="{Binding Name, StringFormat='{}.content_category_{0}', Mode=OneTime}" Margin="0 0 0 20"
                                   Style="{StaticResource GroupBoxExpander}">
                                 <Expander.Header>
                                   <TextBlock Style="{StaticResource Label}">

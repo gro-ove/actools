@@ -7,8 +7,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Selected;
+using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.GameProperties;
@@ -18,13 +21,17 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
@@ -94,6 +101,10 @@ namespace AcManager.Pages.Dialogs {
             Model.WaitingStatus = AppStrings.Race_Initializing;
         }
 
+        void IGameUi.OnProgress(string progress) {
+            Model.WaitingStatus = progress;
+        }
+
         void IGameUi.OnProgress(Game.ProgressState progress) {
             switch (progress) {
                 case Game.ProgressState.Preparing:
@@ -121,50 +132,47 @@ namespace AcManager.Pages.Dialogs {
 
             Logging.Debug($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
 
-            {
-                var extra = result.GetExtraByType<Game.ResultExtraDrift>();
-                if (extra != null) {
-                    return new DriftFinishedData {
-                        Points = extra.Points,
-                        MaxCombo = extra.MaxCombo,
-                        MaxLevel = extra.MaxLevel,
-                        TakenPlace = takenPlace
-                    };
-                }
+            if (result.GetExtraByType<Game.ResultExtraDrift>(out var drift)) {
+                return new DriftFinishedData {
+                    Points = drift.Points,
+                    MaxCombo = drift.MaxCombo,
+                    MaxLevel = drift.MaxLevel,
+                    TakenPlace = takenPlace
+                };
             }
 
-            {
-                var extra = result.GetExtraByType<Game.ResultExtraTimeAttack>();
-                if (extra != null) {
-                    var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
-                    return new TimeAttackFinishedData {
-                        Points = extra.Points,
-                        Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
-                        BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
-                        TakenPlace = takenPlace
-                    };
-                }
+            if (result.GetExtraByType<Game.ResultExtraTimeAttack>(out var timeAttack)) {
+                var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
+                return new TimeAttackFinishedData {
+                    Points = timeAttack.Points,
+                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                    BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
+                    TakenPlace = takenPlace
+                };
             }
 
-            {
-                var extra = result.GetExtraByType<Game.ResultExtraBestLap>();
-                if (extra != null && extra.IsNotCancelled && result.Sessions.Length == 1 && result.Players.Length == 1) {
-                    var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
+            if (result.GetExtraByType<Game.ResultExtraBestLap>(out var bestLap) && bestLap.IsNotCancelled && result.Sessions.Length == 1 &&
+                    (result.Players.Length == 1 || result.Sessions[0].Name == "Track Day")) {
+                var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
 
-                    var sectorsPerSections = result.Sessions.SelectMany(x => from lap in x.Laps where lap.CarNumber == 0 select lap.SectorsTime).ToList();
-                    var theoreticallLapTime = sectorsPerSections.FirstOrDefault()?.Select((x, i) => sectorsPerSections.Select(y => y[i]).Min()).Sum();
+                var sectorsPerSections = result.Sessions.SelectMany(x => from lap in x.Laps where lap.CarNumber == 0 select lap.SectorsTime).ToList();
+                var theoreticallLapTime = sectorsPerSections.FirstOrDefault()?.Select((x, i) => sectorsPerSections.Select(y => y[i]).Min()).Sum();
 
-                    return new HotlapFinishedData {
-                        Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
-                        BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
-                        TheoreticallLapTime = theoreticallLapTime,
-                        TakenPlace = takenPlace
-                    };
-                }
+                return result.Sessions[0].Name == "Track Day" ? new TrackDayFinishedData {
+                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                    BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
+                    TheoreticallLapTime = theoreticallLapTime,
+                } : new HotlapFinishedData {
+                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                    BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
+                    TheoreticallLapTime = theoreticallLapTime,
+                    TakenPlace = takenPlace
+                };
             }
 
             var isOnline = properties?.ModeProperties is Game.OnlineProperties;
-            var playerName = isOnline && SettingsHolder.Drive.DifferentPlayerNameOnline ? SettingsHolder.Drive.PlayerNameOnline : SettingsHolder.Drive.PlayerName;
+            var playerName = isOnline && SettingsHolder.Drive.DifferentPlayerNameOnline
+                    ? SettingsHolder.Drive.PlayerNameOnline : SettingsHolder.Drive.PlayerName;
 
             var dragExtra = result.GetExtraByType<Game.ResultExtraDrag>();
             var sessionsData = result.Sessions.Select(session => {
@@ -199,9 +207,33 @@ namespace AcManager.Pages.Dialogs {
                         select new { Player = player, Car = car, CarSkin = carSkin }
                         ).Select((entry, i) => {
                             var bestLapTime = session.BestLaps.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;
+                            var laps = session.Laps.Where(x => x.CarNumber == i).Select(x => new SessionFinishedData.PlayerLapEntry {
+                                LapNumber = x.LapId + 1,
+                                Sectors = x.SectorsTime,
+                                Cuts = x.Cuts,
+                                TyresShortName = x.TyresShortName,
+                                Total = x.Time,
+                                DeltaToBest = bestLapTime.HasValue ? x.Time - bestLapTime.Value : (TimeSpan?)null,
+                                DeltaToSessionBest = sessionBest.HasValue ? x.Time - sessionBest.Value : (TimeSpan?)null,
+                            }).ToArray();
+
+                            var lapTimes = laps.Skip(1).Select(x => x.Total.TotalSeconds).Where(x => x > 10d).ToList();
+                            double? progress, spread;
+                            if (lapTimes.Count < 2) {
+                                progress = null;
+                                spread = null;
+                            } else {
+                                var firstHalf = lapTimes.Count / 2;
+                                var firstMedian = lapTimes.Take(firstHalf).Median();
+                                var secondMedian = lapTimes.Skip(firstHalf).Median();
+                                progress = 1d - secondMedian / firstMedian;
+                                spread = (lapTimes.Max() - lapTimes.Min()) / bestLapTime?.TotalSeconds;
+                            }
+
                             return new SessionFinishedData.PlayerEntry {
                                 Name = i == 0 ? playerName : entry.Player.Name,
                                 IsPlayer = i == 0,
+                                Index = i,
                                 Car = entry.Car,
                                 CarSkin = entry.CarSkin,
                                 TakenPlace = i < takenPlaces.Length ? takenPlaces[i] + 1 : DefinitelyNonPrizePlace,
@@ -209,16 +241,50 @@ namespace AcManager.Pages.Dialogs {
                                 LapsCount = session.LapsTotalPerCar.ElementAtOrDefault(i),
                                 BestLapTime = bestLapTime,
                                 DeltaToSessionBest = sessionBestLap?.CarNumber == i ? null : bestLapTime - sessionBest,
-                                Total = session.Laps.Where(x => x.CarNumber == i).Select(x => x.Time).Sum(),
-                                Laps = session.Laps.Where(x => x.CarNumber == i).Select(x => new SessionFinishedData.PlayerLapEntry {
-                                    LapNumber = x.LapId + 1,
-                                    Sectors = x.SectorsTime,
-                                    Total = x.Time,
-                                    DeltaToBest = bestLapTime.HasValue ? x.Time - bestLapTime.Value : (TimeSpan?)null,
-                                    DeltaToSessionBest = sessionBest.HasValue ? x.Time - sessionBest.Value : (TimeSpan?)null,
-                                }).ToArray()
+                                TotalTime = session.Laps.Where(x => x.CarNumber == i).Select(x => x.SectorsTime.Sum()).Sum(),
+                                Laps = laps,
+                                LapTimeProgress = progress,
+                                LapTimeSpread = spread
                             };
                         }).OrderBy(x => x.TakenPlace).ToList();
+
+                if (data.PlayerEntries.Count > 0) {
+                    var maxLaps = data.PlayerEntries.Select(x => x.Laps.Length).Max();
+                    var bestTotalTime = data.PlayerEntries.Where(x => x.Laps.Length == maxLaps).MinEntryOrDefault(x => x.TotalTime ?? TimeSpan.MaxValue);
+                    foreach (var entry in data.PlayerEntries) {
+                        var lapsDelta = maxLaps - entry.Laps.Length;
+                        if (bestTotalTime == entry) {
+                            entry.TotalTimeDelta = "-";
+                        } else if (lapsDelta > 0) {
+                            entry.TotalTimeDelta = $"+{lapsDelta} {PluralizingConverter.Pluralize(lapsDelta, "lap")}";
+                        } else {
+                            var t = entry.TotalTime - bestTotalTime?.TotalTime;
+                            var v = t?.ToMillisecondsString();
+                            entry.TotalTimeDelta = t == TimeSpan.Zero ? "" : v != null ? $"+{v}" : null;
+                        }
+                    }
+                }
+
+                var bestProgress = (from player in data.PlayerEntries
+                                where player.LapTimeProgress > 0.03
+                                orderby player.LapTimeProgress descending
+                                select player).FirstOrDefault();
+                var bestConsistent = (from player in data.PlayerEntries
+                                where player.LapTimeSpread < 0.02
+                                orderby player.LapTimeSpread descending
+                                select player).FirstOrDefault();
+
+                data.RemarkableNotes = new[] {
+                    sessionBestLap == null ? null :
+                            new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber), null),
+                    new SessionFinishedData.RemarkableNote("[b]The Best Off-roader Award[/b] goes to ", (from player in data.PlayerEntries
+                                                                                  let cuts = (double)player.Laps.Sum(x => x.Cuts) / player.Laps.Length
+                                                                                  where cuts > 1.5
+                                                                                  orderby cuts descending
+                                                                                  select player).FirstOrDefault(), null),
+                    new SessionFinishedData.RemarkableNote("[b]Remarkable progress[/b] shown by ", bestProgress, null),
+                    new SessionFinishedData.RemarkableNote("[b]The most consistent[/b] is ", bestConsistent, null),
+                }.Where(x => x?.Player != null).ToList();
                 return data;
             }).ToList();
 
@@ -233,38 +299,44 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class SessionFinishedData : BaseFinishedData {
-            public class PlayerEntry : NotifyPropertyChanged {
+            public class RemarkableNote : NotifyPropertyChanged {
+                public string Message { get; }
+                public PlayerEntry Player { get; }
+                public string IconDataKey { get; }
+
+                public RemarkableNote(string message, PlayerEntry player, string iconDataKey) {
+                    Message = message;
+                    Player = player;
+                    IconDataKey = iconDataKey;
+                }
+            }
+
+            public class PlayerEntry : NotifyPropertyChanged, IWithId<int> {
                 public string Name { get; set; }
-
                 public bool IsPlayer { get; set; }
-
                 public bool PrizePlace { get; set; }
-
                 public CarObject Car { get; set; }
-
                 public CarSkinObject CarSkin { get; set; }
-
+                public int Index { get; set; }
                 public int TakenPlace { get; set; }
-
                 public int LapsCount { get; set; }
-
+                public double? LapTimeProgress { get; set; }
+                public double? LapTimeSpread { get; set; }
                 public TimeSpan? BestLapTime { get; set; }
-
                 public TimeSpan? DeltaToSessionBest { get; set; }
-
-                public TimeSpan? Total { get; set; }
-
+                public TimeSpan? TotalTime { get; set; }
+                public string TotalTimeDelta { get; set; }
                 public PlayerLapEntry[] Laps { get; set; }
 
                 private DataTable _lapsDataTable;
+                public DataTable LapsDataTable => _lapsDataTable ?? (_lapsDataTable = CreateLapTable(Car, Laps));
 
-                public DataTable LapsDataTable => _lapsDataTable ?? (_lapsDataTable = CreateLapTable(Laps));
-
-                private static DataTable CreateLapTable(PlayerLapEntry[] laps) {
+                private static DataTable CreateLapTable([CanBeNull] CarObject car, PlayerLapEntry[] laps) {
                     var result = new DataTable();
 
                     if (laps.Length > 0) {
                         result.Columns.Add("Lap");
+                        result.Columns.Add("Tyres");
 
                         for (var i = 0; i < laps[0].Sectors.Length; i++) {
                             result.Columns.Add($"{(i + 1).ToOrdinal("sector")} Sector");
@@ -276,17 +348,21 @@ namespace AcManager.Pages.Dialogs {
                     }
 
                     foreach (var lap in laps.Where(x => x.Total > TimeSpan.Zero)) {
-                        var items = new object[4 + lap.Sectors.Length];
+                        var items = new object[5 + lap.Sectors.Length];
                         items[0] = lap.LapNumber;
-                        items[items.Length - 3] = lap.Total.ToMillisecondsString();
 
+                        var tyresName = car?.AcdData?.GetIniFile("tyres.ini").GetSections("FRONT", -1)
+                                            .FirstOrDefault(x => x.GetNonEmpty("SHORT_NAME") == lap.TyresShortName)?.GetNonEmpty("NAME");
+                        items[1] = tyresName == null ? lap.TyresShortName : $"{tyresName} ({lap.TyresShortName})";
+
+                        items[items.Length - 3] = lap.Total.ToMillisecondsString();
                         items[items.Length - 2] = lap.DeltaToBest.HasValue
                                 ? lap.DeltaToBest == TimeSpan.Zero ? "-" : "+" + lap.DeltaToBest?.ToMillisecondsString() : "";
                         items[items.Length - 1] = lap.DeltaToSessionBest.HasValue
                                 ? lap.DeltaToSessionBest == TimeSpan.Zero ? "-" : "+" + lap.DeltaToSessionBest?.ToMillisecondsString() : "";
 
                         for (var i = 0; i < lap.Sectors.Length; i++) {
-                            items[i + 1] = lap.Sectors[i].ToMillisecondsString();
+                            items[i + 2] = lap.Sectors[i].ToMillisecondsString();
                         }
 
                         result.Rows.Add(items);
@@ -294,17 +370,17 @@ namespace AcManager.Pages.Dialogs {
 
                     return result;
                 }
+
+                public int Id => Index;
             }
 
             public class PlayerLapEntry : NotifyPropertyChanged {
                 public int LapNumber { get; set; }
-
+                public int Cuts { get; set; }
+                public string TyresShortName { get; set; }
                 public TimeSpan[] Sectors { get; set; }
-
                 public TimeSpan Total { get; set; }
-
                 public TimeSpan? DeltaToBest { get; set; }
-
                 public TimeSpan? DeltaToSessionBest { get; set; }
             }
 
@@ -315,6 +391,7 @@ namespace AcManager.Pages.Dialogs {
             public override string Title { get; }
 
             public List<PlayerEntry> PlayerEntries { get; set; }
+            public List<RemarkableNote> RemarkableNotes { get; set; }
         }
 
         public class SessionsFinishedData : BaseFinishedData {
@@ -342,51 +419,44 @@ namespace AcManager.Pages.Dialogs {
 
         public class DriftFinishedData : BaseFinishedData {
             public override string Title { get; } = ToolsStrings.Session_Drift;
-
             public int Points { get; set; }
-
             public int MaxCombo { get; set; }
-
             public int MaxLevel { get; set; }
         }
 
         public class TimeAttackFinishedData : BaseFinishedData {
             public override string Title { get; } = ToolsStrings.Session_TimeAttack;
-
             public int Points { get; set; }
-
             public int Laps { get; set; }
-
             public TimeSpan? BestLapTime { get; set; }
+        }
+
+        public class TrackDayFinishedData : HotlapFinishedData {
+            public override string Title { get; } = ToolsStrings.Session_TrackDay;
         }
 
         public class HotlapFinishedData : BaseFinishedData {
             public override string Title { get; } = ToolsStrings.Session_Hotlap;
-
             public int Laps { get; set; }
-
             public TimeSpan? BestLapTime { get; set; }
-
             public TimeSpan? TheoreticallLapTime { get; set; }
         }
 
         public class DragFinishedData : SessionFinishedData {
             public int Total { get; set; }
-
             public int Wins { get; set; }
-
             public int Runs { get; set; }
-
             public TimeSpan BestReactionTime { get; set; }
-
             public DragFinishedData() : base(ToolsStrings.Session_Drag) {}
         }
 
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
             if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
                     && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults
-                    || _properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null) {
+                    || _properties?.GetAdditional<WhatsGoingOn>() == null
+                            && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null)) {
                 Close();
+                Application.Current?.MainWindow?.Activate();
                 return;
             }
 
@@ -591,26 +661,51 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void ScrollViewer_OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e) {
-            var scrollViewer = (ScrollViewer)sender;
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
+        private void OnScrollMouseWheel(object sender, MouseWheelEventArgs e) {
+            var scrollViewer = sender as ScrollViewer ?? (sender as FrameworkElement)?.FindVisualChild<ScrollViewer>();
+            scrollViewer?.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
-        private void OnClosed(object sender, EventArgs e) {}
+        private void OnClosed(object sender, EventArgs e) { }
+        private void OnLapsTableLoaded(object sender, RoutedEventArgs e) { }
 
-        private void OnLapsTableLoaded(object sender, RoutedEventArgs e) {
-            var numberCellStyle = TryFindResource(@"NumberCellStyle") as Style;
-            var deltaCellStyle = TryFindResource(@"DeltaCellStyle") as Style;
-            var rightAligningHeader = TryFindResource(@"DataGridColumnHeader.RightAlignment") as Style;
+        private void OnPlayersTableLoaded(object sender, RoutedEventArgs e) {
+            var columns = ((DataGrid)sender).Columns.TakeLast(3).ToList();
+            this.AddWidthCondition(1000).Add(columns[1]).Add(columns[2])
+                    .Add(x => {
+                        columns[0].Width = x ? 100 : 140;
+                        columns[0].HeaderStyle = (Style)FindResource(x ?
+                                "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
+                        ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
+                                "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
+                        if (x) {
+                            FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                        }
+                    });
 
+            if (ActualWidth < 1000d) {
+                FancyHints.GameDialogTableSize.Trigger();
+            } else {
+                FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+            }
+        }
+
+        private void OnDataGridMouseDown(object sender, MouseButtonEventArgs e) {
             var grid = (DataGrid)sender;
-            for (var i = grid.Columns.Count - 1; i >= 0; i--) {
-                var column = grid.Columns[i];
-                column.MinWidth = column.ActualWidth;
-                column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-                column.CellStyle = i >= grid.Columns.Count - 2 ? deltaCellStyle : numberCellStyle;
-                column.HeaderStyle = rightAligningHeader;
+            if (grid.IsMouseOverItem(grid.SelectedItem)) {
+                grid.SelectedItem = null;
+                e.Handled = true;
+            }
+        }
+
+        private void OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e) {
+            if (e.PropertyName == "Tyres") {
+                e.Column.HeaderStyle = (Style)FindResource("DataGridColumnHeader.Small");
+            } else {
+                e.Column.Width = e.PropertyName == "Lap" ? 60 : 100;
+                e.Column.HeaderStyle = (Style)FindResource("DataGridColumnHeader.RightAlignment.Small");
+                e.Column.CellStyle = (Style)FindResource("DataGridCell.Transparent.RightAlignment");
             }
         }
     }

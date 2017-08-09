@@ -1,10 +1,10 @@
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {
-    [TestClass]
+    [TestFixture]
     public class WrappedCollectionTest {
-        [TestMethod]
+        [Test]
         public void Test() {
             var array = new BetterObservableCollection<string> {
                 "Cat", "Dog", "Rat"

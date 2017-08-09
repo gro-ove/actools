@@ -17,7 +17,7 @@ namespace AcTools.Render.Base.Objects {
         private Matrix _parentMatrix = Matrix.Identity;
 
         public Matrix ParentMatrix {
-            get { return _parentMatrix; }
+            get => _parentMatrix;
             set {
                 if (Equals(_parentMatrix, value)) return;
                 _parentMatrix = value;
@@ -32,7 +32,7 @@ namespace AcTools.Render.Base.Objects {
         private Matrix _localMatrix = Matrix.Identity;
 
         public Matrix LocalMatrix {
-            get { return _localMatrix; }
+            get => _localMatrix;
             set {
                 if (Equals(_localMatrix, value)) return;
                 _localMatrix = value;
@@ -166,31 +166,46 @@ namespace AcTools.Render.Base.Objects {
 
             UpdateLookAt();
 
-            var c = Count;
-            for (var i = 0; i < c; i++) {
-                var child = this[i];
-                if (child.IsEnabled) {
-                    child.Draw(contextHolder, camera, mode, filter);
-                }
-            }
+#if DEBUG
+            try {
+#endif
 
-            if (HighlightBoundingBoxes && mode == SpecialRenderMode.SimpleTransparent) {
-                if (_box == null) {
-                    var box = GeometryGenerator.CreateLinesBox(new Vector3(1f));
-                    _box = new DebugLinesObject(Matrix.Identity,
-                            box.Vertices.Select(x => new InputLayouts.VerticePC(x.Position, new Color4(1f, 1f, 0.5f, 0f))).ToArray(),
-                            box.Indices.ToArray());
-                }
-
+                var c = Count;
                 for (var i = 0; i < c; i++) {
                     var child = this[i];
-                    if (child.IsEnabled && child.BoundingBox.HasValue) {
-                        var bb = child.BoundingBox.Value;
-                        _box.ParentMatrix = Matrix.Scaling(bb.GetSize()) * Matrix.Translation(bb.GetCenter());
-                        _box.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+                    if (child.IsEnabled) {
+                        child.Draw(contextHolder, camera, mode, filter);
+#if DEBUG
+                        if (Count != c) {
+                            throw new Exception("Collection modified: " + Name);
+                        }
+#endif
                     }
                 }
+
+                if (HighlightBoundingBoxes && mode == SpecialRenderMode.SimpleTransparent) {
+                    if (_box == null) {
+                        var box = GeometryGenerator.CreateLinesBox(new Vector3(1f));
+                        _box = new DebugLinesObject(Matrix.Identity,
+                                box.Vertices.Select(x => new InputLayouts.VerticePC(x.Position, new Color4(1f, 1f, 0.5f, 0f))).ToArray(),
+                                box.Indices.ToArray());
+                    }
+
+                    for (var i = 0; i < c; i++) {
+                        var child = this[i];
+                        if (child.IsEnabled && child.BoundingBox.HasValue) {
+                            var bb = child.BoundingBox.Value;
+                            _box.ParentMatrix = Matrix.Scaling(bb.GetSize()) * Matrix.Translation(bb.GetCenter());
+                            _box.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+                        }
+                    }
+                }
+
+#if DEBUG
+            } catch (Exception e) {
+                throw new Exception("Collection exception: " + Name, e);
             }
+#endif
         }
 
         public virtual void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {

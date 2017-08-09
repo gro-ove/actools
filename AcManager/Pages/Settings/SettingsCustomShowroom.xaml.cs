@@ -45,13 +45,22 @@ namespace AcManager.Pages.Settings {
 
             private DelegateCommand _resetCommand;
 
-            public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
-                ValuesStorage.Remove("__DarkRendererSettings");
-            }));
+            public DelegateCommand ResetCommand
+                => _resetCommand ?? (_resetCommand = new DelegateCommand(() => { ValuesStorage.Remove("__DarkRendererSettings"); }));
 
             private DelegateCommand _resetHeavyCommand;
 
             public DelegateCommand ResetHeavyCommand => _resetHeavyCommand ?? (_resetHeavyCommand = new DelegateCommand(DarkRendererSettings.ResetHeavy));
+
+            private DelegateCommand _resetPreviewsCommand;
+
+            public DelegateCommand ResetPreviewsCommand
+                => _resetPreviewsCommand ?? (_resetPreviewsCommand = new DelegateCommand(() => { ValuesStorage.Remove("__CmPreviewsSettings"); }));
+
+            private DelegateCommand _resetHeavyPreviewsCommand;
+
+            public DelegateCommand ResetHeavyPreviewsCommand
+                => _resetHeavyPreviewsCommand ?? (_resetHeavyPreviewsCommand = new DelegateCommand(CmPreviewsSettings.ResetHeavy));
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {

@@ -28,6 +28,6 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         public bool IsEntryList { get; set; }
 
         [JsonIgnore]
-        string IWithId.Id => CarId;
+        string IWithId<string>.Id => CarId;
     }
 }

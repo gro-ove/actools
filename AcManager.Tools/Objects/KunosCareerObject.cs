@@ -34,23 +34,16 @@ namespace AcManager.Tools.Objects {
             private int _takenPlace;
 
             public bool IsPlayer { get; set; }
-
             public bool TakenPlacePrizePlace { get; } = true;
-
             public string Name { get; set; }
-
             public string Nationality { get; set; }
-
             public string SetupId { get; set; }
-
             public int AiLevel { get; set; }
-
             public CarObject Car { get; set; }
-
             public CarSkinObject CarSkin { get; set; }
 
             public int Points {
-                get { return _points; }
+                get => _points;
                 set {
                     if (value == _points) return;
                     _points = value;
@@ -59,7 +52,7 @@ namespace AcManager.Tools.Objects {
             }
 
             public int TakenPlace {
-                get { return _takenPlace; }
+                get => _takenPlace;
                 set {
                     if (value == _takenPlace) return;
                     _takenPlace = value;
@@ -80,7 +73,7 @@ namespace AcManager.Tools.Objects {
         private BetterObservableCollection<ChampionshipDriverEntry> _championshipDrivers;
 
         public BetterObservableCollection<ChampionshipDriverEntry> ChampionshipDrivers {
-            get { return _championshipDrivers; }
+            get => _championshipDrivers;
             set {
                 if (Equals(value, _championshipDrivers)) return;
                 _championshipDrivers = value;
@@ -236,7 +229,7 @@ namespace AcManager.Tools.Objects {
         private string _description;
 
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (Equals(value, _description)) return;
                 _description = value;
@@ -247,7 +240,7 @@ namespace AcManager.Tools.Objects {
         private string _code;
 
         public string Code {
-            get { return _code; }
+            get => _code;
             set {
                 if (string.IsNullOrWhiteSpace(value)) {
                     value = null;
@@ -262,7 +255,7 @@ namespace AcManager.Tools.Objects {
         private KunosCareerObjectType _type;
 
         public KunosCareerObjectType Type {
-            get { return _type; }
+            get => _type;
             set {
                 if (Equals(value, _type)) return;
                 _type = value;
@@ -275,7 +268,7 @@ namespace AcManager.Tools.Objects {
         private string[] _requiredSeries;
 
         public string[] RequiredSeries {
-            get { return _requiredSeries; }
+            get => _requiredSeries;
             set {
                 if (Equals(value, _requiredSeries)) return;
                 _requiredSeries = value;
@@ -286,7 +279,7 @@ namespace AcManager.Tools.Objects {
         private bool _requiredAnySeries;
 
         public bool RequiredAnySeries {
-            get { return _requiredAnySeries; }
+            get => _requiredAnySeries;
             set {
                 if (Equals(value, _requiredAnySeries)) return;
                 _requiredAnySeries = value;
@@ -297,7 +290,7 @@ namespace AcManager.Tools.Objects {
         private int[] _pointsForPlace;
 
         public int[] PointsForPlace {
-            get { return _pointsForPlace; }
+            get => _pointsForPlace;
             set {
                 if (Equals(value, _pointsForPlace)) return;
                 _pointsForPlace = value;
@@ -308,7 +301,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPointsGoal;
 
         public int ChampionshipPointsGoal {
-            get { return _championshipPointsGoal; }
+            get => _championshipPointsGoal;
             set {
                 if (Equals(value, _championshipPointsGoal)) return;
                 _championshipPointsGoal = value;
@@ -319,7 +312,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipRankingGoal;
 
         public int ChampionshipRankingGoal {
-            get { return _championshipRankingGoal; }
+            get => _championshipRankingGoal;
             set {
                 if (Equals(value, _championshipRankingGoal)) return;
                 _championshipRankingGoal = value;
@@ -334,7 +327,7 @@ namespace AcManager.Tools.Objects {
         private int _firstPlacesGoal;
 
         public int FirstPlacesGoal {
-            get { return _firstPlacesGoal; }
+            get => _firstPlacesGoal;
             set {
                 if (Equals(value, _firstPlacesGoal)) return;
                 _firstPlacesGoal = value;
@@ -345,7 +338,7 @@ namespace AcManager.Tools.Objects {
         private int _secondPlacesGoal;
 
         public int SecondPlacesGoal {
-            get { return _secondPlacesGoal; }
+            get => _secondPlacesGoal;
             set {
                 if (Equals(value, _secondPlacesGoal)) return;
                 _secondPlacesGoal = value;
@@ -356,7 +349,7 @@ namespace AcManager.Tools.Objects {
         private int _thirdPlacesGoal;
 
         public int ThirdPlacesGoal {
-            get { return _thirdPlacesGoal; }
+            get => _thirdPlacesGoal;
             set {
                 if (Equals(value, _thirdPlacesGoal)) return;
                 _thirdPlacesGoal = value;
@@ -367,7 +360,7 @@ namespace AcManager.Tools.Objects {
         private int[] _championshipPointsPerPlace;
 
         public int[] ChampionshipPointsPerPlace {
-            get { return _championshipPointsPerPlace; }
+            get => _championshipPointsPerPlace;
             set {
                 if (Equals(value, _championshipPointsPerPlace)) return;
                 _championshipPointsPerPlace = value;
@@ -378,7 +371,7 @@ namespace AcManager.Tools.Objects {
         private KunosCareerObject _nextCareerObject;
 
         public KunosCareerObject NextCareerObject {
-            get { return _nextCareerObject; }
+            get => _nextCareerObject;
             set {
                 if (Equals(value, _nextCareerObject)) return;
                 _nextCareerObject = value;
@@ -391,7 +384,7 @@ namespace AcManager.Tools.Objects {
         private bool _isAvailable;
 
         public bool IsAvailable {
-            get { return _isAvailable; }
+            get => _isAvailable;
             set {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
@@ -402,7 +395,7 @@ namespace AcManager.Tools.Objects {
         private int _completedEvents;
 
         public int CompletedEvents {
-            get { return _completedEvents; }
+            get => _completedEvents;
             set {
                 if (Equals(value, _completedEvents)) return;
                 _completedEvents = value;
@@ -416,7 +409,7 @@ namespace AcManager.Tools.Objects {
         private int _firstPlaces;
 
         public int FirstPlaces {
-            get { return _firstPlaces; }
+            get => _firstPlaces;
             set {
                 if (Equals(value, _firstPlaces)) return;
                 _firstPlaces = value;
@@ -427,7 +420,7 @@ namespace AcManager.Tools.Objects {
         private int _secondPlaces;
 
         public int SecondPlaces {
-            get { return _secondPlaces; }
+            get => _secondPlaces;
             set {
                 if (Equals(value, _secondPlaces)) return;
                 _secondPlaces = value;
@@ -438,7 +431,7 @@ namespace AcManager.Tools.Objects {
         private int _thirdPlaces;
 
         public int ThirdPlaces {
-            get { return _thirdPlaces; }
+            get => _thirdPlaces;
             set {
                 if (Equals(value, _thirdPlaces)) return;
                 _thirdPlaces = value;
@@ -449,7 +442,7 @@ namespace AcManager.Tools.Objects {
         private int _firstPlacesNeeded;
 
         public int FirstPlacesNeeded {
-            get { return _firstPlacesNeeded; }
+            get => _firstPlacesNeeded;
             set {
                 if (Equals(value, _firstPlacesNeeded)) return;
                 _firstPlacesNeeded = value;
@@ -460,7 +453,7 @@ namespace AcManager.Tools.Objects {
         private int _secondPlacesNeeded;
 
         public int SecondPlacesNeeded {
-            get { return _secondPlacesNeeded; }
+            get => _secondPlacesNeeded;
             set {
                 if (Equals(value, _secondPlacesNeeded)) return;
                 _secondPlacesNeeded = value;
@@ -471,7 +464,7 @@ namespace AcManager.Tools.Objects {
         private int _thirdPlacesNeeded;
 
         public int ThirdPlacesNeeded {
-            get { return _thirdPlacesNeeded; }
+            get => _thirdPlacesNeeded;
             set {
                 if (Equals(value, _thirdPlacesNeeded)) return;
                 _thirdPlacesNeeded = value;
@@ -482,7 +475,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPointsNeeded;
 
         public int ChampionshipPointsNeeded {
-            get { return _championshipPointsNeeded; }
+            get => _championshipPointsNeeded;
             set {
                 if (Equals(value, _championshipPointsNeeded)) return;
                 _championshipPointsNeeded = value;
@@ -493,7 +486,7 @@ namespace AcManager.Tools.Objects {
         private bool _isCompleted;
 
         public bool IsCompleted {
-            get { return _isCompleted; }
+            get => _isCompleted;
             set {
                 if (Equals(value, _isCompleted)) return;
                 _isCompleted = value;
@@ -504,7 +497,7 @@ namespace AcManager.Tools.Objects {
         private long _lastSelectedTimestamp;
 
         public long LastSelectedTimestamp {
-            get { return _lastSelectedTimestamp; }
+            get => _lastSelectedTimestamp;
             set {
                 if (Equals(value, _lastSelectedTimestamp)) return;
                 _lastSelectedTimestamp = value;
@@ -516,7 +509,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPoints = -1;
 
         public int ChampionshipPoints {
-            get { return _championshipPoints; }
+            get => _championshipPoints;
             set {
                 if (Equals(value, _championshipPoints)) return;
                 _championshipPoints = value;
@@ -531,7 +524,7 @@ namespace AcManager.Tools.Objects {
         private IReadOnlyList<int> _championshipAiPoints;
 
         public IReadOnlyList<int> ChampionshipAiPoints {
-            get { return _championshipAiPoints; }
+            get => _championshipAiPoints;
             set {
                 if (Equals(value, _championshipAiPoints)) return;
                 _championshipAiPoints = value;
@@ -546,7 +539,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPlace;
 
         public int ChampionshipPlace {
-            get { return _championshipPlace; }
+            get => _championshipPlace;
             set {
                 if (Equals(value, _championshipPlace)) return;
                 _championshipPlace = value;
@@ -630,7 +623,7 @@ namespace AcManager.Tools.Objects {
                 ThirdPlaces = 0;
                 ChampionshipAiPoints = new int[0];
                 ChampionshipPoints = 0;
-                
+
                 _lastSelectedTimestamp = 0;
             } else {
                 var count = EventsWrappers.Count;

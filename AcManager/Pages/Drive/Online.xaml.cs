@@ -179,7 +179,7 @@ namespace AcManager.Pages.Drive {
             ResizingStuff();
         }
 
-        private TaskbarProgress _taskbarProgress;
+        private TaskbarHolder _taskbarProgress;
         private bool _scrolling;
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
@@ -805,11 +805,26 @@ namespace AcManager.Pages.Drive {
         public void OnNavigatedTo(NavigationEventArgs e) {
             Model.Load();
 
-            _taskbarProgress = new TaskbarProgress();
+            _taskbarProgress = TaskbarService.Create(1000d, () => {
+                switch (Model.Pack.Status) {
+                    case OnlineManagerStatus.Ready:
+                        return Tuple.Create(TaskbarState.NoProgress, 1d);
+                    case OnlineManagerStatus.Error:
+                        return Tuple.Create(TaskbarState.Error, 1d);
+                    case OnlineManagerStatus.Waiting:
+                        return Tuple.Create(TaskbarState.Indeterminate, 0d);
+                    default:
+                        var v = Model.Pack.SourceWrappers;
+                        var m = v.Select(x => x.LoadingProgress).Where(x => !x.IsIndeterminate && !x.IsReady).MinEntryOrDefault(x => x.Progress ?? 0d).Progress;
+                        return m > 0 ? Tuple.Create(TaskbarState.Normal, m.Value) : Tuple.Create(TaskbarState.Indeterminate, 0d);
+                }
+            });
+
             _timer = new DispatcherTimer {
                 Interval = TimeSpan.FromSeconds(1),
                 IsEnabled = true
             };
+
             _timer.Tick += OnTimerTick;
 
             var scrollViewer = ServersListBox.FindVisualChild<ScrollViewer>();

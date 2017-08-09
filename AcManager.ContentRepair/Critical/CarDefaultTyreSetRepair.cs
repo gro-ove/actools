@@ -4,7 +4,7 @@ using AcTools.DataFile;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
-namespace AcManager.ContentRepair.Repairs {
+namespace AcManager.ContentRepair.Critical {
     public class CarDefaultTyreSetRepair : CarSimpleRepairBase {
         public static readonly CarDefaultTyreSetRepair Instance = new CarDefaultTyreSetRepair();
 

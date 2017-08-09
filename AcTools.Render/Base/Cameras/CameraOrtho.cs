@@ -18,11 +18,11 @@ namespace AcTools.Render.Base.Cameras {
             SetView(Matrix.LookAtRH(Position, Target, Up));
         }
 
-        public override void Save() {
+        public virtual void Save() {
             throw new System.NotImplementedException();
         }
 
-        public override void Restore() {
+        public virtual void Restore() {
             throw new System.NotImplementedException();
         }
 
@@ -42,7 +42,7 @@ namespace AcTools.Render.Base.Cameras {
             UpdateViewMatrix();
         }
 
-        public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
+        protected override void LookAtOverride(Vector3 pos, Vector3 target, Vector3 up) {
             Position = pos;
             Target = target;
             Up = up;
@@ -62,9 +62,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Pitch(float angle) {}
-
         public override void Yaw(float angle) {}
-
         public override void Zoom(float dr) {}
     }
 }

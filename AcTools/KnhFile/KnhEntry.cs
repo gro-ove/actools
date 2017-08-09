@@ -6,7 +6,7 @@
         // Matrix
         public float[] Transformation;
 
-        // 3D-vector
+        // Children
         public KnhEntry[] Children;
 
         public KnhEntry(string name, float[] transformation, KnhEntry[] children) {

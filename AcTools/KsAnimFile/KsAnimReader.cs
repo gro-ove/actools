@@ -3,14 +3,13 @@
 namespace AcTools.KsAnimFile {
     internal sealed class KsAnimReader : ReadAheadBinaryReader {
         public KsAnimReader(string filename) : base(filename) {}
-
         public KsAnimReader(Stream stream) : base(stream) {}
 
         public KsAnimHeader ReadHeader() {
             var header = new KsAnimHeader {
                 Version = ReadInt32()
             };
-            
+
             return header;
         }
 

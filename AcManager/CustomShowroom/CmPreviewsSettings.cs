@@ -7,11 +7,11 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
@@ -28,43 +28,58 @@ using SlimDX;
 
 namespace AcManager.CustomShowroom {
     public class CmPreviewsSettings : DarkRendererSettings {
-        // TODO: rearrange code!
-        public static Func<CarObject, CarObject> SelectCarDialog;
-
         public new static readonly string DefaultKey = "__CmPreviewsSettings";
         public new static readonly string DefaultPresetableKeyValue = "Custom Previews";
+        protected override string KeyLockCamera => ".cmPsLc";
 
         public CmPreviewsSettings(DarkKn5ObjectRenderer renderer) : base(renderer, DefaultPresetableKeyValue) {
-            CameraPosition.PropertyChanged += OnCameraCoordinatePropertyChanged;
-            CameraLookAt.PropertyChanged += OnCameraCoordinatePropertyChanged;
-            Renderer.CameraMoved += OnCameraMoved;
             renderer.VisibleUi = false;
-
             if (LockCamera) {
                 Renderer.LockCamera = true;
             }
         }
 
-        internal new void Initialize(bool reset) {
-            base.Initialize(reset);
+        public new static void ResetHeavy() {
+            if (!ValuesStorage.Contains(DefaultKey)) return;
 
-            UpdateSize();
-            UpdateCamera();
+            try {
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.GetString(DefaultKey));
+                data.Width = CommonAcConsts.PreviewWidth;
+                data.Height = CommonAcConsts.PreviewHeight;
+                data.SsaaMode = 1;
+                data.MsaaMode = 0;
+                data.SsaaMode = 1;
+                data.ShadowMapSize = 2048;
+                data.CubemapReflectionMapSize = 1024;
+                data.CubemapReflectionFacesPerFrame = 2;
+                data.UsePcss = false;
+                data.UseSslr = false;
+                data.UseAo = false;
+                data.UseDof = false;
+                data.UseAccumulationDof = false;
+                data.FlatMirrorBlurred = false;
+                ValuesStorage.Set(DefaultKey, JsonConvert.SerializeObject(data));
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
         }
 
-        private void OnCameraCoordinatePropertyChanged(object sender, PropertyChangedEventArgs e) {
-            SaveLater();
-            UpdateCamera();
+        internal new void Initialize(bool reset) {
+            base.Initialize(reset);
+            UpdateSize();
         }
 
         protected override ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, Save, Load, () => {
-                Reset(false);
-            });
+            return new SaveHelper<SaveableData>(DefaultKey, Save, Load, () => Reset(false));
         }
 
         protected override DarkRendererSettings.SaveableData CreateSaveableData() {
             return new SaveableData();
+        }
+
+        public override bool LoadCameraEnabled {
+            get => true;
+            set { }
         }
 
         private SaveableData ToSaveableData() {
@@ -72,9 +87,7 @@ namespace AcManager.CustomShowroom {
                 Width = Width,
                 Height = Height,
                 SoftwareDownsize = SoftwareDownsize,
-                CameraPosition = CameraPosition.ToArray(),
-                CameraLookAt = CameraLookAt.ToArray(),
-                CameraFov = CameraFov,
+                FileName = FileName,
                 AlignCar = AlignCar,
                 AlignCameraHorizontally = AlignCameraHorizontally,
                 AlignCameraHorizontallyOffset = AlignCameraHorizontallyOffset,
@@ -108,15 +121,20 @@ namespace AcManager.CustomShowroom {
             Width = o.Width;
             Height = o.Height;
             SoftwareDownsize = o.SoftwareDownsize;
+            FileName = o.FileName;
+        }
+
+        protected override void LoadCamera(DarkRendererSettings.SaveableData o) {
+            LoadCamera((SaveableData)o);
         }
 
         protected void LoadCamera(SaveableData o) {
-            _cameraBusy = true;
-
-            try {
+            CameraBusy.Do(() => {
                 CameraPosition.Set(o.CameraPosition);
                 CameraLookAt.Set(o.CameraLookAt);
+                CameraTilt = o.CameraTilt;
                 CameraFov = o.CameraFov;
+
                 AlignCar = o.AlignCar;
                 AlignCameraHorizontally = o.AlignCameraHorizontally;
                 AlignCameraHorizontallyOffset = o.AlignCameraHorizontallyOffset;
@@ -124,10 +142,9 @@ namespace AcManager.CustomShowroom {
                 AlignCameraVertically = o.AlignCameraVertically;
                 AlignCameraVerticallyOffset = o.AlignCameraVerticallyOffset;
                 AlignCameraVerticallyOffsetRelative = o.AlignCameraVerticallyOffsetRelative;
-            } finally {
-                _cameraBusy = false;
-                UpdateCamera();
-            }
+            });
+
+            UpdateCamera();
         }
 
         protected void LoadCar(SaveableData o) {
@@ -141,7 +158,6 @@ namespace AcManager.CustomShowroom {
 
         protected void Load(SaveableData o) {
             LoadSize(o);
-            LoadCamera(o);
             LoadCar(o);
             base.Load(o);
         }
@@ -175,7 +191,7 @@ namespace AcManager.CustomShowroom {
             public override Color BackgroundColor { get; set; } = Color.FromRgb(0, 0, 0);
             public override Color LightColor { get; set; } = Color.FromRgb(255, 255, 255);
 
-            public override int MsaaMode { get; set; } = 0;
+            public override int MsaaMode { get; set; }
             public override int SsaaMode { get; set; } = 16;
             public override int ShadowMapSize { get; set; } = 4096;
 
@@ -216,13 +232,16 @@ namespace AcManager.CustomShowroom {
             public override float BloomRadiusMultiplier { get; set; } = 0.8f;
             public override float SsaoOpacity { get; set; } = 0.3f;
 
-
             public int Width = CommonAcConsts.PreviewWidth, Height = CommonAcConsts.PreviewHeight;
             public bool SoftwareDownsize, AlignCar = true, AlignCameraHorizontally = true, AlignCameraVertically, AlignCameraHorizontallyOffsetRelative = true,
                     AlignCameraVerticallyOffsetRelative = true, HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver;
-            public double[] CameraPosition = { 3.194, 0.342, 13.049 }, CameraLookAt = { 2.945, 0.384, 12.082 };
-            public float CameraFov = 9f, AlignCameraHorizontallyOffset = 0.3f, AlignCameraVerticallyOffset, SteerDeg;
+            public string FileName { get; set; } = "preview.jpg";
 
+            public override double[] CameraPosition { get; set; } = { 3.194, 0.342, 13.049 };
+            public override double[] CameraLookAt { get; set; } = { 2.945, 0.384, 12.082 };
+            public override float CameraFov { get; set; } = 9f;
+
+            public float AlignCameraHorizontallyOffset = 0.3f, AlignCameraVerticallyOffset, SteerDeg;
             public string Checksum { get; set; }
 
             /// <summary>
@@ -251,6 +270,7 @@ namespace AcManager.CustomShowroom {
                     CubemapAmbient = CubemapAmbient,
                     CubemapAmbientWhite = CubemapAmbientWhite,
                     EnableShadows = EnableShadows,
+                    AnyGround = AnyGround,
                     FlatMirror = FlatMirror,
                     UseBloom = UseBloom,
                     FlatMirrorBlurred = FlatMirrorBlurred,
@@ -304,7 +324,7 @@ namespace AcManager.CustomShowroom {
 
                     CameraPosition = CameraPosition,
                     CameraLookAt = CameraLookAt,
-
+                    CameraTilt = CameraTilt,
                     CameraFov = CameraFov,
                     AlignCameraHorizontallyOffset = AlignCameraHorizontallyOffset,
                     AlignCameraVerticallyOffset = AlignCameraVerticallyOffset,
@@ -313,7 +333,7 @@ namespace AcManager.CustomShowroom {
                     DelayedConvertation = false,
                     MeshDebugMode = false,
                     SuspensionDebugMode = false,
-                    PreviewName = "preview.jpg",
+                    PreviewName = FileName,
                     WireframeMode = false,
                     SerializedLights = ExtraLights != null ? new JArray(ExtraLights.OfType<object>()).ToString() : null,
 
@@ -323,6 +343,8 @@ namespace AcManager.CustomShowroom {
         }
 
         protected override void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (Renderer.ShotInProcess) return;
+
             switch (e.PropertyName) {
                 /*case nameof(Renderer.UseSsaa):
                     if (!HighQualityPreview) {
@@ -354,19 +376,6 @@ namespace AcManager.CustomShowroom {
                 ValuesStorage.Set(".cmPsHqPreview", value);
                 OnPropertyChanged(save: false);
                 Renderer.ResolutionMultiplier = GetRendererResolutionMultipler();
-            }
-        }
-
-        private bool? _lockCamera;
-
-        public bool LockCamera {
-            get => _lockCamera ?? (_lockCamera = ValuesStorage.GetBool(".cmPsLc")).Value;
-            set {
-                if (Equals(value, LockCamera)) return;
-                _lockCamera = value;
-                ValuesStorage.Set(".cmPsLc", value);
-                OnPropertyChanged(save: false);
-                Renderer.LockCamera = value;
             }
         }
 
@@ -464,6 +473,17 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        private string _fileName;
+
+        public string FileName {
+            get => _fileName;
+            set {
+                if (Equals(value, _fileName)) return;
+                _fileName = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void ResetSize() {
             LoadSize((SaveableData)CreateSaveableData());
         }
@@ -474,22 +494,6 @@ namespace AcManager.CustomShowroom {
         #endregion
 
         #region Camera
-        public Coordinates CameraPosition { get; } = new Coordinates();
-
-        public Coordinates CameraLookAt { get; } = new Coordinates();
-
-        private float _cameraFov;
-
-        public float CameraFov {
-            get => _cameraFov;
-            set {
-                if (Equals(value, _cameraFov)) return;
-                _cameraFov = value;
-                OnPropertyChanged();
-                UpdateCamera();
-            }
-        }
-
         private bool _alignCar;
 
         public bool AlignCar {
@@ -574,63 +578,29 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private void OnCameraMoved(object sender, EventArgs e) {
-            if (_cameraIgnoreNext) {
-                _cameraIgnoreNext = false;
-            } else {
-                if (LockCamera) {
-                    UpdateCamera();
-                } else {
-                    SyncCamera();
-                }
-            }
-        }
-
-        private bool _cameraBusy, _cameraIgnoreNext;
-
-        private void SyncCamera() {
-            if (_cameraBusy) return;
-            _cameraBusy = true;
-
-            try {
+        protected override void SyncCamera() {
+            CameraBusy.Do(() => {
                 var offset = AlignCar ? -Renderer.MainSlot.CarCenter : Vector3.Zero;
                 CameraPosition.Set(Renderer.Camera.Position + offset);
                 CameraLookAt.Set((Renderer.CameraOrbit?.Target ?? Renderer.Camera.Position + Renderer.Camera.Look) + offset);
                 CameraFov = Renderer.Camera.FovY.ToDegrees();
                 AlignCameraHorizontally = false;
                 AlignCameraVertically = false;
-            } finally {
-                _cameraBusy = false;
-            }
+            });
         }
 
-        private void UpdateCamera() {
-            if (_cameraBusy) return;
-            _cameraBusy = true;
-
-            try {
-                Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians());
-
+        protected override void UpdateCamera(bool force = false) {
+            CameraBusy.Do(() => {
+                Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
                 if (AlignCar) {
                     Renderer.AlignCar();
                 }
 
                 Renderer.AlignCamera(AlignCameraHorizontally, AlignCameraHorizontallyOffset, AlignCameraHorizontallyOffsetRelative,
                         AlignCameraVertically, AlignCameraVerticallyOffset, AlignCameraVerticallyOffsetRelative);
-
-                _cameraIgnoreNext = true;
-            } finally {
-                _cameraBusy = false;
-            }
+                CameraIgnoreNext = true;
+            });
         }
-
-        private void ResetCamera() {
-            LoadCamera((SaveableData)CreateSaveableData());
-        }
-
-        private DelegateCommand _resetCameraCommand;
-
-        public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(ResetCamera));
         #endregion
 
         #region Car params
@@ -638,7 +608,7 @@ namespace AcManager.CustomShowroom {
 
         public AsyncCommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new AsyncCommand(() => {
             var currentCar = Renderer.CarNode?.CarId;
-            var car = SelectCarDialog?.Invoke(currentCar == null ? null : CarsManager.Instance.GetById(currentCar));
+            var car = SelectCarDialog.Show(currentCar == null ? null : CarsManager.Instance.GetById(currentCar));
             return car == null ? Task.Delay(0) : Renderer.MainSlot.SetCarAsync(CarDescription.FromDirectory(car.Location, car.AcdData), car.SelectedSkin?.Id);
         }));
 

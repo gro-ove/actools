@@ -134,7 +134,6 @@ namespace AcManager.CustomShowroom {
             public virtual string ShowroomId { get; set; }
             public virtual string ColorGrading { get; set; }
 
-            public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
             public virtual AoType AoType { get; set; } = AoType.Ssao;
             public CarAmbientShadowsMode CarAmbientShadowsMode { get; set; } = CarAmbientShadowsMode.Attached;
 
@@ -142,6 +141,7 @@ namespace AcManager.CustomShowroom {
             public virtual float CubemapAmbient { get; set; } = 0.5f;
             public virtual bool CubemapAmbientWhite { get; set; } = true;
             public virtual bool EnableShadows { get; set; } = true;
+            public virtual bool AnyGround { get; set; } = true;
             public virtual bool FlatMirror { get; set; }
             public virtual bool FlatMirrorBlurred { get; set; } = true;
             public virtual bool UseBloom { get; set; } = true;
@@ -161,23 +161,36 @@ namespace AcManager.CustomShowroom {
             public virtual float Lightθ { get; set; } = 50f;
             public virtual float Lightφ { get; set; } = 104f;
             public virtual float MaterialsReflectiveness { get; set; } = 1f;
+
+            public int ToneVersion = 0;
+            public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
             public virtual float ToneExposure { get; set; } = 1.0f;
             public virtual float ToneGamma { get; set; } = 1f;
             public virtual float ToneWhitePoint { get; set; } = 1.66f;
+
             public virtual float PcssSceneScale { get; set; } = 0.06f;
             public virtual float PcssLightScale { get; set; } = 2f;
             public virtual float BloomRadiusMultiplier { get; set; } = 1f;
             public virtual float SsaoOpacity { get; set; } = 0.3f;
 
-            public virtual bool UseDof { get; set; } = false;
+            public virtual bool UseDof { get; set; }
             public virtual float DofFocusPlane { get; set; } = 1.6f;
             public virtual float DofScale { get; set; } = 1f;
-            public virtual bool UseAccumulationDof { get; set; } = false;
+            public virtual bool UseAccumulationDof { get; set; }
             public virtual int AccumulationDofIterations { get; set; } = 100;
             public virtual float AccumulationDofApertureSize { get; set; } = 0.01f;
 
             [CanBeNull]
             public virtual JObject[] ExtraLights { get; set; }
+
+            [CanBeNull]
+            public virtual double[] CameraPosition { get; set; } = { 3.29, 1.10, 4.93 };
+
+            [CanBeNull]
+            public virtual double[] CameraLookAt { get; set; } = { -0.53, 0.49, 0.11 };
+            public virtual float CameraTilt { get; set; } = 0f;
+            public virtual float CameraFov { get; set; } = 32f;
+            public virtual bool CameraOrbitMode { get; set; } = true;
 
             [CanBeNull]
             private static byte[] Compress(byte[] data) {
@@ -254,6 +267,7 @@ namespace AcManager.CustomShowroom {
             ResetScene();
             ResetHdr();
             ResetExtra();
+            ResetCamera();
 
             if (saveLater) {
                 SaveLater();
@@ -278,6 +292,12 @@ namespace AcManager.CustomShowroom {
 
         [NotNull]
         protected SaveableData Save([NotNull] SaveableData obj) {
+            obj.CameraPosition = CameraPosition.ToArray();
+            obj.CameraLookAt = CameraLookAt.ToArray();
+            obj.CameraOrbitMode = CameraOrbitMode;
+            obj.CameraTilt = CameraTilt;
+            obj.CameraFov = CameraFov;
+
             obj.AmbientDownColor = AmbientDownColor;
             obj.AmbientUpColor = AmbientUpColor;
             obj.BackgroundColor = BackgroundColor;
@@ -297,6 +317,7 @@ namespace AcManager.CustomShowroom {
             obj.ReflectionCubemapAtCamera = Renderer.ReflectionCubemapAtCamera;
             obj.ReflectionsWithShadows = Renderer.ReflectionsWithShadows;
             obj.EnableShadows = Renderer.EnableShadows;
+            obj.AnyGround = Renderer.AnyGround;
             obj.FlatMirror = Renderer.FlatMirror;
             obj.FlatMirrorBlurred = Renderer.FlatMirrorBlurred;
             obj.UseBloom = Renderer.UseBloom;
@@ -307,7 +328,6 @@ namespace AcManager.CustomShowroom {
             obj.UseAo = Renderer.UseAo;
             obj.UseSslr = Renderer.UseSslr;
 
-            obj.ToneMapping = Renderer.ToneMapping;
             obj.AoType = Renderer.AoType;
             obj.CarAmbientShadowsMode = CarAmbientShadowsMode;
             obj.ExtraLights = Renderer.SerializeLights(DarkLightTag.Extra);
@@ -319,10 +339,13 @@ namespace AcManager.CustomShowroom {
             obj.Lightθ = LightθDeg;
             obj.Lightφ = LightφDeg;
             obj.MaterialsReflectiveness = Renderer.MaterialsReflectiveness;
+            obj.BloomRadiusMultiplier = Renderer.BloomRadiusMultiplier;
+
+            obj.ToneVersion = CurrentToneVersion;
+            obj.ToneMapping = Renderer.ToneMapping;
             obj.ToneExposure = Renderer.ToneExposure;
             obj.ToneGamma = Renderer.ToneGamma;
             obj.ToneWhitePoint = Renderer.ToneWhitePoint;
-            obj.BloomRadiusMultiplier = Renderer.BloomRadiusMultiplier;
 
             obj.PcssSceneScale = Renderer.PcssSceneScale;
             obj.PcssLightScale = Renderer.PcssLightScale;
@@ -377,6 +400,146 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        #region Camera
+        protected readonly Busy CameraBusy = new Busy();
+        protected bool CameraIgnoreNext;
+
+        public Coordinates CameraPosition { get; } = new Coordinates();
+        public Coordinates CameraLookAt { get; } = new Coordinates();
+
+        private float _cameraFov;
+
+        public float CameraFov {
+            get => _cameraFov;
+            set {
+                if (Equals(value, _cameraFov)) return;
+                _cameraFov = value;
+                OnPropertyChanged();
+                UpdateCamera();
+            }
+        }
+
+        private float _cameraTilt;
+
+        public float CameraTilt {
+            get => _cameraTilt;
+            set {
+                if (Equals(value, _cameraTilt)) return;
+                _cameraTilt = value;
+                OnPropertyChanged();
+                UpdateCamera();
+            }
+        }
+
+        private bool _cameraOrbitMode;
+
+        public bool CameraOrbitMode {
+            get => _cameraOrbitMode;
+            set {
+                if (Equals(value, _cameraOrbitMode)) return;
+                _cameraOrbitMode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OnCameraCoordinatePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            SaveLater();
+            UpdateCamera();
+        }
+
+        protected virtual void LoadCamera(SaveableData o) {
+            CameraBusy.Do(() => {
+                CameraPosition.Set(o.CameraPosition);
+                CameraLookAt.Set(o.CameraLookAt);
+                CameraTilt = o.CameraTilt;
+                CameraFov = o.CameraFov;
+            });
+
+            UpdateCamera();
+        }
+
+        protected void ResetCamera() {
+            LoadCamera(CreateSaveableData());
+        }
+
+        private DelegateCommand _resetCameraCommand;
+
+        public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(ResetCamera));
+
+        protected virtual string KeyLockCamera => ".csLc";
+        protected virtual string KeyLoadCamera => ".csLoadCamera";
+
+        private bool? _loadCameraEnabled;
+
+        public virtual bool LoadCameraEnabled {
+            get => _loadCameraEnabled ?? (_loadCameraEnabled = ValuesStorage.GetBool(KeyLoadCamera)).Value;
+            set {
+                if (Equals(value, LoadCameraEnabled)) return;
+                _loadCameraEnabled = value;
+                ValuesStorage.Set(KeyLoadCamera, value);
+                OnPropertyChanged(save: false);
+
+                if (value) {
+                    UpdateCamera();
+                }
+            }
+        }
+
+        private bool? _lockCamera;
+
+        public bool LockCamera {
+            get => _lockCamera ?? (_lockCamera = ValuesStorage.GetBool(KeyLockCamera)).Value;
+            set {
+                if (Equals(value, LockCamera)) return;
+                _lockCamera = value;
+                ValuesStorage.Set(KeyLockCamera, value);
+                OnPropertyChanged(save: false);
+                Renderer.LockCamera = value;
+            }
+        }
+
+        private void OnCameraMoved(object sender, EventArgs e) {
+            if (CameraIgnoreNext) {
+                CameraIgnoreNext = false;
+            } else if (!Renderer.ShotInProcess) {
+                if (LockCamera) {
+                    UpdateCamera();
+                } else {
+                    SyncCamera();
+                }
+            }
+        }
+
+        protected virtual void SyncCamera() {
+            CameraBusy.Do(() => {
+                CameraPosition.Set(Renderer.Camera.Position);
+                CameraLookAt.Set(Renderer.CameraOrbit?.Target ?? Renderer.Camera.Position + Renderer.Camera.Look);
+                CameraOrbitMode = Renderer.CameraOrbit != null;
+                CameraTilt = Renderer.Camera.Tilt.ToDegrees();
+                CameraFov = Renderer.Camera.FovY.ToDegrees();
+            });
+        }
+
+        protected virtual void UpdateCamera(bool force = false) {
+            if (!force && !LoadCameraEnabled) return;
+            CameraBusy.Do(() => {
+                if (CameraOrbitMode) {
+                    Renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
+                } else {
+                    Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
+                }
+            });
+        }
+
+        public void LoadCamera(string serializedData) {
+            var data = SaveHelper<SaveableData>.LoadSerialized(serializedData);
+            if (data != null) {
+                LoadCamera(data);
+                UpdateCamera(true);
+            }
+        }
+        #endregion
+
         protected void LoadScene(SaveableData o) {
             LoadShowroom(o.ShowroomId).Forget();
 
@@ -389,6 +552,7 @@ namespace AcManager.CustomShowroom {
             Renderer.CubemapAmbientWhite = o.CubemapAmbientWhite;
             Renderer.ReflectionCubemapAtCamera = o.ReflectionCubemapAtCamera;
             Renderer.ReflectionsWithShadows = o.ReflectionsWithShadows;
+            Renderer.AnyGround = o.AnyGround;
             Renderer.FlatMirror = o.FlatMirror;
             Renderer.FlatMirrorBlurred = o.FlatMirrorBlurred;
 
@@ -405,13 +569,46 @@ namespace AcManager.CustomShowroom {
 
         protected void LoadHdr(SaveableData o) {
             Renderer.ColorGradingData = o.ColorGradingData;
-
             Renderer.UseColorGrading = o.UseColorGrading;
-            Renderer.ToneMapping = o.ToneMapping;
 
-            Renderer.ToneExposure = o.ToneExposure;
-            Renderer.ToneGamma = o.ToneGamma;
-            Renderer.ToneWhitePoint = o.ToneWhitePoint;
+            if (o.ToneVersion != CurrentToneVersion) {
+                UpgradeToneVersion(o);
+            } else {
+                Renderer.ToneMapping = o.ToneMapping;
+                Renderer.ToneExposure = o.ToneExposure;
+                Renderer.ToneGamma = o.ToneGamma;
+                Renderer.ToneWhitePoint = o.ToneWhitePoint;
+            }
+        }
+
+        private const int CurrentToneVersion = 1;
+
+        protected void UpgradeToneVersion(SaveableData o) {
+            var toneMapping = o.ToneMapping;
+            var toneExposure = o.ToneExposure;
+            var toneGamma = o.ToneGamma;
+            var toneWhitePoint = o.ToneWhitePoint;
+
+            switch (o.ToneVersion) {
+                case 0:
+                    switch (toneMapping) {
+                        case ToneMappingFn.Reinhard:
+                            toneExposure = (toneExposure * 0.6993f).Round(0.0001f);
+                            break;
+                        case ToneMappingFn.FilmicReinhard:
+                            toneExposure = (toneExposure * 0.9921f).Round(0.0001f);
+                            break;
+                        case ToneMappingFn.Filmic:
+                            toneExposure = (toneExposure * 1.3617f).Round(0.0001f);
+                            break;
+                    }
+                    break;
+            }
+
+            Renderer.ToneMapping = toneMapping;
+            Renderer.ToneExposure = toneExposure;
+            Renderer.ToneGamma = toneGamma;
+            Renderer.ToneWhitePoint = toneWhitePoint;
         }
 
         protected void LoadExtra(SaveableData o) {
@@ -434,13 +631,12 @@ namespace AcManager.CustomShowroom {
             LoadScene(o);
             LoadHdr(o);
             LoadExtra(o);
+            LoadCamera(o);
         }
 
         [NotNull]
         protected virtual ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load, () => {
-                Reset(false);
-            });
+            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load, () => Reset(false));
         }
 
         internal bool HasSavedData {
@@ -478,6 +674,8 @@ namespace AcManager.CustomShowroom {
 
             Renderer.PropertyChanged += OnRendererPropertyChanged;
             Renderer.LightPropertyChanged += OnLightPropertyChanged;
+
+            UpdateCamera();
         }
 
         public BetterObservableCollection<DarkLightBase> ExtraLights { get; private set; }
@@ -556,6 +754,8 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnLightPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (Renderer.ShotInProcess) return;
+
             if (((DarkLightBase)sender).Tag != DarkLightTag.Extra) {
                 ActionExtension.InvokeInMainThread(SaveLater);
             }
@@ -574,13 +774,20 @@ namespace AcManager.CustomShowroom {
             Renderer = renderer;
             Renderer.SetLightsDescriptionProvider(this);
             TryToGuessCarLights = ValuesStorage.GetBool(KeyTryToGuessCarLights, true);
+
+            CameraPosition.PropertyChanged += OnCameraCoordinatePropertyChanged;
+            CameraLookAt.PropertyChanged += OnCameraCoordinatePropertyChanged;
+            Renderer.CameraMoved += OnCameraMoved;
         }
 
         protected virtual void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (Renderer.ShotInProcess) return;
+
             switch (e.PropertyName) {
                 case nameof(Renderer.CubemapAmbient):
                 case nameof(Renderer.CubemapAmbientWhite):
                 case nameof(Renderer.EnableShadows):
+                case nameof(Renderer.AnyGround):
                 case nameof(Renderer.FlatMirror):
                 case nameof(Renderer.FlatMirrorBlurred):
                 case nameof(Renderer.UseBloom):

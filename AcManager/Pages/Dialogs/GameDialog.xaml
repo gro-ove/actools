@@ -3,8 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Width="800" Height="360" MinWidth="800"
-    MinHeight="360" SizeToContent="Manual" Title="{Binding Title}" d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}" ResizeMode="CanResize"
-    LocationAndSizeKey="GameDialog_LS" Closed="OnClosed" x:Name="This">
+    MaxWidth="1200" MinHeight="360" SizeToContent="Manual" Title="{Binding Title}" d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}"
+    ResizeMode="CanResize" LocationAndSizeKey="GameDialog_LS" Closed="OnClosed" x:Name="This">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -12,14 +12,70 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Number}">
+      <!--<Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Transparent.Number}">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource Error}" />
         <Style.Triggers>
           <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Value="-">
             <Setter Property="TextBlock.Foreground" Value="{DynamicResource WindowText}" />
           </DataTrigger>
         </Style.Triggers>
+      </Style>-->
+
+      <Style x:Key="DataGridColumnHeader.Small" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
       </Style>
+
+      <Style x:Key="DataGridColumnHeader.RightAlignment.Small" TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridColumnHeader.RightAlignment}">
+        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
+      </Style>
+
+      <Style x:Key="DataGridCell.Transparent.Aligned" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCell.Transparent}">
+        <Setter Property="Padding" Value="8 1" />
+      </Style>
+
+      <Style x:Key="DataGridCell.Transparent.RightAlignment.Aligned" TargetType="DataGridCell"
+          BasedOn="{StaticResource DataGridCell.Transparent.RightAlignment}">
+        <Setter Property="Padding" Value="6 1" />
+      </Style>
+
+      <Style x:Key="DataGridColumnHeader.RightAlignment.FarRight" TargetType="{x:Type DataGridColumnHeader}"
+          BasedOn="{StaticResource DataGridColumnHeader.RightAlignment}">
+        <Setter Property="Padding" Value="8 4 44 4" />
+      </Style>
+
+      <DataTemplate x:Key="TotalTimeDeltaTemplate" DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
+        <TextBlock x:Name="TextBlock" Foreground="{DynamicResource TimePositiveDelta}" Text="{Binding TotalTimeDelta}" Margin="8 4 8 4"
+            TextOptions.TextRenderingMode="Grayscale" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="{x:Null}">
+            <Setter TargetName="TextBlock" Property="Visibility" Value="Hidden" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="-">
+            <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource WindowText}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="{x:Static system:String.Empty}">
+            <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource WindowText}" />
+            <Setter TargetName="TextBlock" Property="Text" Value="00:00.000" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+
+      <DataTemplate x:Key="TotalTimeDeltaTemplate.FarRight" DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
+        <TextBlock x:Name="TextBlock" Foreground="{DynamicResource TimePositiveDelta}" Text="{Binding TotalTimeDelta}" Margin="8 4 39 4"
+            TextOptions.TextRenderingMode="Grayscale" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="{x:Null}">
+            <Setter TargetName="TextBlock" Property="Visibility" Value="Hidden" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="-">
+            <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource WindowText}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding TotalTimeDelta}" Value="{x:Static system:String.Empty}">
+            <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource WindowText}" />
+            <Setter TargetName="TextBlock" Property="Text" Value="00:00.000" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
 
@@ -60,11 +116,14 @@
     </StackPanel>
 
     <!-- Finished -->
-    <ContentControl mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Finished}" Content="{Binding FinishedData}">
+    <ContentControl mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Finished}" Content="{Binding FinishedData}"
+        mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.GameDialogTableSize}}" mui:FancyHintsService.OffsetX="22"
+        mui:FancyHintsService.OffsetY="64" mui:FancyHintsService.HorizontalAlignment="Right" mui:FancyHintsService.VerticalAlignment="Bottom"
+        mui:FancyHintsService.HorizontalContentAlignment="Right" mui:FancyHintsService.VerticalContentAlignment="Bottom">
       <ContentControl.Resources>
         <!-- Drift -->
         <DataTemplate DataType="{x:Type di:GameDialog+DriftFinishedData}">
-          <Viewbox Stretch="Uniform">
+          <Viewbox Stretch="Uniform" MaxHeight="320" MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
               <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
                 <Border Width="80">
@@ -92,7 +151,7 @@
 
         <!-- Time attack -->
         <DataTemplate DataType="{x:Type di:GameDialog+TimeAttackFinishedData}">
-          <Viewbox Stretch="Uniform">
+          <Viewbox Stretch="Uniform" MaxHeight="320" MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
               <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
                 <Border Width="80">
@@ -122,7 +181,7 @@
 
         <!-- Hotlap -->
         <DataTemplate DataType="{x:Type di:GameDialog+HotlapFinishedData}">
-          <Viewbox Stretch="Uniform">
+          <Viewbox Stretch="Uniform" MaxHeight="320" MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
               <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
                 <Border Width="80">
@@ -150,15 +209,30 @@
 
         <!-- Racing session -->
         <DataTemplate x:Key="SessionTemplate" DataType="{x:Type di:GameDialog+SessionFinishedData}">
-          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0 -8"
-              PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
-            <DataGrid ItemsSource="{Binding PlayerEntries}" Style="{StaticResource DataGrid.ReadOnly}">
+          <DockPanel PreviewMouseWheel="OnScrollMouseWheel">
+            <ItemsControl ItemsSource="{Binding RemarkableNotes}" DockPanel.Dock="Top" Margin="0 -4 0 16">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel>
+                    <mui:BbCodeBlock BbCode="{Binding Message}" VerticalAlignment="Center" />
+                    <ContentControl ContentTemplate="{StaticResource DataGridCell.DriverName}" Content="{Binding Player}" VerticalAlignment="Center"
+                        TextBlock.FontWeight="Bold" />
+                    <TextBlock Text=" in " VerticalAlignment="Center" />
+                    <ContentControl ContentTemplate="{StaticResource DataGridCell.Car}" Content="{Binding Player}" VerticalAlignment="Center" />
+                  </DockPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <DataGrid ItemsSource="{Binding PlayerEntries}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True"
+                RowDetailsVisibilityMode="VisibleWhenSelected" Loaded="OnPlayersTableLoaded" PreviewMouseLeftButtonDown="OnDataGridMouseDown"
+                Margin="-24 0 -23 0" CellStyle="{StaticResource DataGridCell.Transparent}">
               <DataGrid.Columns>
-                <DataGridTemplateColumn Width="40" Header="" SortMemberPath="TakenPlace" CellStyle="{StaticResource DataGridCell.Number}"
+                <DataGridTemplateColumn Width="64" Header="" SortMemberPath="TakenPlace" CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
-                      <TextBlock x:Name="TextBlock" Text="{Binding TakenPlace}" />
+                      <TextBlock x:Name="TextBlock" Text="{Binding TakenPlace}" Margin="24 0 0 0" />
                       <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding TakenPlace}" Value="{x:Static di:GameDialog.DefinitelyNonPrizePlace}">
                           <Setter TargetName="TextBlock" Property="Visibility" Value="Hidden" />
@@ -168,18 +242,35 @@
                   </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="1.5*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"
-                    CellTemplate="{StaticResource DataGridCell.DriverName}" />
-                <DataGridTemplateColumn Width="2*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
-                    CellTemplate="{StaticResource DataGridCell.Car}" />
-                <DataGridTextColumn Width="120" Header="{x:Static c:ControlsStrings.TableHeader_BestLap}" SortMemberPath="BestLapTime"
+                    CellTemplate="{StaticResource DataGridCell.DriverName}" CellStyle="{StaticResource DataGridCell.Transparent.Aligned}" />
+                <DataGridTemplateColumn Width="1*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
+                    CellTemplate="{StaticResource DataGridCell.Car}" CellStyle="{StaticResource DataGridCell.Transparent.Aligned}" />
+
+                <DataGridTextColumn Width="100" Header="Total Time" SortMemberPath="TotalTime"
+                    Binding="{Binding TotalTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+                    CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment.Aligned}" />
+                <DataGridTemplateColumn Width="100" Header="Total Delta" SortMemberPath="TotalTimeDelta"
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment.FarRight}"
+                    CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}" CellTemplate="{StaticResource TotalTimeDeltaTemplate.FarRight}" />
+
+                <DataGridTextColumn x:Name="BestLapTimeColumn" Width="100" Header="{x:Static c:ControlsStrings.TableHeader_BestLap}"
+                    SortMemberPath="BestLapTime"
                     Binding="{Binding BestLapTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
-                    CellStyle="{StaticResource DataGridCell.Number}" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
-                <DataGridTemplateColumn Width="120" Header="Delta" SortMemberPath="DeltaToSessionBest" CellStyle="{StaticResource DataGridCell.Number}"
-                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" Visibility="Collapsed"
+                    CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment.Aligned}" />
+                <DataGridTemplateColumn x:Name="BestLapTimeDeltaColumn" Width="140" Header="Best Delta" SortMemberPath="DeltaToSessionBest"
+                    CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}" Visibility="Collapsed">
+                  <DataGridTemplateColumn.HeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeader.RightAlignment}">
+                      <Setter Property="Padding" Value="8 4 44 4" />
+                    </Style>
+                  </DataGridTemplateColumn.HeaderStyle>
                   <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
-                      <TextBlock x:Name="TextBlock" Foreground="{DynamicResource Error}"
-                          Text="{Binding DeltaToSessionBest, Converter={StaticResource MillisecondsTimeSpanConverter}, StringFormat='{}+{0}'}" />
+                      <TextBlock x:Name="TextBlock" Foreground="{DynamicResource TimePositiveDelta}"
+                          Text="{Binding DeltaToSessionBest, Converter={StaticResource MillisecondsTimeSpanConverter}, StringFormat='{}+{0}'}"
+                          Margin="8 4 39 4" />
                       <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding DeltaToSessionBest}" Value="{x:Null}">
                           <Setter TargetName="TextBlock" Property="Visibility" Value="Hidden" />
@@ -197,15 +288,15 @@
               <DataGrid.RowDetailsTemplate>
                 <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData+PlayerEntry}">
                   <!-- <ItemsControl ItemsSource="{Binding Laps}" /> -->
-                  <DataGrid ItemsSource="{Binding LapsDataTable.DefaultView}" AutoGenerateColumns="True" Style="{StaticResource DataGrid.ReadOnly}"
-                      Margin="20 0 0 0" Loaded="OnLapsTableLoaded"
+                  <DataGrid ItemsSource="{Binding LapsDataTable.DefaultView}" AutoGenerateColumns="True" Style="{StaticResource DataGrid.Lite}"
+                      IsReadOnly="True" CanUserSortColumns="False" Margin="60 0 40 0" Loaded="OnLapsTableLoaded" AutoGeneratingColumn="OnAutoGeneratingColumn"
                       Visibility="{Binding LapsDataTable.DefaultView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}" />
                 </DataTemplate>
               </DataGrid.RowDetailsTemplate>
 
               <!-- -->
             </DataGrid>
-          </ScrollViewer>
+          </DockPanel>
         </DataTemplate>
 
         <!-- Drag session -->

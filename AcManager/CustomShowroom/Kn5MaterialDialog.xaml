@@ -150,13 +150,14 @@
                   </DockPanel.ContextMenu>
 
                   <DockPanel LastChildFill="False">
-                    <TextBlock Text="{Binding DisplayName, StringFormat='{}{0}:'}" DockPanel.Dock="Top" />
+                    <mui:BbCodeBlock BbCode="{Binding DisplayName, StringFormat='{}{0}:'}" DockPanel.Dock="Left" Style="{StaticResource Label}"
+                        Margin="0 0 4 0" />
                     <mui:ValueLabel Style="{StaticResource ValueLabel.EqualsSign}" Content="X" Value="{Binding X, UpdateSourceTrigger=PropertyChanged}"
-                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" />
+                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" Margin="0" />
                     <mui:ValueLabel Style="{StaticResource ValueLabel.EqualsSign}" Content="Y" Value="{Binding Y, UpdateSourceTrigger=PropertyChanged}"
-                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" />
+                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" Margin="0" />
                     <mui:ValueLabel Style="{StaticResource ValueLabel.EqualsSign}" Content="Z" Value="{Binding Z, UpdateSourceTrigger=PropertyChanged}"
-                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" />
+                        mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" Margin="0" />
                   </DockPanel>
                 </DockPanel>
               </DataTemplate>

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation.Installators {
     public class InstallationDetails {
         [NotNull]
-        public readonly CopyCallback CopyCallback;
+        public readonly ICopyCallback CopyCallback;
 
         [NotNull]
         public readonly string[] ToRemoval;
@@ -15,7 +15,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         [CanBeNull]
         public readonly Func<CancellationToken, Task> BeforeTask, AfterTask;
 
-        public InstallationDetails([NotNull] CopyCallback copyCallback, [CanBeNull] string[] toRemoval,
+        public InstallationDetails([NotNull] ICopyCallback copyCallback, [CanBeNull] string[] toRemoval,
                 [CanBeNull] Func<CancellationToken, Task> beforeTask, [CanBeNull] Func<CancellationToken, Task> afterTask) {
             CopyCallback = copyCallback;
             ToRemoval = toRemoval ?? new string[0];

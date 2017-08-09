@@ -87,6 +87,33 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public static void ReplaceSound(CarObject donor, string target) {
+            var guids = donor.GuidsFilename;
+            var soundbank = donor.SoundbankFilename;
+
+            var id = Path.GetFileName(target);
+            var newGuids = Path.Combine(target, @"sfx", @"GUIDs.txt");
+            var newSoundbank = Path.Combine(target, @"sfx", $@"{id}.bank");
+            FileUtils.EnsureDirectoryExists(Path.Combine(target, @"sfx"));
+
+            using (var putGuids = FileUtils.RecycleOriginal(newGuids))
+            using (var putSoundbank = FileUtils.RecycleOriginal(newSoundbank)) {
+                if (File.Exists(guids) && File.Exists(soundbank)) {
+                    FileUtils.HardLinkOrCopy(soundbank, putSoundbank.Filename);
+                    File.WriteAllText(putGuids.Filename, File.ReadAllText(guids).Replace(donor.Id, id));
+                } else if (File.Exists(soundbank) && donor.Author == AuthorKunos) {
+                    FileUtils.HardLinkOrCopy(soundbank, putSoundbank.Filename);
+                    File.WriteAllText(putGuids.Filename, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
+                                                    .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
+                                                            x.EndsWith(@"} bank:/" + donor.Id))
+                                                    .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
+                                                    .JoinToString(Environment.NewLine).Replace(donor.Id, id));
+                } else {
+                    throw new InformativeException(ToolsStrings.Car_ReplaceSound_WrongCar, ToolsStrings.Car_ReplaceSound_WrongCar_Commentary);
+                }
+            }
+        }
+
         public async Task ReplaceSound(CarObject donor) {
             if (string.Equals(donor.Id, Id, StringComparison.OrdinalIgnoreCase)) {
                 NonfatalError.Notify(ToolsStrings.Car_ReplaceSound_CannotReplace, "Source and destination are the same.");
@@ -94,51 +121,8 @@ namespace AcManager.Tools.Objects {
             }
 
             try {
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report();
-
-                    var guids = donor.GuidsFilename;
-                    var soundbank = donor.SoundbankFilename;
-
-                    var newGuilds = GuidsFilename;
-                    var newSoundbank = SoundbankFilename;
-
-                    await Task.Run(() => {
-                        var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
-                            Original = x,
-                            Backup = FileUtils.EnsureUnique($"{x}.bak")
-                        }).ToList();
-
-                        foreach (var oldFile in destinations) {
-                            File.Move(oldFile.Original, oldFile.Backup);
-                        }
-
-                        try {
-                            if (File.Exists(guids) && File.Exists(soundbank)) {
-                                File.Copy(soundbank, newSoundbank);
-                                File.WriteAllText(newGuilds, File.ReadAllText(guids).Replace(donor.Id, Id));
-                            } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
-                                File.Copy(soundbank, newSoundbank);
-                                File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
-                                                                 .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
-                                                                         x.EndsWith(@"} bank:/" + donor.Id))
-                                                                 .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
-                                                                 .JoinToString(Environment.NewLine).Replace(donor.Id, Id));
-                            } else {
-                                throw new InformativeException(ToolsStrings.Car_ReplaceSound_WrongCar, ToolsStrings.Car_ReplaceSound_WrongCar_Commentary);
-                            }
-                        } catch (Exception) {
-                            foreach (var oldFile in destinations) {
-                                if (File.Exists(oldFile.Original)) {
-                                    File.Delete(oldFile.Original);
-                                }
-                                File.Move(oldFile.Backup, oldFile.Original);
-                            }
-                            throw;
-                        }
-
-                        FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
-                    });
+                using (WaitingDialog.Create("Replacing…")) {
+                    await Task.Run(() => ReplaceSound(donor, Location));
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Car_ReplaceSound_CannotReplace, ToolsStrings.Car_ReplaceSound_CannotReplace_Commentary, e);

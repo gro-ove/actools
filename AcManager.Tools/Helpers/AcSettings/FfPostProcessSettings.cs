@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _enabled;
 
         public bool Enabled {
-            get { return _enabled; }
+            get => _enabled;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;
@@ -32,7 +32,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private SettingEntry _type;
 
         public SettingEntry Type {
-            get { return _type; }
+            get => _type;
             set {
                 if (!Types.Contains(value)) value = Types[0];
                 if (Equals(value, _type)) return;
@@ -44,7 +44,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _gamma;
 
         public double Gamma {
-            get { return _gamma; }
+            get => _gamma;
             set {
                 if (Equals(value, _gamma)) return;
                 _gamma = value;
@@ -55,7 +55,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private string _lutName;
 
         public string LutName {
-            get { return _lutName; }
+            get => _lutName;
             set {
                 if (Equals(value, _lutName)) return;
                 _lutName = value;
@@ -100,7 +100,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private string[] _lutNames;
 
         public string[] LutNames {
-            get { return _lutNames; }
+            get => _lutNames;
             set {
                 if (Equals(value, _lutNames)) return;
                 _lutNames = value;
@@ -111,7 +111,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private GraphData _lutGraphData;
 
         public GraphData LutGraphData {
-            get { return _lutGraphData; }
+            get => _lutGraphData;
             set {
                 if (Equals(value, _lutGraphData)) return;
                 _lutGraphData = value;

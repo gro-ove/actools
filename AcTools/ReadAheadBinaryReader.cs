@@ -177,7 +177,7 @@ namespace AcTools {
                 _left += _stream.Read(_buffer, _left, leftToFill);
                 _total = _left;
 
-                if (_left < count) throw new Exception("Unexpected end");
+                if (_left < count) throw new EndOfStreamException("Unexpected end");
             }
         }
 
@@ -294,7 +294,7 @@ namespace AcTools {
         /// </summary>
         /// <param name="count">Bytes to read.</param>
         /// <returns>Bytes array.</returns>
-        /// <exception cref="Exception">Not enough bytes!</exception>
+        /// <exception cref="EndOfStreamException">Not enough bytes!</exception>
         public byte[] ReadBytes(int count) {
             var result = new byte[count];
             ReadBytesTo(result, 0, count);
@@ -307,7 +307,7 @@ namespace AcTools {
         /// <param name="destination">Destination array.</param>
         /// <param name="offset">Offset in destination array.</param>
         /// <param name="count">Bytes to read.</param>
-        /// <exception cref="Exception">Not enough bytes!</exception>
+        /// <exception cref="EndOfStreamException">Not enough bytes!</exception>
         public void ReadBytesTo(byte[] destination, int offset, int count) {
             if (_left >= count) {
                 Array.Copy(_buffer, GetPosAndMove(count), destination, offset, count);
@@ -317,7 +317,7 @@ namespace AcTools {
                 count -= _left;
 
                 var read = _stream.Read(destination, offset, count);
-                if (read != count) throw new Exception("Unexpected end");
+                if (read != count) throw new EndOfStreamException("Unexpected end");
 
                 _left = _total = 0;
             }

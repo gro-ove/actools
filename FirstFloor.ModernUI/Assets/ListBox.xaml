@@ -73,10 +73,15 @@
         <ControlTemplate TargetType="ListBoxItem">
           <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
             <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
-            <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+            <Rectangle x:Name="BgHighlight" Visibility="Collapsed" Fill="{DynamicResource ItemBackgroundSelectedSubtle}" />
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" />
           </controls:Cell>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="BgHighlight" Property="Visibility" Value="Visible" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -100,10 +105,15 @@
         <ControlTemplate TargetType="ListBoxItem">
           <controls:Cell Background="Transparent" SnapsToDevicePixels="True">
             <Rectangle Fill="{TemplateBinding Background}" VerticalAlignment="Top" Height="4" />
-            <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+            <Rectangle x:Name="BgHighlight" Visibility="Collapsed" Fill="{DynamicResource ItemBackgroundSelectedSubtle}" />
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" />
           </controls:Cell>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="BgHighlight" Property="Visibility" Value="Visible" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

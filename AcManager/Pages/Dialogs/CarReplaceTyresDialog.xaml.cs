@@ -221,7 +221,7 @@ namespace AcManager.Pages.Dialogs {
                         curve.Content = x.Front.WearCurveData ?? "";
                         curve.Save();
 
-                        return new IniFileSection(x.Front.MainSection) {
+                        return new IniFileSection(data, x.Front.MainSection) {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["WEAR_CURVE"] = curve.Name,
@@ -234,7 +234,7 @@ namespace AcManager.Pages.Dialogs {
                         curve.Content = x.Rear.WearCurveData ?? "";
                         curve.Save();
 
-                        return new IniFileSection(x.Rear.MainSection) {
+                        return new IniFileSection(data, x.Rear.MainSection) {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["WEAR_CURVE"] = curve.Name,
@@ -247,7 +247,7 @@ namespace AcManager.Pages.Dialogs {
                         curve.Content = x.Front.PerformanceCurveData ?? "";
                         curve.Save();
 
-                        return new IniFileSection(x.Front.ThermalSection) {
+                        return new IniFileSection(data, x.Front.ThermalSection) {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["PERFORMANCE_CURVE"] = curve.Name
@@ -259,7 +259,7 @@ namespace AcManager.Pages.Dialogs {
                         curve.Content = x.Rear.PerformanceCurveData ?? "";
                         curve.Save();
 
-                        return new IniFileSection(x.Rear.ThermalSection) {
+                        return new IniFileSection(data, x.Rear.ThermalSection) {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["PERFORMANCE_CURVE"] = curve.Name
@@ -799,8 +799,8 @@ namespace AcManager.Pages.Dialogs {
 
             #region Unique stuff
             public string Footprint => _footprint ?? (_footprint = new IniFile {
-                ["main"] = new IniFileSection(MainSection) { ["NAME"] = "", ["SHORT_NAME"] = "", ["WEAR_CURVE"] = "" },
-                ["thermal"] = new IniFileSection(ThermalSection) { ["PERFORMANCE_CURVE"] = "" }
+                ["main"] = new IniFileSection(null, MainSection) { ["NAME"] = "", ["SHORT_NAME"] = "", ["WEAR_CURVE"] = "" },
+                ["thermal"] = new IniFileSection(null, ThermalSection) { ["PERFORMANCE_CURVE"] = "" }
             }.ToString());
             private string _footprint;
 

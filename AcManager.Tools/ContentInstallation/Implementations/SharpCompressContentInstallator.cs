@@ -54,6 +54,16 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        private class SimpleDirectoryInfo : IDirectoryInfo {
+            private readonly IEntry _archiveEntry;
+
+            public SimpleDirectoryInfo(IEntry archiveEntry) {
+                _archiveEntry = archiveEntry;
+            }
+
+            public string Key => _archiveEntry.Key.Replace('/', '\\');
+        }
+
         private class SimpleFileInfo : IFileInfo {
             private readonly IEntry _archiveEntry;
 
@@ -91,27 +101,31 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                 _availableCheck = availableCheck;
             }
 
-            public override async Task<byte[]> ReadAsync() {
+            public override Task<byte[]> ReadAsync() {
                 if (_reader != null) {
-                    return await Task.Run(() => _reader(_archiveEntry.Key)).ConfigureAwait(false);
+                    return Task.Run(() => _reader(_archiveEntry.Key));
                 }
 
-                using (var memory = new MemoryStream())
-                using (var stream = _archiveEntry.OpenEntryStream()) {
-                    await stream.CopyToAsync(memory);
-                    return memory.ToArray();
-                }
+                return Task.Run(() => {
+                    using (var memory = new MemoryStream())
+                    using (var stream = _archiveEntry.OpenEntryStream()) {
+                        stream.CopyTo(memory);
+                        return memory.ToArray();
+                    }
+                });
             }
 
             public override bool IsAvailable() {
                 return _availableCheck?.Invoke(_archiveEntry.Key) != false;
             }
 
-            public override async Task CopyToAsync(string destination) {
-                using (var fileStream = new FileStream(destination, FileMode.Create))
-                using (var stream = _archiveEntry.OpenEntryStream()) {
-                    await stream.CopyToAsync(fileStream);
-                }
+            public override Task CopyToAsync(string destination) {
+                return Task.Run(() => {
+                    using (var fileStream = new FileStream(destination, FileMode.Create))
+                    using (var stream = _archiveEntry.OpenEntryStream()) {
+                        stream.CopyTo(fileStream);
+                    }
+                });
             }
         }
 
@@ -175,17 +189,17 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             });
         }
 
-        protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
+        protected override Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
             if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
 
-            return Task.FromResult(
-                    _extractor.Entries.Where(x => !x.IsDirectory).Select(
-                            x => (IFileInfo)new ArchiveFileInfo(x,
-                                    _extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
-                                    _extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
+            return Task.FromResult(_extractor.Entries.Select(x => x.IsDirectory ?
+                    (IFileOrDirectoryInfo)new SimpleDirectoryInfo(x) :
+                    new ArchiveFileInfo(x,
+                            _extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
+                            _extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
         }
 
-        protected override async Task CopyFileEntries(CopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        protected override async Task CopyFileEntries(ICopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
 
             if (!_extractor.IsSolid) {
@@ -202,13 +216,22 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         while (reader.MoveToNextEntry()) {
                             i++;
 
-                            var entry = new SimpleFileInfo(reader.Entry);
-                            var destination = callback(entry);
-                            if (destination != null) {
-                                FileUtils.EnsureFileDirectoryExists(destination);
-                                progress?.Report(Path.GetFileName(destination), i, count);
-                                reader.WriteEntryTo(destination);
-                                if (cancellation.IsCancellationRequested) return;
+                            var readerEntry = reader.Entry;
+                            if (readerEntry.IsDirectory) {
+                                var entry = new SimpleDirectoryInfo(readerEntry);
+                                var destination = callback.Directory(entry);
+                                if (destination != null) {
+                                    FileUtils.EnsureDirectoryExists(destination);
+                                }
+                            } else {
+                                var entry = new SimpleFileInfo(readerEntry);
+                                var destination = callback.File(entry);
+                                if (destination != null) {
+                                    FileUtils.EnsureFileDirectoryExists(destination);
+                                    progress?.Report(Path.GetFileName(destination), i, count);
+                                    reader.WriteEntryTo(destination);
+                                    if (cancellation.IsCancellationRequested) return;
+                                }
                             }
                         }
                     }

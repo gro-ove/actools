@@ -17,6 +17,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private void SplitShot(int width, int height, double downscale, SplitCallback callback, out int cuts, [CanBeNull] IProgress<Tuple<string, double?>> progress,
                 CancellationToken cancellation) {
+            ShotInProcessValue++;
+
             var original = new { Width, Height, ResolutionMultiplier, TimeFactor };
             ResolutionMultiplier = 1d;
             AutoAdjustTarget = false;
@@ -112,6 +114,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 Height = original.Height;
                 ResolutionMultiplier = original.ResolutionMultiplier;
                 TimeFactor = original.TimeFactor;
+
+                ShotInProcessValue--;
             }
         }
 

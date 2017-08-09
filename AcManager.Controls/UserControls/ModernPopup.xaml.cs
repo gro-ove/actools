@@ -24,16 +24,16 @@ namespace AcManager.Controls.UserControls {
                 typeof(ModernPopup), new PropertyMetadata(new Thickness(4d)));
 
         public Thickness Padding {
-            get { return (Thickness)GetValue(PaddingProperty); }
-            set { SetValue(PaddingProperty, value); }
+            get => (Thickness)GetValue(PaddingProperty);
+            set => SetValue(PaddingProperty, value);
         }
 
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(nameof(Content), typeof(object),
                 typeof(ModernPopup), new PropertyMetadata(OnContentChanged));
 
         public object Content {
-            get { return GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
+            get => GetValue(ContentProperty);
+            set => SetValue(ContentProperty, value);
         }
 
         private static void OnContentChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

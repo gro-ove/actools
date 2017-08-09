@@ -151,17 +151,22 @@ namespace AcTools.Render.Wrapper {
             InvokeFirstFrameCallback();
         }
 
-        protected void OnRender() {
+        private void OnRender() {
             if (_closed) return;
 
-            Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (SleepMode) {
-                Thread.Sleep(20);
-                return;
-            }
+            try {
+                Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+                if (SleepMode) {
+                    Thread.Sleep(20);
+                    return;
+                }
 
-            RenderOverride();
-            Thread.Sleep(1);
+                RenderOverride();
+                Thread.Sleep(1);
+            } catch (Exception e) {
+                AcToolsLogging.NonFatalErrorNotify("Custom Showroom unhandled exception", null, e);
+                Stop();
+            }
         }
 
         private bool _closed;

@@ -284,10 +284,13 @@ namespace AcTools.Render.Forward {
             }
         }
 
+        protected virtual void ClearRenderTarget() {
+            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
+        }
+
         protected virtual void DrawSceneToBuffer() {
             DrawPrepare();
-
-            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
+            ClearRenderTarget();
 
             if (DepthStencilView != null) {
                 DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
@@ -328,6 +331,12 @@ namespace AcTools.Render.Forward {
                         return _hdr.TechCombine_ToneFilmic;
                     case ToneMappingFn.FilmicReinhard:
                         return _hdr.TechCombine_ToneFilmicReinhard;
+                    case ToneMappingFn.Uncharted2:
+                        return _hdr.TechCombine_ToneUncharted2;
+                    case ToneMappingFn.LumaBasedReinhard:
+                        return _hdr.TechCombine_ToneLumaBasedReinhard;
+                    case ToneMappingFn.WhitePreservingLumaBasedReinhard:
+                        return _hdr.TechCombine_ToneWhitePreservingLumaBasedReinhard;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

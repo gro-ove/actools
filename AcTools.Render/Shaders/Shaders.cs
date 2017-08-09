@@ -23,7 +23,7 @@ namespace AcTools.Render.Shaders {
 
 	public class EffectDarkMaterial : IEffectWrapper, IEffectMatricesWrapper, IEffectScreenSizeWrapper {
 		public enum Mode { Main, FewerExtraShadows, FewerExtraShadowsNoPCSS, NoAreaLights, NoExtraShadows, NoPCSS, Simple, SimpleNoPCSS, SimpleNoShadows, WithoutLighting }
-			
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct Light {
             public Vector3 PosW;
@@ -52,7 +52,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetArray(_v, value, Light.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct StandartMaterial {
             public float Ambient;
@@ -77,7 +77,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct ReflectiveMaterial {
             public float FresnelC;
@@ -98,7 +98,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct MapsMaterial {
             public float DetailsUvMultiplier;
@@ -120,7 +120,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct AlphaMaterial {
             public float Alpha;
@@ -139,7 +139,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct NmUvMultMaterial {
             public float DiffuseMultiplier;
@@ -159,7 +159,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct TyresMaterial {
             public float BlurLevel;
@@ -179,7 +179,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, TyresMaterial.Stride);
 			}
         }
-		
+
 		public const uint LightOff = 0;
 		public const uint LightPoint = 1;
 		public const uint LightSpot = 2;
@@ -196,6 +196,7 @@ namespace AcTools.Render.Shaders {
 		public const uint LightLtcPlaneDoubleSide = 16;
 		public const uint LightLtcTubeWithCaps = 16;
 		public const uint HasNormalMap = 1;
+		public const uint NmObjectSpace = 2;
 		public const uint UseNormalAlphaAsAlpha = 64;
 		public const uint AlphaTest = 128;
 		public const uint IsAdditive = 16;
@@ -222,7 +223,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
+		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
@@ -235,7 +236,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyIntVariable FxNumSplits, FxFlatMirrorSide;
 		[NotNull]
-		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapAmbient, FxFlatMirrorPower;
+		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapReflectionsOffset, FxCubemapAmbient, FxFlatMirrorPower;
 		[NotNull]
 		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxUseAo, FxCubemapReflections;
 		[NotNull]
@@ -266,7 +267,7 @@ namespace AcTools.Render.Shaders {
 		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
 		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
 		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
-		
+
 		private Mode _mode = Mode.Main;
 
 		public Mode GetMode(){
@@ -282,7 +283,7 @@ namespace AcTools.Render.Shaders {
 				Initialize(device);
 			}
 		}
-		
+
 		public void Initialize(Device device) {
 			if (_b != null) return;
 
@@ -311,6 +312,7 @@ namespace AcTools.Render.Shaders {
 			TechAmbientShadow = new EffectReadyTechnique(E.GetTechniqueByName("AmbientShadow"));
 			TechMirror = new EffectReadyTechnique(E.GetTechniqueByName("Mirror"));
 			TechFlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatMirror"));
+			TechTransparentGround = new EffectReadyTechnique(E.GetTechniqueByName("TransparentGround"));
 			TechFlatTextureMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatTextureMirror"));
 			TechFlatBackgroundGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatBackgroundGround"));
 			TechFlatAmbientGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatAmbientGround"));
@@ -372,6 +374,7 @@ namespace AcTools.Render.Shaders {
 			FxFlatMirrorSide = new EffectOnlyIntVariable(E.GetVariableByName("gFlatMirrorSide"));
 			FxGPassAlphaThreshold = new EffectOnlyFloatVariable(E.GetVariableByName("gGPassAlphaThreshold"));
 			FxReflectionPower = new EffectOnlyFloatVariable(E.GetVariableByName("gReflectionPower"));
+			FxCubemapReflectionsOffset = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapReflectionsOffset"));
 			FxCubemapAmbient = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapAmbient"));
 			FxFlatMirrorPower = new EffectOnlyFloatVariable(E.GetVariableByName("gFlatMirrorPower"));
 			FxGPassTransparent = new EffectOnlyBoolVariable(E.GetVariableByName("gGPassTransparent"));
@@ -434,7 +437,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, Material.Stride);
 			}
         }
-		
+
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -782,7 +785,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechColorGrading, TechCombine_ToneReinhard, TechCombine_ToneFilmic, TechCombine_ToneFilmicReinhard, TechCombine, TechBloom, TechBloomHighThreshold;
+		public EffectReadyTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechColorGrading, TechCombine_ToneLumaBasedReinhard, TechCombine_ToneWhitePreservingLumaBasedReinhard, TechCombine_ToneUncharted2, TechCombine_ToneReinhard, TechCombine_ToneFilmic, TechCombine_ToneFilmicReinhard, TechCombine, TechBloom, TechBloomHighThreshold;
 
 		[NotNull]
 		public EffectOnlyResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap, FxColorGradingMap;
@@ -800,6 +803,9 @@ namespace AcTools.Render.Shaders {
 			TechTonemap = new EffectReadyTechnique(E.GetTechniqueByName("Tonemap"));
 			TechCopy = new EffectReadyTechnique(E.GetTechniqueByName("Copy"));
 			TechColorGrading = new EffectReadyTechnique(E.GetTechniqueByName("ColorGrading"));
+			TechCombine_ToneLumaBasedReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneLumaBasedReinhard"));
+			TechCombine_ToneWhitePreservingLumaBasedReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneWhitePreservingLumaBasedReinhard"));
+			TechCombine_ToneUncharted2 = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneUncharted2"));
 			TechCombine_ToneReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneReinhard"));
 			TechCombine_ToneFilmic = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneFilmic"));
 			TechCombine_ToneFilmicReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneFilmicReinhard"));
@@ -1059,7 +1065,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ASSAOConstants.Stride);
 			}
         }
-		
+
 		public const int SsaoAdaptiveTapBaseCount = 5;
 		public const int SsaoAdaptiveTapFlexibleCount = 5;
 		public const int SsaoMaxTaps = 12;
@@ -1333,7 +1339,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct ReflectiveMaterial {
             public float FresnelC;
@@ -1354,7 +1360,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct MapsMaterial {
             public float DetailsUvMultipler;
@@ -1374,7 +1380,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct AlphaMaterial {
             public float Alpha;
@@ -1393,7 +1399,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
-		
+
 		[StructLayout(LayoutKind.Sequential)]
         public struct NmUvMultMaterial {
             public float DiffuseMultipler;
@@ -1413,7 +1419,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
-		
+
 		public const uint HasNormalMap = 1;
 		public const uint UseDiffuseAlphaAsMap = 2;
 		public const uint UseNormalAlphaAsAlpha = 64;

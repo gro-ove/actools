@@ -12,6 +12,15 @@ namespace AcTools.Utils.Helpers {
         }
 
         [ContractAnnotation("=> disposable:null")]
+        public static void Dispose<T>([CanBeNull] ref Lazier<T> disposable) where T : class, IDisposable {
+            if (disposable == null) return;
+            if (disposable.IsSet) {
+                disposable.Value?.Dispose();
+                disposable.Reset();
+            }
+        }
+
+        [ContractAnnotation("=> disposable:null")]
         public static void Dispose<T>([CanBeNull] ref IEnumerable<T> disposable) where T : class, IDisposable {
             if (disposable == null) return;
             disposable.DisposeEverything();

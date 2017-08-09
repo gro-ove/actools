@@ -66,6 +66,27 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
+        public static float AsFloat([CanBeNull] this object value) {
+            return value.AsFloat(0);
+        }
+
+        public static float AsFloat([CanBeNull] this string value) {
+            return value.AsFloat(0);
+        }
+
+        public static float AsFloat([CanBeNull] this object value, float defaultValue) {
+            return value as float? ?? value?.ToString().AsFloat(defaultValue) ?? defaultValue;
+        }
+
+        public static float AsFloat([CanBeNull] this string value, float defaultValue) {
+            float result;
+            if (value == null || !float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
+                return defaultValue;
+            }
+
+            return result;
+        }
+
         public static bool AsBoolean([CanBeNull] this object value) {
             return value.AsBoolean(false);
         }

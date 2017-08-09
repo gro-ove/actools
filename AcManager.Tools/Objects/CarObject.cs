@@ -22,6 +22,7 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -48,8 +49,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string DisplayName => Name == null ? Id :
-                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !AcStringValues.GetYearFromName(Name).HasValue ?
-                        $@"{Name.ApartFromLast(Year?.ToInvariantString())} '{Year % 100:D2}" : Name;
+                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !Name.EndsWith(Year?.ToInvariantString()) &&
+                        !AcStringValues.GetYearFromName(Name).HasValue ? $@"{Name} '{Year % 100:D2}" : Name;
 
         public override int? Year {
             get => base.Year;

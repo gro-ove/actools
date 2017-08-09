@@ -2,9 +2,13 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Installators {
-    public interface IFileInfo {
+    public interface IFileOrDirectoryInfo {
         string Key { get; }
+    }
 
+    public interface IDirectoryInfo : IFileOrDirectoryInfo {}
+
+    public interface IFileInfo : IFileOrDirectoryInfo {
         long Size { get; }
 
         /// <summary>

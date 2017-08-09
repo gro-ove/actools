@@ -59,7 +59,7 @@ namespace AcManager.CustomShowroom {
                 Interval = TimeSpan.FromMilliseconds(300),
                 IsEnabled = true
             };
-            _timer.Tick += Timer_Tick;
+            _timer.Tick += OnTimerTick;
 
             var saveable = Model.Settings;
             if (_loadPreset == null) {
@@ -83,7 +83,7 @@ namespace AcManager.CustomShowroom {
             _timer = null;
         }
 
-        private void Timer_Tick(object sender, EventArgs e) {
+        private void OnTimerTick(object sender, EventArgs e) {
             Model.OnTick();
         }
 
@@ -284,15 +284,16 @@ namespace AcManager.CustomShowroom {
                         await _previewsUpdater.WaitForProcessing();
                     }
 
+                    var filename = Path.Combine(skin.Location, Settings.FileName);
                     if (new ImageViewer(new[] {
                         temporary,
-                        skin.PreviewImage
+                        filename
                     }, 0, Settings.Width, Settings.Height).ShowDialogInSelectMode() != null) {
-                        if (File.Exists(skin.PreviewImage)) {
-                            FileUtils.Recycle(skin.PreviewImage);
+                        if (File.Exists(filename)) {
+                            FileUtils.Recycle(filename);
                         }
 
-                        File.Move(temporary, skin.PreviewImage);
+                        File.Move(temporary, filename);
                     }
 
                     _errors = new UpdatePreviewError[0];
@@ -475,20 +476,21 @@ namespace AcManager.CustomShowroom {
                         _waiting.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
 
                         var subprogress = progress + step * (0.1 + 0.8 * _i / _currentSkins.Count);
-                        if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(_currentSkin.PreviewImage)) {
+                        var filename = Path.Combine(_currentSkin.Location, _options.PreviewName);
+                        if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(filename)) {
                             if (++recycled > 5) {
                                 _recyclingWarning = true;
                             }
 
                             _waiting.Report(new AsyncProgressEntry($"Recycling current preview for {_currentSkin.DisplayName}…" + postfix,
                                     _verySingleMode ? 0d : subprogress));
-                            await Task.Run(() => FileUtils.Recycle(_currentSkin.PreviewImage));
+                            await Task.Run(() => FileUtils.Recycle(filename));
                         }
 
                         _waiting.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix, _verySingleMode ? 0d : subprogress + halfstep));
 
                         try {
-                            await _updater.ShotAsync(_currentCar.Id, _currentSkin.Id, _currentSkin.PreviewImage, _currentCar.AcdData,
+                            await _updater.ShotAsync(_currentCar.Id, _currentSkin.Id, filename, _currentCar.AcdData,
                                     GetInformation(_currentCar, _currentSkin, _presetName, _checksum), PreviewReadyCallback);
                             _shotSkins++;
                         } catch (Exception e) {
@@ -515,13 +517,13 @@ namespace AcManager.CustomShowroom {
 
             private void PreviewReadyCallback() {
                 if (!_verySingleMode) {
-                    ActionExtension.InvokeInMainThreadAsync((Action)UpdatePreviewImage);
+                    ((Action)UpdatePreviewImage).InvokeInMainThreadAsync();
                 }
             }
 
             private void UpdatePreviewImage() {
                 if (!_finished) {
-                    _waiting.SetImage(_currentSkin.PreviewImage);
+                    _waiting.SetImage(Path.Combine(_currentSkin.Location, _options.PreviewName));
                 }
             }
 

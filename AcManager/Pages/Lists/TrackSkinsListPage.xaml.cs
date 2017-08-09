@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using JetBrains.Annotations;
@@ -92,7 +93,7 @@ namespace AcManager.Pages.Lists {
 
         public static void Open(TrackObject track) {
             var main = Application.Current?.MainWindow as MainWindow;
-            if (main == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (main == null || Keyboard.Modifiers == ModifierKeys.Control || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {
                 main.OpenSubGroup("track skins", $"Skins for {track.DisplayNameWithoutCount}",

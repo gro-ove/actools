@@ -145,7 +145,8 @@
         <Label Content="Fast-access buttons over car and track in Quick Drive" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}">
+      <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}"
+          ToolTip="If disabled, hold Ctrl while opening skins or setups to open them in a new window anyway">
         <Label Content="Open skins and setups lists in new window" />
       </CheckBox>
     </StackPanel>

@@ -22,9 +22,7 @@ namespace AcManager.Pages.AcSettings {
             internal ViewModel() { }
 
             public PythonSettings Python => AcSettingsHolder.Python;
-
             public FormsSettings Forms => AcSettingsHolder.Forms;
-
             public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
             public AcEnabledOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.EnabledOnlyCollection;
@@ -105,7 +103,7 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private void EnabledAppsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void OnEnabledAppsListSelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (_ignore) return;
             foreach (var item in Model.Apps.Where(x => x.Enabled)) {
                 Model.Python.SetActivated(item.Id, EnabledAppsListBox.SelectedItems.Contains(item));

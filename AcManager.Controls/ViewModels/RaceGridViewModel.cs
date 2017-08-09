@@ -93,6 +93,9 @@ namespace AcManager.Controls.ViewModels {
             [CanBeNull]
             public string[] Names, Nationalities, SkinIds;
 
+            [CanBeNull]
+            public string[] AiLimitations;
+
             public bool? ShuffleCandidates;
             public int? OpponentsNumber, StartingPosition;
 
@@ -121,6 +124,7 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("Names", Names);
                 w.Write("Nationalities", Nationalities);
                 w.Write("SkinIds", SkinIds);
+                w.Write("AiLimitations", AiLimitations);
 
                 w.Write("OpponentsNumber", OpponentsNumber);
                 w.Write("StartingPosition", StartingPosition);
@@ -207,7 +211,9 @@ namespace AcManager.Controls.ViewModels {
                     AiAggressionArrangeReverse = AiAggressionArrangeReverse,
                 };
 
-                if (Mode == BuiltInGridMode.CandidatesManual) {
+                if (Mode == BuiltInGridMode.Custom) {
+                    data.CarIds = NonfilteredList.Where(x => !x.SpecialEntry).Select(x => x.Car.Id).ToArray();
+                } else {
                     var priority = false;
                     data.CarIds = NonfilteredList.Select(x => {
                         if (x.CandidatePriority != 1) priority = true;
@@ -217,8 +223,6 @@ namespace AcManager.Controls.ViewModels {
                     if (priority) {
                         data.CandidatePriorities = NonfilteredList.Select(x => x.CandidatePriority).ToArray();
                     }
-                } else if (Mode == BuiltInGridMode.Custom) {
-                    data.CarIds = NonfilteredList.Where(x => !x.SpecialEntry).Select(x => x.Car.Id).ToArray();
                 }
 
                 if (data.CarIds != null) {
@@ -251,6 +255,10 @@ namespace AcManager.Controls.ViewModels {
                     if (filtered.Any(x => x.CarSkin != null)) {
                         data.SkinIds = filtered.Select(x => x.CarSkin?.Id).ToArray();
                     }
+
+                    if (filtered.Any(x => x.AiLimitationDetails?.IsAnySet == true)) {
+                        data.AiLimitations = filtered.Select(x => x.AiLimitationDetailsData).ToArray();
+                    }
                 }
 
                 data.PlayerBallast = PlayerBallast;
@@ -274,6 +282,7 @@ namespace AcManager.Controls.ViewModels {
                 FilterValue = data.FilterValue;
                 ErrorMessage = null;
 
+                // NonfilteredList is not gonna be rebuilt now, because of LoadingItself flag set by SaveableHelper
                 var mode = Modes.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
                     NonfatalError.NotifyBackground(ToolsStrings.RaceGrid_GridModeIsMissing,
@@ -301,10 +310,14 @@ namespace AcManager.Controls.ViewModels {
                                 Name = data.Names?.ElementAtOrDefault(i),
                                 Nationality = data.Nationalities?.ElementAtOrDefault(i),
                                 CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
+                                AiLimitationDetailsData =  data.AiLimitations?.ElementAtOrDefault(i),
                             };
                         }).NonNull());
+                        _setPropertiesLater = null;
                     } else {
+                        // So, we clear list of opponents to rebuild it later
                         NonfilteredList.Clear();
+                        _setPropertiesLater = data;
                     }
 
                     SetOpponentsNumberInternal(data.OpponentsNumber ?? 7);
@@ -324,11 +337,15 @@ namespace AcManager.Controls.ViewModels {
                             Name = data.Names?.ElementAtOrDefault(i),
                             Nationality = data.Nationalities?.ElementAtOrDefault(i),
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
+                            AiLimitationDetailsData =  data.AiLimitations?.ElementAtOrDefault(i),
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
+                    _setPropertiesLater = null;
                 }
 
                 StartingPosition = data.StartingPosition ?? 7;
+
+                // Here, to be specific
                 FinishLoading();
 
                 PlayerBallast = data.PlayerBallast;
@@ -336,7 +353,6 @@ namespace AcManager.Controls.ViewModels {
             }, Reset);
 
             _presetsHelper = new PresetsMenuHelper();
-
             _randomGroup = new HierarchicalGroup(ToolsStrings.RaceGrid_Random);
             UpdateRandomModes();
 
@@ -361,8 +377,10 @@ namespace AcManager.Controls.ViewModels {
             if (Mode.CandidatesMode) {
                 UpdateViewFilter();
 
-                if (Mode != BuiltInGridMode.CandidatesManual && Mode != BuiltInGridMode.SameCar) {
+                if (Mode != BuiltInGridMode.CandidatesManual) {
                     RebuildGridAsync().Forget();
+                } else {
+                    LoadLaterProperties(NonfilteredList);
                 }
             } else {
                 SetOpponentsNumberInternal(NonfilteredList.Count);
@@ -392,6 +410,8 @@ namespace AcManager.Controls.ViewModels {
             Mode = BuiltInGridMode.SameCar;
             SetOpponentsNumberInternal(7);
             StartingPosition = 7;
+
+            _setPropertiesLater = null;
         }
 
         #region FS watching
@@ -657,6 +677,42 @@ namespace AcManager.Controls.ViewModels {
         }
         #endregion
 
+        #region Fix for properties for special modes
+        // Used in case user set some parameters — such as ballast, for example — to a car from
+        // a list built by LUA function or something. While loading, those parameters are gonna
+        // end up here. And then, when grid will gonna be rebuilt, we’ll try to put them back
+        // where possible.
+        private SaveableData _setPropertiesLater;
+
+        private void LoadLaterProperties(IReadOnlyList<RaceGridEntry> candidates) {
+            if (_setPropertiesLater != null) {
+                var data = _setPropertiesLater;
+                _setPropertiesLater = null;
+
+                if (data.CarIds != null) {
+                    for (var i = 0; i < data.CarIds.Length; i++) {
+                        var carId = data.CarIds[i];
+                        var entry = candidates.FirstOrDefault(x => x.Car.Id == carId);
+                        if (entry != null && !entry.SpecialEntry) {
+                            var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                            var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
+                            var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+                            entry.CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1;
+                            entry.AiLevel = aiLevel >= 0 ? aiLevel : null;
+                            entry.AiAggression = aiAggression >= 0 ? aiAggression : null;
+                            entry.Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0;
+                            entry.Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0;
+                            entry.Name = data.Names?.ElementAtOrDefault(i);
+                            entry.Nationality = data.Nationalities?.ElementAtOrDefault(i);
+                            entry.CarSkin = carSkinId != null ? entry.Car.GetSkinById(carSkinId) : null;
+                            entry.AiLimitationDetailsData = data.AiLimitations?.ElementAtOrDefault(i);
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Candidates building
         public bool IsBusy => _rebuildingTask != null;
 
@@ -678,15 +734,19 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged(nameof(IsBusy));
                 ErrorMessage = null;
 
-                again:
+                Again:
                 var mode = Mode;
                 var candidates = await FindCandidates();
-                if (mode != Mode) goto again;
+                if (mode != Mode) goto Again;
 
                 // I’ve seen that XKCD comic, but I still think goto is more
-                // suitable than a loop here
+                // suitable than a loop here.
 
                 if (candidates == null) return;
+
+                // Fitting those parameters…
+                LoadLaterProperties(candidates);
+
                 NonfilteredList.ReplaceEverythingBy(candidates);
             } catch (SyntaxErrorException e) {
                 ErrorMessage = string.Format(ToolsStrings.Common_SyntaxErrorFormat, e.Message);
@@ -1406,10 +1466,20 @@ namespace AcManager.Controls.ViewModels {
                         break;
                 }
 
+                var carId = entry.Car.Id;
+                if (entry.AiLimitationDetails.IsActive) {
+                    // TODO: async?
+                    try {
+                        carId = entry.AiLimitationDetails.Apply();
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t make AI-specific version of a car", e);
+                    }
+                }
+
                 return new Game.AiCar {
                     AiLevel = level,
                     AiAggression = aggression,
-                    CarId = entry.Car.Id,
+                    CarId = carId,
                     DriverName = displayName,
                     Nationality = nationality,
                     Ballast = entry.Ballast,

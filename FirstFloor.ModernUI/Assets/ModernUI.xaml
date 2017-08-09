@@ -9,7 +9,13 @@
     <ResourceDictionary Source="ColorPicker.xaml" />
     <ResourceDictionary Source="ComboBox.xaml" />
     <ResourceDictionary Source="ContextMenu.xaml" />
+
+    <ResourceDictionary Source="DataGrid.Base.xaml" />
+    <ResourceDictionary Source="DataGrid.Cells.xaml" />
+    <ResourceDictionary Source="DataGrid.Headers.xaml" />
+    <ResourceDictionary Source="DataGrid.Rows.xaml" />
     <ResourceDictionary Source="DataGrid.xaml" />
+
     <ResourceDictionary Source="DatePicker.xaml" />
     <ResourceDictionary Source="Easing.xaml" />
     <ResourceDictionary Source="Expander.xaml" />

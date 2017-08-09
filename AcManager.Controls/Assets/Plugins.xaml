@@ -26,7 +26,7 @@
         <Slider.Value>
           <Binding Path="MontageVramCache">
             <Binding.Converter>
-              <mui:LogarithmicScale Minimum="0" Middle="268435456" Maximum="1073741824" />
+              <mui:LogarithmicScale Minimum="268435456" Middle="536870912" Maximum="2147483648" />
             </Binding.Converter>
           </Binding>
         </Slider.Value>
@@ -39,7 +39,7 @@
         <Slider.Value>
           <Binding Path="MontageMemoryLimit">
             <Binding.Converter>
-              <mui:LogarithmicScale Minimum="0" Middle="2147483648" Maximum="17179869184" />
+              <mui:LogarithmicScale Minimum="1073741824" Middle="2147483648" Maximum="17179869184" />
             </Binding.Converter>
           </Binding>
         </Slider.Value>

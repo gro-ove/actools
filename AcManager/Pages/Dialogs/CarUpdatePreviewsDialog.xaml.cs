@@ -47,7 +47,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _disableSweetFx;
 
         public bool DisableSweetFx {
-            get { return _disableSweetFx; }
+            get => _disableSweetFx;
             set {
                 if (Equals(value, _disableSweetFx)) return;
                 _disableSweetFx = value;
@@ -59,7 +59,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _disableWatermark;
 
         public bool DisableWatermark {
-            get { return _disableWatermark; }
+            get => _disableWatermark;
             set {
                 if (Equals(value, _disableWatermark)) return;
                 _disableWatermark = value;
@@ -71,7 +71,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _resizePreviews;
 
         public bool ResizePreviews {
-            get { return _resizePreviews; }
+            get => _resizePreviews;
             set {
                 if (Equals(value, _resizePreviews)) return;
                 _resizePreviews = value;
@@ -83,7 +83,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _maximizeVideoSettings;
 
         public bool MaximizeVideoSettings {
-            get { return _maximizeVideoSettings; }
+            get => _maximizeVideoSettings;
             set {
                 if (Equals(value, _maximizeVideoSettings)) return;
                 _maximizeVideoSettings = value;
@@ -94,7 +94,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _enableFxaa;
 
         public bool EnableFxaa {
-            get { return _enableFxaa; }
+            get => _enableFxaa;
             set {
                 if (Equals(value, _enableFxaa)) return;
                 _enableFxaa = value;
@@ -105,7 +105,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _useSpecialResolution;
 
         public bool UseSpecialResolution {
-            get { return _useSpecialResolution; }
+            get => _useSpecialResolution;
             set {
                 if (Equals(value, _useSpecialResolution)) return;
                 _useSpecialResolution = value;
@@ -116,7 +116,7 @@ namespace AcManager.Pages.Dialogs {
         private string _cameraPosition;
 
         public string CameraPosition {
-            get { return _cameraPosition; }
+            get => _cameraPosition;
             set {
                 if (Equals(value, _cameraPosition)) return;
                 _cameraPosition = value;
@@ -128,7 +128,7 @@ namespace AcManager.Pages.Dialogs {
         private string _cameraLookAt;
 
         public string CameraLookAt {
-            get { return _cameraLookAt; }
+            get => _cameraLookAt;
             set {
                 if (Equals(value, _cameraLookAt)) return;
                 _cameraLookAt = value;
@@ -140,7 +140,7 @@ namespace AcManager.Pages.Dialogs {
         private double _cameraFov;
 
         public double CameraFov {
-            get { return _cameraFov; }
+            get => _cameraFov;
             set {
                 if (Equals(value, _cameraFov)) return;
                 _cameraFov = value;
@@ -152,7 +152,7 @@ namespace AcManager.Pages.Dialogs {
         private double? _cameraExposure;
 
         public double? CameraExposure {
-            get { return _cameraExposure; }
+            get => _cameraExposure;
             set {
                 if (Equals(value, _cameraExposure)) return;
                 _cameraExposure = value;
@@ -164,7 +164,7 @@ namespace AcManager.Pages.Dialogs {
         private ShowroomObject _selectedShowroom;
 
         public ShowroomObject SelectedShowroom {
-            get { return _selectedShowroom; }
+            get => _selectedShowroom;
             set {
                 if (Equals(value, _selectedShowroom)) return;
                 var update = _selectedShowroom == null || value == null;
@@ -189,7 +189,7 @@ namespace AcManager.Pages.Dialogs {
         private IWithId _selectedFilter;
 
         public IWithId SelectedFilter {
-            get { return _selectedFilter; }
+            get => _selectedFilter;
             set {
                 if (Equals(value, _selectedFilter)) return;
                 var update = _selectedFilter == null || value == null;
@@ -219,9 +219,7 @@ namespace AcManager.Pages.Dialogs {
             public string Id => _id ?? (_id = Filename.ToLower());
 
             public string Name {
-                get {
-                    return _name ?? (_name = Path.GetFileNameWithoutExtension(Filename));
-                }
+                get => _name ?? (_name = Path.GetFileNameWithoutExtension(Filename));
                 set {
                     if (Equals(value, _name)) return;
                     _name = value;
@@ -258,7 +256,7 @@ namespace AcManager.Pages.Dialogs {
         private AsyncProgressEntry _seriesProgress;
 
         public AsyncProgressEntry SeriesProgress {
-            get { return _seriesProgress; }
+            get => _seriesProgress;
             set {
                 if (Equals(value, _seriesProgress)) return;
                 _seriesProgress = value;
@@ -269,7 +267,7 @@ namespace AcManager.Pages.Dialogs {
         private AsyncProgressEntry _progress;
 
         public AsyncProgressEntry Progress {
-            get { return _progress; }
+            get => _progress;
             set {
                 if (Equals(value, _progress)) return;
                 _progress = value;
@@ -280,7 +278,7 @@ namespace AcManager.Pages.Dialogs {
         private string _errorMessage;
 
         public string ErrorMessage {
-            get { return _errorMessage; }
+            get => _errorMessage;
             set {
                 if (Equals(value, _errorMessage)) return;
                 _errorMessage = value;
@@ -291,7 +289,7 @@ namespace AcManager.Pages.Dialogs {
         private ObservableCollection<ResultPreviewComparison> _resultPreviewComparisons;
 
         public ObservableCollection<ResultPreviewComparison> ResultPreviewComparisons {
-            get { return _resultPreviewComparisons; }
+            get => _resultPreviewComparisons;
             set {
                 if (Equals(value, _resultPreviewComparisons)) return;
                 _resultPreviewComparisons = value;
@@ -304,7 +302,7 @@ namespace AcManager.Pages.Dialogs {
         private CollectionView _resultPreviewComparisonsView;
 
         public CollectionView ResultPreviewComparisonsView {
-            get { return _resultPreviewComparisonsView; }
+            get => _resultPreviewComparisonsView;
             set {
                 if (Equals(value, _resultPreviewComparisonsView)) return;
                 _resultPreviewComparisonsView = value;
@@ -354,7 +352,8 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private Task ShowroomMessageInstance([Localizable(false)] string showroomName, [Localizable(false)] string showroomId, [Localizable(false)] string informationUrl) {
+        private Task ShowroomMessageInstance([Localizable(false)] string showroomName, [Localizable(false)] string showroomId,
+                [Localizable(false)] string informationUrl) {
             if (ShowMessage(string.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
                     AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
             return InstallShowroom(showroomName, showroomId, this);
@@ -408,7 +407,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _applyImmediately;
 
         public bool ApplyImmediately {
-            get { return _applyImmediately; }
+            get => _applyImmediately;
             set {
                 if (Equals(value, _applyImmediately)) return;
                 _applyImmediately = value;
@@ -587,7 +586,7 @@ namespace AcManager.Pages.Dialogs {
         private Phase _currentPhase;
 
         public Phase CurrentPhase {
-            get { return _currentPhase; }
+            get => _currentPhase;
             set {
                 if (Equals(value, _currentPhase)) return;
                 _currentPhase = value;
@@ -866,7 +865,7 @@ namespace AcManager.Pages.Dialogs {
         private TimeSpan _takenTime;
 
         public TimeSpan TakenTime {
-            get { return _takenTime; }
+            get => _takenTime;
             set {
                 if (Equals(value, _takenTime)) return;
                 _takenTime = value;
@@ -900,7 +899,7 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

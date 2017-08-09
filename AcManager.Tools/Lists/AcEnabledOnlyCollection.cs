@@ -10,16 +10,39 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Lists {
-    public class AcEnabledOnlyCollection<T> : AcEnabledOnlyCollection_WrappedImpl<T> where T : AcObjectNew {
+    public class AcEnabledOnlyCollection<T> : AcEnabledOnlyCollection_ThirdImpl<T> where T : AcObjectNew {
         public AcEnabledOnlyCollection(IAcWrapperObservableCollection collection) : base(collection) { }
+    }
+
+    // Third implementation, now using proper WrappedFilteredCollection thing.
+    public class AcEnabledOnlyCollection_ThirdImpl<T> : WrappedFilteredCollection<AcItemWrapper, T>
+            where T : AcObjectNew {
+        public AcEnabledOnlyCollection_ThirdImpl([NotNull] IAcWrapperObservableCollection collection) : base((IReadOnlyList<AcItemWrapper>)collection) {
+            collection.WrappedValueChanged += OnWrappedValueChanged;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void OnWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+            Refresh((AcItemWrapper)sender);
+        }
+
+        protected override T Wrap(AcItemWrapper source) {
+            return (T)source.Value;
+        }
+
+        protected override bool Test(AcItemWrapper source) {
+            return source.IsLoaded && source.Value.Enabled;
+        }
     }
 
     // Second implementation — uses WrappedCollection to convert AcItemWrapper to AcObjectNew, and then ListCollectionView
     // to get rid of NULLs. In theory (if both WrappedCollection and ListCollectionView do not contain errors, which is,
-    // in all honesty, in unlikely) should be very reliable, but slower.
-    public class AcEnabledOnlyCollection_WrappedImpl<T> : IList<T>, IList, INotifyCollectionChanged, INotifyPropertyChanged, IWeakEventListener where T : AcObjectNew {
+    // in all honesty, is unlikely) should be very reliable, but slower.
+    public class AcEnabledOnlyCollection_WrappedImpl<T> : IList<T>, IList, INotifyCollectionChanged, INotifyPropertyChanged, IWeakEventListener
+            where T : AcObjectNew {
         private readonly DelegateWrappedCollection<AcItemWrapper, T> _wrapped;
         private readonly BetterListCollectionView _view;
 
@@ -137,7 +160,8 @@ namespace AcManager.Tools.Lists {
     public class AcEnabledOnlyCollection_NaiveImpl<T> : BetterObservableCollection<T>, IWeakEventListener where T : AcObjectNew {
         private readonly IAcWrapperObservableCollection _collection;
 
-        public AcEnabledOnlyCollection_NaiveImpl(IAcWrapperObservableCollection collection) : base(collection.Select(x => x.Value).Where(x => x.Enabled).OfType<T>()) {
+        public AcEnabledOnlyCollection_NaiveImpl(IAcWrapperObservableCollection collection)
+                : base(collection.Select(x => x.Value).Where(x => x.Enabled).OfType<T>()) {
             _collection = collection;
             collection.CollectionChanged += OnCollectionChanged;
             collection.WrappedValueChanged += OnWrappedValueChanged;

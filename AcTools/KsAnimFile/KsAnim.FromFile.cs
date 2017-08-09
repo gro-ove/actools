@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using AcTools.Utils;
 
 namespace AcTools.KsAnimFile {
     public partial class KsAnim {
+        public static KsAnim CreateEmpty() {
+            return new KsAnim {
+                Header = new KsAnimHeader { Version = 2 },
+                Entries = new Dictionary<string, KsAnimEntryBase>()
+            };
+        }
+
         public static KsAnim FromFile(string filename) {
             if (!File.Exists(filename)) {
                 throw new FileNotFoundException(filename);

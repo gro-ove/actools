@@ -20,6 +20,9 @@
 	<SolidColorBrush x:Key="SilverBrush" Color="#C0C0C0" />
 	<SolidColorBrush x:Key="BronzeBrush" Color="#A52A2A" />
 
+	<!-- Time delta -->
+	<SolidColorBrush x:Key="TimePositiveDelta" Color="#A52A2A" />
+
 	<!-- Underlying color and filter for car upgrade icons and track outlines (if they are alone) -->
   <SolidColorBrush x:Key="CarIconBackground" Color="Transparent" />
 	<x:Null x:Key="CarIconEffect" />
@@ -45,7 +48,15 @@
   <SolidColorBrush x:Key="CardHeaderText" Color="#FFFFFF" />
 
   <!-- For semi-transparent list items -->
-  <system:Double x:Key="BackgroundAccentOpacity">0.18</system:Double>
+	<SolidColorBrush x:Key="ItemBackgroundSelectedSubtle" Color="{DynamicResource AccentColor}" Opacity="0.08" />
+
+	<!-- Alternate version with diagonal lines -->
+	<!--<LinearGradientBrush x:Key="ItemBackgroundSelectedSubtle" EndPoint="0,0" StartPoint="8,8" MappingMode="Absolute" SpreadMethod="Repeat" Opacity="0.12">
+		<GradientStop Color="{DynamicResource AccentColor}" Offset="0" />
+		<GradientStop Color="{DynamicResource AccentColor}" Offset="0.2" />
+		<GradientStop Color="Transparent" Offset="0.2" />
+		<GradientStop Color="Transparent" Offset="1" />
+	</LinearGradientBrush>-->
 
   <!-- Windows -->
   <Color x:Key="WindowBackgroundColor">#252526</Color>

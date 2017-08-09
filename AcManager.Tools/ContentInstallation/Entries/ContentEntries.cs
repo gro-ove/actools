@@ -155,16 +155,24 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             };
         }
 
-        protected virtual CopyCallback GetCopyCallback([NotNull] string destination) {
+        protected bool MoveEmptyDirectories = false;
+
+        protected virtual ICopyCallback GetCopyCallback([NotNull] string destination) {
             var filter = SelectedOption?.Filter;
             var path = EntryPath;
-            return fileInfo => {
-                var filename = fileInfo.Key;
+            return new CopyCallback(info => {
+                var filename = info.Key;
                 if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
-            };
+            }, MoveEmptyDirectories ? (info => {
+                var filename = info.Key;
+                if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
+
+                var subFilename = FileUtils.GetRelativePath(filename, path);
+                return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
+            }) : (Func<IDirectoryInfo, string>)null);
         }
 
         [ItemCanBeNull]

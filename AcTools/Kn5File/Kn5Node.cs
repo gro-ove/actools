@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public class Kn5Node {
@@ -53,14 +54,14 @@ namespace AcTools.Kn5File {
 
         public int TotalVerticesCount {
             get {
-                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalVerticesCount) : 
+                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalVerticesCount) :
                     Vertices.Length;
             }
         }
 
         public int TotalTrianglesCount {
             get {
-                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalTrianglesCount) : 
+                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalTrianglesCount) :
                     (Indices.Length/3);
             }
         }
@@ -75,11 +76,12 @@ namespace AcTools.Kn5File {
                     1.0f, 0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f, 0.0f,
                     0.0f, 0.0f, 1.0f, 0.0f,
-                    1.0f, 0.0f, 0.0f, 0.0f 
+                    1.0f, 0.0f, 0.0f, 0.0f
                 }
             };
         }
 
+        [CanBeNull]
         public Kn5Node GetByName(string name) {
             return NodeClass == Kn5NodeClass.Base ? Children.FirstOrDefault(child => child.Name == name) : null;
         }

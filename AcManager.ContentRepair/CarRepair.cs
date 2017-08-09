@@ -18,17 +18,19 @@ namespace AcManager.ContentRepair {
             Types.Add(typeof(T));
         }
 
-        public static IEnumerable<ContentRepairSuggestion> GetRepairSuggestions([NotNull] CarObject car, bool checkResources) {
-            var repairs = Assembly.GetExecutingAssembly().GetTypes()
-                                  .Concat(Types)
-                                  .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(CarRepairBase)))
-                                  .Select(x => (CarRepairBase)Activator.CreateInstance(x));
+        private static bool IsCritical(this Type t) {
+            return t.Namespace?.EndsWith(".Critical") == true;
+        }
 
-            if (!checkResources) {
-                repairs = repairs.Where(x => x.AffectsData);
-            }
+        [NotNull]
+        public static IEnumerable<ContentRepairSuggestion> GetRepairSuggestions([NotNull] CarObject car, bool checkResources, bool criticalOnly = false) {
+            var list = Assembly.GetExecutingAssembly().GetTypes().Concat(Types)
+                               .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(CarRepairBase)))
+                               .IfWhere(criticalOnly, x => x.IsCritical())
+                               .Select(x => (CarRepairBase)Activator.CreateInstance(x))
+                               .IfWhere(!checkResources, x => x.AffectsData).OrderByDescending(x => x.Priority)
+                               .ToList();
 
-            var list = repairs.OrderByDescending(x => x.Priority).ToList();
             for (var i = list.Count - 1; i >= 0; i--) {
                 var repair = list[i];
                 if (!repair.IsAvailable(list)) {
@@ -36,7 +38,10 @@ namespace AcManager.ContentRepair {
                 }
             }
 
-            return list.SelectMany(x => x.GetSuggestions(car)).NonNull().OrderBy(x => x.DisplayName);
+            return list.SelectMany(x => x.GetSuggestions(car).IfSelect(x.GetType().IsCritical(), y => {
+                y.IsCritical = true;
+                return y;
+            })).NonNull().OrderBy(x => x.DisplayName);
         }
     }
 

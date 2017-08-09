@@ -12,5 +12,14 @@ namespace AcTools.Render.Forward {
 
         [Description("Filmic")]
         Filmic = 3,
+
+        [Description("Luma-Based")]
+        LumaBasedReinhard = 5,
+
+        [Description("White-P. Luma-Based")]
+        WhitePreservingLumaBasedReinhard = 6,
+
+        [Description("Uncharted 2")]
+        Uncharted2 = 4,
     }
 }

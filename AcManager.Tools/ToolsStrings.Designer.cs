@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1123,7 +1123,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t process update: {0}. Try to install a new version manually, sorry..
+        ///   Looks up a localized string similar to Can’t update: {0}. Sorry, but you’ll have to update it manually..
         /// </summary>
         public static string AppUpdater_CannotUpdate_Message {
             get {
@@ -4085,6 +4085,15 @@ namespace AcManager.Tools {
         public static string Shared_Replay {
             get {
                 return ResourceManager.GetString("Shared_Replay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Real Head Motion preset.
+        /// </summary>
+        public static string Shared_RhmPreset {
+            get {
+                return ResourceManager.GetString("Shared_RhmPreset", resourceCulture);
             }
         }
         

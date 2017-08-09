@@ -1,0 +1,10 @@
+﻿sid: dv3zyqfr
+id: genericMods
+
+[b]Feature is in development, might not work properly in all cases.[/b]
+
+Do you know about JSGME (also known as Generic Mod Enabler)? Now CM can be a replacement for it of some sorts. It’s fully compatible with JSGME data, the only difference (optional) is that CM uses hard links to install content to avoid wasting disk space and improve performance.
+
+Also, while installing new content, CM will offer you to install it as a mod as well, allowing to quickly disable it later. How it might be useful: move mods folder outside of AC, install all your mods, and then, if you’ll get any worries about your AC being damaged, simply make a new preset with all mods enabled, remove and reinstall AC and then load that preset re-enabling all mods you had installed. Should work.
+
+Please, keep in mind that CM works very similar to JSGME — so, for example, if you install a new car as a mod and then add some more skins or just new files to it, they won’t be removed when mod is disabled.

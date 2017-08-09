@@ -42,6 +42,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             if (_txNormal != null) {
                 flags |= EffectDarkMaterial.HasNormalMap;
+                if (Kn5Material.GetPropertyValueAByName("nmObjectSpace") != 0) {
+                    flags |= EffectDarkMaterial.NmObjectSpace;
+                }
             }
 
             if (Kn5Material.ShaderName.Contains("_AT") || Kn5Material.ShaderName == "ksSkinnedMesh") {

@@ -3,15 +3,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
-    xmlns:internal="http://acstuff.ru/app/internal" mc:Ignorable="d" Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320"
-    Width="540" Height="480" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent"
-    d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop"
-    DragEnter="OnDragEnter" ButtonRowContentAlignment="Stretch" Closed="OnClosed">
+    xmlns:internal="http://acstuff.ru/app/internal" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
+    SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}"
+    ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonRowContentAlignment="Stretch"
+    Closed="OnClosed">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
       <system:String x:Key="ZeroWidthString">​</system:String>
 
       <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type entries:ContentEntryBase}">
@@ -204,137 +207,157 @@
   </mui:ModernDialog.Resources>
 
   <mui:ModernDialog.ButtonsRowContent>
-    <TextBlock Text="Drop files or links your want to add to the queue here" Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
+    <TextBlock Text="Drop or paste files or links your want to add to the queue here" Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
         HorizontalAlignment="Left" />
   </mui:ModernDialog.ButtonsRowContent>
 
-  <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding Queue}" DataContext="{x:Static t:ContentInstallationManager.Instance}"
-      mui:FancyScrollHelper.Outside="True" Margin="0 0 -8 0" Padding="0 0 8 0">
-    <ItemsControl.ItemTemplate>
-      <DataTemplate>
-        <DockPanel Margin="0 0 0 32">
-          <DockPanel DockPanel.Dock="Top">
-            <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
-                Command="{Binding CancelCommand}" ToolTip="Cancel installing"
-                Visibility="{Binding CancelCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
-              <Button.Style>
-                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                  <Setter Property="Background" Value="Transparent" />
-                  <Setter Property="BorderBrush" Value="Transparent" />
-                </Style>
-              </Button.Style>
-              <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                  Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
-                  HorizontalAlignment="Center" StrokeThickness="1" />
-            </Button>
+  <DockPanel>
 
-            <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom">
-              <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                <TextBlock Style="{StaticResource Small}" Text="Name: " />
-                <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayNameWithUrl, Mode=OneWay}" />
-              </DockPanel>
-              <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                <TextBlock Style="{StaticResource Small}" Text="File name: " />
-                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />
-              </DockPanel>
-              <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                <TextBlock Style="{StaticResource Small}" Text="Version: " />
-                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" />
-              </DockPanel>
-            </mui:SpacingUniformGrid>
-
-            <TextBlock Style="{StaticResource Small}" Text="Installing from: " DockPanel.Dock="Left" />
-            <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" />
-          </DockPanel>
-
-          <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-            <!-- Loading thing -->
-            <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
-              <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}"
-                  DockPanel.Dock="Top" Height="4"
-                  Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-              <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" Margin="0 4 0 0"
-                  Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-            </DockPanel>
-
-            <!-- Finished -->
-            <DockPanel>
-              <mui:ReferenceSwitch Value="{Binding Failed}">
-                <mui:ReferenceSwitch.Null>
-                  <DockPanel>
-                    <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                        Margin="0 0 8 0" VerticalAlignment="Center" />
-                    <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
-                  </DockPanel>
-                </mui:ReferenceSwitch.Null>
-                <mui:ReferenceSwitch.NonNull>
-                  <DockPanel>
-                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                        Margin="0 0 8 0" VerticalAlignment="Center" />
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" />
-                  </DockPanel>
-                </mui:ReferenceSwitch.NonNull>
-              </mui:ReferenceSwitch>
-            </DockPanel>
-
-            <!-- Password input -->
-            <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
-              <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
-              <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
-              <TextBlock Text="Password is invalid" Style="{StaticResource Label.Padding}" Foreground="{DynamicResource Error}"
-                  Visibility="{Binding PasswordIsInvalid, Converter={StaticResource BooleanToVisibilityConverter}}" />
-              <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
-            </mui:SpacingStackPanel>
-
-            <!-- Waiting for confirmation -->
-            <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
-              <mui:Switch Value="{Binding Entries.Length}">
-                <StackPanel mui:Switch.When="0">
-                  <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
-                </StackPanel>
-
-                <DockPanel>
-                  <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
-                      Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <mui:SpacingStackPanel Spacing="8" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <DockPanel>
-                          <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
-                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                          <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
-                        </DockPanel>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                  <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
-                      Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
-
-                  <ItemsControl ItemsSource="{Binding Entries}">
-                    <ItemsControl.ItemTemplateSelector>
-                      <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
-                          TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
-                    </ItemsControl.ItemTemplateSelector>
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <mui:SpacingStackPanel Spacing="8" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                  </ItemsControl>
-
-                </DockPanel>
-              </mui:Switch>
-
-              <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
-            </StackPanel>
+    <mui:BooleanSwitch x:Name="SevenZipWarning" Visibility="Collapsed" Value="{Binding IsSevenZipPluginMissing}" DockPanel.Dock="Top">
+      <c:MessageBlock Margin="0 0 0 20">
+        <DockPanel>
+          <mui:BbCodeBlock Text="Turn on 7-Zip plugin to improve installation performance and let CM to unpack all types of archives:" DockPanel.Dock="Top"
+              Margin="0 0 0 20" />
+          <mui:Switch Value="{Binding RecommendedListView.Count}">
+            <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
+            <ItemsControl ItemsSource="{Binding RecommendedListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 -20 -20" />
           </mui:Switch>
-
         </DockPanel>
-      </DataTemplate>
-    </ItemsControl.ItemTemplate>
-  </ItemsControl>
+      </c:MessageBlock>
+    </mui:BooleanSwitch>
+
+    <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding Queue}"
+        DataContext="{x:Static t:ContentInstallationManager.Instance}" mui:FancyScrollHelper.Outside="True" Margin="0 0 -8 0" Padding="0 0 8 0">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <DockPanel Margin="0 0 0 32">
+            <DockPanel DockPanel.Dock="Top">
+              <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
+                  Command="{Binding CancelCommand}" ToolTip="Cancel installing"
+                  Visibility="{Binding CancelCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                <Button.Style>
+                  <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                  </Style>
+                </Button.Style>
+                <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
+                    HorizontalAlignment="Center" StrokeThickness="1" />
+              </Button>
+
+              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom">
+                <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                    Margin="0 4 0 0">
+                  <TextBlock Style="{StaticResource Small}" Text="Name: " />
+                  <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayNameWithUrl, Mode=OneWay}" />
+                </DockPanel>
+                <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
+                  <TextBlock Style="{StaticResource Small}" Text="File name: " />
+                  <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />
+                </DockPanel>
+                <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
+                  <TextBlock Style="{StaticResource Small}" Text="Version: " />
+                  <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" />
+                </DockPanel>
+              </mui:SpacingUniformGrid>
+
+              <TextBlock Style="{StaticResource Small}" Text="Installing from: " DockPanel.Dock="Left" />
+              <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" />
+            </DockPanel>
+
+            <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
+              <!-- Loading thing -->
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
+                <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}"
+                    DockPanel.Dock="Top" Height="4"
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" Margin="0 4 0 0"
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+              </DockPanel>
+
+              <!-- Finished -->
+              <DockPanel>
+                <mui:ReferenceSwitch Value="{Binding Failed}">
+                  <mui:ReferenceSwitch.Null>
+                    <DockPanel>
+                      <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                          Margin="0 0 8 0" VerticalAlignment="Center" />
+                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
+                    </DockPanel>
+                  </mui:ReferenceSwitch.Null>
+                  <mui:ReferenceSwitch.NonNull>
+                    <DockPanel>
+                      <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                          Margin="0 0 8 0" VerticalAlignment="Center" />
+                      <Button DockPanel.Dock="Bottom" Content="View Downloaded File In Explorer" Command="{Binding ViewInExplorerCommand}" Margin="0 4 0 0"
+                          Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" />
+                    </DockPanel>
+                  </mui:ReferenceSwitch.NonNull>
+                </mui:ReferenceSwitch>
+              </DockPanel>
+
+              <!-- Password input -->
+              <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
+                <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
+                <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
+                <TextBlock Text="Password is invalid" Style="{StaticResource Label.Padding}" Foreground="{DynamicResource Error}"
+                    Visibility="{Binding PasswordIsInvalid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
+              </mui:SpacingStackPanel>
+
+              <!-- Waiting for confirmation -->
+              <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
+                <mui:Switch Value="{Binding Entries.Length}">
+                  <StackPanel mui:Switch.When="0">
+                    <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
+                  </StackPanel>
+
+                  <DockPanel>
+                    <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
+                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <DockPanel>
+                            <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                          </DockPanel>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
+                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
+
+                    <ItemsControl ItemsSource="{Binding Entries}">
+                      <ItemsControl.ItemTemplateSelector>
+                        <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
+                            TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
+                      </ItemsControl.ItemTemplateSelector>
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+
+                  </DockPanel>
+                </mui:Switch>
+
+                <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
+              </StackPanel>
+            </mui:Switch>
+
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+  </DockPanel>
 </mui:ModernDialog>

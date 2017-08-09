@@ -34,15 +34,10 @@
       </CheckBox>
     </StackPanel>
 
-    <StackPanel Grid.Column="0" Grid.Row="1">
-      <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-      <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-          ScrollViewer.CanContentScroll="True" SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
-        <ListBox.ItemsPanel>
-          <ItemsPanelTemplate>
-            <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
-          </ItemsPanelTemplate>
-        </ListBox.ItemsPanel>
+    <DockPanel Grid.Column="0" Grid.Row="1">
+      <Label DockPanel.Dock="Top" Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
+      <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" Style="{StaticResource VirtualizingListBox}"
+          SelectionChanged="OnEnabledAppsListSelectionChanged" Margin="0 0 20 0">
         <ListBox.ItemContainerStyle>
           <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
             <Style.Triggers>
@@ -67,7 +62,7 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
-    </StackPanel>
+    </DockPanel>
 
     <DockPanel Grid.Column="1" Grid.Row="1">
       <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
@@ -94,8 +89,8 @@
       </DockPanel>
 
       <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" ContentStringFormat="{}{0} (per desktop)" DockPanel.Dock="Top" />
-      <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
-          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False" EnableColumnVirtualization="True"
+      <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.Lite}"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" EnableColumnVirtualization="True"
           VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
         <DataGrid.Columns>
           <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
@@ -105,11 +100,11 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="PositionColumn" Width="540" Header="Position" CanUserSort="False"
-              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+          <DataGridTemplateColumn x:Name="PositionColumn" Width="540" Header="Position" SortMemberPath="First.Position"
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" CellStyle="{StaticResource DataGridCell.RightAlignment}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <mui:BooleanSwitch Value="{Binding AnyVisible}">
+                <mui:BooleanSwitch Value="{Binding AnyVisible}" HorizontalAlignment="Right">
                   <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
                     <ItemsControl.ItemsPanel>
                       <ItemsPanelTemplate>
@@ -135,7 +130,7 @@
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
           <DataGridTemplateColumn x:Name="ScaleColumn" Width="160" Header="Scale" SortMemberPath="First.Scale"
-              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" CellStyle="{StaticResource DataGridCell.RightAlignment}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
                 <mui:BooleanSwitch Value="{Binding AnyVisible}">

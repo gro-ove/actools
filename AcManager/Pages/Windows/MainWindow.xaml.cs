@@ -65,6 +65,8 @@ namespace AcManager.Pages.Windows {
         private readonly string _testGameDialog = null;
 
         public MainWindow() {
+            Owner = null;
+
             var app = Application.Current;
             if (app != null) {
                 app.MainWindow = this;
@@ -96,29 +98,13 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
                 new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
                 new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4)),
-                new InputBinding(new DelegateCommand(() => {
-                    if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is CheckBox) {
-                        return;
-                    }
-
-                    try {
-                        if (Clipboard.ContainsData(DataFormats.FileDrop)) {
-                            var data = Clipboard.GetFileDropList().OfType<string>().ToList();
-                            Dispatcher.InvokeAsync(() => {
-                                ProcessDroppedFiles(data);
-                            });
-                        } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
-                            var list = Clipboard.GetText().SplitLines();
-                            Dispatcher.InvokeAsync(() => {
-                                ProcessDroppedFiles(list);
-                            });
-                        }
-                    } catch (Exception e) {
-                        Logging.Warning(e);
-                    }
-                }), new KeyGesture(Key.V, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(ArgumentsHandler.OnPaste), new KeyGesture(Key.V, ModifierKeys.Control)),
             });
             InitializeComponent();
+
+            if (SteamStarter.IsInitialized) {
+                OverlayContentCell.Children.Add((FrameworkElement)FindResource("SteamOverlayFix"));
+            }
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
             AppKeyHolder.ProceedMainWindow(this);
@@ -467,27 +453,11 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnDrop(object sender, DragEventArgs e) {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
-
-            Focus();
-            var data = e.GetInputFiles().ToList();
-            Dispatcher.InvokeAsync(() => {
-                if (!e.Handled) {
-                    ProcessDroppedFiles(data);
-                }
-            });
+            ArgumentsHandler.OnDrop(sender, e);
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) {
-            if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
-                    (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
-                e.Effects = DragDropEffects.All;
-            }
-        }
-
-        private static async void ProcessDroppedFiles(IEnumerable<string> files) {
-            if (files == null) return;
-            await ArgumentsHandler.ProcessArguments(files);
+            ArgumentsHandler.OnDragEnter(sender, e);
         }
 
         private void OnClosed(object sender, EventArgs e) {

@@ -20,7 +20,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource FlatListBoxItem}">
-        <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
+        <EventSetter Event="PreviewMouseDoubleClick" Handler="OnItemDoubleClick" />
       </Style>
     </ResourceDictionary>
   </FrameworkElement.Resources>
@@ -105,7 +105,7 @@
       <!--IsHitTestVisible="{Binding ElementName=DetailsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"-->
 
       <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="SelectCarPopup" Placement="Custom" Padding="8"
-          IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right" Opened="SelectCarPopup_OnOpened"
+          IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right" Opened="OnSelectCarPopupOpened"
           mui:PopupHelper.Register="True">
         <Grid Width="320" DataContext="{x:Reference This}">
           <Grid.RowDefinitions>
@@ -192,6 +192,9 @@
                   <mui:BetterTextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
                       ToolTip="{x:Static g:AppStrings.RaceGrid_CandidatePriority}" Style="{StaticResource Borderless.White.Small}" VerticalAlignment="Center"
                       Width="20" Mode="Positive" />
+                  <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                      VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                      Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
                   <TextBlock Text="{Binding DisplayName}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
@@ -226,7 +229,7 @@
                         </mui:InheritingContextMenu>
                       </DockPanel.ContextMenu>
                       <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
-                          Padding="2" Command="{Binding DeleteCommand}">
+                          Padding="2" Command="{Binding DeleteCommand}" ToolTip="{x:Null}">
                         <Button.Style>
                           <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                             <Setter Property="Background" Value="Transparent" />
@@ -239,7 +242,10 @@
                       </Button>
                       <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                           Visibility="Collapsed" x:Name="ErrorIcon" Margin="2 2 4 0" VerticalAlignment="Center" />
-                      <TextBlock x:Name="Name" Text="{Binding DisplayName}" />
+                      <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                          VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                          Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
+                      <TextBlock x:Name="EntryName" Text="{Binding DisplayName}" />
                     </DockPanel>
                     <DataTemplate.Triggers>
                       <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">
@@ -248,7 +254,7 @@
                         <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                        <Setter TargetName="Name" Property="Opacity" Value="0.5" />
+                        <Setter TargetName="EntryName" Property="Opacity" Value="0.5" />
                       </DataTrigger>
                     </DataTemplate.Triggers>
                   </DataTemplate>

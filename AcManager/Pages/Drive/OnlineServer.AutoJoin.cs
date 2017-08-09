@@ -9,7 +9,7 @@ namespace AcManager.Pages.Drive {
             private bool _autoJoinActive;
 
             public bool AutoJoinActive {
-                get { return _autoJoinActive; }
+                get => _autoJoinActive;
                 set {
                     if (Equals(value, _autoJoinActive)) return;
                     _autoJoinActive = value;
@@ -22,7 +22,7 @@ namespace AcManager.Pages.Drive {
             private bool _autoJoinAnyCar;
 
             public bool AutoJoinAnyCar {
-                get { return _autoJoinAnyCar; }
+                get => _autoJoinAnyCar;
                 set {
                     if (Equals(value, _autoJoinAnyCar)) return;
                     _autoJoinAnyCar = value;

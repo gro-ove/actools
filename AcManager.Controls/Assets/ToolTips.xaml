@@ -13,7 +13,7 @@
   <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:CarObject}">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
-      <u:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="640" />
+      <u:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>
   </ToolTip>
 </ResourceDictionary>

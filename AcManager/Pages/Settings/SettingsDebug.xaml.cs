@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -19,14 +21,45 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Settings {
     [Localizable(false)]
-    public partial class SettingsDebug {
+    public partial class SettingsDebug : INotifyPropertyChanged {
+        private sealed class RingStyle : Displayable {
+            public string Key { get; }
+
+            public RingStyle(string key) {
+                Key = key;
+                DisplayName = AcStringValues.NameFromId(key.ApartFromLast("ProgressRingStyle"));
+            }
+        }
+
         public SettingsDebug() {
             InitializeComponent();
             DataContext = new ViewModel();
+
+            ProgressRingsComboBox.SelectionChanged += (sender, args) => {
+                var s = ((ComboBox)sender).SelectedItem as RingStyle;
+                ModernProgressRing.Style = TryFindResource(s?.Key ?? "") as Style;
+            };
+
+            ProgressRingsComboBox.ItemsSource = ((string[])FindResource("ProgressRingStyles")).Select(x => new RingStyle(x)).ToArray();
+            ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault();
+            ProgressRingColor = (Color)FindResource("AccentColor");
+        }
+
+        private Color _progressRingColor;
+
+        public Color ProgressRingColor {
+            get => _progressRingColor;
+            set {
+                if (Equals(value, _progressRingColor)) return;
+                _progressRingColor = value;
+                OnPropertyChanged();
+                ModernProgressRing.Resources["AccentColor"] = value;
+                ModernProgressRing.Resources["Accent"] = new SolidColorBrush(value);
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -125,6 +158,13 @@ namespace AcManager.Pages.Settings {
 
                 //MakeCollage(Directory.GetFiles(@"C:\Users\Carrot\Desktop\Temp\0", "ic_*.png"), @"C:\Users\Carrot\Desktop\Temp\0\comb.png");
             }));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

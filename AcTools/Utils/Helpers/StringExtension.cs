@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -208,6 +209,19 @@ namespace AcTools.Utils.Helpers {
             return place == -1 ? s : s.Remove(place, what.Length).Insert(place, replacement);
         }
 
+        [Pure, NotNull]
+        public static Encoding GetEncoding([NotNull] this byte[] bytes) {
+            if (bytes.StartsWith(Encoding.UTF8.GetPreamble()) || Utf8Checker.IsUtf8(bytes, 200)) {
+                return Encoding.UTF8;
+            }
+
+            if (bytes.StartsWith(Encoding.Unicode.GetPreamble())) return Encoding.Unicode;
+            if (bytes.StartsWith(Encoding.BigEndianUnicode.GetPreamble())) return Encoding.BigEndianUnicode;
+            if (bytes.StartsWith(Encoding.UTF32.GetPreamble())) return Encoding.UTF32;
+            if (bytes.StartsWith(Encoding.UTF7.GetPreamble())) return Encoding.UTF7;
+            return Encoding.Default;
+        }
+
         /// <summary>
         /// Convert bytes to using UTF8 (only if it’s a correct one) or Default encoding.
         /// </summary>
@@ -215,7 +229,7 @@ namespace AcTools.Utils.Helpers {
         /// <returns></returns>
         [Pure, NotNull]
         public static string ToUtf8String([NotNull] this byte[] bytes) {
-            return (UTF8Checker.IsUtf8(bytes, 200) ? Encoding.UTF8 : Encoding.Default).GetString(bytes);
+            return GetEncoding(bytes).GetString(bytes);
         }
 
         [Pure]

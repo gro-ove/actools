@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+    xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+
   <!-- Light theme — whitish background, dark text -->
   <!-- Special colors -->
   <Color x:Key="GoColor">#8BC34A</Color>
@@ -11,24 +11,27 @@
   <Color x:Key="CarPowerColor">#A20025</Color>
   <Color x:Key="CarTorqueColor">#A2A200</Color>
 
-	<!-- Favourites, rating -->
-	<SolidColorBrush x:Key="FavouriteBrush" Color="#DD2C00" />
-	<SolidColorBrush x:Key="RatingBrush" Color="#FFAB00" />
-	<SolidColorBrush x:Key="RatingCompactBackground" Color="#212122" />
+  <!-- Favourites, rating -->
+  <SolidColorBrush x:Key="FavouriteBrush" Color="#DD2C00" />
+  <SolidColorBrush x:Key="RatingBrush" Color="#FFAB00" />
+  <SolidColorBrush x:Key="RatingCompactBackground" Color="#212122" />
 
-	<!-- Places -->
-	<SolidColorBrush x:Key="GoldBrush" Color="#E0E000" />
-	<SolidColorBrush x:Key="SilverBrush" Color="#A3A3A3" />
-	<SolidColorBrush x:Key="BronzeBrush" Color="#A52A2A" />
+  <!-- Places -->
+  <SolidColorBrush x:Key="GoldBrush" Color="#E0E000" />
+  <SolidColorBrush x:Key="SilverBrush" Color="#A3A3A3" />
+  <SolidColorBrush x:Key="BronzeBrush" Color="#A52A2A" />
 
-	<!-- Underlying color and filter for car upgrade icons -->
-	<SolidColorBrush x:Key="CarIconBackground" Color="Transparent" />
+	<!-- Time delta -->
+	<SolidColorBrush x:Key="TimePositiveDelta" Color="#601605" />
+
+  <!-- Underlying color and filter for car upgrade icons -->
+  <SolidColorBrush x:Key="CarIconBackground" Color="Transparent" />
   <mui:InvertKeepColorEffect x:Key="CarIconEffect" />
-	<SolidColorBrush x:Key="TrackOutlineAloneBackground" Color="Transparent" />
+  <SolidColorBrush x:Key="TrackOutlineAloneBackground" Color="Transparent" />
   <mui:InvertKeepColorEffect x:Key="TrackOutlineAloneEffect" />
 
-	<!-- Effect for game loading animation -->
-	<x:Null x:Key="GameLoadingAnimationEffect" />
+  <!-- Effect for game loading animation -->
+  <x:Null x:Key="GameLoadingAnimationEffect" />
 
   <!-- For example, on dark stripe car’s and track’s names are written on quick drive page -->
   <SolidColorBrush x:Key="DarkStripeText" Color="#000000" />
@@ -46,7 +49,13 @@
   <SolidColorBrush x:Key="CardHeaderText" Color="#000000" />
 
   <!-- For semi-transparent list items -->
-  <system:Double x:Key="BackgroundAccentOpacity">0.12</system:Double>
+	<SolidColorBrush x:Key="ItemBackgroundSelectedSubtle" Color="{DynamicResource AccentColor}" Opacity="0.04" />
+  <!--<LinearGradientBrush x:Key="ItemBackgroundSelectedSubtle" EndPoint="0,0" StartPoint="8,8" MappingMode="Absolute" SpreadMethod="Repeat" Opacity="0.12">
+    <GradientStop Color="{DynamicResource AccentColor}" Offset="0" />
+    <GradientStop Color="{DynamicResource AccentColor}" Offset="0.2" />
+    <GradientStop Color="Transparent" Offset="0.2" />
+    <GradientStop Color="Transparent" Offset="1" />
+  </LinearGradientBrush>-->
 
   <!-- Windows -->
   <Color x:Key="WindowBackgroundColor">#FAFAFA</Color>
@@ -130,7 +139,7 @@
   <SolidColorBrush x:Key="MenuText" Color="#66000000" />
   <SolidColorBrush x:Key="MenuTextHover" Color="#BB000000" />
   <SolidColorBrush x:Key="MenuTextSelected" Color="#212122" />
-	<SolidColorBrush x:Key="MenuTextDisabled" Color="#33000000" />
+  <SolidColorBrush x:Key="MenuTextDisabled" Color="#33000000" />
 
   <SolidColorBrush x:Key="ModernButtonBorder" Color="#919191" />
   <SolidColorBrush x:Key="ModernButtonBorderHover" Color="#212122" />
@@ -179,21 +188,21 @@
   <SolidColorBrush x:Key="SubMenuTextHover" Color="#66000000" />
   <SolidColorBrush x:Key="SubMenuTextSelected" Color="#212122" />
 
-	<!-- Fancy hints -->
-	<SolidColorBrush x:Key="FancyHintBackground" Color="#C4000000" />
-	<SolidColorBrush x:Key="FancyHintText" Color="#FFFFFF" />
-	<mui:GrayscaleEffect x:Key="FancyHintTextEffect" SaturationFactor="1" />
-	<mui:GrayscaleEffect x:Key="FancyHintButtonsEffect" SaturationFactor="1" />
-	<SolidColorBrush x:Key="FancyHintButtonBackground" Color="#333333" />
-	<SolidColorBrush x:Key="FancyHintButtonBackgroundHover" Color="#3E3E42" />
-	<SolidColorBrush x:Key="FancyHintButtonBackgroundPressed" Color="{DynamicResource AccentColor}" />
-	<SolidColorBrush x:Key="FancyHintButtonBorder" Color="#333333" />
-	<SolidColorBrush x:Key="FancyHintButtonBorderHover" Color="#3E3E42" />
-	<SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
-	<SolidColorBrush x:Key="FancyHintButtonText" Color="#FFFFFF" />
-	<SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#FFFFFF" />
-	<SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#FFFFFF" />
-	<SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
+  <!-- Fancy hints -->
+  <SolidColorBrush x:Key="FancyHintBackground" Color="#C4000000" />
+  <SolidColorBrush x:Key="FancyHintText" Color="#FFFFFF" />
+  <mui:GrayscaleEffect x:Key="FancyHintTextEffect" SaturationFactor="1" />
+  <mui:GrayscaleEffect x:Key="FancyHintButtonsEffect" SaturationFactor="1" />
+  <SolidColorBrush x:Key="FancyHintButtonBackground" Color="#333333" />
+  <SolidColorBrush x:Key="FancyHintButtonBackgroundHover" Color="#3E3E42" />
+  <SolidColorBrush x:Key="FancyHintButtonBackgroundPressed" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="FancyHintButtonBorder" Color="#333333" />
+  <SolidColorBrush x:Key="FancyHintButtonBorderHover" Color="#3E3E42" />
+  <SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="FancyHintButtonText" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->
   <system:String x:Key="TextEditorSyntaxIni"><![CDATA[

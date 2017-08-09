@@ -3,6 +3,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
@@ -13,6 +14,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = GetTexture("txNormal", contextHolder);
+            if (Kn5Material.GetPropertyValueAByName("nmObjectSpace") != 0) {
+                Flags |= EffectDarkMaterial.NmObjectSpace;
+            }
+
             base.Initialize(contextHolder);
         }
 

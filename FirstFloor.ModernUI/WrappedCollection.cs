@@ -121,9 +121,11 @@ namespace FirstFloor.ModernUI {
                     } else {
                         var oldItem = items[e.OldStartingIndex];
                         var newItem = Wrap((TSource)e.NewItems[0]);
-                        items[e.OldStartingIndex] = newItem;
-                        OnIndexerChanged();
-                        OnCollectionChanged(NotifyCollectionChangedAction.Replace, oldItem, newItem, e.OldStartingIndex);
+                        if (!Equals(oldItem, newItem)) {
+                            items[e.OldStartingIndex] = newItem;
+                            OnIndexerChanged();
+                            OnCollectionChanged(NotifyCollectionChangedAction.Replace, oldItem, newItem, e.OldStartingIndex);
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:

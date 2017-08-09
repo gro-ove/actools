@@ -19,8 +19,8 @@ namespace AcTools.Render.Base.Shadows {
                 _innerCamera.SetLens(1f);
             }
 
-            public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
-                base.LookAt(pos, target, up);
+            protected override void LookAtOverride(Vector3 pos, Vector3 target, Vector3 up) {
+                base.LookAtOverride(pos, target, up);
 
                 if (!Equals(_innerCamera.FarZ, FarZ)) {
                     _innerCamera.Aspect = Aspect;
@@ -91,7 +91,7 @@ namespace AcTools.Render.Base.Shadows {
                     ShadowTransform = shadowTransform;
                     return true;
                 }
-                
+
                 return false;
             }
 

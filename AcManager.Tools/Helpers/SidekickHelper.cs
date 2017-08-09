@@ -41,13 +41,17 @@ namespace AcManager.Tools.Helpers {
         private static Tuple<double, double> GetOptimalRange([CanBeNull] Lut lut) {
             if (lut == null) return null;
 
+            lut.UpdateBoundingBox();
+            var threshold = Math.Min(lut.MaxY, 1d) * 0.999d;
+
             double? fromX = null, toX = null;
             for (var i = 0; i < lut.Count; i++) {
                 var point = lut[i];
-                if (point.Y >= 0.999d) {
+                if (point.Y >= threshold) {
                     if (!fromX.HasValue) {
                         fromX = point.X;
                     }
+
                     toX = point.X;
                 }
             }
@@ -60,7 +64,6 @@ namespace AcManager.Tools.Helpers {
 
             var min = Math.Min(range.Item1, range.Item2);
             var max = Math.Max(range.Item1, range.Item2);
-
             var changed = false;
 
             if (!Equals(section.GetDouble(maxKey, 0d), max)) {
@@ -247,7 +250,7 @@ namespace AcManager.Tools.Helpers {
             var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
             if (!File.Exists(filename)) return;
 
-            OdometerImportIfNeeded(carId, new IniFile(filename)[carId].GetDouble("odometer", 0d));
+            OdometerImportIfNeeded(carId, new IniFile(filename)[carId].GetDouble("odometer", 0d) * 1e3);
         }
 
         public static void OdometerExport([NotNull] string carId) {
@@ -261,13 +264,13 @@ namespace AcManager.Tools.Helpers {
 
             var ini = new IniFile(filename);
             var section = ini[carId];
-            var appDistance = section.GetDouble("odometer", 0d);
+            var appDistance = section.GetDouble("odometer", 0d) * 1e3;
             if (cmDistance <= appDistance + 100) return;
 
-            section.Set("odometer", cmDistance);
+            section.Set("odometer", cmDistance / 1e3);
 
             if (!section.ContainsKey("odometer.originalvalue")) {
-                section.Set("odometer.originalvalue", appDistance);
+                section.Set("odometer.originalvalue", appDistance / 1e3);
             }
 
             ini.Save();

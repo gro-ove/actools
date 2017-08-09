@@ -41,16 +41,16 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             };
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var xaml = EntryPath;
-            if (string.IsNullOrWhiteSpace(xaml)) return info => null;
+            if (string.IsNullOrWhiteSpace(xaml)) return new CopyCallback(null);
 
             var resources = EntryPath.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase);
-            return info => {
+            return new CopyCallback(info => {
                 var filename = info.Key;
                 return FileUtils.ArePathsEqual(filename, xaml) ? Path.Combine(destination, Path.GetFileName(xaml))
                         : FileUtils.IsAffected(resources, filename) ? Path.Combine(destination, FileUtils.GetRelativePath(filename, resources)) : null;
-            };
+            });
         }
 
         protected override async Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
@@ -81,15 +81,15 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             };
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var path = EntryPath;
-            return fileInfo => {
+            return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
                 if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);
-            };
+            });
         }
 
         protected override Task<string> GetDestination(CancellationToken cancellation) {
@@ -120,10 +120,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             };
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var path = EntryPath;
-            if (string.IsNullOrWhiteSpace(path)) return info => null;
-            return info => FileUtils.ArePathsEqual(info.Key, path) ? _destination : null;
+            return string.IsNullOrWhiteSpace(path) ? new CopyCallback(null) :
+                    new CopyCallback(info => FileUtils.ArePathsEqual(info.Key, path) ? _destination : null);
         }
 
         protected override Task<string> GetDestination(CancellationToken cancellation) {

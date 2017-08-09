@@ -144,6 +144,10 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
+        public static float[] ToArray(this Quaternion q) {
+            return new[] { q.X, q.Y, q.Z, q.W };
+        }
+
         public static Quaternion ToQuaternion(this float[] quaternion4) {
             return new Quaternion(quaternion4[0], quaternion4[1], quaternion4[2], quaternion4[3]);
         }
@@ -194,11 +198,22 @@ namespace AcTools.Render.Base.Utils {
             };
         }
 
+        public static Matrix LookAtMatrixConsiderUp(this Vector3 o, Vector3 p, Vector3 u) {
+            var d = Vector3.Normalize(p - o);
+            u.Normalize();
+            var s = Vector3.Normalize(Vector3.Cross(d, u));
+            return ToMatrix(
+                    d.X, d.Y, d.Z, 0,
+                    u.X, u.Y, u.Z, 0,
+                    s.X, s.Y, s.Z, 0,
+                    o.X, o.Y, o.Z, 1);
+        }
+
         public static Matrix LookAtMatrixXAxis(this Vector3 o, Vector3 p, Vector3 u) {
             var d = Vector3.Normalize(p - o);
             var s = Vector3.Normalize(Vector3.Cross(d, Vector3.Normalize(u)));
             var v = Vector3.Cross(s, d);
-            return SlimDxExtension.ToMatrix(
+            return ToMatrix(
                     d.X, d.Y, d.Z, 0,
                     v.X, v.Y, v.Z, 0,
                     s.X, s.Y, s.Z, 0,
@@ -209,7 +224,7 @@ namespace AcTools.Render.Base.Utils {
             var d = Vector3.Normalize(o - p);
             var s = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
             var v = Vector3.Normalize(Vector3.Cross(d, s));
-            return SlimDxExtension.ToMatrix(
+            return ToMatrix(
                     v.X, v.Y, v.Z, 0,
                     d.X, d.Y, d.Z, 0,
                     s.X, s.Y, s.Z, 0,

@@ -5,7 +5,8 @@
   <Color x:Key="ErrorColor">DarkOrange</Color>
   <Color x:Key="GoColor">Lime</Color>
 
-  <system:Double x:Key="BackgroundAccentOpacity">0.18</system:Double>
+  <!-- For semi-transparent list items -->
+  <SolidColorBrush x:Key="ItemBackgroundSelectedSubtle" Color="{DynamicResource AccentColor}" Opacity="0.18" />
 
   <Color x:Key="WindowBackgroundColor">#252526</Color>
   <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />

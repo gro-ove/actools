@@ -1,7 +1,7 @@
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
-namespace AcManager.ContentRepair.Repairs {
+namespace AcManager.ContentRepair.Critical {
     // ERROR: Car fc1_2015_brackley_gp cannot have setup items for ROD_LENGTH_HF when a front suspension is also present
     public class RodLengthHeaveRepair : CarSimpleRepairBase {
         private enum Suspension { Front, Rear }
@@ -47,7 +47,7 @@ namespace AcManager.ContentRepair.Repairs {
             var rear = setupIni.ContainsKey("ROD_LENGTH_HR") && IsSuspensionPresent(data, Suspension.Rear);
             if (!front && !rear) return null;
 
-            return new ContentObsoleteSuggestion("Heave’s length can’t be customized with existing suspension",
+            return new ContentObsoleteSuggestion("Heaveâ€™s length canâ€™t be customized with existing suspension",
                     "Some time ago, it was possible, but now AC just crashes if there is ROD_LENGTH_HF or ROD_LENGTH_HR section in setup.ini.",
                     (p, c) => FixAsync(car, p, c)) {
                         AffectsData = true

@@ -104,11 +104,8 @@ namespace AcTools.Render.Data {
         #region Lights
         public class LightObject {
             public string Name { get; }
-
             public Vector3? HeadlightColor { get; }
-
             public Vector3? BrakeColor { get; }
-
             public TimeSpan? Duration { get; }
 
             public LightObject(string name, Vector3? headlightColor, Vector3? brakeColor, float? duration) {
@@ -175,11 +172,8 @@ namespace AcTools.Render.Data {
             }
 
             public int WheelIndex { get; }
-
             public string Name { get; }
-
             public float MinSpeed { get; }
-
             public float MaxSpeed { get; }
 
             public static IEnumerable<Tuple<string, bool>> GetNamesToToggle(BlurredObject[] list, float speed) {
@@ -203,9 +197,7 @@ namespace AcTools.Render.Data {
         #region LODs
         public class LodDescription {
             public string FileName { get; }
-
             public float In { get; }
-
             public float Out { get; }
 
             internal LodDescription(IniFileSection fileSection) {
@@ -224,11 +216,8 @@ namespace AcTools.Render.Data {
         #region Colliders
         public class ColliderDescription {
             public string Name { get; }
-
             public Vector3 Center { get; }
-
             public Vector3 Size { get; }
-
             public bool GroundEnable { get; }
 
             internal ColliderDescription(string name, IniFileSection fileSection) {
@@ -252,11 +241,8 @@ namespace AcTools.Render.Data {
         #region Flames
         public class FlameDescription {
             public string Name { get; }
-
             public Vector3 Position { get; }
-
             public Vector3 Direction { get; }
-
             public int Group { get; }
 
             internal FlameDescription(string name, IniFileSection fileSection, Matrix graphicMatrix) {
@@ -377,9 +363,7 @@ namespace AcTools.Render.Data {
             }
 
             public abstract string Name { get; }
-
             public abstract string Kpi { get; }
-
             public abstract string Caster { get; }
 
             public event PropertyChangedEventHandler PropertyChanged {
@@ -418,9 +402,7 @@ namespace AcTools.Render.Data {
             public SuspensionBase Both { get; }
 
             public override string Name => Both.DisplayType;
-
             public override string Kpi => Both.Kpi.ToString("F3");
-
             public override string Caster => Both.Caster.ToString("F3");
         }
 
@@ -432,17 +414,13 @@ namespace AcTools.Render.Data {
             }
 
             public Vector3 Start { get; }
-
             public Vector3 End { get; }
-
             public Color Color { get; }
         }
 
         public abstract class SuspensionBase {
             public bool Front { get; }
-
             public float WheelRadius { get; }
-
             public abstract string DisplayType { get; }
 
             protected SuspensionBase(bool front, float wheelRadius) {
@@ -451,7 +429,6 @@ namespace AcTools.Render.Data {
             }
 
             public Vector3 RefPoint { get; protected set; }
-
             public float StaticCamber { get; protected set; }
 
             #region Caster
@@ -488,25 +465,21 @@ namespace AcTools.Render.Data {
             }
 
             public Vector3 Car { get; }
-
             public Vector3 Axle { get; }
         }
 
         public class AxleSuspension : SuspensionBase {
             public float AxleWidth { get; }
-
             public AxleLink[] Links { get; }
-
             public override string DisplayType => "Axle";
-
             protected override float CasterOverride => 0f;
-
             protected override float KpiOverride => 0f;
 
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => Tuple.Create(
-                new Vector3(AxleWidth / 2f, -1f, 0f), new Vector3(AxleWidth / 2f, 1f, 0f));
+                    new Vector3(AxleWidth / 2f, -1f, 0f), new Vector3(AxleWidth / 2f, 1f, 0f));
 
-            public AxleSuspension(IniFileSection basic, IniFileSection section, IniFileSection axleSection, bool front, float wheelRadius) : base(front, wheelRadius) {
+            public AxleSuspension(IniFileSection basic, IniFileSection section, IniFileSection axleSection, bool front, float wheelRadius)
+                    : base(front, wheelRadius) {
                 var baseY = section.GetFloat("BASEY", 1f);
                 var track = section.GetFloat("TRACK", 1f);
                 var wheelbase = basic.GetFloat("WHEELBASE", 2f);
@@ -524,15 +497,14 @@ namespace AcTools.Render.Data {
             }
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => Links.Select(x => new DebugLine(Color.Aqua, x.Car, x.Axle)).Append(
-                new DebugLine(Color.White, new Vector3(-AxleWidth / 2f, 0f, 0f), new Vector3(AxleWidth / 2f, 0f, 0f)));
+                    new DebugLine(Color.White, new Vector3(-AxleWidth / 2f, 0f, 0f), new Vector3(AxleWidth / 2f, 0f, 0f)));
         }
 
         public abstract class EightPointsSuspensionBase : SuspensionBase {
             public Vector3[] Points { get; } = new Vector3[8];
-
             protected override float KpiOverride => ((Points[4].X - Points[5].X) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
 
-            public EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) {}
+            public EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) { }
         }
 
         public class DwbSuspension : EightPointsSuspensionBase {
@@ -559,9 +531,7 @@ namespace AcTools.Render.Data {
             }
 
             public override string DisplayType => "DWB";
-
             protected override float CasterOverride => ((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
-
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[5], Points[4]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new[] {
@@ -597,9 +567,7 @@ namespace AcTools.Render.Data {
             }
 
             public override string DisplayType => "Strut";
-
             protected override float CasterOverride => ((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)).Atan() * 57.2957795f;
-
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[1], Points[0]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new [] {
@@ -631,11 +599,8 @@ namespace AcTools.Render.Data {
             public CameraDescription(float fov, Vector3 position, Vector3 look) : this(fov, position, look, Vector3.UnitY) { }
 
             public Vector3 Position { get; }
-
             public Vector3 Look { get; }
-
             public Vector3 Up { get; }
-
             public float Fov { get; }
 
             public FpsCamera ToCamera() {
@@ -698,32 +663,23 @@ namespace AcTools.Render.Data {
             return IsEmpty ? new CameraDescription[0] :
                     _data.GetIniFile("cameras.ini")
                          .GetSections("CAMERA")
-                         .Select(x => new CameraDescription(x.GetFloat("FOV", 56f), x.GetSlimVector3("POSITION"), x.GetSlimVector3("FORWARD"), x.GetSlimVector3("UP")));
+                         .Select(x => new CameraDescription(x.GetFloat("FOV", 56f), x.GetSlimVector3("POSITION"), x.GetSlimVector3("FORWARD"),
+                                 x.GetSlimVector3("UP")));
         }
         #endregion
 
         #region Wheels
         public class WheelDescription {
             public string Name { get; }
-
             public bool IsLeft => CenterWheel.X > 0f;
-
             public bool IsFront => CenterWheel.Z > 0f;
-
             public Vector3 CenterWheel { get; }
-
             public Vector3 CenterSusp { get; }
-
             public float Radius { get; }
-
             public float RimRadius { get; }
-
             public float Width { get; }
-
             public float BaseY { get; }
-
             public float StaticCamber { get; }
-
             public float StaticToe { get; }
 
             internal WheelDescription(string name, IniFileSection wheelsPairSection, IniFileSection axleSection, IniFileSection graphicOffsetSection,
@@ -774,13 +730,9 @@ namespace AcTools.Render.Data {
         #region Wings
         public class WingDescription {
             public string Name { get; }
-
             public float Chord { get; }
-
             public float Span { get; }
-
             public float Angle { get; }
-
             public Vector3 Position { get; }
 
             public WingDescription(IniFileSection section) {
@@ -803,11 +755,8 @@ namespace AcTools.Render.Data {
         #region Wings animations
         public class WingAnimation : AnimationBase {
             public int Id { get; }
-
             public int? Next { get; }
-
             public float StartAngle { get; }
-
             public float AngleRange { get; }
 
             public WingAnimation(IniFileSection section) : base(section.GetNonEmpty("FILE"), section.GetFloat("TIME", 1f)) {
@@ -850,9 +799,7 @@ namespace AcTools.Render.Data {
             }
 
             public string NodeName { get; }
-
             public float Rpm { get; }
-
             public Vector3 Axis { get; }
         }
 
@@ -867,35 +814,43 @@ namespace AcTools.Render.Data {
 
         #region Driver
         public class DriverDescription {
-            public DriverDescription(string name, Vector3 offset, string steerAnimation, float steerAnimationLock) {
-                Name = name;
-                Offset = offset;
-                SteerAnimation = steerAnimation;
-                SteerAnimationLock = steerAnimationLock;
+            public DriverDescription(IniFile ini) {
+                var model = ini["MODEL"];
+                Name = model.GetNonEmpty("NAME");
+                Offset = model.GetSlimVector3("POSITION");
+
+                var steer = ini["STEER_ANIMATION"];
+                SteerAnimation = steer.GetNonEmpty("NAME", "steer.ksanim");
+                SteerAnimationLock = steer.GetFloat("LOCK", 360f);
+
+                var shift = ini["SHIFT_ANIMATION"];
+                ShiftAnimation = shift.GetNonEmpty("NAME", "shift.ksanim");
+                ShiftInvertHands = shift.GetBool("INVERT_SHIFTING_HANDS", false);
+                ShiftBlendDuration = TimeSpan.FromMilliseconds(shift.GetDouble("BLEND_TIME", 100));
+                ShiftPositiveDuration = TimeSpan.FromMilliseconds(shift.GetDouble("POSITIVE_TIME", 200));
+                ShiftStaticDuration = TimeSpan.FromMilliseconds(shift.GetDouble("STATIC_TIME", 10));
+                ShiftNegativeDuration = TimeSpan.FromMilliseconds(shift.GetDouble("NEGATIVE_TIME", 200));
             }
 
             public string Name { get; }
-
             public Vector3 Offset { get; }
 
             public string SteerAnimation { get; }
-
             public float SteerAnimationLock { get; }
+
+            public string ShiftAnimation { get; }
+            public bool ShiftInvertHands { get; }
+            public TimeSpan ShiftBlendDuration { get; }
+            public TimeSpan ShiftPositiveDuration { get; }
+            public TimeSpan ShiftStaticDuration { get; }
+            public TimeSpan ShiftNegativeDuration { get; }
         }
 
         [CanBeNull]
         public DriverDescription GetDriverDescription() {
             if (IsEmpty) return null;
-
-            var driver = _data.GetIniFile("driver3d.ini");
-
-            var model = driver["MODEL"];
-            var modelName = model.GetNonEmpty("NAME");
-            if (modelName == null) return null;
-
-            var steer = driver["STEER_ANIMATION"];
-            return new DriverDescription(modelName, model.GetSlimVector3("POSITION"),
-                    steer.GetNonEmpty("NAME", "steer.ksanim"), steer.GetFloat("LOCK", 360f));
+            var driver = new DriverDescription(_data.GetIniFile("driver3d.ini"));
+            return driver.Name == null ? null : driver;
         }
         #endregion
 

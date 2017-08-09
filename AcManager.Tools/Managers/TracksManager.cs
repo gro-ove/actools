@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
@@ -70,7 +71,7 @@ namespace AcManager.Tools.Managers {
         }
 
         /// <summary>
-        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly 
+        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly
         /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
         /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
         /// and yet Kunos managed to select not only the character which could be in directory’s name, but
@@ -97,7 +98,7 @@ namespace AcManager.Tools.Managers {
         }
 
         /// <summary>
-        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly 
+        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly
         /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
         /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
         /// and yet Kunos managed to select not only the character which could be in directory’s name, but
@@ -118,7 +119,7 @@ namespace AcManager.Tools.Managers {
 
         /// <summary>
         /// Specially for some damaged entries collected by the old version of PlayerStatsManager. The new
-        /// one is still can record shorten IDs, but now — only when race.ini changed after  the start, 
+        /// one is still can record shorten IDs, but now — only when race.ini changed after  the start,
         /// and how can that happen?
         /// </summary>
         [CanBeNull]
@@ -159,6 +160,10 @@ namespace AcManager.Tools.Managers {
 
         protected override TrackObject CreateAcObject(string id, bool enabled) {
             return new TrackObject(this, id, enabled);
+        }
+
+        protected override TaskbarHolder GetTaskbarProgress() {
+            return TaskbarService.Create(4.9);
         }
 
         private static readonly string[] WatchedFileNames = {

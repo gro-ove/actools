@@ -62,7 +62,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 if (File.Exists(destination)) return destination;
 
                 var temporary = destination + ".tmp";
-                await LoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation);
+                await LoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
                 cancellation.ThrowIfCancellationRequested();
 
                 if (File.Exists(temporary)) {
@@ -85,7 +85,8 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
                 File.WriteAllBytes(destination, new byte[0]);
-                return await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation);
+                await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
+                return destination;
             }
         }
 
@@ -116,8 +117,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        [ItemNotNull]
-        public static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
                 Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
 
@@ -182,8 +182,6 @@ namespace AcManager.Tools.Helpers.Loaders {
             } catch (Exception) when (cancellation.IsCancellationRequested) {
                 throw new OperationCanceledException();
             }
-
-            return destination;
         }
     }
 }

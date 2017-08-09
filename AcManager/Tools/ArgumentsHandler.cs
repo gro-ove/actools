@@ -6,6 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.CustomShowroom;
 using AcManager.Tools.ContentInstallation;
@@ -15,8 +19,10 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using OxyPlot.Reporting;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools {
@@ -38,16 +44,54 @@ namespace AcManager.Tools {
 
         private static List<string> _previousArguments;
 
+        #region Events handling
+        public static void OnPaste() {
+            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is ComboBox) {
+                return;
+            }
+
+            try {
+                if (Clipboard.ContainsData(DataFormats.FileDrop)) {
+                    var data = Clipboard.GetFileDropList().OfType<string>().ToList();
+                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(data));
+                } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
+                    var list = Clipboard.GetText().SplitLines();
+                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(list));
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
+        public static void OnDrop(object sender, DragEventArgs e) {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
+
+            (sender as IInputElement)?.Focus();
+            var data = e.GetInputFiles().ToList();
+            ActionExtension.InvokeInMainThreadAsync(() => e.Handled ? Task.Delay(0) : ProcessArguments(data));
+        }
+
+        public static void OnDragEnter(object sender, DragEventArgs e) {
+            if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
+                    (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
+                e.Effects = DragDropEffects.All;
+            }
+        }
+        #endregion
+
+        public enum ShowMainWindow {
+            No, Yes, Immediately,
+        }
+
         /// <summary>
         /// Returns true if MainWindow should be shown afterwards.
         /// </summary>
-        public static async Task<bool> ProcessArguments(IEnumerable<string> arguments, TimeSpan extraDelay = default(TimeSpan)) {
-            var showMainWindow = false;
+        public static async Task<ShowMainWindow> ProcessArguments([CanBeNull] IEnumerable<string> arguments, TimeSpan extraDelay = default(TimeSpan)) {
+            if (arguments == null) return ShowMainWindow.No;
 
             var list = arguments.ToList();
-            if (_previousArguments?.SequenceEqual(list) == true) {
-                return false;
-            }
+            if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
+            if (list.Count == 0) return ShowMainWindow.Immediately;
 
             _previousArguments = list;
 
@@ -61,10 +105,11 @@ namespace AcManager.Tools {
                 if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
                     AllowExecutables = true
                 })).WhenAll()).All(x => !x)) {
-                    await Task.Delay(ContentInstallationManager.OptionFailedDelay);
+                    await Task.Delay(ContentInstallationManager.OptionBiggestDelay);
                 }
             }
 
+            var showMainWindow = false;
             foreach (var arg in list) {
                 var result = await ProcessArgument(arg);
 
@@ -82,7 +127,7 @@ namespace AcManager.Tools {
             }
 
             _previousArguments = null;
-            return showMainWindow;
+            return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
         }
 
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {
@@ -131,12 +176,10 @@ namespace AcManager.Tools {
         /// </summary>
         /// <param name="argument">Remote source.</param>
         /// <param name="destination">Destination.</param>
-        /// <returns>Path to loaded file.</returns>
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
-        [ItemNotNull]
-        private static async Task<string> LoadRemoveFileToNew(string argument, string destination) {
+        private static async Task LoadRemoveFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.LoadAsyncTo(argument, destination, waiting, information => {
+                await FlexibleLoader.LoadAsyncTo(argument, destination, waiting, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }

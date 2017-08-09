@@ -6,24 +6,17 @@ namespace AcTools.Render.Base.Cameras {
     public class FpsCamera : CameraBase {
         public FpsCamera(float fov) : base(fov) {}
 
-        public override void Save() {
-            throw new System.NotImplementedException();
-        }
-
-        public override void Restore() {
-            throw new System.NotImplementedException();
-        }
-
         public override CameraBase Clone() {
             return new FpsCamera(FovY) {
                 Position = Position,
                 Look = Look,
                 Right = Right,
-                Up = Up
+                Up = Up,
+                Tilt = Tilt
             };
         }
 
-        public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
+        protected override void LookAtOverride(Vector3 pos, Vector3 target, Vector3 up) {
             Position = pos;
             Look = Vector3.Normalize(target - pos);
             Right = Vector3.Normalize(Vector3.Cross(up, Look));
@@ -57,8 +50,9 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
-            SetView(RhMode ? Matrix.LookAtRH(Position, Position + Look, Up) :
-                    Matrix.LookAtLH(Position, Position + Look, Up));
+            var target = Position + Look;
+            SetView(RhMode ? Matrix.LookAtRH(Position, target, GetUpTilt(target, Up)) :
+                    Matrix.LookAtLH(Position, target, GetUpTilt(target, Up)));
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();
         }

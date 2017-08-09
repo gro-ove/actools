@@ -6,7 +6,7 @@ using AcTools.Render.Base.Shadows;
 namespace AcTools.Render.Base {
     public abstract class SceneRenderer : BaseRenderer, IReflectionDraw, IShadowsDraw {
         public readonly RenderableList Scene;
-        
+
         public CameraBase Camera { get; protected set; }
 
         protected SceneRenderer() {
@@ -20,7 +20,7 @@ namespace AcTools.Render.Base {
         private bool _lockCamera;
 
         public bool LockCamera {
-            get { return _lockCamera; }
+            get => _lockCamera;
             set {
                 if (Equals(value, _lockCamera)) return;
                 _lockCamera = value;

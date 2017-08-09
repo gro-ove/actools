@@ -258,7 +258,7 @@
 		float2 reflectedUv = coords + firstStep.xy;
 		// return firstStep.r;
 
-		float3 diffuseColor = gDiffuseMap.SampleLevel(s, coords, 0).rgb;
+		float4 diffuseColor = gDiffuseMap.SampleLevel(s, coords, 0);
 		float specularExp = gNormalMap.Sample(s, coords).a;
 
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
@@ -274,7 +274,7 @@
 
 		// reflection = float4(0, 0, 0, 1);
 		float a = reflection.a * baseReflection.a;
-		return float4(diffuseColor + (reflection.rgb - baseReflection.rgb) * a, 1.0);
+		return float4(diffuseColor.rgb + (reflection.rgb - baseReflection.rgb) * a, diffuseColor.a);
 	}
 
 	float4 ps_FinalStep(PS_IN pin) : SV_Target {

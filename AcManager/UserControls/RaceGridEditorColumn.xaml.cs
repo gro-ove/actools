@@ -165,7 +165,7 @@ namespace AcManager.UserControls {
 
         public static readonly IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
 
-        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {}
+        private void OnItemDoubleClick(object sender, MouseButtonEventArgs e) {}
 
         private void OnItemsControlDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
@@ -186,7 +186,7 @@ namespace AcManager.UserControls {
             e.Effects = DragDropEffects.Move;
         }
 
-        private void SelectCarPopup_OnOpened(object sender, EventArgs e) {
+        private void OnSelectCarPopupOpened(object sender, EventArgs e) {
             if (SelectedCar == null) {
                 SelectedCar = LoadSelected() ?? Model?.PlayerCar ?? CarsManager.Instance.GetDefault();
             }

@@ -579,6 +579,8 @@ namespace AcManager.Tools {
             try {
                 using (var bitmap = Image.FromFile(skin.PreviewImage)) {
                     var baseColors = ImageUtils.GetBaseColors((Bitmap)bitmap);
+                    Logging.Debug("Colors from preview: " + baseColors.Select(x => x.ToString()).JoinToString(", "));
+
                     var a = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
                     var b = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
                     var c = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;

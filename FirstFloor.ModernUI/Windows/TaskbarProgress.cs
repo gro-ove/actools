@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -17,7 +18,7 @@ namespace FirstFloor.ModernUI.Windows {
         private TaskbarState _state;
 
         public TaskbarProgress() : this(Application.Current?.MainWindow) {
-            // if Application.Current == null, it will cause a crash
+            // If Application.Current == null, it will cause a crash
         }
 
         public TaskbarProgress(Window window) {
@@ -35,12 +36,7 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public void Set(double value) {
-            value = value < 0d ? 0d : value > 1d ? 1d : value;
-            if (Equals(value, 0d)) {
-                SetValue(_windowHandle, 0, 1);
-            } else {
-                SetValue(_windowHandle, 1, (ulong)(1d / value));
-            }
+            SetValue(_windowHandle, (ulong)(value < 0d ? 0d : value > 1d ? 1d : value * 100000d), 100000UL);
         }
 
         public void Set(long value, long max) {
@@ -57,19 +53,21 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
-        [ComImport]
-        [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport, Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ITaskbarList3 {
             // ITaskbarList
             [PreserveSig]
             void HrInit();
+
             [PreserveSig]
             void AddTab(IntPtr hwnd);
+
             [PreserveSig]
             void DeleteTab(IntPtr hwnd);
+
             [PreserveSig]
             void ActivateTab(IntPtr hwnd);
+
             [PreserveSig]
             void SetActiveAlt(IntPtr hwnd);
 
@@ -80,14 +78,13 @@ namespace FirstFloor.ModernUI.Windows {
             // ITaskbarList3
             [PreserveSig]
             void SetProgressValue(IntPtr hwnd, ulong ullCompleted, ulong ullTotal);
+
             [PreserveSig]
             void SetProgressState(IntPtr hwnd, TaskbarState state);
         }
 
-        [Guid("56FDF344-FD6D-11d0-958A-006097C9A090")]
-        [ClassInterface(ClassInterfaceType.None)]
-        [ComImport]
-        private class TaskbarInstance {}
+        [Guid("56FDF344-FD6D-11d0-958A-006097C9A090"), ClassInterface(ClassInterfaceType.None), ComImport]
+        private class TaskbarInstance { }
 
         // ReSharper disable once SuspiciousTypeConversion.Global
         private static readonly ITaskbarList3 Instance = new TaskbarInstance() as ITaskbarList3;

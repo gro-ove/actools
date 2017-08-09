@@ -80,8 +80,8 @@ namespace AcTools.Render.Base {
                     DestinationBlend = BlendOption.InverseSourceAlpha,
                     BlendOperation = BlendOperation.Add,
                     SourceBlendAlpha = BlendOption.One,
-                    DestinationBlendAlpha = BlendOption.Zero,
-                    BlendOperationAlpha = BlendOperation.Add,
+                    DestinationBlendAlpha = BlendOption.One,
+                    BlendOperationAlpha = BlendOperation.Maximum,
                     RenderTargetWriteMask = ColorWriteMaskFlags.All
                 }));
 
@@ -92,7 +92,7 @@ namespace AcTools.Render.Base {
                     DestinationBlend = BlendOption.One,
                     BlendOperation = BlendOperation.Add,
                     SourceBlendAlpha = BlendOption.One,
-                    DestinationBlendAlpha = BlendOption.Zero,
+                    DestinationBlendAlpha = BlendOption.One,
                     BlendOperationAlpha = BlendOperation.Add,
                     RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 }));

@@ -49,6 +49,7 @@ using AcManager.Tools.Starters;
 using AcTools;
 using AcTools.AcdFile;
 using AcTools.DataFile;
+using AcTools.GenericMods;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -147,6 +148,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.NfsPorscheTribute, ref RaceGridViewModel.OptionNfsPorscheNames);
             AppArguments.Set(AppFlag.KeepIniComments, ref IniFile.OptionKeepComments);
             AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
+            AppArguments.Set(AppFlag.GenericModsLogging, ref GenericModsEnabler.OptionLoggingEnabled);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();
@@ -361,8 +363,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
             CommonFixes.Initialize();
 
-            // TODO: rearrange code!
-            CmPreviewsSettings.SelectCarDialog = SelectCarDialog.Show;
             CmPreviewsTools.MissingShowroomHelper = new CarUpdatePreviewsDialog.MissingShowroomHelper();
 
             // paint shop+livery generator?

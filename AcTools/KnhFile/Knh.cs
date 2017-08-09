@@ -1,4 +1,5 @@
 ﻿using System;
+using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcTools.KnhFile {
@@ -6,15 +7,13 @@ namespace AcTools.KnhFile {
         public string OriginalFilename { get; }
 
         private Knh([NotNull] KnhEntry entry) {
-            if (entry == null) throw new ArgumentNullException(nameof(entry));
             OriginalFilename = string.Empty;
-            RootEntry = entry;
+            RootEntry = entry ?? throw new ArgumentNullException(nameof(entry));
         }
 
         private Knh(string filename, [NotNull] KnhEntry entry) {
-            if (entry == null) throw new ArgumentNullException(nameof(entry));
             OriginalFilename = filename;
-            RootEntry = entry;
+            RootEntry = entry ?? throw new ArgumentNullException(nameof(entry));
         }
 
         [NotNull]

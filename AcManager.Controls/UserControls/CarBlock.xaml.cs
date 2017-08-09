@@ -60,6 +60,18 @@ namespace AcManager.Controls.UserControls {
             set => SetValue(ShowSkinsAndPreviewProperty, value);
         }
 
+        public static readonly DependencyProperty ShowDescriptionProperty = DependencyProperty.Register(nameof(ShowDescription), typeof(bool),
+                typeof(CarBlock), new PropertyMetadata(true, (o, e) => {
+                    ((CarBlock)o)._showDescription = (bool)e.NewValue;
+                }));
+
+        private bool _showDescription = true;
+
+        public bool ShowDescription {
+            get => _showDescription;
+            set => SetValue(ShowDescriptionProperty, value);
+        }
+
         public static readonly DependencyProperty SelectSkinProperty = DependencyProperty.Register(nameof(SelectSkin), typeof(bool),
                 typeof(CarBlock));
 
@@ -104,33 +116,51 @@ namespace AcManager.Controls.UserControls {
 
         private void UpdateDescription() {
             var car = Car;
-            var description = car?.Description?.Trim();
-            Description.Document.Blocks.Clear();
-
-            var item = new Paragraph();
-
-            if (SettingsHolder.Content.CurversInDrive) {
-                item.Inlines.Add(new Floater {
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Blocks = {
-                        new Paragraph(new InlineUIContainer {
-                            Child = new CarGraphViewer {
-                                Car = car,
-                                Margin = new Thickness(0, 0, 8, 0),
-                                Padding = new Thickness(0, 0, 0, 0),
-                                Width = 240,
-                                Height = 160
-                            }
-                        })
-                    }
-                });
+            if (car == null) {
+                Footer.Child = null;
+                return;
             }
 
-            item.Inlines.Add(string.IsNullOrEmpty(description) ?
-                    PlaceholderTextBlock.GetPlaceholder(Description, "Description is missing.") :
-                    new Run(description));
+            if (ShowDescription) {
+                var textBox = (RichTextBox)FindResource("Description");
+                var carDescription = car.Description?.Trim();
+                textBox.Document.Blocks.Clear();
 
-            Description.Document.Blocks.Add(item);
+                var item = new Paragraph();
+
+                if (SettingsHolder.Content.CurversInDrive) {
+                    item.Inlines.Add(new Floater {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Blocks = {
+                            new Paragraph(new InlineUIContainer {
+                                Child = new CarGraphViewer {
+                                    Car = car,
+                                    Margin = new Thickness(8, 0, 0, 0),
+                                    Padding = new Thickness(0, 0, 0, 0),
+                                    Width = 240,
+                                    Height = 160
+                                }
+                            })
+                        }
+                    });
+                }
+
+                item.Inlines.Add(string.IsNullOrEmpty(carDescription) ?
+                        PlaceholderTextBlock.GetPlaceholder(textBox, "Description is missing.") :
+                        new Run(carDescription));
+
+                textBox.Document.Blocks.Add(item);
+                Footer.Child = textBox;
+            } else if (SettingsHolder.Content.CurversInDrive) {
+                Footer.Child = new CarGraphViewer {
+                    Car = car,
+                    Margin = new Thickness(3, 8, 3, 0),
+                    Padding = new Thickness(0, 0, 0, 0),
+                    Height = 160
+                };
+            } else {
+                Footer.Child = null;
+            }
         }
 
         public static readonly DependencyProperty SelectedSkinProperty = DependencyProperty.Register(nameof(SelectedSkin), typeof(CarSkinObject),

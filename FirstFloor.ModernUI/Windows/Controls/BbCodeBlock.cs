@@ -45,8 +45,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new PropertyMetadata(OnBbCodeChanged));
 
         public string BbCode {
-            get { return (string)GetValue(BbCodeProperty); }
-            set { SetValue(BbCodeProperty, value); }
+            get => (string)GetValue(BbCodeProperty);
+            set => SetValue(BbCodeProperty, value);
         }
 
         public static readonly ILinkNavigator DefaultLinkNavigator = new DefaultLinkNavigator();
@@ -59,16 +59,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BbCodeBlock), new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
 
         public ILinkNavigator LinkNavigator {
-            get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
-            set { SetValue(LinkNavigatorProperty, value); }
+            get => (ILinkNavigator)GetValue(LinkNavigatorProperty);
+            set => SetValue(LinkNavigatorProperty, value);
         }
 
         public static readonly DependencyProperty EmojiSupportProperty = DependencyProperty.Register(nameof(EmojiSupport), typeof(bool),
                 typeof(BbCodeBlock), new PropertyMetadata(true));
 
         public bool EmojiSupport {
-            get { return (bool)GetValue(EmojiSupportProperty); }
-            set { SetValue(EmojiSupportProperty, value); }
+            get => (bool)GetValue(EmojiSupportProperty);
+            set => SetValue(EmojiSupportProperty, value);
         }
 
         /// <summary>
@@ -272,6 +272,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Update();
         }
 
+        public static readonly DependencyProperty LineHeightProperty = DependencyProperty.Register(nameof(LineHeight), typeof(double),
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(double.NaN, (o, e) => {
+                    ((SelectableBbCodeBlock)o)._lineHeight = (double)e.NewValue;
+                }));
+
+        private double _lineHeight = double.NaN;
+
+        public double LineHeight {
+            get => _lineHeight;
+            set => SetValue(LineHeightProperty, value);
+        }
+
         private void Update() {
             if (!IsLoaded || !_dirty) {
                 return;
@@ -281,9 +293,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
-                Document.Blocks.Add(new Paragraph(BbCodeBlock.Parse(bbCode, this, LinkNavigator)) {
+                var item = new Paragraph(BbCodeBlock.Parse(bbCode, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
-                });
+                };
+
+                if (!double.IsNaN(LineHeight)) {
+                    item.LineHeight = LineHeight;
+                }
+
+                Document.Blocks.Add(item);
             }
 
             _dirty = false;
@@ -305,8 +323,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <value>The BB code.</value>
         public string BbCode {
-            get { return (string)GetValue(BbCodeProperty); }
-            set { SetValue(BbCodeProperty, value); }
+            get => (string)GetValue(BbCodeProperty);
+            set => SetValue(BbCodeProperty, value);
         }
 
         /// <summary>
@@ -314,8 +332,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <value>The link navigator.</value>
         public ILinkNavigator LinkNavigator {
-            get { return (ILinkNavigator)GetValue(LinkNavigatorProperty); }
-            set { SetValue(LinkNavigatorProperty, value); }
+            get => (ILinkNavigator)GetValue(LinkNavigatorProperty);
+            set => SetValue(LinkNavigatorProperty, value);
         }
     }
 }

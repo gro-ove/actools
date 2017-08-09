@@ -5,10 +5,18 @@ using System.Windows.Media;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Effects;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public static class IniFileExtension {
+        [NotNull]
+        public static string GetTyreName(this IniFileSection section) {
+            var s = section.GetNonEmpty("SHORT_NAME");
+            var n = section.GetNonEmpty("NAME");
+            return n == null ? (s ?? "<Unnamed>") : (s == null ? n : $"{n} ({s})");
+        }
+
         [NotNull]
         public static SettingEntry GetEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries,
                 [NotNull] SettingEntry defaultValue) {
@@ -54,7 +62,7 @@ namespace AcManager.Tools.Helpers {
                 multipler = 1d;
                 return defaultValue;
             }
-            
+
             multipler = FlexibleParser.ParseDouble(strings[3], 1d);
             return Color.FromRgb(result[0], result[1], result[2]);
         }

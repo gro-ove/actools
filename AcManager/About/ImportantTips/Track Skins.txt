@@ -1,0 +1,47 @@
+﻿sid: ivnrvn29
+id: trackSkins
+
+AC allows to use skins to modify not only cars’ textures, but also track textures as well! And now, CM allows you to enable several skins at once and combine them (for example, one skin for real billboards and another for autumn season). Now, I’ll try to explain in details how it works. 🙂
+
+First of all, all CM track skins are located in “<track folder>\skins\cm_skins”. Usually, it’s next to “default” folder, textures from which do override KN5’s textures. Each CM’s track skin is just a new folder, very similar to cars’ skins, but with “ui_track_skin.json” and “preview.png” (355×200) instead of “ui_skin.json” and “preview.jpg”.
+
+Before the race, you can select active skins in a couple of places (more will be ready later):
+
+ [img="http://i.imgur.com/zsJivd4.png|240"]Quick Drive[/img]
+ [img="http://i.imgur.com/9cjKY6c.png|240"]Tracks Management[/img]
+
+After that, CM will delete all files from “skins/default” folder (if they were not made by CM before, in a previous iteration, they’ll end up in the Windows Recycle Bin) and then replace them with all textures from selected skins. And because of hard links, no space will be wasted and it’ll be done very quickly.
+
+Now, each track skin has a bunch of properties defining how it works:
+
+[mono]{
+  "name": "Autumn",
+  "description": "Autumn season",
+  "id": "jw_autumn",
+  "track": "ks_nordschleife",
+  "tags": [
+    "real",
+    "season"
+  ],
+  "categories": [
+    "season"
+  ],
+  "priority": 10.0,
+  "version": "1.13",
+  "author": "JW modding",
+  "url": null
+}[/mono]
+
+• Name, desciption, tags, version, author and URL are shown in CM;
+• ID should match the name of skin’s folder, optional (used for packing skins in JSGME-compatible way);
+• Track — track ID, used for installation;
+• Categories are used to implement switching between skins: only one skin of specific category can be enabled at the same time;
+• Priority used to specify texture from which skin should be used in case of conflict when both skins enabled override the same texture.
+
+You can create track skins manually or using CM, from Content/Tracks section (press [b]Ctrl+K[/b] to open skins for selected track, as with cars). [i]Sadly, since that section is far from finished, it won’t work in Lite version. Working on it…[/i]
+
+Also, when ready, I suggest to pack skins using CM as well (simply hold Ctrl and click on the same or another skin to enable batch actions mode). With this batch action, you can pack your skins the way they’ll work with JSGME for those who don’t have CM installed, but for CM users, they’ll be installed as proper track skins.
+
+Oh, and one more thing. Let’s imagine you have winter skin (“example_winter”) and real billboards skin (“example_billboards”), and you want to set them so when both are enabled, some sort of snowy real billboard texture will be used. For that, just create a folder called “+example_winter” and put that snowy billboard texture in it. If you need subfolder to work only when two other skins are enabled, call it “+example_winter+example_second”. Each ID in it will add +100 of priority to any texture inside.
+
+I hope this makes any sense (can’t be sure with my English)… Please, don’t forget to update previews for your skins (there is a button in CM, cutting them to 355×200) and sorry if you don’t have a full version of CM, I’m hoping to finish working on Content/Tracks section soon.

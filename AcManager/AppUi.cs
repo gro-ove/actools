@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -82,7 +83,10 @@ namespace AcManager {
             if (AcRootDirectory.Instance?.IsReady != true) return;
 
             _additionalProcessing++;
-            _showMainWindow |= await ArgumentsHandler.ProcessArguments(obj);
+            var v = await ArgumentsHandler.ProcessArguments(obj);
+            _showMainWindow |= v != ArgumentsHandler.ShowMainWindow.No;
+            Logging.Debug("Show main window: " + _showMainWindow);
+
             if (--_additionalProcessing == 0) {
                 _waiting?.SetResult(true);
             }
@@ -106,7 +110,7 @@ namespace AcManager {
                         return;
                     }
 
-                    if (!AppArguments.Values.Any() || await ArgumentsHandler.ProcessArguments(AppArguments.Values)) {
+                    if (!AppArguments.Values.Any() || await ArgumentsHandler.ProcessArguments(AppArguments.Values) != ArgumentsHandler.ShowMainWindow.No) {
                         _showMainWindow = true;
                     }
 
@@ -126,7 +130,7 @@ namespace AcManager {
 
                     do {
                         await Task.Delay(100);
-                    } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault()));
+                    } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible)));
 
                     Logging.Debug("No more windows");
                 } finally {

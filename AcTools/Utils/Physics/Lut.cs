@@ -206,6 +206,11 @@ namespace AcTools.Utils.Physics {
             return optimized;
         }
 
+        public static bool IsInlineValue([NotNull] string value) {
+            return !value.EndsWith(".lut", StringComparison.OrdinalIgnoreCase) &&
+                    (value.IndexOf('=') != -1 || value.IndexOf('|') != -1);
+        }
+
         /// <summary>
         /// Parse lut value from INI-file, something like “(|0=0.8|1000=0.9|)”.
         /// Files are parsed by <see cref="LutDataFile" /> type (also, it warns user about syntax errors).

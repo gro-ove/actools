@@ -49,16 +49,16 @@
           <ControlTemplate.Resources>
             <ResourceDictionary>
               <Storyboard x:Key="ScaleYUp" TargetProperty="(ScaleTransform.ScaleY)">
-                <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="ScaleYDown" TargetProperty="(ScaleTransform.ScaleY)">
-                <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="ScaleXUp" TargetProperty="(ScaleTransform.ScaleX)">
-                <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="ScaleXDown" TargetProperty="(ScaleTransform.ScaleX)">
-                <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandartEase}" />
+                <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
             </ResourceDictionary>
           </ControlTemplate.Resources>

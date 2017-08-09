@@ -47,13 +47,6 @@ namespace AcTools.DataFile {
             _iniFileMode = mode;
         }
 
-        public IniFile(string carDir, string filename) : this(carDir, filename, IniFileMode.Normal) { }
-
-        public IniFile(string carDir, string filename, IniFileMode mode) : base(carDir, InnerIniFileModeTrick(filename, mode)) {
-            _trickIniFileMode = null;
-            _iniFileMode = mode;
-        }
-
         public IniFile(string filename) : this(filename, IniFileMode.Normal) { }
 
         public IniFile(string filename, IniFileMode mode) : base(InnerIniFileModeTrick(filename, mode)) {
@@ -91,7 +84,7 @@ namespace AcTools.DataFile {
                 Content[key] = result;
                 return result;
             }
-            set { Content[key] = value; }
+            set => Content[key] = value;
         }
 
         private static void ParseStringFinish(IniFileSection currentSection, string data, int nonSpace, ref string key, ref int started) {
@@ -600,10 +593,6 @@ namespace AcTools.DataFile {
             }
 
             return base.SaveToAsync(filename, backup);
-        }
-
-        public override string ToString() {
-            return Stringify();
         }
 
         public bool ContainsKey(string key) {

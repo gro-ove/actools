@@ -1,7 +1,7 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
-namespace AcManager.ContentRepair.Repairs {
+namespace AcManager.ContentRepair.Critical {
     public class CarAeroDataRepair : CarSimpleRepairBase {
         public static readonly CarAeroDataRepair Instance = new CarAeroDataRepair();
 

@@ -68,7 +68,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (value) {
                     var orbit = CameraOrbit ?? CreateCamera(Scene);
                     Camera = new FpsCamera(orbit.FovY);
-                    Camera.LookAt(orbit.Position, orbit.Target, orbit.Up);
+                    Camera.LookAt(orbit.Position, orbit.Target, orbit.Tilt);
                     PrepareCamera(Camera);
                 } else {
                     Camera = _resetCamera.Clone();
@@ -82,12 +82,13 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private Vector3 _cameraTo, _showroomOffset;
 
-        public void SetCamera(Vector3 from, Vector3 to, float fovRadY) {
+        public void SetCamera(Vector3 from, Vector3 to, float fovRadY, float tiltRad) {
             UseFpsCamera = true;
+            AutoRotate = false;
             Camera = new FpsCamera(fovRadY);
 
             _cameraTo = to;
-            Camera.LookAt(from, to, Vector3.UnitY);
+            Camera.LookAt(from, to, tiltRad);
             Camera.SetLens(AspectRatio);
             //Camera.UpdateViewMatrix();
 
@@ -95,12 +96,13 @@ namespace AcTools.Render.Kn5SpecificForward {
             IsDirty = true;
         }
 
-        public void SetCameraOrbit(Vector3 from, Vector3 to, float fovRadY) {
+        public void SetCameraOrbit(Vector3 from, Vector3 to, float fovRadY, float tiltRad) {
             UseFpsCamera = false;
+            AutoRotate = false;
             Camera = new CameraOrbit(fovRadY);
 
             _cameraTo = to;
-            Camera.LookAt(from, to, Vector3.UnitY);
+            Camera.LookAt(from, to, tiltRad);
             Camera.SetLens(AspectRatio);
             //Camera.UpdateViewMatrix();
 
@@ -113,7 +115,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (camera == null) return;
 
             var offset = MainSlot.CarCenter;
-            camera.LookAt(camera.Position + offset, _cameraTo += offset, Vector3.UnitY);
+            camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
             camera.SetLens(AspectRatio);
 
             offset.Y = 0;
@@ -135,7 +137,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             camera.UpdateViewMatrix();
 
             var offset = GetCameraOffsetForCenterAlignmentUsingVertices(camera, x, xOffset, xOffsetRelative, y, yOffset, yOffsetRelative);
-            camera.LookAt(camera.Position + offset, _cameraTo += offset, Vector3.UnitY);
+            camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
 
             offset.Y = 0;
             _showroomOffset += offset;
@@ -590,7 +592,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (_reflectionCubemap != null) {
                 _reflectionCubemap.Update(reflectionPosition);
                 _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
-                if (!_reflectionCubemap.DrawScene(DeviceContextHolder, this, ShotInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
+                if (!_reflectionCubemap.DrawScene(DeviceContextHolder, this, ShotDrawInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
                     IsDirty = true;
                 }
             }
@@ -622,7 +624,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         protected override void DrawSpritesInner() {
-            if (!VisibleUi || ShotInProcess) return;
+            if (!VisibleUi || ShotDrawInProcess) return;
 
             if (_textBlock == null) {
                 _textBlock = new TextBlockRenderer(Sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
@@ -846,6 +848,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         private float _elapsedCamera;
+        private float _lastOffset;
 
         protected override void OnTickOverride(float dt) {
             base.OnTickOverride(dt);
@@ -854,7 +857,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 CarSlots[i].CarNode?.OnTick(dt);
             }
 
-            const float threshold = 0.01f;
+            const float threshold = 0.0003f;
             if (_resetState > threshold) {
                 /*if (!AutoRotate) {
                     _resetState = 0f;
@@ -869,22 +872,33 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
 
                 var cam = CameraOrbit;
                 if (cam != null) {
+                    var offset = (_resetCamera.Alpha - cam.Alpha).Abs() + (_resetCamera.Beta - cam.Beta).Abs() + (_resetCamera.Radius - cam.Radius).Abs();
+                    if (offset > _lastOffset) {
+                        _resetState = 0f;
+                        _lastOffset = float.MaxValue;
+                    } else {
+                        _lastOffset = offset;
+                    }
+
                     cam.Alpha += (_resetCamera.Alpha - cam.Alpha) * d;
                     cam.Beta += (_resetCamera.Beta - cam.Beta) * d;
                     cam.Radius += (_resetCamera.Radius - cam.Radius) * d;
+                    cam.Tilt += (_resetCamera.Tilt - cam.Tilt) * d;
                     cam.FovY += (_resetCamera.FovY - cam.FovY) * d;
                     cam.SetLens(cam.Aspect);
                 }
 
                 _elapsedCamera = 0f;
-
                 IsDirty = true;
-            } else if (AutoRotate && CameraOrbit != null) {
-                CameraOrbit.Alpha -= dt * 0.29f;
-                CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
-                _elapsedCamera += dt;
+            } else {
+                _lastOffset = float.MaxValue;
+                if (AutoRotate && CameraOrbit != null) {
+                    CameraOrbit.Alpha -= dt * 0.29f;
+                    CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
+                    _elapsedCamera += dt;
 
-                IsDirty = true;
+                    IsDirty = true;
+                }
             }
 
             if (AutoAdjustTarget && CameraOrbit != null) {

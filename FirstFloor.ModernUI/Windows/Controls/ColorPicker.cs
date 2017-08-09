@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -27,6 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         internal Popup Popup { get; private set; }
         private ColorPickerPanel _panel;
+        private ToggleButton _button;
 
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
@@ -35,11 +38,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Popup.Opened -= Popup_Opened;
             }
 
+            if (_button != null) {
+                _button.PreviewMouseLeftButtonDown -= OnButtonClick;
+            }
+
             Popup = GetTemplateChild("PART_Popup") as Popup;
             _panel = GetTemplateChild("PART_Panel") as ColorPickerPanel;
+            _button = GetTemplateChild("PART_Button") as ToggleButton;
 
             if (Popup != null) {
                 Popup.Opened += Popup_Opened;
+            }
+
+            if (_button != null) {
+                _button.PreviewMouseLeftButtonDown += OnButtonClick;
+            }
+        }
+
+        private void OnButtonClick(object sender, RoutedEventArgs routedEventArgs) {
+            if (Keyboard.Modifiers == ModifierKeys.Control && !Popup.IsOpen) {
+                routedEventArgs.Handled = true;
+                Color = ScreenColorPickerDialog.Pick() ?? Color;
             }
         }
 

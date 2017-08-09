@@ -13,16 +13,17 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
         public static TimeSpan OptionSuccessDelay = TimeSpan.FromSeconds(3);
-        public static TimeSpan OptionFailedDelay = TimeSpan.FromSeconds(10);
+        public static TimeSpan OptionCancelledDelay = TimeSpan.FromSeconds(0);
+        public static TimeSpan OptionBiggestDelay = TimeSpan.FromSeconds(15);
 
         public static ContentInstallationManager Instance { get; } = new ContentInstallationManager();
         public static IPluginsNavigator PluginsNavigator { get; set; }
 
         private ContentInstallationManager() {
-            Queue = new BetterObservableCollection<ContentInstallationEntry>();
+            Queue = new ChangeableObservableCollection<ContentInstallationEntry>();
         }
 
-        public BetterObservableCollection<ContentInstallationEntry> Queue { get; }
+        public ChangeableObservableCollection<ContentInstallationEntry> Queue { get; }
 
         private bool _busyDoingSomething;
 
@@ -67,9 +68,22 @@ namespace AcManager.Tools.ContentInstallation {
             return _tasks.TryGetValue(source, out Task<bool> task) ? task : (_tasks[source] = InstallAsyncInternal(source, installationParams));
         }
 
-        private async void RemoveLater(ContentInstallationEntry entry) {
-            await Task.Delay(entry.Failed != null ? OptionFailedDelay : OptionSuccessDelay);
+        private void Remove(ContentInstallationEntry entry) {
+            entry.Dispose();
             ActionExtension.InvokeInMainThread(() => Queue.Remove(entry));
+        }
+
+        private async void RemoveLater(ContentInstallationEntry entry) {
+            if (entry.Cancelled || entry.Failed == null) {
+                await Task.Delay(entry.Cancelled ? OptionCancelledDelay : OptionSuccessDelay);
+                Remove(entry);
+            } else {
+                entry.PropertyChanged += (sender, args) => {
+                    if (args.PropertyName == nameof(entry.Cancelled)) {
+                        Remove(entry);
+                    }
+                };
+            }
         }
 
         public static bool IsRemoteSource(string source) {

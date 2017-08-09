@@ -11,11 +11,6 @@ namespace AcTools.Kn5File {
             Write("sc6969".ToCharArray());
         }
 
-        public override void Write(string value) {
-            Write(value.Length);
-            Write(Encoding.ASCII.GetBytes(value));
-        }
-
         public void Write(Kn5MaterialBlendMode blendMode) {
             Write((byte)blendMode);
         }
@@ -26,12 +21,6 @@ namespace AcTools.Kn5File {
 
         public void Write(Kn5NodeClass nodeClass) {
             Write((int)nodeClass);
-        }
-
-        public void Write(float[] values) {
-            for (var i = 0; i < values.Length; i++) {
-                Write(values[i]);
-            }
         }
 
         public void Write(Kn5Header header) {
@@ -105,10 +94,10 @@ namespace AcTools.Kn5File {
 
                     Write(node.MaterialId);
                     Write(node.Layer);
-                    
+
                     Write(node.LodIn);
                     Write(node.LodOut);
-                    
+
                     Write(node.BoundingSphereCenter);
                     Write(node.BoundingSphereRadius);
 

@@ -5,6 +5,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Dialogs {
+    // TODO: SORT THIS SHIT OUT! ALL THAT 0.0001–0.9999 IS VERY IDIOTIC.
     public struct AsyncProgressEntry : INotifyPropertyChanged {
         public string Message { get; }
 
@@ -18,8 +19,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             return new AsyncProgressEntry(message, 0d);
         }
 
-        public bool IsIndeterminate => Message == "" && Equals(Progress, 0d);
-
+        public bool IsIndeterminate => Equals(Progress, 0d);
         public bool IsReady => Equals(Progress, 1d);
 
         public AsyncProgressEntry(string message, double? progress) {

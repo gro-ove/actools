@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.ContentInstallation.Entries;
+using AcManager.Tools.ContentInstallation.Implementations;
+using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public class AdditionalContentEntryTemplateSelectorInner : DataTemplateSelector {
         public DataTemplate BasicTemplate { get; set; }
-
         public DataTemplate TrackTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
@@ -22,7 +30,7 @@ namespace AcManager.Pages.Dialogs {
         }
     }
 
-    public partial class InstallAdditionalContentDialog {
+    public partial class InstallAdditionalContentDialog : INotifyPropertyChanged {
         private static InstallAdditionalContentDialog _dialog;
 
         public static void Initialize() {
@@ -48,6 +56,13 @@ namespace AcManager.Pages.Dialogs {
         public static void ShowInstallDialog() {
             if (_dialog == null) {
                 _dialog = new InstallAdditionalContentDialog();
+
+                if (Application.Current?.MainWindow is MainWindow) {
+                    _dialog.Owner = Application.Current?.MainWindow;
+                    _dialog.ShowInTaskbar = false;
+                    _dialog.WindowStyle = WindowStyle.ToolWindow;
+                }
+
                 _dialog.Show();
                 _dialog.Closed += (sender, args) => {
                     if (IsAlone) {
@@ -66,36 +81,95 @@ namespace AcManager.Pages.Dialogs {
         private static bool IsAlone => Application.Current?.Windows.OfType<MainWindow>().FirstOrDefault()?.IsVisible != true;
 
         private InstallAdditionalContentDialog() {
+            UpdateSevenZipPluginMissing();
+            PluginsManager.Instance.PluginEnabled += OnPlugin;
+            PluginsManager.Instance.PluginDisabled += OnPlugin;
+            this.OnActualUnload(() => {
+                PluginsManager.Instance.PluginEnabled -= OnPlugin;
+                PluginsManager.Instance.PluginDisabled -= OnPlugin;
+            });
+
+            PluginsManager.Instance.UpdateIfObsolete().Forget();
+            RecommendedListView = new BetterListCollectionView(PluginsManager.Instance.List);
+            RecommendedListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
+            RecommendedListView.Filter = o => (o as PluginEntry)?.Id == SevenZipContentInstallator.PluginId;
+
             DataContext = this;
             InitializeComponent();
+            InputBindings.AddRange(new[] {
+                new InputBinding(new DelegateCommand(ArgumentsHandler.OnPaste), new KeyGesture(Key.V, ModifierKeys.Control)),
+            });
             Buttons = new[] { IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None) };
+
+            if (ContentInstallationManager.Instance.Queue.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
+                SevenZipWarning.Visibility = Visibility.Visible;
+            } else {
+                ContentInstallationManager.Instance.Queue.ItemPropertyChanged += OnItemPropertyChanged;
+                this.OnActualUnload(() => {
+                    ContentInstallationManager.Instance.Queue.ItemPropertyChanged -= OnItemPropertyChanged;
+                });
+            }
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ContentInstallationEntry.SevenZipInstallatorWouldNotHurt)) {
+                SevenZipWarning.Visibility = Visibility.Visible;
+            }
+        }
+
+        public BetterListCollectionView RecommendedListView { get; }
+
+        private bool? _isSevenZipPluginMissing;
+
+        public bool IsSevenZipPluginMissing {
+            get => _isSevenZipPluginMissing ?? false;
+            set {
+                if (value == _isSevenZipPluginMissing) return;
+                var oldValue = _isSevenZipPluginMissing;
+                _isSevenZipPluginMissing = value;
+                OnPropertyChanged();
+
+                if (oldValue == true && value == false) {
+                    foreach (var entry in ContentInstallationManager.Instance.Queue.Where(x => x.SevenZipInstallatorWouldNotHurt &&
+                            x.CancelCommand.IsAbleToExecute && x.State == ContentInstallationEntryState.WaitingForConfirmation)) {
+                        ContentInstallationManager.Instance.InstallAsync(entry.Source).ContinueWith(async v => {
+                            if (!v.Result) {
+                                await Task.Delay(1);
+                                ContentInstallationManager.Instance.InstallAsync(entry.LoadedFilename ?? entry.Source).Forget();
+                            }
+                        }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                        entry.KeepLoaded = true;
+                        entry.CancelCommand.Execute();
+                    }
+                }
+            }
+        }
+
+        private void UpdateSevenZipPluginMissing() {
+            IsSevenZipPluginMissing = !PluginsManager.Instance.IsPluginEnabled(SevenZipContentInstallator.PluginId);
+        }
+
+        private void OnPlugin(object o, AppAddonEventHandlerArgs e) {
+            if (e.PluginId == SevenZipContentInstallator.PluginId) {
+                UpdateSevenZipPluginMissing();
+            }
         }
 
         private void OnClosed(object sender, EventArgs e) {}
 
         private void OnDrop(object sender, DragEventArgs e) {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
-
-            Focus();
-
-            var data = e.Data.GetData(DataFormats.FileDrop) as string[] ??
-                    (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
-                                                                        .Select(x => x.Trim())
-                                                                        .Select(x => x.Length > 1 && x.StartsWith(@"""") && x.EndsWith(@"""")
-                                                                                ? x.Substring(1, x.Length - 2) : x);
-            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
+            ArgumentsHandler.OnDrop(sender, e);
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) {
-            if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
-                    (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
-                e.Effects = DragDropEffects.All;
-            }
+            ArgumentsHandler.OnDragEnter(sender, e);
         }
 
-        private static async void ProcessDroppedFiles(IEnumerable<string> files) {
-            if (files == null) return;
-            await ArgumentsHandler.ProcessArguments(files);
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -118,9 +118,9 @@ namespace AcManager.Pages.Lists {
             }));
         }
 
-        public static void Open(CarObject car) {
+        public static void Open([NotNull] CarObject car) {
             var main = Application.Current?.MainWindow as MainWindow;
-            if (main == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (main == null || Keyboard.Modifiers == ModifierKeys.Control || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSkinsDialog.Show(car);
             } else {
                 main.OpenSubGroup("skins", $"Skins for {car.DisplayName}",

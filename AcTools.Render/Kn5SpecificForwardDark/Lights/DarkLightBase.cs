@@ -498,6 +498,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         }
 
         public abstract void Rotate(Quaternion delta);
+
+        void IMoveable.Scale(Vector3 delta) {}
         #endregion
 
         private Matrix _parentMatrix = Matrix.Identity;
@@ -897,6 +899,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             var onScreenPosition = Vector3.TransformCoordinate(Vector3.Zero, objectTransform * camera.ViewProj) * 0.5f +
                     new Vector3(0.5f);
             onScreenPosition.Y = 1f - onScreenPosition.Y;
+            if (onScreenPosition.Z < 0f || onScreenPosition.Z > 1f) return;
+
             _debugText.DrawString(text,
                     new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f),
                     TextAlignment.HorizontalCenter | TextAlignment.VerticalCenter, 12f, color,

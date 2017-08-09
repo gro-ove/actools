@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base.Utils;
+﻿using System.Net;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using SlimDX;
 
@@ -18,14 +19,14 @@ namespace AcTools.Render.Base.Cameras {
         private float _radius, _alpha, _beta;
         private Vector3 _target;
 
-        public override void Save() {
+        public virtual void Save() {
             _radius = Radius;
             _alpha = Alpha;
             _beta = Beta;
             _target = Target;
         }
 
-        public override void Restore() {
+        public virtual void Restore() {
             Radius = _radius;
             Alpha = _alpha;
             Beta = _beta;
@@ -39,11 +40,12 @@ namespace AcTools.Render.Base.Cameras {
                 Beta = Beta,
                 Up = Up,
                 Target = Target,
-                Position = Position
+                Position = Position,
+                Tilt = Tilt
             };
         }
 
-        public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
+        protected override void LookAtOverride(Vector3 pos, Vector3 target, Vector3 up) {
             Target = target;
             Position = pos;
 
@@ -93,8 +95,7 @@ namespace AcTools.Render.Base.Cameras {
                     Target.X + sideRadius * Alpha.Cos(),
                     Target.Y + height,
                     Target.Z + sideRadius * Alpha.Sin());
-
-            SetView(Matrix.LookAtRH(Position, Target, Vector3.UnitY));
+            SetView(Matrix.LookAtRH(Position, Target, GetUpTilt(Target, Vector3.UnitY)));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

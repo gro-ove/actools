@@ -121,7 +121,10 @@
                       <Button Content="Hide" Command="{Binding HideCommand}" />
                     </StackPanel>
                     <DockPanel Dock="Top" Margin="0 0 0 4">
-                      <mui:BbCodeBlock DockPanel.Dock="Right" BbCode="{Binding Category}" Style="{StaticResource Small}" Margin="8 2 8 0" />
+                      <Path x:Name="PART_AlertIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                          Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Visibility="Collapsed" />
+                      <mui:BbCodeBlock DockPanel.Dock="Right" x:Name="PART_Category" BbCode="{Binding Category}" Style="{StaticResource Small}"
+                          Margin="8 2 8 0" />
                       <mui:BbCodeBlock DockPanel.Dock="Top" BbCode="{Binding DisplayName}" FontWeight="Bold" />
                     </DockPanel>
                     <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" />
@@ -138,6 +141,16 @@
                     </DockPanel>
                   </Border>
                 </mui:Cell>
+                <DataTemplate.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsCritical}" Value="True" />
+                      <Condition Binding="{Binding IsSolved}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter TargetName="PART_Category" Property="Foreground" Value="{DynamicResource Error}" />
+                    <Setter TargetName="PART_AlertIcon" Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                </DataTemplate.Triggers>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>

@@ -128,7 +128,6 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             var presetsDirectory = EnsureDirectory(category);
-
             var dialog = new SaveFileDialog {
                 InitialDirectory = presetsDirectory,
                 Filter = string.Format(ToolsStrings.Presets_FileFilter, category.Extension),

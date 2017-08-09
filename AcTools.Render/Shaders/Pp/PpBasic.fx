@@ -8,7 +8,7 @@
 		AddressU = CLAMP;
 		AddressV = CLAMP;
 	};
-	
+
 // input resources
 	cbuffer cbPerObject : register(b0) {
 		float4 gScreenSize;
@@ -207,7 +207,7 @@
 	float4 ps_Fxaa(PS_IN pin) : SV_Target {
 		FxaaTex tex = { samInputImage, gInputMap };
 		float3 aaImage = FxaaPixelShader(pin.Tex, tex, gScreenSize.zw);
-		return float4(aaImage, 1.0f);
+		return float4(aaImage, gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0f).a);
 	}
 
 	technique10 Fxaa { // PT

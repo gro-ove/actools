@@ -1,5 +1,6 @@
 ﻿using AcTools.Windows;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -101,6 +102,11 @@ namespace AcTools.Utils {
                 if (ArePathsEqual(Filename, _filename)) return;
                 if (File.Exists(Filename)) {
                     Recycle(_filename);
+
+                    if (File.Exists(_filename)) {
+                        throw new Exception("Can’t recycle original file: " + _filename);
+                    }
+
                     File.Move(Filename, _filename);
                 }
             }
@@ -225,6 +231,36 @@ namespace AcTools.Utils {
 
                 foreach (var t in files) {
                     yield return t;
+                }
+            }
+        }
+
+        [NotNull]
+        public static IEnumerable<string> GetDirectoriesRecursive(string path) {
+            var queue = new Queue<string>();
+            queue.Enqueue(path);
+
+            while (queue.Count > 0) {
+                path = queue.Dequeue();
+
+                string[] dirs = null;
+                try {
+                    dirs = Directory.GetDirectories(path);
+                } catch (Exception) {
+                    // ignored
+                }
+
+                if (dirs != null) {
+                    foreach (var t in from t in dirs
+                                      let attributes = new DirectoryInfo(t).Attributes
+                                      where (attributes & (FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System)) == 0
+                                      select t) {
+                        queue.Enqueue(t);
+                    }
+
+                    foreach (var t in dirs) {
+                        yield return t;
+                    }
                 }
             }
         }
@@ -453,6 +489,10 @@ namespace AcTools.Utils {
             return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
+        public static string EnsureFilenameIsValid(string fileName) {
+            return Path.GetInvalidFileNameChars().ApartFrom('/', '\\', ':').Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
+        }
+
         [NotNull, Localizable(false)]
         public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix, bool forcePostfix, int startFrom = 1) {
             if (!forcePostfix && !Exists(filename)) return filename;
@@ -518,6 +558,35 @@ namespace AcTools.Utils {
                     HardLinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
             } else {
+                HardLinkOrCopy(source, destination, true);
+            }
+        }
+
+        public delegate bool CopyRecursiveFilter(string filename, bool isDirectory);
+
+        public static void HardLinkOrCopyRecursive(string source, string destination, CopyRecursiveFilter filter, bool onlyNecessaryDirectories) {
+            if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
+                if (!onlyNecessaryDirectories) {
+                    Directory.CreateDirectory(destination);
+
+                    foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories).Where(x => filter(x, true))) {
+                        Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                    }
+
+                    foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories).Where(x => filter(x, false))) {
+                        HardLinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    }
+                } else {
+                    foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories).Where(x => filter(x, false))) {
+                        var target = Path.Combine(destination, GetRelativePath(filePath, source));
+                        EnsureFileDirectoryExists(target);
+                        HardLinkOrCopy(filePath, target, true);
+                    }
+                }
+            } else if (filter(source, false)) {
+                if (onlyNecessaryDirectories) {
+                    EnsureFileDirectoryExists(destination);
+                }
                 HardLinkOrCopy(source, destination, true);
             }
         }

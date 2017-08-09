@@ -23,6 +23,6 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         [ItemCanBeNull]
         Task<IReadOnlyList<ContentEntryBase>> GetEntriesAsync([CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
 
-        Task InstallAsync(CopyCallback callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        Task InstallAsync(ICopyCallback callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -50,6 +51,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double[] CameraPosition = { 3.194, 0.342, 13.049 };
         public double[] CameraLookAt = { 2.945, 0.384, 12.082 };
         public double CameraFov = 9d;
+        public double CameraTilt = 0d;
 
         public bool AlignCar = true;
         public bool AlignCameraHorizontally = true;
@@ -59,6 +61,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double AlignCameraHorizontallyOffset = 0.3;
         public double AlignCameraVerticallyOffset = 0.0;
 
+        public bool AnyGround = true;
         public bool FlatMirror = false;
         public bool FlatMirrorBlurred = false;
         public double FlatMirrorReflectiveness = 1d;
@@ -160,6 +163,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ GetHashCode(CameraPosition);
                 hashCode = (hashCode * 397) ^ GetHashCode(CameraLookAt);
                 hashCode = (hashCode * 397) ^ CameraFov.GetHashCode();
+
+                if (CameraTilt != 0d) {
+                    hashCode = (hashCode * 397) ^ CameraTilt.GetHashCode();
+                }
+
                 hashCode = (hashCode * 397) ^ AlignCar.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraHorizontally.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraVertically.GetHashCode();
@@ -167,6 +175,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffsetRelative.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraHorizontallyOffset.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffset.GetHashCode();
+
+                if (!AnyGround) {
+                    hashCode = (hashCode * 397) ^ "hideGround".GetHashCode();
+                }
+
                 hashCode = (hashCode * 397) ^ FlatMirror.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorBlurred.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorReflectiveness.GetHashCode();
@@ -253,7 +266,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void UpdateCamera() {
             _renderer.SetCamera(
                     ToVector3(_options.CameraPosition), ToVector3(_options.CameraLookAt),
-                    (float)(MathF.PI / 180f * _options.CameraFov));
+                    (float)(MathF.PI / 180f * _options.CameraFov),
+                    (float)(MathF.PI / 180f * _options.CameraTilt));
 
             if (_options.AlignCar) {
                 _renderer.AlignCar();
@@ -309,6 +323,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.MeshDebug = options.MeshDebugMode;
 
             // Flat mirror
+            renderer.AnyGround = options.AnyGround;
             renderer.FlatMirror = options.FlatMirror;
             renderer.FlatMirrorBlurred = options.FlatMirrorBlurred;
             renderer.FlatMirrorReflectiveness = (float)options.FlatMirrorReflectiveness;
@@ -437,7 +452,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             ProcessConvertation(() => {
                 using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
                     ImageUtils.Convert(shotStream, stream,
-                            _options.SoftwareDownsize ? new Size(_options.PreviewWidth, _options.PreviewHeight) : (Size?)null, exif: information);
+                            _options.SoftwareDownsize ? new Size(_options.PreviewWidth, _options.PreviewHeight) : (Size?)null, exif: information,
+                            format: destination.EndsWith(".png") ? ImageFormat.Png : ImageFormat.Jpeg);
                     callback?.Invoke();
                 }
             }, DisposeCallback(shotStream));

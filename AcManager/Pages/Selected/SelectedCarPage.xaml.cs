@@ -13,6 +13,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.CustomShowroom;
+using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
@@ -110,33 +111,10 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private static WeakReference<ModernDialog> _analyzerDialog;
             private DelegateCommand _carAnalyzerCommand;
 
             public DelegateCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => {
-                if (_analyzerDialog != null && _analyzerDialog.TryGetTarget(out ModernDialog dialog)) {
-                    dialog.Close();
-                }
-
-                dialog = new ModernDialog {
-                    ShowTitle = false,
-                    Title = "Analyzer",
-                    SizeToContent = SizeToContent.Manual,
-                    ResizeMode = ResizeMode.CanResizeWithGrip,
-                    LocationAndSizeKey = @"lsMigrationHelper",
-                    MinWidth = 800,
-                    MinHeight = 480,
-                    Width = 800,
-                    Height = 640,
-                    MaxWidth = 99999,
-                    MaxHeight = 99999,
-                    Content = new ModernFrame {
-                        Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True&Rating=True", SelectedObject.Id)
-                    }
-                };
-
-                dialog.Show();
-                _analyzerDialog = new WeakReference<ModernDialog>(dialog);
+                CarAnalyzer.Run(SelectedObject);
             }));
 
             #region Open In Showroom

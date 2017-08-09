@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Put all information about generic mods activation/deactivation to log.
+        /// Example: --generic-mods-logging.
+        /// </summary>
+        GenericModsLogging,
+
+        /// <summary>
         /// Fancy hints are shown much more frequently.
         /// Example: --fancy-hints-debug-mode.
         /// </summary>

@@ -421,7 +421,7 @@ All found similarities:
                         var cockpitSwitch = data.GetIniFile("lods.ini")["COCKPIT_HR"].GetFloat("DISTANCE_SWITCH", 0f);
                         var cockpitLrValid = 0;
 
-                        if (cockpitHrNode.TotalTrianglesCount < 20e3) {
+                        if (cockpitHrNode == null || cockpitHrNode.TotalTrianglesCount < 20e3) {
                             cockpitLrValid = 2;
                             lodsRate += 1d;
                         } else {
@@ -762,7 +762,38 @@ All found similarities:
         }
 
         public static IValueConverter RatingToColorConverter { get; } = new RatingToColorConverterInner();
-
         public static IValueConverter RatingToTextConverter { get; } = new RatingToTextConverterInner();
+
+        #region As a separate tool
+        private static WeakReference<ModernDialog> _analyzerDialog;
+
+        public static void Run([NotNull] CarObject car) {
+            if (car == null) throw new ArgumentNullException(nameof(car));
+
+            if (_analyzerDialog != null && _analyzerDialog.TryGetTarget(out ModernDialog dialog)) {
+                dialog.Close();
+            }
+
+            dialog = new ModernDialog {
+                ShowTitle = false,
+                Title = "Analyzer",
+                SizeToContent = SizeToContent.Manual,
+                ResizeMode = ResizeMode.CanResizeWithGrip,
+                LocationAndSizeKey = @"lsMigrationHelper",
+                MinWidth = 800,
+                MinHeight = 480,
+                Width = 800,
+                Height = 640,
+                MaxWidth = 99999,
+                MaxHeight = 99999,
+                Content = new ModernFrame {
+                    Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True&Rating=True", car.Id)
+                }
+            };
+
+            dialog.Show();
+            _analyzerDialog = new WeakReference<ModernDialog>(dialog);
+        }
+        #endregion
     }
 }

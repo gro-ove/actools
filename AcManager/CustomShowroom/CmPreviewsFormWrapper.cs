@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.CustomShowroom {
-    public class CmPreviewsFormWrapper : LiteShowroomFormWrapper {
+    public class CmPreviewsFormWrapper : LiteShowroomFormWrapperWithUiShots {
         private AttachedHelper _helper;
         private readonly CmPreviewsTools _tools;
 

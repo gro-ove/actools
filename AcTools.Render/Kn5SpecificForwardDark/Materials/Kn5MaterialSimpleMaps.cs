@@ -30,6 +30,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (_txNormal != null) {
                 _hasNormalMap = true;
                 Flags |= EffectDarkMaterial.HasNormalMap;
+                if (Kn5Material.GetPropertyValueAByName("nmObjectSpace") != 0) {
+                    Flags |= EffectDarkMaterial.NmObjectSpace;
+                }
             }
 
             if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 2.0f)) {

@@ -98,13 +98,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             set {
                 if (Equals(value, _anyGround)) return;
                 _anyGround = value;
-
-                if (!value) {
-                    FlatMirror = false;
-                }
-
                 OnPropertyChanged();
                 IsDirty = true;
+                _mirrorDirty = true;
+                if (!value) {
+                    FlatMirror = false;
+                    OpaqueGround = false;
+                }
             }
         }
 
@@ -115,15 +115,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             set {
                 if (value == _flatMirror) return;
                 _flatMirror = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                _mirrorDirty = true;
+                UpdateBlurredFlatMirror();
 
                 if (value) {
                     AnyGround = true;
                 }
-
-                IsDirty = true;
-                OnPropertyChanged();
-                _mirrorDirty = true;
-                UpdateBlurredFlatMirror();
             }
         }
 
@@ -150,6 +149,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsDirty = true;
                 OnPropertyChanged();
                 _mirrorDirty = true;
+
+                if (value) {
+                    AnyGround = true;
+                }
             }
         }
 

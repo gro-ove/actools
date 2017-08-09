@@ -117,7 +117,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsClosable { get; }
 
-        string IWithId.Id => _onKey;
+        string IWithId<string>.Id => _onKey;
     }
 
     public class ServerQualificationSessionEntry : ServerSessionEntry {

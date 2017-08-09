@@ -28,6 +28,9 @@
         <ControlTemplate TargetType="{x:Type TextBoxBase}">
           <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
           <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+              <Setter Property="Foreground" Value="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource AncestorType=FrameworkElement}}" />
+            </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
             </Trigger>

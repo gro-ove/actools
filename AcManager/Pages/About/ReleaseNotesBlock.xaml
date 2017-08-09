@@ -10,7 +10,7 @@
     </DockPanel>
     <TextBlock Style="{StaticResource Label}" Margin="0 0 0 16" Text="{Binding DisplayName}" DockPanel.Dock="Top" />
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="0 0 0 20">
-      <mui:BbCodeBlock BbCode="{Binding Content}" LineHeight="22" />
+      <mui:SelectableBbCodeBlock BbCode="{Binding Content}" LineHeight="22" />
     </ScrollViewer>
   </DockPanel>
 </UserControl>

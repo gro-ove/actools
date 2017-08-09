@@ -68,7 +68,8 @@ namespace AcManager.Tools.Helpers {
             var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
             if (!File.Exists(filename)) return;
 
-            ImportIfNeeded(carId, new IniFile(filename)["Cars"].GetDouble(carId, 0d));
+            var ini = new IniFile(filename);
+            ImportIfNeeded(carId, ini["Cars"].GetDouble(carId, 0d) * ini["Adjustments"].GetDouble("ks_mclaren_570s", 1d));
         }
 
         public static void Export([NotNull] string carId) {
@@ -81,13 +82,14 @@ namespace AcManager.Tools.Helpers {
             if (!File.Exists(filename)) return;
 
             var ini = new IniFile(filename);
-            var section = ini["Cars"];
-            var appDistance = section.GetDouble(carId, 0d);
+            var cars = ini["Cars"];
+            var multiplier = ini["Adjustments"].GetDouble("ks_mclaren_570s", 1d);
+            var appDistance = cars.GetDouble(carId, 0d) * multiplier;
             if (cmDistance <= appDistance + 100) return;
 
-            section.Set(carId, cmDistance);
-            if (!section.ContainsKey(carId + ".originalvalue")) {
-                section.Set(carId + ".originalvalue", appDistance);
+            cars.Set(carId, cmDistance / multiplier);
+            if (!cars.ContainsKey(carId + ".originalvalue")) {
+                cars.Set(carId + ".originalvalue", appDistance / multiplier);
             }
 
             ini.Save();

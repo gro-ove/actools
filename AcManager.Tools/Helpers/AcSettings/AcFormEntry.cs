@@ -142,7 +142,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             name = Regex.Replace(name, @"AC(?=[A-Z])", "AC ");
             name = Regex.Replace(name, @"^Form (?=\w)|\bD(?=Car)| Form$", "");
 #if DEBUG
-            Logging.Debug($"“{name}” → “{original}” → “{name}”");
+            Logging.Debug($"“{id}” → “{original}” → “{name}”");
 #endif
             return name;
         }

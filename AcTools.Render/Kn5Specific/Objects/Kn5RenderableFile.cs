@@ -121,6 +121,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private RenderableList _rootObject;
 
+        [NotNull]
         public RenderableList RootObject {
             get { return _rootObject; }
             protected set {

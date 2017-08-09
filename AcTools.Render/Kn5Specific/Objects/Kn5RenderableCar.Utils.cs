@@ -12,21 +12,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
     public partial class Kn5RenderableCar {
         [CanBeNull]
         public static KsAnimAnimator CreateAnimator([NotNull] string rootDirectory, [NotNull] string animName, float duration = 1f,
-                bool clampEnabled = true) {
-            return CreateAnimator(Path.Combine(rootDirectory, "animations", animName), duration, clampEnabled);
+                bool clampEnabled = true, bool skipFixed = true) {
+            return CreateAnimator(Path.Combine(rootDirectory, "animations", animName), duration, clampEnabled, skipFixed);
         }
 
         [CanBeNull]
-        public static KsAnimAnimator CreateAnimator([NotNull] string rootDirectory, CarData.AnimationBase animation, bool clampEnabled = true) {
-            return CreateAnimator(Path.Combine(rootDirectory, "animations", animation.KsAnimName), animation.Duration, clampEnabled);
+        public static KsAnimAnimator CreateAnimator([NotNull] string rootDirectory, CarData.AnimationBase animation, bool clampEnabled = true,
+                bool skipFixed = true) {
+            return CreateAnimator(Path.Combine(rootDirectory, "animations", animation.KsAnimName), animation.Duration, clampEnabled, skipFixed);
         }
 
         [CanBeNull]
-        public static KsAnimAnimator CreateAnimator([NotNull] string filename, float duration = 1f, bool clampEnabled = true) {
-            if (!File.Exists(filename)) return null;
-
+        public static KsAnimAnimator CreateAnimator([NotNull] string filename, float duration = 1f, bool clampEnabled = true, bool skipFixed = true) {
             try {
-                return new KsAnimAnimator(filename, duration) {
+                return new KsAnimAnimator(filename, duration, skipFixed) {
                     ClampPosition = clampEnabled
                 };
             } catch (Exception e) {

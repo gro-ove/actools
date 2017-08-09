@@ -11,25 +11,33 @@ namespace AcManager.Tools.Managers.Online {
         public static readonly string ExtendedSeparator = "ℹ";
 
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
-        private static readonly Regex SortingCheatsRegex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
+        private static readonly string TrashSymbols = @"|/#☆★.:=<>+-";
+        private static readonly Regex SortingCheats1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
+        private static readonly Regex SortingCheats2Regex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
             var specialIndex = name.IndexOf(ExtendedSeparator, StringComparison.InvariantCulture);
             if (specialIndex != -1) {
                 extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + ExtendedSeparator.Length));
-                name = name.Substring(0, specialIndex).Trim();
+                name = name.Substring(0, specialIndex);
             } else {
                 extPort = null;
-                name = name.Trim();
             }
 
-            name = SpacesCollapseRegex.Replace(name, " ");
+            name = SpacesCollapseRegex.Replace(name.Trim(), " ");
+
             if (SettingsHolder.Online.FixNames) {
-                name = SortingCheatsRegex.Replace(name, "");
+                name = SortingCheats2Regex.Replace(name, "");
+
+                var v = SortingCheats1Regex.Replace(name, " ");
+                if (v != name) {
+                    name = SpacesCollapseRegex.Replace(v, " ").Trim();
+                }
             } else if (oldName != null && SimpleCleanUpRegex.IsMatch(name) && !SimpleCleanUpRegex.IsMatch(oldName)) {
                 name = SimpleCleanUpRegex.Replace(name, "");
             }
+
             return name;
         }
 

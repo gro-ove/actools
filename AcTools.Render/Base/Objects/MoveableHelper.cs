@@ -9,8 +9,8 @@ using SlimDX;
 namespace AcTools.Render.Base.Objects {
     public interface IMoveable {
         void Move(Vector3 delta);
-
         void Rotate(Quaternion delta);
+        void Scale(Vector3 scale);
 
         [CanBeNull]
         IMoveable Clone();
@@ -31,10 +31,20 @@ namespace AcTools.Render.Base.Objects {
         private DebugLinesObject _arrowX, _arrowY, _arrowZ;
 
         [CanBeNull]
-        private DebugLinesObject _circleX, _circleY, _circleZ;
+        private DebugLinesObject _circleX, _circleY, _circleZ, _scale;
 
         private Vector3 _arrowHighlighted, _circleHighlighted;
-        private bool _keepHighlight;
+        private bool _scaleHighlighted, _keepHighlight;
+
+        private readonly IMoveable _parent;
+        private readonly MoveableRotationAxis _rotationAxis;
+        private readonly bool _allowScaling;
+
+        public MoveableHelper(IMoveable parent, MoveableRotationAxis rotationAxis = MoveableRotationAxis.Y, bool allowScaling = false) {
+            _parent = parent;
+            _rotationAxis = rotationAxis;
+            _allowScaling = allowScaling;
+        }
 
         public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone, [CanBeNull] out IMoveable cloned) {
             if (_keepHighlight) {
@@ -46,51 +56,25 @@ namespace AcTools.Render.Base.Objects {
             cloned = null;
 
             if (_arrowHighlighted != default(Vector3)) {
-                Vector3 planeNormal;
-                if (_arrowHighlighted.Y == 0f) {
-                    planeNormal = Vector3.UnitY;
-                } else if (_arrowHighlighted.X == 0f) {
-                    if (_arrowHighlighted.Z == 0f) {
-                        planeNormal = camera.Look.X.Abs() < camera.Look.Z.Abs() ? Vector3.UnitZ : Vector3.UnitX;
-                    } else {
-                        planeNormal = Vector3.UnitX;
-                    }
-                } else if (_arrowHighlighted.Z == 0f) {
-                    planeNormal = Vector3.UnitZ;
-                } else {
-                    planeNormal = -camera.Look;
-                }
-
-                var plane = new Plane(ParentMatrix.GetTranslationVector(), planeNormal);
+                var plane = new Plane(ParentMatrix.GetTranslationVector(), -camera.Look);
                 var rayFrom = camera.GetPickingRay(relativeFrom, new Vector2(1f, 1f));
                 var rayTo = camera.GetPickingRay(relativeFrom + relativeDelta, new Vector2(1f, 1f));
+                if (!Ray.Intersects(rayFrom, plane, out var distanceFrom) ||
+                        !Ray.Intersects(rayTo, plane, out var distanceTo)) return false;
 
-                float distance;
-
-                if (!Ray.Intersects(rayFrom, plane, out distance)) return false;
-                var pointFrom = rayFrom.Position + rayFrom.Direction * distance;
-
-                if (!Ray.Intersects(rayTo, plane, out distance)) return false;
-                var pointTo = rayTo.Position + rayTo.Direction * distance;
-                var pointDelta = pointTo - pointFrom;
-
+                var pointDelta =  rayTo.Direction * distanceTo - rayFrom.Direction * distanceFrom;
                 if (tryToClone) {
                     cloned = _parent.Clone();
                 }
 
-                var xOver = pointDelta.X.Abs();
-                if (xOver > 1f) pointDelta.X /= xOver;
-
-                var yOver = pointDelta.Y.Abs();
-                if (yOver > 1f) pointDelta.Y /= yOver;
-
-                var zOver = pointDelta.Z.Abs();
-                if (zOver > 1f) pointDelta.Z /= zOver;
-
+                var totalDistance = pointDelta.Length();
                 var resultMovement = new Vector3(
                         pointDelta.X * _arrowHighlighted.X,
                         pointDelta.Y * _arrowHighlighted.Y,
                         pointDelta.Z * _arrowHighlighted.Z);
+                resultMovement.Normalize();
+                resultMovement *= totalDistance;
+
                 _parent.Move(resultMovement);
                 UpdateBoundingBox();
                 return true;
@@ -109,6 +93,13 @@ namespace AcTools.Render.Base.Objects {
                 return true;
             }
 
+            if (_scaleHighlighted) {
+                var v = relativeDelta.X + relativeDelta.Y;
+                _parent.Scale(new Vector3(v > 0f ? 1.01f : 1f / 1.01f));
+                UpdateBoundingBox();
+                return true;
+            }
+
             return false;
         }
 
@@ -116,17 +107,10 @@ namespace AcTools.Render.Base.Objects {
             _keepHighlight = false;
         }
 
-        private readonly IMoveable _parent;
-        private readonly MoveableRotationAxis _rotationAxis;
-
-        public MoveableHelper(IMoveable parent, MoveableRotationAxis rotationAxis) {
-            _parent = parent;
-            _rotationAxis = rotationAxis;
-        }
-
         public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             const float arrowSize = 0.08f;
             const float circleSize = 0.06f;
+            const float boxSize = 0.14f;
 
             if (_arrowX == null) {
                 _arrowX = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f), arrowSize);
@@ -143,6 +127,10 @@ namespace AcTools.Render.Base.Objects {
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.Z)) {
                     _circleZ = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), radius: circleSize);
+                }
+
+                if (_allowScaling) {
+                    _scale = DebugLinesObject.GetLinesBox(Matrix.Identity, new Vector3(boxSize), new Color4(0f, 1f, 1f, 0f));
                 }
             }
 
@@ -170,6 +158,11 @@ namespace AcTools.Render.Base.Objects {
                     _circleZ.ParentMatrix = matrix;
                     _circleZ.UpdateBoundingBox();
                 }
+
+                if (_scale != null) {
+                    _scale.ParentMatrix = matrix;
+                    _scale.UpdateBoundingBox();
+                }
             }
 
             if (_keepHighlight) {
@@ -179,6 +172,7 @@ namespace AcTools.Render.Base.Objects {
                 _circleX?.Draw(holder, camera, _circleHighlighted.X == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
                 _circleY?.Draw(holder, camera, _circleHighlighted.Y == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
                 _circleZ?.Draw(holder, camera, _circleHighlighted.Z == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
+                _scale?.Draw(holder, camera, _scaleHighlighted ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);
             } else {
                 var mousePosition = holder.TryToGet<IMousePositionProvider>()?.GetRelative();
                 var rayN = mousePosition == null ? null : (camera as CameraBase)?.GetPickingRay(mousePosition.Value, new Vector2(1f, 1f));
@@ -201,6 +195,13 @@ namespace AcTools.Render.Base.Objects {
                     _circleY?.Draw(holder, camera, SpecialRenderMode.Simple);
                     _circleZ?.Draw(holder, camera, SpecialRenderMode.Simple);
                 }
+
+                if (_arrowHighlighted == Vector3.Zero && _circleHighlighted == Vector3.Zero) {
+                    _scaleHighlighted = _scale?.DrawHighlighted(ray, holder, camera) ?? false;
+                } else {
+                    _scaleHighlighted = false;
+                    _scale?.Draw(holder, camera, SpecialRenderMode.Simple);
+                }
             }
         }
 
@@ -211,6 +212,7 @@ namespace AcTools.Render.Base.Objects {
             DisposeHelper.Dispose(ref _circleX);
             DisposeHelper.Dispose(ref _circleY);
             DisposeHelper.Dispose(ref _circleZ);
+            DisposeHelper.Dispose(ref _scale);
         }
 
         public string Name => "__movable";
@@ -234,7 +236,7 @@ namespace AcTools.Render.Base.Objects {
         public void UpdateBoundingBox() {}
 
         public IRenderableObject Clone() {
-            return new MoveableHelper(_parent, _rotationAxis);
+            return new MoveableHelper(_parent, _rotationAxis, _allowScaling);
         }
 
         public float? CheckIntersection(Ray ray) {

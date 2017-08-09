@@ -145,6 +145,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         #region Parsing
         private class SevenZipEntry {
             public string Key;
+            public bool IsDirectory;
             public long Size;
         }
 
@@ -157,13 +158,14 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             if (!m.Success) return null;
 
             var key = m.Groups[3].Value;
-            return m.Groups[1].Value.StartsWith("D") ? null : new SevenZipEntry {
+            return new SevenZipEntry {
                 Key = key.Trim(),
+                IsDirectory = m.Groups[1].Value.StartsWith("D"),
                 Size = FlexibleParser.TryParseLong(m.Groups[2].Value) ?? 0L
             };
         }
 
-        private static IEnumerable<SevenZipEntry> ParseListOfFiles(string[] o){
+        private static IEnumerable<SevenZipEntry> ParseListOfFilesOrDirectories(string[] o){
             return o.Select(ParseListOfFiles_Line).NonNull();
         }
 
@@ -182,7 +184,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         private bool _solidArchive;
 
         [ItemCanBeNull]
-        private async Task<List<SevenZipEntry>> ListFiles(CancellationToken c) {
+        private async Task<List<SevenZipEntry>> ListFilesOrDirectories(CancellationToken c) {
             if (_cachedList != null) {
                 return _cachedList;
             }
@@ -200,7 +202,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                 _solidArchive = solidLine == "Solid = +";
             }
 
-            _cachedList = ParseListOfFiles(o.Out).ToList();
+            _cachedList = ParseListOfFilesOrDirectories(o.Out).ToList();
             return _cachedList;
         }
 
@@ -222,7 +224,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             Logging.Debug(_filename);
 
             try {
-                var list = await ListFiles(c);
+                var list = (await ListFilesOrDirectories(c))?.Where(x => !x.IsDirectory);
                 if (list == null) return;
 
                 SevenZipEntry testFile;
@@ -256,6 +258,16 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        private class SevenZipDirectoryInfo : IDirectoryInfo {
+            private readonly SevenZipEntry _archiveEntry;
+
+            public SevenZipDirectoryInfo(SevenZipEntry archiveEntry) {
+                _archiveEntry = archiveEntry;
+            }
+
+            public string Key => _archiveEntry.Key.Replace('/', '\\');
+        }
+
         private class SevenZipFileInfo : IFileInfo {
             private readonly SevenZipEntry _archiveEntry;
             private readonly Func<string, byte[]> _reader;
@@ -268,7 +280,6 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public string Key => _archiveEntry.Key.Replace('/', '\\');
-
             public long Size => _archiveEntry.Size;
 
             public async Task<byte[]> ReadAsync() {
@@ -285,8 +296,9 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
         }
 
-        protected override async Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
-            return (await ListFiles(cancellation))?.Select(x => new SevenZipFileInfo(x, ReadData, CheckData));
+        protected override async Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
+            return (await ListFilesOrDirectories(cancellation))?.Select(x => x.IsDirectory ?
+                (IFileOrDirectoryInfo)new SevenZipDirectoryInfo(x) : new SevenZipFileInfo(x, ReadData, CheckData));
         }
 
         private List<string> _askedData;
@@ -327,7 +339,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                 _preloadedData = new Dictionary<string, byte[]>();
             }
 
-            var list = (await ListFiles(cancellation))?.Where(x => _askedData.Contains(x.Key)).ToList();
+            var list = (await ListFilesOrDirectories(cancellation))?.Where(x => !x.IsDirectory && _askedData.Contains(x.Key)).ToList();
             if (list == null) return;
 
             // for debugging in case of unexpected end
@@ -374,26 +386,34 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }, cancellation).ConfigureAwait(false);
         }
 
-        protected override async Task CopyFileEntries(CopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var filtered = (await ListFiles(cancellation))?.Select(x => {
-                var destination = callback(new SevenZipFileInfo(x, null, null));
-                return destination == null ? null : Tuple.Create(x.Key, x.Size, destination);
+        protected override async Task CopyFileEntries(ICopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            var filtered = (await ListFilesOrDirectories(cancellation))?.Select(x => {
+                var destination = x.IsDirectory ? callback.Directory(new SevenZipDirectoryInfo(x)) :
+                        callback.File(new SevenZipFileInfo(x, null, null));
+                return destination == null ? null : Tuple.Create(x.Key, x.IsDirectory, x.Size, destination);
             }).NonNull().ToList();
             if (filtered == null) return;
 
-            await GetFiles(filtered.Select(x => x.Item1), async s => {
+            await GetFiles(filtered.Where(x => !x.Item2).Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
+                    if (entry.Item2) {
+                        FileUtils.EnsureDirectoryExists(entry.Item4);
+                    } else {
+                        FileUtils.EnsureFileDirectoryExists(entry.Item4);
+                        progress?.Report(Path.GetFileName(entry.Item4), i, filtered.Count);
 
-                    FileUtils.EnsureFileDirectoryExists(entry.Item3);
-                    progress?.Report(Path.GetFileName(entry.Item3), i, filtered.Count);
-
-                    using (var write = File.Create(entry.Item3)) {
-                        await s.CopyToAsync(write, entry.Item2);
-                        if (cancellation.IsCancellationRequested) return;
+                        using (var write = File.Create(entry.Item4)) {
+                            await s.CopyToAsync(write, entry.Item3);
+                            if (cancellation.IsCancellationRequested) return;
+                        }
                     }
                 }
             }, cancellation);
+
+            foreach (var entry in filtered.Where(x => x.Item2)) {
+                FileUtils.EnsureDirectoryExists(entry.Item4);
+            }
         }
     }
 }

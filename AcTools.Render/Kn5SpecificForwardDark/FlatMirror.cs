@@ -12,7 +12,7 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum FlatMirrorMode {
-        TransparentMirror, BackgroundGround, SolidGround, TextureMirror
+        TransparentMirror, BackgroundGround, SolidGround, ShadowOnlyGround, TextureMirror
     }
 
     public class FlatMirror : RenderableList {
@@ -109,6 +109,22 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
+        private class ShadowOnlyGroundMaterial : FlatMirrorMaterialBase {
+            public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
+                if (mode != SpecialRenderMode.SimpleTransparent) return false;
+                contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
+                contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+                return true;
+            }
+
+            public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                Effect.TechTransparentGround.DrawAllPasses(contextHolder.DeviceContext, indices);
+                contextHolder.DeviceContext.OutputMerger.BlendState = null;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            }
+        }
+
         private class TextureMirrorMaterial : FlatMirrorMaterialBase {
             public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
                 if (!base.Prepare(contextHolder, mode)) return false;
@@ -182,6 +198,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     case FlatMirrorMode.BackgroundGround:
                         _material = new SemiTransparentGroundMaterial();
                         break;
+                    case FlatMirrorMode.ShadowOnlyGround:
+                        _material = new ShadowOnlyGroundMaterial();
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
@@ -230,7 +249,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public FlatMirror([NotNull] IRenderableObject mirroredObject, Plane plane) : this(mirroredObject, plane, FlatMirrorMode.TransparentMirror) {}
 
-        public FlatMirror(Plane plane, bool opaqueMode) : this(null, plane, opaqueMode ? FlatMirrorMode.SolidGround : FlatMirrorMode.TransparentMirror) {}
+        public FlatMirror(Plane plane, bool opaqueMode, bool shadowOnlyMode) : this(null, plane,
+                shadowOnlyMode ? FlatMirrorMode.ShadowOnlyGround :
+                        opaqueMode ? FlatMirrorMode.SolidGround : FlatMirrorMode.TransparentMirror) {}
 
         private RasterizerState _rasterizerState;
 

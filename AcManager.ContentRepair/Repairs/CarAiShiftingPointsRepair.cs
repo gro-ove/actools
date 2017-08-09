@@ -1,4 +1,5 @@
-﻿using AcManager.Tools.Objects;
+﻿using AcManager.ContentRepair.Critical;
+using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
 namespace AcManager.ContentRepair.Repairs {

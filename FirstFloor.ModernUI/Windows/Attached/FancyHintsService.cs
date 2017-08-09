@@ -66,9 +66,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public bool CloseOnResize { get; }
 
         private static void DebugMessage(string msg) {
-            #if DEBUG
-            Logging.Debug(msg);
-            #endif
+            if (OptionDebugMode) {
+                Logging.Debug(msg);
+            }
         }
 
         public async void Trigger(TimeSpan delay) {
@@ -134,6 +134,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public void MaskAsUnnecessary() {
             Logging.Debug($"{Id}: unnecessary");
             Shown = true;
+            Unnecessary?.Invoke(this, EventArgs.Empty);
         }
 
         private bool? _available;
@@ -161,6 +162,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public event EventHandler<ShowHintEventArgs> Show;
+        public event EventHandler<EventArgs> Unnecessary;
     }
 
     public class FancyHintsService : NotifyPropertyChanged {
@@ -185,13 +187,13 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         internal static void Register(FancyHint hint) {
             Hints.Add(hint);
             hint.Show += OnHintShow;
+            hint.Unnecessary += OnHintUnnecessary;
         }
 
         private static Tuple<string, FrameworkElement> _nextHint;
 
         private static bool TryToShow(FrameworkElement element, FancyHint hint) {
             var parent = element;
-
             var attachTo = GetAttachTo(element);
             if (attachTo != null) {
                 var attachToType = attachTo as Type;
@@ -219,6 +221,13 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             layer.Item1.Add(new FancyHintAdorner(element, parent, layer.Item1, layer.Item2, hint));
             return true;
+        }
+
+        private static void OnHintUnnecessary(object sender, EventArgs eventArgs) {
+            var hint = (FancyHint)sender;
+            if (hint != null && FancyHintAdorner.Current?.Hint == hint) {
+                FancyHintAdorner.Current.ForceClose();
+            }
         }
 
         private static void OnHintShow(object sender, ShowHintEventArgs eventArgs) {
@@ -319,7 +328,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static Tuple<AdornerLayer, Window> GetAdornerLayer([NotNull] Visual visual) {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
 
-            var window = visual.GetParent<Window>();
+            var window = visual as Window ?? visual.GetParent<Window>();
             var layer = window?.FindVisualChildren<AdornerDecorator>().FirstOrDefault(GetHintsDecorator)?.AdornerLayer;
             return layer != null ? Tuple.Create(layer, window) : null;
         }

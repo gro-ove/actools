@@ -55,7 +55,7 @@ namespace AcManager.Tools.Helpers {
 
         private string _value;
         private bool _loaded, _default;
-        
+
         private static string GetDefaultValue() {
             return TryToFind().FirstOrDefault()?.SteamId;
         }
@@ -105,7 +105,7 @@ namespace AcManager.Tools.Helpers {
                 NonfatalError.Notify("Can’t get Steam ID from its config", e);
                 yield break;
             }
-            
+
             string selectedId = null;
             try {
                 var selectedKey = new IniFile(FileUtils.GetRaceIniFilename());
@@ -168,6 +168,6 @@ namespace AcManager.Tools.Helpers {
         [CanBeNull]
         public string SteamId { get; }
 
-        string IWithId.Id => SteamId;
+        string IWithId<string>.Id => SteamId;
     }
 }

@@ -224,6 +224,11 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void UnhandledExceptionHandler(Exception e) {
+            if (e is InvalidOperationException && e.Message.Contains("Visibility") && e.Message.Contains("WindowInteropHelper.EnsureHandle")) {
+                Logging.Error(e.ToString());
+                return;
+            }
+
             var text = e?.ToString() ?? @"?";
 
             if (!_initialized) {

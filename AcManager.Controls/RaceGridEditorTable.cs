@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
@@ -61,6 +62,9 @@ namespace AcManager.Controls {
                 this.AddWidthCondition(840).Add(t => GetTemplateChild(@"PART_RestrictorColumn") as DataGridColumn),
                 this.AddWidthCondition(980).Add(t => GetTemplateChild(@"PART_NationalityColumn") as DataGridColumn),
 
+                SettingsHolder.Drive.QuickDriveAiLimitations ?
+                        this.AddWidthCondition(1140).Add(t => GetTemplateChild(@"PART_AiLimitationColumn") as DataGridColumn) : null,
+
                 this.AddSizeCondition(p => p.ActualWidth >= 740 && p._model.PlayerCar != null).Add(
                         t => GetTemplateChild(@"PART_PlayerBallast") as FrameworkElement),
                 this.AddSizeCondition(p => p.ActualWidth >= 840 && p._model.PlayerCar != null).Add(
@@ -70,7 +74,7 @@ namespace AcManager.Controls {
 
         private void UpdateConditions() {
             foreach (var condition in _sizeRelated) {
-                condition.Update();
+                condition?.Update();
             }
         }
 

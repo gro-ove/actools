@@ -105,15 +105,15 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             yield return new GenericModUpdateOption(Name);
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var path = EntryPath;
-            return fileInfo => {
-                var filename = fileInfo.Key;
+            return new CopyCallback(info => {
+                var filename = info.Key;
                 if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);
-            };
+            });
         }
 
         protected override Task<string> GetDestination(CancellationToken cancellation) {

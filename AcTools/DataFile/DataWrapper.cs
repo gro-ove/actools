@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using AcTools.AcdFile;
 using AcTools.Utils;
+using AcTools.Utils.Physics;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
@@ -163,6 +164,7 @@ namespace AcTools.DataFile {
             }
         }
 
+        [Obsolete]
         public LutDataFile GetLutFile(string name) {
             lock (_cache) {
                 AbstractDataFile cached;

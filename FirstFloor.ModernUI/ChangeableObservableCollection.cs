@@ -11,9 +11,10 @@ namespace FirstFloor.ModernUI {
     public class ChangeableObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged where T : INotifyPropertyChanged {
         public ChangeableObservableCollection(){ }
 
-        public ChangeableObservableCollection(IEnumerable<T> collection) {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
-            CopyFrom(collection);
+        public ChangeableObservableCollection([CanBeNull] IEnumerable<T> collection) {
+            if (collection != null) {
+                CopyFrom(collection);
+            }
         }
 
         private void CopyFrom(IEnumerable<T> collection) {

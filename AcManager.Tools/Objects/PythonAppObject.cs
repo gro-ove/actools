@@ -397,7 +397,7 @@ namespace AcManager.Tools.Objects {
     public class PythonAppConfigValue : Displayable, IWithId {
         public string OriginalKey { get; private set; }
 
-        string IWithId.Id => OriginalKey;
+        string IWithId<string>.Id => OriginalKey;
 
         public Func<IPythonAppConfigValueProvider, bool> IsEnabledTest { get; private set; }
 

@@ -12,7 +12,7 @@ namespace AcManager.Tools.Managers.Online {
         public const string Key = @"lan";
         public static readonly LanOnlineSource Instance = new LanOnlineSource();
 
-        string IWithId.Id => Key;
+        string IWithId<string>.Id => Key;
 
         public string DisplayName => "LAN";
 

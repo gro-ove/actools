@@ -33,7 +33,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public ServerPresetDriverEntry Clone() {
-            var s = new IniFileSection();
+            var s = new IniFileSection(null);
             SaveTo(s);
             return new ServerPresetDriverEntry(s);
         }

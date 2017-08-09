@@ -199,7 +199,15 @@
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
+    <Compile Include="Kn5Specific\Objects\CarDescription.cs" />
+    <Compile Include="Kn5Specific\Objects\ExtraModels.cs" />
+    <Compile Include="Kn5Specific\Objects\IExtraModelProvider.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.AmbientShadows.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Cameras.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.DriverCrew.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lights.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.LiveReload.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Movement.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Wheels.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lines.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Utils.cs" />
@@ -317,6 +325,7 @@
     <Content Include="Shaders\Dark\DarkMaterial.NoPCSS.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.WithoutLighting.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.GPass.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Kunos.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.fx" />
@@ -326,7 +335,6 @@
     <Content Include="Shaders\Includes\DarkMaterial.Unpack.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Reflection.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Simple.fx" />
-    <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\ASSAO.fx" />
     <Content Include="Shaders\Includes\HBAO.Found.fx" />
     <None Include="Shaders\Includes\FXAA.311.fx.off" />

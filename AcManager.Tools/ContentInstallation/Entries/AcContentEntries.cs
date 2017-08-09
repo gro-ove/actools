@@ -415,7 +415,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private string _existingFormat = ToolsStrings.ContentInstallation_TrackExisting;
         public override string ExistingFormat => _existingFormat;
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var filter = NoConflictMode ? null : SelectedOption?.Filter;
 
             Logging.Write("INSTALLING TRACK…");
@@ -434,7 +434,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
                 if (disabled.Count == Layouts.Count) {
                     Logging.Write("Everything is disabled!");
-                    return p => null;
+                    return new CopyCallback(null);
                 }
 
                 var inisToCopy = Layouts.Where(x => x.Active).Select(x => x.Id == "" ? "models.ini" : $@"models_{x.Id}.ini")
@@ -460,13 +460,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                                 : !disabled.Any(x => FileUtils.IsAffected(x, path)));
             }
 
-            return fileInfo => {
+            return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
                 if (EntryPath != string.Empty && !FileUtils.IsAffected(EntryPath, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, EntryPath);
                 return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
-            };
+            });
         }
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
@@ -606,11 +606,11 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return FontsManager.Instance;
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var bitmapExtension = Path.GetExtension(EntryPath);
             var mainEntry = EntryPath.ApartFromLast(bitmapExtension) + FontObject.FontExtension;
 
-            return info => {
+            return new CopyCallback(info => {
                 if (FileUtils.ArePathsEqual(info.Key, mainEntry)) {
                     return destination;
                 }
@@ -620,7 +620,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 }
 
                 return null;
-            };
+            });
         }
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
@@ -651,6 +651,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public PythonAppContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null,
                 byte[] iconData = null, IEnumerable<string> icons = null) : base(path, id, name, version, iconData) {
+            MoveEmptyDirectories = true;
             _icons = icons?.ToList();
         }
 
@@ -662,17 +663,17 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return PythonAppsManager.Instance;
         }
 
-        protected override CopyCallback GetCopyCallback(string destination) {
+        protected override ICopyCallback GetCopyCallback(string destination) {
             var callback = base.GetCopyCallback(destination);
             var icons = _icons;
             if (icons == null) return callback;
 
-            return info => {
-                var b = callback(info);
+            return new CopyCallback(info => {
+                var b = callback?.File(info);
                 return b != null || !icons.Contains(info.Key) ? b :
                         Path.Combine(FileUtils.GetGuiIconsFilename(AcRootDirectory.Instance.RequireValue),
                                 Path.GetFileName(info.Key) ?? "icon.tmp");
-            };
+            }, info => callback?.Directory(info));
         }
     }
 

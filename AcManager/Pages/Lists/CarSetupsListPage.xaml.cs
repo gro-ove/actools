@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using JetBrains.Annotations;
@@ -164,9 +165,9 @@ namespace AcManager.Pages.Lists {
 
         private static int _remoteLinksStatus;
 
-        public static void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
+        public static void Open([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
             var main = Application.Current?.MainWindow as MainWindow;
-            if (forceNewWindow || main == null || !main.IsActive || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (forceNewWindow || Keyboard.Modifiers == ModifierKeys.Control || main == null || !main.IsActive || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car, forceRemoteSource);
                 return;
             }
@@ -179,6 +180,9 @@ namespace AcManager.Pages.Lists {
 
             var existing = main.OpenSubGroup("setups", $"Setups for {car.DisplayName}",
                     UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id));
+            foreach (var link in GetRemoteLinks(car.Id)) {
+                existing.FixedLinks.Add(link);
+            }
             if (forceRemoteSource != CarSetupsRemoteSource.None) {
                 existing.SetSelected(GetRemoteSourceUri(car.Id, forceRemoteSource));
             }

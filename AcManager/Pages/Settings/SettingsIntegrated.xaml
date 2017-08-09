@@ -32,6 +32,10 @@
 
       <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
 
+      <CheckBox IsChecked="{Binding Integrated.RsrLimitTemperature}" ToolTip="There is a rumour you might get banned on RSR for setting the temperature lower than 10 °C; with this option enabled, if you have RSR app enabled, CM will automatically raise temperature if needed up to 10 °C to avoid getting banned">
+        <Label Content="Limit lower temperature by 10 °C to avoid being banned on RSR" />
+      </CheckBox>
+
       <CheckBox IsChecked="{Binding Live.RsrEnabled}">
         <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
       </CheckBox>
@@ -88,11 +92,11 @@
       <DockPanel>
         <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
             Command="{Binding ImportSidekickOdometerCommand}" />
-        <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
+        <CheckBox IsChecked="{Binding Drive.SidekickOdometerImportValues}">
           <Label Content="Import driven distance from Sidekick app if bigger" />
         </CheckBox>
       </DockPanel>
-      <CheckBox IsChecked="{Binding Drive.StereoOdometerExportValues}">
+      <CheckBox IsChecked="{Binding Drive.SidekickOdometerExportValues}">
         <Label Content="Export driven distance to Sidekick app if bigger" />
       </CheckBox>
 

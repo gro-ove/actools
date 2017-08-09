@@ -69,7 +69,7 @@
       </DataGridTemplateColumn>
 
       <DataGridTextColumn x:Name="DefaultColumn" Width="120" Header="{x:Static c:ControlsStrings.TableHeader_BestLap}" SortMemberPath="Entry.LapTime"
-          Binding="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" CellStyle="{StaticResource DataGridCell.Number}"
+          Binding="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" CellStyle="{StaticResource DataGridCell.RightAlignment}"
           HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
       <DataGridTextColumn Width="180" Header="{x:Static c:ControlsStrings.TableHeader_Date}" SortMemberPath="Entry.EntryDate"
           Binding="{Binding Entry.EntryDate}" CellStyle="{StaticResource SmallNumberCellStyle}"

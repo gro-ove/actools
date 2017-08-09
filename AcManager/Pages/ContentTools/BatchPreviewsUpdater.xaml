@@ -85,13 +85,18 @@
                         BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" MouseLeftButtonUp="OnCarsListBoxItemClick">
                       <mui:Cell SnapsToDevicePixels="True">
                         <Rectangle Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
-                        <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+                        <Rectangle x:Name="BgHighlight" Visibility="Collapsed" Fill="{DynamicResource ItemBackgroundSelectedSubtle}" />
                         <Border Margin="6 0 8 0" Padding="{TemplateBinding Padding}">
                           <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                       </mui:Cell>
                     </Border>
+                    <ControlTemplate.Triggers>
+                      <Trigger Property="IsSelected" Value="True">
+                        <Setter TargetName="BgHighlight" Property="Visibility" Value="Visible" />
+                      </Trigger>
+                    </ControlTemplate.Triggers>
                   </ControlTemplate>
                 </Setter.Value>
               </Setter>

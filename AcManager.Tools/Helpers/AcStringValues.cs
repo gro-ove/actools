@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
         private static Regex _idYearRegex;
 
         private static Regex IdYearRegex => _idYearRegex ??
-                                            (_idYearRegex = new Regex(@"(?:19[2-9]|20[01])\d$", RegexOptions.Compiled));
+                                            (_idYearRegex = new Regex(@"(?<![a-zA-Z0-9])(?:19[2-9]|20[01])\d$", RegexOptions.Compiled));
 
         public static int? GetYearFromId([NotNull] string id) {
             var result = IdYearRegex.Match(id);

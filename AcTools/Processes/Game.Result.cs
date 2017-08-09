@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -27,6 +28,11 @@ namespace AcTools.Processes {
             [CanBeNull]
             public T GetExtraByType<T>() where T : ResultExtra {
                 return Extras.OfType<T>().FirstOrDefault();
+            }
+
+            public bool GetExtraByType<T>(out T value) where T : ResultExtra {
+                value = Extras.OfType<T>().FirstOrDefault();
+                return value != null;
             }
 
             public bool IsNotCancelled => NumberOfSessions == Sessions.Length && (Sessions.Any(x => x.IsNotCancelled) || Extras.Any(x => x.IsNotCancelled));
@@ -199,17 +205,23 @@ namespace AcTools.Processes {
         }
 
         public class ResultPlayer {
-            [JsonProperty(PropertyName = "name")]
             public string Name;
-
-            [JsonProperty(PropertyName = "car")]
             public string CarId;
-
-            [JsonProperty(PropertyName = "skin")]
             public string CarSkinId;
 
             public string GetDescription() {
                 return $"({Name} in {CarId})";
+            }
+
+            [JsonConstructor]
+            public ResultPlayer(string name, string car, string skin) {
+                if (FakeCarIds.IsFake(car, out var f)) {
+                    car = f;
+                }
+
+                Name = name;
+                CarId = car;
+                CarSkinId = skin;
             }
         }
 
@@ -225,6 +237,12 @@ namespace AcTools.Processes {
             /// </summary>
             [JsonProperty(PropertyName = "car")]
             public int CarNumber;
+
+            [JsonProperty(PropertyName = "cuts")]
+            public int Cuts;
+
+            [JsonProperty(PropertyName = "tyre")]
+            public string TyresShortName;
 
             [JsonProperty(PropertyName = "sectors"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
             public TimeSpan[] SectorsTime;
@@ -343,7 +361,7 @@ namespace AcTools.Processes {
             public int[] GetTakenPlacesPerCar() {
                 return GetCarPerTakenPlace().Select((x, i) => new[] { x, i }).OrderBy(x => x[0]).Select(x => x[1]).ToArray();
             }
-            
+
             public string GetDescription() {
                 return $"({Name}, Laps={LapsCount}, Places=[{CarPerTakenPlace?.JoinToString(", ")}])";
             }

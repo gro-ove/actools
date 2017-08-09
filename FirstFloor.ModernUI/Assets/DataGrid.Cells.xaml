@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:system="clr-namespace:System;assembly=mscorlib">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Easing.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Background" Value="{DynamicResource DataGridCellBackground}" />
+    <Setter Property="Foreground" Value="{DynamicResource DataGridCellForeground}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="5,1" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type DataGridCell}">
+          <c:Cell SnapsToDevicePixels="True">
+            <Rectangle Fill="{TemplateBinding Background}" />
+            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+              <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+            </Border>
+          </c:Cell>
+          <ControlTemplate.Triggers>
+            <!--<Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundHover}" />
+              <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundHover}" />
+            </Trigger>-->
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundSelected}" />
+              <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundSelected}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="DataGridCell.RightAlignment" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+    <Setter Property="HorizontalContentAlignment" Value="Right" />
+  </Style>
+
+  <Style x:Key="DataGridCell.Transparent" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type DataGridCell}">
+          <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="DataGridCell.Transparent.RightAlignment" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Transparent}">
+    <Setter Property="HorizontalContentAlignment" Value="Right" />
+  </Style>
+
+</ResourceDictionary>

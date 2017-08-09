@@ -38,7 +38,8 @@ SamplerState samCubemap {
 float3 GetReflection(float3 reflected, float specularExp) {
 	[branch]
 	if (gCubemapReflections) {
-		return gReflectionCubemap.SampleLevel(samCubemap, reflected, saturate(1 - specularExp / 255) * 8).rgb * gReflectionPower;
+		return gReflectionCubemap.SampleLevel(samCubemap, reflected,
+		        saturate(1 - specularExp / 255 + gCubemapReflectionsOffset) * 8).rgb * gReflectionPower;
 	} else {
 		[flatten]
 		if (gFlatMirrored) {

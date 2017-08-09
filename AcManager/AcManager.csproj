@@ -230,6 +230,7 @@
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithUiShots.cs" />
     <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
       <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
     </Compile>
@@ -358,6 +359,7 @@
       <DependentUpon>PackServerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
+    <Compile Include="Pages\Drive\OnlineServer.Menus.cs" />
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -1483,8 +1485,11 @@
     </EmbeddedResource>
     <None Include="About\ImportantTips\Browser Extension.txt" />
     <None Include="About\ImportantTips\Custom Showroom Color Grading.txt" />
+    <None Include="About\ImportantTips\Fake Cars.txt" />
+    <None Include="About\ImportantTips\Generic Mods.txt" />
     <None Include="About\ImportantTips\Python Apps Versions.txt" />
     <Content Include="About\Licenses\7ZipExtra\License.txt" />
+    <None Include="About\ImportantTips\Track Skins.txt" />
     <None Include="About\Licenses\AdornedControl\LICENSE" />
     <None Include="About\Licenses\AssettoCorsaSharedMemory\LICENSE" />
     <None Include="About\Licenses\AvalonEdit\LICENSE" />

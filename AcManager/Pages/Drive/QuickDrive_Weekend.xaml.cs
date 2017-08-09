@@ -122,7 +122,7 @@ namespace AcManager.Pages.Drive {
                     Penalties = Penalties,
                     JumpStartPenalty = JumpStartPenalty,
                     StartingPosition = RaceGridViewModel.StartingPositionLimited == 0
-                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPositionLimited,
+                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumberLimited + 2) : RaceGridViewModel.StartingPositionLimited,
                     RaceLaps = LapsNumber,
                     BotCars = botCars,
                     PracticeDuration = PracticeDuration,

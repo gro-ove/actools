@@ -30,9 +30,8 @@ namespace AcManager.ContentRepair.Repairs {
             var hidden = GetHiddenNodes(driver["MODEL"].GetNonEmpty("NAME"));
             if (hidden == null) return;
 
-            driver.SetSections("HIDE_OBJECT", hidden.Union(driver.GetSections("HIDE_OBJECT").Select(x => x.GetNonEmpty("NAME"))).Select(x => new IniFileSection {
-                ["NAME"] = x
-            }));
+            driver.SetSections("HIDE_OBJECT", hidden.Union(driver.GetSections("HIDE_OBJECT").Select(x => x.GetNonEmpty("NAME")))
+                                                    .Select(x => new IniFileSection(data) { ["NAME"] = x }));
             driver.Save();
         }
 

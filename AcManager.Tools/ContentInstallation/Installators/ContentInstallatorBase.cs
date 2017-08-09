@@ -38,10 +38,10 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         protected abstract string GetBaseId();
 
         [ItemCanBeNull]
-        protected abstract Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation);
+        protected abstract Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation);
 
         public async Task<IReadOnlyList<ContentEntryBase>> GetEntriesAsync(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var list = (await GetFileEntriesAsync(cancellation))?.ToList();
+            var list = (await GetFileEntriesAsync(cancellation))?.OfType<IFileInfo>().ToList();
             if (list == null) return null;
 
             for (var i = 0; i < 2; i++) {
@@ -75,23 +75,33 @@ namespace AcManager.Tools.ContentInstallation.Installators {
 
         protected abstract Task LoadMissingContents(CancellationToken cancellation);
 
-        protected virtual async Task CopyFileEntries([NotNull] CopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        protected virtual async Task CopyFileEntries([NotNull] ICopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var list = (await GetFileEntriesAsync(cancellation))?.ToList();
             if (list == null) return;
 
-            for (var i = 0; i < list.Count; i++) {
-                var fileInfo = list[i];
-                var destination = callback(fileInfo);
+            var files = list.OfType<IFileInfo>().ToList();
+            for (var i = 0; i < files.Count; i++) {
+                var fileInfo = files[i];
+                var destination = callback.File(fileInfo);
                 if (destination != null) {
                     FileUtils.EnsureFileDirectoryExists(destination);
-                    progress?.Report(Path.GetFileName(destination), i, list.Count);
+                    progress?.Report(Path.GetFileName(destination), i, files.Count);
                     await fileInfo.CopyToAsync(destination);
                     if (cancellation.IsCancellationRequested) return;
                 }
             }
+
+            var directories = list.OfType<IDirectoryInfo>().ToList();
+            for (var i = 0; i < directories.Count; i++) {
+                var directoryInfo = directories[i];
+                var destination = callback.Directory(directoryInfo);
+                if (destination != null) {
+                    FileUtils.EnsureDirectoryExists(destination);
+                }
+            }
         }
 
-        public async Task InstallAsync([NotNull] CopyCallback callback,
+        public async Task InstallAsync([NotNull] ICopyCallback callback,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             await CopyFileEntries(callback, progress, cancellation);
         }

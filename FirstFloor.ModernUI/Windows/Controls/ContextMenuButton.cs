@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -26,7 +27,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(ContextMenuButton);
         }
 
-
         public event EventHandler<ContextMenuButtonEventArgs> Click;
 
         private bool Open(bool near) {
@@ -35,6 +35,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (args.Handled) return true;
 
             var menu = args.Menu ?? Menu;
+
+            if (ForceNear.HasValue) {
+                near = ForceNear.Value;
+            }
 
             var popup = menu as Popup;
             if (popup != null) {
@@ -66,6 +70,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return false;
         }
 
+        public static readonly DependencyProperty ForceNearProperty = DependencyProperty.Register(nameof(ForceNear), typeof(bool?),
+                typeof(ContextMenuButton), new PropertyMetadata(null, (o, e) => {
+                    ((ContextMenuButton)o)._forceNear = (bool?)e.NewValue;
+                }));
+
+        private bool? _forceNear;
+
+        public bool? ForceNear {
+            get => _forceNear;
+            set => SetValue(ForceNearProperty, value);
+        }
+
+        public static readonly DependencyProperty ExtraDelayProperty = DependencyProperty.Register(nameof(ExtraDelay), typeof(bool),
+                typeof(ContextMenuButton), new PropertyMetadata(false, (o, e) => {
+                    ((ContextMenuButton)o)._extraDelay = (bool)e.NewValue;
+                }));
+
+        private bool _extraDelay;
+
+        public bool ExtraDelay {
+            get => _extraDelay;
+            set => SetValue(ExtraDelayProperty, value);
+        }
+
         private FrameworkElement _child;
         private FrameworkElement _button;
 
@@ -90,7 +118,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private void OnButtonClick(object sender, MouseButtonEventArgs e) {
+        private async void OnButtonClick(object sender, MouseButtonEventArgs e) {
+            if (ExtraDelay) {
+                await Task.Delay(1);
+            }
+
             if (!e.Handled && Open(true)) {
                 e.Handled = true;
             }
@@ -137,8 +169,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ContextMenuButton), new PropertyMetadata(OnMenuChanged));
 
         public FrameworkElement Menu {
-            get { return (FrameworkElement)GetValue(MenuProperty); }
-            set { SetValue(MenuProperty, value); }
+            get => (FrameworkElement)GetValue(MenuProperty);
+            set => SetValue(MenuProperty, value);
         }
 
         private static void OnMenuChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -179,24 +211,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ContextMenuButton));
 
         public ICommand Command {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(nameof(CommandParameter), typeof(object),
                 typeof(ContextMenuButton));
 
         public object CommandParameter {
-            get { return GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
         }
 
         public static readonly DependencyProperty PropagateToChildrenProperty = DependencyProperty.Register(nameof(PropagateToChildren), typeof(bool),
                 typeof(ContextMenuButton));
 
         public bool PropagateToChildren {
-            get { return (bool)GetValue(PropagateToChildrenProperty); }
-            set { SetValue(PropagateToChildrenProperty, value); }
+            get => (bool)GetValue(PropagateToChildrenProperty);
+            set => SetValue(PropagateToChildrenProperty, value);
         }
     }
 }

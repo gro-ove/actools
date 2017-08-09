@@ -14,9 +14,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -35,6 +37,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SlimDX;
@@ -304,6 +307,9 @@ namespace AcManager.CustomShowroom {
                 [JsonProperty("cl")]
                 public double[] CameraLookAt = { 0, 0, 0 };
 
+                [JsonProperty("ti")]
+                public float CameraTilt = 0f;
+
                 [JsonProperty("cf")]
                 public float CameraFov = 36f;
 
@@ -349,6 +355,7 @@ namespace AcManager.CustomShowroom {
 
                     CameraPosition = CameraPosition.ToArray(),
                     CameraLookAt = CameraLookAt.ToArray(),
+                    CameraTilt = CameraTilt,
                     CameraFov = CameraFov,
                     CameraOrbit = CameraOrbit,
                     CameraAutoRotate = CameraAutoRotate,
@@ -375,6 +382,19 @@ namespace AcManager.CustomShowroom {
                 set {
                     if (Equals(value, _cameraFov)) return;
                     _cameraFov = value;
+                    OnPropertyChanged();
+                    UpdateCamera();
+                    SaveLater();
+                }
+            }
+
+            private float _cameraTilt;
+
+            public float CameraTilt {
+                get => _cameraTilt;
+                set {
+                    if (Equals(value, _cameraTilt)) return;
+                    _cameraTilt = value;
                     OnPropertyChanged();
                     UpdateCamera();
                     SaveLater();
@@ -434,6 +454,31 @@ namespace AcManager.CustomShowroom {
                 Renderer?.ResetCamera();
             }));
 
+            private DelegateCommand _loadPresetCameraCommand;
+
+            public DelegateCommand LoadPresetCameraCommand => _loadPresetCameraCommand ?? (_loadPresetCameraCommand = new DelegateCommand(() => {
+                try {
+                    var showroomPresetsDirectory = PresetsManager.Instance.EnsureDirectory(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue));
+                    var previewsPresetsDirectory = PresetsManager.Instance.EnsureDirectory(new PresetsCategory(CmPreviewsSettings.DefaultPresetableKeyValue));
+
+                    var dialog = new OpenFileDialog {
+                        InitialDirectory = showroomPresetsDirectory,
+                        Filter = string.Format(ToolsStrings.Presets_FileFilter, PresetsCategory.DefaultFileExtension),
+                        Title = "Select Custom Showroom Or Custom Previews Preset",
+                        CustomPlaces = {
+                            new FileDialogCustomPlace(showroomPresetsDirectory),
+                            new FileDialogCustomPlace(previewsPresetsDirectory),
+                        }
+                    };
+
+                    if (dialog.ShowDialog() == true) {
+                        Settings?.LoadCamera(File.ReadAllText(dialog.FileName));
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load camera from preset", e);
+                }
+            }, () => Settings != null));
+
             private bool _cameraBusy, _cameraIgnoreNext;
 
             private void OnCameraMoved(object sender, EventArgs e) {
@@ -452,6 +497,7 @@ namespace AcManager.CustomShowroom {
                 try {
                     CameraPosition.Set(renderer.Camera.Position);
                     CameraLookAt.Set(renderer.CameraOrbit?.Target ?? renderer.Camera.Position + renderer.Camera.Look);
+                    CameraTilt = renderer.Camera.Tilt.ToDegrees();
                     CameraFov = renderer.Camera.FovY.ToDegrees();
                     CameraOrbit = renderer.CameraOrbit != null;
                 } finally {
@@ -466,9 +512,9 @@ namespace AcManager.CustomShowroom {
 
                 try {
                     if (CameraOrbit) {
-                        renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians());
+                        renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
                     } else {
-                        renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians());
+                        renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
                     }
 
                     renderer.AutoRotate = CameraAutoRotate;
@@ -498,6 +544,7 @@ namespace AcManager.CustomShowroom {
                 try {
                     CameraPosition.Set(o.CameraPosition);
                     CameraLookAt.Set(o.CameraLookAt);
+                    CameraTilt = o.CameraTilt;
                     CameraFov = o.CameraFov;
                     CameraOrbit = o.CameraOrbit;
                     CameraAutoRotate = o.CameraAutoRotate;
@@ -1036,11 +1083,11 @@ namespace AcManager.CustomShowroom {
                     Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename("FbxConverter", "FbxConverter.exe");
 
                     var destination = Path.Combine(Car.Location, "unpacked");
-                    using (var waiting = new WaitingDialog(Tools.ToolsStrings.Common_Exporting)) {
+                    using (var waiting = new WaitingDialog(ToolsStrings.Common_Exporting)) {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination) &&
-                                MessageBox.Show(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), Tools.ToolsStrings.Common_Destination,
+                                ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), Tools.ToolsStrings.Common_Destination,
                                         MessageBoxButton.YesNo) == MessageBoxResult.No) {
                             var temp = destination;
                             var i = 1;

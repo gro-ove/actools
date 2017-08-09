@@ -159,7 +159,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 node.LocalMatrix = /*Matrix.Scaling(node.GetOriginalScale()) **/ (callback(node) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
-                AcToolsLogging.Write(node.LocalMatrix);
+                /*AcToolsLogging.Write(node.LocalMatrix);*/
 
                 if (collectNodes) {
                     result.Add(node);

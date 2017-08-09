@@ -107,7 +107,7 @@ namespace AcManager.Tools.Managers.Plugins {
             return Instance.UpdateList();
         }
 
-        public async Task UpdateList() {
+        private async Task UpdateList() {
             if (!_locallyLoaded) {
                 ReloadLocalList();
             }
@@ -128,7 +128,7 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        public async Task<IEnumerable<PluginEntry>> DownloadAndParseList() {
+        private static async Task<IEnumerable<PluginEntry>> DownloadAndParseList() {
             try {
                 var loaded = await CmApiProvider.GetStringAsync("plugins/list");
                 return loaded == null ? null : JsonConvert.DeserializeObject<PluginEntry[]>(loaded).Where(x => x.IsAllRight);

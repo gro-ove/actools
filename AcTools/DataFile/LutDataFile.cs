@@ -12,7 +12,12 @@ namespace AcTools.DataFile {
         public LutDataFile(string filename) : base(filename) {}
         public LutDataFile() {}
 
-        public readonly Lut Values = new Lut();
+        public LutDataFile(Lut values) {
+            _lut = values;
+        }
+
+        private Lut _lut;
+        public Lut Values => _lut ?? (_lut = new Lut());
 
         protected override void ParseString(string data) {
             Clear();
@@ -38,12 +43,9 @@ namespace AcTools.DataFile {
                         if (started != -1) {
                             if (!double.IsNaN(key) || !FlexibleParser.TryParseDouble(data.Substring(started, i - started), out key)) {
                                 if (malformed == -1) {
-                                    if (!double.IsNaN(key)) {
-                                        AcToolsLogging.Write($@"Key already defined! But then, there is a second one, at {line}");
-                                    } else {
-                                        AcToolsLogging.Write($@"Failed to parse key “{data.Substring(started, i - started)}” at {line}");
-                                    }
-
+                                    AcToolsLogging.Write(!double.IsNaN(key)
+                                            ? $@"Key already defined! But then, there is a second one, at {line}"
+                                            : $@"Failed to parse key “{data.Substring(started, i - started)}” at {line}");
                                     malformed = line;
                                 }
 

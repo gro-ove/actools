@@ -29,9 +29,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     ResetSoundEmitters();
 
                     // driver
-                    _driverSet = false;
-                    _driverSteerAnimator = null;
-                    DisposeHelper.Dispose(ref _driver);
+                    ResetDriver();
 
                     // debug lines
                     _wingsLines.Reset();
@@ -67,9 +65,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
                     break;
                 case "driver3d.ini":
-                    _driverSet = false;
-                    DisposeHelper.Dispose(ref _driver);
-                    _driverSteerAnimator = null;
+                    ResetDriver();
                     break;
                 case "engine.ini":
                     LoadEngineParams();

@@ -1,18 +1,30 @@
 ﻿<Popup x:Class="AcManager.Controls.UserControls.ModernPopup" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" StaysOpen="False" AllowsTransparency="True"
-        PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Custom" HorizontalAlignment="Left"
-        mui:PopupHelper.Register="True">
-    <mui:Cell x:Name="Root" Margin="4" HorizontalAlignment="Center" d:DataContext="{d:DesignInstance local:ModernPopup}">
-        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-        <Border Background="{DynamicResource PopupBackground}" Padding="{Binding Padding}">
-            <AdornerDecorator>
-                <ContentPresenter Content="{Binding Content}" TextBlock.FontStyle="Normal" TextBlock.FontWeight="Normal"
-                        TextOptions.TextFormattingMode="{DynamicResource FormattingMode}" />
-            </AdornerDecorator>
-        </Border>
-        <Border BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" />
-    </mui:Cell>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" StaysOpen="False" AllowsTransparency="True"
+    PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Custom" HorizontalAlignment="Left"
+    mui:PopupHelper.Register="True">
+  <Popup.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Popup.Resources>
+
+  <mui:Cell x:Name="Root" Margin="4" HorizontalAlignment="Center" d:DataContext="{d:DesignInstance local:ModernPopup}"
+      TextBlock.FontFamily="{StaticResource DefaultFont}" TextBlock.FontSize="{DynamicResource DefaultFontSize}">
+    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+    <Border Background="{DynamicResource PopupBackground}" Padding="{Binding Padding}">
+      <AdornerDecorator>
+        <ContentPresenter Content="{Binding Content}" TextBlock.FontStyle="Normal" TextBlock.FontWeight="Normal"
+            TextOptions.TextFormattingMode="{DynamicResource FormattingMode}" />
+      </AdornerDecorator>
+    </Border>
+    <Border BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" />
+  </mui:Cell>
 </Popup>

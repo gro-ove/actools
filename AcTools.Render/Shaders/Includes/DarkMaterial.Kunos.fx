@@ -300,7 +300,7 @@ float4 ps_Windscreen(PS_IN pin) : SV_Target {
 
 #if COMPLEX_LIGHTING == 1
 	float3 diffuse;
-	GetLight_NoSpecular(fromEyeW, pin.PosW, diffuse);
+	GetLight_NoSpecular_NoArea(fromEyeW, pin.PosW, diffuse);
 #else
 	float3 diffuse = saturate(Luminance(gLightColor) * 0.76);
 #if ENABLE_SHADOWS == 1
@@ -562,6 +562,26 @@ technique10 FlatMirror {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, ps_FlatMirror()));
+	}
+}
+
+float4 ps_TransparentGround(pt_PS_IN pin) : SV_Target {
+#if ENABLE_SHADOWS == 1
+	float shadow = 1.0 - GetShadow(pin.PosW);
+#else
+	float shadow = 0.0;
+#endif
+
+	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
+    float shadowOpacity = saturate(Luminance(gLightColor) / (1 + saturate(Luminance(ambient))));
+	return float4(0, 0, 0, shadow * shadowOpacity);
+}
+
+technique10 TransparentGround {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, ps_TransparentGround()));
 	}
 }
 

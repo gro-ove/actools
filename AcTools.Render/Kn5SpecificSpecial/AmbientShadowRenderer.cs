@@ -162,7 +162,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void Draw(float multipler, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
-            
+
             var t = Iterations;
 
             // draw
@@ -174,7 +174,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     progress?.Report((double)k / t);
                     if (cancellation.IsCancellationRequested) return;
                 }
-                
+
                 /* random distribution */
                 Vector3 v3;
                 while (true) {
@@ -295,7 +295,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 SetBodyShadowCamera();
                 Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.Subrange(0.01, 0.59), cancellation);
                 if (cancellation.IsCancellationRequested) return;
-                
+
                 SaveResultAs(replacement.Filename, BodySize, BodyPadding);
             }
 
@@ -305,19 +305,21 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _wheelMode = true;
 
             var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
-            foreach (var entry in nodes.Select(x => CarNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
+            var list = nodes.Select(x => CarNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
                 Node = x,
                 Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
                         new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
                 FileName = $"tyre_{i}_shadow.png",
                 Progress = progress.Subrange(0.6 + i * 0.1, 0.099)
-            })) {
+            }).ToList();
+
+            foreach (var entry in list) {
                 using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
                     Scene.Clear();
                     _flattenNodes = null;
 
-                    Scene.Add(entry.Node);
-                    entry.Node.LocalMatrix = entry.Matrix;
+                    Scene.AddRange(list.Select(x => x.Node));
+                    Scene.LocalMatrix = entry.Matrix;
                     Scene.UpdateBoundingBox();
 
                     Draw(WheelMultipler, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);

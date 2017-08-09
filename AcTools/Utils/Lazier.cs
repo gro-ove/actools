@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Management;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
@@ -7,14 +8,17 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public static class Lazier {
+        [NotNull]
         public static Lazier<T> Create<T>(Func<T> fn) {
             return new Lazier<T>(fn);
         }
 
+        [NotNull]
         public static Lazier<T> Create<T>(Func<Task<T>> fn, T loadingValue = default(T)) {
             return new Lazier<T>(fn, loadingValue);
         }
 
+        [NotNull]
         public static Lazier<T> Static<T>(T obj) {
             return new Lazier<T>(obj);
         }
@@ -85,8 +89,24 @@ namespace AcTools.Utils {
             }
         }
 
+        private bool _autoDispose;
+
+        public bool AutoDispose {
+            get => _autoDispose;
+            set {
+                if (Equals(value, _autoDispose)) return;
+                _autoDispose = value;
+                OnPropertyChanged();
+            }
+        }
+
         public void Reset() {
             if (_fn == null && _fnTask == null) return;
+
+            if (AutoDispose) {
+                (_value as IDisposable)?.Dispose();
+            }
+
             _value = default(T);
             OnPropertyChanged(nameof(Value));
             IsSet = false;

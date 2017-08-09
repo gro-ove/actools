@@ -59,34 +59,34 @@ namespace AcManager.ContentRepair {
     }
 
     public class ContentRepairSuggestion : Displayable {
+        public bool IsCritical { get; set; }
+
         public string Category { get; }
-
         public sealed override string DisplayName { get; set; }
-
         public string Description { get; }
 
         public List<ContentRepairSuggestionFix> Fixes { get; }
 
         public string FixCaption {
-            get { return Fixes[0].FixCaption; }
-            set { Fixes[0].FixCaption = value; }
+            get => Fixes[0].FixCaption;
+            set => Fixes[0].FixCaption = value;
         }
 
         public bool AffectsData {
-            get { return Fixes[0].AffectsData; }
-            set { Fixes[0].AffectsData = value; }
+            get => Fixes[0].AffectsData;
+            set => Fixes[0].AffectsData = value;
         }
 
         public bool ShowProgressDialog {
-            get { return Fixes[0].ShowProgressDialog; }
-            set { Fixes[0].ShowProgressDialog = value; }
+            get => Fixes[0].ShowProgressDialog;
+            set => Fixes[0].ShowProgressDialog = value;
         }
 
         public ContentRepairSuggestion(string category, string name, string description, Func<IProgress<AsyncProgressEntry>, CancellationToken, Task<bool>> fix) {
             Fixes = new List<ContentRepairSuggestionFix> {
                 new ContentRepairSuggestionFix(this, null, fix)
             };
-            
+
             Category = category;
             DisplayName = name;
             Description = description;
@@ -104,7 +104,7 @@ namespace AcManager.ContentRepair {
         private bool _isHidden;
 
         public bool IsHidden {
-            get { return _isHidden; }
+            get => _isHidden;
             set {
                 if (Equals(value, _isHidden)) return;
                 _isHidden = value;
@@ -115,7 +115,7 @@ namespace AcManager.ContentRepair {
         private bool _isSolved;
 
         public bool IsSolved {
-            get { return _isSolved; }
+            get => _isSolved;
             set {
                 if (Equals(value, _isSolved)) return;
                 _isSolved = value;

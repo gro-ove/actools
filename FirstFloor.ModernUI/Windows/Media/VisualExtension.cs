@@ -40,24 +40,34 @@ namespace FirstFloor.ModernUI.Windows.Media {
         }
 
         [CanBeNull]
-        public static Visual GetItemVisual(this ItemsControl list, int index) {
+        public static Visual GetItemVisual(this ItemsControl list, object item) {
+            return list.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated
+                    ? null : list.ItemContainerGenerator.ContainerFromItem(item) as Visual;
+        }
+
+        [CanBeNull]
+        public static Visual GetIndexVisual(this ItemsControl list, int index) {
             return list.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated
                     ? null : list.ItemContainerGenerator.ContainerFromIndex(index) as Visual;
         }
 
-        public static bool IsMouseOverItem(this ItemsControl list, int index) {
-            return list.GetItemVisual(index)?.IsMouseOverElement() == true;
+        public static bool IsMouseOverIndex(this ItemsControl list, int index) {
+            return list.GetIndexVisual(index)?.IsMouseOverElement() == true;
         }
 
-        public static bool IsMouseOverItem(this ItemsControl list, int index, Point point) {
-            return list.GetItemVisual(index)?.IsMouseOverElement(point) == true;
+        public static bool IsMouseOverIndex(this ItemsControl list, int index, Point point) {
+            return list.GetIndexVisual(index)?.IsMouseOverElement(point) == true;
+        }
+
+        public static bool IsMouseOverItem(this ItemsControl list, object item) {
+            return list.GetItemVisual(item)?.IsMouseOverElement() == true;
         }
 
         public static int GetMouseItemIndex(this ItemsControl list) {
             var screenPoint = GetMousePosition();
 
             for (var i = 0; i < list.Items.Count; i++) {
-                if (list.IsMouseOverItem(i, screenPoint)) {
+                if (list.IsMouseOverIndex(i, screenPoint)) {
                     return i;
                 }
             }

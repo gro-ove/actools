@@ -590,7 +590,7 @@ Author: [b]{3}[/b]</value>
     <value>Font’s icon symbol:</value>
   </data>
   <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
-    <value>Smaller value may increase UI responsibleness, but decrease loading times</value>
+    <value>Smaller value may increase UI responsiveness, but decrease loading times</value>
   </data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
     <value>For example, on disabling</value>
@@ -623,7 +623,7 @@ Author: [b]{3}[/b]</value>
     <value>Fancy Showroom:</value>
   </data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
-    <value>Use bloom</value>
+    <value>Use HDR</value>
   </data>
   <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
     <value>Use MSAA</value>

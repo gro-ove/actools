@@ -124,7 +124,7 @@ namespace AcManager.CustomShowroom {
 
         public sealed class MaterialValueSingle : MaterialValueBase {
             public MaterialValueSingle(string name, float value) : base(name) {
-                Value = OriginalValue = value;
+                Value = (OriginalValue = value).ToInvariantString();
             }
 
             private float _originalValue;
@@ -138,14 +138,14 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private float _value;
+            private string _value;
 
-            public float Value {
+            public string Value {
                 get => _value;
                 set {
                     if (value == _value) return;
                     _value = value;
-                    IsChanged = value != OriginalValue;
+                    IsChanged = value.AsFloat() != OriginalValue;
                     OnPropertyChanged();
                 }
             }
@@ -153,25 +153,25 @@ namespace AcManager.CustomShowroom {
             private DelegateCommand _resetCommand;
 
             public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
-                Value = OriginalValue;
+                Value = OriginalValue.ToInvariantString();
             }));
 
             protected override void ApplyOverride() {
-                OriginalValue = Value;
+                OriginalValue = Value.AsFloat();
             }
         }
 
         public sealed class MaterialValue3D : MaterialValueBase {
             public MaterialValue3D(string name, float[] value) : base(name) {
-                X = OriginalX = value.FirstOrDefault();
-                Y = OriginalY = value.ElementAtOrDefault(1);
-                Z = OriginalZ = value.ElementAtOrDefault(2);
+                X = OriginalX = value.FirstOrDefault().ToInvariantString();
+                Y = OriginalY = value.ElementAtOrDefault(1).ToInvariantString();
+                Z = OriginalZ = value.ElementAtOrDefault(2).ToInvariantString();
                 OriginalValue = $"X={X}, Y={Y}, Z={Z}";
             }
 
-            private float _originalX;
+            private string _originalX;
 
-            public float OriginalX {
+            public string OriginalX {
                 get => _originalX;
                 set {
                     if (value.Equals(_originalX)) return;
@@ -180,9 +180,9 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private float _originalY;
+            private string _originalY;
 
-            public float OriginalY {
+            public string OriginalY {
                 get => _originalY;
                 set {
                     if (value.Equals(_originalY)) return;
@@ -191,9 +191,9 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private float _originalZ;
+            private string _originalZ;
 
-            public float OriginalZ {
+            public string OriginalZ {
                 get => _originalZ;
                 set {
                     if (value.Equals(_originalZ)) return;
@@ -220,9 +220,9 @@ namespace AcManager.CustomShowroom {
                 OriginalValue = $"X={X}, Y={Y}, Z={Z}";
             }
 
-            private float _x;
+            private string _x;
 
-            public float X {
+            public string X {
                 get => _x;
                 set {
                     if (Equals(value, _x)) return;
@@ -232,9 +232,9 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private float _y;
+            private string _y;
 
-            public float Y {
+            public string Y {
                 get => _y;
                 set {
                     if (Equals(value, _y)) return;
@@ -244,9 +244,9 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private float _z;
+            private string _z;
 
-            public float Z {
+            public string Z {
                 get => _z;
                 set {
                     if (Equals(value, _z)) return;
@@ -447,9 +447,8 @@ namespace AcManager.CustomShowroom {
                     ValuesSingle.ReplaceEverythingBy(Material.ShaderProperties.Where(x =>
                             x.Name != "ksEmissive" && x.Name != "damageZones" && x.Name != "groundNormal" && x.Name != "boh").Select(
                                     x => new MaterialValueSingle(x.Name, x.ValueA)));
-                    Values3D.ReplaceEverythingBy(Material.ShaderProperties.Where(x =>
-                            x.Name == "ksEmissive" && x.Name == "damageZones").Select(
-                                    x => new MaterialValue3D(x.Name, x.ValueC)));
+                    Values3D.ReplaceEverythingBy(Material.ShaderProperties.Where(x => x.Name == "ksEmissive").Select(
+                            x => new MaterialValue3D(x.Name, x.ValueC)));
                     ValuesSingle.ItemPropertyChanged += OnValueSingleChanged;
                     Values3D.ItemPropertyChanged += OnValue3DChanged;
                 }
@@ -465,7 +464,7 @@ namespace AcManager.CustomShowroom {
                 if (kn5Renderer == null) return;
 
                 var v = (MaterialValueSingle)sender;
-                kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value);
+                kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value.AsFloat());
             }
 
             private void OnValue3DChanged(object sender, PropertyChangedEventArgs args) {
@@ -480,7 +479,8 @@ namespace AcManager.CustomShowroom {
                 if (kn5Renderer == null) return;
 
                 var v = (MaterialValue3D)sender;
-                kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id, new []{ v.X, v.Y, v.Z });
+                kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id,
+                        new[] { v.X.AsFloat(), v.Y.AsFloat(), v.Z.AsFloat() });
             }
 
             public void ApplyValues() {
@@ -616,16 +616,16 @@ namespace AcManager.CustomShowroom {
                         foreach (var s in ValuesSingle) {
                             var jv = p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["A"];
                             if (jv != null) {
-                                s.Value = (float)jv.AsDouble();
+                                s.Value = ((float)jv.AsDouble()).ToInvariantString();
                             }
                         }
 
                         foreach (var s in Values3D) {
                             var jv = p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["C"] as JArray;
                             if (jv != null) {
-                                s.X = (float)jv["X"].AsDouble();
-                                s.Y = (float)jv["Y"].AsDouble();
-                                s.Z = (float)jv["Z"].AsDouble();
+                                s.X = ((float)jv["X"].AsDouble()).ToInvariantString();
+                                s.Y = ((float)jv["Y"].AsDouble()).ToInvariantString();
+                                s.Z = ((float)jv["Z"].AsDouble()).ToInvariantString();
                             }
                         }
                     }

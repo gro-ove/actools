@@ -9,13 +9,9 @@ using Newtonsoft.Json;
 namespace AcManager.Controls.ViewModels {
     public interface IRaceGridMode : INotifyPropertyChanged, IWithId {
         string DisplayName { get; }
-
         bool CandidatesMode { get; }
-
         bool Filterable { get; }
-
         bool AffectedByCar { get; }
-
         bool AffectedByTrack { get; }
     }
 
@@ -32,17 +28,13 @@ namespace AcManager.Controls.ViewModels {
         public static readonly IRaceGridMode Custom = new BuiltInGridMode("custom", "Custom", false);
 
         public string Id { get; }
-
         public bool CandidatesMode { get; }
-
         public bool Filterable { get; }
-
         public bool AffectedByCar { get; }
-
         public bool AffectedByTrack { get; }
 
-        private BuiltInGridMode([Localizable(false)] string id, string displayName, bool candidatesMode = true, bool? filterable = null, bool affectedByCar = false,
-                bool affectedByTrack = false) {
+        private BuiltInGridMode([Localizable(false)] string id, string displayName, bool candidatesMode = true, bool? filterable = null,
+                bool affectedByCar = false, bool affectedByTrack = false) {
             Id = id;
             CandidatesMode = candidatesMode;
             Filterable = filterable ?? candidatesMode;
@@ -54,9 +46,8 @@ namespace AcManager.Controls.ViewModels {
 
     public sealed class CandidatesGridMode : Displayable, IRaceGridMode {
         public bool CandidatesMode => true;
-
         public bool Filterable => true;
-        
+
         public string Id { get; }
 
         [JsonProperty(PropertyName = @"filter")]

@@ -6,9 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+#pragma warning disable 649
 
 namespace AcManager.Tools.Helpers.AcLog {
     public class WhatsGoingOn {
@@ -37,22 +39,18 @@ namespace AcManager.Tools.Helpers.AcLog {
             return string.Format(Type.GetDescription() ?? Type.ToString(), Arguments);
         }
 
-        private NonfatalErrorSolution _solution;
+        private LazierThis<NonfatalErrorSolution> _solution;
 
-        public NonfatalErrorSolution Solution {
-            get {
-                return _solution ?? (Fix == null ? null :
-                        _solution = new NonfatalErrorSolution(null, null, token => {
-                            if (FixAffectingDataOriginalLog != null) {
-                                var carIds = GetCarsIds(FixAffectingDataOriginalLog).ToList();
-                                if (!DataUpdateWarning.Warn(carIds.Select(CarsManager.Instance.GetById))) {
-                                    return Task.Delay(0);
-                                }
-                            }
-                            
-                            return Fix(token);
-                        }));
-            }
-        }
+        public NonfatalErrorSolution Solution => _solution.Get(() => Fix == null ? null :
+                new NonfatalErrorSolution(null, null, token => {
+                    if (FixAffectingDataOriginalLog != null) {
+                        var carIds = GetCarsIds(FixAffectingDataOriginalLog).ToList();
+                        if (!DataUpdateWarning.Warn(carIds.Select(CarsManager.Instance.GetById))) {
+                            return Task.Delay(0);
+                        }
+                    }
+
+                    return Fix(token);
+                }));
     }
 }

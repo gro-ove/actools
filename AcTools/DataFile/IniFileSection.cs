@@ -9,15 +9,21 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
-        public IniFileSection(IniFileSection original) : base(original) {
+        [CanBeNull]
+        private readonly IDataWrapper _wrapper;
+
+        public IniFileSection([CanBeNull] IDataWrapper wrapper, IniFileSection original) : base(original) {
+            _wrapper = wrapper;
             Commentary = original.Commentary;
             Commentaries = original.Commentaries == null ? null : new Dictionary<string, string>(original.Commentaries);
         }
 
-        public IniFileSection() {}
+        public IniFileSection([CanBeNull] IDataWrapper wrapper) {
+            _wrapper = wrapper;
+        }
 
         public IniFileSection Clone() {
-            return new IniFileSection(this);
+            return new IniFileSection(_wrapper, this);
         }
 
         [CanBeNull]
@@ -49,7 +55,7 @@ namespace AcTools.DataFile {
         }
 
         public new dynamic this[[NotNull, LocalizationRequired(false)] string key] {
-            get { return ContainsKey(key) ? base[key] : null; }
+            get => ContainsKey(key) ? base[key] : null;
             set {
                 if (ReferenceEquals(value, IniFile.Nothing)) {
                     Remove(key);
@@ -210,7 +216,13 @@ namespace AcTools.DataFile {
         [Pure, CanBeNull]
         public Lut GetLut([NotNull, LocalizationRequired(false)] string key) {
             var value = GetNonEmpty(key);
-            return value == null ? null : Lut.FromValue(value);
+            if (value == null) return null;
+            if (!Lut.IsInlineValue(value)) {
+                if (_wrapper != null) return _wrapper.GetLutFile(value).Values;
+                AcToolsLogging.Write("Non-inline LUT found, but DataWrapper is not set!");
+            }
+
+            return Lut.FromValue(value);
         }
 
         /// <summary>
@@ -228,7 +240,7 @@ namespace AcTools.DataFile {
 
             var s = GetNonEmpty(key);
             if (s == null) return null;
-            
+
             return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out T result) ||
                     s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : (T?)null;
         }
@@ -248,7 +260,7 @@ namespace AcTools.DataFile {
 
             var s = GetNonEmpty(key);
             if (s == null) return defaultValue;
-            
+
             return Enum.TryParse(s, ignoreCase, out T result) ||
                     s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : defaultValue;
         }

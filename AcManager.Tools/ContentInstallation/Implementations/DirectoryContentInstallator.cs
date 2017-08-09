@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Tools.ContentInstallation.Installators {
+namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class DirectoryContentInstallator : ContentInstallatorBase {
         public string Directory { get; }
 
@@ -24,6 +25,17 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         protected override string GetBaseId() {
             var id = Path.GetFileName(Directory)?.ToLower();
             return AcStringValues.IsAppropriateId(id) ? id : null;
+        }
+
+        private class InnerDirectoryInfo : IDirectoryInfo {
+            private readonly string _directory, _filename;
+
+            public InnerDirectoryInfo(string directory, string filename) {
+                _directory = directory;
+                _filename = filename;
+            }
+
+            public string Key => FileUtils.GetRelativePath(_filename, _directory);
         }
 
         private class InnerFileInfo : IFileInfo  {
@@ -73,11 +85,10 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             }
         }
 
-        protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
-            return Task.Run(() => {
-                var result = FileUtils.GetFilesRecursive(Directory).Select(x => (IFileInfo)new InnerFileInfo(Directory, x)).ToList();
-                return (IEnumerable<IFileInfo>)result;
-            });
+        protected override Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
+            return Task.Run(() => (IEnumerable<IFileOrDirectoryInfo>)FileUtils
+                    .GetFilesRecursive(Directory).Select(x => (IFileOrDirectoryInfo)new InnerFileInfo(Directory, x))
+                    .Concat(FileUtils.GetDirectoriesRecursive(Directory).Select(x => (IDirectoryInfo)new InnerDirectoryInfo(Directory, x))).ToList());
         }
 
         protected override Task LoadMissingContents(CancellationToken cancellation) {

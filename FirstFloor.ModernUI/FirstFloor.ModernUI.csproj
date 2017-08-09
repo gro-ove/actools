@@ -123,6 +123,8 @@
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Effects\InvertEffect.cs" />
     <Compile Include="Effects\InvertKeepColorEffect.cs" />
+    <Compile Include="Effects\NorEffect4.cs" />
+    <Compile Include="Effects\NorEffect.cs" />
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="NotifyExtension.cs" />
@@ -143,11 +145,14 @@
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScrollHelper.cs" />
+    <Compile Include="Windows\Attached\IsPressedAdvancement.cs" />
     <Compile Include="Windows\Attached\ListBoxHelper.cs" />
+    <Compile Include="Windows\Attached\Resources.cs" />
     <Compile Include="Windows\Attached\SaveScroll.cs" />
     <Compile Include="Windows\Attached\VisibilityAnimation.cs" />
     <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
+    <Compile Include="Windows\Controls\AppScaleProperty.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BbCode\BbCodeParser.Image.cs" />
     <Compile Include="Windows\Controls\BetterImage.ThreadPools.cs" />
@@ -378,6 +383,7 @@
     <Compile Include="Windows\ToastWin8Helper.cs" />
     <Compile Include="Windows\WindowPlacementStruct.cs" />
     <Compile Include="WrappedCollection.cs" />
+    <Compile Include="WrappedFilteredCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Assets\Converters.xaml">
@@ -401,6 +407,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Calendar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\DataGrid.Base.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\DataGrid.Cells.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\DataGrid.Headers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\DataGrid.Rows.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -670,6 +692,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Effects\Shaders\NorEffect.ps" />
+    <Resource Include="Effects\Shaders\NorEffect4.ps" />
     <Resource Include="Effects\Shaders\OverlayColorEffect.ps" />
     <Resource Include="Fonts\Segoe Condensed Bold.ttf" />
   </ItemGroup>
@@ -678,6 +702,8 @@
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
     <None Include="Effects\Shaders\InvertEffect.fx" />
     <None Include="Effects\Shaders\InvertKeepColorEffect.fx" />
+    <None Include="Effects\Shaders\NorEffect.fx" />
+    <None Include="Effects\Shaders\NorEffect4.fx" />
     <None Include="Effects\Shaders\OverlayColorEffect.fx" />
     <None Include="packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />

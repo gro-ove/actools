@@ -99,16 +99,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Kn5RenderableCar.AdjustPosition(CarNode);
 
             if (_leftDoorOpen) {
-                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetLeftDoorAnimation())?.SetImmediate(CarNode, 1f);
+                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetLeftDoorAnimation())?.SetImmediate(CarNode, 1f, null);
             }
 
             if (_rightDoorOpen) {
-                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetRightDoorAnimation())?.SetImmediate(CarNode, 1f);
+                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetRightDoorAnimation())?.SetImmediate(CarNode, 1f, null);
             }
 
             if (_headlightsEnabled) {
                 foreach (var animation in carData.GetLightsAnimations()) {
-                    Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f);
+                    Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                 }
             }
 
@@ -120,7 +120,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var i = 0;
                 foreach (var animation in carData.GetWingsAnimations()) {
                     if (_wingsStates[i++]) {
-                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f);
+                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                     }
                 }
             }
@@ -129,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var i = 0;
                 foreach (var animation in carData.GetExtraAnimations()) {
                     if (_extraAnimationsStates[i++]) {
-                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f);
+                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                     }
                 }
             }

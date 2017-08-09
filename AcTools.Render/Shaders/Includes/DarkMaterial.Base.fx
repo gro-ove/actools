@@ -1,5 +1,6 @@
 // structs
 static const dword HAS_NORMAL_MAP = 1;
+static const dword NM_OBJECT_SPACE = 2;
 static const dword USE_NORMAL_ALPHA_AS_ALPHA = 64;
 static const dword ALPHA_TEST = 128;
 
@@ -79,6 +80,9 @@ cbuffer cbPerObject : register(b0) {
 	TyresMaterial gTyresMaterial;
 }
 
+#define HAS_FLAG(x) ((gMaterial.Flags & x) == x)
+#define GET_FLAG(x) ((gMaterial.Flags & x) / x)
+
 cbuffer cbPerFrame {
 	float3 gEyePosW;
 
@@ -89,6 +93,7 @@ cbuffer cbPerFrame {
 	float gReflectionPower;
 	bool gUseAo;
 	bool gCubemapReflections;
+	float gCubemapReflectionsOffset;
 	float gCubemapAmbient;
 
 	int gFlatMirrorSide;
@@ -139,16 +144,23 @@ SamplerState samAnisotropic {
 };
 
 float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW) {
-	float3 normalT = float3(
+	float3 n = float3(
 		2.0 * normalMapSample.x - 1.0,
 		1.0 - 2.0 * normalMapSample.y,
 		2.0 * normalMapSample.z - 1.0);
+	float3x3 m;
 
-	float3 N = unitNormalW;
-	float3 T = normalize(tangentW - dot(tangentW, N)*N);
-	float3 B = normalize(cross(N, T));
+    if (HAS_FLAG(NM_OBJECT_SPACE)){
+        n = float3(n.x, n.z, n.y);
+        m = (float3x3)gWorldInvTranspose;
+    } else {
+        float3 N = unitNormalW;
+        float3 T = normalize(tangentW - dot(tangentW, N)*N);
+        float3 B = normalize(cross(N, T));
+        m = float3x3(T, B, N);
+	}
 
-	return mul(normalT, float3x3(T, B, N));
+    return mul(n, m);
 }
 
 struct pt_VS_IN {
@@ -304,9 +316,6 @@ depthOnly_PS_IN vs_depthOnly_skinned(skinned_VS_IN vin) {
 
 	return vout;
 }
-
-#define HAS_FLAG(x) ((gMaterial.Flags & x) == x)
-#define GET_FLAG(x) ((gMaterial.Flags & x) / x)
 
 void AlphaTest(float alpha) {
 	if (HAS_FLAG(ALPHA_TEST)) clip(alpha - 0.5);

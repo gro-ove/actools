@@ -9,7 +9,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private Vector2 _mousePosition;
 
         public Vector2 MousePosition {
-            get { return _mousePosition; }
+            get => _mousePosition;
             set {
                 if (Equals(value, _mousePosition)) return;
                 _mousePosition = value;
@@ -26,7 +26,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _showMovementArrows;
 
         public bool ShowMovementArrows {
-            get { return _showMovementArrows; }
+            get => _showMovementArrows;
             set {
                 if (Equals(value, _showMovementArrows)) return;
                 _showMovementArrows = value;

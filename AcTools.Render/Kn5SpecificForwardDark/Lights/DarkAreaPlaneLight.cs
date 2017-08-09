@@ -3,6 +3,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using Newtonsoft.Json.Linq;
 using SlimDX;
 
@@ -39,9 +40,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight {
                         Direction = Direction,
+                        Up = Up,
                         Range = Range,
                         Width = Width,
                         Height = Height,
+                        VisibleBrightnessMultiplier = VisibleBrightnessMultiplier,
                         DoubleSide = DoubleSide,
                         VisibleLight = VisibleLight
                     };
@@ -74,11 +77,29 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Vector3? _actualDirection;
         public Vector3 ActualDirection => _actualDirection ?? (_actualDirection = Vector3.TransformNormal(Direction, ParentMatrix)).Value;
 
+        private Vector3 _up = new Vector3(0f, 1f, 0f);
+
+        public Vector3 Up {
+            get => _up;
+            set {
+                value = Vector3.Normalize(value);
+                if (value.Equals(_up)) return;
+                _up = value;
+                _actualUp = null;
+                OnPropertyChanged();
+            }
+        }
+
+        private Vector3? _actualUp;
+        public Vector3 ActualUp => _actualUp ?? (_actualUp = Vector3.TransformNormal(Up, ParentMatrix)).Value;
+
         protected override void SerializeOverride(JObject obj) {
             base.SerializeOverride(obj);
             //obj["range"] = Range;
             obj["width"] = Width;
             obj["height"] = Height;
+            obj["meshBrightness"] = VisibleBrightnessMultiplier;
+            obj["up"] = VectorToString(Up);
             obj["direction"] = VectorToString(Direction);
             if (DoubleSide) {
                 obj["doubleSide"] = DoubleSide;
@@ -88,9 +109,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         protected override void DeserializeOverride(JObject obj) {
             base.DeserializeOverride(obj);
             Direction = StringToVector((string)obj["direction"]) ?? Vector3.UnitX;
+            Up = StringToVector((string)obj["up"]) ?? Vector3.UnitY;
             //Range = obj["range"] != null ? (float)obj["range"] : 2f;
             Width = obj["width"] != null ? (float)obj["width"] : 0.6f;
             Height = obj["height"] != null ? (float)obj["height"] : 0.4f;
+            VisibleBrightnessMultiplier = obj["meshBrightness"] != null ? (float)obj["meshBrightness"] : 1f;
             DoubleSide = obj["doubleSide"] != null && (bool)obj["doubleSide"];
         }
 
@@ -149,7 +172,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             base.SetOverride(holder, ref light);
 
             var pos = ActualPosition;
-            var matrix = Vector3.Zero.LookAtMatrixXAxis(ActualDirection, Vector3.UnitY);
+            var matrix = Vector3.Zero.LookAtMatrixConsiderUp(ActualDirection, ActualUp);
             var dx = Vector3.TransformNormal(Vector3.UnitZ, matrix) * Width / 2f;
             var dy = Vector3.TransformNormal(Vector3.UnitY, matrix) * Height / 2f;
 
@@ -181,6 +204,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             if (!IsMovable) return;
             var parentMatrixInvert = Matrix.Invert(ParentMatrix);
             Direction = Vector3.TransformNormal(Vector3.TransformNormal(ActualDirection, Matrix.RotationQuaternion(delta)), parentMatrixInvert);
+            Up = Vector3.TransformNormal(Vector3.TransformNormal(ActualUp, Matrix.RotationQuaternion(delta)), parentMatrixInvert);
         }
 
         protected override MoveableHelper CreateMoveableHelper() {
@@ -213,8 +237,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         }
 
+        private float _visibleBrightnessMultiplier = 1f;
+
+        public float VisibleBrightnessMultiplier {
+            get => _visibleBrightnessMultiplier;
+            set {
+                if (Equals(value, _visibleBrightnessMultiplier)) return;
+                _visibleBrightnessMultiplier = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected override Vector4 LightMeshColor => Color.ToVector4() * ((Brightness / 2f).Pow(0.4f) * 4f) * VisibleBrightnessMultiplier;
+
         protected override Matrix GetLightMeshTransformMatrix() {
-            return ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY);
+            return ActualPosition.LookAtMatrixConsiderUp(ActualPosition + ActualDirection, ActualUp);
         }
     }
 }

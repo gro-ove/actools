@@ -345,6 +345,14 @@ namespace AcManager.Controls.UserControls {
                     SchemeHandlerFactory = new AltFilesHandlerFactory()
                 });
 
+                AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
+                    try {
+                        Cef.Shutdown();
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
+                };
+
                 Cef.Initialize(settings, false, null);
             }
 

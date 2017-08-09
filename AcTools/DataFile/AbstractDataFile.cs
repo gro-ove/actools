@@ -28,7 +28,7 @@ namespace AcTools.DataFile {
 
         private readonly string _acdFilename;
 
-        protected AbstractDataFile(string carDir, string name, Acd acd) {
+        protected AbstractDataFile(string carDir, string name, [CanBeNull] Acd acd) {
             Name = name;
             _acdFilename = Path.Combine(carDir, "data.acd");
 
@@ -54,8 +54,6 @@ namespace AcTools.DataFile {
 
             Load();
         }
-
-        protected AbstractDataFile(string carDir, string filename) : this(carDir, filename, null) {}
 
         protected AbstractDataFile([CanBeNull] string filename) {
             Mode = StorageMode.UnpackedFile;
@@ -170,5 +168,9 @@ namespace AcTools.DataFile {
         public abstract void Clear();
 
         public abstract string Stringify();
+
+        public override string ToString() {
+            return Stringify();
+        }
     }
 }

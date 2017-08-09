@@ -1,0 +1,16 @@
+﻿sid: knt81tt9
+id: fakeCars
+limited: true
+
+[b]If, for example, you want to limit AI tyres in Track Day mode or make AIs more willing to go to pit stops, you might find this interesting.[/b]
+
+Sadly, AC doesn’t allow to specify such AI parameters as tyres to use or fuel to take. In theory, you can force them to use specific setup by naming it in a specific manner and putting it to a specific folder, but, as far as I can see, AIs don’t hesitate to switch tyres after that setup has been loaded. And also, this way, you could only specify a single setup per car ID.
+
+But how is this for an idea? Why not take a car — complete car — and make a clone of it, but adjust clone’s data, removing all unnecessary tyres and adjusting other parameters if needed? Don’t worry about wasted disk space or increasing loading time: with hard links, no actual copy of most files will be required to make. And hard links are supported by almost all file systems, by NTFS for sure.
+
+Of course, there are some issues: first of all, those clones are only temporary, so replays of those races won’t work. CM solves this issue by scanning replay for fake cars and restoring them before playing, but original launcher won’t do any of it. Also, this way of limiting AI does increase RAM and VRAM consumption, because sounds, models and textures will be treated as new, unique ones.
+
+So, if needed, enable that feature in Settings/Drive and then make race grid params popup wider to see a new column with AI limitations. Oh, and don’t forget to remove “__cm_tmp_…” cars manually after the race. For now, CM keeps them for debugging purposes.
+
+ [img="http://i.imgur.com/OwHkV1F.png|240"]Screenshot of that column[/img]
+

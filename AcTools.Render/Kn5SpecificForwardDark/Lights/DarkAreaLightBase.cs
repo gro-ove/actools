@@ -90,9 +90,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             EnsureLightCreated();
             _light.Transform = GetLightMeshTransformMatrix();// * Matrix.Scaling(Width, 1f, Height);
-            _light.SetColor(Color.ToVector4() * Brightness);
+            _light.SetColor(LightMeshColor);
             _light.Draw(holder, camera, mode);
         }
+
+        protected virtual Vector4 LightMeshColor => Color.ToVector4() * Brightness;
 
         protected void ResetLightMesh() {
             _lightRenderableObject?.Clear();

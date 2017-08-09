@@ -3,7 +3,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
     xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render"
-    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d">
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
@@ -72,6 +74,15 @@
         </mui:BbCodeBlock>
       </c:MessageBlock>
 
+      <DockPanel Style="{StaticResource DockPanel}">
+        <Label Content="File name:" />
+        <mui:HistoricalTextBox Text="{Binding FileName}" Placeholder="preview.jpg" SaveKey="_customPreviewNames">
+          <mui:HistoricalTextBox.DefaultItems>
+            <system:String>preview.jpg</system:String>
+          </mui:HistoricalTextBox.DefaultItems>
+        </mui:HistoricalTextBox>
+      </DockPanel>
+
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetSizeCommand}" />
     </mui:SpacingStackPanel>
   </ScrollViewer>
@@ -112,6 +123,11 @@
           <Slider Minimum="-16" Maximum="16" Value="{Binding Z, StringFormat='{}{0:F2}'}" TickFrequency="4" TickPlacement="BottomRight" />
         </DockPanel>
       </mui:SpacingUniformGrid>
+
+      <DockPanel>
+        <mui:ValueLabel Value="{Binding CameraTilt, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Tilt" Postfix="°" />
+        <Slider Minimum="-45" Maximum="45" Value="{Binding CameraTilt, StringFormat='{}{0:F1}'}" TickFrequency="9" TickPlacement="BottomRight" />
+      </DockPanel>
 
       <DockPanel>
         <mui:ValueLabel Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="View angle"
@@ -579,10 +595,10 @@
               <DataTemplate DataType="{x:Type lights:DarkAreaPlaneLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <!--<DockPanel>
-                                        <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"
-                                                Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
-                                        <Slider Minimum="0" Maximum="10" Value="{Binding Range}" TickFrequency="1" TickPlacement="None" />
-                                    </DockPanel>-->
+                      <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"
+                              Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
+                      <Slider Minimum="0" Maximum="10" Value="{Binding Range}" TickFrequency="1" TickPlacement="None" />
+                  </DockPanel>-->
                   <DockPanel>
                     <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Width" Postfix=" cm"
                         Value="{Binding Width, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
@@ -599,6 +615,11 @@
                   <CheckBox IsChecked="{Binding VisibleLight}">
                     <Label Content="Visible" />
                   </CheckBox>
+                  <DockPanel>
+                    <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Visual brightness multiplier" Postfix="%"
+                        Value="{Binding VisibleBrightnessMultiplier, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
+                    <Slider Minimum="0" Maximum="2" Value="{Binding VisibleBrightnessMultiplier}" TickFrequency="0.2" TickPlacement="None" />
+                  </DockPanel>
                 </mui:SpacingStackPanel>
               </DataTemplate>
             </ContentControl.Resources>
@@ -759,7 +780,7 @@
       <TextBlock Text="Quality:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
       <CheckBox IsChecked="{Binding Renderer.UseBloom}">
-        <Label Content="Bloom" />
+        <Label Content="HDR" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding Renderer.UseSslr}">
@@ -849,7 +870,7 @@
       <TextBlock Text="Quality:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
       <CheckBox IsChecked="{Binding Renderer.UseBloom}">
-        <Label Content="Bloom" />
+        <Label Content="HDR" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding Renderer.UseSslr}">
@@ -953,7 +974,7 @@
       <TextBlock Style="{StaticResource Heading2}" Margin="0 20 0 0">
         <Run Text="Color grading" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
                                         Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=colorGrading">[?]</Hyperlink><Run
-                                                                                                                                                                             Text=":" />
+                                                                                                                                                                                 Text=":" />
       </TextBlock>
 
       <CheckBox IsChecked="{Binding Renderer.UseColorGrading}"

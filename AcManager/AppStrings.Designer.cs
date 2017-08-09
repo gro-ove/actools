@@ -10,8 +10,8 @@
 
 namespace AcManager {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,29 +23,29 @@ namespace AcManager {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
-        
-        private static global::System.Resources.ResourceManager resourceMan;
-        
+
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal AppStrings() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace AcManager {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url=&quot;https://trello.com/b/MwqpL8Bw/content-manager&quot;]Trello[/url] or [url=&quot;https://trello.com/c/w5xT6ssZ/49-contacts&quot;]something else[/url]..
         /// </summary>
@@ -68,7 +68,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ContactInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact us:.
         /// </summary>
@@ -77,7 +77,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ContactUsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copyright © 2016 AcClub. All rights reserved..
         /// </summary>
@@ -86,7 +86,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_Copyright", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A custom launcher and content management app for [url=&quot;http://www.assettocorsa.net/&quot;]Assetto Corsa[/url].
         /// </summary>
@@ -95,7 +95,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_Description", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable developer mode?.
         /// </summary>
@@ -104,7 +104,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_DeveloperMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Developer Mode.
         /// </summary>
@@ -113,7 +113,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_DeveloperMode_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content Manager is made possible by some [url=&quot;/Pages/About/Credits.xaml|_top&quot;]open source software[/url].
         ///Content Manager [url=&quot;/Pages/About/License.xaml|_top&quot;]License[/url]..
@@ -123,7 +123,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_Footer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mark All As Read.
         /// </summary>
@@ -132,7 +132,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_MarkAllAsRead", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to More information.
         /// </summary>
@@ -141,7 +141,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_MoreInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New!.
         /// </summary>
@@ -150,7 +150,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_NewTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recent changes.
         /// </summary>
@@ -159,7 +159,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_RecentChanges", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Report an issue.
         /// </summary>
@@ -168,7 +168,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t send logs.
         /// </summary>
@@ -177,7 +177,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue_CannotSend", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Describe the issue. And, please, leave some contacts if you want to get a response (also, it could help to resolve the issue)..
         /// </summary>
@@ -186,7 +186,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Logs Sent.
         /// </summary>
@@ -195,7 +195,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue_Sent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Thank you for the help!.
         /// </summary>
@@ -204,7 +204,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue_Sent_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to What’s The Issue?.
         /// </summary>
@@ -213,7 +213,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ReportAnIssue_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Special thanks for translation to:.
         /// </summary>
@@ -222,7 +222,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_ThanksForTranslationHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version: {0}.
         /// </summary>
@@ -231,7 +231,7 @@ namespace AcManager {
                 return ResourceManager.GetString("About_VersionFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Available {solution}:.
         /// </summary>
@@ -240,7 +240,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcError_AvailableSolutions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t solve the problem.
         /// </summary>
@@ -249,7 +249,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcError_CannotSolveProblem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to None of solutions are available..
         /// </summary>
@@ -258,7 +258,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcError_SolutionsNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Solve All Similar Errors.
         /// </summary>
@@ -267,7 +267,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcError_SolveAllSimilarErrors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stack trace:
         ///[mono]{0}[/mono].
@@ -277,7 +277,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcError_StackTrace", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Activated.
         /// </summary>
@@ -286,7 +286,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_AppActivated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to If you makes your own mods, please, use this field instead of description (or, of course, name).
         /// </summary>
@@ -295,7 +295,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_Author_TooltipExt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Be careful, changing ID might cause some problems with online!.
         /// </summary>
@@ -304,7 +304,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_ChangeId_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to City:.
         /// </summary>
@@ -313,7 +313,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_CityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cloning….
         /// </summary>
@@ -322,7 +322,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_Cloning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date:.
         /// </summary>
@@ -331,7 +331,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_DateLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Driver:.
         /// </summary>
@@ -340,7 +340,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_DriverLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Driver Name:.
         /// </summary>
@@ -349,7 +349,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_DriverNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter new ID:.
         /// </summary>
@@ -358,7 +358,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_EnterNewId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last scanned: {0}.
         /// </summary>
@@ -367,7 +367,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_FontLastScannedFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last scanned: Never.
         /// </summary>
@@ -376,7 +376,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_FontLastScannedNever", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test:.
         /// </summary>
@@ -385,7 +385,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_FontTestLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Used in:.
         /// </summary>
@@ -394,7 +394,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_FontUsedInLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Geo Tags:.
         /// </summary>
@@ -403,7 +403,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_GeoTagsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ID:.
         /// </summary>
@@ -412,7 +412,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_IdLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Number:.
         /// </summary>
@@ -421,7 +421,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_NumberLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Priority:.
         /// </summary>
@@ -430,7 +430,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_PriorityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Size:.
         /// </summary>
@@ -439,7 +439,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_SizeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Team:.
         /// </summary>
@@ -448,7 +448,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_TeamLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Track:.
         /// </summary>
@@ -457,7 +457,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_TrackLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Layout Name:.
         /// </summary>
@@ -466,7 +466,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_TrackLayoutNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Again, please, use this field if you’re modder and you have a web-page with an additional information and new versions for this object.
         /// </summary>
@@ -475,7 +475,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_Url_TooltipExt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rescan.
         /// </summary>
@@ -484,7 +484,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_UsingsRescan", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Could be used for auto-updating.
         /// </summary>
@@ -493,7 +493,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_Version_TooltipExt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weather:.
         /// </summary>
@@ -502,7 +502,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_WeatherLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use as:.
         /// </summary>
@@ -511,7 +511,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcObject_WeatherUseAsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Folder is unacceptable.
         /// </summary>
@@ -520,7 +520,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcRoot_FolderIsUnacceptable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Assetto Corsa root folder:.
         /// </summary>
@@ -529,7 +529,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcRoot_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your Steam ID for online:.
         /// </summary>
@@ -538,7 +538,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcRoot_SteamId_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Welcome to Content Manager and thanks for using it! You have only couple of things left to do before launch:.
         /// </summary>
@@ -547,7 +547,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcRoot_Welcome", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apps.
         /// </summary>
@@ -556,7 +556,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Apps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Activated apps:.
         /// </summary>
@@ -565,7 +565,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Apps_ActivatedLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Forms:.
         /// </summary>
@@ -574,7 +574,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Apps_FormsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
@@ -583,7 +583,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Engine.
         /// </summary>
@@ -592,7 +592,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Engine", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Latency:.
         /// </summary>
@@ -601,7 +601,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_LatencyLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Switch to Low or Normal if you&apos;re experiencing problems with sound.
         /// </summary>
@@ -610,7 +610,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_LatencyLabel_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Levels:.
         /// </summary>
@@ -619,7 +619,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_LevelsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Master.
         /// </summary>
@@ -628,7 +628,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Master", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opponents.
         /// </summary>
@@ -637,7 +637,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Opponents", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Surface.
         /// </summary>
@@ -646,7 +646,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Surface", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tyres.
         /// </summary>
@@ -655,7 +655,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Tyres", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tyres offset.
         /// </summary>
@@ -664,7 +664,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_TyresOffset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to UI.
         /// </summary>
@@ -673,7 +673,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Ui", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Wind.
         /// </summary>
@@ -682,7 +682,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Audio_Wind", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Controls.
         /// </summary>
@@ -691,7 +691,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Controls", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default value:.
         /// </summary>
@@ -700,7 +700,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_DefaultValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Value.
         /// </summary>
@@ -709,7 +709,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Exposure_Value", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Field of view.
         /// </summary>
@@ -718,7 +718,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_FieldOfView", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Vertical angle.
         /// </summary>
@@ -727,7 +727,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_FieldOfView_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ghost car.
         /// </summary>
@@ -736,7 +736,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_GhostCar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max opacity at.
         /// </summary>
@@ -745,7 +745,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_GhostCar_MaxOpacityAt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opacity.
         /// </summary>
@@ -754,7 +754,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_GhostCar_Opacity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recording limit.
         /// </summary>
@@ -763,7 +763,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_GhostCar_RecordingLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start showing at.
         /// </summary>
@@ -772,7 +772,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_GhostCar_StartShowingAt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mirrors.
         /// </summary>
@@ -781,7 +781,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Mirrors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rendering distance.
         /// </summary>
@@ -790,7 +790,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Mirrors_RenderingDistance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Miscellaneous.
         /// </summary>
@@ -799,7 +799,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Miscellaneous", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Proximity indicator.
         /// </summary>
@@ -808,7 +808,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_ProximityIndicator", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show nearest opponents.
         /// </summary>
@@ -817,7 +817,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_ProximityIndicator_ShowNearestOpponents", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Post-replay event command:.
         /// </summary>
@@ -826,7 +826,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_EventPostLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pre-replay event command:.
         /// </summary>
@@ -835,7 +835,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_EventPreLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replay-related events:.
         /// </summary>
@@ -844,7 +844,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_EventsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maximum size.
         /// </summary>
@@ -853,7 +853,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_MaximumSize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quality:.
         /// </summary>
@@ -862,7 +862,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_QualityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maximum size (recommended): {0} MB.
         /// </summary>
@@ -871,7 +871,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Replays_RecommendedMaximumSizeFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replays:.
         /// </summary>
@@ -880,7 +880,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_ReplaysHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Session information.
         /// </summary>
@@ -889,7 +889,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_SessionInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skidmarks.
         /// </summary>
@@ -898,7 +898,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Skidmarks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Height from the ground.
         /// </summary>
@@ -907,7 +907,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Skidmarks_Height", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quantity.
         /// </summary>
@@ -916,7 +916,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Skidmarks_Quantity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to System.
         /// </summary>
@@ -925,7 +925,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Developer apps.
         /// </summary>
@@ -934,7 +934,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_DeveloperApps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow free camera.
         /// </summary>
@@ -943,7 +943,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_FreeCamera", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Press F7 to toggle free camera mode.
         /// </summary>
@@ -952,7 +952,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_FreeCamera_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Logging (recommended).
         /// </summary>
@@ -961,7 +961,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_Logging", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Screenshots format:.
         /// </summary>
@@ -970,7 +970,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_ScreenshotsFormatLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Switch to BMP, install Magick.NET plugin and don&apos;t forget to enable automatic conversion on Settings/Drive page..
         /// </summary>
@@ -979,7 +979,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_ScreenshotsQuality", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Want the best screenshots quality?.
         /// </summary>
@@ -988,7 +988,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_ScreenshotsQuality_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Simulation value.
         /// </summary>
@@ -997,7 +997,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_System_SimulationValueLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
@@ -1006,7 +1006,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow unsupported DirectX 10 (use on your own risk; doesn&apos;t work?).
         /// </summary>
@@ -1015,7 +1015,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_AllowDirectX10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Anisotropic filtering:.
         /// </summary>
@@ -1024,7 +1024,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_AnitrosopicFilteringLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MSAA:.
         /// </summary>
@@ -1033,7 +1033,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_AntiAliasingLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Benchmark.
         /// </summary>
@@ -1042,7 +1042,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Benchmark", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start a benchmark (Ctrl+G).
         /// </summary>
@@ -1051,7 +1051,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Benchmark_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Crepuscular rays.
         /// </summary>
@@ -1060,7 +1060,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_CrepuscularRays", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom resolution:.
         /// </summary>
@@ -1069,7 +1069,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_CustomResolutionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Depth of field:.
         /// </summary>
@@ -1078,7 +1078,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_DepthOfFieldLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable post-processing effects.
         /// </summary>
@@ -1087,7 +1087,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_EnablePostProcessing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fix resolution automatically.
         /// </summary>
@@ -1096,7 +1096,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_FixResolutionAutomatically", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Framerate.
         /// </summary>
@@ -1105,7 +1105,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Framerate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fullscreen.
         /// </summary>
@@ -1114,7 +1114,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Fullscreen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to FXAA.
         /// </summary>
@@ -1123,7 +1123,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Fxaa", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Glare quality:.
         /// </summary>
@@ -1132,7 +1132,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_GlareQualityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Heat shimmering.
         /// </summary>
@@ -1141,7 +1141,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_HeatShimmering", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to High quality.
         /// </summary>
@@ -1150,7 +1150,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_HighQuality", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Limit framerate.
         /// </summary>
@@ -1159,7 +1159,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_LimitFramerate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max. frame latency.
         /// </summary>
@@ -1168,7 +1168,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MaximumFrameLatency", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maximum frame latency; auto — defined by videocard settings.
         /// </summary>
@@ -1177,7 +1177,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MaximumFrameLatency_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mip LOD bias.
         /// </summary>
@@ -1186,7 +1186,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MipLodBias", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set negative value (like −1) to sharp the image.
         /// </summary>
@@ -1195,7 +1195,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MipLodBias_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mirror resolution:.
         /// </summary>
@@ -1204,7 +1204,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MirrorResolutionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mirrors:.
         /// </summary>
@@ -1213,7 +1213,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MirrorsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Motion blur.
         /// </summary>
@@ -1222,7 +1222,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_MotionBlur", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Oculus:.
         /// </summary>
@@ -1231,7 +1231,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_OculusHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overall quality:.
         /// </summary>
@@ -1240,7 +1240,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_OverallQualityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pixels per display.
         /// </summary>
@@ -1249,7 +1249,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_PixelsPerDisplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Post-Processing:.
         /// </summary>
@@ -1258,7 +1258,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_PostProcessingHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quality:.
         /// </summary>
@@ -1267,7 +1267,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_QualityHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reflections:.
         /// </summary>
@@ -1276,7 +1276,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_ReflectionsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reflection resolution:.
         /// </summary>
@@ -1285,7 +1285,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_ReflectionsResolutionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rendering distance.
         /// </summary>
@@ -1294,7 +1294,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_RenderingDistance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rendering frequency:.
         /// </summary>
@@ -1303,7 +1303,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_RenderingFrequencyLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rendering mode:.
         /// </summary>
@@ -1312,7 +1312,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_RenderingModeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resolution:.
         /// </summary>
@@ -1321,7 +1321,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_ResolutionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Saturation.
         /// </summary>
@@ -1330,7 +1330,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_Saturation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shadow resolution:.
         /// </summary>
@@ -1339,7 +1339,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_ShadowResolutionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skybox reflection.
         /// </summary>
@@ -1348,7 +1348,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_SkyboxReflection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skybox reflection gain.
         /// </summary>
@@ -1357,7 +1357,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_SkyboxReflection_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Smoke generation:.
         /// </summary>
@@ -1366,7 +1366,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_SmokeGenerationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show smoke in mirrors.
         /// </summary>
@@ -1375,7 +1375,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_SmokeInMirrors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to System:.
         /// </summary>
@@ -1384,7 +1384,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_SystemHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Vertical syncronization.
         /// </summary>
@@ -1393,7 +1393,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_VerticalSyncronization", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to World detail:.
         /// </summary>
@@ -1402,7 +1402,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_Video_WorldDetalLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View &amp; UI.
         /// </summary>
@@ -1411,7 +1411,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AcSettings_ViewAndUi", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t install content from file.
         /// </summary>
@@ -1420,7 +1420,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_CannotInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t install {0}.
         /// </summary>
@@ -1429,7 +1429,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_CannotInstallFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t unpack.
         /// </summary>
@@ -1438,7 +1438,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_CannotUnpack", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maybe archive is damaged or password is incorrect..
         /// </summary>
@@ -1447,7 +1447,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_CannotUnpack_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ID: {0}.
         /// </summary>
@@ -1456,7 +1456,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_IdFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password is invalid, try again:.
         /// </summary>
@@ -1465,7 +1465,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_InputPassword_InvalidPrompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Archive is encrypted. Input password:.
         /// </summary>
@@ -1474,7 +1474,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_InputPassword_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password Required.
         /// </summary>
@@ -1483,7 +1483,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_InputPassword_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Installing {0}….
         /// </summary>
@@ -1492,7 +1492,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_Installing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing found.
         /// </summary>
@@ -1501,7 +1501,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_NothingFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password is invalid.
         /// </summary>
@@ -1510,7 +1510,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_PasswordIsInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Path: {0}.
         /// </summary>
@@ -1519,7 +1519,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_PathFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Install Additional Content.
         /// </summary>
@@ -1528,7 +1528,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to What to update:.
         /// </summary>
@@ -1537,7 +1537,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AdditionalContent_WhatToUpdateLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content Manager Updated.
         /// </summary>
@@ -1546,7 +1546,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_AppUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to see recent changes.
         /// </summary>
@@ -1555,7 +1555,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_AppUpdated_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Data Updated.
         /// </summary>
@@ -1564,7 +1564,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_DataUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Current version: {0}.
         /// </summary>
@@ -1573,7 +1573,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_DataUpdated_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Locale Updated.
         /// </summary>
@@ -1582,7 +1582,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_LocaleUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Restart app to see changes.
         /// </summary>
@@ -1591,7 +1591,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_LocaleUpdated_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Version.
         /// </summary>
@@ -1600,7 +1600,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_NewVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update is ready: {0}.
         /// </summary>
@@ -1609,7 +1609,7 @@ namespace AcManager {
                 return ResourceManager.GetString("App_NewVersion_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App will be restarted.
         /// </summary>
@@ -1618,7 +1618,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_AppWillBeRestarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t check key.
         /// </summary>
@@ -1627,7 +1627,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_CannotCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Get a New Key.
         /// </summary>
@@ -1636,7 +1636,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_GetNewKey", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Key is invalid.
         /// </summary>
@@ -1645,7 +1645,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_InvalidKey", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?.
         /// </summary>
@@ -1654,7 +1654,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_KeyRevoked_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Key Revoked.
         /// </summary>
@@ -1663,7 +1663,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_KeyRevoked_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Key was revoked.
         /// </summary>
@@ -1672,7 +1672,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_KeyWasRevoked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Now app will be restarted, but it shouldn’t take long. Thanks again for your support!
         ///
@@ -1683,7 +1683,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_PreRestart_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Thank You!.
         /// </summary>
@@ -1692,7 +1692,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_PreRestart_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter app key (XXXX-XXXX-…):.
         /// </summary>
@@ -1701,7 +1701,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App Key.
         /// </summary>
@@ -1710,7 +1710,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please, don’t share key, otherwise it might get revoked!.
         /// </summary>
@@ -1719,7 +1719,7 @@ namespace AcManager {
                 return ResourceManager.GetString("AppKey_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t install additional content.
         /// </summary>
@@ -1728,7 +1728,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotInstallAdditionalContent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t install car’s setup.
         /// </summary>
@@ -1737,7 +1737,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotInstallCarSetup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR has changed..
         /// </summary>
@@ -1746,7 +1746,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotInstallSetup_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR returned file in unsupported format..
         /// </summary>
@@ -1755,7 +1755,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotInstallSetup_CommentaryFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t parse request.
         /// </summary>
@@ -1764,7 +1764,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotParseRequest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t process request.
         /// </summary>
@@ -1773,7 +1773,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotProcessRequest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure data is valid..
         /// </summary>
@@ -1782,7 +1782,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotProcessRequest_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure required car &amp; track are installed and available..
         /// </summary>
@@ -1791,7 +1791,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_CannotStartRace_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Metadata is missing..
         /// </summary>
@@ -1800,7 +1800,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_MetadataIsMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save as Generic.
         /// </summary>
@@ -1809,7 +1809,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SaveAsGeneric", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
@@ -1818,7 +1818,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_Apply", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apply &amp; Save.
         /// </summary>
@@ -1827,7 +1827,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_ApplyAndSave", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apply FFB Only.
         /// </summary>
@@ -1836,7 +1836,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_ApplyFfbOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apply Only.
         /// </summary>
@@ -1845,7 +1845,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_ApplyOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just Go.
         /// </summary>
@@ -1854,7 +1854,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_JustGo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save &amp; Apply.
         /// </summary>
@@ -1863,7 +1863,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_SaveAndApply", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save Only.
         /// </summary>
@@ -1872,7 +1872,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_SaveOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Would you like to apply this preset?.
         /// </summary>
@@ -1881,7 +1881,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_ShouldApply", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Would you like to apply this preset or to save it for later?.
         /// </summary>
@@ -1890,7 +1890,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_Shared_ShouldApplyOrSave", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name: [b]{0}[/b]
         ///{1}: [b]{2}[/b]
@@ -1901,7 +1901,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SharedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [/b][i]?[/i][b].
         /// </summary>
@@ -1910,7 +1910,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SharedMessage_EmptyValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For.
         /// </summary>
@@ -1919,7 +1919,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SharedMessage_For", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ID.
         /// </summary>
@@ -1928,7 +1928,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SharedMessage_Id", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unsupported yet type: “{0}”.
         /// </summary>
@@ -1937,7 +1937,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Arguments_SharedUnsupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add as a new badge for (brand’s name):.
         /// </summary>
@@ -1946,7 +1946,7 @@ namespace AcManager {
                 return ResourceManager.GetString("BrandBadge_AddAs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t change brand’s badge.
         /// </summary>
@@ -1955,7 +1955,7 @@ namespace AcManager {
                 return ResourceManager.GetString("BrandBadge_CannotChange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure brand’s badge file is available to write..
         /// </summary>
@@ -1964,7 +1964,7 @@ namespace AcManager {
                 return ResourceManager.GetString("BrandBadge_CannotChange_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select New Brand’s Badge.
         /// </summary>
@@ -1973,7 +1973,7 @@ namespace AcManager {
                 return ResourceManager.GetString("BrandBadge_SelectNew", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Brand Badge.
         /// </summary>
@@ -1982,7 +1982,7 @@ namespace AcManager {
                 return ResourceManager.GetString("BrandBadge_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t pack data.
         /// </summary>
@@ -1991,7 +1991,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_CannotPackData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Skin.
         /// </summary>
@@ -2000,7 +2000,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_DeleteSkin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skin will be moved to the Recycle Bin.
         /// </summary>
@@ -2009,7 +2009,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_DeleteSkin_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Packed data already exists. Replace it?[br][br]Original “data.acd” will be moved to the Recycle Bin..
         /// </summary>
@@ -2018,7 +2018,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_PackExistingDataMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You’re going to repack original Kunos data. Result most likely will differ, so you won’t be able to play online. Are you sure you want to continue?[br][br]Original “data.acd” will be moved to the Recycle Bin..
         /// </summary>
@@ -2027,7 +2027,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_PackKunosDataMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skin: {0}.
         /// </summary>
@@ -2036,7 +2036,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Car_SkinFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select Parent.
         /// </summary>
@@ -2045,7 +2045,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarParent_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable all effects.
         /// </summary>
@@ -2054,7 +2054,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_AllEffects", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable all video effets like reflections or glare (recommended).
         /// </summary>
@@ -2063,7 +2063,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_AllEffects_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Camera Position:.
         /// </summary>
@@ -2072,7 +2072,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CameraPositionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cancelled..
         /// </summary>
@@ -2081,7 +2081,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CancelledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t download showroom “{0}”.
         /// </summary>
@@ -2090,7 +2090,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CannotDownloadShowroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t install showroom “{0}”.
         /// </summary>
@@ -2099,7 +2099,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CannotInstallShowroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t save previews.
         /// </summary>
@@ -2108,7 +2108,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CannotSave", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t update previews of disabled car or skin..
         /// </summary>
@@ -2117,7 +2117,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_CannotUpdateForDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apparantly SweetFx doesn&apos;t affect the result, but could decrease loading time.
         /// </summary>
@@ -2126,7 +2126,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_DisableSweetFx_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exposure:.
         /// </summary>
@@ -2135,7 +2135,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ExposureLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter is missing. Open options?.
         /// </summary>
@@ -2144,7 +2144,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_FilterIsMissingOptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable FXAA.
         /// </summary>
@@ -2153,7 +2153,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Fxaa", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use FXAA for previews.
         /// </summary>
@@ -2162,7 +2162,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Fxaa_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Kunos watermark will be temporary hidden.
         /// </summary>
@@ -2171,7 +2171,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_HideWatermark_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Look At:.
         /// </summary>
@@ -2180,7 +2180,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_LookAtLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manual.
         /// </summary>
@@ -2189,7 +2189,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Manual", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set camera position manually and then press F8 to start shooting.
         /// </summary>
@@ -2198,7 +2198,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Manual_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Now updating: {0} ({1}/{2}).
         /// </summary>
@@ -2207,7 +2207,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Progress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resize previews.
         /// </summary>
@@ -2216,7 +2216,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ResizePreviews", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resize previews to Kunos size 1022×575 (highly recommended).
         /// </summary>
@@ -2225,7 +2225,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ResizePreviews_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shot in 3840×2160.
         /// </summary>
@@ -2234,7 +2234,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ShotIn4k", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable for the best quality.
         /// </summary>
@@ -2243,7 +2243,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ShotIn4k_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [url=&quot;{0}&quot;]{1}[/url] isn’t installed. Install it?.
         /// </summary>
@@ -2252,7 +2252,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ShowroomIsMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Showroom Is Missing.
         /// </summary>
@@ -2261,7 +2261,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ShowroomIsMissing_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Showroom is missing. Open options?.
         /// </summary>
@@ -2270,7 +2270,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_ShowroomIsMissingOptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Something went wrong..
         /// </summary>
@@ -2279,7 +2279,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_SomethingWentWrong", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Taken {0}.
         /// </summary>
@@ -2288,7 +2288,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_TakenTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update Previews.
         /// </summary>
@@ -2297,7 +2297,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarPreviews_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … s 0–100.
         /// </summary>
@@ -2306,7 +2306,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Acceleration_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time to accelerate from 0 to 100 km/h, recommended format: “{0}”.
         /// </summary>
@@ -2315,7 +2315,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Acceleration_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Acceleration:.
         /// </summary>
@@ -2324,7 +2324,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_AccelerationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically recalculate P/W ratio.
         /// </summary>
@@ -2333,7 +2333,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_AutomaticallyRecalculatePwRatio", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copy new values to Torque and BHP?.
         /// </summary>
@@ -2342,7 +2342,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_CopyNewPowerAndTorque", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fix Format.
         /// </summary>
@@ -2351,7 +2351,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_FixFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Try to set proper format for value.
         /// </summary>
@@ -2360,7 +2360,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_FixFormat_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fix Formats.
         /// </summary>
@@ -2369,7 +2369,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_FixFormats", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … km/h.
         /// </summary>
@@ -2378,7 +2378,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_MaxSpeed_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Top speed, recommended format: “{0}”.
         /// </summary>
@@ -2387,7 +2387,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_MaxSpeed_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max Speed:.
         /// </summary>
@@ -2396,7 +2396,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_MaxSpeedLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … bhp.
         /// </summary>
@@ -2405,7 +2405,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Power_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max horsepower value, recommended format: “{0}”.
         /// </summary>
@@ -2414,7 +2414,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Power_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to BHP:.
         /// </summary>
@@ -2423,7 +2423,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_PowerLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … kg/hp.
         /// </summary>
@@ -2432,7 +2432,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_PwRatio_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Power to weight ratio, recommended format: “{0}”.
         /// </summary>
@@ -2441,7 +2441,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_PwRatio_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to P/W Ratio:.
         /// </summary>
@@ -2450,7 +2450,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_PwRatioLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recalculate.
         /// </summary>
@@ -2459,7 +2459,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Recalculate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recalculate value using BHP and weight values.
         /// </summary>
@@ -2468,7 +2468,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Recalculate_PwRatioTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recalculate from data.
         /// </summary>
@@ -2477,7 +2477,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Recalculate_WeightTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Curves will be recalculated based on engine.ini, power.lut and power and torque values from ui_car.json.
         /// </summary>
@@ -2486,7 +2486,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recalculate Curves Using Data &amp; Power/Torque Values.
         /// </summary>
@@ -2495,7 +2495,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Curves will be recalculated based on engine.ini, but you’ll have to provide transmission loss.
         /// </summary>
@@ -2504,7 +2504,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recalculate Curves Using Data Only.
         /// </summary>
@@ -2513,7 +2513,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataOnlyHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Curves will be scaled to fit power and torque values from ui_car.json (you can see them above).
         /// </summary>
@@ -2522,7 +2522,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_ScaleCurvesToPowerTorque_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Scale Curves To Power/Torque Values.
         /// </summary>
@@ -2531,7 +2531,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_ScaleCurvesToPowerTorqueHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set Power Curve.
         /// </summary>
@@ -2540,7 +2540,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_SetPowerCurve", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have to specify power and torque values first..
         /// </summary>
@@ -2549,7 +2549,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_SpecifyPowerAndTorqueFirst", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} Specifications.
         /// </summary>
@@ -2558,7 +2558,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … Nm.
         /// </summary>
@@ -2567,7 +2567,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Torque_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max torque value, recommended format: “{0}”.
         /// </summary>
@@ -2576,7 +2576,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Torque_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Torque:.
         /// </summary>
@@ -2585,7 +2585,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_TorqueLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Transmission loss.
         /// </summary>
@@ -2594,7 +2594,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_TransmissionLoss", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Transmission Loss For {0}.
         /// </summary>
@@ -2603,7 +2603,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_TransmissionLossTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update Curves.
         /// </summary>
@@ -2612,7 +2612,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_UpdateCurves", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … kg.
         /// </summary>
@@ -2621,7 +2621,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Weight_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weight without driver, recommended format: “{0}”.
         /// </summary>
@@ -2630,7 +2630,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_Weight_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weight:.
         /// </summary>
@@ -2639,7 +2639,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CarSpecs_WeightLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t load changelog.
         /// </summary>
@@ -2648,7 +2648,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Changelog_CannotLoad", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recent Changes.
         /// </summary>
@@ -2657,7 +2657,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Changelog_RecentChanges_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add To The Library?.
         /// </summary>
@@ -2666,7 +2666,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_AddToLibrary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t add a new entry to the library.
         /// </summary>
@@ -2675,7 +2675,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_CannotAddToLibrary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t find car with provided ID.
         /// </summary>
@@ -2684,7 +2684,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_CannotFindCarById", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t find object with provided ID.
         /// </summary>
@@ -2693,7 +2693,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_CannotFindObjectById", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t start race.
         /// </summary>
@@ -2702,7 +2702,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_CannotStartRace", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Color:.
         /// </summary>
@@ -2711,7 +2711,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_ColorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Developer mode.
         /// </summary>
@@ -2720,7 +2720,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_DevMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disabling {0}….
         /// </summary>
@@ -2729,7 +2729,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_DisablingFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to File “{0}” is missing..
         /// </summary>
@@ -2738,7 +2738,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_FileIsMissingDot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Go!.
         /// </summary>
@@ -2747,7 +2747,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Go", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start race (Ctrl+G).
         /// </summary>
@@ -2756,7 +2756,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Go_RaceTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Got It.
         /// </summary>
@@ -2765,7 +2765,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_GotId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How-To.
         /// </summary>
@@ -2774,7 +2774,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_HowTo_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ID: {0}.
         /// </summary>
@@ -2783,7 +2783,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_IdFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage.
         /// </summary>
@@ -2792,7 +2792,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Manage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0:F2} ms.
         /// </summary>
@@ -2801,7 +2801,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_MillisecondsFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to More information in Main Log.log..
         /// </summary>
@@ -2810,7 +2810,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_MoreInformationInMainLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Brand Name.
         /// </summary>
@@ -2819,7 +2819,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_NewBrandName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Name.
         /// </summary>
@@ -2828,7 +2828,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_NewName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to One More Thing.
         /// </summary>
@@ -2837,7 +2837,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_OneMoreThing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Required value.
         /// </summary>
@@ -2846,7 +2846,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_RequiredValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
@@ -2855,7 +2855,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Restart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Road temperature: .
         /// </summary>
@@ -2864,7 +2864,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_RoadTemperature", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select File.
         /// </summary>
@@ -2873,7 +2873,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_SelectFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select Image For Preview.
         /// </summary>
@@ -2882,7 +2882,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_SelectImageForPreview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share.
         /// </summary>
@@ -2891,7 +2891,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Share", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share current settings (Ctrl+Page Up).
         /// </summary>
@@ -2900,7 +2900,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Share_SettingsTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share weather (Ctrl+Page Up).
         /// </summary>
@@ -2909,7 +2909,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Share_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shooting cancelled.
         /// </summary>
@@ -2918,7 +2918,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_ShootingCancelled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
@@ -2927,7 +2927,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_SignIn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sign Out.
         /// </summary>
@@ -2936,7 +2936,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_SignOut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
@@ -2945,7 +2945,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Test", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
@@ -2954,7 +2954,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_Update", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View User Folder.
         /// </summary>
@@ -2963,7 +2963,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Common_ViewUserFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ABS:.
         /// </summary>
@@ -2972,7 +2972,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Abs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Additional bindings:.
         /// </summary>
@@ -2981,7 +2981,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_AdditionalBindings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Already used.
         /// </summary>
@@ -2990,7 +2990,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_AlreadyUsed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to “{0}” is already used for {1}. Do you want to remove old using first?.
         /// </summary>
@@ -2999,7 +2999,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_AlreadyUsed_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to “{0}” is already used for {1} and {2}. Do you want to remove old usings first?.
         /// </summary>
@@ -3008,7 +3008,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_AlreadyUsed_MultipleMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No, Apply to All.
         /// </summary>
@@ -3017,7 +3017,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ApplyToAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Axles.
         /// </summary>
@@ -3026,7 +3026,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Axles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Brake balance:.
         /// </summary>
@@ -3035,7 +3035,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_BrakeBalance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Buttons.
         /// </summary>
@@ -3044,7 +3044,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Buttons", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Combine with keyboard.
         /// </summary>
@@ -3053,7 +3053,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_CombineWithKeyboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Detected controllers:.
         /// </summary>
@@ -3062,7 +3062,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_DetectedControllersHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Device: {0}.
         /// </summary>
@@ -3071,7 +3071,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_DeviceFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable mouse steering.
         /// </summary>
@@ -3080,7 +3080,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_EnableMouseSteering", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Engine brake:.
         /// </summary>
@@ -3089,7 +3089,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_EngineBrake", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Force Feedback.
         /// </summary>
@@ -3098,7 +3098,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ForceFeedback", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gear shift debouncing.
         /// </summary>
@@ -3107,7 +3107,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_GearShiftDebouncing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Prevents accidental gearshifts due to faulty hardware.
         /// </summary>
@@ -3116,7 +3116,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_GearShiftDebouncing_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gestures:.
         /// </summary>
@@ -3125,7 +3125,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Gestures", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Input method:.
         /// </summary>
@@ -3134,7 +3134,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_InputMethodLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please, choose a file in initial directory (“cfg\controllers\savedsetups”) or some subdirectory..
         /// </summary>
@@ -3143,7 +3143,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_InvalidDirectory_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invert FFB.
         /// </summary>
@@ -3152,7 +3152,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_InvertFfb", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Keyboard steering:.
         /// </summary>
@@ -3161,7 +3161,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_KeyboardSteeringHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MGU-K:.
         /// </summary>
@@ -3170,7 +3170,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_MguK", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Miscellaneous:.
         /// </summary>
@@ -3179,7 +3179,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Miscellaneous", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mouse steering:.
         /// </summary>
@@ -3188,7 +3188,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_MouseSteeringHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opposite lock speed.
         /// </summary>
@@ -3197,7 +3197,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_OppositeLockSpeed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Yes, Remove Old.
         /// </summary>
@@ -3206,7 +3206,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_RemoveOld", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Return rate.
         /// </summary>
@@ -3215,7 +3215,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ReturnRate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} (FFB Only).
         /// </summary>
@@ -3224,7 +3224,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SharedFfbOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to keyboard.
         /// </summary>
@@ -3233,7 +3233,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SharedFor_Keyboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Xbox 360 controller.
         /// </summary>
@@ -3242,7 +3242,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SharedFor_XboxController", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share FFB Settings Only.
         /// </summary>
@@ -3251,7 +3251,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ShareFfbOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Including experimental FFB properties.
         /// </summary>
@@ -3260,7 +3260,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ShareFfbOnly_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share Preset.
         /// </summary>
@@ -3269,7 +3269,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SharePreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only basic properties, without experimental ones.
         /// </summary>
@@ -3278,7 +3278,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SharePreset_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shifters:.
         /// </summary>
@@ -3287,7 +3287,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_ShiftersHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Steering speed.
         /// </summary>
@@ -3296,7 +3296,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SteeringSpeed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Swap Usings.
         /// </summary>
@@ -3305,7 +3305,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_SwapUsings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test current preset with Quick Drive.
         /// </summary>
@@ -3314,7 +3314,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Test_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Traction control:.
         /// </summary>
@@ -3323,7 +3323,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_TractionControl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Turbo:.
         /// </summary>
@@ -3332,7 +3332,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_Turbo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use H-shifter.
         /// </summary>
@@ -3341,7 +3341,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_UseHShifter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use mouse buttons for throttle and brakes.
         /// </summary>
@@ -3350,7 +3350,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_UseMouseButtons", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View:.
         /// </summary>
@@ -3359,7 +3359,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_View", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Warn About Unsaved Changes.
         /// </summary>
@@ -3368,7 +3368,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_WarnAboutUnsaved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Otherwise, app will move previous changed versions to the Recycle Bin silently.
         /// </summary>
@@ -3377,7 +3377,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Controls_WarnAboutUnsaved_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can&apos;t create new showroom.
         /// </summary>
@@ -3386,7 +3386,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_CannotCreate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to In Shadow.
         /// </summary>
@@ -3395,7 +3395,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_InShadow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
@@ -3404,7 +3404,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_NameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recommended format: DDS Image, 32f.32f.32f.32f, 5120×2560
         ///But if you don&apos;t want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP.
@@ -3414,7 +3414,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_Panorama_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Something like this:.
         /// </summary>
@@ -3423,7 +3423,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_Panorama_Example", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Panorama:.
         /// </summary>
@@ -3432,7 +3432,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_PanoramaLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select a Panorama File.
         /// </summary>
@@ -3441,7 +3441,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_SelectPanorama_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create New Showroom.
         /// </summary>
@@ -3450,7 +3450,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CreateShowroom_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don’t Crop.
         /// </summary>
@@ -3459,7 +3459,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CropImage_Skip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Crop Image.
         /// </summary>
@@ -3468,7 +3468,7 @@ namespace AcManager {
                 return ResourceManager.GetString("CropImage_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} Setups.
         /// </summary>
@@ -3477,7 +3477,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Dialog_CarSetupsFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} Skins.
         /// </summary>
@@ -3486,7 +3486,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Dialog_CarSkinsFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Actual temperature:.
         /// </summary>
@@ -3495,7 +3495,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ActualTemperature", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AI arrange order:.
         /// </summary>
@@ -3504,7 +3504,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_AiArrangeOrder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set to Ascending if you want smartest bot to start in the end of starting grid.
         /// </summary>
@@ -3513,7 +3513,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_AiArrangeOrder_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AI cars loading….
         /// </summary>
@@ -3522,7 +3522,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_AiCarsLoading", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AI cars filtering….
         /// </summary>
@@ -3531,7 +3531,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_AiFiltering", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show AI level in driver’s name.
         /// </summary>
@@ -3540,7 +3540,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_AiLevelInDriverName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Arrange in reverse order.
         /// </summary>
@@ -3549,7 +3549,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ArrangeInReverseOrder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The strongest opponent will be the last at the start line.
         /// </summary>
@@ -3558,7 +3558,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ArrangeInReverseOrder_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Arrange randomly.
         /// </summary>
@@ -3567,7 +3567,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ArrangeRandomly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t filter appropriate cars for starting grid.
         /// </summary>
@@ -3576,7 +3576,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotFilter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to If you made any changes to GridTypes.json, make sure they’re correct..
         /// </summary>
@@ -3585,7 +3585,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotFilter_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t initialize Lua.
         /// </summary>
@@ -3594,7 +3594,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotInitializeLua", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Attempt to find any car fitting selected grid type is failed..
         /// </summary>
@@ -3603,7 +3603,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotStart_CannotFindAnyCar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please, select some non-disabled car..
         /// </summary>
@@ -3612,7 +3612,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotStart_SelectNonDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please, select a track..
         /// </summary>
@@ -3621,7 +3621,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotStart_SelectTrack", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please, set at least one opponent..
         /// </summary>
@@ -3630,7 +3630,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotStart_SetOpponent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t Start Race.
         /// </summary>
@@ -3639,7 +3639,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_CannotStart_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Consider Timezones.
         /// </summary>
@@ -3648,7 +3648,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ConsiderTimezones", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fixed opponents strength.
         /// </summary>
@@ -3657,7 +3657,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_FixedOpponentsStrength", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ghost car.
         /// </summary>
@@ -3666,7 +3666,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_GhostCar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ghost car advantage.
         /// </summary>
@@ -3675,7 +3675,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_GhostCarAdvantage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid script.
         /// </summary>
@@ -3684,7 +3684,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_InvalidScript", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Penalty for jump start.
         /// </summary>
@@ -3693,7 +3693,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_JumpStartPenalty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App will take {0} {opponent} from this list.
         /// </summary>
@@ -3702,7 +3702,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ListOfPossibleOpponents_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Possible opponents list:.
         /// </summary>
@@ -3711,7 +3711,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_ListOfPossibleOpponentsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading failed.
         /// </summary>
@@ -3720,7 +3720,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_LoadingFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use local weather instead of weather on the track.
         /// </summary>
@@ -3729,7 +3729,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_LocalWeather_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Local Weather.
         /// </summary>
@@ -3738,7 +3738,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_LocalWeatherHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Limited by number of pits available ({0}).
         /// </summary>
@@ -3747,7 +3747,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_OpponentsMaximumLimitation_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opponents strength.
         /// </summary>
@@ -3756,7 +3756,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_OpponentsStrength", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opponents strength (min).
         /// </summary>
@@ -3765,7 +3765,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_OpponentsStrengthMin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last.
         /// </summary>
@@ -3774,7 +3774,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Ordinal_Last", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to driver.
         /// </summary>
@@ -3783,7 +3783,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Ordinal_Parameter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Random.
         /// </summary>
@@ -3792,7 +3792,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Ordinal_Random", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Penalties.
         /// </summary>
@@ -3801,7 +3801,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Penalties", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Race duration.
         /// </summary>
@@ -3810,7 +3810,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_RaceDuration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Real conditions.
         /// </summary>
@@ -3819,7 +3819,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_RealConditions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set Time Manually.
         /// </summary>
@@ -3828,7 +3828,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_SetTimeManuallyHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skip.
         /// </summary>
@@ -3837,7 +3837,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_SkipSession", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start from:.
         /// </summary>
@@ -3846,7 +3846,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_StartFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting position.
         /// </summary>
@@ -3855,7 +3855,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_StartingPosition", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Temperature.
         /// </summary>
@@ -3864,7 +3864,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Temperature", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Random.
         /// </summary>
@@ -3873,7 +3873,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Temperature_Random", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Actual temperature is out of range, closest value is used.
         /// </summary>
@@ -3882,7 +3882,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Temperature_Warning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
@@ -3891,7 +3891,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Time", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Random.
         /// </summary>
@@ -3900,7 +3900,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Time_Random", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Actual time is out of range, closest value is used.
         /// </summary>
@@ -3909,7 +3909,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Time_Warning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time multiplier.
         /// </summary>
@@ -3918,7 +3918,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_TimeMultiplerLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Track:.
         /// </summary>
@@ -3927,7 +3927,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_TrackStateLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tyre blankets.
         /// </summary>
@@ -3936,7 +3936,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_TyreBlankets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t load real weather.
         /// </summary>
@@ -3945,7 +3945,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Weather_CannotLoad", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {}Actual weather ({0}) isn&apos;t supported.
         /// </summary>
@@ -3954,7 +3954,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_Weather_Warning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weather:.
         /// </summary>
@@ -3963,7 +3963,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Drive_WeatherLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Missing Driver Models.
         /// </summary>
@@ -3972,7 +3972,7 @@ namespace AcManager {
                 return ResourceManager.GetString("DriverModel_MissingDriverModels", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Acceleration.
         /// </summary>
@@ -3981,7 +3981,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByAcceleration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Age.
         /// </summary>
@@ -3990,7 +3990,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByAge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Author.
         /// </summary>
@@ -3999,7 +3999,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByAuthor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Brand.
         /// </summary>
@@ -4008,7 +4008,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByBrand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Car.
         /// </summary>
@@ -4017,7 +4017,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByCar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By City.
         /// </summary>
@@ -4026,7 +4026,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByCity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Class.
         /// </summary>
@@ -4035,7 +4035,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByClass", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Country.
         /// </summary>
@@ -4044,7 +4044,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByCountry", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Decade.
         /// </summary>
@@ -4053,7 +4053,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByDecade", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Driver Name.
         /// </summary>
@@ -4062,7 +4062,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByDriver", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Length.
         /// </summary>
@@ -4071,7 +4071,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByLength", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Number.
         /// </summary>
@@ -4080,7 +4080,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Amount Of Pitstops.
         /// </summary>
@@ -4089,7 +4089,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByPitboxes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Power.
         /// </summary>
@@ -4098,7 +4098,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByPower", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Priority.
         /// </summary>
@@ -4107,7 +4107,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByPriority", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar P/W Ratio.
         /// </summary>
@@ -4116,7 +4116,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByPwRatio", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Size.
         /// </summary>
@@ -4125,7 +4125,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_BySize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Tag.
         /// </summary>
@@ -4134,7 +4134,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByTag", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Team.
         /// </summary>
@@ -4143,7 +4143,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByTeam", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Top Speed.
         /// </summary>
@@ -4152,7 +4152,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByTopSpeed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Torque.
         /// </summary>
@@ -4161,7 +4161,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByTorque", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Track.
         /// </summary>
@@ -4170,7 +4170,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByTrack", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Weather.
         /// </summary>
@@ -4179,7 +4179,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByWeather", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Weight.
         /// </summary>
@@ -4188,7 +4188,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByWeight", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Width.
         /// </summary>
@@ -4197,7 +4197,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByWidth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter By Year.
         /// </summary>
@@ -4206,7 +4206,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Filter_ByYear", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Missing Fonts.
         /// </summary>
@@ -4215,7 +4215,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Font_MissingFonts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content Manager is hidden.
         /// </summary>
@@ -4224,7 +4224,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Hibernate_TrayText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AI Level:.
         /// </summary>
@@ -4233,7 +4233,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_AiLevelLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fully completed.
         /// </summary>
@@ -4242,7 +4242,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_FullyCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Laps:.
         /// </summary>
@@ -4251,7 +4251,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_LapsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Left to earn: .
         /// </summary>
@@ -4260,7 +4260,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_LeftToEarn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
@@ -4269,7 +4269,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_Next", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opponents:.
         /// </summary>
@@ -4278,7 +4278,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_OpponentsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Progress: {0}.
         /// </summary>
@@ -4287,7 +4287,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_ProgressFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Required series aren’t done yet.
         /// </summary>
@@ -4296,7 +4296,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_RequiredSeriesAreNotDoneYet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All progress in this championship will be lost. Are you sure?.
         /// </summary>
@@ -4305,7 +4305,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_ResetProgress_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reset Championship Progress.
         /// </summary>
@@ -4314,7 +4314,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_ResetProgress_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Series goal: .
         /// </summary>
@@ -4323,7 +4323,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_SeriesGoal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting position:.
         /// </summary>
@@ -4332,7 +4332,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_StartingPositionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Temperature:.
         /// </summary>
@@ -4341,7 +4341,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_TemperatureLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time:.
         /// </summary>
@@ -4350,7 +4350,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_TimeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Kunos Career.
         /// </summary>
@@ -4359,7 +4359,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Track State:.
         /// </summary>
@@ -4368,7 +4368,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_TrackState", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weather:.
         /// </summary>
@@ -4377,7 +4377,7 @@ namespace AcManager {
                 return ResourceManager.GetString("KunosCareer_WeatherLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} app.
         /// </summary>
@@ -4386,7 +4386,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Apps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} car.
         /// </summary>
@@ -4395,7 +4395,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Cars", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} driver model.
         /// </summary>
@@ -4404,7 +4404,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_DriverModels", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} font.
         /// </summary>
@@ -4413,7 +4413,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Fonts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} filter.
         /// </summary>
@@ -4422,7 +4422,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_PpFilters", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} replay.
         /// </summary>
@@ -4431,7 +4431,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Replays", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} preset.
         /// </summary>
@@ -4440,7 +4440,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_ServerPresets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} setup.
         /// </summary>
@@ -4449,7 +4449,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Setups", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} showroom.
         /// </summary>
@@ -4458,7 +4458,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Showrooms", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} skin.
         /// </summary>
@@ -4467,7 +4467,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Skins", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} track.
         /// </summary>
@@ -4476,7 +4476,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Tracks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} weather.
         /// </summary>
@@ -4485,7 +4485,7 @@ namespace AcManager {
                 return ResourceManager.GetString("List_Weather", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t change livery image.
         /// </summary>
@@ -4494,7 +4494,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_CannotChange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure livery.png isn’t busy.
         /// </summary>
@@ -4503,7 +4503,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_CannotChange_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change skin’s number to “{0}”?.
         /// </summary>
@@ -4512,7 +4512,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_ChangeNumber_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skin Number Is Changed.
         /// </summary>
@@ -4521,7 +4521,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_ChangeNumber_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Color:.
         /// </summary>
@@ -4530,7 +4530,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_ColorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Condensed.
         /// </summary>
@@ -4539,7 +4539,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Number_Condensed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Light.
         /// </summary>
@@ -4548,7 +4548,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Number_Light", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Light (with contour).
         /// </summary>
@@ -4557,7 +4557,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Number_LightOutlined", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Number:.
         /// </summary>
@@ -4566,7 +4566,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_NumberHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Value.
         /// </summary>
@@ -4575,7 +4575,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_NumberValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Result:.
         /// </summary>
@@ -4584,7 +4584,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_ResultLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Secondary color:.
         /// </summary>
@@ -4593,7 +4593,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_SecondaryColorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Carbon.
         /// </summary>
@@ -4602,7 +4602,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_Carbon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Circle.
         /// </summary>
@@ -4611,7 +4611,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_Circle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Diagonal.
         /// </summary>
@@ -4620,7 +4620,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_Diagonal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Diagonal line with Circle.
         /// </summary>
@@ -4629,7 +4629,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_DiagonalLineWithCircle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Diagonal with Circle.
         /// </summary>
@@ -4638,7 +4638,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_DiagonalWithCircle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Double Stripes.
         /// </summary>
@@ -4647,7 +4647,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_DoubleStripes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Flat.
         /// </summary>
@@ -4656,7 +4656,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_Flat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Horizontal Split.
         /// </summary>
@@ -4665,7 +4665,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_HorizontalSplit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Horizontal Stripes.
         /// </summary>
@@ -4674,7 +4674,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_HorizontalStripes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Side Stripes.
         /// </summary>
@@ -4683,7 +4683,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_SideStripes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stripes.
         /// </summary>
@@ -4692,7 +4692,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_Stripes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Triple Horizontal Split.
         /// </summary>
@@ -4701,7 +4701,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_TripleHorizontalSplit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Triple Vertical Split.
         /// </summary>
@@ -4710,7 +4710,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_TripleVerticalSplit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Vertical Split.
         /// </summary>
@@ -4719,7 +4719,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Shape_VerticalSplit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shape:.
         /// </summary>
@@ -4728,7 +4728,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_ShapeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bright.
         /// </summary>
@@ -4737,7 +4737,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Bright", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gloss.
         /// </summary>
@@ -4746,7 +4746,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Gloss", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gradient.
         /// </summary>
@@ -4755,7 +4755,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Gradient", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Miura.
         /// </summary>
@@ -4764,7 +4764,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Miura", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Solid.
         /// </summary>
@@ -4773,7 +4773,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Solid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tesla.
         /// </summary>
@@ -4782,7 +4782,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Style_Tesla", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Style:.
         /// </summary>
@@ -4791,7 +4791,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_StyleLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tertiary color:.
         /// </summary>
@@ -4800,7 +4800,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_TertiaryColorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Text color:.
         /// </summary>
@@ -4809,7 +4809,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_TextColorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Livery Icon.
         /// </summary>
@@ -4818,7 +4818,7 @@ namespace AcManager {
                 return ResourceManager.GetString("LiveryIcon_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
@@ -4827,7 +4827,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_About", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Apps.
         /// </summary>
@@ -4836,7 +4836,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Apps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Assetto Corsa.
         /// </summary>
@@ -4845,7 +4845,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_AssettoCorsa", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t process argument.
         /// </summary>
@@ -4854,7 +4854,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_CannotProcessArgument", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure it’s in valid format..
         /// </summary>
@@ -4863,7 +4863,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_CannotProcessArgument_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Career.
         /// </summary>
@@ -4872,7 +4872,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Career", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Сars.
         /// </summary>
@@ -4881,7 +4881,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Cars", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Challenges.
         /// </summary>
@@ -4890,7 +4890,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Challenges", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content.
         /// </summary>
@@ -4899,7 +4899,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Content", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content Manager.
         /// </summary>
@@ -4908,7 +4908,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_ContentManager", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drive.
         /// </summary>
@@ -4917,7 +4917,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Drive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fonts.
         /// </summary>
@@ -4926,7 +4926,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Fonts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Important Tips.
         /// </summary>
@@ -4935,7 +4935,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_ImportantTips", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to LAN.
         /// </summary>
@@ -4944,7 +4944,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Lan", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Language &amp; Regional.
         /// </summary>
@@ -4953,7 +4953,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Language", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Grid.
         /// </summary>
@@ -4962,7 +4962,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_LapTimesGrid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Live.
         /// </summary>
@@ -4971,7 +4971,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Live", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Media.
         /// </summary>
@@ -4980,7 +4980,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Media", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Miscellaneous.
         /// </summary>
@@ -4989,7 +4989,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Miscellaneous", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not supported request: “{0}”.
         /// </summary>
@@ -4998,7 +4998,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_NotSupportedRequest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Now With Official Support!.
         /// </summary>
@@ -5007,7 +5007,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_OfficialSupportNotification", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New starter is ready, now without any patching at all.
         /// </summary>
@@ -5016,7 +5016,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_OfficialSupportNotification_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn&apos;t have to replace AssettoCorsa.exe, and it&apos;s great! Would you like to switch to a new Official Starter?.
         /// </summary>
@@ -5025,7 +5025,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_OfficialSupportNotification_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
@@ -5034,7 +5034,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Online", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to PP Filters.
         /// </summary>
@@ -5043,7 +5043,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_PpFilters", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
@@ -5052,7 +5052,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Profile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quick.
         /// </summary>
@@ -5061,7 +5061,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_QuickDrive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recent.
         /// </summary>
@@ -5070,7 +5070,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_RecentLapTimes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Release Notes.
         /// </summary>
@@ -5079,7 +5079,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_ReleaseNotes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replays.
         /// </summary>
@@ -5088,7 +5088,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Replays", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR.
         /// </summary>
@@ -5097,7 +5097,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Rsr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Screenshots.
         /// </summary>
@@ -5106,7 +5106,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Screenshots", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server.
         /// </summary>
@@ -5115,7 +5115,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Server", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Presets.
         /// </summary>
@@ -5124,7 +5124,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_ServerPresets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Running.
         /// </summary>
@@ -5133,7 +5133,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_ServerRunning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
@@ -5142,7 +5142,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Setups.
         /// </summary>
@@ -5151,7 +5151,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Setups", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Showrooms.
         /// </summary>
@@ -5160,7 +5160,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Showrooms", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Single.
         /// </summary>
@@ -5169,7 +5169,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Single", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skins.
         /// </summary>
@@ -5178,7 +5178,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Skins", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SRS.
         /// </summary>
@@ -5187,7 +5187,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Srs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stats.
         /// </summary>
@@ -5196,7 +5196,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Stats", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Content Manager (Lite Mode).
         /// </summary>
@@ -5205,7 +5205,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tracks.
         /// </summary>
@@ -5214,7 +5214,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Tracks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unhandled exception:
         ///
@@ -5225,7 +5225,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_UnhandledException", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save changes to the following items?.
         /// </summary>
@@ -5234,7 +5234,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_UnsavedChanges", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unsaved Changes.
         /// </summary>
@@ -5243,7 +5243,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_UnsavedChangesHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
@@ -5252,7 +5252,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Main_Weather", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add By IP.
         /// </summary>
@@ -5261,7 +5261,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddByIp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Adding server….
         /// </summary>
@@ -5270,7 +5270,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddingServer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add a New Server.
         /// </summary>
@@ -5279,7 +5279,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddNewServer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server address (IP &amp; HTTP or TCP Port):.
         /// </summary>
@@ -5288,7 +5288,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddServer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add New Servers.
         /// </summary>
@@ -5297,7 +5297,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddServer_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Port could be omitted, in this case app will scan all specific ports.
         /// </summary>
@@ -5306,7 +5306,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AddServer_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All cars are taken.
         /// </summary>
@@ -5315,7 +5315,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_AllCarsAreTaken", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t add server.
         /// </summary>
@@ -5324,7 +5324,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_CannotAddServer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clients:.
         /// </summary>
@@ -5333,7 +5333,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_ClientsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drivers online:.
         /// </summary>
@@ -5342,7 +5342,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_DriversOnlineLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Booking.
         /// </summary>
@@ -5351,7 +5351,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterBooking_Short", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show empty servers.
         /// </summary>
@@ -5360,7 +5360,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Empty.
         /// </summary>
@@ -5369,7 +5369,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterEmpty_Short", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show full servers.
         /// </summary>
@@ -5378,7 +5378,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterFull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full.
         /// </summary>
@@ -5387,7 +5387,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterFull_Short", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Servers with missing content.
         /// </summary>
@@ -5396,7 +5396,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Missing.
         /// </summary>
@@ -5405,7 +5405,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterMissing_Short", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show password-protected servers.
         /// </summary>
@@ -5414,7 +5414,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterPassword", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
@@ -5423,7 +5423,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterPassword_Short", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show servers with booking.
         /// </summary>
@@ -5432,7 +5432,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_FilterWithBooking", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Left:.
         /// </summary>
@@ -5441,7 +5441,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_LeftLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing to display.
         /// </summary>
@@ -5450,7 +5450,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_NothingToDisplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password:.
         /// </summary>
@@ -5459,7 +5459,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_PasswordLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pinged {0} out of {1}.
         /// </summary>
@@ -5468,7 +5468,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Pinged", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} server.
         /// </summary>
@@ -5477,7 +5477,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_ServersFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server with provided ID “{0}” is missing.
         /// </summary>
@@ -5486,7 +5486,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_ServerWithIdIsMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sessions:.
         /// </summary>
@@ -5495,7 +5495,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SessionsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skin is missing.
         /// </summary>
@@ -5504,7 +5504,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SkinIsMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Capacity.
         /// </summary>
@@ -5513,7 +5513,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByCapacity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Cars Number.
         /// </summary>
@@ -5522,7 +5522,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByCarsNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Drivers.
         /// </summary>
@@ -5531,7 +5531,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByDrivers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort by:.
         /// </summary>
@@ -5540,7 +5540,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Name.
         /// </summary>
@@ -5549,7 +5549,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Ping.
         /// </summary>
@@ -5558,7 +5558,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_SortByPing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Capacity.
         /// </summary>
@@ -5567,7 +5567,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Sorting_Capacity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cars Number.
         /// </summary>
@@ -5576,7 +5576,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Sorting_CarsNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drivers.
         /// </summary>
@@ -5585,7 +5585,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Sorting_Drivers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
@@ -5594,7 +5594,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Sorting_Name", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ping.
         /// </summary>
@@ -5603,7 +5603,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_Sorting_Ping", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time:.
         /// </summary>
@@ -5612,7 +5612,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Online_TimeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This section isn’t ready yet.
         /// </summary>
@@ -5621,7 +5621,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Page_Wip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to If you want to know more about the development, [url=&quot;https://trello.com/b/MwqpL8Bw/content-manager&quot;]here is a Trello board[/url] with a lot of information..
         /// </summary>
@@ -5630,7 +5630,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Page_Wip_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cleaning up some stuff….
         /// </summary>
@@ -5639,7 +5639,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_CleaningUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Initializing….
         /// </summary>
@@ -5648,7 +5648,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_Initializing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting benchmark….
         /// </summary>
@@ -5657,7 +5657,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_LaunchingBenchmark", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting session….
         /// </summary>
@@ -5666,7 +5666,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_LaunchingGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting the replay….
         /// </summary>
@@ -5675,7 +5675,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_LaunchingReplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Preparing….
         /// </summary>
@@ -5684,7 +5684,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_Preparing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Waiting for the end of race….
         /// </summary>
@@ -5693,7 +5693,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_Waiting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Waiting for the end of benchmark….
         /// </summary>
@@ -5702,7 +5702,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_WaitingBenchmark", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Waiting for the end of replay….
         /// </summary>
@@ -5711,7 +5711,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Race_WaitingReplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Candidate priority.
         /// </summary>
@@ -5720,7 +5720,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_CandidatePriority", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Candidates:.
         /// </summary>
@@ -5729,7 +5729,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_Candidates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Class: {0}.
         /// </summary>
@@ -5738,7 +5738,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_ClassFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Detailed settings.
         /// </summary>
@@ -5747,7 +5747,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_DetailedSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loaded {1} out of {0}.
         /// </summary>
@@ -5756,7 +5756,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_LoadingProgress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opponents:.
         /// </summary>
@@ -5765,7 +5765,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_Opponents", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to There is no pit stop for this car.
         /// </summary>
@@ -5774,7 +5774,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceGrid_OverTheLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Best combo: .
         /// </summary>
@@ -5783,7 +5783,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_BestCombo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Best lap: .
         /// </summary>
@@ -5792,7 +5792,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_BestLap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Race cancelled.
         /// </summary>
@@ -5801,7 +5801,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_CancelledHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error:.
         /// </summary>
@@ -5810,7 +5810,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_ErrorHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Laps: .
         /// </summary>
@@ -5819,7 +5819,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_Laps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max Level: .
         /// </summary>
@@ -5828,7 +5828,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_MaxLevel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Result processing error.
         /// </summary>
@@ -5837,7 +5837,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_ResultProcessingError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Keep replay.
         /// </summary>
@@ -5846,7 +5846,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_SaveReplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Theoretical: .
         /// </summary>
@@ -5855,7 +5855,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_Threoretical", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Try again.
         /// </summary>
@@ -5864,7 +5864,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_TryAgain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don’t keep replay.
         /// </summary>
@@ -5873,7 +5873,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RaceResult_UnsaveReplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t share replay.
         /// </summary>
@@ -5882,7 +5882,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Replay_CannotShare", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AC Replay.
         /// </summary>
@@ -5891,7 +5891,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Replay_DefaultUploadedName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0}
         ///
@@ -5902,7 +5902,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Replay_SharedReadMe", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR app is disabled.
         /// </summary>
@@ -5911,7 +5911,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_AppIsDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You need to enable it first..
         /// </summary>
@@ -5920,7 +5920,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_AppIsDisabled_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR app is missing.
         /// </summary>
@@ -5929,7 +5929,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_AppIsMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Download it [url=&quot;http://www.radiators-champ.com/RSRLiveTiming/&quot;]here[/url]..
         /// </summary>
@@ -5938,7 +5938,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_AppIsMissing_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to If you’re using Chrome-like browser, [url=&quot;https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc&quot;]here[/url] is an extension for starting RSR events directly from browser!.
         /// </summary>
@@ -5947,7 +5947,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [url=&quot;https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit&quot;]Here[/url] is the list of mods used by RSR (download links included)..
         /// </summary>
@@ -5956,7 +5956,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_ContentIsMissing_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid RSR parameters.
         /// </summary>
@@ -5965,7 +5965,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_InvalidParameters", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure RSR website is working properly..
         /// </summary>
@@ -5974,7 +5974,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_InvalidParameters_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quit.
         /// </summary>
@@ -5983,7 +5983,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_Quit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quit registration.
         /// </summary>
@@ -5992,7 +5992,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_Quit_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR Hotlap.
         /// </summary>
@@ -6001,7 +6001,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Rsr_SessionName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Getting information about the event….
         /// </summary>
@@ -6010,7 +6010,7 @@ namespace AcManager {
                 return ResourceManager.GetString("RsrStarter_GettingInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
@@ -6019,7 +6019,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Select_All", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Brands.
         /// </summary>
@@ -6028,7 +6028,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Select_Brands", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Categories.
         /// </summary>
@@ -6037,7 +6037,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Select_Categories", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Countries.
         /// </summary>
@@ -6046,7 +6046,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Select_Countries", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage car’s setups.
         /// </summary>
@@ -6055,7 +6055,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Select_ManageSetups_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AC settings:.
         /// </summary>
@@ -6064,7 +6064,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_AcSettingsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Appearance.
         /// </summary>
@@ -6073,7 +6073,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dynamic background.
         /// </summary>
@@ -6082,7 +6082,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_DynamicBackground", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Restart app to apply changes.
         /// </summary>
@@ -6091,7 +6091,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_ImageScaling_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Image scaling quality:.
         /// </summary>
@@ -6100,7 +6100,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_ImageScalingLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Large search boxes.
         /// </summary>
@@ -6109,7 +6109,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_LargeSearchBoxes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to By the way, try shortcuts like F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc..
         /// </summary>
@@ -6118,7 +6118,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_LargeSearchBoxes_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Popup toolbars.
         /// </summary>
@@ -6127,7 +6127,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_PopupToolbars", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t forget, there is a keyboard shortcut for every button.
         /// </summary>
@@ -6136,7 +6136,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_PopupToolbars_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Small font.
         /// </summary>
@@ -6145,7 +6145,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_SmallFont", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Text rendering:.
         /// </summary>
@@ -6154,7 +6154,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_TextRenderingLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Theme:.
         /// </summary>
@@ -6163,7 +6163,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_ThemeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Transition animation:.
         /// </summary>
@@ -6172,7 +6172,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Appearance_TransitionAnimationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add year postfix to cars’ names.
         /// </summary>
@@ -6181,7 +6181,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_AddYearPostfix", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cars:.
         /// </summary>
@@ -6190,7 +6190,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_CarsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change brand&apos;s icon automatically.
         /// </summary>
@@ -6199,7 +6199,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ChangeBrandIcon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Confirm before removal.
         /// </summary>
@@ -6208,7 +6208,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ConfirmBeforeRemoval", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Keep in mind that all removed content always can be restored from Recycle Bin.
         /// </summary>
@@ -6217,7 +6217,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ConfirmBeforeRemoval_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Download previews of common showrooms.
         /// </summary>
@@ -6226,7 +6226,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_DownloadPreviews", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to I doubt you have time to update all of them.
         /// </summary>
@@ -6235,7 +6235,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_DownloadPreviews_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Font’s icon symbol:.
         /// </summary>
@@ -6244,7 +6244,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_FontIconSymbol", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to One symbol which will be used for an icon.
         /// </summary>
@@ -6253,7 +6253,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_FontIconSymbol_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fonts:.
         /// </summary>
@@ -6262,7 +6262,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_FontsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Information search:.
         /// </summary>
@@ -6271,16 +6271,16 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_InformationSearchHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Smaller value may increase UI responsibleness, but decrease loading times.
+        ///   Looks up a localized string similar to Smaller value may increase UI responsiveness, but decrease loading times.
         /// </summary>
         public static string Settings_Content_LoadingConcurrency_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Content_LoadingConcurrency_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading concurrency:.
         /// </summary>
@@ -6289,7 +6289,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_LoadingConcurrencyLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Look at Wikipedia by default.
         /// </summary>
@@ -6298,7 +6298,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_LookAtWikipedia", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add “site:wikipedia.org” by default.
         /// </summary>
@@ -6307,7 +6307,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_LookAtWikipedia_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mark as new:.
         /// </summary>
@@ -6316,7 +6316,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_MarkAsNewLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically scroll to selected item.
         /// </summary>
@@ -6325,7 +6325,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ScrollAutomatically", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For example, on disabling.
         /// </summary>
@@ -6334,7 +6334,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ScrollAutomatically_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Search engine:.
         /// </summary>
@@ -6343,7 +6343,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_SearchEngine", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Showrooms:.
         /// </summary>
@@ -6352,7 +6352,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Content_ShowroomsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto-adjusting camera pivot.
         /// </summary>
@@ -6361,7 +6361,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_AutoAdjustPivot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tries to keep a car at the center of the screen as much as possible (but without any heavy calculations).
         /// </summary>
@@ -6370,7 +6370,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_AutoAdjustPivot_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use bloom.
         /// </summary>
@@ -6379,7 +6379,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Bloom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable if you need maximum performance; you can toggle it any time by pressing B.
         /// </summary>
@@ -6388,7 +6388,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Bloom_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use by default:.
         /// </summary>
@@ -6397,7 +6397,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_DefaultType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hold Ctrl when starting to select the other one.
         /// </summary>
@@ -6406,7 +6406,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_DefaultType_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fancy Showroom:.
         /// </summary>
@@ -6415,7 +6415,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_FancyHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use FXAA.
         /// </summary>
@@ -6424,7 +6424,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Fxaa", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can toggle it any time by pressing F.
         /// </summary>
@@ -6433,7 +6433,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Fxaa_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invert mouse buttons.
         /// </summary>
@@ -6442,7 +6442,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_InvertMouseButtons", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use left mouse button for panning and right for rotating a model instead.
         /// </summary>
@@ -6451,7 +6451,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_InvertMouseButtons_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Lite Showroom:.
         /// </summary>
@@ -6460,7 +6460,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_LiteHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use MSAA.
         /// </summary>
@@ -6469,7 +6469,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Msaa", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can toggle it any time by pressing M.
         /// </summary>
@@ -6478,7 +6478,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Msaa_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default showroom:.
         /// </summary>
@@ -6487,7 +6487,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_Showroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Lite Showroom is DirectX 10-compatible, much simpler and easier for a videocard. Perfect solution for skins drawing..
         /// </summary>
@@ -6496,7 +6496,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_CustomShowroom_TypeComment", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dev.
         /// </summary>
@@ -6505,7 +6505,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Dev", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use 32-bit version.
         /// </summary>
@@ -6514,7 +6514,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_32bit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show AI level in driver’s name.
         /// </summary>
@@ -6523,7 +6523,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_AiLevelInDriverName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only for non-fixed AI level.
         /// </summary>
@@ -6532,7 +6532,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_AiLevelInDriverName_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Always record ghost in hotlap mode.
         /// </summary>
@@ -6541,7 +6541,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_AlwaysRecordGhost", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Record ghost while hotlapping even if it’s hidden.
         /// </summary>
@@ -6550,7 +6550,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_AlwaysRecordGhost_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cache brands.
         /// </summary>
@@ -6559,7 +6559,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_CacheBrands", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to In car selection dialog.
         /// </summary>
@@ -6568,7 +6568,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_CacheBrands_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow to change AI level.
         /// </summary>
@@ -6577,7 +6577,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ChangeAiLevel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow to change car’s skin.
         /// </summary>
@@ -6586,7 +6586,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ChangeCarSkin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically convert screenshots from BMP-format to JPEG on exit.
         /// </summary>
@@ -6595,7 +6595,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ConvertScreenshots", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to I highly recommend to enable Magick.NET first — with it, result quality will be higher.
         /// </summary>
@@ -6604,7 +6604,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ConvertScreenshots_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replace clouds by weather’s clouds if exist.
         /// </summary>
@@ -6613,7 +6613,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_CustomClouds", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Of course, only temporary.
         /// </summary>
@@ -6622,7 +6622,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_CustomClouds_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AC-related events:.
         /// </summary>
@@ -6631,7 +6631,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_EventsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Expand bounds.
         /// </summary>
@@ -6640,7 +6640,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ExpandBounds", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allows to set up to 999 laps and stuff, use on your own risk..
         /// </summary>
@@ -6649,7 +6649,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ExpandBounds_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Extended Weather.
         /// </summary>
@@ -6658,7 +6658,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_ExtendedWeatherHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Kunos career:.
         /// </summary>
@@ -6667,7 +6667,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_KunosCareerHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Local address.
         /// </summary>
@@ -6676,7 +6676,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_LocalAddress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For local weather.
         /// </summary>
@@ -6685,7 +6685,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_LocalAddress_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
@@ -6694,7 +6694,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_NameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nationality:.
         /// </summary>
@@ -6703,7 +6703,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_NationalityLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use different name online.
         /// </summary>
@@ -6712,7 +6712,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_OnlineName_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Online name:.
         /// </summary>
@@ -6721,7 +6721,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_OnlineNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Override default PP filter in Oculus Rift mode.
         /// </summary>
@@ -6730,7 +6730,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_OverridePpFilterOculusFix", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Temporary overwrite system/cfg/ppfilters/default.ini with selected PP filter if Oculus Rift mode is enabled.
         /// </summary>
@@ -6739,7 +6739,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_OverridePpFilterOculusFix_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Player’s name:.
         /// </summary>
@@ -6748,7 +6748,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_PlayerNameHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This command will be executed after acs.exe finished, but before reading all result json-files.
         ///
@@ -6768,7 +6768,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_PostCommand_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Post-race event command:.
         /// </summary>
@@ -6777,7 +6777,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_PostCommandLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This command will be executed before starting acs.exe, but after setting all ini-files.
         ///
@@ -6797,7 +6797,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_PreCommand_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pre-race event command:.
         /// </summary>
@@ -6806,7 +6806,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_PreCommandLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quick Drive:.
         /// </summary>
@@ -6815,7 +6815,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_QuickDriveHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t show results of Practice session.
         /// </summary>
@@ -6824,7 +6824,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_SkipPracticeResults", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Game starter.
         /// </summary>
@@ -6833,7 +6833,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_Starter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start race immediately.
         /// </summary>
@@ -6842,7 +6842,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_StartImmediately", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fallback to Official Starter if original launcher isn’t running.
         /// </summary>
@@ -6851,7 +6851,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_UiModuleFallback", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use custom weather’s particles.
         /// </summary>
@@ -6860,7 +6860,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_WeatherParticles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Particles will be reverted back later.
         /// </summary>
@@ -6869,7 +6869,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_WeatherParticles_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use custom weather’s PP-filter.
         /// </summary>
@@ -6878,7 +6878,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_WeatherPpFilter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to PP-filter will be switched back later.
         /// </summary>
@@ -6887,7 +6887,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Drive_WeatherPpFilter_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
@@ -6896,7 +6896,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Assetto Corsa folder:.
         /// </summary>
@@ -6905,7 +6905,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_AcFolderLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App:.
         /// </summary>
@@ -6914,7 +6914,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_AppHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App key:.
         /// </summary>
@@ -6923,7 +6923,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_AppKeyLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App version:.
         /// </summary>
@@ -6932,7 +6932,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_AppVersionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto Updates:.
         /// </summary>
@@ -6941,7 +6941,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_AutoUpdatesHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change path to AC root folder.
         /// </summary>
@@ -6950,7 +6950,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ChangeAcRoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Do you want to change path? App will be restarted..
         /// </summary>
@@ -6959,7 +6959,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ChangeAcRoot_Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Check For Updates.
         /// </summary>
@@ -6968,7 +6968,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_CheckForUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Check for updates:.
         /// </summary>
@@ -6977,7 +6977,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_CheckForUpdatesLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Data version:.
         /// </summary>
@@ -6986,7 +6986,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ContentVersionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update to non-tested versions.
         /// </summary>
@@ -6995,7 +6995,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_TestingAccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Testing Access:.
         /// </summary>
@@ -7004,7 +7004,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_TestingAccessHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clean Up.
         /// </summary>
@@ -7013,7 +7013,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ValuesCleanUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove all nonimportant values.
         /// </summary>
@@ -7022,7 +7022,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ValuesCleanUp_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Values Storage:.
         /// </summary>
@@ -7031,7 +7031,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ValuesHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} entry.
         /// </summary>
@@ -7040,7 +7040,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ValuesNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Saving time:.
         /// </summary>
@@ -7049,7 +7049,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_ValuesSavingTimeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start Menu shortcut (for modern notifications).
         /// </summary>
@@ -7058,7 +7058,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_WindowsShortcut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create Start Menu shortcut; required for showing proper notifications in Windows 8, 8.1 and 10.
         /// </summary>
@@ -7067,7 +7067,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_General_WindowsShortcut_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom style.
         /// </summary>
@@ -7076,7 +7076,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_CustomStyle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable RSR Live Timing tab.
         /// </summary>
@@ -7085,7 +7085,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_EnableRsr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable Sim Racing System (SRS) tab.
         /// </summary>
@@ -7094,7 +7094,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_EnableSrs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically toggle RSR app.
         /// </summary>
@@ -7103,7 +7103,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_RsrAutoToggleApp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically show or hide RSR app if starting race isn’t RSR-related.
         /// </summary>
@@ -7112,7 +7112,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_RsrAutoToggleApp_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom optimized style for built-in RSR website.
         /// </summary>
@@ -7121,7 +7121,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_RsrCustomStyle_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use different name when RSR form is enabled.
         /// </summary>
@@ -7130,7 +7130,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_RsrName_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RSR name:.
         /// </summary>
@@ -7139,7 +7139,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_RsrNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom optimized style for built-in SRS website.
         /// </summary>
@@ -7148,7 +7148,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_SrsCustomStyle_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Joining from Online.
         /// </summary>
@@ -7157,7 +7157,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_SrsJoinFromOnline", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App will set a special SRS name automatically to avoid problems.
         /// </summary>
@@ -7166,7 +7166,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_SrsJoinFromOnline_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default value: “SimRacingSystem*”.
         /// </summary>
@@ -7175,7 +7175,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_SrsOnlineMask_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mask for SRS servers:.
         /// </summary>
@@ -7184,7 +7184,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Live_SrsOnlineMaskLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
@@ -7193,7 +7193,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_Custom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom Translations.
         /// </summary>
@@ -7202,7 +7202,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_CustomTranslationsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Flag “--force-locale” is set!.
         /// </summary>
@@ -7211,7 +7211,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_ForceLocaleWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How To Translate.
         /// </summary>
@@ -7220,7 +7220,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_HowToTranslate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Installed.
         /// </summary>
@@ -7229,7 +7229,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_Installed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Language:.
         /// </summary>
@@ -7238,7 +7238,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_LanguageLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overwrite strings with unpacked locale if exists.
         /// </summary>
@@ -7247,7 +7247,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_LoadCustom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unpacked locale will be loaded from “AppData\Local\AcTools Content Manager\Locales\(ID)”, where ID is your selected locale.
         /// </summary>
@@ -7256,7 +7256,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_LoadCustom_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Locale ID.
         /// </summary>
@@ -7265,7 +7265,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_LocaleId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Officially supported.
         /// </summary>
@@ -7274,7 +7274,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_OfficiallySupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Prepare.
         /// </summary>
@@ -7283,7 +7283,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_Prepare", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Prepare unpacked locale.
         /// </summary>
@@ -7292,7 +7292,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_Prepare_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
@@ -7301,7 +7301,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_RestartApp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just hold Ctrl when you click Close button to restart CM faster.
         /// </summary>
@@ -7310,7 +7310,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_RestartApp_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don’t forget to restart app after any changes.
         /// </summary>
@@ -7319,7 +7319,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_RestartMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Translate Resx Files.
         /// </summary>
@@ -7328,7 +7328,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_ResxMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set locale by its ID.
         /// </summary>
@@ -7337,7 +7337,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_SetLocaleById", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Send unpacked locale to include it to CM.
         /// </summary>
@@ -7346,7 +7346,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_Submit_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update locale before start up.
         /// </summary>
@@ -7355,7 +7355,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_UpdateBeforeStartUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Will take no longer than 500 ms.
         /// </summary>
@@ -7364,7 +7364,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_UpdateBeforeStartUp_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Locale version:.
         /// </summary>
@@ -7373,7 +7373,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Locale_VersionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Adding by IP:.
         /// </summary>
@@ -7382,7 +7382,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_AddingByIpHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Scan timeout.
         /// </summary>
@@ -7391,7 +7391,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_AddingByIpScanTimeout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Compact UI.
         /// </summary>
@@ -7400,7 +7400,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_CompactUi", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Connection:.
         /// </summary>
@@ -7409,7 +7409,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_ConnectionHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to LAN:.
         /// </summary>
@@ -7418,7 +7418,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_LanHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Scan using connections:.
         /// </summary>
@@ -7427,7 +7427,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_LanScanConnectionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Load server information directly.
         /// </summary>
@@ -7436,7 +7436,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_LoadInformationDirectly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing.
         /// </summary>
@@ -7445,7 +7445,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_LoadInformationDirectly_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ping concurrency.
         /// </summary>
@@ -7454,7 +7454,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingConcurrency", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Increase value to make pinging of the whole list go faster, but it’ll be less accurate.
         /// </summary>
@@ -7463,7 +7463,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingConcurrency_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pinging:.
         /// </summary>
@@ -7472,7 +7472,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingingHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ping timeout.
         /// </summary>
@@ -7481,7 +7481,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingTimeout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use threads instead of asynchronous API.
         /// </summary>
@@ -7490,7 +7490,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingWithThreads", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The most correct pinging, but the slowest one.
         /// </summary>
@@ -7499,7 +7499,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PingWithThreads_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Some enumeration like “9000-10000”.
         /// </summary>
@@ -7508,7 +7508,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PortsByIp_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Scan ports:.
         /// </summary>
@@ -7517,7 +7517,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PortsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Some enumeration like “9600,9602,9700-9750”.
         /// </summary>
@@ -7526,7 +7526,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_PortsLan_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remember passwords.
         /// </summary>
@@ -7535,7 +7535,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_RememberPasswords", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server:.
         /// </summary>
@@ -7544,7 +7544,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_ServerLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server presets manager:.
         /// </summary>
@@ -7553,7 +7553,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_ServerPresetsManagerHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show brand badges in cars list.
         /// </summary>
@@ -7562,7 +7562,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Online_ShowBrandBadges", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Plugins.
         /// </summary>
@@ -7571,7 +7571,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Plugins", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quick Switches.
         /// </summary>
@@ -7580,7 +7580,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_QuickSwitches", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Added:.
         /// </summary>
@@ -7589,7 +7589,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_QuickSwitches_AddedLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url=&quot;https://trello.com/c/ad89Y9rL/71-quick-switches&quot;]here[/url] or [url=&quot;https://trello.com/c/w5xT6ssZ/49-contacts&quot;]using any other way[/url]..
         /// </summary>
@@ -7598,7 +7598,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_QuickSwitches_Description", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable Quick Switches.
         /// </summary>
@@ -7607,7 +7607,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_QuickSwitches_Enable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Library:.
         /// </summary>
@@ -7616,7 +7616,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_QuickSwitches_LibraryLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically add “.acreplay” to new replays.
         /// </summary>
@@ -7625,7 +7625,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AddExtension", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically add “.acreplay” extension to new replays made by AC.
         /// </summary>
@@ -7634,7 +7634,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AddExtension_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add To Existing.
         /// </summary>
@@ -7643,7 +7643,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AddExtensionToExisting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add “.acreplay” extension to all existing replays.
         /// </summary>
@@ -7652,7 +7652,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AddExtensionToExisting_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Autosave replays.
         /// </summary>
@@ -7661,7 +7661,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AutosaveReplays", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Usual “cr” will be renamed automatically..
         /// </summary>
@@ -7670,7 +7670,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_AutosaveReplays_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replays’ file names and extensions:.
         /// </summary>
@@ -7679,7 +7679,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_ExtensionHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to With “.acreplay” extension you’ll be able to start a replay just by clicking it in Windows Explorer.
         /// </summary>
@@ -7688,7 +7688,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_ExtensionHeader_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Load information about replays.
         /// </summary>
@@ -7697,7 +7697,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_LoadInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Try to detect track, car and weather from replays for Media/Replays tab.
         /// </summary>
@@ -7706,7 +7706,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_LoadInformation_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replays name format.
         /// </summary>
@@ -7715,7 +7715,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_NameFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Used for saving or autosaving replays after the race.
         ///
@@ -7737,7 +7737,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Replays_NameFormat_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sharing.
         /// </summary>
@@ -7746,7 +7746,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share anonymously.
         /// </summary>
@@ -7755,7 +7755,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_Anonymously", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Destination:.
         /// </summary>
@@ -7764,7 +7764,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesDestinationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Folder:.
         /// </summary>
@@ -7773,7 +7773,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesFolderLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Press “Update” to reload list of folders.
         /// </summary>
@@ -7782,7 +7782,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesFoldersUpdate_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Big files:.
         /// </summary>
@@ -7791,7 +7791,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Selected folder: {0}.
         /// </summary>
@@ -7800,7 +7800,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesSelectedFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copy link to clipboard automatically.
         /// </summary>
@@ -7809,7 +7809,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_CopyLinkAutomatically", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom IDs.
         /// </summary>
@@ -7818,7 +7818,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_CustomIds", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to History:.
         /// </summary>
@@ -7827,7 +7827,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_HistoryHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
@@ -7836,7 +7836,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_HistoryTableName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Target.
         /// </summary>
@@ -7845,7 +7845,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_HistoryTableTarget", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
@@ -7854,7 +7854,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_HistoryTableType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to URL.
         /// </summary>
@@ -7863,7 +7863,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_HistoryTableUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sharing nickname:.
         /// </summary>
@@ -7872,7 +7872,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_NameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Special:.
         /// </summary>
@@ -7881,7 +7881,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_SpecialHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable custom names for sharing.
         /// </summary>
@@ -7890,7 +7890,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_Unnamed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Verify params before sharing.
         /// </summary>
@@ -7899,7 +7899,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Settings_Sharing_VerifyParams", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t update showroom’s preview.
         /// </summary>
@@ -7908,7 +7908,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Showroom_CannotUpdatePreview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t remove “ui_skin.json”.
         /// </summary>
@@ -7917,7 +7917,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Skin_CannotRemoveUiSkin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure file isn’t used..
         /// </summary>
@@ -7926,7 +7926,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Skin_CannotRemoveUiSkin_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t restore damaged JSON.
         /// </summary>
@@ -7935,7 +7935,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_CannotRestoreJsonFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change brand’s badge.
         /// </summary>
@@ -7944,7 +7944,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeBrandBadge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select a new brand’s badge from the list.
         /// </summary>
@@ -7953,7 +7953,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeBrandBadge_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change parent.
         /// </summary>
@@ -7962,7 +7962,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeParent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select a new parent from cars list.
         /// </summary>
@@ -7971,7 +7971,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeParent_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change upgrade icon.
         /// </summary>
@@ -7980,7 +7980,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeUpgradeIcon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select or create a new upgrade icon with the editor.
         /// </summary>
@@ -7989,7 +7989,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_ChangeUpgradeIcon_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create empty skin.
         /// </summary>
@@ -7998,7 +7998,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_CreateEmptySkin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create a new empty skin called “default”.
         /// </summary>
@@ -8007,7 +8007,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_CreateEmptySkin_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
@@ -8016,7 +8016,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_Enable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Move font from “fonts-off” to “fonts”.
         /// </summary>
@@ -8025,7 +8025,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_Enable_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable {0}.
         /// </summary>
@@ -8034,7 +8034,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_EnableSkin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable disabled skin.
         /// </summary>
@@ -8043,7 +8043,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_EnableSkin_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Find track.
         /// </summary>
@@ -8052,7 +8052,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_FindTrack", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Try to find track online.
         /// </summary>
@@ -8061,7 +8061,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_FindTrack_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fix name.
         /// </summary>
@@ -8070,7 +8070,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_FixName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove invalid symbols.
         /// </summary>
@@ -8079,7 +8079,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_FixName_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate new livery.
         /// </summary>
@@ -8088,7 +8088,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GenerateLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate a new livery using last settings of Livery Editor.
         /// </summary>
@@ -8097,7 +8097,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GenerateLivery_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate new file.
         /// </summary>
@@ -8106,7 +8106,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GenerateNew", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New empty file will be created; don’t forget to set proper values and save it afterwards.
         /// </summary>
@@ -8115,7 +8115,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GenerateNew_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate new preview.
         /// </summary>
@@ -8124,7 +8124,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GeneratePreview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate a new preview using recently used preset.
         /// </summary>
@@ -8133,7 +8133,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_GeneratePreview_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make an empty model.
         /// </summary>
@@ -8142,7 +8142,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeEmptyModel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to With nothing, only emptyness.
         /// </summary>
@@ -8151,7 +8151,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeEmptyModel_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make generic.
         /// </summary>
@@ -8160,7 +8160,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeGeneric", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Move to generic folder.
         /// </summary>
@@ -8169,7 +8169,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeGeneric_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make independent.
         /// </summary>
@@ -8178,7 +8178,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeIndependent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove id of missing parent from ui_car.json.
         /// </summary>
@@ -8187,7 +8187,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_MakeIndependent_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate random livery.
         /// </summary>
@@ -8196,7 +8196,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RandomLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate a new livery using random settings.
         /// </summary>
@@ -8205,7 +8205,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RandomLivery_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove object.
         /// </summary>
@@ -8214,7 +8214,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RemoveObject", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Object will be removed to the Recycle Bin.
         /// </summary>
@@ -8223,7 +8223,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RemoveObject_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove replay.
         /// </summary>
@@ -8232,7 +8232,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RemoveReplay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replay will be removed to the Recycle Bin.
         /// </summary>
@@ -8241,7 +8241,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RemoveReplay_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Try to restore JSON file.
         /// </summary>
@@ -8250,7 +8250,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RestoreJsonFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible).
         /// </summary>
@@ -8259,7 +8259,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_RestoreJsonFile_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set {0} badge.
         /// </summary>
@@ -8268,7 +8268,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandBadge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set the brand’s badge from Content storage.
         /// </summary>
@@ -8277,7 +8277,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandBadge_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set brand name.
         /// </summary>
@@ -8286,7 +8286,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just set a new brand name.
         /// </summary>
@@ -8295,7 +8295,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandName_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter a new brand name:.
         /// </summary>
@@ -8304,7 +8304,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandName_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set brand name based on car’s name.
         /// </summary>
@@ -8313,7 +8313,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandNameFromName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New brand name will be: “{0}”.
         /// </summary>
@@ -8322,7 +8322,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetBrandNameFromName_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set name.
         /// </summary>
@@ -8331,7 +8331,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just set a new name.
         /// </summary>
@@ -8340,7 +8340,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetName_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter a new name:.
         /// </summary>
@@ -8349,7 +8349,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetName_Prompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set name based on ID.
         /// </summary>
@@ -8358,7 +8358,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetNameFromId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New name will be: “{0}”.
         /// </summary>
@@ -8367,7 +8367,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetNameFromId_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set “{0}” icon.
         /// </summary>
@@ -8376,7 +8376,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetUpgradeIcon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set the upgrade icon from Content storage.
         /// </summary>
@@ -8385,7 +8385,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetUpgradeIcon_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Setup new livery.
         /// </summary>
@@ -8394,7 +8394,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetupLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select a new livery using Livery Editor.
         /// </summary>
@@ -8403,7 +8403,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetupLivery_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Setup and generate new preview.
         /// </summary>
@@ -8412,7 +8412,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetupPreview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select a new preview through settings.
         /// </summary>
@@ -8421,7 +8421,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Solution_SetupPreview_Details", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure all required mods are installed..
         /// </summary>
@@ -8430,7 +8430,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_CarIsMissing_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just in case, if you can&apos;t join using this section (or missed joining time), use Online section instead..
         /// </summary>
@@ -8439,7 +8439,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to IP:.
         /// </summary>
@@ -8448,7 +8448,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_IpLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Port:.
         /// </summary>
@@ -8457,7 +8457,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_PortLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to join the race.
         /// </summary>
@@ -8466,7 +8466,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_ReadyNotification", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SRS Server Is Ready.
         /// </summary>
@@ -8475,7 +8475,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_ReadyNotificationHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start at:.
         /// </summary>
@@ -8484,7 +8484,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Srs_StartAtLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clean Up Tags.
         /// </summary>
@@ -8493,7 +8493,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Tags_CleanUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clean Up &amp; Sort Tags.
         /// </summary>
@@ -8502,7 +8502,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Tags_CleanUpAndSort", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort Tags.
         /// </summary>
@@ -8511,7 +8511,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Tags_Sort", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Analyze.
         /// </summary>
@@ -8520,7 +8520,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Analyze", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Setups.
         /// </summary>
@@ -8529,7 +8529,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CarSetups", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage setups (Ctrl+U).
         /// </summary>
@@ -8538,7 +8538,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CarSetups_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Skins.
         /// </summary>
@@ -8547,7 +8547,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CarSkins", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage skins (Ctrl+K).
         /// </summary>
@@ -8556,7 +8556,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CarSkins_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change ID.
         /// </summary>
@@ -8565,7 +8565,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ChangeId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change skin’s ID (Ctrl+Shift+F2).
         /// </summary>
@@ -8574,7 +8574,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ChangeId_SkinTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change weather’s ID (Ctrl+Shift+F2).
         /// </summary>
@@ -8583,7 +8583,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ChangeId_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change Livery.
         /// </summary>
@@ -8592,7 +8592,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ChangeLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Change skin’s livery.png (Ctrl+L).
         /// </summary>
@@ -8601,7 +8601,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ChangeLivery_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clone.
         /// </summary>
@@ -8610,7 +8610,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Clone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clone weather (Ctrl+Shift+D).
         /// </summary>
@@ -8619,7 +8619,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Clone_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copy Values.
         /// </summary>
@@ -8628,7 +8628,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CopyValues", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copy values to other layouts.
         /// </summary>
@@ -8637,7 +8637,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CopyValues_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create JSON-file.
         /// </summary>
@@ -8646,7 +8646,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CreateJson", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create New Font.
         /// </summary>
@@ -8655,7 +8655,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CreateNewFont", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create a new font using Kunos tool (Ctrl+N).
         /// </summary>
@@ -8664,7 +8664,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CreateNewFont_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create New Showroom.
         /// </summary>
@@ -8673,7 +8673,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CreateNewShowroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create new showroom from existing panorama (Ctrl+N).
         /// </summary>
@@ -8682,7 +8682,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CreateNewShowroom_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom Showroom.
         /// </summary>
@@ -8691,7 +8691,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CustomShowroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fancy Custom Showroom.
         /// </summary>
@@ -8700,7 +8700,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CustomShowroom_Fancy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Slower and less accurate, but with proper lighting and reflections.
         /// </summary>
@@ -8709,7 +8709,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CustomShowroom_Fancy_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Lite Custom Showroom.
         /// </summary>
@@ -8718,7 +8718,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CustomShowroom_Lite", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Faster and more accurate, helpful for modding or skins drawing.
         /// </summary>
@@ -8727,7 +8727,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_CustomShowroom_Lite_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
@@ -8736,7 +8736,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove app to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8745,7 +8745,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_AppTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove car to the Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8754,7 +8754,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_CarTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove model to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8763,7 +8763,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_DriverModelTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove font to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8772,7 +8772,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_FontTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove PP filter to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8781,7 +8781,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_PpFilterTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove replay to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8790,7 +8790,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_ReplayTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove setup to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8799,7 +8799,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_SetupTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove showroom to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8808,7 +8808,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_ShowroomTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove skin to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8817,7 +8817,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_SkinTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove track to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8826,7 +8826,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_TrackTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove weather to Recycle Bin (Ctrl+Delete).
         /// </summary>
@@ -8835,7 +8835,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Delete_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete JSON-file.
         /// </summary>
@@ -8844,7 +8844,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_DeleteJson", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
@@ -8853,7 +8853,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Disable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable (Ctrl+D).
         /// </summary>
@@ -8862,7 +8862,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Disable_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable Edit Mode.
         /// </summary>
@@ -8871,7 +8871,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_DisableEditMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Switch from Edit Mode (Ctrl+E).
         /// </summary>
@@ -8880,7 +8880,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_DisableEditMode_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable Unused.
         /// </summary>
@@ -8889,7 +8889,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_DisableUnused", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rescan usings and disable all unused fonts (Ctrl+Shift+D).
         /// </summary>
@@ -8898,7 +8898,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_DisableUnused_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drive.
         /// </summary>
@@ -8907,7 +8907,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Drive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use car in a Quick Drive session (Ctrl+G).
         /// </summary>
@@ -8916,7 +8916,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Drive_CarTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use track in a Quick Drive session (Ctrl+G).
         /// </summary>
@@ -8925,7 +8925,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Drive_TrackTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Edit Mode.
         /// </summary>
@@ -8934,7 +8934,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_EditMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Switch to Edit Mode (Ctrl+E).
         /// </summary>
@@ -8943,7 +8943,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_EditMode_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
@@ -8952,7 +8952,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Enable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable (Ctrl+D).
         /// </summary>
@@ -8961,7 +8961,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Enable_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Find Information.
         /// </summary>
@@ -8970,7 +8970,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_FindInformation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Find information about car (Ctrl+I).
         /// </summary>
@@ -8979,7 +8979,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_FindInformation_CarTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Find information about track (Ctrl+I).
         /// </summary>
@@ -8988,7 +8988,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_FindInformation_TrackTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Folder.
         /// </summary>
@@ -8997,7 +8997,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open app’s folder (Ctrl+F).
         /// </summary>
@@ -9006,7 +9006,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_AppTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open car’s folder (Ctrl+F).
         /// </summary>
@@ -9015,7 +9015,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_CarTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open model’s folder (Ctrl+F).
         /// </summary>
@@ -9024,7 +9024,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_DriverModelTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open font’s folder (Ctrl+F).
         /// </summary>
@@ -9033,7 +9033,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_FontTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open PP filter’s folder (Ctrl+F).
         /// </summary>
@@ -9042,7 +9042,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_PpFilterTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open replay’s folder (Ctrl+F).
         /// </summary>
@@ -9051,7 +9051,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_ReplayTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open setup’s folder (Ctrl+F).
         /// </summary>
@@ -9060,7 +9060,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_SetupTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open showroom’s folder (Ctrl+F).
         /// </summary>
@@ -9069,7 +9069,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_ShowroomTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open skin’s folder (Ctrl+F).
         /// </summary>
@@ -9078,7 +9078,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_SkinTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open track’s folder (Ctrl+F).
         /// </summary>
@@ -9087,7 +9087,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_TrackTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open weather’s folder (Ctrl+F).
         /// </summary>
@@ -9096,7 +9096,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Folder_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate Livery.
         /// </summary>
@@ -9105,7 +9105,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_GenerateLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate a new livery using last settings of Livery Editor.
         /// </summary>
@@ -9114,7 +9114,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_GenerateLivery_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate Random Livery.
         /// </summary>
@@ -9123,7 +9123,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_GenerateRandomLivery", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Generate a new livery using random settings.
         /// </summary>
@@ -9132,7 +9132,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_GenerateRandomLivery_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Join.
         /// </summary>
@@ -9141,7 +9141,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Join", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Join server (Ctrl+G).
         /// </summary>
@@ -9150,7 +9150,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Join_OnlineTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pack Data.
         /// </summary>
@@ -9159,7 +9159,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_PackData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For a decent online (Ctrl+J).
         /// </summary>
@@ -9168,7 +9168,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_PackData_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Play.
         /// </summary>
@@ -9177,7 +9177,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Play", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Run replay (Ctrl+G).
         /// </summary>
@@ -9186,7 +9186,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Play_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
@@ -9195,7 +9195,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Refresh", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh server information (Ctrl+R).
         /// </summary>
@@ -9204,7 +9204,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Refresh_OnlineTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reload.
         /// </summary>
@@ -9213,7 +9213,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Reload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reload (Ctrl+R).
         /// </summary>
@@ -9222,7 +9222,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Reload_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rename.
         /// </summary>
@@ -9231,7 +9231,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Rename", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rename app according to the new name (Ctrl+S).
         /// </summary>
@@ -9240,7 +9240,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Rename_AppTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rename replay according to the new name (Ctrl+S).
         /// </summary>
@@ -9249,7 +9249,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Rename_ReplayTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replace Sound.
         /// </summary>
@@ -9258,7 +9258,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ReplaceSound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replace sound by a sound of any other car (Alt+S).
         /// </summary>
@@ -9267,7 +9267,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ReplaceSound_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rescan Usings.
         /// </summary>
@@ -9276,7 +9276,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_RescanUsings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Collect list of cars per font (Ctrl+U).
         /// </summary>
@@ -9285,7 +9285,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_RescanUsings_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
@@ -9294,7 +9294,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Save", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save changed INI-file (Ctrl+S).
         /// </summary>
@@ -9303,7 +9303,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Save_IniTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save changed JSON-file (Ctrl+S).
         /// </summary>
@@ -9312,7 +9312,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Save_JsonTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share filter (Ctrl+Page Up).
         /// </summary>
@@ -9321,7 +9321,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Share_FilterTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share setup (Ctrl+Page Up).
         /// </summary>
@@ -9330,7 +9330,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Share_SetupTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Showroom.
         /// </summary>
@@ -9339,7 +9339,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Showroom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View car in showroom (Ctrl+H).
         /// </summary>
@@ -9348,7 +9348,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Showroom_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select showroom, filter and etc..
         /// </summary>
@@ -9357,7 +9357,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_ShowroomOptions_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test filter in showroom (Ctrl+G).
         /// </summary>
@@ -9366,7 +9366,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Test_FilterTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test setup (Ctrl+G).
         /// </summary>
@@ -9375,7 +9375,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Test_SetupTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Test weather on track (Ctrl+G).
         /// </summary>
@@ -9384,7 +9384,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_Test_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Turn Off Sound.
         /// </summary>
@@ -9393,7 +9393,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_TurnOffSound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable sound (Ctrl+I).
         /// </summary>
@@ -9402,7 +9402,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_TurnOffSound_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Turn On Sound.
         /// </summary>
@@ -9411,7 +9411,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_TurnOnSound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable sound (Ctrl+I).
         /// </summary>
@@ -9420,7 +9420,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_TurnOnSound_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unpack Data.
         /// </summary>
@@ -9429,7 +9429,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UnpackData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For development purposes only (Alt+J).
         /// </summary>
@@ -9438,7 +9438,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UnpackData_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update Map.
         /// </summary>
@@ -9447,7 +9447,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdateMap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update Preview.
         /// </summary>
@@ -9456,7 +9456,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update showroom’s preview (Ctrl+P).
         /// </summary>
@@ -9465,7 +9465,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreview_ShowroomTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update skin’s preview (Ctrl+P).
         /// </summary>
@@ -9474,7 +9474,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreview_SkinTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update track’s preview (Ctrl+P).
         /// </summary>
@@ -9483,7 +9483,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreview_TrackTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update weather’s preview (Ctrl+P).
         /// </summary>
@@ -9492,7 +9492,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreview_WeatherTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update Previews.
         /// </summary>
@@ -9501,7 +9501,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviews", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update all previews (Ctrl+P).
         /// </summary>
@@ -9510,7 +9510,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviews_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manual Mode.
         /// </summary>
@@ -9519,7 +9519,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviewsManually", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set camera position manually and then press F8 to start shooting.
         /// </summary>
@@ -9528,7 +9528,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviewsManually_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select showroom, filter, camera position and etc..
         /// </summary>
@@ -9537,7 +9537,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviewsOptions_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Without Shooting.
         /// </summary>
@@ -9546,7 +9546,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviewWithoutShooting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Just select existing image.
         /// </summary>
@@ -9555,7 +9555,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UpdatePreviewWithoutShooting_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Upload &amp; Share.
         /// </summary>
@@ -9564,7 +9564,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UploadAndShare", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share replay using Google Drive (Ctrl+Page Up).
         /// </summary>
@@ -9573,7 +9573,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Toolbar_UploadAndShare_ReplayTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … m.
         /// </summary>
@@ -9582,7 +9582,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Length_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total length, recommended format: “{0}”.
         /// </summary>
@@ -9591,7 +9591,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Length_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ….
         /// </summary>
@@ -9600,7 +9600,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Pitboxes_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Amount of pit stops as well as limit for a number of cars on the track, recommended format: “{0}”.
         /// </summary>
@@ -9609,7 +9609,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Pitboxes_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to … m.
         /// </summary>
@@ -9618,7 +9618,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Width_FormatTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Average track’s width, recommended format: “{0}”.
         /// </summary>
@@ -9627,7 +9627,7 @@ namespace AcManager {
                 return ResourceManager.GetString("TrackSpecs_Width_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add as a new upgrade icon:.
         /// </summary>
@@ -9636,7 +9636,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_AddAs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t change upgrade icon..
         /// </summary>
@@ -9645,7 +9645,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_CannotChange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make sure upgrade icon file is available to write..
         /// </summary>
@@ -9654,7 +9654,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_CannotChange_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ctrl+I: Italic, Ctrl+B: Bold.
         /// </summary>
@@ -9663,7 +9663,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Current.
         /// </summary>
@@ -9672,7 +9672,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_Current", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Editor.
         /// </summary>
@@ -9681,7 +9681,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_Editor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Library.
         /// </summary>
@@ -9690,7 +9690,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_Library", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
@@ -9699,7 +9699,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_New", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select New Upgrade Icon.
         /// </summary>
@@ -9708,7 +9708,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_SelectNew", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Upgrade Icon.
         /// </summary>
@@ -9717,7 +9717,7 @@ namespace AcManager {
                 return ResourceManager.GetString("UpgradeIcon_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version Info.
         /// </summary>
@@ -9726,7 +9726,7 @@ namespace AcManager {
                 return ResourceManager.GetString("VersionInfo_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can’t share weather.
         /// </summary>
@@ -9735,7 +9735,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Weather_CannotShare", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Files are too big. Limit is {0}..
         /// </summary>
@@ -9744,7 +9744,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Weather_CannotShare_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
         ///
@@ -9761,7 +9761,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Weather_KunosReadme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Seems empty?.
         /// </summary>
@@ -9770,7 +9770,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Weather_SeemsEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Switch to Edit Mode if you want to modify other weather&apos;s parameters..
         /// </summary>
@@ -9779,7 +9779,7 @@ namespace AcManager {
                 return ResourceManager.GetString("Weather_SeemsEmpty_Commentary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Additional:.
         /// </summary>
@@ -9788,7 +9788,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_AdditionalHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Angle gamma.
         /// </summary>
@@ -9797,7 +9797,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_AngleGamma", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Blend.
         /// </summary>
@@ -9806,7 +9806,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Blend", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Brightness.
         /// </summary>
@@ -9815,7 +9815,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Brightness", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clouds:.
         /// </summary>
@@ -9824,7 +9824,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_CloudsHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Color.
         /// </summary>
@@ -9833,7 +9833,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Color", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Base color; the sunlight, light color and ambient will be added to this.
         /// </summary>
@@ -9842,7 +9842,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Color_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Color curves:.
         /// </summary>
@@ -9851,7 +9851,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_ColorCurvesHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cover.
         /// </summary>
@@ -9860,7 +9860,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Cover", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Regulates clouds transparency.
         /// </summary>
@@ -9869,7 +9869,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Cover_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cut-off.
         /// </summary>
@@ -9878,7 +9878,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_CutOff", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Regulates other colors influencies on the cloud:
         /// • [b]0%:[/b] just the color effects on the clouds are considered;
@@ -9890,7 +9890,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_CutOff_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Distance.
         /// </summary>
@@ -9899,7 +9899,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Distance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fog:.
         /// </summary>
@@ -9908,7 +9908,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_FogHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to HDR-off mult..
         /// </summary>
@@ -9917,7 +9917,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_HdrOffMultipler", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Used when HDR is disabled.
         /// </summary>
@@ -9926,7 +9926,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_HdrOffMultipler_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Turn on headlights.
         /// </summary>
@@ -9935,7 +9935,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Headlights", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Height of the quad.
         /// </summary>
@@ -9944,7 +9944,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Height_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Multiplier.
         /// </summary>
@@ -9953,7 +9953,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Multipler", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Number of clouds.
         /// </summary>
@@ -9962,7 +9962,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Number_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Distance from the center of the skybox to the quad.
         /// </summary>
@@ -9971,7 +9971,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_Radius_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Base speed multiplier.
         /// </summary>
@@ -9980,7 +9980,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_SpeedMultipler_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Temp. coefficient.
         /// </summary>
@@ -9989,7 +9989,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_TemperatureCoefficient", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”.
         /// </summary>
@@ -9998,7 +9998,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_TemperatureCoefficient_Tooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Air temp..
         /// </summary>
@@ -10007,7 +10007,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_TemperatureCoefficientAirTemperature", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Temperature coefficient testing:.
         /// </summary>
@@ -10016,7 +10016,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_TemperatureCoefficientTesting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View “readme_weather.txt”.
         /// </summary>
@@ -10025,7 +10025,7 @@ namespace AcManager {
                 return ResourceManager.GetString("WeatherEdit_ViewReadmeHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Width of the quad.
         /// </summary>

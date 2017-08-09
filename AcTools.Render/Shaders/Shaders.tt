@@ -78,7 +78,7 @@ using SlimDX.Direct3D11;
 		} else {
 			resultNamespace = directoryName + "." + resultNamespace;
 		}
-		
+
 		projectRoot = Path.GetDirectoryName(projectRoot);
 		if (projectRoot == null) throw new Exception("Could not find project’s root directory");
 	}
@@ -103,7 +103,7 @@ namespace <#= resultNamespace #> {
 		warned = true;
 		MessageBox.Show(msg, "Shaders Compilation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 	};
-	
+
 	Func<string, List<string>, DateTime> LastIncludeWriteTime_Inner = null;
 	LastIncludeWriteTime_Inner = (filename, previous) => {
 		var data = File.ReadAllText(filename);
@@ -123,7 +123,7 @@ namespace <#= resultNamespace #> {
 					lastWrite = iInfo.LastWriteTime;
 				}
 
-				var inner = LastIncludeWriteTime_Inner(included, previous);				
+				var inner = LastIncludeWriteTime_Inner(included, previous);
 				if (inner > lastWrite) {
 					lastWrite = inner;
 				}
@@ -163,17 +163,17 @@ namespace <#= resultNamespace #> {
 			RedirectStandardOutput = true,
 			UseShellExecute = false
 		});
-	
+
 		p.Start();
 		var w = p.StandardError.ReadToEnd().Replace("warning X4717: Effects deprecated for D3DCompiler_47", "")
 				.Replace(Path.GetDirectoryName(f) + "\\", "").Trim();
 		if (w.Length > 0) Debug.WriteLine(w);
 		p.WaitForExit();
-	
+
 		if (p.ExitCode != 0){
 			throw new Exception(w);
 		}
-	
+
 		if (File.Exists(h)) File.Delete(h);
 
 		File.WriteAllBytes(h, Compress(File.ReadAllBytes(c)));
@@ -195,7 +195,7 @@ namespace <#= resultNamespace #> {
 						.SelectMany(x => Directory.GetFiles(x, "*.fx")))){
 			writer.AddResource(Path.GetFileNameWithoutExtension(f), CompileShader(f));
 		}
-	
+
 		writer.Generate();
 	}
 
@@ -208,13 +208,13 @@ namespace <#= resultNamespace #> {
 		t = t.Substring(0, 1).ToUpperInvariant() + t.Substring(1);
 		return "Fx" + t;
 	};
-	Func<string,string> ConvertConstName = s => 
+	Func<string,string> ConvertConstName = s =>
 		Regex.Replace(s.ToLower(), @"^\w|_\w", x => x.Value.Replace("_", "").ToUpper());
-	Func<string,string> ConvertConstValue = s => 
+	Func<string,string> ConvertConstValue = s =>
 		Regex.Replace(
-			s.Replace("float4", "new Vector4").Replace("float3", "new Vector3").Replace("float2", "new Vector2"), 
+			s.Replace("float4", "new Vector4").Replace("float3", "new Vector3").Replace("float2", "new Vector2"),
 			@"(\d+\.\d+\b)", x => x.Value + "f");
-	Func<string,string> MapShaderType = s => 
+	Func<string,string> MapShaderType = s =>
 		s == "dword" ? "uint" :
 		s == "float4x4" ? "Matrix" :
 		s == "float2" ? "Vector2" :
@@ -222,14 +222,14 @@ namespace <#= resultNamespace #> {
 		s == "float4" ? "Vector4" :
 		s;
 	Func<string,string> ClearHlslCode = s => Regex.Replace(s, @"//.+", "");
-	Func<string,string> ConvertStringToLiteral = s => LiteralRegularMode ? 
+	Func<string,string> ConvertStringToLiteral = s => LiteralRegularMode ?
 		"\"" + s
 			.Replace("\\", @"\\")
 			.Replace("\"", "\\\"")
 			.Replace("\r", @"")
 			.Replace("\t", @"\t")
-			.Replace("\n", @"\n") + 
-		"\"" : 
+			.Replace("\n", @"\n") +
+		"\"" :
 		"@\"" + s.Replace("\"", "\"\"") + "\"";
 
 /* INCLUDEABLE FILES */
@@ -239,7 +239,7 @@ namespace <#= resultNamespace #> {
 		var includeName = Path.GetFileName(file);
 		includes[includeName] = File.ReadAllText(file);
 	}
-	
+
 	Func<string, List<string>, string> PrependIncludes_Inner = null;
 	PrependIncludes_Inner = (data, added) => {
 		foreach (var x in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>().Select(x => x.Groups[1].Value)){
@@ -281,7 +281,7 @@ namespace <#= resultNamespace #> {
 
 		var name = Path.GetFileNameWithoutExtension(file);
 		var data = File.ReadAllText(file);
-		
+
 		var alternative = Regex.Match(data, @"// Alternative for (\w+)");
 		if (alternative.Success){
 			continue;
@@ -295,15 +295,15 @@ namespace <#= resultNamespace #> {
 
 	/* TECHNIQUES */
 		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique(?:1[01])?\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
-		var tls = ts_tmp.Where(x => x.Groups[2].Success).Select(x => new { 
-			Type = x.Groups[2].Value, 
-			Custom = (string)null, 
-			TechName = x.Groups[1].Value 
+		var tls = ts_tmp.Where(x => x.Groups[2].Success).Select(x => new {
+			Type = x.Groups[2].Value,
+			Custom = (string)null,
+			TechName = x.Groups[1].Value
 		})
 			.Where(x => false) // disabling comment support
 			.ToList();
 		var ts = ts_tmp.Select(x => x.Groups[1].Value).ToList();
-		
+
 			// # > /* < #= (name) # > */ < #
 		foreach (var match in Regex.Matches(data, @"(?:^|\n)\s*struct\s+((?:\w+_)?VS_IN)\s*\{.*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()){
 			var structName = match.Groups[1].Value;
@@ -311,7 +311,7 @@ namespace <#= resultNamespace #> {
 			// # > /* < #= (name + ": " + structName) # > */ < #
 
 			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+.+?\s*\)\s*\{").Cast<Match>()
-				.Select(x => x.Groups[1].Value).SelectMany(x => 
+				.Select(x => x.Groups[1].Value).SelectMany(x =>
 					ts_tmp.Where(y => y.Groups[3].Value.Contains(x)).Select(y => y.Groups[1].Value)
 				).FirstOrDefault();
 			if (techName == null) continue;
@@ -325,13 +325,13 @@ namespace <#= resultNamespace #> {
 				});
 				continue;
 			}
-			
+
 			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT|BLENDWEIGHTS?|BLENDINDICES|[A-Z]{3,})\b").Cast<Match>().Select(x => x.Value);
-			var result = string.Join("", types.Select(x => 
-					x == "TANGENT" ? "G" : 
-					x == "TEXCOORDSIZE" ? "X" : 
-					x == "BLENDWEIGHT" ? "W2" : 
-					x == "BLENDWEIGHTS" ? "W4" : 
+			var result = string.Join("", types.Select(x =>
+					x == "TANGENT" ? "G" :
+					x == "TEXCOORDSIZE" ? "X" :
+					x == "BLENDWEIGHT" ? "W2" :
+					x == "BLENDWEIGHTS" ? "W4" :
 					"" + x[0])).Trim();
 			if (result.Length == 0) continue;
 			tls.Add(new {
@@ -347,7 +347,7 @@ namespace <#= resultNamespace #> {
 
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
-		
+
 		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?::.*?)?;").Cast<Match>().ToList();
 		var vrsArr = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)(?::.*?)?;").Cast<Match>().ToList();
 		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>().ToList();
@@ -370,7 +370,7 @@ namespace <#= resultNamespace #> {
 			Type = x.Groups[1].Value,
 			Name = x.Groups[2].Value
 		});
-		
+
 	/* CONSTS */
 		var justReadonly = false;
 		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
@@ -380,14 +380,14 @@ namespace <#= resultNamespace #> {
 			var constValue = ConvertConstValue(x.Groups[3].Value);
 			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		";
 		}).ToList();
-		
+
 	/* CONSTS FROM DEFINES (ROOT FILE ONLY) */
 		foreach (var x in Regex.Matches(data, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
 			var v = x.Groups[2].Value;
 			var constName = ConvertConstName(x.Groups[1].Value);
 			var constValue = ConvertConstValue(v).Trim();
-			var typeName = v.Contains("float4") ? "Vector4" : 
-				v.Contains("float3") ? "Vector3" : 
+			var typeName = v.Contains("float4") ? "Vector4" :
+				v.Contains("float3") ? "Vector3" :
 				v.Contains("float2") ? "Vector2" :
 				v.Contains("true") || v.Contains("false") ? "bool" :
 				v.Contains(".") ? "float" : "int";
@@ -406,7 +406,7 @@ namespace <#= resultNamespace #> {
 	/* AND EVEN STRUCTS! */
 		var structsNames = new List<string>();
 		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-zA-Z]+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
-				.Where(x => !x.Groups[1].Value.EndsWith("_IN", StringComparison.OrdinalIgnoreCase) && 
+				.Where(x => !x.Groups[1].Value.EndsWith("_IN", StringComparison.OrdinalIgnoreCase) &&
 						!x.Groups[1].Value.EndsWith("_OUTPUT", StringComparison.OrdinalIgnoreCase)).Select(x => {
 			structsNames.Add(x.Groups[1].Value);
 
@@ -428,7 +428,7 @@ namespace <#= resultNamespace #> {
 				 SlimDxExtension.SetObject(_v, value, {0}.Stride);
 			}}
         }}
-		
+
 		" : "") + (vsArr.Any(y => y.Type ==  x.Groups[1].Value) ? @"public class EffectStruct{0}ArrayVariable {{
 			private readonly EffectVariable _v;
 
@@ -440,8 +440,8 @@ namespace <#= resultNamespace #> {
 				 SlimDxExtension.SetArray(_v, value, {0}.Stride);
 			}}
         }}
-		
-		" : ""), x.Groups[1].Value, 
+
+		" : ""), x.Groups[1].Value,
 			string.Join("\n",
 				x.Groups[2].Value.Split('\n').Select(y => Regex.Replace(y, @"//.+", "").Trim().Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries)).Where(y => y.Length == 2)
 					.Select(y => {
@@ -465,7 +465,7 @@ namespace <#= resultNamespace #> {
 		var extraModesEnum = "";
 		if (extraModes.Count > 0){
 			extraModesEnum = $@"public enum Mode {{ Main, {string.Join(", ", extraModes.Select(x => Path.GetFileNameWithoutExtension(x).Split('.').Last()))} }}
-			
+
 		";
 		}
 
@@ -565,7 +565,7 @@ namespace <#= resultNamespace #> {
 		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
 <# } #>
 <# if (extraModes.Count > 0){ #>
-		
+
 		private Mode _mode = Mode.Main;
 
 		public Mode GetMode(){
@@ -581,7 +581,7 @@ namespace <#= resultNamespace #> {
 				Initialize(device);
 			}
 		}
-		
+
 		public void Initialize(Device device) {
 			if (_b != null) return;
 

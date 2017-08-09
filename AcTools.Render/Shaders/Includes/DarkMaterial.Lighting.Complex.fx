@@ -20,6 +20,8 @@ static const dword LIGHT_LTC_TUBE = 7;
 static const dword LIGHT_LTC_SPHERE = 4;
 #endif
 
+#define _AREA_LIGHTS_FROM 4
+
 static const dword LIGHT_NO_SHADOWS = 1;
 static const dword LIGHT_SMOOTH_SHADOWS = 2;
 static const dword LIGHT_SHADOWS_CUBE = 4;
@@ -507,7 +509,7 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 	}
 }
 
-void GetLight_NoSpecular(float3 normal, float3 position, out float3 diffuse) {
+void GetLight_NoSpecular_NoArea(float3 normal, float3 position, out float3 diffuse) {
 	float3 direction = gLights[0].DirectionW.xyz;
 	float shadow = GetMainShadow_ConsiderMirror(position) * GetDiffuseMultiplier(normal, direction);
 	diffuse = gLights[0].Color.xyz * shadow;
@@ -515,7 +517,7 @@ void GetLight_NoSpecular(float3 normal, float3 position, out float3 diffuse) {
 	[loop]
 	for (int i = 1; i < MAX_LIGHS_AMOUNT; i++) {
 		[branch]
-		if (gLights[i].Type == LIGHT_OFF) continue;
+		if (gLights[i].Type == LIGHT_OFF || gLights[i].Type >= _AREA_LIGHTS_FROM) continue;
 
 		float3 specular = 0.0;
 		GetLight_ByType(gLights[i], normal, position, 0, 0, false, diffuse, specular);

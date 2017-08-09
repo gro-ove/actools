@@ -8,6 +8,9 @@
     <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
     <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
     <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+    <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+    <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+    <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
     <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
     <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
     <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />

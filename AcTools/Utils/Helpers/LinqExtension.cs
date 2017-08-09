@@ -30,6 +30,39 @@ namespace AcTools.Utils.Helpers {
             if (n > 0) yield return buffer;
         }
 
+        public static int Median(this IEnumerable<int> source, IComparer<int> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+        public static float Median(this IEnumerable<float> source, IComparer<float> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+        public static double Median(this IEnumerable<double> source, IComparer<double> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+        public static int? Median(this IEnumerable<int?> source, IComparer<int?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+        public static float? Median(this IEnumerable<float?> source, IComparer<float?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+        public static double? Median(this IEnumerable<double?> source, IComparer<double?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+
+        public static TimeSpan Median(this IEnumerable<TimeSpan> source, IComparer<TimeSpan> comparer = null)
+                => source.MedianInner(comparer, (x, y) => TimeSpan.FromSeconds((x.TotalSeconds + y.TotalSeconds) / 2d));
+
+        public static TimeSpan? Median(this IEnumerable<TimeSpan?> source, IComparer<TimeSpan?> comparer = null)
+                => source.MedianInner(comparer, (x, y) => TimeSpan.FromSeconds(((x?.TotalSeconds ?? 0d) + (y?.TotalSeconds ?? 0d)) / 2d));
+
+        private static T MedianInner<T>(this IEnumerable<T> source, IComparer<T> comparer, Func<T, T, T> average) {
+            if (comparer == null) comparer = Comparer<T>.Default;
+
+            var temp = source.ToArray();
+            Array.Sort(temp, comparer);
+
+            var count = temp.Length;
+            if (count == 0) {
+                throw new InvalidOperationException("Empty collection");
+            }
+
+            if (count % 2 == 0 && average != null) {
+                var a = temp[count / 2 - 1];
+                var b = temp[count / 2];
+                return average(a, b);
+            }
+
+            return temp[count / 2];
+        }
+
         public static int IndexOf<T>([NotNull] this IEnumerable<T> source, T value) {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -621,6 +654,17 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static IEnumerable<T> IfWhere<T>([NotNull] this IEnumerable<T> source, bool condition, [NotNull] Func<T, bool> fn) {
+            return condition ? source.Where(fn) : source;
+        }
+
+
+        [Pure]
+        public static IEnumerable<T> IfSelect<T>([NotNull] this IEnumerable<T> source, bool condition, [NotNull] Func<T, T> fn) {
+            return condition ? source.Select(fn) : source;
+        }
+
+        [Pure]
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (additionalItems == null) return source;
@@ -806,11 +850,9 @@ namespace AcTools.Utils.Helpers {
         }
     }
 
-    public interface IWithId {
-        string Id { get; }
-    }
-
     public interface IWithId<out T> {
         T Id { get; }
     }
+
+    public interface IWithId : IWithId<string> {}
 }

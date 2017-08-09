@@ -5,12 +5,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcTools;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.ContentInstallation.Installators {
+namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class ZipContentInstallator : ContentInstallatorBase {
         public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams) {
             var result = new ZipContentInstallator(filename, installationParams);
@@ -38,6 +39,14 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         protected override string GetBaseId() {
             var id = Path.GetFileNameWithoutExtension(Filename)?.ToLower();
             return AcStringValues.IsAppropriateId(id) ? id : null;
+        }
+
+        private class ArchiveDirectoryInfo : IDirectoryInfo {
+            public ArchiveDirectoryInfo(ZipArchiveEntry archiveEntry) {
+                Key = archiveEntry.FullName.Replace('/', '\\').ApartFromLast("\\");
+            }
+
+            public string Key { get; }
         }
 
         private class ArchiveFileInfo : IFileInfo {
@@ -70,10 +79,11 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             }
         }
 
-        protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
+        protected override Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
             if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
-            return Task.FromResult(_extractor.Entries.Where(x => !x.FullName.EndsWith("\\") && !x.FullName.EndsWith("/"))
-                                             .Select(x => (IFileInfo)new ArchiveFileInfo(x)));
+            return Task.FromResult(_extractor.Entries.Select(x =>
+                    x.FullName.EndsWith("\\") || x.FullName.EndsWith("/") ? new ArchiveDirectoryInfo(x) :
+                            (IFileOrDirectoryInfo)new ArchiveFileInfo(x)));
         }
 
         protected override Task LoadMissingContents(CancellationToken cancellation) {

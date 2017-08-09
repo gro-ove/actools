@@ -1,8 +1,7 @@
 ﻿using System;
 
 namespace AcTools.Utils.Helpers {
-    // ReSharper disable once InconsistentNaming
-    public static class UTF8Checker {
+    public static class Utf8Checker {
         public static bool IsUtf8(byte[] buffer, int limit = int.MaxValue) {
             var position = 0;
             var bytes = 0;
@@ -20,7 +19,7 @@ namespace AcTools.Utils.Helpers {
             return true;
         }
 
-        public static bool IsValid(byte[] buffer, int position, int length, ref int bytes) {
+        private static bool IsValid(byte[] buffer, int position, int length, ref int bytes) {
             if (length > buffer.Length) {
                 throw new ArgumentException("Invalid length");
             }

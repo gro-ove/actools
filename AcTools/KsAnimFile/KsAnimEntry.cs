@@ -1,14 +1,20 @@
-﻿namespace AcTools.KsAnimFile {
-    public abstract class KsAnimEntryBase {
+﻿using AcTools.Utils.Helpers;
+
+namespace AcTools.KsAnimFile {
+    public abstract class KsAnimEntryBase : IWithId {
         public string NodeName;
+        public abstract int Size { get; }
+        string IWithId<string>.Id => NodeName;
     }
 
     public class KsAnimEntryV1 : KsAnimEntryBase {
         public float[][] Matrices;
+        public override int Size => Matrices.Length;
     }
 
     public class KsAnimEntryV2 : KsAnimEntryBase {
         public KsAnimKeyframe[] KeyFrames;
+        public override int Size => KeyFrames.Length;
     }
 
     public struct KsAnimKeyframe {

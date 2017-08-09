@@ -14,7 +14,7 @@ namespace AcManager.Tools.Managers.Online {
         public const string Key = @"kunos";
         public static readonly KunosOnlineSource Instance = new KunosOnlineSource();
 
-        string IWithId.Id => Key;
+        string IWithId<string>.Id => Key;
 
         public string DisplayName => "Kunos";
 
@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers.Online {
         public const string Key = @"minorating";
         public static readonly MinoratingOnlineSource Instance = new MinoratingOnlineSource();
 
-        string IWithId.Id => Key;
+        string IWithId<string>.Id => Key;
 
         public string DisplayName => "Minorating";
 

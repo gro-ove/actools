@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
@@ -163,7 +164,7 @@ namespace AcTools.AcdFile {
             foreach (var entry in _entries.Values.NonNull()) {
                 var destination = Path.Combine(dir, entry.Name);
                 Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
-                File.WriteAllBytes(destination, entry.Data);
+                File.WriteAllBytes(FileUtils.EnsureFilenameIsValid(destination), entry.Data);
             }
         }
 

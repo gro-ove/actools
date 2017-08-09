@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
@@ -28,6 +29,18 @@ namespace AcManager.Tools.Helpers.AcLog {
             try {
                 var log = File.Open(FileUtils.GetLogFilename(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite).ReadAsStringAndDispose();
 
+                {
+                    var match = Regex.Match(log,
+                            @"ERROR: INIReader: content/cars/([\w._-]+)/data/car\.ini > KEY_NOT_FOUND: \[INFO\] SCREEN_NAME",
+                            RegexOptions.CultureInvariant);
+                    if (match.Success) {
+                        return new WhatsGoingOn(
+                                CarsManager.Instance.GetWrapperById(match.Groups[1].Value) == null
+                                        ? WhatsGoingOnType.CarIsMissing : WhatsGoingOnType.CarIsMissingOrDamaged,
+                                match.Groups[1].Value);
+                    }
+                }
+
                 if (log.Contains(@"ACClient:: ACP_WRONG_PASSWORD")) {
                     return new WhatsGoingOn(WhatsGoingOnType.OnlineWrongPassword);
                 }
@@ -44,9 +57,15 @@ namespace AcManager.Tools.Helpers.AcLog {
                     return new WhatsGoingOn(WhatsGoingOnType.WheelsAreMissing);
                 }
 
+                if (log.Contains(@"): AnimationBlender::blendAnimations") && log.Contains(@"): DriverModel::animateHShifter")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.SteerAnimIsMissing);
+                }
+
                 {
                     var match = Regex.Match(log, @"Error, cannot initialize Post Processing, (.+) not found", RegexOptions.CultureInvariant);
-                    if (match.Success) return new WhatsGoingOn(WhatsGoingOnType.PpFilterIsMissing, match.Groups[1].Value);
+                    if (match.Success) {
+                        return new WhatsGoingOn(WhatsGoingOnType.PpFilterIsMissing, match.Groups[1].Value);
+                    }
                 }
 
                 var i = log.IndexOf(@"CRASH in:", StringComparison.Ordinal);

@@ -128,7 +128,7 @@
         </DockPanel>
       </DataTemplate>
 
-      <Style x:Key="RowStyle" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.SemiTransparent}">
+      <Style x:Key="RowStyle" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.DetailsAlways.RibbonLeft}">
         <Setter Property="Padding" Value="0 4" />
       </Style>
     </ResourceDictionary>
@@ -150,11 +150,11 @@
       </DockPanel>
 
       <ListBox x:Name="SavedDriversList" ItemsSource="{Binding SavedDrivers}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
-          Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp">
+          Drop="OnItemsControlDrop" KeyUp="OnSavedDriversKeyUp" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}" Margin="-7 0 -8 0">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <mui:SpacingStackPanel Spacing="2" TextBlock.FontWeight="Normal" Height="52" Background="Transparent"
-                mui:ContextMenuAdvancement.PropagateToChildren="True">
+                mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="1 0 1 0">
               <mui:SpacingStackPanel.ContextMenu>
                 <ContextMenu>
                   <MenuItem Header="Delete Entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
@@ -235,9 +235,9 @@
       </Grid>
     </c:ModernPopup>
 
-    <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite.VisibleDetails}" mui:Draggable.Enabled="True"
-        MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
-        CellStyle="{StaticResource DataGridCell.SemiTransparent}"><!-- TODO: SelectionMode="Extended"-->
+    <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
+        mui:Draggable.Enabled="True" MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
+        CellStyle="{StaticResource DataGridCell.Transparent}"><!-- TODO: SelectionMode="Extended"-->
       <!--<mui:Draggable.DestinationConverter>
         <l:ServerPresetDriverEntryDraggableConverter />
       </mui:Draggable.DestinationConverter>-->
@@ -274,7 +274,7 @@
         </DataTemplate>
       </DataGrid.RowDetailsTemplate>
       <DataGrid.Columns>
-        <DataGridTemplateColumn Width="40" Header="" CellStyle="{StaticResource DataGridCell.SemiTransparent.Number}"
+        <DataGridTemplateColumn Width="40" Header="" CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}"
             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate DataType="{x:Type t:ServerPresetDriverEntry}">

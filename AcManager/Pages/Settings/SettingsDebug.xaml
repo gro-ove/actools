@@ -2,7 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDebug+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDebug+ViewModel}"
+    x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -33,6 +34,23 @@
 
       <!--controls test-->
       <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
+
+      <StackPanel Margin="0 20 20 0">
+        <TextBlock Text="Progress Rings" Style="{StaticResource SettingsPanel.Heading2.First}" />
+
+        <DockPanel>
+          <Label Content="Style:" DockPanel.Dock="Left" Width="200" />
+          <mui:SpacingUniformGrid HorizontalSpacing="8">
+            <mui:BetterComboBox x:Name="ProgressRingsComboBox" IsEditable="False" DisplayMemberPath="DisplayName" />
+            <mui:ColorPicker Color="{Binding ProgressRingColor, ElementName=This}" />
+          </mui:SpacingUniformGrid>
+        </DockPanel>
+
+        <DockPanel Height="80" Margin="0 8 0 0">
+          <Label Content="Control:" Width="200" DockPanel.Dock="Left" VerticalAlignment="Top" />
+          <mui:ModernProgressRing x:Name="ModernProgressRing" IsActive="True" Width="80" Height="80" HorizontalAlignment="Left" />
+        </DockPanel>
+      </StackPanel>
 
       <StackPanel Margin="0 20 20 20" TextBlock.Foreground="Cyan">
         <StackPanel.Resources>

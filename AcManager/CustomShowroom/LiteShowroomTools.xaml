@@ -549,6 +549,12 @@
               </mui:SpacingUniformGrid>
 
               <DockPanel>
+                <mui:ValueLabel Value="{Binding CameraTilt, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Tilt"
+                    Postfix="°" />
+                <Slider Minimum="-45" Maximum="45" Value="{Binding CameraTilt, StringFormat='{}{0:F1}'}" TickFrequency="9" TickPlacement="BottomRight" />
+              </DockPanel>
+
+              <DockPanel>
                 <mui:ValueLabel Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="View angle"
                     Postfix="°" />
                 <Slider Minimum="1.8" Maximum="90" Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" TickFrequency="8.82" TickPlacement="BottomRight" />
@@ -566,7 +572,12 @@
                 <Label Content="Auto-align car" />
               </CheckBox>
 
+              <CheckBox IsChecked="{Binding Settings.LoadCameraEnabled}">
+                <Label Content="Load camera position with preset" />
+              </CheckBox>
+
               <Button Command="{Binding ResetCameraCommand}" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
+              <Button Command="{Binding LoadPresetCameraCommand}" Margin="0 4 0 0" Content="Load From Another Preset" />
             </mui:SpacingStackPanel>
           </ScrollViewer>
 
@@ -594,7 +605,7 @@
               </mui:BetterComboBox>
 
               <TextBlock Text="Driver &amp; Crew" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-              <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
+              <mui:SpacingUniformGrid HorizontalSpacing="4" VerticalSpacing="4" Columns="2">
                 <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverVisible}">
                   <Label Content="Driver" />
                 </CheckBox>
@@ -602,6 +613,22 @@
                   <Label Content="Crew" />
                 </CheckBox>
               </mui:SpacingUniformGrid>
+              <mui:BooleanSwitch Value="{Binding Renderer.CarNode.IsDriverVisible}">
+                <mui:SpacingUniformGrid HorizontalSpacing="4" VerticalSpacing="4" Columns="2">
+                  <CheckBox IsChecked="{Binding Renderer.CarNode.ShiftAnimationEnabled}" IsEnabled="{Binding Renderer.CarNode.IsDriverVisible}">
+                    <Label Content="Shifting" />
+                  </CheckBox>
+                  <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverMovable}" IsEnabled="{Binding Renderer.CarNode.IsDriverVisible}">
+                    <Label Content="Movable driver" />
+                  </CheckBox>
+                  <Button Content="Reset" Command="{Binding Renderer.CarNode.ResetDriverMovementCommand}"
+                      IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
+                  <Button Content="Save Pos." Command="{Binding Renderer.CarNode.SaveDriverMovementCommand}"
+                      ToolTip="Save driver position into “steer.ksanim” file" IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
+                  <Button Content="Save KNH" Command="{Binding Renderer.CarNode.UpdateDriverKnhCommand}"
+                      ToolTip="Save driver position into “driver_base_pos.knh” file (not sure if it’s used at all by either AC or CM thought)" />
+                </mui:SpacingUniformGrid>
+              </mui:BooleanSwitch>
 
               <TextBlock Text="Lights" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
               <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">

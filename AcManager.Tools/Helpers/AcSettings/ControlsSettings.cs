@@ -1001,7 +1001,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["CONTROLLERS"] = Devices
                     .Select(x => (IDirectInputDevice)x)
                     .Union(_placeholderDevices)
-                    .Aggregate(new IniFileSection(), (s, d, i) => {
+                    .Aggregate(new IniFileSection(null), (s, d, i) => {
                         s.Set("CON" + d.Index, d.DisplayName);
                         s.Set("PGUID" + d.Index, d.Id ?? ProductGuids.GetValueOrDefault(d.DisplayName));
                         return s;

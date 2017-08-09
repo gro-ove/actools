@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:windows="clr-namespace:FirstFloor.ModernUI.Windows">
   <!-- Easing function -->
-  <windows:CubicBesierEase x:Key="StandartEase" EasingMode="EaseIn" X1="0.4" Y1="0" X2="0.2" Y2="1" />
+  <windows:CubicBesierEase x:Key="StandardEase" EasingMode="EaseIn" X1="0.4" Y1="0" X2="0.2" Y2="1" />
   <windows:CubicBesierEase x:Key="DecelerationEase" EasingMode="EaseIn" X1="0" Y1="0" X2="0.2" Y2="1" />
   <windows:CubicBesierEase x:Key="AccelerationEase" EasingMode="EaseIn" X1="0.4" Y1="0" X2="1" Y2="1" />
   <windows:CubicBesierEase x:Key="SharpEase" EasingMode="EaseIn" X1="0.4" Y1="0" X2="0.6" Y2="1" />

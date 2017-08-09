@@ -43,17 +43,21 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     }
 
     internal class FancyHintAdorner : Adorner {
-        public static bool IsAnyShown { get; private set; }
+        public static bool IsAnyShown => Current != null;
+
+        [CanBeNull]
+        public static FancyHintAdorner Current { get; private set; }
+
+        public FancyHint Hint { get; }
 
         private readonly AdornerLayer _layer;
         private readonly Window _window;
-        private readonly FancyHint _hint;
         private readonly FrameworkElement _contentPresenter;
 
         public FancyHintAdorner(UIElement adornedElement, UIElement parent, AdornerLayer layer, Window window, FancyHint hint) : base(adornedElement) {
             _layer = layer;
             _window = window;
-            _hint = hint;
+            Hint = hint;
 
             IsHitTestVisible = true;
 
@@ -93,7 +97,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private async void Show() {
-            IsAnyShown = true;
+            Current = this;
             await Task.Delay(1);
             var cell = GetByName("PART_Cell");
             if (cell != null) {
@@ -103,7 +107,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 _window.PreviewMouseDown += OnWindowMouseDown;
                 _window.PreviewKeyDown += OnWindowKeyDown;
 
-                if (_hint.CloseOnResize) {
+                if (Hint.CloseOnResize) {
                     _window.SizeChanged += OnWindowSizeChanged;
                 }
 
@@ -117,7 +121,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     });
                 }
             } else {
-                IsAnyShown = false;
+                Current = null;
             }
         }
 
@@ -147,13 +151,19 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             Close();
         }
 
+        public void ForceClose() {
+            if (IsHitTestVisible) {
+                Close();
+            }
+        }
+
         private async void Close() {
             IsHitTestVisible = false;
 
             _window.PreviewMouseDown -= OnWindowMouseDown;
             _window.PreviewKeyDown -= OnWindowMouseDown;
 
-            if (_hint.CloseOnResize) {
+            if (Hint.CloseOnResize) {
                 _window.SizeChanged -= OnWindowSizeChanged;
             }
 
@@ -164,7 +174,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
 
             _layer.Remove(this);
-            IsAnyShown = false;
+            Current = null;
         }
 
         protected override int VisualChildrenCount => 1;

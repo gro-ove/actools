@@ -152,7 +152,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             public Vector3 CarCenter {
                 get {
-                    var result = CarNode?.BoundingBox?.GetCenter() ?? Vector3.Zero;
+                    var result = CarNode?.RootObject.BoundingBox?.GetCenter() ?? Vector3.Zero;
                     result.Y = 0f;
                     return result;
                 }
@@ -377,8 +377,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone) {
-                IMoveable c;
-                if (CarNode?.Movable.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out c) == true) {
+                if (CarNode?.MoveObject(relativeFrom, relativeDelta, camera, tryToClone) == true) {
                     ResetCarBoundingBox();
                     return true;
                 }
@@ -387,7 +386,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             public void StopMovement() {
-                CarNode?.Movable.StopMovement();
+                CarNode?.StopMovement();
             }
 
             public event PropertyChangedEventHandler PropertyChanged;
@@ -466,6 +465,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void RefreshMaterial(Kn5 kn5, uint materialId) {
+            if (Disposed) return;
             if (ShowroomNode != null && ShowroomNode.OriginalFile == kn5) {
                 ShowroomNode.RefreshMaterial(DeviceContextHolder, materialId);
                 IsDirty = true;
@@ -480,6 +480,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void UpdateMaterialPropertyA(Kn5 kn5, uint materialId, string propertyName, float valueA) {
+            if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {
                 prop.ValueA = valueA;
@@ -488,6 +489,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void UpdateMaterialPropertyC(Kn5 kn5, uint materialId, string propertyName, float[] valueC) {
+            if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {
                 prop.ValueC = valueC;
