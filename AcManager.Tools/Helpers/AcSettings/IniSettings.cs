@@ -143,8 +143,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 SetToIni();
                 IgnoreChangesForAWhile();
                 IsReloading = false;
-
-                await Ini.SaveAsync(Filename);
+                Ini.Save(Filename);
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {

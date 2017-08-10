@@ -24,11 +24,10 @@
         <Label Content="Integrate Minorating" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding Online.FixNames}">
-        <Label>
-          <Label.Content>Fix names from prefixes like “AAA…”</Label.Content>
-        </Label>
-      </CheckBox>
+      <DockPanel>
+        <Label Content="Fix names:" ToolTip="Refresh might be required after changing" />
+        <ComboBox ItemsSource="{Binding Online.FixNamesModes}" SelectedItem="{Binding Online.FixNamesMode}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
 
       <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
         <Button Content="Manage Lists" Command="{Binding ManageListsCommand}" />

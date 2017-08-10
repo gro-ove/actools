@@ -30,6 +30,26 @@
         <Label Content="Add available setups counter" />
       </CheckBox>
 
+      <c:MessageBlock Margin="0 0 0 8">
+        <mui:BbCodeBlock>
+          <mui:BbCodeBlock.BbCode>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.BbCode>
+        </mui:BbCodeBlock>
+      </c:MessageBlock>
+
+      <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        <Label Content="Cache list of setups for:" />
+        <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheListPeriod}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
+
+      <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        <Label Content="Cache data per setup for:" />
+        <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheDataPeriod}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
+
+      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        <Label Content="Use caching proxy for setups list to avoid overloading The Setup Market server" />
+      </CheckBox>
+
       <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
 
       <CheckBox IsChecked="{Binding Integrated.RsrLimitTemperature}" ToolTip="There is a rumour you might get banned on RSR for setting the temperature lower than 10 °C; with this option enabled, if you have RSR app enabled, CM will automatically raise temperature if needed up to 10 °C to avoid getting banned">

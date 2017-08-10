@@ -346,7 +346,7 @@ namespace AcManager {
                 return null;
             };
 
-            AbstractDataFile.ErrorsCatcher = new DataSyntaxErrorCatcher();
+            DataFileBase.ErrorsCatcher = new DataSyntaxErrorCatcher();
             AppArguments.Set(AppFlag.SharedMemoryLiveReadingInterval, ref AcSharedMemory.OptionLiveReadingInterval);
             AcSharedMemory.Initialize();
 
@@ -388,8 +388,8 @@ namespace AcManager {
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
-            public void Catch(AbstractDataFile file, int line) {
-                if (file.Mode == AbstractDataFile.StorageMode.UnpackedFile && file.Filename != null) {
+            public void Catch(DataFileBase file, int line) {
+                if (file.Filename != null) {
                     NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.Filename), line),
                             ToolsStrings.SyntaxError_Commentary, null, new[] {
                                 new NonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
@@ -398,8 +398,8 @@ namespace AcManager {
                                 })
                             });
                 } else {
-                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed, file.Name, line),
-                            ToolsStrings.SyntaxError_Commentary);
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed,
+                            $"{file.Name} ({Path.GetFileName(file.Data?.Location ?? "?")})", line), ToolsStrings.SyntaxError_Commentary);
                 }
             }
         }

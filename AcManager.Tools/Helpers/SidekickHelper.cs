@@ -8,6 +8,7 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
+using AcTools;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Physics;
@@ -32,31 +33,30 @@ namespace AcManager.Tools.Helpers {
 
         [CanBeNull]
         private static Tuple<double, double> CombineRanges([CanBeNull] Tuple<double, double> a, [CanBeNull] Tuple<double, double> b) {
-            if (a == null) return b;
-            if (b == null) return a;
-            return new Tuple<double, double>(Math.Min(a.Item1, b.Item1), Math.Max(a.Item2, b.Item2));
+            return a == null ? b : b == null ? a :
+                    new Tuple<double, double>(Math.Min(a.Item1, b.Item1), Math.Max(a.Item2, b.Item2));
         }
 
         [CanBeNull]
-        private static Tuple<double, double> GetOptimalRange([CanBeNull] Lut lut) {
+        public static Tuple<double, double> GetOptimalRange([CanBeNull] Lut lut) {
             if (lut == null) return null;
 
             lut.UpdateBoundingBox();
-            var threshold = Math.Min(lut.MaxY, 1d) * 0.999d;
 
+            var threshold = Math.Min(lut.MaxY, 1d) * 0.98d;
             double? fromX = null, toX = null;
-            for (var i = 0; i < lut.Count; i++) {
-                var point = lut[i];
-                if (point.Y >= threshold) {
+
+            lut.ForEach((x, y) => {
+                if (y >= threshold) {
                     if (!fromX.HasValue) {
-                        fromX = point.X;
+                        fromX = x;
                     }
 
-                    toX = point.X;
+                    toX = x;
                 }
-            }
+            });
 
-            return fromX.HasValue ? new Tuple<double, double>(fromX.Value, toX.Value) : null;
+            return fromX.HasValue && toX.HasValue ? new Tuple<double, double>(fromX ?? 0d, toX ?? 0d) : null;
         }
 
         private static bool SetRange(IniFileSection section, string minKey, string maxKey, [CanBeNull] Tuple<double, double> range) {

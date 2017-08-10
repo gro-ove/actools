@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using AcTools.Utils.Helpers;
 
 namespace AcTools.AcdFile {
     public class AcdEntry {
@@ -10,7 +10,7 @@ namespace AcTools.AcdFile {
         /// </summary>
         /// <returns>Output string</returns>
         public override string ToString() {
-            return Encoding.UTF8.GetString(Data);
+            return Data.ToUtf8String();
         }
     }
 }

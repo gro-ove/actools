@@ -224,6 +224,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         private static readonly string[] MagickExtensions = {
             ".bmp",
+            ".exr",
             ".gif",
             ".hdr",
             ".ico",

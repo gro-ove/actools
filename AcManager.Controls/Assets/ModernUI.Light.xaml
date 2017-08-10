@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+    xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
 
   <!-- Light theme — whitish background, dark text -->
   <!-- Special colors -->
@@ -205,7 +205,7 @@
   <SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->
-  <system:String x:Key="TextEditorSyntaxIni"><![CDATA[
+  <s:String x:Key="TextEditorSyntaxIni"><![CDATA[
 		<SyntaxDefinition name="INI" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 			<Color name="Section" foreground="#777722" />
 			<Color name="Comment" foreground="#777777" />
@@ -226,5 +226,8 @@
 					([eE][+-]?[0-9]+)? # optional exponent
 				</Rule>
 			</RuleSet>
-		</SyntaxDefinition>]]></system:String>
+		</SyntaxDefinition>]]></s:String>
+
+	<!-- About -->
+	<s:String x:Key="Description">I recommend you to switch to a light car previews style with this theme.</s:String>
 </ResourceDictionary>

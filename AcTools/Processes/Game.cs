@@ -34,7 +34,7 @@ namespace AcTools.Processes {
             file["HEADER"].Set("VERSION", 2);
             file["LAP_INVALIDATOR"].Set("ALLOWED_TYRES_OUT", -1);
         }
-        
+
         public static bool OptionDebugMode = false;
 
         [CanBeNull]
@@ -223,7 +223,7 @@ namespace AcTools.Processes {
             public T GetAdditional<T>() {
                 return AdditionalPropertieses.OfType<T>().FirstOrDefault();
             }
-            
+
             public bool HasAdditional<T>() {
                 return AdditionalPropertieses.OfType<T>().Any();
             }
@@ -287,7 +287,7 @@ namespace AcTools.Processes {
                         ReplayProperties.Set(iniFile);
                     } else if (BenchmarkProperties != null) {
                         BenchmarkProperties.Set(iniFile);
-                    } else { 
+                    } else {
                         throw new NotSupportedException();
                     }
                 }

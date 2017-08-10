@@ -31,6 +31,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.AcdFile;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;

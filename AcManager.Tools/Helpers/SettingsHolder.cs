@@ -236,22 +236,25 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private SettingEntry[] _fixNamesMode;
+            private SettingEntry[] _fixNamesModes;
 
-            public SettingEntry[] FixNamesMode => _fixNamesMode ?? (_fixNamesMode = new[] {
+            public SettingEntry[] FixNamesModes => _fixNamesModes ?? (_fixNamesModes = new[] {
                 new SettingEntry(0, "Disabled"),
-                new SettingEntry(1, "Leading letters “A”"),
-                new SettingEntry(1, "Deep cleaning")
+                new SettingEntry(1, "Leading Letters “A”"),
+                new SettingEntry(2, "Thorough cleaning")
             });
 
-            private bool? _fixNames;
+            private SettingEntry _fixNamesMode;
 
-            public bool FixNames {
-                get => _fixNames ?? (_fixNames = ValuesStorage.GetBool("Settings.OnlineSettings.FixNames", true)).Value;
+            public SettingEntry FixNamesMode {
+                get {
+                    var saved = ValuesStorage.GetIntNullable("Settings.IntegratedSettings.FixNamesMode");
+                    return _fixNamesMode ?? (_fixNamesMode = FixNamesModes.GetByIdOrDefault(saved) ?? FixNamesModes.ElementAt(1));
+                }
                 set {
-                    if (Equals(value, _fixNames)) return;
-                    _fixNames = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.FixNames", value);
+                    if (Equals(value, _fixNamesMode)) return;
+                    _fixNamesMode = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.FixNamesMode", value.IntValue ?? -1);
                     OnPropertyChanged();
                 }
             }
@@ -2341,10 +2344,65 @@ namespace AcManager.Tools.Helpers {
         public class IntegratedSettings : NotifyPropertyChanged {
             internal IntegratedSettings() { }
 
+            private DelayEntry[] _periodEntries;
+
+            public DelayEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
+                new DelayEntry(TimeSpan.FromHours(1)),
+                new DelayEntry(TimeSpan.FromHours(3)),
+                new DelayEntry(TimeSpan.FromHours(6)),
+                new DelayEntry(TimeSpan.FromHours(12)),
+                new DelayEntry(TimeSpan.FromDays(1))
+            });
+
+            private DelayEntry _theSetupMarketCacheListPeriod;
+
+            public DelayEntry TheSetupMarketCacheListPeriod {
+                get {
+                    var saved = ValuesStorage.GetTimeSpan("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
+                    return _theSetupMarketCacheListPeriod ?? (_theSetupMarketCacheListPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            Periods.ElementAt(3));
+                }
+                set {
+                    if (Equals(value, _theSetupMarketCacheListPeriod)) return;
+                    _theSetupMarketCacheListPeriod = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelayEntry _theSetupMarketCacheDataPeriod;
+
+            public DelayEntry TheSetupMarketCacheDataPeriod {
+                get {
+                    var saved = ValuesStorage.GetTimeSpan("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod");
+                    return _theSetupMarketCacheDataPeriod ?? (_theSetupMarketCacheDataPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            Periods.ElementAt(2));
+                }
+                set {
+                    if (Equals(value, _theSetupMarketCacheDataPeriod)) return;
+                    _theSetupMarketCacheDataPeriod = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _theSetupMarketCacheServer;
+
+            public bool TheSetupMarketCacheServer {
+                get => _theSetupMarketCacheServer ?? (_theSetupMarketCacheServer =
+                        ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCacheServer", true)).Value;
+                set {
+                    if (Equals(value, _theSetupMarketCacheServer)) return;
+                    _theSetupMarketCacheServer = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheServer", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _theSetupMarketTab;
 
             public bool TheSetupMarketTab {
-                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value;
+                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", false)).Value;
                 set {
                     if (Equals(value, _theSetupMarketTab)) return;
                     _theSetupMarketTab = value;

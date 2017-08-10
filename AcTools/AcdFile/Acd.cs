@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -81,7 +82,7 @@ namespace AcTools.AcdFile {
             SetEntry(entryName, Encoding.UTF8.GetBytes(entryData));
         }
 
-        public void RemoveEntry([NotNull] string entryName) {
+        public void DeleteEntry([NotNull] string entryName) {
             _entries[entryName] = null;
         }
 
@@ -154,17 +155,65 @@ namespace AcTools.AcdFile {
         }
 
         [NotNull]
-        public static Acd FromDirectory([NotNull] string dir) {
-            if (!Directory.Exists(dir)) throw new DirectoryNotFoundException(dir);
-            return new Acd(null, dir);
+        public static Acd FromDirectory([NotNull] string directory) {
+            if (!Directory.Exists(directory)) throw new DirectoryNotFoundException(directory);
+            return new Acd(null, directory);
         }
 
-        public void ExportDirectory([NotNull] string dir) {
+        public void ExportDirectory([NotNull] string directory) {
             EnsureFullyLoaded();
+            FileUtils.EnsureDirectoryExists(directory);
+
             foreach (var entry in _entries.Values.NonNull()) {
-                var destination = Path.Combine(dir, entry.Name);
-                Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
-                File.WriteAllBytes(FileUtils.EnsureFilenameIsValid(destination), entry.Data);
+                var entryFilename = Path.Combine(directory, entry.Name);
+                var destDirectory = Path.GetDirectoryName(entryFilename) ?? "";
+                if (destDirectory != directory) {
+                    FileUtils.EnsureDirectoryExists(destDirectory);
+                }
+
+                File.WriteAllBytes(FileUtils.EnsureFilenameIsValid(entryFilename), entry.Data);
+            }
+        }
+
+        public void Update(bool recycleOriginal) {
+            var filename = _packedFile;
+            if (filename != null) {
+                if (recycleOriginal) {
+                    using (var f = FileUtils.RecycleOriginal(filename)) {
+                        try {
+                            Save(f.Filename);
+                        } catch {
+                            FileUtils.TryToDelete(f.Filename);
+                            throw;
+                        }
+                    }
+                } else {
+                    Save(filename);
+                }
+            } else {
+                var unpackedDirectory = _unpackedDirectory;
+                if (unpackedDirectory != null) {
+                    if (recycleOriginal) {
+                        var temporary = FileUtils.EnsureUnique(unpackedDirectory);
+                        ExportDirectory(temporary);
+
+                        if (!FileUtils.ArePathsEqual(temporary, unpackedDirectory)) {
+                            FileUtils.Recycle(unpackedDirectory);
+                            Directory.Move(temporary, unpackedDirectory);
+                        }
+                    } else {
+                        EnsureFullyLoaded();
+
+                        if (Directory.Exists(unpackedDirectory)) {
+                            foreach (var v in Directory.GetFiles(unpackedDirectory).Where(x =>
+                                    _entries.ContainsKey(Path.GetFileName(x)?.ToLowerInvariant() ?? ""))) {
+                                FileUtils.TryToDelete(v);
+                            }
+                        }
+
+                        ExportDirectory(unpackedDirectory);
+                    }
+                }
             }
         }
 

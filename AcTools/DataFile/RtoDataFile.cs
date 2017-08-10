@@ -5,13 +5,11 @@ using AcTools.AcdFile;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.DataFile {
-    public class RtoDataFile : AbstractDataFile {
-        public RtoDataFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) {}
-        public RtoDataFile(string carDir, string filename) : base(carDir, filename) {}
+    public class RtoDataFile : DataFileBase {
         public RtoDataFile(string filename) : base(filename) {}
         public RtoDataFile() {}
 
-        public readonly Dictionary<string, double> Values = new Dictionary<string, double>(); 
+        public readonly Dictionary<string, double> Values = new Dictionary<string, double>();
 
         protected override void ParseString(string data) {
             Clear();

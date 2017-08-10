@@ -101,12 +101,13 @@
     <Compile Include="DataAnalyzer\RulesSet.cs" />
     <Compile Include="DataAnalyzer\RulesSet.Test.cs" />
     <Compile Include="DataAnalyzer\RulesWrapper.cs" />
+    <Compile Include="DataFile\IDataFile.cs" />
     <Compile Include="DataFile\IniFileSection.cs" />
     <Compile Include="DataFile\ISyntaxErrorsCatcher.cs" />
     <Compile Include="DataFile\LutDataFile.cs" />
     <Compile Include="DataFile\RawDataFile.cs" />
     <Compile Include="DataFile\DataWrapper.cs" />
-    <Compile Include="DataFile\AbstractDataFile.cs" />
+    <Compile Include="DataFile\DataFileBase.cs" />
     <Compile Include="DataFile\IniFile.cs" />
     <Compile Include="DataFile\RtoDataFile.cs" />
     <Compile Include="GCHelper.cs" />
@@ -204,8 +205,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Processes\Showroom.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
-    <Compile Include="Utils\DataFixer.cs" />
-    <Compile Include="Utils\Kn5Fixer.cs" />
     <Compile Include="Utils\Lazier.cs" />
     <Compile Include="Utils\LogWatcher.cs" />
     <Compile Include="Utils\MathException.cs" />

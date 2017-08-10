@@ -35,24 +35,6 @@ namespace AcManager.Tools.Helpers {
             return new Tuple<double, double>(Math.Min(a.Item1, b.Item1), Math.Max(a.Item2, b.Item2));
         }
 
-        [CanBeNull]
-        private static Tuple<double, double> GetOptimalRange([CanBeNull] Lut lut) {
-            if (lut == null) return null;
-
-            double? fromX = null, toX = null;
-            for (var i = 0; i < lut.Count; i++) {
-                var point = lut[i];
-                if (point.Y >= 0.999d) {
-                    if (!fromX.HasValue) {
-                        fromX = point.X;
-                    }
-                    toX = point.X;
-                }
-            }
-
-            return fromX.HasValue ? new Tuple<double, double>(fromX.Value, toX.Value) : null;
-        }
-
         private static bool SetRange(IniFileSection section, string minKey, string maxKey, [CanBeNull] Tuple<double, double> range) {
             if (range == null) return false;
 
@@ -131,8 +113,8 @@ namespace AcManager.Tools.Helpers {
             var brakes = wrapper.GetIniFile("brakes.ini");
             var frontCurve = brakes["TEMPS_FRONT"].GetLut("PERF_CURVE");
             var rearCurve = brakes["TEMPS_REAR"].GetLut("PERF_CURVE");
-            var frontBrakesRange = frontCurve == null || frontCurve.Count < 2 ? null : GetOptimalRange(frontCurve);
-            var rearBrakesRange = rearCurve == null || rearCurve.Count < 2 ? null : GetOptimalRange(rearCurve);
+            var frontBrakesRange = frontCurve == null || frontCurve.Count < 2 ? null : SidekickHelper.GetOptimalRange(frontCurve);
+            var rearBrakesRange = rearCurve == null || rearCurve.Count < 2 ? null : SidekickHelper.GetOptimalRange(rearCurve);
 
             // Tyres
             var tyres = wrapper.GetIniFile("tyres.ini");
@@ -150,9 +132,9 @@ namespace AcManager.Tools.Helpers {
                 var idealPressureRear = sectionRear.GetDouble("PRESSURE_IDEAL", 0d);
 
                 // Find optimal termal range and, if different, combine front and rear ranges
-                var thermalRange = GetOptimalRange(GetThermalLut(wrapper, sectionNameFront));
+                var thermalRange = SidekickHelper.GetOptimalRange(GetThermalLut(wrapper, sectionNameFront));
                 if (sectionFront.GetNonEmpty("PERFORMANCE_CURVE") != sectionRear.GetNonEmpty("PERFORMANCE_CURVE")) {
-                    var thermalRangeRear = GetOptimalRange(GetThermalLut(wrapper, sectionNameRear));
+                    var thermalRangeRear = SidekickHelper.GetOptimalRange(GetThermalLut(wrapper, sectionNameRear));
                     thermalRange = CombineRanges(thermalRange, thermalRangeRear);
                 }
 

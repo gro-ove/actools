@@ -64,7 +64,7 @@ namespace AcTools.Kn5File {
                     section.Set("VAR_" + i + "_FLOAT3", material.ShaderProperties[i].ValueC);
                     section.Set("VAR_" + i + "_FLOAT4", material.ShaderProperties[i].ValueD);
                 }
-                
+
                 section.Set("RESCOUNT", material.TextureMappings.Length);
                 for (var i = 0; i < material.TextureMappings.Length; i++) {
                     section.Set("RES_" + i + "_NAME", material.TextureMappings[i].Name);

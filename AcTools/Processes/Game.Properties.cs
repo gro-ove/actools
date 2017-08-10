@@ -97,7 +97,7 @@ namespace AcTools.Processes {
                     section.Set("AI_LEVEL", 100);
                 }
 
-                file["CAR_0"] = new IniFileSection {
+                file["CAR_0"] = new IniFileSection(null) {
                     ["SETUP"] = CarSetupId?.ToLowerInvariant() ?? "",
                     ["SKIN"] = CarSkinId?.ToLowerInvariant(),
                     ["MODEL"] = "-",
@@ -150,7 +150,7 @@ namespace AcTools.Processes {
             }
 
             protected virtual void SetGroove(IniFile file, int virtualLaps = 10, int maxLaps = 1, int startingLaps = 1) {
-                file["GROOVE"] = new IniFileSection {
+                file["GROOVE"] = new IniFileSection(null) {
                     ["VIRTUAL_LAPS"] = virtualLaps,
                     ["MAX_LAPS"] = maxLaps,
                     ["STARTING_LAPS"] = startingLaps
@@ -159,7 +159,7 @@ namespace AcTools.Processes {
 
             protected virtual void SetBots(IniFile file, IEnumerable<AiCar> bots) {
                 file.SetSections("CAR", 1, from car in bots
-                                           select new IniFileSection {
+                                           select new IniFileSection(null) {
                                                ["MODEL"] = car.CarId?.ToLowerInvariant(),
                                                ["SKIN"] = car.SkinId?.ToLowerInvariant(),
                                                ["SETUP"] = car.Setup?.ToLowerInvariant(),
@@ -315,7 +315,7 @@ namespace AcTools.Processes {
             }
 
             protected virtual void SetSessions(IniFile file) {
-                file["SESSION_0"] = new IniFileSection {
+                file["SESSION_0"] = new IniFileSection(null) {
                     ["NAME"] = SessionName,
                     ["TYPE"] = SessionType.Drag,
                     ["SPAWN_SET"] = StartType.Id,
@@ -369,7 +369,7 @@ namespace AcTools.Processes {
             }
 
             protected virtual void SetSessions(IniFile file) {
-                file["SESSION_0"] = new IniFileSection {
+                file["SESSION_0"] = new IniFileSection(null) {
                     ["NAME"] = SessionName,
                     ["DURATION_MINUTES"] = Duration,
                     ["SPAWN_SET"] = StartType.RegularStart.Id,
@@ -384,7 +384,7 @@ namespace AcTools.Processes {
             public bool UsePracticeSessionType = false;
 
             protected override void SetSessions(IniFile file) {
-                file["SESSION_0"] = new IniFileSection {
+                file["SESSION_0"] = new IniFileSection(null) {
                     ["NAME"] = "Track Day",
                     ["DURATION_MINUTES"] = 720,
                     ["SPAWN_SET"] = StartType.Pit.Id,
@@ -401,7 +401,7 @@ namespace AcTools.Processes {
 
             private IEnumerable<IniFileSection> GetSessions() {
                 if (PracticeDuration > 0) {
-                    yield return new IniFileSection {
+                    yield return new IniFileSection(null) {
                         ["NAME"] = "Practice",
                         ["DURATION_MINUTES"] = PracticeDuration,
                         ["SPAWN_SET"] = PracticeStartType.Id,
@@ -410,7 +410,7 @@ namespace AcTools.Processes {
                 }
 
                 if (QualificationDuration > 0) {
-                    yield return new IniFileSection {
+                    yield return new IniFileSection(null) {
                         ["NAME"] = "Qualifying",
                         ["DURATION_MINUTES"] = QualificationDuration,
                         ["SPAWN_SET"] = QualificationStartType.Id,
@@ -418,7 +418,7 @@ namespace AcTools.Processes {
                     };
                 }
 
-                yield return new IniFileSection {
+                yield return new IniFileSection(null) {
                     ["NAME"] = "Race",
                     ["DURATION_MINUTES"] = Duration,
                     ["SPAWN_SET"] = StartType.RegularStart.Id,

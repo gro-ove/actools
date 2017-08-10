@@ -17,7 +17,7 @@ namespace AcTools.DataFile {
         Normal, Comments, ValuesWithSemicolons
     }
 
-    public class IniFile : AbstractDataFile, IEnumerable<KeyValuePair<string, IniFileSection>> {
+    public class IniFile : DataFileBase, IEnumerable<KeyValuePair<string, IniFileSection>> {
         public static IniFile Empty => new IniFile();
 
         public static readonly object Nothing = new object();
@@ -40,24 +40,17 @@ namespace AcTools.DataFile {
 
         public IniFileMode IniFileMode => _trickIniFileMode ?? _iniFileMode;
 
-        public IniFile(string carDir, string filename, Acd loadedAcd) : this(carDir, filename, loadedAcd, IniFileMode.Normal) { }
-
-        public IniFile(string carDir, string filename, Acd loadedAcd, IniFileMode mode) : base(carDir, InnerIniFileModeTrick(filename, mode), loadedAcd) {
+        public IniFile(string filename, IniFileMode mode = IniFileMode.Normal) : base(InnerIniFileModeTrick(filename, mode)) {
             _trickIniFileMode = null;
             _iniFileMode = mode;
         }
-
-        public IniFile(string filename) : this(filename, IniFileMode.Normal) { }
-
-        public IniFile(string filename, IniFileMode mode) : base(InnerIniFileModeTrick(filename, mode)) {
-            _trickIniFileMode = null;
-            _iniFileMode = mode;
-        }
-
-        public IniFile() : this(IniFileMode.Normal) { }
 
         public IniFile(IniFileMode mode) {
             _iniFileMode = mode;
+        }
+
+        public IniFile() {
+            _iniFileMode = IniFileMode.Normal;
         }
 
         public readonly Dictionary<string, IniFileSection> Content = new Dictionary<string, IniFileSection>();
@@ -80,7 +73,7 @@ namespace AcTools.DataFile {
                 IniFileSection result;
                 if (Content.TryGetValue(key, out result)) return result;
 
-                result = new IniFileSection();
+                result = new IniFileSection(Data);
                 Content[key] = result;
                 return result;
             }
@@ -131,7 +124,7 @@ namespace AcTools.DataFile {
                         if (s == data.Length) break;
                         for (; i < data.Length && data[i] != ']'; i++) { }
 
-                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection(Data);
                         break;
 
                     case '\n':
@@ -188,7 +181,7 @@ namespace AcTools.DataFile {
                         if (s == data.Length) break;
                         for (; i < data.Length && data[i] != ']'; i++) { }
 
-                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection(Data);
                         break;
 
                     case '\n':
@@ -263,7 +256,7 @@ namespace AcTools.DataFile {
                         if (s == data.Length) break;
                         for (; i < data.Length && data[i] != ']'; i++) { }
 
-                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection(Data);
                         break;
 
                     case '\n':
@@ -578,21 +571,12 @@ namespace AcTools.DataFile {
         }
         #endregion
 
-        protected override void SaveTo(string filename, bool backup) {
+        protected override void SaveToOverride(string filename, bool recycleOriginal) {
             if (IniFileMode == IniFileMode.Comments || OptionKeepComments) {
-                SaveToKeepComments(filename, backup);
+                SaveToKeepComments(filename, recycleOriginal);
             } else {
-                base.SaveTo(filename, backup);
+                base.SaveToOverride(filename, recycleOriginal);
             }
-        }
-
-        protected override Task SaveToAsync(string filename, bool backup) {
-            if (IniFileMode == IniFileMode.Comments || OptionKeepComments) {
-                SaveToKeepComments(filename, backup);
-                return Task.Delay(0);
-            }
-
-            return base.SaveToAsync(filename, backup);
         }
 
         public bool ContainsKey(string key) {

@@ -84,10 +84,10 @@ namespace AcManager.Tools.Managers {
                     progress?.Report(car.DisplayName, i++, cars.Count);
                     return new {
                         CarId = car.Id,
-                        DriverModelId = (await Task.Run(() => new IniFile(car.Location, @"driver3d.ini"), cancellation))
+                        DriverModelId = (await Task.Run(() => car.AcdData?.GetIniFile(@"driver3d.ini"), cancellation))
                                 ["MODEL"].GetNonEmpty("NAME")
                     };
-                }).WhenAll(12, cancellation)).Where(x => x != null && x.DriverModelId != null).ToListIfItIsNot();
+                }).WhenAll(12, cancellation)).Where(x => x?.DriverModelId != null).ToListIfItIsNot();
 
                 if (cancellation.IsCancellationRequested) return null;
                 foreach (var fontObject in LoadedOnly) {

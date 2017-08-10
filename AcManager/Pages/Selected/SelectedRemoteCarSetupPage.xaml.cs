@@ -7,6 +7,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;

@@ -20,7 +20,7 @@ namespace AcTools.Utils.Physics {
             return torque * (1.0 + multipler);
         }
 
-        private const double TorqueRpmToBhpMultipler = 1.0/(9.5488*745.7);
+        private const double TorqueRpmToBhpMultipler = 1.0 / (9.5488 * 745.7);
 
         [Pure]
         public static double TorqueToPower(double torque, double rpm) {
@@ -40,70 +40,12 @@ namespace AcTools.Utils.Physics {
 
         [NotNull]
         public static Lut TorqueToPower(Lut torque, int detalization = 100) {
-            torque.UpdateBoundingBox();
-
-            var startFrom = torque.MinX;
-            var limit = torque.MaxX;
-
-            var result = new Lut();
-
-            var previousTorquePoint = 0;
-            var previousRpm = 0d;
-            for (var i = 0; i <= detalization; i++) {
-                var rpm = detalization == 0 ? limit : (limit - startFrom) * i / detalization + startFrom;
-
-                for (var j = previousTorquePoint; j < torque.Count; j++) {
-                    var p = torque[j];
-
-                    if (p.X > rpm) {
-                        previousTorquePoint = j > 0 ? j - 1 : 0;
-                        break;
-                    }
-
-                    if ((i == 0 || p.X > previousRpm) && p.X < rpm) {
-                        result.Add(new LutPoint(p.X, TorqueToPower(p.Y, p.X)));
-                    }
-                }
-                
-                result.Add(new LutPoint(rpm, TorqueToPower(torque.InterpolateLinear(rpm), rpm)));
-                previousRpm = rpm;
-            }
-            
-            return Result(result);
+            return Result(torque.Select((x, y) => new LutPoint(x, TorqueToPower(y, x)), detalization));
         }
 
         [NotNull]
         public static Lut PowerToTorque(Lut torque, int detalization = 100) {
-            torque.UpdateBoundingBox();
-
-            var startFrom = torque.MinX;
-            var limit = torque.MaxX;
-
-            var result = new Lut();
-
-            var previousTorquePoint = 0;
-            var previousRpm = 0d;
-            for (var i = 0; i <= detalization; i++) {
-                var rpm = detalization == 0 ? limit : (limit - startFrom) * i / detalization + startFrom;
-
-                for (var j = previousTorquePoint; j < torque.Count; j++) {
-                    var p = torque[j];
-
-                    if (p.X > rpm) {
-                        previousTorquePoint = j > 0 ? j - 1 : 0;
-                        break;
-                    }
-
-                    if ((i == 0 || p.X > previousRpm) && p.X < rpm) {
-                        result.Add(new LutPoint(p.X, PowerToTorque(p.Y, p.X)));
-                    }
-                }
-                
-                result.Add(new LutPoint(rpm, PowerToTorque(torque.InterpolateLinear(rpm), rpm)));
-                previousRpm = rpm;
-            }
-
-            return Result(result);
+            return Result(torque.Select((x, y) => new LutPoint(x, PowerToTorque(y, x)), detalization));
         }
 
         [CanBeNull]

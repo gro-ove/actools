@@ -103,7 +103,7 @@ namespace AcManager.Tools.Managers {
                     progress?.Report(car.DisplayName, i++, cars.Count);
                     return new {
                         CarId = car.Id,
-                        FontIds = (await Task.Run(() => new IniFile(car.Location, @"digital_instruments.ini"), cancellation))
+                        FontIds = (await Task.Run(() => car.AcdData?.GetIniFile(@"digital_instruments.ini"), cancellation))
                                 .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant()).NonNull().ToList()
                     };
                 }).WhenAll(12, cancellation)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItIsNot();

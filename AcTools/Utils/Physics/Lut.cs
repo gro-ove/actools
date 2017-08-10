@@ -116,11 +116,8 @@ namespace AcTools.Utils.Physics {
         }
 
         public double MinX { get; private set; }
-
         public double MaxX { get; private set; }
-
         public double MinY { get; private set; }
-
         public double MaxY { get; private set; }
 
         /// <summary>
@@ -249,6 +246,44 @@ namespace AcTools.Utils.Physics {
                 }
             }
 
+            return result;
+        }
+
+        public delegate void CallbackPoint(double x, double y);
+        public delegate LutPoint SelectPoint(double x, double y);
+
+        public void ForEach(CallbackPoint callback, int detalization = 100, bool linearInterpolation = true) {
+            UpdateBoundingBox();
+            var startFrom = MinX;
+            var limit = MaxX;
+            var previousPoint = 0;
+            var previousX = 0d;
+            for (var i = 0; i <= detalization; i++) {
+                var x = detalization == 0 ? limit : (limit - startFrom) * i / detalization + startFrom;
+
+                for (var j = previousPoint; j < Count; j++) {
+                    var p = this[j];
+
+                    if (p.X > x) {
+                        previousPoint = j > 0 ? j - 1 : 0;
+                        break;
+                    }
+
+                    if ((i == 0 || p.X > previousX) && p.X < x) {
+                        callback(p.X, p.Y);
+                    }
+                }
+
+                callback(x, linearInterpolation ? InterpolateLinear(x) : InterpolateCubic(x));
+                previousX = x;
+            }
+        }
+
+        public Lut Select(SelectPoint callback, int detalization = 100, bool linearInterpolation = true) {
+            var result = new Lut();
+            ForEach((x, y) => {
+                result.Add(callback(x, y));
+            }, detalization, linearInterpolation);
             return result;
         }
 

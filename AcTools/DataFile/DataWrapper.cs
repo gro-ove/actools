@@ -5,11 +5,44 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using AcTools.AcdFile;
 using AcTools.Utils;
-using AcTools.Utils.Physics;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public interface IDataWrapper {
+        [NotNull]
+        string Location { get; }
+
+        [NotNull]
+        T GetFile<T>([NotNull] string name) where T : IDataFile, new();
+
+        [CanBeNull]
+        string GetData([NotNull] string name);
+
+        bool Contains([NotNull] string name);
+        void Refresh([CanBeNull] string name);
+        void SetData([NotNull] string name, [CanBeNull] string data, bool recycleOriginal = false);
+        void Delete([NotNull] string name, bool recycleOriginal = false);
+    }
+
+    public static class DataWrapperExtension {
+        public static IniFile GetIniFile(this IDataWrapper data, string name) {
+            return data.GetFile<IniFile>(name);
+        }
+
+        public static LutDataFile GetLutFile(this IDataWrapper data, string name) {
+            return data.GetFile<LutDataFile>(name);
+        }
+
+        public static RtoDataFile GetRtoFile(this IDataWrapper data, string name) {
+            return data.GetFile<RtoDataFile>(name);
+        }
+
+        public static RawDataFile GetRawFile(this IDataWrapper data, string name) {
+            return data.GetFile<RawDataFile>(name);
+        }
+    }
+
+    /*public interface IDataWrapper {
         IniFile GetIniFile([Localizable(false)] string name);
 
         LutDataFile GetLutFile(string name);
@@ -17,9 +50,90 @@ namespace AcTools.DataFile {
         RtoDataFile GetRtoFile(string name);
 
         RawDataFile GetRawFile(string name);
+    }*/
+
+    public abstract class DataWrapperBase : IDataWrapper {
+        private object _cacheLock = new object();
+
+        [CanBeNull]
+        private Dictionary<string, IDataFile> _cache;
+
+        public abstract string Location { get; }
+
+        public T GetFile<T>(string name) where T : IDataFile, new() {
+            lock (_cacheLock) {
+                if (_cache == null) {
+                    _cache = new Dictionary<string, IDataFile>();
+                }
+
+                if (_cache.TryGetValue(name, out var v) && v is T) {
+                    return (T)v;
+                }
+            }
+
+            var t = new T();
+            lock (_cacheLock) {
+                _cache[name] = t;
+            }
+
+            InitializeFile(t, name);
+            return t;
+        }
+
+        protected virtual void InitializeFile(IDataFile dataFile, string name) {
+            dataFile.Initialize(this, name, null);
+        }
+
+        public abstract string GetData(string name);
+        public abstract bool Contains(string name);
+
+        protected void ClearCache() {
+            if (_cache == null) return;
+            lock (_cacheLock) {
+                _cache.Clear();
+            }
+        }
+
+        public void Refresh(string name) {
+            if (_cache != null) {
+                lock (_cacheLock) {
+                    if (name == null) {
+                        _cache.Clear();
+                    } else if (_cache.ContainsKey(name)) {
+                        _cache.Remove(name);
+                    }
+                }
+            }
+
+            RefreshOverride(name);
+        }
+
+        public void SetData(string name, string data, bool recycleOriginal = false) {
+            if (_cache != null) {
+                lock (_cacheLock) {
+                    _cache.Remove(name);
+                }
+            }
+
+            SetDataOverride(name, data, recycleOriginal);
+        }
+
+        public void Delete(string name, bool recycleOriginal = false) {
+            if (_cache != null) {
+                lock (_cacheLock) {
+                    _cache.Remove(name);
+                }
+            }
+
+            DeleteOverride(name, recycleOriginal);
+        }
+
+        protected abstract void RefreshOverride(string name);
+        protected abstract void SetDataOverride(string name, string data, bool recycleOriginal);
+        protected abstract void DeleteOverride(string name, bool recycleOriginal);
     }
 
-    public class DataDirectoryWrapper : IDataWrapper {
+    public class DataDirectoryWrapper : DataWrapperBase {
         private readonly string _directory;
 
         public DataDirectoryWrapper(string directory) {
@@ -30,34 +144,57 @@ namespace AcTools.DataFile {
             _directory = directory;
         }
 
-        public IniFile GetIniFile(string name) {
-            return new IniFile(Path.Combine(_directory, name));
+        public override string Location => _directory;
+
+        public override string GetData(string name) {
+            var filename = Path.Combine(_directory, name);
+            return File.Exists(filename) ? File.ReadAllText(filename) : null;
         }
 
-        public LutDataFile GetLutFile(string name) {
-            return new LutDataFile(Path.Combine(_directory, name));
+        public override bool Contains(string name) {
+            var filename = Path.Combine(_directory, name);
+            return File.Exists(filename);
         }
 
-        public RtoDataFile GetRtoFile(string name) {
-            return new RtoDataFile(Path.Combine(_directory, name));
+        protected override void RefreshOverride(string name) {}
+
+        protected override void SetDataOverride(string name, string data, bool recycleOriginal = false) {
+            var filename = Path.Combine(_directory, name);
+            if (recycleOriginal) {
+                using (var f = FileUtils.RecycleOriginal(filename)) {
+                    try {
+                        File.WriteAllText(f.Filename, data);
+                    } catch {
+                        FileUtils.TryToDelete(f.Filename);
+                        throw;
+                    }
+                }
+            } else {
+                File.WriteAllText(filename, data);
+            }
         }
 
-        public RawDataFile GetRawFile(string name) {
-            return new RawDataFile(Path.Combine(_directory, name));
+        protected override void DeleteOverride(string name, bool recycleOriginal = false) {
+            var filename = Path.Combine(_directory, name);
+            if (recycleOriginal) {
+                FileUtils.Recycle(filename);
+            } else if (File.Exists(filename)) {
+                File.Delete(filename);
+            }
         }
     }
 
-    public class DataWrapper : IDataWrapper, INotifyPropertyChanged {
-        private readonly string _carDirectory;
-        private readonly Dictionary<string, AbstractDataFile> _cache;
-
+    public class DataWrapper : DataWrapperBase, INotifyPropertyChanged {
+        [CanBeNull]
         private Acd _acd;
 
-        public string ParentDirectory => _carDirectory ?? _acd?.ParentDirectory;
+        [NotNull]
+        public string ParentDirectory { get; }
 
-        private DataWrapper(string carDirectory) {
-            _carDirectory = carDirectory;
-            _cache = new Dictionary<string, AbstractDataFile>();
+        public override string Location => ParentDirectory;
+
+        private DataWrapper([NotNull] string carDirectory) {
+            ParentDirectory = carDirectory;
 
             var dataAcd = Path.Combine(carDirectory, "data.acd");
             if (File.Exists(dataAcd)) {
@@ -73,60 +210,63 @@ namespace AcTools.DataFile {
             }
         }
 
-        public void Refresh([CanBeNull] string localName) {
-            lock (_cache) {
-                if (localName == null) {
-                    _cache.Clear();
-                } else if (_cache.ContainsKey(localName)) {
-                    _cache.Remove(localName);
+        public override string GetData(string name) {
+            return _acd?.GetEntry(name)?.ToString();
+        }
+
+        protected override void InitializeFile(IDataFile dataFile, string name) {
+            if (_acd?.IsPacked == false) {
+                dataFile.Initialize(this, name, _acd.GetFilename(name));
+            } else {
+                base.InitializeFile(dataFile, name);
+            }
+        }
+
+        public override bool Contains(string name) {
+            return !IsEmpty && _acd?.GetEntry(name) != null;
+        }
+
+        protected override void RefreshOverride(string name) {
+            var dataAcd = Path.Combine(ParentDirectory, "data.acd");
+            if (File.Exists(dataAcd)) {
+                if (!IsPacked) {
+                    ClearCache();
                 }
 
-                var dataAcd = Path.Combine(_carDirectory, "data.acd");
-                if (File.Exists(dataAcd)) {
-                    if (!IsPacked) {
-                        _cache.Clear();
-                    }
+                _acd = Acd.FromFile(dataAcd);
+                IsPacked = true;
+                IsEmpty = false;
+            } else {
+                if (IsPacked) {
+                    ClearCache();
+                }
 
-                    _acd = Acd.FromFile(dataAcd);
-                    IsPacked = true;
+                IsPacked = false;
+
+                var dataDirectory = Path.Combine(ParentDirectory, "data");
+                if (Directory.Exists(dataDirectory)) {
+                    _acd = Acd.FromDirectory(dataDirectory);
                     IsEmpty = false;
                 } else {
-                    if (IsPacked) {
-                        _cache.Clear();
-                    }
-
-                    IsPacked = false;
-
-                    var dataDirectory = Path.Combine(_carDirectory, "data");
-                    if (Directory.Exists(dataDirectory)) {
-                        _acd = Acd.FromDirectory(dataDirectory);
-                        IsEmpty = false;
-                    } else {
-                        IsEmpty = true;
-                    }
-                }
-
-                OnDataChanged(localName);
-            }
-        }
-
-        public bool Contains(string key) {
-            return !IsEmpty && _acd?.GetEntry(key) != null;
-        }
-
-        public void Delete(string key) {
-            _cache.Remove(key);
-            if (IsEmpty || _acd?.GetEntry(key) == null) return;
-
-            if (IsPacked) {
-                _acd.RemoveEntry(key);
-                _acd.Save(Path.Combine(_carDirectory, "data.acd"));
-            } else {
-                var filename = _acd.GetFilename(key);
-                if (File.Exists(filename)) {
-                    File.Delete(filename);
+                    IsEmpty = true;
                 }
             }
+
+            OnDataChanged(name);
+        }
+
+        protected override void SetDataOverride(string name, string data, bool recycleOriginal = false) {
+            var acd = _acd;
+            if (acd == null) return;
+            acd.SetEntry(name, data);
+            acd.Update(recycleOriginal);
+        }
+
+        protected override void DeleteOverride(string name, bool recycleOriginal = false) {
+            var acd = _acd;
+            if (acd == null) return;
+            acd.DeleteEntry(name);
+            acd.Update(recycleOriginal);
         }
 
         private bool _isPacked;
@@ -148,59 +288,6 @@ namespace AcTools.DataFile {
                 if (value == _isEmpty) return;
                 _isEmpty = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public IniFile GetIniFile([Localizable(false)] string name) {
-            lock (_cache) {
-                AbstractDataFile cached;
-                if (_cache.TryGetValue(name, out cached) && cached is IniFile) {
-                    return (IniFile)cached;
-                }
-
-                var result = new IniFile(_carDirectory, name, _acd);
-                _cache[name] = result;
-                return result;
-            }
-        }
-
-        [Obsolete]
-        public LutDataFile GetLutFile(string name) {
-            lock (_cache) {
-                AbstractDataFile cached;
-                if (_cache.TryGetValue(name, out cached) && cached is LutDataFile) {
-                    return (LutDataFile)cached;
-                }
-
-                var result = new LutDataFile(_carDirectory, name, _acd);
-                _cache[name] = result;
-                return result;
-            }
-        }
-
-        public RtoDataFile GetRtoFile(string name) {
-            lock (_cache) {
-                AbstractDataFile cached;
-                if (_cache.TryGetValue(name, out cached) && cached is RtoDataFile) {
-                    return (RtoDataFile)cached;
-                }
-
-                var result = new RtoDataFile(_carDirectory, name, _acd);
-                _cache[name] = result;
-                return result;
-            }
-        }
-
-        public RawDataFile GetRawFile(string name) {
-            lock (_cache) {
-                AbstractDataFile cached;
-                if (_cache.TryGetValue(name, out cached) && cached is RawDataFile) {
-                    return (RawDataFile)cached;
-                }
-
-                var result = new RawDataFile(_carDirectory, name, _acd);
-                _cache[name] = result;
-                return result;
             }
         }
 

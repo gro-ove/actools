@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

@@ -6,9 +6,7 @@ using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 
 namespace AcTools.DataFile {
-    public class LutDataFile : AbstractDataFile {
-        public LutDataFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) {}
-        public LutDataFile(string carDir, string filename) : base(carDir, filename) {}
+    public class LutDataFile : DataFileBase {
         public LutDataFile(string filename) : base(filename) {}
         public LutDataFile() {}
 

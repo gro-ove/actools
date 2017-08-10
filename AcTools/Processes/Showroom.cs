@@ -13,11 +13,11 @@ namespace AcTools.Processes {
             iniFile["SHOWROOM"].Set("TRACK", (showroomId ?? "").ToLowerInvariant());
             iniFile.Save();
         }
-        
+
         private static string GetCurrentFilterIni() {
             return new IniFile(FileUtils.GetCfgVideoFilename())["POST_PROCESS"].GetPossiblyEmpty("FILTER");
         }
-        
+
         private static void SetCurrentFilterIni(string filter) {
             var filename = FileUtils.GetCfgVideoFilename();
             var iniFile = new IniFile(filename);

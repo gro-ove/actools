@@ -68,7 +68,7 @@ namespace AcTools.Utils {
 
         [CanBeNull, Pure]
         public static string GetMainCarFilename(string carDir, [CanBeNull] DataWrapper data) {
-            var iniFile = data?.GetIniFile("lods.ini") ?? new IniFile(carDir, "lods.ini");
+            var iniFile = (data ?? DataWrapper.FromCarDirectory(carDir)).GetIniFile("lods.ini");
             if (!iniFile.IsEmptyOrDamaged()) {
                 var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
                 if (fromData != null) {

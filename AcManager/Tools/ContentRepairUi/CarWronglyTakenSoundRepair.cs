@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using AcManager.ContentRepair;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 
 namespace AcManager.Tools.ContentRepairUi {
     public class CarWronglyTakenSoundRepair : CarRepairBase {

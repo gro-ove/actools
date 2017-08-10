@@ -1,5 +1,5 @@
 namespace AcTools.DataFile {
     public interface ISyntaxErrorsCatcher {
-        void Catch(AbstractDataFile file, int line);
+        void Catch(DataFileBase file, int line);
     }
 }

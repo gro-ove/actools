@@ -338,7 +338,8 @@
                     <mui:BetterImage.ToolTip>
                       <StackPanel Margin="4 8">
                         <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedCarEntry.CarObject.DisplayName}" Margin="0 0 0 4" />
-                        <c:CarBlock Car="{Binding SelectedCarEntry.CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                        <c:CarBlock Car="{Binding SelectedCarEntry.CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320"
+                            ShowDescription="False" />
                       </StackPanel>
                     </mui:BetterImage.ToolTip>
                   </mui:BetterImage>
