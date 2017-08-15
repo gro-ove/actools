@@ -9,9 +9,9 @@
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsGeneral">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True" Margin="0">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
 
-      <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+      <StackPanel Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
           <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
@@ -69,7 +69,7 @@
         </DockPanel>
 
       </StackPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+      <StackPanel Style="{StaticResource SettingsPanel}">
 
         <!--app version-->
         <DockPanel>

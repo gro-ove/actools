@@ -86,6 +86,13 @@
                       <c:TransitioningContentControl x:Name="PART_Content" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" />
                     </DockPanel>
 
+                    <!-- Resize grip -->
+                    <c:Cell x:Name="ResizeGrip" Background="Transparent" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        WindowChrome.ResizeGripDirection="BottomRight" Panel.ZIndex="10">
+                      <Path Width="12" Height="12" Margin="1" Stroke="{DynamicResource WindowText}" StrokeThickness="1" Stretch="None"
+                          Data="F1 M1,10 L3,10 M5,10 L7,10 M9,10 L11,10 M2,9 L2,11 M6,9 L6,11 M10,9 L10,11 M5,6 L7,6 M9,6 L11,6 M6,5 L6,7 M10,5 L10,7 M9,2 L11,2 M10,1 L10,3" />
+                    </c:Cell>
+
                     <Rectangle x:Name="DimmingThing" Panel.ZIndex="20" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                   </c:Cell>
                 </Border>
@@ -111,6 +118,13 @@
                 </BeginStoryboard>
               </Trigger.ExitActions>
             </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
+                <Condition Property="WindowState" Value="Normal" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+            </MultiTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>

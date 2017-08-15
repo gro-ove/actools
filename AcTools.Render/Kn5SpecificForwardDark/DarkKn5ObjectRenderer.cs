@@ -1193,7 +1193,10 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             } while (direction.LengthSquared() > 1f);
 
             var bokeh = camera.Right * direction.X + camera.Up * direction.Y;
-            var newCamera = new FpsCamera(camera.FovY);
+            var newCamera = new FpsCamera(camera.FovY) {
+                CutProj = camera.CutProj
+            };
+
             var newPosition = camera.Position + AccumulationDofApertureSize * apertureMultipler * bokeh;
             var lookAt = camera.Position + camera.Look * DofFocusPlane;
             newCamera.LookAt(newPosition, lookAt, camera.Tilt);

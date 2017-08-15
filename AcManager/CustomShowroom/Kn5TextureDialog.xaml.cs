@@ -182,7 +182,7 @@ namespace AcManager.CustomShowroom {
 
                         ValuesStorage.Set(KeyDimensions, result);
 
-                        var match = Regex.Match(result, @"^\s*(\d+)(\s+|\s*\D\s*)(\d+)\s*$");
+                        var match = Regex.Match(result, @"^\s*(\d+)(?:\s+|\s*\D\s*)(\d+)\s*$");
                         if (match.Success) {
                             width = FlexibleParser.ParseInt(match.Groups[1].Value);
                             height = FlexibleParser.ParseInt(match.Groups[2].Value);

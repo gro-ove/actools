@@ -495,14 +495,30 @@ namespace AcTools.Utils {
 
         [NotNull, Localizable(false)]
         public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix, bool forcePostfix, int startFrom = 1) {
-            if (!forcePostfix && !Exists(filename)) return filename;
+            return EnsureUnique(false, filename, postfix, forcePostfix, startFrom);
+        }
+
+        public static string EnsureUnique(bool holdPlace, [NotNull] string filename, [NotNull] string postfix, bool forcePostfix, int startFrom = 1) {
+            if (!forcePostfix && !Exists(filename)) {
+                if (holdPlace) {
+                    using (File.Create(filename)) { }
+                }
+
+                return filename;
+            }
 
             var ext = Path.GetExtension(filename);
             var start = filename.Substring(0, filename.Length - ext.Length);
 
             for (var i = startFrom; i < 99999; i++) {
                 var result = start + string.Format(postfix, i) + ext;
-                if (!Exists(result)) return result;
+                if (Exists(result)) continue;
+
+                if (holdPlace) {
+                    using (File.Create(result)) { }
+                }
+
+                return result;
             }
 
             throw new Exception("Can’t find unique filename");
@@ -510,7 +526,12 @@ namespace AcTools.Utils {
 
         [NotNull, Localizable(false)]
         public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix = "-{0}") {
-            return EnsureUnique(filename, postfix, false);
+            return EnsureUnique(false, filename, postfix);
+        }
+
+        [NotNull, Localizable(false)]
+        public static string EnsureUnique(bool holdPlace, [NotNull] string filename, [NotNull] string postfix = "-{0}") {
+            return EnsureUnique(holdPlace, filename, postfix, false);
         }
 
         public static void CopyRecursive(string source, string destination) {

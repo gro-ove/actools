@@ -74,6 +74,7 @@ namespace AcManager.Pages.Settings {
         public void Initialize() {
             InitializeComponent();
             DataContext = new ViewModel();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
     }
 }

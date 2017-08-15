@@ -2021,6 +2021,21 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private string[] _paintShopSources;
+
+            public string[] PaintShopSources {
+                get => _paintShopSources ?? (_paintShopSources = ValuesStorage.GetStringList("Settings.CustomShowroomSettings.PaintShopSources", new[] {
+                    "https://github.com/MadMat13/CM-Paint-Shop/"
+                }).ToArray());
+                set {
+                    value = value.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                    if (Equals(value, _paintShopSources)) return;
+                    _paintShopSources = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.PaintShopSources", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static CustomShowroomSettings _customShowroom;

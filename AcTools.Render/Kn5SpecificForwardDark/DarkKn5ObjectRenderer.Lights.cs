@@ -306,6 +306,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void OnLightPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            IsDirty = true;
             switch (e.PropertyName) {
                 case nameof(DarkLightBase.Type):
                     var light = (DarkLightBase)sender;

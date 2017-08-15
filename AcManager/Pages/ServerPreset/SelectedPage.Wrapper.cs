@@ -428,6 +428,7 @@ namespace AcManager.Pages.ServerPreset {
             private IEnumerable<WrapperContentObject> GetContentCars() {
                 return from c in SelectedObject.DriverEntries.GroupBy(x => x.CarId)
                        let car = CarsManager.Instance.GetById(c.Key)
+                       where car != null
                        let skins = c.Select(x => x.CarSkinId).NonNull().Distinct().Select(car.GetSkinById).NonNull()
                                     .Where(x => x.CanBePacked()).Select(x => new WrapperContentObject(x, SelectedObject.WrapperContentDirectory) {
                                         ShareMode = ShareMode.None
@@ -445,7 +446,7 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private void LoadWrapperContentCars() {
-                WrapperContentCars.LoadFrom(SelectedObject.WrapperContentJObject?["cars"], "skins");;
+                WrapperContentCars.LoadFrom(SelectedObject.WrapperContentJObject?["cars"], "skins");
             }
 
             private readonly Busy _wrapperContentCarsBusy = new Busy();

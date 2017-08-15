@@ -18,6 +18,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public static class SidekickHelper {
+        public static double OptionRangeThreshold = 0;
+
         public static readonly string SidekickAppId = @"Sidekick";
         private static readonly Regex SidekickNameRegex = new Regex(@"\W+", RegexOptions.Compiled);
 
@@ -43,7 +45,7 @@ namespace AcManager.Tools.Helpers {
 
             lut.UpdateBoundingBox();
 
-            var threshold = Math.Min(lut.MaxY, 1d) * 0.98d;
+            var threshold = Math.Min(lut.MaxY, 1d) * (1d - OptionRangeThreshold);
             double? fromX = null, toX = null;
 
             lut.ForEach((x, y) => {

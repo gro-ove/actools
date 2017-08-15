@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
@@ -22,6 +25,18 @@ namespace AcManager.Controls {
     }
 
     public class AvalonExtension {
+        private class LinesArrayToTextConverterInner : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return (value as IEnumerable<string>)?.JoinToString('\n');
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                return value?.ToString().Split('\n').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            }
+        }
+
+        public static IValueConverter LinesArrayToTextConverter = new LinesArrayToTextConverterInner();
+
         internal static bool GetInitialized(DependencyObject obj) {
             return (bool)obj.GetValue(InitializedProperty);
         }

@@ -231,6 +231,7 @@
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
     <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithUiShots.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomTools.PaintShop.cs" />
     <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
       <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
     </Compile>
@@ -695,6 +696,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomShowroom\CmPreviewsTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomCar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomPaintShop.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

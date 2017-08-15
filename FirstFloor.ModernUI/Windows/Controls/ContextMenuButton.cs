@@ -36,6 +36,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var menu = args.Menu ?? Menu;
 
+            if (args.Menu != null && (menu as FrameworkElement)?.DataContext == null) {
+                ((FrameworkElement)menu).SetBinding(DataContextProperty, new Binding {
+                    Source = this,
+                    Path = new PropertyPath(nameof(DataContext))
+                });
+            }
+
             if (ForceNear.HasValue) {
                 near = ForceNear.Value;
             }

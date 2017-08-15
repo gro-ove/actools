@@ -149,6 +149,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.KeepIniComments, ref IniFile.OptionKeepComments);
             AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
             AppArguments.Set(AppFlag.GenericModsLogging, ref GenericModsEnabler.OptionLoggingEnabled);
+            AppArguments.Set(AppFlag.SidekickOptimalRangeThreshold, ref SidekickHelper.OptionRangeThreshold);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();

@@ -354,32 +354,25 @@ namespace AcManager.Pages.Lists {
                     if (!power.HasValue && !torque.HasValue) return;
 
                     if (!torque.HasValue) {
-                        powerCurve = obj.SpecsPowerCurve?.ToLut();
                         if (powerCurve != null) {
                             powerCurve.ScaleToSelf(power.Value);
 
                             var temporaryCurve = TorquePhysicUtils.PowerToTorque(powerCurve);
                             temporaryCurve.UpdateBoundingBox();
                             torque = temporaryCurve.MaxY;
+                            torqueCurve?.ScaleToSelf(torque.Value);
                         } else return;
                     } else if (!power.HasValue) {
-                        torqueCurve = obj.SpecsTorqueCurve?.ToLut();
                         if (torqueCurve != null) {
                             torqueCurve.ScaleToSelf(torque.Value);
 
                             var temporaryCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
                             temporaryCurve.UpdateBoundingBox();
                             power = temporaryCurve.MaxY;
+                            powerCurve?.ScaleToSelf(power.Value);
                         } else return;
-                    }
-
-                    if (powerCurve == null) {
-                        powerCurve = obj.SpecsPowerCurve?.ToLut();
+                    } else {
                         powerCurve?.ScaleToSelf(power.Value);
-                    }
-
-                    if (torqueCurve == null) {
-                        torqueCurve = obj.SpecsTorqueCurve?.ToLut();
                         torqueCurve?.ScaleToSelf(torque.Value);
                     }
                 } else {

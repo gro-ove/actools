@@ -309,7 +309,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             fileName = Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
-            return FileUtils.EnsureUnique(Path.Combine(directory, fileName));
+            return FileUtils.EnsureUnique(true, Path.Combine(directory, fileName));
         }
 
         private bool _keepLoaded;

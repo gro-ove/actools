@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// For testing.
+        /// Example: --sidekick-optimal-range-threshold=0.01
+        /// </summary>
+        SidekickOptimalRangeThreshold,
+
+        /// <summary>
         /// Put all information about generic mods activation/deactivation to log.
         /// Example: --generic-mods-logging.
         /// </summary>

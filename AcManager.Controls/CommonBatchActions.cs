@@ -32,7 +32,7 @@ namespace AcManager.Controls {
 
         private static readonly BatchAction[] AcJsonObjectNewSet = new BatchAction[] {
             BatchAction_AddTag.Instance
-        }.Append(DefaultSet).ToArray();
+        }.Append(DefaultSet).Append(AcCommonObjectSet).ToArray();
 
         public static IEnumerable<BatchAction> GetDefaultSet<T>() where T : AcObjectNew {
             if (typeof(T).IsSubclassOf(typeof(AcJsonObjectNew))) {

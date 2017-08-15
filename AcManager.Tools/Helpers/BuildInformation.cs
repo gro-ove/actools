@@ -34,5 +34,5 @@ namespace AcManager.Tools.Helpers {
 #else
         public static string Configuration { get; private set; } = @"Release";
 #endif
-    }
+   }
 }

@@ -15,8 +15,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private delegate void SplitCallback(Action<Stream> stream, int x, int y, int width, int height);
 
-        private void SplitShot(int width, int height, double downscale, SplitCallback callback, out int cuts, [CanBeNull] IProgress<Tuple<string, double?>> progress,
-                CancellationToken cancellation) {
+        private void SplitShot(int width, int height, double downscale, SplitCallback callback, out int cuts,
+                [CanBeNull] IProgress<Tuple<string, double?>> progress, CancellationToken cancellation) {
             ShotInProcessValue++;
 
             var original = new { Width, Height, ResolutionMultiplier, TimeFactor };
@@ -72,7 +72,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     var shotHeight = (height * downscale).RoundToInt();
                     AcToolsLogging.Write($"Rendered: downscale={downscale}, {shotWidth}×{shotHeight}, {LastShotWidth}×{LastShotHeight}");
 
-                    using (var blender = new PiecesBlender(shotWidth, shotHeight, OptionGBufferExtra)){
+                    using (var blender = new PiecesBlender(shotWidth, shotHeight, OptionGBufferExtra)) {
                         blender.Initialize();
 
                         for (var i = 0; i < cuts * cuts; i++) {

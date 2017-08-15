@@ -374,14 +374,19 @@ namespace LicensePlates {
 
         private MagickImage DiffuseMap(MagickImage textLayer, string backgroundFile, double lightDirection, bool previewMode) {
             var image = LoadImage(backgroundFile).Clone();
+            if (_disposed) return image;
+
             if (image.Width != textLayer.Width || image.Height != textLayer.Height) {
+                if (_disposed) return image;
                 image.Resize(textLayer.Width, textLayer.Height);
             }
 
             if (!previewMode) {
+                if (_disposed) return image;
                 DrawBevel(image, textLayer, lightDirection);
             }
 
+            if (_disposed) return image;
             image.Composite(textLayer, 0, 0, CompositeOperator.Over);
             return image;
         }
@@ -435,27 +440,38 @@ namespace LicensePlates {
 
         private MagickImage NormalsMap(MagickImage textLayer, string backgroundFile, bool previewMode) {
             var image = LoadImage(backgroundFile).Clone();
+            if (_disposed) return image;
+
             if (image.Width != textLayer.Width || image.Height != textLayer.Height) {
                 image.Resize(textLayer.Width, textLayer.Height);
+                if (_disposed) return image;
             }
 
             using (var summaryLayer = GetNormalsMapLayer(textLayer)) {
+                if (_disposed) return image;
+
                 if (!previewMode) {
                     using (var blurredLayer = new MagickImage(summaryLayer)) {
                         blurredLayer.Blur(12, 6);
+                        if (_disposed) return image;
                         image.Composite(blurredLayer, 0, 0, CompositeOperator.Overlay);
+                        if (_disposed) return image;
                     }
 
                     using (var textFlatten = new MagickImage(textLayer)) {
                         textFlatten.Colorize(new MagickColor("#8080ff"), new Percentage(100));
+                        if (_disposed) return image;
                         image.Composite(textFlatten, 0, 0, CompositeOperator.Over);
+                        if (_disposed) return image;
                     }
                 }
 
                 image.Composite(summaryLayer, 0, 0, CompositeOperator.Overlay);
+                if (_disposed) return image;
 
                 if (!previewMode) {
                     NormalizeNormalsMap(image, 1.0);
+                    if (_disposed) return image;
                 }
             }
 
@@ -491,7 +507,11 @@ namespace LicensePlates {
             }
         }
 
+        private bool _disposed;
+
         public void Dispose() {
+            _disposed = true;
+
             _textLayer?.Dispose();
             _textLayer = null;
 
