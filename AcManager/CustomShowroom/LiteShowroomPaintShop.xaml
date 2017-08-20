@@ -1,9 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates"
-    xmlns:cs="clr-namespace:AcManager.CustomShowroom"
-    xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:c="http://acstuff.ru/app/controls"
     mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="LiteShowroomSettings.xaml" />
@@ -307,11 +305,26 @@
       <TextBlock Text="Paint Shop" Style="{StaticResource Heading2}" />
     </DockPanel>
 
-    <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" DockPanel.Dock="Bottom">
-      <Button Command="{Binding SkinSaveChangesCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
-          Padding="0 3 0 5" />
+    <Button DockPanel.Dock="Bottom" Command="{Binding SkinSaveCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
+        Padding="0 3 0 5" />
+    <DockPanel DockPanel.Dock="Bottom" Style="{StaticResource DockPanel}" Margin="0 4 0 4">
+      <Label Content="Skin ID:" Width="60" />
+      <mui:BooleanSwitch Value="{Binding SaveAsNewSkin}">
+        <mui:BooleanSwitch.True>
+          <mui:BetterTextBox Text="{Binding SaveAsSkinId}" Placeholder="{Binding SaveAsSkinIdSuggested}" />
+        </mui:BooleanSwitch.True>
+        <mui:BooleanSwitch.False>
+          <mui:BetterTextBox Text="{Binding Skin.Id, Mode=OneWay}" IsReadOnly="True" />
+        </mui:BooleanSwitch.False>
+      </mui:BooleanSwitch>
+    </DockPanel>
+    <mui:LabeledToggleButton DockPanel.Dock="Bottom" IsChecked="{Binding SaveAsNewSkin}" HighlightChecked="False" LabelChecked="Save As New"
+        LabelUnchecked="Modify Current" Margin="0 20 0 0" />
+
+    <!--<mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" DockPanel.Dock="Bottom">
+      <Button Command="{Binding SkinSaveChangesCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" Padding="0 3 0 5" />
       <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save As New…" Padding="0 3 0 5" />
-    </mui:SpacingUniformGrid>
+    </mui:SpacingUniformGrid>-->
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outside="True"
         mui:SaveScroll.Key="__csSkinItems">

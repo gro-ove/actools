@@ -20,6 +20,7 @@ namespace AcTools.Render.Kn5SpecificForward {
     public partial class ForwardKn5ObjectRenderer {
         [CanBeNull]
         public IAcCarSoundFactory SoundFactory { get; set; }
+
         public static int OptionCacheSize = 0;
 
         private class PreviousCar {
@@ -366,9 +367,11 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                     _renderer.IsDirty = true;
                     _renderer.Scene.UpdateBoundingBox();
+#if DEBUG
                 } catch (Exception e) {
                     MessageBox.Show(e.ToString());
                     throw;
+#endif
                 } finally {
                     if (ReferenceEquals(_loadingCar, car)) {
                         _loadingCar = null;

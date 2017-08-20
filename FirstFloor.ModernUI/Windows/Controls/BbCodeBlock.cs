@@ -58,6 +58,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator),
                 typeof(BbCodeBlock), new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
 
+        [CanBeNull]
         public ILinkNavigator LinkNavigator {
             get => (ILinkNavigator)GetValue(LinkNavigatorProperty);
             set => SetValue(LinkNavigatorProperty, value);
@@ -87,11 +88,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnLinkNavigatorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue == null) {
-                // null values disallowed
-                throw new NullReferenceException("LinkNavigator");
-            }
-
             ((BbCodeBlock)o).UpdateDirty();
         }
 
@@ -210,7 +206,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnRequestNavigate(object sender, RequestNavigateEventArgs e) {
             try {
                 // perform navigation using the link navigator
-                LinkNavigator.Navigate(e.Uri, this, e.Target);
+                LinkNavigator?.Navigate(e.Uri, this, e.Target);
             } catch (Exception ex) {
                 // display navigation failures
                 Logging.Warning(ex);

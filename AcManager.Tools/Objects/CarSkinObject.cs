@@ -87,7 +87,7 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public override string DisplayName => string.IsNullOrWhiteSpace(Name) ? Id : Name;
+        public override string DisplayName => SettingsHolder.Content.CarSkinsDisplayId || string.IsNullOrWhiteSpace(Name) ? Id : Name;
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
@@ -97,7 +97,6 @@ namespace AcManager.Tools.Objects {
         }
 
         public string LiveryImage { get; private set; }
-
         public string PreviewImage { get; private set; }
 
         protected override void LoadOrThrow() {

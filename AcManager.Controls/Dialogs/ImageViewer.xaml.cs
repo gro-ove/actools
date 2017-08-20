@@ -17,33 +17,53 @@ using Microsoft.Win32;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Dialogs {
+    [CanBeNull]
+    public delegate object ImageViewerDetailsCallback([CanBeNull] object image);
+
     public partial class ImageViewer {
-        public ImageViewer(ImageSource imageSource) : this(new[] { imageSource }) { }
+        public ImageViewer(ImageSource imageSource, ImageViewerDetailsCallback details = null) : this(new[] { imageSource }, details: details) { }
 
-        public ImageViewer(string image, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) : this(new[] { image }, 0, maxWidth, maxHeight) { }
+        public ImageViewer(string image, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue, ImageViewerDetailsCallback details = null) :
+                this(new[] { image }, 0, maxWidth, maxHeight, details) { }
 
-        public ImageViewer(IEnumerable<object> images, int position = 0, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) {
-            DataContext = new ViewModel(images, position) {
+        public ImageViewer(IEnumerable<object> images, int position = 0, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue,
+                ImageViewerDetailsCallback details = null) {
+            DataContext = new ViewModel(images, position, details) {
                 MaxImageWidth = maxWidth,
                 MaxImageHeight = maxHeight
             };
+
             InitializeComponent();
             Buttons = new Button[] { };
-
             ((ViewModel)DataContext).PropertyChanged += OnModelPropertyChanged;
+        }
+
+        public HorizontalAlignment HorizontalDetailsAlignment {
+            get => Details.HorizontalAlignment;
+            set => Details.HorizontalAlignment = value;
+        }
+
+        public VerticalAlignment VerticalDetailsAlignment {
+            get => Details.VerticalAlignment;
+            set => Details.VerticalAlignment = value;
+        }
+
+        public Thickness ImageMargin {
+            get => Image.Margin;
+            set => Image.Margin= value;
         }
 
         private void OnModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // if (e.PropertyName == )
         }
 
-        private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 Close();
             }
         }
 
-        private void ImageViewer_OnKeyDown(object sender, KeyEventArgs e) {
+        private void OnKeyDown(object sender, KeyEventArgs e) {
             if (e.Key >= Key.D1 && e.Key <= Key.D9) {
                 Model.CurrentPosition = e.Key - Key.D1;
             } else if (e.Key == Key.Left || e.Key == Key.K) {
@@ -53,7 +73,7 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        private void ImageViewer_OnKeyUp(object sender, KeyEventArgs e) {
+        private void OnKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack ||
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 Close();
@@ -78,16 +98,16 @@ namespace AcManager.Controls.Dialogs {
             return IsSelected ? Model.CurrentOriginalImage as string : null;
         }
 
-        private void ApplyButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnApplyButtonClick(object sender, MouseButtonEventArgs e) {
             IsSelected = true;
             Close();
         }
 
-        private void CloseButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnCloseButtonClick(object sender, MouseButtonEventArgs e) {
             Close();
         }
 
-        private void ImageViewer_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (double.IsInfinity(Model.MaxImageHeight)) {
                 Model.MaxImageHeight = Wrapper.Height;
             }
@@ -100,10 +120,13 @@ namespace AcManager.Controls.Dialogs {
         public ViewModel Model => (ViewModel)DataContext;
 
         public class ViewModel : NotifyPropertyChanged {
+            [CanBeNull]
+            private readonly ImageViewerDetailsCallback _details;
             private readonly object[] _images;
             private readonly object[] _originalImages;
-            
-            public ViewModel(IEnumerable<object> images, int position) {
+
+            public ViewModel(IEnumerable<object> images, int position, [CanBeNull] ImageViewerDetailsCallback details) {
+                _details = details;
                 _originalImages = images.ToArray();
                 _images = _originalImages.ToArray();
 
@@ -111,48 +134,66 @@ namespace AcManager.Controls.Dialogs {
                 UpdateCurrent();
             }
 
-            private async void UpdateCurrent() {
-                var position = _currentPosition;
-                var path = _images[position] as string;
+            private void Preload(int position) {
+                if (position < 0 || position >= _images.Length) return;
+
+                string path;
+                lock (_images) {
+                    path = _images[position] as string;
+                }
+
                 if (path != null) {
-                    _images[position] = BetterImage.LoadBitmapSource(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
+                    BetterImage.LoadBitmapSourceAsync(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth).ContinueWith(r => {
+                        if (r.Result.IsBroken) return;
+                        lock (_images) {
+                            var updated = _images[position];
+                            if (updated as string == path) {
+                                _images[position] = r.Result;
+                            }
+                        }
+                    }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                }
+            }
+
+            private void Unload(int position) {
+                lock (_images) {
+                    _images[position] = _originalImages[position];
+                }
+            }
+
+            private void UpdateCurrent() {
+                var position = _currentPosition;
+
+                object current;
+                lock (_images) {
+                    current = _images[position];
                 }
 
-                if (position < _images.Length - 1) {
-                    var next = position + 1;
-                    var nextPath = _images[next] as string;
-                    if (nextPath != null) {
-                        var loaded = await BetterImage.LoadBitmapSourceAsync(nextPath, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
-                        var updated = _images[next];
-                        if (updated as string != nextPath) return;
-                        _images[next] = loaded;
+                CurrentDetails = _details?.Invoke(_originalImages[position]);
+
+                var path = current as string;
+                if (path != null) {
+                    var loaded = BetterImage.LoadBitmapSource(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
+                    lock (_images) {
+                        _images[position] = loaded;
                     }
                 }
 
-                if (position > 1) {
-                    var next = position - 1;
-                    var nextPath = _images[next] as string;
-                    if (nextPath != null) {
-                        var loaded = await BetterImage.LoadBitmapSourceAsync(nextPath, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
-                        var updated = _images[next];
-                        if (updated as string != nextPath) return;
-                        _images[next] = loaded;
+                Preload(position + 1);
+                Preload(position - 1);
+
+                for (var i = 0; i < _images.Length; i++) {
+                    var offset = (i - position).Abs();
+                    if (offset > 1) {
+                        Unload(position);
                     }
-                }
-
-                for (var i = 0; i < position - 2; i++) {
-                    _images[i] = _originalImages[i];
-                }
-
-                for (var i = position + 3; i < _images.Length; i++) {
-                    _images[i] = _originalImages[i];
                 }
             }
 
             private int _currentPosition;
 
             public int CurrentPosition {
-                get { return _currentPosition; }
+                get => _currentPosition;
                 set {
                     value = value.Clamp(0, _images.Length - 1);
                     if (Equals(value, _currentPosition)) return;
@@ -182,7 +223,7 @@ namespace AcManager.Controls.Dialogs {
             private bool _saveable;
 
             public bool Saveable {
-                get { return _saveable; }
+                get => _saveable;
                 set {
                     if (Equals(value, _saveable)) return;
                     _saveable = value;
@@ -193,7 +234,7 @@ namespace AcManager.Controls.Dialogs {
             private string _saveableTitle = ControlsStrings.ImageViewer_Save_Title;
 
             public string SaveableTitle {
-                get { return _saveableTitle; }
+                get => _saveableTitle;
                 set {
                     if (Equals(value, _saveableTitle)) return;
                     _saveableTitle = value;
@@ -204,7 +245,7 @@ namespace AcManager.Controls.Dialogs {
             private string _saveDirectory;
 
             public string SaveDirectory {
-                get { return _saveDirectory; }
+                get => _saveDirectory;
                 set {
                     if (Equals(value, _saveDirectory)) return;
                     _saveDirectory = value;
@@ -215,7 +256,7 @@ namespace AcManager.Controls.Dialogs {
             private double _maxImageWidth = double.MaxValue;
 
             public double MaxImageWidth {
-                get { return _maxImageWidth; }
+                get => _maxImageWidth;
                 set {
                     if (value.Equals(_maxImageWidth)) return;
                     _maxImageWidth = value;
@@ -226,7 +267,7 @@ namespace AcManager.Controls.Dialogs {
             private double _maxImageHeight = double.MaxValue;
 
             public double MaxImageHeight {
-                get { return _maxImageHeight; }
+                get => _maxImageHeight;
                 set {
                     if (value.Equals(_maxImageHeight)) return;
                     _maxImageHeight = value;
@@ -234,16 +275,32 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public object CurrentImage => _images[_currentPosition];
+            private object _currentDetails;
+
+            public object CurrentDetails {
+                get => _currentDetails;
+                set {
+                    if (Equals(value, _currentDetails)) return;
+                    _currentDetails = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public object CurrentImage {
+                get {
+                    lock (_images) {
+                        return _images[_currentPosition];
+                    }
+                }
+            }
 
             public object CurrentOriginalImage => _originalImages[_currentPosition];
-
             public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? ControlsStrings.ImageViewer_DefaultName);
 
             private bool _selectionMode;
 
             public bool SelectionMode {
-                get { return _selectionMode; }
+                get => _selectionMode;
                 set {
                     if (Equals(value, _selectionMode)) return;
                     _selectionMode = value;

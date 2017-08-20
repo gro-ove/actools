@@ -280,8 +280,8 @@ namespace AcTools.Render.Kn5Specific.Animations {
 
         public bool PingPongMode;
 
-        private void Set(float position) {
-            if (_wrappers == null) return;
+        private bool Set(float position) {
+            if (_wrappers == null) return false;
 
             if (!ClampPosition) {
                 if (position > 1f) {
@@ -294,13 +294,20 @@ namespace AcTools.Render.Kn5Specific.Animations {
             var wrappersPosition = PingPongMode ?
                     position > 0.5f ? 2f - position * 2f : position * 2f :
                     position;
+            var any = false;
+
             for (var i = 0; i < _wrappers.Length; i++) {
                 _wrappers[i].Set(wrappersPosition);
+                any = true;
             }
 
-            foreach (var animator in Linked) {
+            for (var i = 0; i < Linked.Count; i++) {
+                var animator = Linked[i];
                 animator.Set(position);
+                any = true;
             }
+
+            return any;
         }
 
         public void Update() {
@@ -324,28 +331,20 @@ namespace AcTools.Render.Kn5Specific.Animations {
                 }
 
                 _targetPosition = _currentPosition;
-                Set(_currentPosition);
-                return true;
+                return Set(_currentPosition);
             }
 
             if (_duration > 0 && _targetPosition != _currentPosition) {
                 if (float.IsPositiveInfinity(dt) || Equals(dt, float.MaxValue)) {
                     _currentPosition = _targetPosition;
-                    Set(_currentPosition);
-                    return true;
+                    return Set(_currentPosition);
                 }
 
                 var delta = dt / _duration;
                 var left = (_targetPosition - _currentPosition).Abs();
-                if (left < delta) {
-                    _currentPosition = _targetPosition;
-                    Set(_currentPosition);
-                } else {
-                    _currentPosition += _targetPosition < _currentPosition ? -delta : delta;
-                    Set(_currentPosition);
-                }
-
-                return true;
+                _currentPosition = left < delta ? _targetPosition :
+                        _currentPosition + (_targetPosition < _currentPosition ? -delta : delta);
+                return Set(_currentPosition);
             }
 
             return false;

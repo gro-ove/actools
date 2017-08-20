@@ -26,7 +26,7 @@ namespace AcTools.Tests {
         [Test]
         public async Task TestAsync() {
             var i = 0;
-            var l = Lazier.Create(async () => {
+            var l = Lazier.CreateAsync(async () => {
                 var v = ++i;
                 await Task.Delay(25);
                 return v;

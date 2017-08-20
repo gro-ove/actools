@@ -51,11 +51,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static bool OptionReadFileSync = false;
 
         /// <summary>
-        /// Set true to decode all images in the UI thread.
-        /// </summary>
-        public static bool OptionDecodeImageSync = false;
-
-        /// <summary>
         /// If image’s size is smaller than this, it will be decoded in the UI thread.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
@@ -236,6 +231,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public int DecodeWidth {
             get => _decodeWidth;
             set => SetValue(DecodeWidthProperty, value);
+        }
+
+        public static readonly DependencyProperty AsyncDecodeProperty = DependencyProperty.Register(nameof(AsyncDecode), typeof(bool),
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
+                    ((BetterImage)o)._asyncDecode = (bool)e.NewValue;
+                }));
+
+        private bool _asyncDecode = true;
+
+        public bool AsyncDecode {
+            get => _asyncDecode;
+            set => SetValue(AsyncDecodeProperty, value);
         }
 
         public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch),
@@ -748,7 +755,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
-            var bytes = await ReadBytesAsync(filename);
+            if (filename.StartsWith("http:") || filename.StartsWith("https:")) {
+                Uri uri;
+                try {
+                    uri = new Uri(filename);
+                } catch (Exception) {
+                    return BitmapEntry.Empty;
+                }
+
+                var remote = uri.Scheme == "http" || uri.Scheme == "https";
+                if (remote) {
+                    return await LoadRemoteBitmapAsync(uri).ConfigureAwait(false);
+                }
+            }
+
+            var bytes = await ReadBytesAsync(filename).ConfigureAwait(false);
             return bytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
         }
         #endregion
@@ -1100,9 +1121,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            if (OptionDecodeImageSync) {
-                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
-            } else {
+            if (AsyncDecode) {
                 _currentTask = ThreadPool.Run(() => {
                     var current = LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight);
 
@@ -1119,6 +1138,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, result);
                     }
                 });
+            } else {
+                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
             }
         }
 

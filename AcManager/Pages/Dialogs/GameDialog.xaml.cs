@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media.Effects;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Selected;
@@ -57,7 +58,7 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            var rhmSettingsButton = new Button {
+            /*var rhmSettingsButton = new Button {
                 Content = "RHM Settings",
                 Command = RhmService.Instance.ShowSettingsCommand,
                 MinHeight = 21,
@@ -69,9 +70,19 @@ namespace AcManager.Pages.Dialogs {
                 Source = RhmService.Instance,
                 Path = new PropertyPath(nameof(RhmService.Active)),
                 Converter = new FirstFloor.ModernUI.Windows.Converters.BooleanToVisibilityConverter()
-            });
+            });*/
 
-            Buttons = new[] { rhmSettingsButton, CancelButton };
+            Buttons = new[] {
+                // rhmSettingsButton,
+                CancelButton
+            };
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            var effect = ProgressRing.Effect as DropShadowEffect;
+            if (effect != null) {
+                effect.BlurRadius *= ProgressRing.DensityMultiplier;
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e) {

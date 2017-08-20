@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -79,6 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         [CanBeNull]
         private readonly FrameworkElement _source;
+        private readonly List<Tuple<string, string>> _imageUrls = new List<Tuple<string, string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:BBCodeParser"/> class.
@@ -294,6 +296,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                             if (uri != null) {
                                 FrameworkElement image = new Image (cache) { ImageUrl = uri };
+                                // FrameworkElement image = new BetterImage { Filename = uri, AsyncDecode = false };
+
                                 if (toolTip) {
                                     image.ToolTip = new ToolTip {
                                         Content = new TextBlock { Text = token.Value }
@@ -314,14 +318,16 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                         image.MaxWidth = maxSize;
                                         image.MaxHeight = maxSize;
                                     }
+
                                     RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
                                 }
 
                                 if (expand) {
+                                    _imageUrls.Add(Tuple.Create(uri, toolTip ? token.Value : null));
                                     image.Cursor = Cursors.Hand;
                                     image.MouseDown += (sender, args) => {
                                         args.Handled = true;
-                                        BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(new Uri(uri, UriKind.RelativeOrAbsolute)));
+                                        BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(uri, _imageUrls));
                                     };
                                 }
 

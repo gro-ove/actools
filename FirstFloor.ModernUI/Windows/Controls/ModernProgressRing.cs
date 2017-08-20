@@ -49,5 +49,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get => (bool)GetValue(IsActiveProperty);
             set => SetValue(IsActiveProperty, value);
         }
+
+        #region For glowing
+        public static readonly DependencyProperty DensityMultiplierProperty = DependencyProperty.Register(nameof(DensityMultiplier), typeof(double),
+                typeof(ModernProgressRing), new FrameworkPropertyMetadata(1d));
+
+        public double DensityMultiplier {
+            get => (double)GetValue(DensityMultiplierProperty);
+            set => SetValue(DensityMultiplierProperty, value);
+        }
+        #endregion
     }
 }

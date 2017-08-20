@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -35,19 +36,62 @@ namespace AcManager.CustomShowroom {
         private readonly BaseRenderer _renderer;
 
         private readonly Kn5 _kn5;
-        private readonly string _textureName;
         private readonly ISaveHelper _saveable;
 
-        public Size? Size { private get; set; }
+        [NotNull]
+        public readonly string TextureName;
+
+        [CanBeNull]
+        public readonly string ObjectPath;
+
+        private Size? _originSize;
+
+        public Size? OriginSize {
+            get => _originSize;
+            set {
+                if (value.Equals(_originSize)) return;
+                _originSize = value;
+                _size = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Size? _size;
 
         [CanBeNull]
         private readonly CarObject _car;
 
-        public BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName,
+        public static BakedShadowsRendererViewModel ForTexture([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName,
                 [CanBeNull] CarObject car) {
+            return new BakedShadowsRendererViewModel(renderer, kn5, textureName, null, car);
+        }
+
+        public static BakedShadowsRendererViewModel ForObject([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string objectPath,
+                [CanBeNull] CarObject car) {
+            return new BakedShadowsRendererViewModel(renderer, kn5, null, objectPath, car);
+        }
+
+        private BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5,
+                [CanBeNull] string textureName, [CanBeNull] string objectPath, [CanBeNull] CarObject car) {
             _renderer = renderer;
             _kn5 = kn5;
-            _textureName = textureName;
+
+            if (textureName == null) {
+                if (objectPath == null) throw new ArgumentNullException(nameof(objectPath));
+
+                var node = _kn5.GetNode(objectPath)
+                        ?? throw new Exception($"Node “{objectPath}” not found");
+                var material = _kn5.GetMaterial(node.MaterialId)
+                        ?? throw new Exception($"Material for node “{objectPath}” not found");
+                textureName = material.GetMappingByName("txDiffuse")?.Texture ?? material.TextureMappings.FirstOrDefault()?.Texture
+                        ?? throw new Exception($"Texture for node “{objectPath}” not found");
+
+                TextureName = textureName;
+                ObjectPath = objectPath;
+            }
+
+            TextureName = textureName;
+
             _car = car;
             _saveable = new SaveHelper<SaveableData>("_carTextureDialog", () => new SaveableData {
                 From = From,
@@ -157,7 +201,7 @@ namespace AcManager.CustomShowroom {
             switch (size) {
                 case null:
                     var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
-                            ValuesStorage.GetString(KeyDimensions, Size.HasValue ? $"{Size?.Width}x{Size?.Height}" : ""), @"2048x2048");
+                            ValuesStorage.GetString(KeyDimensions, _size.HasValue ? $"{_size?.Width}x{_size?.Height}" : ""), @"2048x2048");
                     if (string.IsNullOrWhiteSpace(result)) return null;
 
                     ValuesStorage.Set(KeyDimensions, result);
@@ -179,8 +223,8 @@ namespace AcManager.CustomShowroom {
                     break;
 
                 case -1:
-                    width = (int)(Size?.Width ?? 1024);
-                    height = (int)(Size?.Height ?? 1024);
+                    width = (int)(_size?.Width ?? 1024);
+                    height = (int)(_size?.Height ?? 1024);
                     break;
 
                 default:
@@ -205,7 +249,7 @@ namespace AcManager.CustomShowroom {
                         renderer.CopyStateFrom(_renderer as ToolsKn5ObjectRenderer);
                         renderer.Width = width;
                         renderer.Height = height;
-                        renderer.Shot(filename, _textureName, progress, cancellation);
+                        renderer.Shot(filename, TextureName, ObjectPath, progress, cancellation);
                     }
                 });
 
@@ -229,16 +273,16 @@ namespace AcManager.CustomShowroom {
 
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
             var filename = FilesStorage.Instance.GetTemporaryFilename(
-                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} AO.png");
+                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} AO.png");
             var resultSizeN = await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car);
             if (!resultSizeN.HasValue) return;
 
             var resultSize = resultSizeN.Value;
             var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
             var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
-                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} Original ({uniquePostfix}).tmp");
+                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} Original ({uniquePostfix}).tmp");
             if (File.Exists(originalTexture)) {
-                new ImageViewer(new object[] { filename, originalTexture }) {
+                new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
                     Model = {
                         Saveable = true,
                         SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
@@ -251,11 +295,11 @@ namespace AcManager.CustomShowroom {
             }
 
             byte[] data;
-            if (_renderer != null && _kn5.TexturesData.TryGetValue(_textureName, out data)) {
+            if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out data)) {
                 var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
                 if (image != null) {
                     image.Image.SaveAsPng(originalTexture);
-                    new ImageViewer(new object[] { filename, originalTexture }) {
+                    new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
                         Model = {
                             Saveable = true,
                             SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
@@ -273,7 +317,8 @@ namespace AcManager.CustomShowroom {
                     Saveable = true,
                     SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                     SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
-                }
+                },
+                ImageMargin = new Thickness()
             }.ShowDialog();
         }));
         #endregion

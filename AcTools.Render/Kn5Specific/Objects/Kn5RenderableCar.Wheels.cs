@@ -113,11 +113,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var susp = $@"SUSP_{namePostfix}";
             var hub = $@"HUB_{namePostfix}";
-            var skipHub = getDummyByName(susp).GetAllChildren().Any(x => x.Name == hub);
+            var skipHub = getDummyByName(susp)?.GetAllChildren().Any(x => x.Name == hub);
 
             var animatedDisc = $@"DISC_{namePostfix}_ANIM";
             return new[] {
-                $@"WHEEL_{namePostfix}", susp, skipHub ? null : hub,
+                $@"WHEEL_{namePostfix}", susp, skipHub == true ? null : hub,
                 getDummyByName(animatedDisc) != null ? null : $@"DISC_{namePostfix}"
             }.NonNull();
         }

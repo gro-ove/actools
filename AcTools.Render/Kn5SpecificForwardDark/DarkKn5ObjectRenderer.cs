@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -1038,13 +1039,39 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
         }
 
+        public static bool OptionSpecialAccumulationDofBokeh;
+
         private bool _realTimeAccumulationMode;
         private int _realTimeAccumulationSize;
+
+        public override int AccumulatedFrame => _realTimeAccumulationSize;
 
         private TargetResourceTexture _accumulationTexture, _accumulationMaxTexture,
                 _accumulationTemporaryTexture, _accumulationBaseTexture;
 
         private void DrawRealTimeDofAccumulation() {
+            if (_realTimeAccumulationSize >= AccumulationDofIterations) {
+                PrepareForFinalPass();
+                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+
+                if (_accumulationDofBokeh) {
+                    var between = PpBetweenBuffer;
+                    copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, between.TargetView, _realTimeAccumulationSize);
+
+                    var bufferAColorGrading = PpColorGradingBuffer;
+                    if (!UseColorGrading || bufferAColorGrading == null) {
+                        HdrPass(between.View, RenderTargetView, OutputViewport);
+                    } else {
+                        var hdrView = HdrPass(between.View, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ?? bufferAColorGrading.View;
+                        ColorGradingPass(hdrView, RenderTargetView, OutputViewport);
+                    }
+                } else {
+                    copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, RenderTargetView, _realTimeAccumulationSize);
+                }
+
+                return;
+            }
+
             if (_accumulationTexture == null) {
                 _accumulationTexture = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
                 _accumulationMaxTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
@@ -1058,8 +1085,9 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
 
             var accumulationDofBokeh = AccumulationDofBokeh;
-            if (accumulationDofBokeh) {
-                _accumulationMaxTexture.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
+            var specialDofBokeh = AccumulationDofBokeh && OptionSpecialAccumulationDofBokeh;
+            if (specialDofBokeh) {
+                _accumulationMaxTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
             }
 
             var firstStep = _realTimeAccumulationSize == 0;
@@ -1067,7 +1095,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
             if (firstStep) {
                 DeviceContext.ClearRenderTargetView(_accumulationTexture.TargetView, default(Color4));
-                if (accumulationDofBokeh) {
+                if (specialDofBokeh) {
                     DeviceContext.ClearRenderTargetView(_accumulationMaxTexture.TargetView, default(Color4));
                 }
                 DrawSceneToBuffer();
@@ -1080,32 +1108,71 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             var bufferF = InnerBuffer;
             if (bufferF == null) return;
 
-            var result = AaThenBloom(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
-            var copy = DeviceContextHolder.GetHelper<CopyHelper>();
-
+            bool? originalFxaa = null;
             if (firstStep) {
-                copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);
+                originalFxaa = UseFxaa;
+                UseFxaa = true;
+                IsDirty = false;
             }
-
-            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-            copy.Draw(DeviceContextHolder, result, _accumulationTexture.TargetView);
 
             if (accumulationDofBokeh) {
-                DeviceContext.Rasterizer.SetViewports(_accumulationMaxTexture.Viewport);
-                DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MaxState;
-                copy.Draw(DeviceContextHolder, result, _accumulationMaxTexture.TargetView);
-                DeviceContext.Rasterizer.SetViewports(OutputViewport);
-            }
+                var result = AaPass(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
+                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
 
-            DeviceContext.OutputMerger.BlendState = null;
+                if (firstStep) {
+                    UseFxaa = originalFxaa ?? true;
+                    IsDirty = false;
+                    copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);
+                }
 
-            if (_realTimeAccumulationSize < 4) {
-                copy.Draw(DeviceContextHolder, _accumulationBaseTexture.View, RenderTargetView);
-            } else if (accumulationDofBokeh) {
-                copy.AccumulateBokehDivide(DeviceContextHolder, _accumulationTexture.View, _accumulationMaxTexture.View, RenderTargetView,
-                        _realTimeAccumulationSize, 0.5f);
+                DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
+                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView);
+                DeviceContext.OutputMerger.BlendState = null;
+
+                var between = PpBetweenBuffer;
+                if (_realTimeAccumulationSize < 4) {
+                    copy.Draw(DeviceContextHolder, _accumulationBaseTexture.View, between.TargetView);
+                } else {
+                    copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, between.TargetView, _realTimeAccumulationSize);
+                }
+
+                var bufferAColorGrading = PpColorGradingBuffer;
+                if (!UseColorGrading || bufferAColorGrading == null) {
+                    HdrPass(between.View, RenderTargetView, OutputViewport);
+                } else {
+                    var hdrView = HdrPass(between.View, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ?? bufferAColorGrading.View;
+                    ColorGradingPass(hdrView, RenderTargetView, OutputViewport);
+                }
             } else {
-                copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, RenderTargetView, _realTimeAccumulationSize);
+                var result = AaThenBloom(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
+                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+
+                if (firstStep) {
+                    UseFxaa = originalFxaa ?? true;
+                    IsDirty = false;
+                    copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);
+                }
+
+                DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
+                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView);
+
+                if (specialDofBokeh) {
+                    DeviceContext.Rasterizer.SetViewports(_accumulationMaxTexture.Viewport);
+                    DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MaxState;
+                    copy.DrawSqr(DeviceContextHolder, result, _accumulationMaxTexture.TargetView);
+                    DeviceContext.Rasterizer.SetViewports(OutputViewport);
+                }
+
+                DeviceContext.OutputMerger.BlendState = null;
+
+                if (_realTimeAccumulationSize < 4) {
+                    copy.Draw(DeviceContextHolder, _accumulationBaseTexture.View, RenderTargetView);
+                } else if (specialDofBokeh) {
+                    copy.AccumulateBokehDivide(DeviceContextHolder, _accumulationTexture.View, _accumulationMaxTexture.View, RenderTargetView,
+                            _realTimeAccumulationSize, 0.5f);
+                } else {
+                    copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, RenderTargetView, _realTimeAccumulationSize);
+                }
             }
         }
 
@@ -1153,9 +1220,12 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         public int AccumulationDofIterations {
             get => _accumulationDofIterations;
             set {
+                value = Math.Max(value, 2);
                 if (Equals(value, _accumulationDofIterations)) return;
                 _accumulationDofIterations = value;
+                IsDirty = true;
                 OnPropertyChanged();
+                _realTimeAccumulationSize = 0;
             }
         }
 
@@ -1187,18 +1257,31 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         protected override bool CanShotWithoutExtraTextures => base.CanShotWithoutExtraTextures && (!UseDof || !UseAccumulationDof);
 
         private CameraBase GetDofAccumulationCamera(CameraBase camera, float apertureMultipler) {
+            var apertureSize = AccumulationDofApertureSize;
+
             Vector2 direction;
-            do {
-                direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
-            } while (direction.LengthSquared() > 1f);
+            if (apertureSize <= 0f) {
+                direction = Vector2.Zero;
+            } else {
+                do {
+                    direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
+                } while (direction.LengthSquared() > 1f);
+                direction.Normalize();
+                direction *= MathF.Pow(MathUtils.Random(0f, 1f), 0.4f);
+            }
 
             var bokeh = camera.Right * direction.X + camera.Up * direction.Y;
+            var positionOffset = AccumulationDofApertureSize * apertureMultipler * bokeh;
+
+            var aaOffset = Matrix.Translation(MathUtils.Random(-1f, 1f) / Width, MathUtils.Random(-1f, 1f) / Height, 0f);
+            var focusDistance = DofFocusPlane;
+
             var newCamera = new FpsCamera(camera.FovY) {
-                CutProj = camera.CutProj
+                CutProj = camera.CutProj.HasValue ? aaOffset * camera.CutProj : aaOffset
             };
 
-            var newPosition = camera.Position + AccumulationDofApertureSize * apertureMultipler * bokeh;
-            var lookAt = camera.Position + camera.Look * DofFocusPlane;
+            var newPosition = camera.Position + positionOffset;
+            var lookAt = camera.Position + camera.Look * focusDistance;
             newCamera.LookAt(newPosition, lookAt, camera.Tilt);
             newCamera.SetLens(AspectRatio);
             newCamera.UpdateViewMatrix();
@@ -1218,10 +1301,16 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 var copy = DeviceContextHolder.GetHelper<CopyHelper>();
                 _useDof = false;
 
+                if (IsDirty) {
+                    _realTimeAccumulationSize = 0;
+                }
+
                 using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
                 using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
                     summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
                     temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                    DeviceContext.ClearRenderTargetView(summary.TargetView, default(Color4));
+                    DeviceContext.ClearRenderTargetView(temporary.TargetView, default(Color4));
 
                     var iterations = AccumulationDofIterations;
                     for (var i = 0; i < iterations; i++) {
@@ -1238,7 +1327,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                         }
 
                         DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-                        copy.Draw(DeviceContextHolder, temporary.View, summary.TargetView);
+                        copy.DrawSqr(DeviceContextHolder, temporary.View, summary.TargetView);
                         DeviceContext.OutputMerger.BlendState = null;
                     }
 
@@ -1252,7 +1341,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             base.DrawShot(target, progress, cancellation);
         }
 
-        public override bool AccumulationMode => UseDof && UseAccumulationDof;
+        public override bool AccumulationMode => UseDof && UseAccumulationDof && _realTimeAccumulationSize < AccumulationDofIterations;
 
         protected override void OnTickOverride(float dt) {
             base.OnTickOverride(dt);

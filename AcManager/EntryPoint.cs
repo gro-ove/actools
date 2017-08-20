@@ -109,6 +109,11 @@ namespace AcManager {
         public static void MainInner(string[] args) {
             if (AppUpdater.OnStartup(args)) return;
 
+            if (args.Length == 2 && args[0] == "--run") {
+                Process.Start(args[1]);
+                return;
+            }
+
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 

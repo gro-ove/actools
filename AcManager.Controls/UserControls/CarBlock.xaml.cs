@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -13,6 +14,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -179,10 +181,38 @@ namespace AcManager.Controls.UserControls {
             set => SetValue(PreviewContentProperty, value);
         }
 
+        public static ImageViewerDetailsCallback GetSkinImageViewerDetailsCallback(CarObject car) {
+            var lazy = Lazier.Create(() => {
+                var livery = new BetterImage {
+                    Width = 48, Height = 48,
+                    Margin = new Thickness(0, 0, 8, 0),
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+                livery.SetBinding(BetterImage.FilenameProperty, new Binding(nameof(CarSkinObject.LiveryImage)));
+                return new DockPanel {
+                    Children = {
+                        livery,
+                        new ContentControl {
+                            Content = ToolTips.GetCarSkinToolTip()?.Content as FrameworkElement
+                        }
+                    }
+                };
+            });
+
+            return image => {
+                var skin = car.EnabledOnlySkins.FirstOrDefault(x => x.PreviewImage == image as string);
+                if (skin == null) return null;
+
+                lazy.Value?.SetValue(DataContextProperty, skin);
+                return lazy.Value;
+            };
+        }
+
         private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {
             var list = Car.SkinsManager.EnabledOnly.Select(x => x.PreviewImage).ToList();
-            var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage))
-                    .ShowDialogInSelectMode();
+            var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage),
+                    details: GetSkinImageViewerDetailsCallback(Car)).ShowDialogInSelectMode();
             SelectedSkin = Car.EnabledOnlySkins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
         }
 

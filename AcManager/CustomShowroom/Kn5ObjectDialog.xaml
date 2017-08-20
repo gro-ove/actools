@@ -1,8 +1,8 @@
-﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5TextureDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5ObjectDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" Title="Car Texture"
-    d:DataContext="{d:DesignInstance customShowroom:Kn5TextureDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
+    d:DataContext="{d:DesignInstance customShowroom:Kn5ObjectDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
     MaxWidth="999" Topmost="False">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
@@ -16,8 +16,7 @@
 
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto" />
-      <ColumnDefinition Width="320" />
+      <ColumnDefinition Width="480" />
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
@@ -25,43 +24,33 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <Grid Width="240" Height="240" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 12 0">
-      <!-- TODO -->
-      <Image Source="{Binding PreviewImage}" MouseLeftButtonDown="OnPreviewClick"
-          Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-      <mui:ModernProgressRing Width="80" Height="80" VerticalAlignment="Center" HorizontalAlignment="Center"
-          Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}" />
-    </Grid>
+    <TextBlock Text="{Binding ObjectName}" Style="{StaticResource Heading2}" Grid.Row="0" Margin="0 0 0 12" />
 
-    <TextBlock Text="{Binding TextureName}" Style="{StaticResource Heading2}" Grid.Column="1" Grid.Row="0" Margin="0 0 0 12" />
-
-    <DockPanel Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top">
-      <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
-          VerticalAlignment="Center" Margin="0 0 8 0" />
-      <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_TextureIsMissing}" />
-    </DockPanel>
-
-    <Grid Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Grid.Column="1" Grid.Row="1">
+    <Grid Grid.Row="1">
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
-          <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureTypeLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureFormat}" Placeholder="?" />
+          <Label DockPanel.Dock="Left" Width="100" Content="Path:" />
+          <mui:PlaceholderTextBlock Text="{Binding ObjectPath}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
-          <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureFormatLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureFormatDescription}" Placeholder="?" />
+          <Label DockPanel.Dock="Left" Width="100" Content="Material:" />
+          <mui:PlaceholderTextBlock Text="{Binding Material.Name}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
-          <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureDimensionsLabel}" />
+          <Label DockPanel.Dock="Left" Width="100" Content="Shader:" />
+          <mui:PlaceholderTextBlock Text="{Binding Material.ShaderName}" Placeholder="?" />
+        </DockPanel>
+        <DockPanel>
+          <Label DockPanel.Dock="Left" Width="100" Content="Main texture:" />
           <mui:PlaceholderTextBlock Text="{Binding TextureDimensions}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
-          <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
+          <Label DockPanel.Dock="Left" Width="100" Content="Triangles:" />
+          <mui:PlaceholderTextBlock Text="{Binding TrianglesCount}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
-          <Label DockPanel.Dock="Left" Width="100" Content="Used for:" />
-          <mui:PlaceholderTextBlock Text="{Binding UsedFor}" TextTrimming="CharacterEllipsis" ToolTip="{Binding UsedFor}" />
+          <Label DockPanel.Dock="Left" Width="100" Content="Vertices:" />
+          <mui:PlaceholderTextBlock Text="{Binding VerticesCount}" Placeholder="?" />
         </DockPanel>
 
         <StackPanel Margin="0 20 0 0" Visibility="{Binding IsChecked, ElementName=ShowOptionsItem, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -132,26 +121,6 @@
           <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show Options" />
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>
-
-      <mui:ButtonWithComboBox Content="Replace" Command="{Binding ReplaceCommand}">
-        <mui:ButtonWithComboBox.ButtonToolTip>Replace texture in KN5 with something else</mui:ButtonWithComboBox.ButtonToolTip>
-        <mui:ButtonWithComboBox.MenuItems>
-          <MenuItem Command="{Binding RenameCommand}" Header="Rename Texture" />
-          <MenuItem Command="{Binding ForkCommand}"
-              Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-              IsEnabled="{Binding IsForkAvailable}" ToolTip="Fork texture to be used only in this material" Header="{Binding Material.Name}">
-            <MenuItem.HeaderStringFormat>Fork Texture For Material “{0}”</MenuItem.HeaderStringFormat>
-          </MenuItem>
-          <MenuItem Command="{Binding ChangeTextureCommand}"
-              Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-              IsEnabled="{Binding IsChangeAvailable}" ToolTip="Change texture in this material" Header="{Binding Material.Name}">
-            <MenuItem.HeaderStringFormat>Change Texture For Material “{0}”</MenuItem.HeaderStringFormat>
-          </MenuItem>
-        </mui:ButtonWithComboBox.MenuItems>
-      </mui:ButtonWithComboBox>
-
-      <Button Command="{Binding ExportCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_Export}"
-          Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </mui:SpacingStackPanel>
   </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>

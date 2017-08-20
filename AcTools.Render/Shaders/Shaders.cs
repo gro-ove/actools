@@ -496,7 +496,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechCopy, TechCut, TechCopyNoAlpha, TechAccumulate, TechAccumulateDivide, TechAccumulateBokehDivide, TechOverlay, TechDepthToLinear, TechShadow, TechDepth, TechFxaa;
+		public EffectReadyTechnique TechCopy, TechCopySqr, TechCopySqrt, TechCut, TechCopyNoAlpha, TechAccumulate, TechAccumulateDivide, TechAccumulateBokehDivide, TechOverlay, TechDepthToLinear, TechShadow, TechDepth, TechFxaa;
 
 		[NotNull]
 		public EffectOnlyResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
@@ -514,6 +514,8 @@ namespace AcTools.Render.Shaders {
 			E = new Effect(device, _b);
 
 			TechCopy = new EffectReadyTechnique(E.GetTechniqueByName("Copy"));
+			TechCopySqr = new EffectReadyTechnique(E.GetTechniqueByName("CopySqr"));
+			TechCopySqrt = new EffectReadyTechnique(E.GetTechniqueByName("CopySqrt"));
 			TechCut = new EffectReadyTechnique(E.GetTechniqueByName("Cut"));
 			TechCopyNoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("CopyNoAlpha"));
 			TechAccumulate = new EffectReadyTechnique(E.GetTechniqueByName("Accumulate"));

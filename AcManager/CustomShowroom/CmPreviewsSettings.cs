@@ -144,7 +144,7 @@ namespace AcManager.CustomShowroom {
                 AlignCameraVerticallyOffsetRelative = o.AlignCameraVerticallyOffsetRelative;
             });
 
-            UpdateCamera();
+            PushCamera();
         }
 
         protected void LoadCar(SaveableData o) {
@@ -304,6 +304,7 @@ namespace AcManager.CustomShowroom {
                     DofFocusPlane = DofFocusPlane,
                     DofScale = DofScale,
                     UseAccumulationDof = UseAccumulationDof,
+                    AccumulationDofBokeh = AccumulationDofBokeh,
                     AccumulationDofIterations = AccumulationDofIterations,
                     AccumulationDofApertureSize = AccumulationDofApertureSize,
 
@@ -502,7 +503,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCar)) return;
                 _alignCar = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -514,7 +515,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraHorizontally)) return;
                 _alignCameraHorizontally = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -526,7 +527,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraHorizontallyOffset)) return;
                 _alignCameraHorizontallyOffset = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -538,7 +539,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraHorizontallyOffsetRelative)) return;
                 _alignCameraHorizontallyOffsetRelative = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -550,7 +551,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraVertically)) return;
                 _alignCameraVertically = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -562,7 +563,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraVerticallyOffset)) return;
                 _alignCameraVerticallyOffset = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -574,11 +575,11 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _alignCameraVerticallyOffsetRelative)) return;
                 _alignCameraVerticallyOffsetRelative = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
-        protected override void SyncCamera() {
+        protected override void PullCamera() {
             CameraBusy.Do(() => {
                 var offset = AlignCar ? -Renderer.MainSlot.CarCenter : Vector3.Zero;
                 CameraPosition.Set(Renderer.Camera.Position + offset);
@@ -589,7 +590,7 @@ namespace AcManager.CustomShowroom {
             });
         }
 
-        protected override void UpdateCamera(bool force = false) {
+        protected override void PushCamera(bool force = false) {
             CameraBusy.Do(() => {
                 Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
                 if (AlignCar) {

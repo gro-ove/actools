@@ -288,7 +288,8 @@ namespace AcManager.CustomShowroom {
                     if (new ImageViewer(new[] {
                         temporary,
                         filename
-                    }, 0, Settings.Width, Settings.Height).ShowDialogInSelectMode() != null) {
+                    }, 0, Settings.Width, Settings.Height,
+                            i => i as string == temporary ? "Newly generated preview" : "Current preview").ShowDialogInSelectMode() != null) {
                         if (File.Exists(filename)) {
                             FileUtils.Recycle(filename);
                         }

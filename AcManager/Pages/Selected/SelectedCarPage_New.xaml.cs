@@ -15,6 +15,7 @@ using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
+using AcManager.Controls.UserControls;
 using AcManager.CustomShowroom;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
@@ -701,7 +702,8 @@ namespace AcManager.Pages.Selected {
                 new ImageViewer(
                         from skin in skins select skin.PreviewImage,
                         skins.IndexOf(_model.SelectedObject.SelectedSkin),
-                        CommonAcConsts.PreviewWidth).ShowDialog();
+                        CommonAcConsts.PreviewWidth,
+                        details: CarBlock.GetSkinImageViewerDetailsCallback(_model.SelectedObject)).ShowDialog();
             }
         }
 

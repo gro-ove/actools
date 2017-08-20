@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace AcManager.Tools {
 
             ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
 
-            var shot = new ImageViewer(newShots) {
+            var shot = new ImageViewer(newShots, details: x => Path.GetFileName(x as string)) {
                 Model = {
                     MaxImageHeight = CommonAcConsts.TrackPreviewHeight,
                     MaxImageWidth = CommonAcConsts.TrackPreviewWidth

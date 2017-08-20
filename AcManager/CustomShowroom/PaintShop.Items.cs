@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools;
@@ -24,7 +25,7 @@ namespace AcManager.CustomShowroom {
             protected PaintableItem(bool enabledByDefault) {
                 _enabled = enabledByDefault;
             }
-            
+
             [CanBeNull]
             private IPaintShopRenderer _renderer;
 
@@ -35,13 +36,13 @@ namespace AcManager.CustomShowroom {
             [NotNull]
             public virtual Dictionary<int, Color> LiveryColors => new Dictionary<int, Color>(0);
 
-            public int LiveryPriority { get; set; } = 0;
+            public int LiveryPriority { get; set; }
 
             private bool _enabled;
 
             [JsonProperty("enabled")]
             public bool Enabled {
-                get { return _enabled; }
+                get => _enabled;
                 set {
                     if (Equals(value, _enabled)) return;
                     _enabled = value;
@@ -53,7 +54,7 @@ namespace AcManager.CustomShowroom {
             private bool _guessed;
 
             public bool Guessed {
-                get { return _guessed; }
+                get => _guessed;
                 internal set {
                     if (Equals(value, _guessed)) return;
                     _guessed = value;
@@ -111,14 +112,14 @@ namespace AcManager.CustomShowroom {
             protected abstract void ResetOverride([NotNull] IPaintShopRenderer renderer);
 
             [NotNull]
-            protected abstract Task SaveOverrideAsync([NotNull] IPaintShopRenderer renderer, string location);
+            protected abstract Task SaveOverrideAsync([NotNull] IPaintShopRenderer renderer, string location, CancellationToken cancellation);
 
             [NotNull]
-            public Task SaveAsync(string location) {
+            public Task SaveAsync(string location, CancellationToken cancellation) {
                 var renderer = _renderer;
                 if (renderer == null) return Task.Delay(0);
 
-                return IsActive() ? SaveOverrideAsync(renderer, location) : Task.Delay(0);
+                return IsActive() ? SaveOverrideAsync(renderer, location, cancellation) : Task.Delay(0);
             }
 
             private bool _disposed;
@@ -187,9 +188,10 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 foreach (var texture in _textures) {
                     await renderer.SaveTextureAsync(Path.Combine(location, texture), _color.ToColor(), _opacity);
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
         }
@@ -208,7 +210,7 @@ namespace AcManager.CustomShowroom {
             }
 
             public override string DisplayName { get; set; } = "Replaced If Enabled";
-            
+
             private readonly bool _inverse;
             private readonly Dictionary<string, PaintShopSource> _replacements;
 
@@ -228,13 +230,15 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 foreach (var replacement in _replacements) {
                     if (replacement.Value.Data != null) {
                         await FileUtils.WriteAllBytesAsync(Path.Combine(location, replacement.Key), replacement.Value.Data);
                     } else if (replacement.Value.Name != null) {
                         await renderer.SaveTextureAsync(replacement.Key, replacement.Value);
                     }
+
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
         }
@@ -255,7 +259,7 @@ namespace AcManager.CustomShowroom {
             private KeyValuePair<string, PaintShopSource> _value;
 
             public KeyValuePair<string, PaintShopSource> Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -277,11 +281,12 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 var value = Value.Value;
                 if (value == null) return;
                 foreach (var tex in _textures) {
                     await renderer.SaveTextureAsync(Path.Combine(location, tex), value);
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
 
@@ -318,7 +323,7 @@ namespace AcManager.CustomShowroom {
             private KeyValuePair<string, Dictionary<string, PaintShopSource>> _value;
 
             public KeyValuePair<string, Dictionary<string, PaintShopSource>> Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -340,11 +345,12 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 var value = Value.Value;
                 if (value == null) return;
                 foreach (var pair in value) {
                     await renderer.SaveTextureAsync(Path.Combine(location, pair.Key), pair.Value);
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
 
@@ -390,7 +396,7 @@ namespace AcManager.CustomShowroom {
             // which color is in which slot, −1 if there is no color in given slot
             [CanBeNull]
             public int[] LiveryColorIds { get; set; }
-            
+
             public override Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
                 Slot = i,
                 Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
@@ -419,10 +425,11 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 foreach (var replacement in Replacements) {
                     await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 0d,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
 
@@ -443,7 +450,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        public class TintedWindows : ColoredItem { 
+        public class TintedWindows : ColoredItem {
             public double DefaultAlpha { get; set; }
 
             public bool FixedColor { get; set; }
@@ -460,7 +467,7 @@ namespace AcManager.CustomShowroom {
                 FixedColor = fixedColor;
             }
 
-            public TintedWindows(Dictionary<string, TintedEntry> replacements, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false) 
+            public TintedWindows(Dictionary<string, TintedEntry> replacements, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false)
                     : base(replacements, colors) {
                 DefaultAlpha = defaultAlpha;
                 FixedColor = fixedColor;
@@ -472,7 +479,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("alpha")]
             public double Alpha {
-                get { return _alpha ?? DefaultAlpha; }
+                get => _alpha ?? DefaultAlpha;
                 set {
                     if (Equals(value, _alpha)) return;
                     _alpha = value;
@@ -482,8 +489,8 @@ namespace AcManager.CustomShowroom {
             }
 
             public double Transparency {
-                get { return 1d - Alpha; }
-                set { Alpha = 1d - value; }
+                get => 1d - Alpha;
+                set => Alpha = 1d - value;
             }
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
@@ -493,10 +500,11 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 foreach (var replacement in Replacements) {
                     await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, Alpha,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
+                    if (cancellation.IsCancellationRequested) return;
                 }
             }
         }
@@ -511,7 +519,7 @@ namespace AcManager.CustomShowroom {
             private Color _value;
 
             public Color Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (AllowedValues != null && !AllowedValues.ContainsValue(value)) {
                         value = AllowedValues.First().Value;
@@ -528,7 +536,7 @@ namespace AcManager.CustomShowroom {
                 get {
                     return AllowedValues?.FirstOrDefault(x => x.Value == _value) ?? new KeyValuePair<string, Color>(ToolsStrings.Common_None, Colors.Transparent);
                 }
-                set { Value = value.Value; }
+                set => Value = value.Value;
             }
 
             [CanBeNull]
@@ -538,7 +546,7 @@ namespace AcManager.CustomShowroom {
         public class CarPaintColors : NotifyPropertyChanged {
             public CarPaintColors(CarPaintColor[] colors) {
                 Colors = colors;
-                
+
                 ActualColors = new Color[Colors.Length];
                 DrawingColors = new System.Drawing.Color[Colors.Length];
                 UpdateActualColors();
@@ -641,7 +649,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("color")]
             public Color Color {
-                get { return _color ?? DefaultColor; }
+                get => _color ?? DefaultColor;
                 set {
                     if (Equals(value, _color)) return;
                     _color = value;
@@ -653,7 +661,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("flakes")]
             public double Flakes {
-                get { return _flakes; }
+                get => _flakes;
                 set {
                     if (Equals(value, _flakes)) return;
                     _flakes = value;
@@ -670,7 +678,7 @@ namespace AcManager.CustomShowroom {
             private CarPaintPattern _currentPattern;
 
             public CarPaintPattern CurrentPattern {
-                get { return _currentPattern; }
+                get => _currentPattern;
                 set {
                     if (Equals(value, _currentPattern)) return;
                     _currentPattern = value;
@@ -698,9 +706,9 @@ namespace AcManager.CustomShowroom {
             }
 
             private bool _patternEnabled = true;
-            
+
             public bool PatternEnabled {
-                get { return _patternEnabled; }
+                get => _patternEnabled;
                 set {
                     if (Equals(value, _patternEnabled)) return;
                     _patternEnabled = value;
@@ -764,8 +772,9 @@ namespace AcManager.CustomShowroom {
                         : Task.Delay(0);
             }
 
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 await SaveColorAsync(renderer, location);
+                if (cancellation.IsCancellationRequested) return;
                 await SavePatternAsync(renderer, location);
             }
 
@@ -791,7 +800,7 @@ namespace AcManager.CustomShowroom {
 
             public override void Deserialize(JObject data) {
                 base.Deserialize(data);
-                
+
                 if (data != null && PatternTexture != null) {
                     PatternEnabled = data.GetBoolValueOnly("patternEnabled") != false;
                     var current = data.GetStringValueOnly("patternSelected");
@@ -828,7 +837,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("complex")]
             public bool ComplexMode {
-                get { return _complexMode; }
+                get => _complexMode;
                 set {
                     if (Equals(value, _complexMode)) return;
                     _complexMode = value;
@@ -841,7 +850,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("reflection")]
             public double Reflection {
-                get { return _reflection; }
+                get => _reflection;
                 set {
                     if (Equals(value, _reflection)) return;
                     _reflection = value;
@@ -854,7 +863,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("gloss")]
             public double Gloss {
-                get { return _gloss; }
+                get => _gloss;
                 set {
                     if (Equals(value, _gloss)) return;
                     _gloss = value;
@@ -867,7 +876,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("specular")]
             public double Specular {
-                get { return _specular; }
+                get => _specular;
                 set {
                     if (Equals(value, _specular)) return;
                     _specular = value;
@@ -885,7 +894,7 @@ namespace AcManager.CustomShowroom {
                 if (_previousComplexMode != _complexMode || Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
                     if (ComplexMode) {
-                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, FixGloss, 
+                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, FixGloss,
                                 MapsDefaultTexture, MapsMask);
                     } else {
                         renderer.OverrideTexture(MapsTexture, null);
@@ -902,9 +911,11 @@ namespace AcManager.CustomShowroom {
                 base.ResetOverride(renderer);
                 renderer.OverrideTexture(MapsTexture, null);
             }
-            
-            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
-                await base.SaveOverrideAsync(renderer, location);
+
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
+                await base.SaveOverrideAsync(renderer, location, cancellation);
+                if (cancellation.IsCancellationRequested) return;
+
                 if (ComplexMode) {
                     await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, FixGloss,
                             MapsDefaultTexture, MapsMask);

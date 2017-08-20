@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -123,6 +124,86 @@ namespace AcManager.Tools.Helpers.Api {
             Logging.Debug($"Cached {id} used");
             JustLoadedStaticData.Add(id);
             return Tuple.Create(file.FullName, false);
+        }
+
+        private static readonly List<string> JustLoadedPaintShopData = new List<string>();
+
+        /// <summary>
+        /// Load piece of data for Paint Shop, either from CM API, or from cache.
+        /// </summary>
+        /// <param name="carId"></param>
+        /// <param name="progress"></param>
+        /// <param name="cancellation"></param>
+        /// <returns>Cached filename and if data is just loaded or not.</returns>
+        [ItemCanBeNull]
+        public static async Task<Tuple<string, bool>> GetPaintShopDataAsync([NotNull] string carId, IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Paint Shop", $"{carId}.zip"));
+
+            if (JustLoadedPaintShopData.Contains(carId) && file.Exists) {
+                return Tuple.Create(file.FullName, false);
+            }
+
+            var result = await InternalUtils.CmGetPaintShopDataAsync(carId, UserAgent,
+                    file.Exists ? file.LastWriteTime : (DateTime?)null, progress, cancellation).ConfigureAwait(false);
+            if (cancellation.IsCancellationRequested) return null;
+
+            if (result != null && result.Item1.Length != 0) {
+                Logging.Debug($"Fresh version of {carId} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
+                var lastWriteTime = result.Item2 ?? DateTime.Now;
+                await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
+                file.Refresh();
+                file.LastWriteTime = lastWriteTime;
+                JustLoadedPaintShopData.Add(carId);
+                return Tuple.Create(file.FullName, true);
+            }
+
+            if (!file.Exists) {
+                return null;
+            }
+
+            Logging.Debug($"Cached {carId} used");
+            JustLoadedPaintShopData.Add(carId);
+            return Tuple.Create(file.FullName, false);
+        }
+
+        private static string[] _paintShopIds;
+
+        /// <summary>
+        /// Load piece of data for Paint Shop, either from CM API, or from cache.
+        /// </summary>
+        /// <param name="progress"></param>
+        /// <param name="cancellation"></param>
+        /// <returns>Cached filename and if data is just loaded or not.</returns>
+        [ItemCanBeNull]
+        public static async Task<string[]> GetPaintShopIdsAsync(IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            if (_paintShopIds != null) {
+                return _paintShopIds;
+            }
+
+            var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Paint Shop", "IDs.json"));
+            var result = await InternalUtils.CmGetPaintShopDataAsync(null, UserAgent,
+                    file.Exists ? file.LastWriteTime : (DateTime?)null, progress, cancellation).ConfigureAwait(false);
+            if (cancellation.IsCancellationRequested) return null;
+
+            if (result != null && result.Item1.Length != 0) {
+                Logging.Debug($"Fresh version of IDs loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
+                var lastWriteTime = result.Item2 ?? DateTime.Now;
+                await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
+                file.Refresh();
+                file.LastWriteTime = lastWriteTime;
+                _paintShopIds = JsonConvert.DeserializeObject<string[]>(result.Item1.ToUtf8String());
+                return _paintShopIds;
+            }
+
+            if (!file.Exists) {
+                return null;
+            }
+
+            Logging.Debug("Cached IDs used");
+            _paintShopIds = JsonConvert.DeserializeObject<string[]>(File.ReadAllText(file.FullName));
+            return _paintShopIds;
         }
 
         [ItemCanBeNull]

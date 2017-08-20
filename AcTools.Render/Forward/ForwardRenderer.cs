@@ -522,7 +522,7 @@ namespace AcTools.Render.Forward {
         /// <summary>
         /// Returns null if result is in output.
         /// </summary>
-        private ShaderResourceView ColorGradingPass(ShaderResourceView input, RenderTargetView target, Viewport viewport) {
+        protected ShaderResourceView ColorGradingPass(ShaderResourceView input, RenderTargetView target, Viewport viewport) {
             if (ColorGradingData == null) return input;
 
             if (!_colorGradingSet) {
@@ -553,7 +553,7 @@ namespace AcTools.Render.Forward {
         /// <summary>
         /// If returns null, result is in target.
         /// </summary>
-        private ShaderResourceView AaPass(ShaderResourceView input, RenderTargetView target) {
+        protected ShaderResourceView AaPass(ShaderResourceView input, RenderTargetView target) {
             if (IsSmaaAvailable && UseSmaa) {
                 throw new NotImplementedException();
             }
@@ -576,6 +576,9 @@ namespace AcTools.Render.Forward {
 
             return input;
         }
+
+        protected TargetResourceTexture PpBetweenBuffer => _bufferA;
+        protected TargetResourceTexture PpColorGradingBuffer => _bufferAColorGrading;
 
         /// <summary>
         /// Inner _bufferA used as temporary if SSAA enabled. If returns null, result is in target.

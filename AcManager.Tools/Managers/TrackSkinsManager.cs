@@ -152,9 +152,9 @@ namespace AcManager.Tools.Managers {
 
         public IAcObjectNew AddNew(string id = null) {
             var mainDirectory = Directories.GetMainDirectory();
-            var uniqueId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(mainDirectory, "skin")));
 
             if (id == null) {
+                var uniqueId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(mainDirectory, "skin")));
                 id = Prompt.Show("Choose a name for a new track skin:", "New track skin", required: true, maxLength: 80, watermark: "?",
                         defaultValue: uniqueId);
                 if (id == null) return null;

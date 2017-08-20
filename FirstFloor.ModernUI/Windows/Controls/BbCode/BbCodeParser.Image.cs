@@ -48,13 +48,13 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             }
 
             public string ImageUrl {
-                get { return (string)GetValue(ImageUrlProperty); }
-                set { SetValue(ImageUrlProperty, value); }
+                get => (string)GetValue(ImageUrlProperty);
+                set => SetValue(ImageUrlProperty, value);
             }
 
             public BitmapCreateOptions CreateOptions {
-                get { return (BitmapCreateOptions)GetValue(CreateOptionsProperty); }
-                set { SetValue(CreateOptionsProperty, value); }
+                get => (BitmapCreateOptions)GetValue(CreateOptionsProperty);
+                set => SetValue(CreateOptionsProperty, value);
             }
 
             private static async void ImageUrlPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {

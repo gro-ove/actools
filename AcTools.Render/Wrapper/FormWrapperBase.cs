@@ -43,6 +43,7 @@ namespace AcTools.Render.Wrapper {
             _title = title;
 
             Form = new RenderForm(title) {
+                Text = _title,
                 ClientSize = new Size(width, height),
                 StartPosition = FormStartPosition.CenterScreen
             };
@@ -146,22 +147,23 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual bool SleepMode => !Renderer.IsDirty && !Renderer.AccumulationMode;
 
-        protected virtual void RenderOverride() {
+        private void Draw() {
             Renderer.Draw();
-            InvokeFirstFrameCallback();
         }
 
         private void OnRender() {
             if (_closed) return;
 
             try {
-                Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+                // Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+
                 if (SleepMode) {
                     Thread.Sleep(20);
                     return;
                 }
 
-                RenderOverride();
+                Draw();
+                InvokeFirstFrameCallback();
                 Thread.Sleep(1);
             } catch (Exception e) {
                 AcToolsLogging.NonFatalErrorNotify("Custom Showroom unhandled exception", null, e);

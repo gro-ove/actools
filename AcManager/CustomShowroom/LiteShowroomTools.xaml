@@ -127,16 +127,35 @@
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
               </CheckBox>
 
+
+              <!--<c:MessageBlock>
+                <mui:BbCodeBlock BbCode="Now, with updated Paint Shop, CM will automatically download and update rules for various cars. It might take some time." />
+              </c:MessageBlock>-->
+
               <mui:AsyncButton Margin="0 20 0 0" Command="{Binding PaintShopCommand}">
                 <DockPanel>
-                  <Path Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Data="{StaticResource BrushIconData}"
-                      Stretch="Uniform" Width="12" Height="12" Margin="0 0 6 -1" VerticalAlignment="Center" />
+                  <mui:BooleanSwitch Value="{Binding PaintShopSupported.Value}" Margin="0 0 6 -1" VerticalAlignment="Center" Width="12" Height="12">
+                    <mui:BooleanSwitch.True>
+                      <Path Data="{StaticResource BrushIconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" />
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                      <Path Data="{StaticResource BrushIconData}" Stretch="Uniform"
+                          Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                    </mui:BooleanSwitch.False>
+                  </mui:BooleanSwitch>
                   <TextBlock Text="Paint Shop" />
                 </DockPanel>
               </mui:AsyncButton>
 
               <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
                   Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+
+              <!--<mui:ReferenceSwitch Value="{Binding PaintShopRulesLoader}">
+                <StackPanel Margin="0 4 0 0">
+                  <TextBlock Text="Updating obsolete rules…" Style="{StaticResource Label}" />
+                </StackPanel>
+              </mui:ReferenceSwitch>-->
+
               <!--<Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
                   ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />-->
 
@@ -158,9 +177,6 @@
                 <TextBlock Text="Selected Object" Style="{StaticResource Heading2}" />
               </DockPanel>
               <DockPanel Style="{StaticResource DockPanel}">
-                <DockPanel.InputBindings>
-                  <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
-                </DockPanel.InputBindings>
                 <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
                     Padding="4 0" />
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />

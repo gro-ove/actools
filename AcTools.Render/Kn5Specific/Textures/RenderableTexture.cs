@@ -14,6 +14,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public bool Exists { get; set; }
 
         public bool IsDisposed { get; private set; }
+        public bool IsOverrideDisabled { get; set; }
 
         public RenderableTexture(string name = null) {
             Name = name;
@@ -23,7 +24,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private ShaderResourceView _resource;
 
         public ShaderResourceView Resource {
-            get { return _proceduralOverride ?? _override ?? _resource; }
+            get => _proceduralOverride ?? (IsOverrideDisabled ? _resource : _override ?? _resource);
             internal set {
                 if (Equals(_resource, value)) return;
                 DisposeHelper.Dispose(ref _resource);
@@ -34,7 +35,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private ShaderResourceView _override;
 
         public ShaderResourceView Override {
-            get { return _override; }
+            get => _override;
             internal set {
                 if (Equals(_override, value)) return;
                 if (_override?.Disposed == false) { // wut? how does that happen?
@@ -48,7 +49,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private bool _disposeProceduralOverride;
 
         public ShaderResourceView ProceduralOverride {
-            get { return _proceduralOverride; }
+            get => _proceduralOverride;
             private set {
                 if (Equals(value, _proceduralOverride)) return;
                 if (_disposeProceduralOverride) {

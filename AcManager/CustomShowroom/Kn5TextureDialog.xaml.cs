@@ -51,7 +51,6 @@ namespace AcManager.CustomShowroom {
 
             [NotNull]
             public string TextureName { get; }
-
             public string TextureFormat { get; }
 
             private string _textureFormatDescription;
@@ -134,7 +133,7 @@ namespace AcManager.CustomShowroom {
                 byte[] data;
                 Data = kn5.TexturesData.TryGetValue(textureName, out data) ? data : null;
 
-                BakedShadows = new BakedShadowsRendererViewModel(renderer, _kn5, TextureName, car);
+                BakedShadows = BakedShadowsRendererViewModel.ForTexture(renderer, _kn5, TextureName, car);
 
                 var usedFor = (from material in kn5.Materials.Values
                                let slots = (from slot in material.TextureMappings
@@ -155,11 +154,11 @@ namespace AcManager.CustomShowroom {
             public async void OnLoaded() {
                 Loading = true;
 
-                var loaded = _renderer == null ? await LoadImageUsingMagickNet(Data) : LoadImageUsingDirectX(_renderer, Data);
+                var loaded = _renderer == null ? await LoadImageUsingMagickNetAsync(Data) : await Task.Run(() => LoadImageUsingDirectX(_renderer, Data));
                 PreviewImage = loaded?.Image;
                 TextureFormatDescription = loaded?.FormatDescription;
                 TextureDimensions = PreviewImage == null ? null : $"{PreviewImage.PixelWidth}×{PreviewImage.PixelHeight}";
-                BakedShadows.Size = PreviewImage == null ? (Size?)null : new Size(PreviewImage.PixelWidth, PreviewImage.PixelHeight);
+                BakedShadows.OriginSize = PreviewImage == null ? (Size?)null : new Size(PreviewImage.PixelWidth, PreviewImage.PixelHeight);
                 Loading = false;
             }
 
@@ -212,7 +211,7 @@ namespace AcManager.CustomShowroom {
                     using (var renderer = new UvRenderer(_kn5)) {
                         renderer.Width = width;
                         renderer.Height = height;
-                        renderer.Shot(filename, TextureName);
+                        renderer.Shot(filename, TextureName, null);
                     }
                 });
 
@@ -221,7 +220,8 @@ namespace AcManager.CustomShowroom {
                         Saveable = true,
                         SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                         SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
-                    }
+                    },
+                    ImageMargin = new Thickness()
                 }.ShowDialog();
             }));
 
@@ -425,7 +425,7 @@ namespace AcManager.CustomShowroom {
         }
 
         [ItemCanBeNull]
-        internal static async Task<LoadedImage> LoadImageUsingMagickNet(byte[] imageData) {
+        internal static async Task<LoadedImage> LoadImageUsingMagickNetAsync(byte[] imageData) {
             if (imageData == null || imageData.Length == 0) return null;
 
             try {
@@ -470,8 +470,8 @@ namespace AcManager.CustomShowroom {
             _loaded = false;
         }
 
-        private void Preview_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            new ImageViewer(Model.PreviewImage) { Owner = null }.ShowDialog();
+        private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
+            new ImageViewer(Model.PreviewImage) { Owner = null, ImageMargin = new Thickness() }.ShowDialog();
         }
     }
 }

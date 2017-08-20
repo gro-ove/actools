@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using AcTools.DataFile;
@@ -13,6 +14,7 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -27,7 +29,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public BakedShadowsRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             ResolutionMultiplier = 2d;
         }
-        
+
         public float SkyBrightnessLevel = 2.5f;
         public float ΘFrom = -10.0f;
         public float ΘTo = 50.0f;
@@ -99,7 +101,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _bufferA.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
             DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, new Color4(0f, 0f, 0f, 0f));
         }
-        
+
         private Viewport _shadowViewport;
         private TargetResourceDepthTexture _shadowBuffer;
         private CameraOrtho _shadowCamera;
@@ -127,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             if (_flattenNodes == null) {
                 _flattenNodes = Flatten(Scene, x => (x as Kn5RenderableDepthOnlyObject)?.OriginalNode.CastShadows != false &&
-                        IsVisible(x)).ToArray();
+                        IsVisible(x)).OfType<Kn5RenderableDepthOnlyObject>().ToArray();
             }
 
             for (var i = 0; i < _flattenNodes.Length; i++) {
@@ -237,7 +239,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 _effect.FxInputMap.SetResource(_bufferF2.View);
                 _effect.TechAoGrow.DrawAllPasses(DeviceContext, 6);
             }
-            
+
             if (UseFxaa) {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferF2.TargetView);
 
@@ -266,23 +268,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             };
             _shadowCamera.SetLens(1f);
         }
-        
+
         public bool UseFxaa = false;
 
-        public void Shot(string outputFile, string textureName, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+        public void Shot(string outputFile, string textureName, [CanBeNull] string objectPath, [CanBeNull] IProgress<double> progress,
+                CancellationToken cancellation) {
             if (!Initialized) {
                 Initialize();
                 if (cancellation.IsCancellationRequested) return;
             }
 
-            _filteredNodes = Flatten(Scene, x => {
-                var kn5 = x as Kn5RenderableDepthOnlyObject;
-                if (kn5 == null) return true;
-
-                var material = Kn5.GetMaterial(kn5.OriginalNode.MaterialId);
-                return material != null && material.TextureMappings.Any(m => m.Texture == textureName);
-            }).ToArray();
-            
+            _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath).OfType<Kn5RenderableDepthOnlyObject>().ToArray();
             PrepareBuffers(2048);
             SetBodyShadowCamera();
             if (cancellation.IsCancellationRequested) return;

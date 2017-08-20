@@ -27,22 +27,8 @@ namespace AcTools.Processes {
         private string _acLauncherBackup;
         private Process _launcherProcess, _gameProcess;
 
-        private void TryToRunSteam() {
-            try {
-                var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
-                if (regKey == null) return;
-
-                var steamPath = regKey.GetValue("SteamPath").ToString();
-                var exe = Path.Combine(steamPath, "Steam.exe");
-
-                Process.Start(exe);
-            } catch (Exception) {
-                // ignored
-            }
-        }
-
         public void Run() {
-            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
 
             _acLauncher = FileUtils.GetAcLauncherFilename(AcRoot);
             _acLauncherBackup = _acLauncher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";

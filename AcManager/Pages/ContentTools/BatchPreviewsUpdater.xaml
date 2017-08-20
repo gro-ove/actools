@@ -102,11 +102,9 @@
               </Setter>
               <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                  <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
                   <Setter Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                  <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
                   <Setter Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">

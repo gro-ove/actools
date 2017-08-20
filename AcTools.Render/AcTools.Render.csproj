@@ -74,6 +74,11 @@
       <Private>False</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
+    <Reference Include="DdsCompress, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\DdsCompress-$(ActualPlatform)\DdsCompress.dll</HintPath>
+      <Private>False</Private>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
@@ -159,7 +164,6 @@
     <Compile Include="Base\Utils\ThreadPool.cs" />
     <Compile Include="Data\CarData.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Paintshop.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkPreviewsUpdater.cs" />
     <Compile Include="Base\Objects\DebugLinesObject.cs" />
     <Compile Include="Kn5SpecificForwardDark\FlatMirror.cs" />
@@ -189,6 +193,7 @@
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.CarSlot.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.Movement.cs" />
     <Compile Include="Kn5SpecificForward\IPaintShopRenderer.cs" />
+    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Camera.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Textures.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.PaintShop.cs" />
     <Compile Include="Kn5SpecificSpecial\AiLaneObject.cs" />
@@ -208,6 +213,7 @@
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lights.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.LiveReload.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Movement.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.PaintShop.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Wheels.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lines.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Utils.cs" />
@@ -298,6 +304,7 @@
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\DdsEncoder.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
     <Compile Include="Wrapper\FormWrapperBase.cs" />
     <Compile Include="Wrapper\LiteShowroomFormWrapper.cs" />

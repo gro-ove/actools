@@ -51,7 +51,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public FilesStorage.ContentEntry SelectedStyleEntry {
-                get { return _selectedStyleEntry; }
+                get => _selectedStyleEntry;
                 set {
                     if (Equals(value, _selectedStyleEntry)) return;
                     _selectedStyleEntry = value;
@@ -64,7 +64,7 @@ namespace AcManager.CustomShowroom {
             private List<FilesStorage.ContentEntry> _styles;
 
             public List<FilesStorage.ContentEntry> Styles {
-                get { return _styles; }
+                get => _styles;
                 private set {
                     if (Equals(value, _styles)) return;
                     _styles = value;
@@ -85,7 +85,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             protected LicensePlatesStyle SelectedStyle {
-                get { return _selectedStyle; }
+                get => _selectedStyle;
                 private set {
                     if (Equals(value, _selectedStyle)) return;
 
@@ -113,7 +113,7 @@ namespace AcManager.CustomShowroom {
             private bool _previewMode = ValuesStorage.GetBool(KeyPreviewMode, true);
 
             public bool PreviewMode {
-                get { return _previewMode; }
+                get => _previewMode;
                 set {
                     if (Equals(value, _previewMode)) return;
                     _previewMode = value;
@@ -280,14 +280,14 @@ namespace AcManager.CustomShowroom {
                 _flatNormals = false;
             }
 
-            protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+            protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
                 if (SelectedStyle == null) return Task.Delay(0);
                 return Task.Run(() => {
                     if (DiffuseTexture != null) {
                         SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
                     }
 
-                    if (NormalsTexture != null) {
+                    if (NormalsTexture != null && !cancellation.IsCancellationRequested) {
                         SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
                     }
                 });

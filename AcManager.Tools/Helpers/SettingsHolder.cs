@@ -1585,6 +1585,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _carSkinsDisplayId;
+
+            public bool CarSkinsDisplayId {
+                get => _carSkinsDisplayId ?? (_carSkinsDisplayId = ValuesStorage.GetBool("Settings.ContentSettings.CarSkinsDisplayId", false)).Value;
+                set {
+                    if (Equals(value, _carSkinsDisplayId)) return;
+                    _carSkinsDisplayId = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarSkinsDisplayId", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsFixSpecs;
 
             public bool CarsFixSpecs {
@@ -2022,7 +2034,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private string[] _paintShopSources;
+            /*private string[] _paintShopSources;
 
             public string[] PaintShopSources {
                 get => _paintShopSources ?? (_paintShopSources = ValuesStorage.GetStringList("Settings.CustomShowroomSettings.PaintShopSources", new[] {
@@ -2035,7 +2047,7 @@ namespace AcManager.Tools.Helpers {
                     ValuesStorage.Set("Settings.CustomShowroomSettings.PaintShopSources", value);
                     OnPropertyChanged();
                 }
-            }
+            }*/
         }
 
         private static CustomShowroomSettings _customShowroom;

@@ -14,7 +14,7 @@ namespace AcTools.Utils {
         }
 
         [NotNull]
-        public static Lazier<T> Create<T>(Func<Task<T>> fn, T loadingValue = default(T)) {
+        public static Lazier<T> CreateAsync<T>(Func<Task<T>> fn, T loadingValue = default(T)) {
             return new Lazier<T>(fn, loadingValue);
         }
 
@@ -45,7 +45,7 @@ namespace AcTools.Utils {
                             SetTask().Forget();
                         }
 
-                        return _loadingValue;
+                        return _isSet ? _value : _loadingValue;
                     }
 
                     IsSet = true;

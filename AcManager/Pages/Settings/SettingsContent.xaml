@@ -141,6 +141,13 @@
           <Label Content="Old layout" />
         </CheckBox>
 
+        <!-- Car skins specific -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Car skins:" />
+
+        <CheckBox IsChecked="{Binding Holder.CarSkinsDisplayId}">
+          <Label Content="Display skin IDs instead of names" />
+        </CheckBox>
+
         <!-- Showrooms specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_ShowroomsHeader}" />
 

@@ -5,8 +5,11 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
@@ -406,7 +409,7 @@ namespace AcManager.CustomShowroom {
         }
 
         [CanBeNull]
-        private static PaintableItem GetPaintableItem([NotNull] JObject e, Func<string, byte[]> extractData) {
+        private static PaintableItem GetPaintableItem([NotNull] JObject e, [NotNull] Func<string, byte[]> extractData) {
             PaintableItem result;
             var type = GetString(e, KeyType, TypeColor).ToLowerInvariant();
             switch (type) {
@@ -496,64 +499,87 @@ namespace AcManager.CustomShowroom {
             return result;
         }
 
-        private static IEnumerable<PaintableItem> GetPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, string filename) {
+        private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
+                [NotNull] Func<string, byte[]> extractData) {
             var result = new List<PaintableItem>();
-            ZipArchive[] data = { null };
-
-            try {
-                foreach (var item in array) {
-                    if (item.Type == JTokenType.String) {
-                        var s = (string)item;
-                        if (!s.StartsWith("@")) {
-                            result.AddRange(GetPaintableItems(s, kn5, previousIds, false));
-                        } else if (string.Equals(s, "@guess", StringComparison.OrdinalIgnoreCase)) {
-                            result.AddRange(GuessPaintableItems(kn5));
+            foreach (var item in array) {
+                if (item.Type == JTokenType.String) {
+                    var s = (string)item;
+                    if (!s.StartsWith("@")) {
+                        var inherited = GetCarPaintableItems(s, kn5, previousIds);
+                        if (inherited != null) {
+                            result.AddRange(inherited);
                         }
+                    } else if (string.Equals(s, "@guess", StringComparison.OrdinalIgnoreCase)) {
+                        result.AddRange(GuessPaintableItems(kn5));
+                    }
+                } else {
+                    var o = item as JObject;
+                    if (o == null) {
+                        Logging.Warning("Unknown entry: " + item);
                     } else {
-                        var o = item as JObject;
-                        if (o == null) {
-                            Logging.Warning("Unknown entry: " + item);
-                        } else {
-                            try {
-                                var i = GetPaintableItem(o, s => {
-                                    var unpackedFilename = Path.Combine(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase), s);
-                                    if (File.Exists(unpackedFilename)) {
-                                        return File.ReadAllBytes(unpackedFilename);
-                                    }
-
-                                    if (data[0] == null) {
-                                        try {
-                                            data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
-                                        } catch (Exception e) {
-                                            Logging.Warning(e.Message);
-                                        }
-
-                                        if (data[0] == null) return null;
-                                    }
-
-                                    return data[0].Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
-                                                  .Open()
-                                                  .ReadAsBytesAndDispose();
-                                });
-
-                                if (i != null) {
-                                    result.Add(i);
-                                }
-                            } catch (Exception e) {
-                                Logging.Error(e);
+                        try {
+                            var i = GetPaintableItem(o, extractData);
+                            if (i != null) {
+                                result.Add(i);
                             }
+                        } catch (Exception e) {
+                            Logging.Error(e);
                         }
                     }
                 }
+            }
+            return result;
+        }
 
-                return result;
+        private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, string filename) {
+            ZipArchive[] data = { null };
+
+            try {
+                return GetJArrayPaintableItems(array, kn5, previousIds, s => {
+                    var unpackedFilename = Path.Combine(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase), s);
+                    if (File.Exists(unpackedFilename)) {
+                        return File.ReadAllBytes(unpackedFilename);
+                    }
+
+                    if (data[0] == null) {
+                        try {
+                            data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
+                        } catch (Exception e) {
+                            Logging.Warning(e.Message);
+                        }
+
+                        if (data[0] == null) return null;
+                    }
+
+                    return data[0].Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
+                                  .Open()
+                                  .ReadAsBytesAndDispose();
+                });
             } finally {
                 DisposeHelper.Dispose(ref data[0]);
             }
         }
 
-        private static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
-                bool fallbackToGuess) {
+        private static IEnumerable<PaintableItem> GetDownloadedPaintableItems(string downloadedData, string carId, [CanBeNull] Kn5 kn5,
+                [NotNull] List<string> previousIds) {
+            using (var zip = ZipFile.OpenRead(downloadedData)) {
+                var manifest = zip.GetEntry("Manifest.json").Open().ReadAsStringAndDispose();
+                var jObj = JObject.Parse(manifest);
+                if (jObj.GetStringValueOnly("id") != carId) {
+                    throw new Exception($"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");
+                }
+
+                var entries = (JArray)jObj["entries"];
+                return GetJArrayPaintableItems(entries, kn5, previousIds, s => {
+                    return zip.Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
+                              .Open().ReadAsBytesAndDispose();
+                });
+            }
+        }
+
+        [CanBeNull]
+        private static IEnumerable<PaintableItem> GetCarPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds) {
             var carIdLower = carId.ToLowerInvariant();
             if (previousIds.Contains(carIdLower)) return new PaintableItem[0];
             previousIds.Add(carIdLower);
@@ -565,7 +591,7 @@ namespace AcManager.CustomShowroom {
                     var t = JToken.Parse(File.ReadAllText(candidate));
                     var j = (t as JObject)?.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray ?? t as JArray;
                     if (j != null) {
-                        return GetPaintableItems(j, kn5, previousIds, candidate);
+                        return GetJArrayPaintableItems(j, kn5, previousIds, candidate);
                     }
                 } catch (Exception e) {
                     Logging.Error(e);
@@ -576,7 +602,7 @@ namespace AcManager.CustomShowroom {
                         var j = JObject.Parse(File.ReadAllText(filename));
                         var d = j.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray;
                         if (d != null) {
-                            return GetPaintableItems(d, kn5, previousIds, filename);
+                            return GetJArrayPaintableItems(d, kn5, previousIds, filename);
                         }
                     } catch (Exception e) {
                         Logging.Error(e);
@@ -584,7 +610,31 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            return fallbackToGuess ? GuessPaintableItems(kn5) : new PaintableItem[0];
+            return null;
+        }
+
+        [ItemCanBeNull]
+        private static async Task<IEnumerable<PaintableItem>> GetCarPaintableItemsAsync(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
+                [CanBeNull] Func<CancellationToken, Task<string>> remoteDataFallback, bool guessFallback, CancellationToken cancellation) {
+            var result = await Task.Run(() => GetCarPaintableItems(carId, kn5, previousIds));
+            if (result != null || cancellation.IsCancellationRequested) {
+                return result;
+            }
+
+            if (remoteDataFallback != null) {
+                try {
+                    var remoteDataLoaded = await remoteDataFallback.Invoke(cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
+
+                    if (remoteDataLoaded != null) {
+                        return await Task.Run(() => GetDownloadedPaintableItems(remoteDataLoaded, carId, kn5, previousIds));
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            return guessFallback ? GuessPaintableItems(kn5) : new PaintableItem[0];
         }
 
         private class PaintableItemComparer : IComparer<PaintableItem>, IEqualityComparer<PaintableItem> {
@@ -604,13 +654,21 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        [NotNull]
-        public static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5) {
-            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) return new PaintableItem[0];
+        [ItemCanBeNull]
+        public static async Task<List<PaintableItem>> GetPaintableItemsAsync(string carId, [CanBeNull] Kn5 kn5, CancellationToken cancellation) {
+            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) return new List<PaintableItem>(0);
 
-            var result = GetPaintableItems(carId, kn5, new List<string>(2), true).ToList();
-            result.Sort(PaintableItemComparer.Instance);
-            return result.Distinct(PaintableItemComparer.Instance);
+            try {
+                var result = (await GetCarPaintableItemsAsync(carId, kn5, new List<string>(2),
+                        async c => (await CmApiProvider.GetPaintShopDataAsync(carId, cancellation: c))?.Item1, true, cancellation))?
+                        .Distinct(PaintableItemComparer.Instance).ToList();
+                if (result == null || cancellation.IsCancellationRequested) return null;
+
+                result.Sort(PaintableItemComparer.Instance);
+                return result;
+            } catch (Exception e) when (e.IsCanceled()) {
+                return null;
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ namespace CustomShowroom {
             using (var renderer = new UvRenderer(kn5)) {
                 var dir = Path.GetDirectoryName(kn5) ?? "";
                 var output = Path.Combine(dir, "extracted_uv.png");
-                renderer.Shot(output, extractUvTexture);
+                renderer.Shot(output, extractUvTexture, null);
                 Process.Start(output);
             }
         }

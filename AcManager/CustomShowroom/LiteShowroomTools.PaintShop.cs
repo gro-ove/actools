@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -22,32 +26,36 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.CustomShowroom {
     public partial class LiteShowroomTools {
-        public partial class ViewModel {
+        public partial class ViewModel : INotifyDataErrorInfo {
             #region Skin
             private void DisposeSkinItems() {
+                Renderer?.SetCurrentSkinActive(true);
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
                 SkinItems = null;
             }
 
-            private void LoadSkinItems() {}
-
             [ItemCanBeNull]
             private async Task<List<PaintShop.PaintableItem>> GetSkinItems(CancellationToken cancellation) {
-                await Task.Delay(500, cancellation);
+                // PaintShopRulesLoader = new PaintShopRulesLoader();
+
+                await Task.Delay(50);
                 if (cancellation.IsCancellationRequested) return null;
 
-                var skinItems = await Task.Run(() => PaintShop.GetPaintableItems(Car.Id, Renderer?.MainSlot.Kn5).ToList());
+                var skinItems = (await PaintShop.GetPaintableItemsAsync(Car.Id, Renderer?.MainSlot.Kn5, cancellation))?.ToList();
+                if (skinItems == null || cancellation.IsCancellationRequested) return null;
 
                 try {
                     var skin = Path.Combine(Skin.Location, "cm_skin.json");
-                    if (File.Exists(skin)) {
-                        var jObj = JObject.Parse(File.ReadAllText(skin));
-                        foreach (var pair in jObj) {
-                            if (pair.Value.Type != JTokenType.Object) continue;
-                            skinItems.FirstOrDefault(x => PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
-                                     .Deserialize((JObject)pair.Value);
+                    await Task.Run(() => {
+                        if (File.Exists(skin)) {
+                            var jObj = JObject.Parse(File.ReadAllText(skin));
+                            foreach (var pair in jObj) {
+                                if (pair.Value.Type != JTokenType.Object) continue;
+                                skinItems.FirstOrDefault(x => PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
+                                         .Deserialize((JObject)pair.Value);
+                            }
                         }
-                    }
+                    });
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -55,19 +63,59 @@ namespace AcManager.CustomShowroom {
                 return skinItems;
             }
 
+            #region Errors
+            public IEnumerable GetErrors(string propertyName) {
+                switch (propertyName) {
+                    case nameof(SaveAsSkinId):
+                        if (!SaveAsNewSkin) return null;
+
+                        var skinId = SaveAsSkinId;
+                        if (string.IsNullOrWhiteSpace(skinId)) return null;
+                        if (Path.GetInvalidFileNameChars().Any(x => skinId.IndexOf(x) != -1) ||
+                                Regex.IsMatch(skinId, @"[^\.\w-]")) return new[] { "Please, use only letters, digits, underscores, hyphens or dots" };
+                        if (FileUtils.Exists(Path.Combine(Car.SkinsDirectory, skinId))) return new[] { "Place is taken" };
+                        return null;
+                    default:
+                        return null;
+                }
+            }
+
+            public bool HasErrors => GetErrors(nameof(SaveAsSkinId)) != null;
+            public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+            public void OnErrorsChanged([CallerMemberName] string propertyName = null) {
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            }
+            #endregion
+
+            /*private PaintShopRulesLoader _paintShopRulesLoader;
+
+            public PaintShopRulesLoader PaintShopRulesLoader {
+                get => _paintShopRulesLoader;
+                set {
+                    if (Equals(value, _paintShopRulesLoader)) return;
+                    _paintShopRulesLoader = value;
+                    OnPropertyChanged();
+                }
+            }*/
+
+            public Lazier<bool> PaintShopSupported { get; }
+
             private AsyncCommand<CancellationToken?> _paintShopCommand;
 
             public AsyncCommand<CancellationToken?> PaintShopCommand => _paintShopCommand ?? (_paintShopCommand =
                     new AsyncCommand<CancellationToken?>(async c => {
-                        if (SkinItems != null) return;
-                        var skinItems = await GetSkinItems(c ?? default(CancellationToken));
-                        if (c?.IsCancellationRequested == true || skinItems == null || SkinItems != null) return;
+                        if (SkinItems == null) {
+                            var skinItems = await GetSkinItems(c ?? default(CancellationToken));
+                            if (c?.IsCancellationRequested == true || skinItems == null || SkinItems != null) return;
 
-                        SkinItems = skinItems;
-                        UpdateLicensePlatesStyles();
-                        FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
+                            SkinItems = skinItems;
+                            UpdateLicensePlatesStyles();
+                            FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
+                        }
 
                         Mode = Mode.Skin;
+                        SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
 
             private IList<PaintShop.PaintableItem> _skinItems;
@@ -88,8 +136,7 @@ namespace AcManager.CustomShowroom {
 
                     _skinItems = value;
                     OnPropertyChanged();
-                    _skinSaveChangesCommand?.RaiseCanExecuteChanged();
-                    _skinSaveAsNewCommand?.RaiseCanExecuteChanged();
+                    _skinSaveCommand?.RaiseCanExecuteChanged();
 
                     if (_skinItems != null) {
                         foreach (var item in _skinItems) {
@@ -118,62 +165,120 @@ namespace AcManager.CustomShowroom {
             public DelegateCommand ToggleSkinModeCommand
                 => _toggleSkinModeCommand ?? (_toggleSkinModeCommand = new DelegateCommand(() => { Mode = Mode == Mode.Skin ? Mode.Main : Mode.Skin; }));
 
-            private async Task SkinSave([NotNull] CarSkinObject skin, bool showWaitingDialog = true) {
+            private bool _saveAsNewSkin;
+
+            public bool SaveAsNewSkin {
+                get => _saveAsNewSkin;
+                set {
+                    if (Equals(value, _saveAsNewSkin)) return;
+                    _saveAsNewSkin = value;
+                    OnPropertyChanged();
+                    OnErrorsChanged(nameof(SaveAsSkinId));
+                    Renderer?.SetCurrentSkinActive(!value);
+                }
+            }
+
+            private string _saveAsSkinId;
+
+            public string SaveAsSkinId {
+                get => _saveAsSkinId;
+                set {
+                    if (Equals(value, _saveAsSkinId)) return;
+                    _saveAsSkinId = value;
+                    OnPropertyChanged();
+                    OnErrorsChanged();
+                }
+            }
+
+            private string _saveAsSkinIdSuggested = "generated";
+
+            public string SaveAsSkinIdSuggested {
+                get => _saveAsSkinIdSuggested;
+                set {
+                    if (Equals(value, _saveAsSkinIdSuggested)) return;
+                    _saveAsSkinIdSuggested = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private async Task SkinSaveAsync() {
                 try {
                     var skinsItems = SkinItems;
                     if (Renderer == null || skinsItems == null) return;
 
-                    if (Directory.GetFiles(skin.Location, "*.dds").Any() &&
-                            ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
-                                    MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                    var saveAsNew = SaveAsNewSkin;
+                    var skin = saveAsNew ? (CarSkinObject)Car.SkinsManager.AddNew(SaveAsSkinId ?? SaveAsSkinIdSuggested) : Skin;
+                    if (skin == null) {
+                        throw new Exception("Can’t find skin");
+                    }
 
-                    using (showWaitingDialog ? WaitingDialog.Create("Saving…") : null) {
+                    using (var progress = WaitingDialog.Create("Saving…")) {
+                        var cancellation = progress.CancellationToken;
+
                         var jObj = new JObject();
-                        foreach (var item in skinsItems.ToList()) {
+                        var list = skinsItems.ToList();
+
+                        for (var i = 0; i < list.Count; i++) {
+                            var item = list[i];
                             try {
                                 jObj[PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
-                                await item.SaveAsync(skin.Location);
+                                progress.Report(item.DisplayName, i, list.Count);
+                                await item.SaveAsync(skin.Location, cancellation);
+                                if (cancellation.IsCancellationRequested) break;
                             } catch (NotImplementedException) { }
                         }
 
-                        var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.Enabled);
-                        if (carPaint != null && LiveryGenerator != null) {
-                            var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
-                            if (liveryStyle != null) {
-                                var colors = new Dictionary<int, Color>(3);
+                        if (!cancellation.IsCancellationRequested) {
+                            var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.Enabled);
+                            if (carPaint != null && LiveryGenerator != null) {
+                                var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
+                                if (liveryStyle != null) {
+                                    progress.Report("Generating livery…", 0.99999);
 
-                                foreach (var item in skinsItems.Where(x => x.Enabled).OrderBy(x => x.LiveryPriority)) {
-                                    foreach (var pair in item.LiveryColors) {
-                                        colors[pair.Key] = pair.Value;
+                                    var colors = new Dictionary<int, Color>(3);
+                                    foreach (var item in skinsItems.Where(x => x.Enabled).OrderBy(x => x.LiveryPriority)) {
+                                        foreach (var pair in item.LiveryColors) {
+                                            colors[pair.Key] = pair.Value;
+                                        }
                                     }
-                                }
 
-                                if (carPaint.LiveryColorId.HasValue) {
-                                    colors[carPaint.LiveryColorId.Value] = carPaint.Color;
-                                }
-
-                                var patternColors = carPaint.CurrentPattern?.LiveryColors;
-                                if (patternColors != null) {
-                                    foreach (var pair in patternColors) {
-                                        colors[pair.Key] = pair.Value;
+                                    if (carPaint.LiveryColorId.HasValue) {
+                                        colors[carPaint.LiveryColorId.Value] = carPaint.Color;
                                     }
+
+                                    var patternColors = carPaint.CurrentPattern?.LiveryColors;
+                                    if (patternColors != null) {
+                                        foreach (var pair in patternColors) {
+                                            colors[pair.Key] = pair.Value;
+                                        }
+                                    }
+
+                                    Logging.Debug("Livery colors: " + colors.Select(x => $"[{x.Key}={x.Value.ToHexString()}]").JoinToReadableString());
+
+                                    var colorsArray = Enumerable.Range(0, 3).Select(x => colors.GetValueOr(x, Colors.White)).ToArray();
+                                    await LiveryGenerator.CreateLiveryAsync(skin, colorsArray, liveryStyle);
                                 }
-
-                                Logging.Debug("Livery colors: " + colors.Select(x => $"[{x.Key}={x.Value.ToHexString()}]").JoinToReadableString());
-
-                                var colorsArray = Enumerable.Range(0, 3).Select(x => colors.GetValueOr(x, Colors.White)).ToArray();
-                                await LiveryGenerator.CreateLiveryAsync(skin, colorsArray, liveryStyle);
                             }
                         }
 
                         File.WriteAllText(Path.Combine(skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
                     }
+
+                    if (saveAsNew) {
+                        Skin = skin;
+                    }
+                } catch (Exception e) when (e.IsCanceled()) {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t save skin", e);
                 }
             }
 
-            private AsyncCommand _skinSaveChangesCommand;
+            private AsyncCommand _skinSaveCommand;
+
+            public AsyncCommand SkinSaveCommand => _skinSaveCommand ?? (_skinSaveCommand = new AsyncCommand(SkinSaveAsync,
+                    () => SkinItems?.Any() == true));
+
+            /*private AsyncCommand _skinSaveChangesCommand;
 
             public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand =
                     new AsyncCommand(() => SkinSave(Skin), () => SkinItems?.Any() == true));
@@ -229,7 +334,7 @@ namespace AcManager.CustomShowroom {
                     await SkinSave(skin, false);
                     Skin = skin;
                 }
-            }, () => SkinItems?.Any() == true));
+            }, () => SkinItems?.Any() == true));*/
 
             private void OnLicensePlatesChanged(object sender, EventArgs e) {
                 UpdateLicensePlatesStyles();

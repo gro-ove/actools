@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
@@ -27,6 +29,39 @@ namespace AcTools.Kn5File {
         [CanBeNull]
         public Kn5Material GetMaterial(uint id) {
             return Materials.Values.ElementAtOrDefault((int)id);
+        }
+
+        [CanBeNull]
+        public Kn5Node GetNode([NotNull] string path) {
+            var pieces = path.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            var node = RootNode;
+
+            for (var i = 0; i < pieces.Length; i++) {
+                node = node?.GetByName(pieces[i]);
+                if (node == null) return null;
+            }
+
+            return node;
+        }
+
+        [CanBeNull]
+        private string GetObjectPath([NotNull] Kn5Node parent, [NotNull] Kn5Node node) {
+            if (parent.Children.IndexOf(node) != -1) return node.Name;
+
+            for (var i = 0; i < parent.Children.Count; i++) {
+                var child = parent.Children[i];
+                var v = GetObjectPath(child, node);
+                if (v != null) {
+                    return child.Name + '\\' + v;
+                }
+            }
+
+            return null;
+        }
+
+        [CanBeNull]
+        public string GetObjectPath([NotNull] Kn5Node node) {
+            return GetObjectPath(RootNode, node);
         }
 
         public Kn5Node RootNode;

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
@@ -7,8 +8,12 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Managers {
     public class CarSkinsCollectionReadyEventArgs : CollectionReadyEventArgs {
@@ -20,7 +25,7 @@ namespace AcManager.Tools.Managers {
         }
     }
 
-    public class CarSkinsManager : AcManagerNew<CarSkinObject> {
+    public class CarSkinsManager : AcManagerNew<CarSkinObject>, ICreatingManager {
         public static event EventHandler<CarSkinsCollectionReadyEventArgs> AnySkinsCollectionReady;
         private readonly EventHandler<CollectionReadyEventArgs> _collectionReadyHandler;
 
@@ -92,6 +97,35 @@ namespace AcManager.Tools.Managers {
 
             if (LoadingReset) {
                 Load();
+            }
+        }
+
+        public IAcObjectNew AddNew(string id = null) {
+            var mainDirectory = Directories.GetMainDirectory();
+
+            if (id == null) {
+                var uniqueId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(mainDirectory, "skin")));
+                id = Prompt.Show("Choose a name for a new car skin:", "New car skin", required: true, maxLength: 80, watermark: "?",
+                        defaultValue: uniqueId);
+                if (id == null) return null;
+            }
+
+            var directory = Directories.GetLocation(id, true);
+            if (Directory.Exists(directory)) {
+                throw new InformativeException("Can’t add a new object", $"ID “{id}” is already taken.");
+            }
+
+            using (IgnoreChanges()) {
+                Directory.CreateDirectory(directory);
+                File.WriteAllText(Path.Combine(directory, "ui_skin.json"), new JObject {
+                    ["skinname"] = AcStringValues.NameFromId(id)
+                }.ToString(Formatting.Indented));
+
+                var obj = CreateAndLoadAcObject(id, true);
+                InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                UpdateList(true);
+
+                return obj;
             }
         }
     }

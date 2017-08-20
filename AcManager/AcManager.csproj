@@ -217,6 +217,9 @@
     <Compile Include="CustomShowroom\Kn5MaterialDialog.xaml.cs">
       <DependentUpon>Kn5MaterialDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomShowroom\Kn5ObjectDialog.xaml.cs">
+      <DependentUpon>Kn5ObjectDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomShowroom\Kn5TextureDialog.xaml.cs">
       <DependentUpon>Kn5TextureDialog.xaml</DependentUpon>
     </Compile>
@@ -688,6 +691,10 @@
       <DependentUpon>SelectCar.xaml</DependentUpon>
     </Compile>
     <Page Include="CustomShowroom\Kn5MaterialDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\Kn5ObjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1493,6 +1500,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="About\ImportantTips\Browser Extension.txt" />
+    <None Include="About\ImportantTips\Custom Showroom Best Antialiasing.txt" />
     <None Include="About\ImportantTips\Custom Showroom Color Grading.txt" />
     <None Include="About\ImportantTips\Fake Cars.txt" />
     <None Include="About\ImportantTips\Generic Mods.txt" />

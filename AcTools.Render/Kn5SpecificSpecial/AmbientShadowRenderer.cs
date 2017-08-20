@@ -127,7 +127,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 _flattenNodes = Flatten(Scene, x =>
                         (x as Kn5RenderableDepthOnlyObject)?.OriginalNode.CastShadows != false &&
                                 !ignored.Contains((x as Kn5RenderableList)?.Name) && IsVisible(x))
-                        .ToArray();
+                        .OfType<Kn5RenderableDepthOnlyObject>().ToArray();
             }
 
             for (var i = 0; i < _flattenNodes.Length; i++) {

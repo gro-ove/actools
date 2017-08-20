@@ -506,7 +506,12 @@ namespace AcManager {
         }
 
         private void OnBbImageClick(object sender, BbCodeImageEventArgs e) {
-            new ImageViewer(e.ImageUri.ToString()).ShowDialog();
+            (e.BlockImages?.Select(x => x.Item1).Contains(e.ImageUrl) == true ?
+                    new ImageViewer(e.BlockImages.Select(x => x.Item1), e.BlockImages.Select(x => x.Item1).IndexOf(e.ImageUrl),
+                            details: i => e.BlockImages.FirstOrDefault(x => x.Item1 == i as string)?.Item2) {
+                                HorizontalDetailsAlignment = HorizontalAlignment.Center
+                            } :
+                    new ImageViewer(e.ImageUrl)).ShowDialog();
         }
 
         private void InitializeUpdatableStuff() {

@@ -62,9 +62,12 @@
           <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_InvertMouseButtons}" />
         </CheckBox>
 
+      </StackPanel>
+      <StackPanel Style="{StaticResource SettingsPanel}">
+
         <!--lite specific-->
         <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_LiteHeader}" />-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quality:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Quality:" />
 
         <CheckBox IsChecked="{Binding Holder.UseOldLiteShowroom}">
           <CheckBox.ToolTip>It’s rendering is way less accurate and it doesn’t support skinned meshes, but maybe you still need it for whatever reason?</CheckBox.ToolTip>
@@ -117,17 +120,15 @@
           </mui:BbCodeBlock>
         </c:MessageBlock>
 
-      </StackPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}">
-
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Paint Shop:" />
+        <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Paint Shop:" />
 
         <DockPanel>
           <Label Content="Sources:" />
           <ae:TextEditor Margin="0 0 0 0" Height="200"
               c:AvalonExtension.Text="{Binding Holder.PaintShopSources, Converter={x:Static c:AvalonExtension.LinesArrayToTextConverter}, UpdateSourceTrigger=LostFocus}"
               ToolTip="Just put the URLs to GitHub repositories or direct links here, one URL per line" />
-        </DockPanel>
+        </DockPanel>-->
+
       </StackPanel>
 
     </mui:SpacingUniformGrid>

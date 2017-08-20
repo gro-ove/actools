@@ -184,6 +184,7 @@
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\BindableConverterConverter.cs" />
+    <Compile Include="Windows\Converters\BrushOpacityConverter.cs" />
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />

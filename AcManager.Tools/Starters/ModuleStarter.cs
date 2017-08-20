@@ -30,7 +30,7 @@ namespace AcManager.Tools.Starters {
             try {
                 return InstallModule();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t install UI module", e);
+                NonfatalError.Notify("Canâ€™t install UI module", e);
                 return false;
             }
         }
@@ -46,7 +46,7 @@ namespace AcManager.Tools.Starters {
         public static async Task<string> GetDataAsync([Localizable(false),NotNull] string data, CancellationToken cancellation = default(CancellationToken)) {
             if (!IsAssettoCorsaRunning) {
                 TryToRunAssettoCorsa();
-                throw new InformativeException("Running AssettoCorsa.exe is required", "You’re using Module Starter, it works only though original launcher.");
+                throw new InformativeException("Running AssettoCorsa.exe is required", "Youâ€™re using Module Starter, it works only though original launcher.");
             }
 
             var backdoor = BackdoorFilename;
@@ -66,7 +66,7 @@ namespace AcManager.Tools.Starters {
             if (ini["COMMAND"].GetNonEmpty("CURRENT") != null || result == null) {
                 throw new InformativeException("UI module does not respond", "Make sure UI module is working properly.");
             }
-            
+
             return Convert.FromBase64String(result).ToUtf8String();
         }
 
@@ -99,7 +99,7 @@ namespace AcManager.Tools.Starters {
 
                 return installed;
             } catch (Exception e) {
-                throw new InformativeException("Can’t install UI module", e);
+                throw new InformativeException("Canâ€™t install UI module", e);
             }
         }
 
@@ -115,12 +115,12 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
-            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             SetAcX86Param();
 
             if (!IsAssettoCorsaRunning) {
                 TryToRunAssettoCorsa();
-                throw new InformativeException("Running AssettoCorsa.exe is required", "You’re using Module Starter, it works only though original launcher.");
+                throw new InformativeException("Running AssettoCorsa.exe is required", "Youâ€™re using Module Starter, it works only though original launcher.");
             }
 
             var backdoor = BackdoorFilename;

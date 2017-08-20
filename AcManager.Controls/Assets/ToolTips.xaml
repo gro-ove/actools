@@ -16,4 +16,15 @@
       <u:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>
   </ToolTip>
+
+  <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}">
+    <c:PropertiesGrid Columns="1" Width="240" LabelWidth="80">
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="None" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="None" />
+      <mui:Switch Value="{Binding SkinNumber}" c:PropertiesGrid.Label="Number:">
+        <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="None" />
+        <mui:PlaceholderTextBlock Text="{Binding SkinNumber}" Placeholder="None" />
+      </mui:Switch>
+    </c:PropertiesGrid>
+  </ToolTip>
 </ResourceDictionary>

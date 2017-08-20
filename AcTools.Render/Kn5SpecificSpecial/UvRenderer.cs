@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -7,7 +8,6 @@ using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
 using SlimDX;
@@ -17,9 +17,10 @@ using FillMode = SlimDX.Direct3D11.FillMode;
 using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public class UvRenderer : BaseRenderer {
+    public class UvRenderer : UtilsRendererBase {
         private readonly Kn5 _kn5;
         private Kn5RenderableFile _carNode;
+        private IKn5RenderableObject[] _filteredNodes;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
@@ -44,12 +45,20 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private void RenderUv() {
             var effect = DeviceContextHolder.GetEffect<EffectSpecialUv>();
 
-            for (var x = -1f; x <= 1f; x++) {
-                for (var y = -1f; y <= 1f; y++) {
+            var s = Stopwatch.StartNew();
+            var j = 0;
+            for (var x = -2f; x <= 2f; x++) {
+                for (var y = -2f; y <= 2f; y++) {
                     effect.FxOffset.Set(new Vector2(x, y));
-                    _carNode.Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
+                    for (var i = 0; i < _filteredNodes.Length; i++) {
+                        _filteredNodes[i].Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
+                    }
+
+                    j++;
                 }
             }
+
+            AcToolsLogging.Write($"Performance: {s.Elapsed.TotalMilliseconds / j:F1} ms per iteration; {j} iterations");
         }
 
         protected override void DrawOverride() {
@@ -84,12 +93,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        public void Shot(string outputFile, string textureName) {
+        public void Shot(string outputFile, string textureName, string objectPath) {
             if (!Initialized) {
                 Initialize();
             }
 
-            Kn5MaterialUv.Filter = textureName;
+            _filteredNodes = Flatten(_kn5, _carNode, textureName, objectPath).ToArray();
             Draw();
             Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
@@ -99,24 +108,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
     public class UvMaterialsFactory : IMaterialsFactory {
         public IRenderableMaterial CreateMaterial(object key) {
-            if (key is Kn5MaterialDescription) {
-                return new Kn5MaterialUv(((Kn5MaterialDescription)key).Material);
-            }
-
-            return new InvisibleMaterial();
+            return new Kn5MaterialUv();
         }
     }
 
     public class Kn5MaterialUv : IRenderableMaterial {
-        internal static string Filter { get; set; }
-
         private EffectSpecialUv _effect;
-        private readonly string[] _textures;
 
-        internal Kn5MaterialUv(Kn5Material material) {
-            _textures = material?.TextureMappings.Where(x => x.Name != "txDetail"
-                    && x.Name != "txNormalDetail").Select(x => x.Texture).ToArray() ?? new string[0];
-        }
+        internal Kn5MaterialUv() {}
 
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSpecialUv>();
@@ -126,7 +125,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
-            if (!_textures.Contains(Filter)) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
             return true;

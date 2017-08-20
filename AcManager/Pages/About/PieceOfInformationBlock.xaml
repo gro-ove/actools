@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
     mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignData PieceOfInformationBlock}">
   <ScrollViewer x:Name="Root" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel MinWidth="200" DataContext="{Binding Piece}">
+    <StackPanel MinWidth="200" DataContext="{Binding Piece}" Margin="0 0 20 80">
       <DockPanel Margin="0 0 0 8">
         <Ellipse DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4" Fill="{DynamicResource Go}" Width="8" Height="8"
             ToolTip="{x:Static g:AppStrings.About_NewTooltip}" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />

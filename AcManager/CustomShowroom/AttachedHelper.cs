@@ -177,6 +177,12 @@ namespace AcManager.CustomShowroom {
                 return;
             }
 
+            switch (e.Key) {
+                case Key.PageDown:
+                case Key.PageUp:
+                    return;
+            }
+
             if (e.Key == Key.H && Keyboard.Modifiers == ModifierKeys.Control) {
                 _visible = !_visible;
                 UpdateVisibility(true);

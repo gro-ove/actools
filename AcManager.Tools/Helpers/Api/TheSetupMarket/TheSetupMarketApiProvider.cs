@@ -16,7 +16,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         [ItemCanBeNull]
         public static async Task<string> GetSetup(string setupId, CancellationToken cancellation = default(CancellationToken)) {
             try {
-                return await Cache.GetAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
+                return await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
             } catch (Exception e) {
                 if (!cancellation.IsCancellationRequested) {
@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         [ItemCanBeNull]
         public static async Task<RemoteSetupInformation> GetSetupInformation(string setupId, CancellationToken cancellation = default(CancellationToken)) {
             try {
-                var data = await Cache.GetAsync($"http://thesetupmarket.com/api/get-setup/{setupId}", $"{setupId}.json",
+                var data = await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup/{setupId}", $"{setupId}.json",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
                 if (cancellation.IsCancellationRequested) return null;
                 return RemoteSetupInformation.FromTheSetupMarketJToken(JObject.Parse(data));
@@ -47,11 +47,11 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         public static async Task<Tuple<RemoteSetupInformation, string>> GetSetupFullInformation(string setupId,
                 CancellationToken cancellation = default(CancellationToken)) {
             try {
-                var ini = await Cache.GetAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
+                var ini = await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
                 if (cancellation.IsCancellationRequested) return null;
 
-                var data = await Cache.GetAsync($"http://thesetupmarket.com/api/get-setup/{setupId}", $"{setupId}.json",
+                var data = await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup/{setupId}", $"{setupId}.json",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
                 if (cancellation.IsCancellationRequested) return null;
 
@@ -77,7 +77,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
             }
 
             try {
-                var data = await Cache.GetAsync(SettingsHolder.Integrated.TheSetupMarketCacheServer ?
+                var data = await Cache.GetStringAsync(SettingsHolder.Integrated.TheSetupMarketCacheServer ?
                         "http://thesetupmarketcache-x4fab.rhcloud.com/setups" :
                         "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa", "List.json",
                         SettingsHolder.Integrated.TheSetupMarketCacheListPeriod.TimeSpan).ConfigureAwait(false);

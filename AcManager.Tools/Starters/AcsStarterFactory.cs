@@ -70,24 +70,29 @@ namespace AcManager.Tools.Starters {
             };
         }
 
+        [NotNull]
         public static IAcsStarter Create() {
-            var result = CreateFromSettings();
-            result.SetPlatform();
+            return PrepareCreated(CreateFromSettings());
+        }
+
+        [NotNull]
+        public static IAcsStarter PrepareCreated([NotNull] IAcsStarter starter) {
+            starter.SetPlatform();
 
             if (SettingsHolder.Drive.RunSteamIfNeeded) {
-                result.RunSteamIfNeeded = true;
+                starter.RunSteamIfNeeded = true;
             }
 
-            Logging.Debug($"Starter created: {result.GetType().Name}");
-            
-            var preparable = result as IAcsPrepareableStarter;
+            Logging.Debug($"Starter created: {starter.GetType().Name}");
+
+            var preparable = starter as IAcsPrepareableStarter;
             if (preparable != null && !preparable.TryToPrepare()) {
                 Logging.Warning("Can’t prepare, using fallback starter instead.");
-                result = CreateFallback();
-                result.SetPlatform();
+                starter = CreateFallback();
+                starter.SetPlatform();
             }
 
-            return result;
+            return starter;
         }
     }
 }

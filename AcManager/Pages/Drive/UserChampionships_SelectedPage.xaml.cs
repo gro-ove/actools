@@ -501,9 +501,10 @@ namespace AcManager.Pages.Drive {
 
             var skins = carObject.EnabledOnlySkins.ToList();
             var viewer = new ImageViewer(
-                skins.Select(x => x.PreviewImage),
-                skins.IndexOf(carSkin)
-            );
+                    skins.Select(x => x.PreviewImage),
+                    skins.IndexOf(carSkin),
+                    CommonAcConsts.PreviewWidth,
+                    details: CarBlock.GetSkinImageViewerDetailsCallback(carObject));
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
                 var selected = viewer.ShowDialogInSelectMode();

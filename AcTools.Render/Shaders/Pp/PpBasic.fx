@@ -48,6 +48,32 @@
 		}
 	}
 
+	float4 ps_CopySqr(PS_IN pin) : SV_Target {
+	    float4 v = gInputMap.Sample(samInputImage, pin.Tex);
+		return v * v;
+	}
+
+	technique10 CopySqr {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CopySqr()));
+		}
+	}
+
+	float4 ps_CopySqrt(PS_IN pin) : SV_Target {
+	    float4 v = gInputMap.Sample(samInputImage, pin.Tex);
+		return sqrt(max(v, 0));
+	}
+
+	technique10 CopySqrt {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CopySqrt()));
+		}
+	}
+
 	float4 ps_Cut(PS_IN pin) : SV_Target {
 		return gInputMap.Sample(samInputImage, (pin.Tex - 0.5) * gSizeMultipler + 0.5);
 	}
@@ -86,7 +112,7 @@
 	}
 
 	float4 ps_AccumulateDivide(PS_IN pin) : SV_Target {
-		return gInputMap.Sample(samInputImage, pin.Tex) * gMultipler;
+		return sqrt(max(gInputMap.Sample(samInputImage, pin.Tex) * gMultipler, 0));
 	}
 
 	technique10 AccumulateDivide {
@@ -99,9 +125,26 @@
 
 	float4 ps_AccumulateBokehDivide(PS_IN pin) : SV_Target{
 		float4 b = gInputMap.Sample(samInputImage, pin.Tex);
-		float4 o = gOverlayMap.Sample(samInputImage, pin.Tex);
-		float m = saturate(10.0 * dot(o.rgb, float3(0.299f, 0.587f, 0.114f)) - 0.9) * gBokenMultipler.x;
-		return b * gMultipler * (1.0 - m) + o * m;
+		// float4 o = gOverlayMap.Sample(samInputImage, pin.Tex);
+
+        float4 o = 0;
+        float v = 0;
+
+        float x, y;
+        for (x = -1; x <= 1; x += 0.25) {
+            for (y = -1; y <= 1; y += 0.25) {
+                float2 uv = pin.Tex + float2(x, y) * gScreenSize.zw * 2.5;
+                float w = sqrt(pow(1.5 - abs(x), 2) + pow(1.5 - abs(y), 2));
+                float4 n = gOverlayMap.SampleLevel(samInputImage, uv, 0);
+                o += n * w;
+                v += w;
+            }
+        }
+
+        o /= v;
+
+		float m = saturate(50.0 * (dot(o.rgb, float3(0.299f, 0.587f, 0.114f)) - 1.0)) * gBokenMultipler.x;
+		return sqrt(max(b * gMultipler * (1.0 - m) * 0.1 + o * m, 0));
 	}
 
 	technique10 AccumulateBokehDivide {

@@ -11,13 +11,52 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Temporary;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public abstract class ShadowsRendererBase : BaseRenderer {
+    public abstract class UtilsRendererBase : BaseRenderer {
+        [NotNull]
+        protected static IEnumerable<IKn5RenderableObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
+            return root
+                    .SelectManyRecursive(x => {
+                        var list = x as Kn5RenderableList;
+                        if (list == null || !list.IsEnabled) return null;
+                        return filter?.Invoke(list) == false ? null : list;
+                    })
+                    .OfType<IKn5RenderableObject>()
+                    .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
+        }
+
+        [NotNull]
+        protected static IEnumerable<IKn5RenderableObject> Flatten(Kn5 kn5, RenderableList root, [CanBeNull] string textureName,
+                [CanBeNull] string objectPath) {
+            var split = Lazier.Create(() => objectPath?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
+
+            bool TestObjectPath(IKn5RenderableObject obj) {
+                var s = split.Value;
+                if (s == null || s.Length < 1) return true;
+                if (s[s.Length - 1] != obj.OriginalNode.Name) return false;
+                return kn5.GetObjectPath(obj.OriginalNode) == objectPath;
+            }
+
+            return Flatten(root, x => {
+                var k = x as IKn5RenderableObject;
+                if (k == null) return true;
+                if (!TestObjectPath(k)) return false;
+                if (textureName == null) return true;
+                var material = kn5.GetMaterial(k.OriginalNode.MaterialId);
+                return material != null && material.TextureMappings.Where(y => y.Name != "txDetail" && y.Name != "txNormalDetail")
+                                                   .Any(m => m.Texture == textureName);
+            });
+        }
+    }
+
+    public abstract class ShadowsRendererBase : UtilsRendererBase {
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
         [NotNull]
@@ -135,18 +174,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
         #endregion
-
-        [NotNull]
-        protected static IEnumerable<Kn5RenderableDepthOnlyObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
-            return root
-                    .SelectManyRecursive(x => {
-                        var list = x as Kn5RenderableList;
-                        if (list == null || !list.IsEnabled) return null;
-                        return filter?.Invoke(list) == false ? null : list;
-                    })
-                    .OfType<Kn5RenderableDepthOnlyObject>()
-                    .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
-        }
 
         private class AlphaTexturesProvider : IAlphaTexturesProvider {
             private readonly Kn5 _kn5;

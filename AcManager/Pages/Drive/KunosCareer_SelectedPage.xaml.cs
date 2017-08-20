@@ -14,6 +14,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -212,8 +213,9 @@ namespace AcManager.Pages.Drive {
             var skins = ev.CarObject.EnabledOnlySkins.ToList();
             var viewer = new ImageViewer(
                 skins.Select(x => x.PreviewImage),
-                skins.IndexOf(ev.CarSkin)
-            );
+                skins.IndexOf(ev.CarSkin),
+                CommonAcConsts.PreviewWidth,
+                details: CarBlock.GetSkinImageViewerDetailsCallback(ev.CarObject));
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
                 var selected = viewer.ShowDialogInSelectMode();

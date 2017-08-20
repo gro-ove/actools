@@ -1,0 +1,13 @@
+sid: wccb386t
+Do you want to get yourself the best AA available for Custom Showroom (as well as Custom Previews)? Just go to Misc tab in settings, enable Accumulation DOF and set aperture size to 0. Also, keep bokeh fix disabled, and set iterations to 20–50, it should be more than enough.
+
+Then, to stop losing sharpness and solve performance issues, feel free to disable FXAA, MSAA and increased pixel density.
+
+In accumulation mode, CM will mix new frames with previous ones, each time slightly moving camera in a radius of one pixel of screen-space until it reaches speicified amount of iterations. And each time scene is updated, acculumation buffer will be reset. That’s why, even without FXAA enabled, first frame still will be rendered with it — so, when something is animated or camera is moving, some AA would still be active.
+
+For previews, it’s still better to keep higher pixel density active to keep textures sharp, but now 4x would be enough. And, of course, it might slow previews generation down noticeably, and, to be honest, for Kunos style, difference is pretty subtle. So, decide for yourself if it’s worth it.
+
+ [img="http://i.imgur.com/AaMCkU8.jpg|320"]Default settings: 16x pixel density and FXAA[/img]
+ [img="http://i.imgur.com/c654tZE.jpg|320"]DOF trick: 4x pixel density and 20 iterations of accumulation DOF[/img]
+
+[i]Of course, this primitive thing is nowhere near proper TSSAA, but I’m not even sure I can implement TSSAA without deferred shading — which, as I now realize, not very compatible with AC materials.[/i]

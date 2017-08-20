@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
@@ -25,9 +26,11 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -46,7 +49,7 @@ namespace AcManager.CustomShowroom {
         Blurred = 2
     }
 
-    public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider {
+    public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider, ILinkNavigator {
         public static readonly string DefaultKey = "__DarkRendererSettings";
         public static readonly string DefaultPresetableKeyValue = "Custom Showroom";
 
@@ -177,6 +180,7 @@ namespace AcManager.CustomShowroom {
             public virtual float DofFocusPlane { get; set; } = 1.6f;
             public virtual float DofScale { get; set; } = 1f;
             public virtual bool UseAccumulationDof { get; set; }
+            public virtual bool AccumulationDofBokeh { get; set; }
             public virtual int AccumulationDofIterations { get; set; } = 100;
             public virtual float AccumulationDofApertureSize { get; set; } = 0.01f;
 
@@ -355,6 +359,7 @@ namespace AcManager.CustomShowroom {
             obj.DofFocusPlane = Renderer.DofFocusPlane;
             obj.DofScale = Renderer.DofScale;
             obj.UseAccumulationDof = Renderer.UseAccumulationDof;
+            obj.AccumulationDofBokeh = Renderer.AccumulationDofBokeh;
             obj.AccumulationDofIterations = Renderer.AccumulationDofIterations;
             obj.AccumulationDofApertureSize = Renderer.AccumulationDofApertureSize;
             return obj;
@@ -415,7 +420,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _cameraFov)) return;
                 _cameraFov = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -427,7 +432,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _cameraTilt)) return;
                 _cameraTilt = value;
                 OnPropertyChanged();
-                UpdateCamera();
+                PushCamera();
             }
         }
 
@@ -444,7 +449,7 @@ namespace AcManager.CustomShowroom {
 
         private void OnCameraCoordinatePropertyChanged(object sender, PropertyChangedEventArgs e) {
             SaveLater();
-            UpdateCamera();
+            PushCamera();
         }
 
         protected virtual void LoadCamera(SaveableData o) {
@@ -452,10 +457,11 @@ namespace AcManager.CustomShowroom {
                 CameraPosition.Set(o.CameraPosition);
                 CameraLookAt.Set(o.CameraLookAt);
                 CameraTilt = o.CameraTilt;
+                CameraOrbitMode = o.CameraOrbitMode;
                 CameraFov = o.CameraFov;
             });
 
-            UpdateCamera();
+            PushCamera();
         }
 
         protected void ResetCamera() {
@@ -480,7 +486,7 @@ namespace AcManager.CustomShowroom {
                 OnPropertyChanged(save: false);
 
                 if (value) {
-                    UpdateCamera();
+                    PushCamera();
                 }
             }
         }
@@ -503,24 +509,25 @@ namespace AcManager.CustomShowroom {
                 CameraIgnoreNext = false;
             } else if (!Renderer.ShotInProcess) {
                 if (LockCamera) {
-                    UpdateCamera();
+                    PushCamera();
                 } else {
-                    SyncCamera();
+                    PullCamera();
                 }
             }
         }
 
-        protected virtual void SyncCamera() {
+        protected virtual void PullCamera() {
             CameraBusy.Do(() => {
                 CameraPosition.Set(Renderer.Camera.Position);
                 CameraLookAt.Set(Renderer.CameraOrbit?.Target ?? Renderer.Camera.Position + Renderer.Camera.Look);
                 CameraOrbitMode = Renderer.CameraOrbit != null;
                 CameraTilt = Renderer.Camera.Tilt.ToDegrees();
                 CameraFov = Renderer.Camera.FovY.ToDegrees();
+                SaveLater();
             });
         }
 
-        protected virtual void UpdateCamera(bool force = false) {
+        protected virtual void PushCamera(bool force = false) {
             if (!force && !LoadCameraEnabled) return;
             CameraBusy.Do(() => {
                 if (CameraOrbitMode) {
@@ -535,7 +542,7 @@ namespace AcManager.CustomShowroom {
             var data = SaveHelper<SaveableData>.LoadSerialized(serializedData);
             if (data != null) {
                 LoadCamera(data);
-                UpdateCamera(true);
+                PushCamera(true);
             }
         }
         #endregion
@@ -622,6 +629,7 @@ namespace AcManager.CustomShowroom {
             Renderer.DofFocusPlane = o.DofFocusPlane;
             Renderer.DofScale = o.DofScale;
             Renderer.UseAccumulationDof = o.UseAccumulationDof;
+            Renderer.AccumulationDofBokeh = o.AccumulationDofBokeh;
             Renderer.AccumulationDofIterations = o.AccumulationDofIterations;
             Renderer.AccumulationDofApertureSize = o.AccumulationDofApertureSize;
         }
@@ -675,7 +683,7 @@ namespace AcManager.CustomShowroom {
             Renderer.PropertyChanged += OnRendererPropertyChanged;
             Renderer.LightPropertyChanged += OnLightPropertyChanged;
 
-            UpdateCamera();
+            PushCamera(true);
         }
 
         public BetterObservableCollection<DarkLightBase> ExtraLights { get; private set; }
@@ -766,7 +774,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public DarkRendererSettings(DarkKn5ObjectRenderer renderer) : this(renderer, DefaultPresetableKeyValue) {
-            Initialize(false);
+            // Initialize(false);
         }
 
         protected DarkRendererSettings(DarkKn5ObjectRenderer renderer, string presetableKeyValue) {
@@ -818,6 +826,7 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.DofFocusPlane):
                 case nameof(Renderer.DofScale):
                 case nameof(Renderer.UseAccumulationDof):
+                case nameof(Renderer.AccumulationDofBokeh):
                 case nameof(Renderer.AccumulationDofApertureSize):
                 case nameof(Renderer.AccumulationDofIterations):
                 case nameof(Renderer.CubemapReflectionFacesPerFrame):
@@ -1243,5 +1252,33 @@ namespace AcManager.CustomShowroom {
                 SaveLater();
             }
         }
+
+        #region Link navigator for inline commands
+        public CommandDictionary Commands {
+            get => BbCodeBlock.DefaultLinkNavigator.Commands;
+            set => BbCodeBlock.DefaultLinkNavigator.Commands = value;
+        }
+
+        public event EventHandler<NavigateEventArgs> PreviewNavigate {
+            add => BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += value;
+            remove => BbCodeBlock.DefaultLinkNavigator.PreviewNavigate -= value;
+        }
+
+        public void Navigate(Uri uri, FrameworkElement source, string parameter = null) {
+            if (uri.OriginalString == "cmd://setAccumulationAa") {
+                Renderer.UseFxaa = false;
+                Renderer.UseMsaa = false;
+                Renderer.UseSsaa = false;
+                Renderer.UseAccumulationDof = true;
+                Renderer.UseDof = true;
+                Renderer.AccumulationDofApertureSize = 0f;
+                Renderer.AccumulationDofBokeh = false;
+                Renderer.AccumulationDofIterations = 40;
+                return;
+            }
+
+            BbCodeBlock.DefaultLinkNavigator.Navigate(uri, source, parameter);
+        }
+        #endregion
     }
 }

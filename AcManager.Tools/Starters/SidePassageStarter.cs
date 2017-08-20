@@ -19,9 +19,7 @@ namespace AcManager.Tools.Starters {
         private static readonly string Version = @"1.0.3.64";
 
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
-
         private static string LauncherOriginalFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, "AssettoCorsa_original.exe");
-
         private static string BackgroundFlagFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, "AssettoCorsa_background.flag");
 
         private static void InstallSidePassage() {
@@ -39,7 +37,7 @@ namespace AcManager.Tools.Starters {
                         return;
                     }
 
-                    Logging.Write($"Service is obsolete (installed: {versionInfo.FileVersion ?? "<NULL>"}, available: {Version}), update is required…");
+                    Logging.Write($"Service is obsolete (installed: {versionInfo.FileVersion ?? "<NULL>"}, available: {Version}), update is requiredâ€¦");
                 } else {
                     updateRequired = false;
                 }
@@ -86,15 +84,15 @@ namespace AcManager.Tools.Starters {
                 if (updateRequired) {
                     Toast.Show("AC Service Updated", $"New version: {Version}");
                 } else {
-                    Toast.Show("AC Service Installed", $"Original launcher renamed as “{Path.GetFileName(LauncherOriginalFilename)}”");
+                    Toast.Show("AC Service Installed", $"Original launcher renamed as â€œ{Path.GetFileName(LauncherOriginalFilename)}â€");
                 }
             } catch (Exception e) {
                 if (updateRequired) {
-                    throw new InformativeException("Can’t update AC Service",
-                            "Please, make sure it’s not running and if it is, stop it", e);
+                    throw new InformativeException("Canâ€™t update AC Service",
+                            "Please, make sure itâ€™s not running and if it is, stop it", e);
                 }
 
-                throw new InformativeException("Can’t install AC Service",
+                throw new InformativeException("Canâ€™t install AC Service",
                         "Please, make sure the original launcher is not running and if it is, stop it", e);
             }
 
@@ -140,13 +138,13 @@ namespace AcManager.Tools.Starters {
         private static bool _listeningForExit;
 
         private static void StartSidePassage() {
-            Logging.Write("Starting Side Passage service…");
+            Logging.Write("Starting Side Passage serviceâ€¦");
             File.WriteAllBytes(BackgroundFlagFilename, new byte[0]);
 
             var process = Process.Start(LauncherFilename);
             if (process == null) {
-                throw new InformativeException("Can’t start side passage",
-                        "Please, make sure AC Service (replacement for AssettoCorsa.exe — don’t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is installed well.");
+                throw new InformativeException("Canâ€™t start side passage",
+                        "Please, make sure AC Service (replacement for AssettoCorsa.exe â€” donâ€™t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is installed well.");
             }
 
             if (!_listeningForExit) {
@@ -204,20 +202,20 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
-            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             InstallSidePassage();
 
             var passage = EstablishConnection();
             if (passage == null) {
-                throw new InformativeException("Can’t connect to side passage",
-                        "Please, make sure AC Service  (replacement for AssettoCorsa.exe — don’t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is running well or switch starters.");
+                throw new InformativeException("Canâ€™t connect to side passage",
+                        "Please, make sure AC Service  (replacement for AssettoCorsa.exe â€” donâ€™t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is running well or switch starters.");
             }
 
             passage.Start(AcsName);
         }
 
         public override async Task RunAsync(CancellationToken cancellation) {
-            await Task.Run(() => SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded));
+            await Task.Run(() => SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false));
 
             new IniFile(FileUtils.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
@@ -228,14 +226,14 @@ namespace AcManager.Tools.Starters {
 
             await Task.Run(() => InstallSidePassage());
             if (cancellation.IsCancellationRequested) return;
-            
+
             var passage = await EstablishConnectionAsync(cancellation);
             if (cancellation.IsCancellationRequested) return;
 
             if (passage == null) {
-                throw new InformativeException("Can’t connect to side passage", "Please, make sure AC Service is running well or switch starters.");
+                throw new InformativeException("Canâ€™t connect to side passage", "Please, make sure AC Service is running well or switch starters.");
             }
-            
+
             passage.Start(AcsName);
         }
 
@@ -263,7 +261,7 @@ namespace AcManager.Tools.Starters {
             if (cancellation.IsCancellationRequested) return null;
 
             if (passage == null) {
-                throw new InformativeException("Can’t connect to side passage", "Please, make sure AC Service is running well or switch starters.");
+                throw new InformativeException("Canâ€™t connect to side passage", "Please, make sure AC Service is running well or switch starters.");
             }
 
             return await Task.Run(() => passage.GetAchievements());

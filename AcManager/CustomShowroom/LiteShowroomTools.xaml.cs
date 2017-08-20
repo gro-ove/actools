@@ -16,6 +16,7 @@ using AcManager.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
@@ -178,12 +179,16 @@ namespace AcManager.CustomShowroom {
                         renderer.AmbientShadowHighlight = false;
                     }
 
+                    if (value != Mode.Skin) {
+                        DisposeSkinItems();
+                    }
+
                     if (value == Mode.Skin && SkinItems == null) {
                         if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
-                        } else {
-                            LoadSkinItems();
+                        /*} else {
+                            LoadSkinItems();*/
                         }
                     }
 
@@ -305,7 +310,7 @@ namespace AcManager.CustomShowroom {
                 public double[] CameraLookAt = { 0, 0, 0 };
 
                 [JsonProperty("ti")]
-                public float CameraTilt = 0f;
+                public float CameraTilt;
 
                 [JsonProperty("cf")]
                 public float CameraFov = 36f;
@@ -360,6 +365,7 @@ namespace AcManager.CustomShowroom {
                 }, Load);
 
                 Saveable.Initialize();
+                PaintShopSupported = Lazier.CreateAsync(async () => (await CmApiProvider.GetPaintShopIdsAsync())?.Contains(Car.Id) == true);
             }
 
             #region Camera
@@ -637,17 +643,6 @@ namespace AcManager.CustomShowroom {
                 Mode = Mode.Main;
             }));
 
-            private DelegateCommand _copyCameraPositionCommand;
-
-            public DelegateCommand CopyCameraPositionCommand => _copyCameraPositionCommand ?? (_copyCameraPositionCommand = new DelegateCommand(() => {
-                var renderer = Renderer;
-                if (renderer == null) return;
-                ShowMessage(string.Format("Camera position: {0}\nLook at: {1}\nFOV: {2:F1}°",
-                        ToString(renderer.Camera.Position), ToString(renderer.Camera.Position + renderer.Camera.Look),
-                        180d / Math.PI * renderer.Camera.FovY),
-                        "Camera Position");
-            }));
-
             private AsyncCommand _updateKn5Command;
 
             public AsyncCommand UpdateKn5Command => _updateKn5Command ?? (_updateKn5Command = new AsyncCommand(async () => {
@@ -880,7 +875,7 @@ namespace AcManager.CustomShowroom {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination) &&
-                                ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), Tools.ToolsStrings.Common_Destination,
+                                ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), ToolsStrings.Common_Destination,
                                         MessageBoxButton.YesNo) == MessageBoxResult.No) {
                             var temp = destination;
                             var i = 1;
@@ -901,7 +896,7 @@ namespace AcManager.CustomShowroom {
 
                     Process.Start(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify(string.Format(Tools.ToolsStrings.Common_CannotUnpack, Tools.ToolsStrings.Common_KN5), e);
+                    NonfatalError.Notify(string.Format(ToolsStrings.Common_CannotUnpack, ToolsStrings.Common_KN5), e);
                 }
             }, () => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.MainSlot.Kn5 != null));
             #endregion
@@ -930,15 +925,22 @@ namespace AcManager.CustomShowroom {
                 AttachedHelper.GetInstance(_renderer)?.Attach(text, dlg);
             }
 
-            private DelegateCommand _viewObjectCommand;
+            private AsyncCommand _viewObjectCommand;
 
-            public DelegateCommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new DelegateCommand(() => {
-                var obj = Renderer?.SelectedObject?.OriginalNode;
+            public AsyncCommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new AsyncCommand(async () => {
+                var obj = Renderer?.SelectedObject;
                 if (obj == null) return;
 
-                ShowMessage(string.Format(ControlsStrings.CustomShowroom_ObjectInformation, obj.Name, obj.NodeClass.GetDescription(), obj.Active,
-                        obj.IsRenderable, obj.IsVisible, obj.IsTransparent, obj.CastShadows, obj.Layer,
-                        obj.LodIn, obj.LodOut, Renderer.SelectedMaterial?.Name ?? @"?"), obj.Name);
+                var attached = AttachedHelper.GetInstance(_renderer);
+                if (attached == null) return;
+
+                try {
+                    if (Renderer == null) return;
+                    await attached.AttachAndWaitAsync("Kn5ObjectDialog",
+                            new Kn5ObjectDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject), obj));
+                } catch (Exception e) {
+                    NonfatalError.Notify("Unexpected exception", e);
+                }
             }, () => Renderer?.SelectedObject != null));
 
             private static string MaterialPropertyToString(Kn5Material.ShaderProperty property) {

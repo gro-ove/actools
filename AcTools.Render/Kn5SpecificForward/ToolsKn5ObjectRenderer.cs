@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using AcTools.Kn5File;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -128,21 +130,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             _outlineDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
-        public event EventHandler CameraMoved;
-        private Matrix _cameraView;
-
         protected override void DrawPrepare() {
-            var cameraMoved = CameraMoved;
-            if (cameraMoved != null) {
-                Camera.UpdateViewMatrix();
-                if (_cameraView != Camera.ViewProj) {
-                    _cameraView = Camera.ViewProj;
-                    cameraMoved.Invoke(this, EventArgs.Empty);
-                    Camera.UpdateViewMatrix();
-                    _cameraView = Camera.ViewProj;
-                }
-            }
-
+            TestCameraMoved();
             base.DrawPrepare();
 
             var highlighted = AmbientShadowHighlight ? (IRenderableObject)CarNode?.AmbientShadowNode : SelectedObject;

@@ -5,6 +5,7 @@
   <c:BooleanToFontWeightConverter x:Key="BooleanToFontWeightConverter" />
   <c:BooleanToTextConverter x:Key="BooleanToTextConverter" />
   <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  <c:BrushOpacityConverter x:Key="BrushOpacityConverter" />
   <c:ChainConverter x:Key="ChainConverter" />
   <c:DifferentToVisibilityConverter x:Key="DifferentToVisibilityConverter" />
   <c:DrawingToColorConverter x:Key="DrawingToColorConverter" />

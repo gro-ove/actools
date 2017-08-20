@@ -12,7 +12,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             var f = value?.ToString() == (i ? s.Substring(1) : s);
             return i ? !f : f;
         }
-        
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value == null || parameter == null) return null;
             var useValue = (bool)value;

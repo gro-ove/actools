@@ -23,7 +23,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
-            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             CreateAppIdFile();
             GameProcess = Process.Start(new ProcessStartInfo {
                 FileName = AcsFilename,
@@ -33,7 +33,7 @@ namespace AcManager.Tools.Starters {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetAchievementsInner() {
-            SteamRunningHelper.EnsureSteamIsRunning(SettingsHolder.Drive.RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(SettingsHolder.Drive.RunSteamIfNeeded, false);
             CreateAppIdFile();
 
             var reader = Path.Combine(AcRootDirectory.Instance.RequireValue, "SteamStatisticsReader.exe");

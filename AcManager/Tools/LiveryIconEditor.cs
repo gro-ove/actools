@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AcManager.CustomShowroom;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
@@ -256,7 +258,7 @@ namespace AcManager.Tools {
         }
 
         public async Task ApplyColorsAsync([CanBeNull] Color[] colors) {
-            colors = colors ?? await Task.Run(() => GuessColors(Skin));
+            colors = colors ?? await GuessColorsAsync(Skin);
             ColorValue = colors.Length > 0 ? colors[0] : Colors.White;
             SecondaryColorValue = colors.Length > 1 ? colors[1] : Colors.Black;
             TertiaryColorValue = colors.Length > 2 ? colors[2] : Colors.Black;
@@ -456,8 +458,8 @@ namespace AcManager.Tools {
         private static readonly WeakList<Tuple<string, Kn5>> Kn5MaterialsCache = new WeakList<Tuple<string, Kn5>>(10);
         private static readonly WeakList<Tuple<string, Kn5>> Kn5TexturesCache = new WeakList<Tuple<string, Kn5>>(10);
 
-        [CanBeNull]
-        private static Color[] GuessColorsFromTextures(CarSkinObject skin) {
+        [ItemCanBeNull]
+        private static async Task<Color[]> GuessColorsFromTexturesAsync(CarSkinObject skin) {
             if (!ImageUtils.IsMagickSupported) {
                 Logging.Debug("ImageMagick is missing");
                 return null;
@@ -485,11 +487,14 @@ namespace AcManager.Tools {
                     return null;
                 }
 
-                materialsKn5 = Kn5.FromFile(GetKn5Filename(), SkippingTextureLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
+                materialsKn5 = await Task.Run(() => Kn5.FromFile(GetKn5Filename(), SkippingTextureLoader.Instance, nodeLoader: SkippingNodeLoader.Instance));
                 Kn5MaterialsCache.Add(Tuple.Create(car.Id, materialsKn5));
             }
 
-            var paintable = PaintShop.GetPaintableItems(skin.CarId, materialsKn5).ToList();
+            var paintable = (await PaintShop.GetPaintableItemsAsync(skin.CarId, materialsKn5, default(CancellationToken)))?.ToList();
+            if (paintable == null) {
+                return null;
+            }
 
             var carPaint = paintable.OfType<PaintShop.CarPaint>().FirstOrDefault();
             if (carPaint?.GuessColorsFromPreviews != false) {
@@ -538,37 +543,39 @@ namespace AcManager.Tools {
                     return ImageUtils.GetTextureColor(asPng).ToColor();
                 }
 
-                var result = new[] {
-                    GetColor(texture),
-                    Colors.Black,
-                    Colors.Black
-                };
+                return await Task.Run(() => {
+                    var result = new[] {
+                        GetColor(texture),
+                        Colors.Black,
+                        Colors.Black
+                    };
 
-                Logging.Debug($"Main color: {texture} ({result[0].ToHexString()})");
+                    Logging.Debug($"Main color: {texture} ({result[0].ToHexString()})");
 
-                foreach (var item in paintable.OfType<PaintShop.ColoredItem>().Where(x => x.LiveryColorIds?.Length > 0).OrderBy(x => x.LiveryPriority)) {
-                    if (item.LiveryColorIds == null) continue;
-                    for (var i = 0; i < item.LiveryColorIds.Length; i++) {
-                        var slotId = i;
-                        var slotTexture = item.AffectedTextures.ElementAtOrDefault(item.LiveryColorIds[i]);
-                        Logging.Debug($"Extra: {slotId} = {slotTexture} (priority: {item.LiveryPriority})");
+                    foreach (var item in paintable.OfType<PaintShop.ColoredItem>().Where(x => x.LiveryColorIds?.Length > 0).OrderBy(x => x.LiveryPriority)) {
+                        if (item.LiveryColorIds == null) continue;
+                        for (var i = 0; i < item.LiveryColorIds.Length; i++) {
+                            var slotId = i;
+                            var slotTexture = item.AffectedTextures.ElementAtOrDefault(item.LiveryColorIds[i]);
+                            Logging.Debug($"Extra: {slotId} = {slotTexture} (priority: {item.LiveryPriority})");
 
-                        if (slotId < 0 || slotId > 2 || slotTexture == null) continue;
-                        result[slotId] = GetColor(slotTexture);
+                            if (slotId < 0 || slotId > 2 || slotTexture == null) continue;
+                            result[slotId] = GetColor(slotTexture);
+                        }
                     }
-                }
 
-                Logging.Debug($"Colors guessed: {s.Elapsed.TotalMilliseconds:F1} ms");
-                return result;
+                    Logging.Debug($"Colors guessed: {s.Elapsed.TotalMilliseconds:F1} ms");
+                    return result;
+                });
             } finally {
                 DisposeHelper.Dispose(ref reader);
             }
         }
 
         [NotNull]
-        private static Color[] GuessColors(CarSkinObject skin) {
+        private static async Task<Color[]> GuessColorsAsync(CarSkinObject skin) {
             try {
-                var result = GuessColorsFromTextures(skin);
+                var result = await GuessColorsFromTexturesAsync(skin);
                 if (result != null) {
                     return result;
                 }
@@ -576,20 +583,22 @@ namespace AcManager.Tools {
                 Logging.Warning("Can’t guess colors with Paint Shop: " + e);
             }
 
-            try {
-                using (var bitmap = Image.FromFile(skin.PreviewImage)) {
-                    var baseColors = ImageUtils.GetBaseColors((Bitmap)bitmap);
-                    Logging.Debug("Colors from preview: " + baseColors.Select(x => x.ToString()).JoinToString(", "));
+            return await Task.Run(() => {
+                try {
+                    using (var bitmap = Image.FromFile(skin.PreviewImage)) {
+                        var baseColors = ImageUtils.GetBaseColors((Bitmap)bitmap);
+                        Logging.Debug("Colors from preview: " + baseColors.Select(x => x.ToString()).JoinToString(", "));
 
-                    var a = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
-                    var b = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
-                    var c = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
-                    return new[] { a, b, c };
+                        var a = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
+                        var b = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
+                        var c = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
+                        return new[] { a, b, c };
+                    }
+                } catch (Exception e) {
+                    Logging.Warning("Can’t guess colors: " + e);
+                    return new[] { Colors.White, Colors.Black, Colors.Black };
                 }
-            } catch (Exception e) {
-                Logging.Warning("Can’t guess colors: " + e);
-                return new[] { Colors.White, Colors.Black, Colors.Black };
-            }
+            });
         }
         #endregion
     }

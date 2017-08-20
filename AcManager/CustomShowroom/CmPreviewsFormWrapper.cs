@@ -35,11 +35,7 @@ namespace AcManager.CustomShowroom {
             return _tools.Model.GetErrors();
         }
 
-        /*protected override void OnRender() {
-            if (!Renderer.IsDirty && !Renderer.AccumulationMode) return;
-            Renderer.Draw();
-            InvokeFirstFrameCallback();
-        }*/
+        protected override bool SleepMode => base.SleepMode && !_helper.IsActive;
 
         [ItemCanBeNull]
         private static async Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] CarObject car, [CanBeNull] string skinId,

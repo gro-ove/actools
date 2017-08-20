@@ -175,5 +175,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         /// </summary>
         Task SaveTextureTintAsync(string filename, [NotNull] Color[] colors, double alphaAdd, [NotNull] PaintShopSource source,
                 [CanBeNull] PaintShopSource maskSource, [CanBeNull] PaintShopSource overlay);
+
+        void SetCurrentSkinActive(bool active);
     }
 }

@@ -51,8 +51,12 @@ namespace AcManager.Tools.Starters {
             if (!initialized) {
                 Logging.Debug("Still not initialized…");
 
-                if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
-                    MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                try {
+                    SteamRunningHelper.EnsureSteamIsRunning(true, true);
+                } catch {
+                    if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
+                        MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    }
                 }
 
                 Environment.Exit(0);
@@ -130,8 +134,6 @@ namespace AcManager.Tools.Starters {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetAchievementsInner() {
-            SteamRunningHelper.EnsureSteamIsRunning(SettingsHolder.Drive.RunSteamIfNeeded);
-
             var reader = Path.Combine(_acRoot, "SteamStatisticsReader.exe");
             var output = new StringBuilder();
             using (var process = new Process {

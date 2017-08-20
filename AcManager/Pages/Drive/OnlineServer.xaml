@@ -498,9 +498,7 @@
 
                     <DataTemplate.Triggers>
                       <DataTrigger Binding="{Binding IsActive}" Value="True">
-                        <Setter TargetName="TypeText" Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
                         <Setter TargetName="TypeText" Property="FontWeight" Value="Bold" />
-                        <Setter TargetName="DurationText" Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
                         <Setter TargetName="DurationText" Property="FontWeight" Value="Bold" />
                       </DataTrigger>
                     </DataTemplate.Triggers>

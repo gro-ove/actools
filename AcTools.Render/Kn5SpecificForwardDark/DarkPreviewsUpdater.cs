@@ -107,6 +107,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double DofFocusPlane = 1.6;
         public double DofScale = 1d;
         public bool UseAccumulationDof = false;
+        public bool AccumulationDofBokeh = false;
         public int AccumulationDofIterations = 300;
         public double AccumulationDofApertureSize = 0.01;
 
@@ -212,6 +213,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ PcssSceneScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssLightScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ SsaoOpacity.GetHashCode();
+
+                if (UseDof) {
+                    hashCode = (hashCode * 397) ^ "useDof".GetHashCode();
+                    hashCode = (hashCode * 397) ^ DofFocusPlane.GetHashCode();
+
+                    if (UseAccumulationDof) {
+                        hashCode = (hashCode * 397) ^ "accumulationDof".GetHashCode();
+                        hashCode = (hashCode * 397) ^ AccumulationDofApertureSize.GetHashCode();
+                        hashCode = (hashCode * 397) ^ AccumulationDofIterations.GetHashCode();
+                        hashCode = (hashCode * 397) ^ AccumulationDofBokeh.GetHashCode();
+                    } else {
+                        hashCode = (hashCode * 397) ^ DofScale.GetHashCode();
+                    }
+                }
+
                 return Convert.ToBase64String(BitConverter.GetBytes(hashCode)).TrimEnd('=');
             }
         }
@@ -373,6 +389,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.DofFocusPlane = (float)options.DofFocusPlane;
             renderer.DofScale = (float)options.DofScale;
             renderer.UseAccumulationDof = options.UseAccumulationDof;
+            renderer.AccumulationDofBokeh = options.AccumulationDofBokeh;
             renderer.AccumulationDofIterations = options.AccumulationDofIterations;
             renderer.AccumulationDofApertureSize = (float)options.AccumulationDofApertureSize;
 

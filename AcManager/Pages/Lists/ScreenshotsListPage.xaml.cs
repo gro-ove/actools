@@ -80,18 +80,16 @@ namespace AcManager.Pages.Lists {
                 Screenshots = screenshots;
             }
 
-            public void Load() {
-            }
-
-            public void Unload() {
-            }
+            public void Load() {}
+            public void Unload() {}
         }
 
         private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var screenshot = (sender as FrameworkElement)?.DataContext as Screenshot;
             if (screenshot == null) return;
 
-            new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot)).ShowDialog();
+            new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot),
+                    4000, details: x => Path.GetFileName(x as string)).ShowDialog();
         }
     }
 }

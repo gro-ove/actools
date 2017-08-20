@@ -6,6 +6,14 @@ using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
+    public class VersionComparer : IComparer<string> {
+        public static VersionComparer Instance = new VersionComparer();
+
+        public int Compare(string x, string y) {
+            return x.CompareAsVersionTo(y);
+        }
+    }
+
     public static class StringExtension {
         public static string RandomString(int length){
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

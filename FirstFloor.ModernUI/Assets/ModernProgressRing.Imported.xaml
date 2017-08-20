@@ -8,6 +8,7 @@
     <Setter Property="Height" Value="80" />
     <Setter Property="Width" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -214,6 +215,7 @@
     <Setter Property="MinHeight" Value="32" />
     <Setter Property="MinWidth" Value="32" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -609,6 +611,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="True" />
     <Setter Property="ToolTip" Value="Original idea: Bees &amp; Bombs (/u/davebees)" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -722,6 +725,7 @@
     <Setter Property="MinHeight" Value="32" />
     <Setter Property="MinWidth" Value="32" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1155,10 +1159,139 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style x:Key="HexCubeProgressRingStyle" TargetType="c:ModernProgressRing">
+    <Style.Resources>
+      <ResourceDictionary Source="pack://application:,,,/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    </Style.Resources>
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="20" />
+    <Setter Property="MinWidth" Value="20" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="ToolTip" Value="Original idea: Bees &amp; Bombs (/u/davebees)" />
+    <Setter Property="IsHitTestVisible" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:ModernProgressRing">
+          <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="SizeStates">
+                <VisualState x:Name="Large" />
+                <VisualState x:Name="Small" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ActiveStates">
+                <VisualState x:Name="Inactive" />
+                <VisualState x:Name="Active">
+                  <Storyboard RepeatBehavior="Forever" SpeedRatio="0.6">
+                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="Ring" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="Rotate2d">
+                      <EasingDoubleKeyFrame KeyTime="0:0:0.0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="-60" KeySpline="0.42,0 0.58,1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="-60" KeySpline="0.42,0 0.58,1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.4" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.6" Value="-60" KeySpline="0.42,0 0.58,1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="-60" KeySpline="0.42,0 0.58,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="Rotate2dW">
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="60" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.4" Value="120" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="180" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Piece2d" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0:0:0.8" Value="{x:Static Visibility.Collapsed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Piece3d" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0:0:0.8" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames BeginTime="0:0:0.8" Storyboard.TargetProperty="Angle" Storyboard.TargetName="Rotate1">
+                      <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="90" KeySpline="0.3,0 0.8,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames BeginTime="0:0:0.8" Storyboard.TargetProperty="Angle" Storyboard.TargetName="Rotate2">
+                      <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="90" KeySpline="0.3,0 0.8,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <c:Cell x:Name="Ring" IsHitTestVisible="False">
+              <c:Cell x:Name="Piece2d" Margin="2">
+                <Path Data="F1 M8.660254,0 l8.660254,5 v10 l-8.660254,5 l-8.660254,-5 v-10 Z" Stretch="Uniform" Fill="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BrushOpacityConverter}, ConverterParameter=0.5}" />
+                <c:Cell RenderTransformOrigin="0.5,0.5">
+                  <UIElement.RenderTransform>
+                    <RotateTransform x:Name="Rotate2dW" />
+                  </UIElement.RenderTransform>
+                  <Path Data="F1 M8.660254,0 l8.660254,5 v10 l-8.660254,5 l-8.660254,-5 v-10 Z" Stretch="Uniform" Fill="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" Width="38" Height="38" RenderTransformOrigin="0,0.25">
+                    <UIElement.RenderTransform>
+                      <TransformGroup>
+                        <RotateTransform x:Name="Rotate2d" Angle="30" />
+                        <TranslateTransform x:Name="Translate2d" X="-17" Y="9" />
+                      </TransformGroup>
+                    </UIElement.RenderTransform>
+                  </Path>
+                </c:Cell>
+              </c:Cell>
+              <Viewport3D x:Name="Piece3d" RenderOptions.EdgeMode="Unspecified" Visibility="Collapsed">
+                <Viewport3D.Camera>
+                  <OrthographicCamera Position="-10 -10 -10" LookDirection="10 10 10" Width="3.48" UpDirection="0,1,1" FarPlaneDistance="18" NearPlaneDistance="8" />
+                </Viewport3D.Camera>
+                <ModelVisual3D>
+                  <ModelVisual3D.Content>
+                    <Model3DGroup>
+                      <AmbientLight Color="White" />
+                      <GeometryModel3D x:Name="Cube">
+                        <GeometryModel3D.Geometry>
+                          <MeshGeometry3D Positions="-1,-1,-1 1,-1,-1 1,1,-1 -1,1,-1 -1,-1,1 1,-1,1 1,1,1 -1,1,1" TriangleIndices="0,3,1,1,3,2 4,5,7,5,6,7 2,7,6,3,7,2 0,5,4,1,5,0 0,4,7,0,7,3 2,6,5,2,5,1" />
+                        </GeometryModel3D.Geometry>
+                        <GeometryModel3D.Material>
+                          <DiffuseMaterial Brush="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BrushOpacityConverter}, ConverterParameter=0.5}" />
+                        </GeometryModel3D.Material>
+                        <GeometryModel3D.Transform>
+                          <Transform3DGroup>
+                            <Transform3DGroup.Children>
+                              <RotateTransform3D>
+                                <RotateTransform3D.Rotation>
+                                  <AxisAngleRotation3D x:Name="Rotate1" Axis="1 0 0" />
+                                </RotateTransform3D.Rotation>
+                              </RotateTransform3D>
+                              <RotateTransform3D>
+                                <RotateTransform3D.Rotation>
+                                  <AxisAngleRotation3D x:Name="Rotate2" Axis="0 0 1" />
+                                </RotateTransform3D.Rotation>
+                              </RotateTransform3D>
+                            </Transform3DGroup.Children>
+                          </Transform3DGroup>
+                        </GeometryModel3D.Transform>
+                      </GeometryModel3D>
+                      <GeometryModel3D Transform="{Binding Transform, ElementName=Cube}">
+                        <GeometryModel3D.Geometry>
+                          <MeshGeometry3D Positions="1.001,-1.001,1.001 0,-1.001,1.001 -1.001,-1.001,0, -1.001,-1.001,-1.001 1.001,-1.001,0 0,-1.001,-1.001" TriangleIndices="0,1,2,0,2,3 0,3,4 4,3,5 " />
+                        </GeometryModel3D.Geometry>
+                        <GeometryModel3D.Material>
+                          <DiffuseMaterial Brush="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </GeometryModel3D.Material>
+                      </GeometryModel3D>
+                    </Model3DGroup>
+                  </ModelVisual3D.Content>
+                </ModelVisual3D>
+              </Viewport3D>
+            </c:Cell>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <Style x:Key="HourglassProgressRingStyle" TargetType="c:ModernProgressRing">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Accent}" />
-    <Setter Property="IsHitTestVisible" Value="False" />
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="MinHeight" Value="80" />
@@ -1166,6 +1299,9 @@
     <Setter Property="MaxHeight" Value="80" />
     <Setter Property="MaxWidth" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="IsHitTestVisible" Value="True" />
+    <Setter Property="ToolTip" Value="Original idea: Tom Hazledine" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1201,7 +1337,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <c:Cell x:Name="Ring" Margin="{TemplateBinding Padding}" Visibility="Collapsed" RenderTransformOrigin="0.499,0.5">
+            <c:Cell x:Name="Ring" Margin="{TemplateBinding Padding}" Visibility="Collapsed" RenderTransformOrigin="0.499,0.5" IsHitTestVisible="False">
               <UIElement.RenderTransform>
                 <RotateTransform />
               </UIElement.RenderTransform>
@@ -1243,6 +1379,7 @@
     <Setter Property="MaxHeight" Value="80" />
     <Setter Property="MaxWidth" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1337,6 +1474,7 @@
     <Setter Property="Height" Value="80" />
     <Setter Property="Width" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1438,6 +1576,7 @@
     <Setter Property="Height" Value="80" />
     <Setter Property="Width" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1685,6 +1824,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="True" />
     <Setter Property="ToolTip" Value="Original idea: Bees &amp; Bombs (/u/davebees)" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -1863,6 +2003,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="True" />
     <Setter Property="ToolTip" Value="Original idea: Bees &amp; Bombs (/u/davebees)" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -2167,6 +2308,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="True" />
     <Setter Property="ToolTip" Value="Original idea: /u/FastAsUcan" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -2426,11 +2568,13 @@
   <Style x:Key="SamsungProgressRingStyle" TargetType="c:ModernProgressRing">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+    <Setter Property="IsHitTestVisible" Value="False" />
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="MinHeight" Value="32" />
     <Setter Property="MinWidth" Value="32" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -2609,6 +2753,7 @@
     <Setter Property="MaxHeight" Value="80" />
     <Setter Property="MaxWidth" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -2734,6 +2879,7 @@
     <Setter Property="MinHeight" Value="32" />
     <Setter Property="MinWidth" Value="32" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -2824,6 +2970,86 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style x:Key="WalkProgressRingStyle" TargetType="c:ModernProgressRing">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="MinWidth" Value="32" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="IsHitTestVisible" Value="True" />
+    <Setter Property="ToolTip" Value="Original idea: Pascal Gault" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:ModernProgressRing">
+          <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+            <Border.Resources>
+              <Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+              </Style>
+            </Border.Resources>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="SizeStates">
+                <VisualState x:Name="Large" />
+                <VisualState x:Name="Small" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ActiveStates">
+                <VisualState x:Name="Inactive" />
+                <VisualState x:Name="Active">
+                  <Storyboard SpeedRatio="0.8" RepeatBehavior="Forever">
+                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="Ring" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="X" Storyboard.TargetName="RingTranslate">
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                      <LinearDoubleKeyFrame KeyTime="0:0:0.4" Value="-16" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="X" Storyboard.TargetName="LegTranslate">
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="80" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Y" Storyboard.TargetName="LegTranslate">
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="-15" KeySpline="0,0 0.2,1" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="0" KeySpline="0.4,0 1,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="LegScale">
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.1" Value="1.4" KeySpline="0.4,0 1,1" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1" KeySpline="0,0 0.56,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <c:Cell x:Name="Ring" Margin="{TemplateBinding Padding}" Visibility="Collapsed" IsHitTestVisible="False">
+              <UIElement.RenderTransform>
+                <TranslateTransform x:Name="RingTranslate" />
+              </UIElement.RenderTransform>
+              <UniformGrid Columns="5" Rows="1">
+                <Ellipse Width="12" Height="12" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                  <UIElement.RenderTransform>
+                    <TransformGroup>
+                      <ScaleTransform ScaleX="1" ScaleY="1" x:Name="LegScale" />
+                      <TranslateTransform X="0" Y="0" x:Name="LegTranslate" />
+                    </TransformGroup>
+                  </UIElement.RenderTransform>
+                </Ellipse>
+                <Ellipse Width="12" Height="12" Fill="{TemplateBinding Foreground}" />
+                <Ellipse Width="12" Height="12" Fill="{TemplateBinding Foreground}" />
+                <Ellipse Width="12" Height="12" Fill="{TemplateBinding Foreground}" />
+                <Ellipse Width="12" Height="12" Fill="{TemplateBinding Foreground}" />
+              </UniformGrid>
+            </c:Cell>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <Style x:Key="WanderingCubesProgressRingStyle" TargetType="c:ModernProgressRing">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Accent}" />
@@ -2833,6 +3059,7 @@
     <Setter Property="Height" Value="80" />
     <Setter Property="Width" Value="80" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="DensityMultiplier" Value="0.5" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernProgressRing">
@@ -3060,6 +3287,156 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style x:Key="WindowsProgressRingStyle" TargetType="c:ModernProgressRing">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="MinWidth" Value="32" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="IsHitTestVisible" Value="True" />
+    <Setter Property="ToolTip" Value="Original idea: Pelly Benassi" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:ModernProgressRing">
+          <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+            <Border.Resources>
+              <Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+              </Style>
+            </Border.Resources>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="SizeStates">
+                <VisualState x:Name="Large" />
+                <VisualState x:Name="Small" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ActiveStates">
+                <VisualState x:Name="Inactive" />
+                <VisualState x:Name="Active">
+                  <Storyboard SpeedRatio="0.3" RepeatBehavior="Forever">
+                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="Ring" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="Ring_Rotate">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="90" KeySpline="0.4,0 0.2,1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.4" Value="90" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.6" Value="180" KeySpline="0.4,0 0.2,1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.8" Value="180" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ProgressElement1_Scale">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="1" />
+                      <EasingDoubleKeyFrame KeyTime="0:0:0.34" Value="0.5">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                          <BounceEase Bounces="2" Bounciness="3.5" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                      </EasingDoubleKeyFrame>
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0.5" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="1" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="ProgressElement1_Rotate">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="90" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ProgressElement2_Scale">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.22" Value="1" />
+                      <EasingDoubleKeyFrame KeyTime="0:0:0.36" Value="0.5">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                          <BounceEase Bounces="2" Bounciness="3.5" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                      </EasingDoubleKeyFrame>
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0.5" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="1" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="ProgressElement2_Rotate">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="90" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ProgressElement3_Scale">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.24" Value="1" />
+                      <EasingDoubleKeyFrame KeyTime="0:0:0.38" Value="0.5">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                          <BounceEase Bounces="2" Bounciness="3.5" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                      </EasingDoubleKeyFrame>
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0.5" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="1" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="ProgressElement3_Rotate">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="90" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ProgressElement4_Scale">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.26" Value="1" />
+                      <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.5">
+                        <EasingDoubleKeyFrame.EasingFunction>
+                          <BounceEase Bounces="2" Bounciness="3.5" />
+                        </EasingDoubleKeyFrame.EasingFunction>
+                      </EasingDoubleKeyFrame>
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0.5" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="1" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Angle" Storyboard.TargetName="ProgressElement4_Rotate">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:0.6" Value="0" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.8" Value="90" KeySpline="0.4,0 0.2,1" />
+                    </DoubleAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <c:SpacingUniformGrid x:Name="Ring" Margin="{TemplateBinding Padding}" Visibility="Collapsed" Columns="2" Rows="2" HorizontalSpacing="4" VerticalSpacing="4" RenderTransformOrigin="0.5,0.5" Width="54" Height="54" IsHitTestVisible="False">
+              <UIElement.RenderTransform>
+                <RotateTransform x:Name="Ring_Rotate" Angle="45" />
+              </UIElement.RenderTransform>
+              <Rectangle x:Name="ProgressElement2" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                <UIElement.RenderTransform>
+                  <TransformGroup>
+                    <RotateTransform x:Name="ProgressElement2_Rotate" />
+                    <ScaleTransform x:Name="ProgressElement2_Scale" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Self}}" />
+                  </TransformGroup>
+                </UIElement.RenderTransform>
+              </Rectangle>
+              <Rectangle x:Name="ProgressElement3" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                <UIElement.RenderTransform>
+                  <TransformGroup>
+                    <RotateTransform x:Name="ProgressElement3_Rotate" />
+                    <ScaleTransform x:Name="ProgressElement3_Scale" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Self}}" />
+                  </TransformGroup>
+                </UIElement.RenderTransform>
+              </Rectangle>
+              <Rectangle x:Name="ProgressElement1" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                <UIElement.RenderTransform>
+                  <TransformGroup>
+                    <RotateTransform x:Name="ProgressElement1_Rotate" />
+                    <ScaleTransform x:Name="ProgressElement1_Scale" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Self}}" />
+                  </TransformGroup>
+                </UIElement.RenderTransform>
+              </Rectangle>
+              <Rectangle x:Name="ProgressElement4" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                <UIElement.RenderTransform>
+                  <TransformGroup>
+                    <RotateTransform x:Name="ProgressElement4_Rotate" />
+                    <ScaleTransform x:Name="ProgressElement4_Scale" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Self}}" />
+                  </TransformGroup>
+                </UIElement.RenderTransform>
+              </Rectangle>
+            </c:SpacingUniformGrid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <x:Array Type="{x:Type sys:String}" x:Key="ProgressRingStyles">
     <sys:String>AzureProgressRingStyle</sys:String>
     <sys:String>BubbleProgressRingStyle</sys:String>
@@ -3070,6 +3447,7 @@
     <sys:String>DoubleBounceProgressRingStyle</sys:String>
     <sys:String>FadingCircleProgressRingStyle</sys:String>
     <sys:String>GridProgressRingStyle</sys:String>
+    <sys:String>HexCubeProgressRingStyle</sys:String>
     <sys:String>HourglassProgressRingStyle</sys:String>
     <sys:String>LiftProgressRingStyle</sys:String>
     <sys:String>LoadingArcsProgressRingStyle</sys:String>
@@ -3084,7 +3462,9 @@
     <sys:String>SnakeProgressRingStyle</sys:String>
     <sys:String>SquaresProgressRingStyle</sys:String>
     <sys:String>ThreeBounceProgressRingStyle</sys:String>
+    <sys:String>WalkProgressRingStyle</sys:String>
     <sys:String>WanderingCubesProgressRingStyle</sys:String>
     <sys:String>WaveProgressRingStyle</sys:String>
+    <sys:String>WindowsProgressRingStyle</sys:String>
   </x:Array>
 </ResourceDictionary>

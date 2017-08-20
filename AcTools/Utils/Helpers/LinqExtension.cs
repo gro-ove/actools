@@ -205,6 +205,30 @@ namespace AcTools.Utils.Helpers {
             return result;
         }
 
+        [CanBeNull]
+        public static T MaxEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector, IComparer<TResult> comparer) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+            var result = default(T);
+            var maxValue = default(TResult);
+            var first = true;
+
+            foreach (var item in source) {
+                var value = selector(item);
+                if (first) {
+                    result = item;
+                    maxValue = value;
+                    first = false;
+                } else if (comparer.Compare(value, maxValue) > 0) {
+                    result = item;
+                    maxValue = value;
+                }
+            }
+
+            return result;
+        }
+
         public static T MinEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));

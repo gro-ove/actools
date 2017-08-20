@@ -38,13 +38,10 @@ namespace AcTools.Render.Base {
         private SwapChain _swapChain;
 
         public Device Device => _deviceContextHolder.Device;
-
         public DeviceContext DeviceContext => _deviceContextHolder.DeviceContext;
-
         public DeviceContextHolder DeviceContextHolder => _deviceContextHolder;
 
         public bool IsDirty { get; set; }
-
         public virtual bool AccumulationMode => false;
 
         private int _width, _height;
@@ -131,7 +128,6 @@ namespace AcTools.Render.Base {
         }
 
         public double OutputDownscaleMultiplier => 1 / ResolutionMultiplier;
-
         public float AspectRatio => (float)ActualWidth / ActualHeight;
 
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
@@ -149,6 +145,8 @@ namespace AcTools.Render.Base {
                 return current;
             }
         }
+
+        public virtual int AccumulatedFrame => 0;
 
         public float Elapsed => _stopwatch.ElapsedMilliseconds / 1000f;
         private float _previousElapsed;
@@ -213,9 +211,7 @@ namespace AcTools.Render.Base {
         }
 
         public bool WpfMode { get; set; }
-
         public bool UseSprite { get; set; } = true;
-
         protected bool Initialized { get; private set; }
 
         private SampleDescription _sampleDescription = new SampleDescription(1, 0);
@@ -337,7 +333,6 @@ namespace AcTools.Render.Base {
         private DepthStencilView _depthView;
 
         public Texture2D RenderBuffer => _renderBuffer;
-
         public Texture2D DepthBuffer => _depthBuffer;
 
         [CanBeNull]
@@ -422,7 +417,6 @@ namespace AcTools.Render.Base {
         protected bool InitiallyResized { get; private set; }
 
         public Viewport Viewport => new Viewport(0, 0, Width, Height, 0.0f, 1.0f);
-
         public Viewport OutputViewport => new Viewport(0, 0, ActualWidth, ActualHeight, 0.0f, 1.0f);
 
         protected abstract void ResizeInner();
@@ -432,7 +426,6 @@ namespace AcTools.Render.Base {
         }
 
         protected DepthStencilView DepthStencilView => _depthView;
-
         protected RenderTargetView RenderTargetView => _renderView;
 
         private float _timeFactor = 1f;
@@ -637,16 +630,7 @@ namespace AcTools.Render.Base {
 
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture, _shotCutTexture;
 
-        private int _shotInProcessValue;
-
-        protected int ShotInProcessValue {
-            get => _shotInProcessValue;
-            set {
-                _shotInProcessValue = value;
-                AcToolsLogging.Write($"value = {value}");
-            }
-        }
-
+        protected int ShotInProcessValue { get; set; }
         public bool ShotInProcess => ShotInProcessValue > 0;
         public bool ShotDrawInProcess { get; private set; }
 
@@ -666,7 +650,7 @@ namespace AcTools.Render.Base {
 
         public void Shot(int baseWidth, int baseHeight, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            AcToolsLogging.Write($"{baseWidth}×{baseHeight}, downscale={downscale}, crop={crop}");
+            // AcToolsLogging.Write($"{baseWidth}×{baseHeight}, downscale={downscale}, crop={crop}");
 
             ShotInProcessValue++;
             var original = new { Width, Height, ResolutionMultiplier };
@@ -788,7 +772,6 @@ namespace AcTools.Render.Base {
                     _resized = false;
                 }
 
-                AcToolsLogging.Write("Finished");
                 ShotInProcessValue--;
             }
         }

@@ -3,9 +3,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
     xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render"
-    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d">
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
@@ -770,7 +768,11 @@
       </CheckBox>
 
       <c:MessageBlock>
-        <TextBlock TextWrapping="Wrap">MSAA is not compatible with FXAA or SSLR yet. Please, don’t use them together (FXAA+SSLR is fine though).</TextBlock>
+        <TextBlock TextWrapping="Wrap" Style="{StaticResource Small}">MSAA is not compatible with FXAA or SSLR yet. Please, don’t use them together (FXAA+SSLR is fine though).</TextBlock>
+      </c:MessageBlock>
+
+      <c:MessageBlock CloseKey="aa-check-out-misc-tab">
+        <TextBlock TextWrapping="Wrap" Style="{StaticResource Small}">Want to get the best AA? Check out acculumation DOF at Misc tab.</TextBlock>
       </c:MessageBlock>
 
       <!--<CheckBox IsChecked="{Binding Renderer.UseSmaa}" IsEnabled="{Binding Renderer.IsSmaaAvailable}">
@@ -1049,15 +1051,19 @@
               TickPlacement="BottomRight" />
         </DockPanel>
 
-        <mui:SpacingStackPanel Spacing="4">
+        <mui:SpacingStackPanel Spacing="4" Margin="0 4 0 0">
           <CheckBox IsChecked="{Binding UseAccumulationDof}">
-            <Label Content="Accumulation DOF (experimental)" />
+            <Label Content="Accumulation DOF" />
+          </CheckBox>
+
+          <CheckBox IsChecked="{Binding AccumulationDofBokeh}">
+            <Label Content="Accumulation bokeh (experimental)" />
           </CheckBox>
 
           <DockPanel IsEnabled="{Binding UseAccumulationDof}">
             <mui:ValueLabel Value="{Binding AccumulationDofIterations}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                Content="Iterations for screenshots" />
-            <Slider Minimum="50" Maximum="300" Value="{Binding AccumulationDofIterations}" TickFrequency="25" TickPlacement="BottomRight" />
+                Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
+            <Slider Minimum="20" Maximum="320" Value="{Binding AccumulationDofIterations}" TickFrequency="30" TickPlacement="BottomRight" />
           </DockPanel>
 
           <DockPanel IsEnabled="{Binding UseAccumulationDof}">
@@ -1069,6 +1075,11 @@
           </DockPanel>
         </mui:SpacingStackPanel>
       </mui:SpacingStackPanel>
+
+      <c:MessageBlock>
+        <mui:BbCodeBlock LinkNavigator="{Binding}" Style="{StaticResource Small}"
+            BbCode="[b]Want to get the best AA?[/b] Enable accumulation DOF and set aperture size to 0, 20–50 iterations would be more than enough. Also, with this approach, it’s better to disable MSAA, FXAA and increased pixel density at all.[br][br]To enable it quickly, click [url=&quot;cmd://setAccumulationAa&quot;]here[/url]." />
+      </c:MessageBlock>
 
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetExtraCommand}" />
     </mui:SpacingStackPanel>

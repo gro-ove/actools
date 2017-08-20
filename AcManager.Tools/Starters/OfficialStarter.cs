@@ -13,15 +13,44 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Starters {
+    // Specially for cases when there is a CM instead of AssettoCorsa.exe
+    internal class CmStarter : StarterBase {
+        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+
+        public override void Run() {
+            ProcessExtension.Start(LauncherFilename, new[] {
+                "--run", AcsName
+            }, new ProcessStartInfo {
+                WorkingDirectory =  AcRootDirectory.Instance.RequireValue
+            });
+        }
+    }
+
     public class OfficialStarter : StarterBase {
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
-        private void CheckVersion() {
+        private enum Mode {
+            DefaultMode, CmMode, AcServiceMode
+        }
+
+        private Mode CheckVersion() {
             if (!File.Exists(LauncherFilename)) {
                 throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_OriginalLauncherIsMissing);
             }
 
-            if (!FileVersionInfo.GetVersionInfo(LauncherFilename).FileVersion.IsVersionOlderThan(@"0.16.714")) return;
+            var version = FileVersionInfo.GetVersionInfo(LauncherFilename);
+
+            if (version.FileDescription == "Content Manager") {
+                return Mode.CmMode;
+            }
+
+            if (version.FileDescription == "AC Side Passage") {
+                return Mode.AcServiceMode;
+            }
+
+            if (!version.FileVersion.IsVersionOlderThan(@"0.16.714")) {
+                return Mode.DefaultMode;
+            }
 
             if (StarterPlus.IsPatched(LauncherFilename)) {
                 var backupFilename = StarterPlus.BackupFilename;
@@ -48,7 +77,7 @@ namespace AcManager.Tools.Starters {
                     // ignored
                 }
 
-                return;
+                return Mode.DefaultMode;
             }
 
             if (ModernDialog.ShowMessage(ToolsStrings.OfficialStarter_GameIsTooOld, ToolsStrings.NotSupported, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
@@ -60,7 +89,7 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
-            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             new IniFile(FileUtils.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = true,
@@ -76,13 +105,32 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
-            CheckVersion();
-            RunInner();
+            switch (CheckVersion()) {
+                case Mode.DefaultMode:
+                    RunInner();
+                    break;
+                case Mode.AcServiceMode:
+                    AcsStarterFactory.PrepareCreated(new SidePassageStarter()).Run();
+                    break;
+                case Mode.CmMode:
+                    AcsStarterFactory.PrepareCreated(new CmStarter()).Run();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public override Task RunAsync(CancellationToken cancellation) {
-            CheckVersion();
-            return Task.Run(() => RunInner(), cancellation);
+            switch (CheckVersion()) {
+                case Mode.DefaultMode:
+                    return Task.Run(() => RunInner(), cancellation);
+                case Mode.AcServiceMode:
+                    return AcsStarterFactory.PrepareCreated(new SidePassageStarter()).RunAsync(cancellation);
+                case Mode.CmMode:
+                    return AcsStarterFactory.PrepareCreated(new CmStarter()).RunAsync(cancellation);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public override void CleanUp() {

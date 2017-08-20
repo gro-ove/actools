@@ -37,6 +37,14 @@
       </DockPanel>
     </StackPanel>
 
+    <!-- Player name -->
+    <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+      <TextBlock Text="What’s your name?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <DockPanel Margin="20 8 0 0">
+        <mui:BetterTextBox Text="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" Placeholder="?" />
+      </DockPanel>
+    </StackPanel>
+
     <!-- Shortcut -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
       <TextBlock Text="Add a shortcut to Start Menu?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />

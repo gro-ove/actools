@@ -241,7 +241,7 @@ namespace AcManager.Pages.Selected {
 
                 ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
 
-                var shot = new ImageViewer(newShots) {
+                var shot = new ImageViewer(newShots, details: x => Path.GetFileName(x as string)) {
                     Model = {
                         MaxImageHeight = CommonAcConsts.PreviewHeight,
                         MaxImageWidth = CommonAcConsts.PreviewWidth
