@@ -484,6 +484,11 @@ namespace AcTools.Render.Kn5SpecificForward {
                     GetSize(source) ?? new Size(OptionMaxTintSize, OptionMaxTintSize));
         }
 
+        public void SetCurrentSkinActive(bool active) {
+            CarNode?.SetCurrentSkinActive(active);
+            IsDirty = true;
+        }
+
         // disposal
         private void DisposePaintShop() {
             _paintShopTextures?.DisposeEverything();
