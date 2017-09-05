@@ -142,6 +142,7 @@
               <ListBox Grid.Row="0" x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
+                  VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.IsContainerVirtualizable="False"
                   ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" mui:SaveScroll.Key="{TemplateBinding SaveScrollKey}">
                 <ListBox.GroupStyle>
                   <GroupStyle>
@@ -151,7 +152,7 @@
                           <Setter.Value>
                             <ControlTemplate TargetType="GroupItem">
                               <mui:RememberingExpander Key="{Binding Name, StringFormat='{}.content_category_{0}', Mode=OneTime}" Margin="0 0 0 20"
-                                  Style="{StaticResource GroupBoxExpander}">
+                                  Style="{StaticResource GroupBoxExpander}" DefaultValue="True">
                                 <Expander.Header>
                                   <TextBlock Style="{StaticResource Label}">
                                     <Run Text="{Binding Name, Mode=OneWay}" />
@@ -189,7 +190,7 @@
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
-                        IsVirtualizing="True" />
+                        IsVirtualizing="True" IsVirtualizingWhenGrouping="True" IsContainerVirtualizable="False" />
                   </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
               </ListBox>

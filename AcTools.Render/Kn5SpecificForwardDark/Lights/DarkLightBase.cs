@@ -902,7 +902,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             if (onScreenPosition.Z < 0f || onScreenPosition.Z > 1f) return;
 
             _debugText.DrawString(text,
-                    new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f),
+                    new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f), 0f,
                     TextAlignment.HorizontalCenter | TextAlignment.VerticalCenter, 12f, color,
                     CoordinateType.Absolute);
         }

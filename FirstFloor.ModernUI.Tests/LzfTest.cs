@@ -1,11 +1,12 @@
 using System.Text;
 using FirstFloor.ModernUI.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace FirstFloor.ModernUI.Tests {
-    [TestClass]
+    [TestFixture]
     public class LzfTest {
-        [TestMethod]
+        [Test]
         public void TestStream() {
             var data = "Loyal Guernseycow Improbable Cheerful Indochinesetiger Able Kindly Heron";
             var bytes = Encoding.UTF8.GetBytes(data);

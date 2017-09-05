@@ -725,7 +725,7 @@ namespace AcManager.Pages.Windows {
             } else if (trackObject != null) {
                 QuickDrive.Show(track: trackObject);
             } else if (weatherObject != null) {
-                QuickDrive.Show(weather: weatherObject);
+                QuickDrive.Show(weatherId: weatherObject.Id);
             } else {
                 e.Effects = DragDropEffects.None;
                 return;

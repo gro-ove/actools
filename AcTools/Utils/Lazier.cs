@@ -32,7 +32,7 @@ namespace AcTools.Utils {
         private readonly Func<Task<T>> _fnTask;
         private readonly T _loadingValue;
 
-        private bool _isSetting;
+        private Task<T> _settingTask;
         private int _isSettingId;
         private T _value;
 
@@ -41,8 +41,8 @@ namespace AcTools.Utils {
             get {
                 if (!_isSet) {
                     if (_fnTask != null) {
-                        if (!_isSetting) {
-                            SetTask().Forget();
+                        if (_settingTask == null) {
+                            _settingTask = SetTask();
                         }
 
                         return _isSet ? _value : _loadingValue;
@@ -56,26 +56,31 @@ namespace AcTools.Utils {
             }
         }
 
-        private async Task SetTask() {
-            if (_fnTask == null) return;
+        [ItemCanBeNull]
+        public Task<T> ForceGetValue() {
+            if (_isSet || _fnTask == null) return Task.FromResult(Value);
+            return _settingTask ?? (_settingTask = SetTask());
+        }
+
+        private async Task<T> SetTask() {
+            if (_fnTask == null) return default(T);
 
             var setting = ++_isSettingId;
-            _isSetting = true;
-
             try {
                 var ready = await _fnTask();
-                if (_isSettingId != setting) return;
+                if (_isSettingId != setting) return default(T);
 
                 _value = ready;
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
-                if (_isSettingId != setting) return;
+                if (_isSettingId != setting) return default(T);
                 _value = _loadingValue;
             }
 
             IsSet = true;
-            _isSetting = false;
+            _settingTask = null;
             OnPropertyChanged(nameof(Value));
+            return _value;
         }
 
         private bool _isSet;
@@ -111,9 +116,9 @@ namespace AcTools.Utils {
             OnPropertyChanged(nameof(Value));
             IsSet = false;
 
-            if (_isSetting) {
+            if (_settingTask != null) {
                 _isSettingId++;
-                _isSetting = false;
+                _settingTask = null;
             }
         }
 

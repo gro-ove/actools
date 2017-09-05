@@ -20,6 +20,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +31,7 @@ namespace AcManager.CustomShowroom {
             #region Skin
             private void DisposeSkinItems() {
                 Renderer?.SetCurrentSkinActive(true);
+                FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update -= OnPaintShopDataChanged;
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
                 SkinItems = null;
             }
@@ -111,10 +113,12 @@ namespace AcManager.CustomShowroom {
 
                             SkinItems = skinItems;
                             UpdateLicensePlatesStyles();
+                            FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update += OnPaintShopDataChanged;
                             FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
                         }
 
                         Mode = Mode.Skin;
+                        SkinNumber = Skin.SkinNumber.AsInt(1);
                         SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
 
@@ -144,19 +148,26 @@ namespace AcManager.CustomShowroom {
                             item.PropertyChanged += OnSkinItemPropertyChanged;
                         }
                     }
+
+                    SetSkinNumber();
                 }
             }
 
             private void OnSkinItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (e.PropertyName != nameof(PaintShop.PaintableItem.Enabled)) return;
+                switch (e.PropertyName) {
+                    case nameof(PaintShop.IPaintableNumberItem.IsNumberActive):
+                        SetSkinNumber();
+                        break;
+                    case nameof(PaintShop.PaintableItem.Enabled):
+                        var item = (PaintShop.PaintableItem)sender;
+                        if (!item.Enabled) break;
 
-                var item = (PaintShop.PaintableItem)sender;
-                if (!item.Enabled) return;
-
-                foreach (var next in _skinItems) {
-                    if (!ReferenceEquals(next, item) && next.Enabled && item.AffectedTextures.Any(next.AffectedTextures.Contains)) {
-                        next.Enabled = false;
-                    }
+                        foreach (var next in _skinItems) {
+                            if (!ReferenceEquals(next, item) && next.Enabled && item.AffectedTextures.Any(next.AffectedTextures.Contains)) {
+                                next.Enabled = false;
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -228,6 +239,11 @@ namespace AcManager.CustomShowroom {
                             } catch (NotImplementedException) { }
                         }
 
+                        if (HasNumbers) {
+                            skin.SkinNumber = SkinNumber.ToInvariantString();
+                            skin.Save();
+                        }
+
                         if (!cancellation.IsCancellationRequested) {
                             var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.Enabled);
                             if (carPaint != null && LiveryGenerator != null) {
@@ -273,81 +289,88 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            private bool _hasNumbers;
+
+            public bool HasNumbers {
+                get => _hasNumbers;
+                set {
+                    if (Equals(value, _hasNumbers)) return;
+                    _hasNumbers = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _skinNumber;
+
+            public int SkinNumber {
+                get => _skinNumber;
+                set {
+                    if (Equals(value, _skinNumber)) return;
+                    _skinNumber = value;
+                    OnPropertyChanged();
+                    SetSkinNumber();
+                }
+            }
+
+            private void SetSkinNumber() {
+                var number = SkinNumber;
+                var any = false;
+
+                try {
+                    if (SkinItems == null) return;
+                    foreach (var item in SkinItems.OfType<PaintShop.IPaintableNumberItem>()) {
+                        item.Number = number;
+                        any = item.IsNumberActive;
+                    }
+                } finally {
+                    HasNumbers = any;
+                }
+            }
+
             private AsyncCommand _skinSaveCommand;
 
             public AsyncCommand SkinSaveCommand => _skinSaveCommand ?? (_skinSaveCommand = new AsyncCommand(SkinSaveAsync,
                     () => SkinItems?.Any() == true));
 
-            /*private AsyncCommand _skinSaveChangesCommand;
-
-            public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand =
-                    new AsyncCommand(() => SkinSave(Skin), () => SkinItems?.Any() == true));
-
-            private AsyncCommand _skinSaveAsNewCommand;
-
-            public AsyncCommand SkinSaveAsNewCommand => _skinSaveAsNewCommand ?? (_skinSaveAsNewCommand = new AsyncCommand(async () => {
-                var newId = "generated";
-                var location = Car.SkinsDirectory;
-                var i = 100;
-                for (; i > 0; i--) {
-                    var defaultId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(location, newId)));
-                    newId = Prompt.Show("Please, enter an ID for a new skin:", "Save As New Skin", defaultId, "?", required: true, maxLength: 120);
-
-                    if (newId == null) return;
-                    if (Regex.IsMatch(newId, @"[^\.\w-]")) {
-                        ModernDialog.ShowMessage(
-                                "ID shouldn’t contain spaces and other weird symbols. I mean, it might, but then original launcher, for example, won’t work with it.",
-                                "Invalid ID", MessageBoxButton.OK);
-                        continue;
-                    }
-
-                    if (FileUtils.Exists(Path.Combine(location, newId))) {
-                        ModernDialog.ShowMessage(
-                                "Skin with this ID already exists.",
-                                "Place Is Taken", MessageBoxButton.OK);
-                        continue;
-                    }
-
-                    break;
-                }
-
-                if (i == 0) return;
-
-                using (var waiting = WaitingDialog.Create("Saving…")) {
-                    Directory.CreateDirectory(Path.Combine(location, newId));
-
-                    CarSkinObject skin = null;
-                    for (var j = 0; j < 5; j++) {
-                        await Task.Delay(500);
-                        skin = Car.GetSkinById(newId);
-                        if (skin != null) {
-                            break;
-                        }
-                    }
-
-                    if (skin == null) {
-                        waiting.Dispose();
-                        NonfatalError.Notify("Can’t save skin", "Skin can’t be created?");
-                        return;
-                    }
-
-                    await SkinSave(skin, false);
-                    Skin = skin;
-                }
-            }, () => SkinItems?.Any() == true));*/
-
             private void OnLicensePlatesChanged(object sender, EventArgs e) {
                 UpdateLicensePlatesStyles();
             }
 
+            private List<FilesStorage.ContentEntry> _styles;
             private void UpdateLicensePlatesStyles() {
-                var skinsItems = SkinItems;
-                if (Renderer == null || skinsItems == null) return;
+                var skinItems = SkinItems;
+                if (Renderer == null || skinItems == null) return;
 
-                var styles = FilesStorage.Instance.GetContentDirectories(ContentCategory.LicensePlates).ToList();
-                foreach (var item in skinsItems.OfType<PaintShop.LicensePlate>()) {
-                    item.SetStyles(styles);
+                _styles = FilesStorage.Instance.GetContentDirectories(ContentCategory.LicensePlates).ToList();
+                foreach (var item in skinItems.OfType<PaintShop.LicensePlate>()) {
+                    item.SetStyles(_styles);
                 }
+            }
+
+            private void OnPaintShopDataChanged(object sender, EventArgs e) {
+                UpdatePaintShopData();
+            }
+
+            private readonly Busy _updatePaintShopDataBusy = new Busy();
+
+            private void UpdatePaintShopData() {
+                _updatePaintShopDataBusy.Task(async () => {
+                    var skinItems = await GetSkinItems(default(CancellationToken));
+                    if (skinItems == null || SkinItems == null) return;
+
+                    if (_styles != null) {
+                        foreach (var item in skinItems.OfType<PaintShop.LicensePlate>()) {
+                            item.SetStyles(_styles);
+                        }
+                    }
+
+                    for (var i = 0; i < SkinItems.Count; i++) {
+                        var item = SkinItems[i];
+                        skinItems.GetByIdOrDefault(item.Id)?.Deserialize(item.Serialize());
+                    }
+
+                    SkinItems = skinItems;
+                });
             }
             #endregion
         }

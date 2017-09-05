@@ -676,13 +676,17 @@ namespace AcTools.Utils {
                     Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
         }
 
-        public static void TryToDelete(string filename) {
+        /// <summary>
+        /// Returns true if file doesn’t exist anymore.
+        /// </summary>
+        public static bool TryToDelete(string filename) {
             try {
                 if (File.Exists(filename)) {
                     File.Delete(filename);
                 }
+                return true;
             } catch {
-                // ignored
+                return false;
             }
         }
     }

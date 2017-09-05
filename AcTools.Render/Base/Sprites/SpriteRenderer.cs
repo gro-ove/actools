@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using AcTools.Render.Shaders;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using Buffer = SlimDX.Direct3D11.Buffer;
@@ -36,7 +38,7 @@ namespace AcTools.Render.Base.Sprites {
     }
 
     /// <summary>
-    /// Specify the alpha blending mode of the texture being drawn 
+    /// Specify the alpha blending mode of the texture being drawn
     /// </summary>
     public enum AlphaBlendModeType {
         /// <summary>
@@ -73,7 +75,7 @@ namespace AcTools.Render.Base.Sprites {
         public Device Device { get; }
 
         private readonly DeviceContext _context;
-        
+
         /// <summary>
         /// Gets or sets, if this SpriteRenderer handles DepthStencilState
         /// </summary>
@@ -213,7 +215,7 @@ namespace AcTools.Render.Base.Sprites {
 
             Initialize(contextHolder);
         }
-        
+
         #region ### private SlimDX field memebers ###
         private Buffer _vb;
         private VertexBufferBinding _vbBinding;
@@ -298,13 +300,13 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         private EffectSpriteShader _shader;
-        
+
         /// <summary>
         /// Initializes the sprite renderer so it is set up for use.
         /// </summary>
         protected void Initialize(DeviceContextHolder device) {
             _shader = device.GetEffect<EffectSpriteShader>();
-            
+
             CreateVertexBuffer(VerticeSpriteSpecific.StrideValue, _bufferSize);
             CreateDepthStencilAndBlendState();
             RefreshViewport();
@@ -321,7 +323,9 @@ namespace AcTools.Render.Base.Sprites {
         /// Closes a reorder session. Further draw calls will not be drawn together with previous draw calls.
         /// </summary>
         public void ClearReorderBuffer() {
-            _textureSprites.Clear();
+            lock (_textureSprites) {
+                _textureSprites.Clear();
+            }
         }
 
         private Vector2 ConvertCoordinate(Vector2 coordinate, CoordinateType coordinateType) {
@@ -395,7 +399,7 @@ namespace AcTools.Render.Base.Sprites {
             Draw(texture, position, size, center, rotationAngle, Vector2.Zero, new Vector2(1, 1), color, coordinateType);
         }
 
-        private Vector2 Rotate(Vector2 v, float sine, float cosine) {
+        internal static Vector2 Rotate(Vector2 v, float sine, float cosine) {
             return new Vector2(cosine * v.X + sine * v.Y, -sine * v.X + cosine * v.Y);
         }
 
@@ -412,6 +416,14 @@ namespace AcTools.Render.Base.Sprites {
         /// <param name="texCoords">Texture coordinates for the top left corner</param>
         /// <param name="texCoordsSize">Size of the region in texture coordinates</param>
         protected internal void Draw(object texture, Vector2 position, Vector2 size, Vector2 center, double rotationAngle, Vector2 texCoords,
+                Vector2 texCoordsSize, Color4 color, CoordinateType coordinateType) {
+            Draw(texture, position, size, center,
+                    rotationAngle == 0d ? 0f : (float)Math.Sin(rotationAngle),
+                    rotationAngle == 0d ? 0f : (float)Math.Cos(rotationAngle),
+                    texCoords, texCoordsSize, color, coordinateType);
+        }
+
+        protected internal void Draw(object texture, Vector2 position, Vector2 size, Vector2 center, float rotationSine, float rotationCosine, Vector2 texCoords,
                 Vector2 texCoordsSize, Color4 color, CoordinateType coordinateType) {
             if (texture == null) return;
 
@@ -437,18 +449,16 @@ namespace AcTools.Render.Base.Sprites {
                 down = new Vector2(0, size.Y - center.Y);
             }
 
-            if (rotationAngle != 0) {
+            if (rotationSine != 0 || rotationCosine != 0) {
                 if (coordinateType != CoordinateType.Absolute && coordinateType != CoordinateType.Relative) {
                     // Normalized coordinates tend to be skewed when applying rotation
-                    throw new ArgumentException("Rotation is only allowed for relative or absolute coordinates", nameof(rotationAngle));
+                    throw new ArgumentException("Rotation is only allowed for relative or absolute coordinates");
                 }
 
-                var sine = (float)Math.Sin(rotationAngle);
-                var cosine = (float)Math.Cos(rotationAngle);
-                left = Rotate(left, sine, cosine);
-                right = Rotate(right, sine, cosine);
-                up = Rotate(up, sine, cosine);
-                down = Rotate(down, sine, cosine);
+                left = Rotate(left, rotationSine, rotationCosine);
+                right = Rotate(right, rotationSine, rotationCosine);
+                up = Rotate(up, rotationSine, rotationCosine);
+                down = Rotate(down, rotationSine, rotationCosine);
             }
 
             var data = new VerticeSpriteSpecific {
@@ -463,13 +473,21 @@ namespace AcTools.Render.Base.Sprites {
 
             if (AllowReorder) {
                 // Is there already a sprite for this texture?
-                if (_textureSprites.ContainsKey(texture)) {
-                    // Add the sprite to the last segment for this texture
-                    var segment = _textureSprites[texture].Last();
-                    AddIn(segment, data);
-                } else
-                // Add a new segment for this texture
+                var addNew = false;
+                lock (_textureSprites) {
+                    if (_textureSprites.ContainsKey(texture)) {
+                        // Add the sprite to the last segment for this texture
+                        var segment = _textureSprites[texture].Last();
+                        AddIn(segment, data);
+                    } else {
+                        // Add a new segment for this texture
+                        addNew = true;
+                    }
+                }
+
+                if (addNew){
                     AddNew(texture, data);
+                }
             } else {
                 // Add a new segment for this texture
                 AddNew(texture, data);
@@ -477,22 +495,28 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         private void AddNew(object texture, VerticeSpriteSpecific data) {
-            // Create new segment with initial values
-            var newSegment = new SpriteSegment {
-                Texture = texture,
-                Sprites = { data }
-            };
+            if (texture == null) return;
 
-            _sprites.Add(newSegment);
+            lock (_textureSprites) {
+                // Create new segment with initial values
+                var newSegment = new SpriteSegment {
+                    Texture = texture,
+                    Sprites = { data }
+                };
 
-            // Create reference for segment in dictionary
-            if (!_textureSprites.ContainsKey(texture)) {
-                _textureSprites.Add(texture, new List<SpriteSegment>());
+                _sprites.Add(newSegment);
+
+                // Create reference for segment in dictionary
+                if (!_textureSprites.ContainsKey(texture)) {
+                    // Thread.Sleep(100);
+                    _textureSprites.Add(texture, new List<SpriteSegment>());
+                    // Task.Run(() => AcToolsLogging.Write(s));
+                }
+
+                _textureSprites[texture].Add(newSegment);
+                _spriteCount++;
+                CheckForFullBuffer();
             }
-
-            _textureSprites[texture].Add(newSegment);
-            _spriteCount++;
-            CheckForFullBuffer();
         }
 
         /// <summary>
@@ -537,7 +561,7 @@ namespace AcTools.Render.Base.Sprites {
                 }
 
                 // Construct vertexbuffer
-                UpdateVertexBufferData(_sprites.SelectMany(s => s.Sprites).ToArray());
+                UpdateVertexBufferData(_sprites.SelectMany(t => t.Sprites).ToArray());
 
 
                 // Initialize render calls
@@ -567,7 +591,10 @@ namespace AcTools.Render.Base.Sprites {
             // Reset buffers
             _spriteCount = 0;
             _sprites.Clear();
-            _textureSprites.Clear();
+
+            lock (_textureSprites) {
+                _textureSprites.Clear();
+            }
         }
 
         #region IDisposable Support
@@ -580,9 +607,16 @@ namespace AcTools.Render.Base.Sprites {
                 }
 
                 DisposeOfResources();
-                DepthStencilState.Dispose();
-                BlendState.Dispose();
+
+                // In case there are several SpriteRenderers created
+                try {
+                    DepthStencilState.Dispose();
+                } catch (ObjectDisposedException) { }
+                try {
+                    BlendState.Dispose();
+                } catch (ObjectDisposedException) { }
             }
+
             _disposed = true;
         }
 

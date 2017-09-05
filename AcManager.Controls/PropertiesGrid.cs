@@ -215,8 +215,15 @@ namespace AcManager.Controls {
         private TextFormattingMode _formattingMode;
         private Brush _labelForeground;
         private string[] _labels;
+        private UIElement[] _labelElements;
         private double _xStep, _yStep;
         private double _labelTextOffset;
+
+        /*protected override void OnChildDesiredSizeChanged(UIElement child) {
+            base.OnChildDesiredSizeChanged(child);
+            InvalidateMeasure();
+            InvalidateVisual();
+        }*/
 
         protected override void OnRender(DrawingContext dc) {
             base.OnRender(dc);
@@ -228,7 +235,7 @@ namespace AcManager.Controls {
                     y += _yStep;
                 }
 
-                if (_labels[i] != null) {
+                if (_labels[i] != null && _labelElements[i].Visibility != Visibility.Collapsed) {
                     var text = new FormattedText(_labels[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
                             _labelTypeface, _labelFontSize, _labelForeground, new NumberSubstitution(), _formattingMode) {
                                 Trimming = TextTrimming.CharacterEllipsis,
@@ -236,7 +243,6 @@ namespace AcManager.Controls {
                                 MaxLineCount = 1,
                                 MaxTextWidth = _labelTextWidth
                             };
-
                     dc.DrawText(text, new Point(_xStep * c + _labelPadding.Left, y + _labelTextOffset - text.Height / 2));
                 }
             }
@@ -245,12 +251,15 @@ namespace AcManager.Controls {
         private void UpdateLabels() {
             if (_labels?.Length != _nonCollapsedCount) {
                 _labels = new string[_nonCollapsedCount];
+                _labelElements = new UIElement[_nonCollapsedCount];
             }
 
-            for (int i = 0, j = 0, count = InternalChildren.Count; i < count; ++i) {
-                var child = InternalChildren[i];
+            var children = InternalChildren;
+            for (int i = 0, j = 0, count = children.Count; i < count; ++i) {
+                var child = children[i];
                 if (child.Visibility != Visibility.Collapsed) {
                     var value = child.GetValue(LabelProperty)?.ToString();
+                    _labelElements[j] = child;
                     _labels[j++] = string.IsNullOrWhiteSpace(value) ? null : value;
                 }
             }

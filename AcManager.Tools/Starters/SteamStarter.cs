@@ -51,12 +51,8 @@ namespace AcManager.Tools.Starters {
             if (!initialized) {
                 Logging.Debug("Still not initialized…");
 
-                try {
-                    SteamRunningHelper.EnsureSteamIsRunning(true, true);
-                } catch {
-                    if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
-                        MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    }
+                if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
+                    MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 }
 
                 Environment.Exit(0);

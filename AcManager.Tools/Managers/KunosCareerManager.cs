@@ -126,17 +126,17 @@ namespace AcManager.Tools.Managers {
 
                 case KunosCareerObjectType.Championship:
                     if (e.Result.NumberOfSessions > 0) {
-                        var places = e.Result.Sessions.Last().GetTakenPlacesPerCar();
-                        ev.TakenPlace = places[0] + 1;
+                        var places = e.Result.Sessions?.Last().GetTakenPlacesPerCar();
+                        ev.TakenPlace = places?[0] + 1 ?? 0;
                         ev.IsPassed = true;
 
                         var nextEvent = career.EventsManager.GetByNumber(ev.EventNumber + 1);
                         if (nextEvent != null) nextEvent.IsAvailable = true;
 
                         var pointsPerPlace = career.ChampionshipPointsPerPlace;
-                        career.ChampionshipPoints += pointsPerPlace.ElementAtOrDefault(places[0]);
-                        career.ChampionshipAiPoints = places.Skip(1).Select((place, id) =>
-                                pointsPerPlace.ElementAtOrDefault(place) + career.ChampionshipAiPoints.ElementAtOrDefault(id)).ToArray();
+                        career.ChampionshipPoints += pointsPerPlace.ElementAtOrDefault(places?[0] ?? -1);
+                        career.ChampionshipAiPoints = places?.Skip(1).Select((place, id) =>
+                                pointsPerPlace.ElementAtOrDefault(place) + career.ChampionshipAiPoints?.ElementAtOrDefault(id) ?? 0).ToArray();
                         career.SaveProgress(true);
 
                         if (!career.IsCompleted && CheckIfCareerCompleted(career)) {

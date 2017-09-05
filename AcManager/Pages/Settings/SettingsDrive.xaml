@@ -2,12 +2,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsDrive+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsDrive+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsDrive">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel Style="{StaticResource SettingsPanel}">
         <DockPanel>
@@ -59,6 +60,25 @@
         <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
         </CheckBox>
+
+        <DockPanel ToolTip="Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”" Margin="0 20 0 8">
+          <mui:ValueLabel Value="{Binding Drive.RaceResultsLimit}" Content="Keep results of the last"
+              Postfix="{Binding Drive.RaceResultsLimit, Converter={StaticResource PluralizingConverter}, ConverterParameter='{} {session}'}"
+              Width="{x:Static system:Double.NaN}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+          <Slider Minimum="0" Maximum="1">
+            <Slider.Value>
+              <Binding Path="Drive.RaceResultsLimit">
+                <Binding.Converter>
+                  <mui:LogarithmicScale Minimum="100" Middle="1000" Maximum="10000" />
+                </Binding.Converter>
+              </Binding>
+            </Slider.Value>
+          </Slider>
+        </DockPanel>
+
+        <c:MessageBlock Margin="0 0 0 8">
+          <mui:BbCodeBlock BbCode="When limit is exceeded, oldest results will be recycled after the end of the race." TextWrapping="Wrap" />
+        </c:MessageBlock>
 
         <!-- Shared memory -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}">

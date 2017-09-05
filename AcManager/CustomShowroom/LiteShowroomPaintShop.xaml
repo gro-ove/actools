@@ -167,6 +167,31 @@
           </StackPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type cs:PaintShop+TexturePattern}">
+          <StackPanel>
+            <CheckBox IsChecked="{Binding Enabled}">
+              <Label Content="{Binding DisplayName}" />
+            </CheckBox>
+
+            <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
+              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 0 0 4"
+                  DisplayMemberPath="DisplayName" />
+              <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <mui:ColorPicker Color="{Binding Value}" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </StackPanel>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type cs:PaintShop+CarPaint}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
@@ -174,12 +199,15 @@
             </CheckBox>
 
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-              <DockPanel Style="{StaticResource DockPanel}">
+              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ColorReplacementValue}" ItemsSource="{Binding ColorReplacements}" Margin="0 0 0 4"
+                  DisplayMemberPath="Key" Visibility="{Binding HasColorReplacements, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+              <DockPanel Style="{StaticResource DockPanel}" Visibility="{Binding ColorAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Color:" />
                 <mui:ColorPicker Color="{Binding Color}" />
               </DockPanel>
 
-              <DockPanel Style="{StaticResource DockPanel}">
+              <DockPanel Style="{StaticResource DockPanel}" Visibility="{Binding FlakesAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <mui:ValueLabel Value="{Binding Flakes, Converter={StaticResource PercentageConverter}}" Postfix="%" mui:BetterTextBox.Mode="Number"
                     DockPanel.Dock="Top" Content="Flakes" />
                 <Slider Minimum="0" Maximum="100" TickPlacement="None" IsSnapToTickEnabled="False"
@@ -217,12 +245,15 @@
             </CheckBox>
 
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-              <DockPanel Style="{StaticResource DockPanel}">
+              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ColorReplacementValue}" ItemsSource="{Binding ColorReplacements}" Margin="0 4 0 0"
+                  DisplayMemberPath="Key" Visibility="{Binding HasColorReplacements, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+              <DockPanel Style="{StaticResource DockPanel}" Visibility="{Binding ColorAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Color:" />
                 <mui:ColorPicker Color="{Binding Color}" />
               </DockPanel>
 
-              <DockPanel Style="{StaticResource DockPanel}">
+              <DockPanel Style="{StaticResource DockPanel}" Visibility="{Binding FlakesAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <mui:ValueLabel Value="{Binding Flakes, Converter={StaticResource PercentageConverter}}" Postfix="%" mui:BetterTextBox.Mode="Number"
                     DockPanel.Dock="Top" Content="Flakes" />
                 <Slider Minimum="0" Maximum="100" TickPlacement="None" IsSnapToTickEnabled="False"
@@ -303,6 +334,13 @@
           IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
           ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
       <TextBlock Text="Paint Shop" Style="{StaticResource Heading2}" />
+    </DockPanel>
+
+    <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
+        Visibility="{Binding HasNumbers, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <mui:ValueLabel Value="{Binding SkinNumber}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0" mui:BetterTextBox.Maximum="9999"
+          DockPanel.Dock="Top" Content="Number" />
+      <Slider Minimum="0" Maximum="99" Value="{Binding SkinNumber}" />
     </DockPanel>
 
     <Button DockPanel.Dock="Bottom" Command="{Binding SkinSaveCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"

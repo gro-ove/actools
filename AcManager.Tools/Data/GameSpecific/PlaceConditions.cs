@@ -16,7 +16,7 @@ namespace AcManager.Tools.Data.GameSpecific {
         public const int UnremarkablePlace = 4;
 
         /// <summary>
-        /// For some of place condition types, better is more, for others — fewer (less).
+        /// For some of place condition types, better is more, for others â€” fewer (less).
         /// </summary>
         private int GetTakenPlace(int value) {
             switch (Type) {
@@ -60,10 +60,10 @@ namespace AcManager.Tools.Data.GameSpecific {
                 case PlaceConditionsType.Wins:
                     return UnremarkablePlace;
                 case PlaceConditionsType.Position:
-                    var place = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.CarPerTakenPlace?.IndexOf(0);
+                    var place = result.Sessions?.LastOrDefault(x => x.BestLaps?.Any() == true)?.CarPerTakenPlace?.IndexOf(0);
                     return place.HasValue ? GetTakenPlace(place.Value + 1) : UnremarkablePlace;
                 case PlaceConditionsType.Time:
-                    var time = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.BestLaps.FirstOrDefault(x => x.CarNumber == 0)?.Time;
+                    var time = result.Sessions?.LastOrDefault(x => x.BestLaps?.Any() == true)?.BestLaps?.FirstOrDefault(x => x.CarNumber == 0)?.Time;
                     return time.HasValue ? GetTakenPlace((int)time.Value.TotalMilliseconds) : UnremarkablePlace;
                 default:
                     throw new ArgumentOutOfRangeException();

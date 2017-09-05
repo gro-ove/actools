@@ -10,6 +10,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public Busy(bool invokeInUiThread = false, bool logging = false) {
             _invokeInUiThread = invokeInUiThread;
             _logging = logging;
+            _counter = 0;
         }
 
         private int _counter;
@@ -21,12 +22,14 @@ namespace FirstFloor.ModernUI.Helpers {
                 Logging.Debug("Busy: " + _counter);
             }
 
-            return new ActionAsDisposable(() => {
-                _counter--;
-                if (_logging) {
-                    Logging.Debug("Ended: " + _counter);
-                }
-            });
+            return new ActionAsDisposable(SetAction);
+        }
+
+        private void SetAction() {
+            _counter--;
+            if (_logging) {
+                Logging.Debug("Ended: " + _counter);
+            }
         }
 
         private class ActionAsDisposable : IDisposable {
@@ -50,7 +53,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public void Do(Action a) {
             if (_invokeInUiThread) {
-                ActionExtension.InvokeInMainThread(() => DoUi(a));
+                var t = this;
+                ActionExtension.InvokeInMainThread(() => t.DoUi(a));
             } else {
                 DoUi(a);
             }
@@ -64,7 +68,8 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public Task Task(Func<Task> a) {
-            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => TaskUi(a)) : TaskUi(a);
+            var t = this;
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => t.TaskUi(a)) : TaskUi(a);
         }
 
         private async Task DelayUi(TimeSpan delay, bool force) {
@@ -75,7 +80,8 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public Task Delay(TimeSpan delay, bool force = false) {
-            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => DelayUi(delay, force)) : DelayUi(delay, force);
+            var t = this;
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => t.DelayUi(delay, force)) : DelayUi(delay, force);
         }
 
         private async Task DelayUi(int millisecondsDelay, bool force) {
@@ -86,7 +92,8 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public Task Delay(int delay, bool force = false) {
-            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => DelayUi(delay, force)) : DelayUi(delay, force);
+            var t = this;
+            return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => t.DelayUi(delay, force)) : DelayUi(delay, force);
         }
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
@@ -10,7 +11,7 @@ namespace AcManager.Controls.Helpers {
     public interface ISomeCommonCommandsHelper {
         void SetupHotlap(CarObject car, TrackObjectBase track);
 
-        void RunHotlap(CarObject car, TrackObjectBase track);
+        Task<bool> RunHotlapAsync(CarObject car, TrackObjectBase track);
     }
 
     public static class CommonCommands {
@@ -59,7 +60,7 @@ namespace AcManager.Controls.Helpers {
         public static DelegateCommand<object[]> RunHotlapCommand => _runHotlapCommand ?? (_runHotlapCommand = new DelegateCommand<object[]>(ids => {
             var p = ParseParameter(ids);
             if (p != null) {
-                _helper.RunHotlap(p.Item1, p.Item2);
+                _helper.RunHotlapAsync(p.Item1, p.Item2);
             }
         }, ids => _helper != null));
 

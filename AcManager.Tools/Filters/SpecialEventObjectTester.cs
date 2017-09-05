@@ -31,6 +31,9 @@ namespace AcManager.Tools.Filters {
                 case "type":
                     return nameof(SpecialEventObject.DisplayType);
 
+                case "guid":
+                    return nameof(SpecialEventObject.Guid);
+
                 case "car":
                 case "carid":
                     return nameof(SpecialEventObject.CarId);
@@ -64,6 +67,9 @@ namespace AcManager.Tools.Filters {
 
                 case "type":
                     return value.Test(obj.DisplayType);
+
+                case "guid":
+                    return value.Test(obj.Guid);
 
                 case "carid":
                     return value.Test(obj.CarId);

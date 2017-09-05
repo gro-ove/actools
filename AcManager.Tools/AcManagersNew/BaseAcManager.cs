@@ -435,6 +435,8 @@ namespace AcManager.Tools.AcManagersNew {
             return GetFirstOrNull();
         }
 
+        public T Default => GetDefault();
+
         [NotNull]
         protected virtual T CreateAndLoadAcObject([NotNull, LocalizationRequired(false)] string id, bool enabled, bool withPastLoad = true) {
             var result = CreateAcObject(id, enabled);

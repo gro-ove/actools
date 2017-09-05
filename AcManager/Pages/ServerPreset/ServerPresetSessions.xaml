@@ -30,7 +30,7 @@
         </CheckBox>
       </StackPanel>
 
-      <mui:SpacingUniformGrid x:Name="ColumnsGrid" Columns="2" HorizontalSpacing="20" VerticalSpacing="20" StackMode="True">
+      <mui:SpacingUniformGrid x:Name="ColumnsGrid" Columns="2" HorizontalSpacing="20" VerticalSpacing="20" VerticalStackMode="True">
         <ItemsControl ItemsSource="{Binding SelectedObject.SimpleSessions}" ItemTemplate="{StaticResource SessionTemplate}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>

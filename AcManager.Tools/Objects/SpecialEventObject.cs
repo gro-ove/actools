@@ -155,7 +155,7 @@ namespace AcManager.Tools.Objects {
                 Content = new ScrollViewer {
                     Content = new SelectableBbCodeBlock {
                         BbCode =
-                            $"You’re using {SettingsHolder.Drive.SelectedStarterType.DisplayName} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?",
+                            $"Youâ€™re using {SettingsHolder.Drive.SelectedStarterType.DisplayName} Starter. With it, you wonâ€™t get a Steam achievment, so progress wonâ€™t be saved. Are you sure you want to continue?",
                         Margin = new Thickness(0, 0, 0, 8)
                     },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -190,10 +190,10 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ICommand _goCommand;
+        private AsyncCommand<Game.AssistsProperties> _goCommand;
 
         // TODO: async command
-        public ICommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand<Game.AssistsProperties>(async o => {
+        public AsyncCommand<Game.AssistsProperties> GoCommand => _goCommand ?? (_goCommand = new AsyncCommand<Game.AssistsProperties>(async o => {
             if (SettingsHolder.Drive.SelectedStarterType.Id == "SSE" && !ShowStarterDoesNotFitMessage()) {
                 return;
             }

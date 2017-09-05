@@ -78,7 +78,6 @@ namespace AcManager.Controls {
             }
 
             var skin = GetCarSkinObject(element);
-            Logging.Debug(skin);
             if (skin != null) {
                 SetToolTip(element, GetCarSkinToolTip(element), skin);
                 return;

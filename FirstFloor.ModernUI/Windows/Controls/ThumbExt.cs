@@ -2,6 +2,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -30,7 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (IsMouseCaptured) ReleaseMouseCapture();
             ClearValue(IsDraggingPropertyKey);
 
-            var multiplier = Keyboard.Modifiers == ModifierKeys.Shift ? 0.2 : 1d;
+            var multiplier = GetMultiplier();
             RaiseEvent(new DragCompletedEventArgs(
                     (_previousScreenCoordPosition.X - _originScreenCoordPosition.X) * multiplier,
                     (_previousScreenCoordPosition.Y - _originScreenCoordPosition.Y) * multiplier, true));
@@ -39,6 +41,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Point _originThumbPoint;
         private Point _originScreenCoordPosition;
         private Point _previousScreenCoordPosition;
+
+        [CanBeNull]
+        private Visual _currentWindow;
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) {
             if (IsDraggingPropertyKey == null) {
@@ -52,7 +57,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 CaptureMouse();
                 SetValue(IsDraggingPropertyKey, true);
                 _originThumbPoint = e.GetPosition(this);
+
+                _currentWindow = this.GetParent() as Visual;
+                if (_currentWindow != null) {
+                    _startElementPosition = TransformToAncestor(_currentWindow).Transform(new Point(0, 0));
+                }
+
                 _previousScreenCoordPosition = _originScreenCoordPosition = PointToScreen(_originThumbPoint);
+                _previousMultiplier = GetMultiplier();
                 var flag = true;
                 try {
                     RaiseEvent(new DragStartedEventArgs(_originThumbPoint.X, _originThumbPoint.Y));
@@ -61,6 +73,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (flag) CancelDragOverride();
                 }
             }
+        }
+
+        private static double GetMultiplier() {
+            return Keyboard.Modifiers == ModifierKeys.Shift ? 0.2 : 1d;
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
@@ -82,6 +98,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        private Point _startElementPosition;
+        private double _previousMultiplier;
+
         protected override void OnMouseMove(MouseEventArgs e) {
             if (IsDraggingPropertyKey == null) {
                 base.OnMouseMove(e);
@@ -96,17 +115,38 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _previousScreenCoordPosition = screen;
                 e.Handled = true;
 
-                var multiplier = Keyboard.Modifiers == ModifierKeys.Shift ? 0.2 : 1d;
-                RaiseEvent(new DragDeltaEventArgs((position.X - _originThumbPoint.X) * multiplier, (position.Y - _originThumbPoint.Y) * multiplier));
-                if (multiplier != 1d) {
-                    _originThumbPoint.X = position.X;
-                    _originThumbPoint.Y = position.Y;
+                var multiplier = GetMultiplier();
+                if (_currentWindow != null) {
+                    var elementPosition = TransformToAncestor(_currentWindow).Transform(new Point(0, 0));
+                    if (_previousMultiplier != multiplier) {
+                        _previousMultiplier = multiplier;
+                        _originThumbPoint = position;
+                        _startElementPosition = elementPosition;
+                        return;
+                    }
+
+                    var offsetReported = new Point(
+                            elementPosition.X - _startElementPosition.X,
+                            elementPosition.Y - _startElementPosition.Y);
+                    var totalMovement = new Point(
+                            offsetReported.X + (position.X - _originThumbPoint.X),
+                            offsetReported.Y + (position.Y - _originThumbPoint.Y));
+                    RaiseEvent(new DragDeltaEventArgs(
+                            totalMovement.X * multiplier - offsetReported.X,
+                            totalMovement.Y * multiplier - offsetReported.Y));
+                } else {
+                    RaiseEvent(new DragDeltaEventArgs(
+                            (position.X - _originThumbPoint.X) * multiplier,
+                            (position.Y - _originThumbPoint.Y) * multiplier));
+                    if (multiplier != 1d) {
+                        _originThumbPoint.X = position.X;
+                        _originThumbPoint.Y = position.Y;
+                    }
                 }
             } else {
                 if (ReferenceEquals(e.MouseDevice.Captured, this)) ReleaseMouseCapture();
                 ClearValue(IsDraggingPropertyKey);
-                _originThumbPoint.X = 0.0;
-                _originThumbPoint.Y = 0.0;
+                _originThumbPoint = default(Point);
             }
         }
     }

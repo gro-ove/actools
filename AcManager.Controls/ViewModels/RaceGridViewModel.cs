@@ -862,6 +862,7 @@ namespace AcManager.Controls.ViewModels {
 
         private string _filterValue;
 
+        [CanBeNull]
         public string FilterValue {
             get => _filterValue;
             set {

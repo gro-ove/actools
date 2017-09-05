@@ -38,10 +38,11 @@ namespace AcTools.Processes {
         public static bool OptionDebugMode = false;
 
         [CanBeNull]
-        public static Result GetResult() {
+        public static Result GetResult(DateTime gameStartTime) {
             try {
                 var filename = OptionDebugMode ? FileUtils.GetResultJsonFilename().Replace("race_out", "race_out_debug") : FileUtils.GetResultJsonFilename();
-                if (!File.Exists(filename)) return null;
+                var info = new FileInfo(filename);
+                if (!info.Exists || info.LastWriteTime < gameStartTime) return null;
                 var result = JsonConvert.DeserializeObject<Result>(FileUtils.ReadAllText(filename));
                 return result?.IsNotCancelled == true ? result : null;
             } catch (Exception e) {
@@ -50,10 +51,7 @@ namespace AcTools.Processes {
         }
 
         private static void RemoveResultJson() {
-            var filename = FileUtils.GetResultJsonFilename();
-            if (File.Exists(filename)) {
-                File.Delete(filename);
-            }
+            FileUtils.TryToDelete(FileUtils.GetResultJsonFilename());
         }
 
         private static bool _busy;
@@ -67,6 +65,7 @@ namespace AcTools.Processes {
             _busy = true;
 
             RemoveResultJson();
+            var start = DateTime.Now;
 
             try {
                 properties.Set();
@@ -82,7 +81,7 @@ namespace AcTools.Processes {
                 properties.RevertChanges();
             }
 
-            return GetResult();
+            return GetResult(start);
         }
 
         public enum ProgressState {
@@ -102,7 +101,7 @@ namespace AcTools.Processes {
                 progress?.Report(ProgressState.Waiting);
                 await Task.Delay(500, cancellation);
                 _busy = false;
-                return GetResult();
+                return GetResult(DateTime.MinValue);
             }
 
             RemoveResultJson();
@@ -117,6 +116,7 @@ namespace AcTools.Processes {
                 }
             }
 
+            var start = DateTime.Now;
             try {
                 progress?.Report(ProgressState.Preparing);
                 await Task.Run(() => properties.Set(), cancellation);
@@ -147,7 +147,7 @@ namespace AcTools.Processes {
                 listener?.Dispose();
             }
 
-            return GetResult();
+            return GetResult(start);
         }
 
         public abstract class AdditionalProperties {

@@ -81,7 +81,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static string GetStringValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+        public static string GetStringValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
@@ -89,7 +89,7 @@ namespace AcTools.Utils.Helpers {
             return string.IsNullOrEmpty(result) ? null : result;
         }
 
-        public static int? GetIntValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+        public static int? GetIntValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
@@ -101,11 +101,11 @@ namespace AcTools.Utils.Helpers {
             return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (int?)null : (int)val;
         }
 
-        public static int GetIntValueOnly(this JToken obj, [LocalizationRequired(false)] string key, int defaultValue) {
+        public static int GetIntValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, int defaultValue) {
             return obj.GetIntValueOnly(key) ?? defaultValue;
         }
 
-        public static double? GetDoubleValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+        public static double? GetDoubleValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
@@ -117,22 +117,22 @@ namespace AcTools.Utils.Helpers {
             return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (double?)null : (double)val;
         }
 
-        public static double GetDoubleValueOnly(this JToken obj, [LocalizationRequired(false)] string key, double defaultValue) {
+        public static double GetDoubleValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, double defaultValue) {
             return obj.GetDoubleValueOnly(key) ?? defaultValue;
         }
 
-        public static bool? GetBoolValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+        public static bool? GetBoolValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.Boolean && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
             return (bool)value;
         }
 
-        public static bool GetBoolValueOnly(this JToken obj, [LocalizationRequired(false)] string key, bool defaultValue) {
+        public static bool GetBoolValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, bool defaultValue) {
             return obj.GetBoolValueOnly(key) ?? defaultValue;
         }
 
-        public static GeoTagsEntry GetGeoTagsValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+        public static GeoTagsEntry GetGeoTagsValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key] as JArray;
             if (value == null || value.Count != 2) return null;
             var lat = value[0];

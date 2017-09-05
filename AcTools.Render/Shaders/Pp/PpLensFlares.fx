@@ -1,7 +1,7 @@
 #include "Common.fx"
 
-#define uGhosts 8
-#define uGhostDispersal 0.07
+#define uGhosts 4
+#define uGhostDispersal 0.35
 
 float4 ps_Ghosts(PS_IN pin) : SV_Target {
 	float2 texcoord = -pin.Tex + (float2)1.0;
@@ -9,7 +9,7 @@ float4 ps_Ghosts(PS_IN pin) : SV_Target {
 	// ghost vector to image centre:
 	float2 ghostVec = ((float2)0.5 - texcoord) * uGhostDispersal;
 
-	// sample ghosts:  
+	// sample ghosts:
 	float3 result = (float3)0.0;
 	for (int i = 0; i < uGhosts; ++i) {
 		float2 offset = frac(texcoord + ghostVec * (float)i);
@@ -26,8 +26,8 @@ float4 ps_Ghosts(PS_IN pin) : SV_Target {
 
 technique10 Ghosts {
 	pass P0 {
-		SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
-		SetGeometryShader( NULL );
-		SetPixelShader( CompileShader( ps_4_0, ps_Ghosts() ) );
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Ghosts()));
 	}
 }

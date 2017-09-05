@@ -90,15 +90,13 @@ namespace AcManager.Pages.AcSettings {
                 Controls.SavePreset(filename);
             }));
 
-            private CommandBase _testCommand;
+            private AsyncCommand _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
-                QuickDrive.Run();
-            }));
+            public AsyncCommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(() => QuickDrive.RunAsync()));
 
-            private CommandBase _shareCommand;
+            private AsyncCommand<string> _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand<string>(Share));
+            public AsyncCommand<string> ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand<string>(Share));
 
             private async Task Share(string o) {
                 switch (o) {

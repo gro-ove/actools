@@ -4,9 +4,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using AcTools.Render.Base.Utils;
+using AcTools.Utils;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct2D;
 using SlimDX.Direct3D10;
+using SlimDX.DirectInput;
 using SlimDX.DirectWrite;
 using SlimDX.DXGI;
 using Debug = System.Diagnostics.Debug;
@@ -94,12 +98,17 @@ namespace AcTools.Render.Base.Sprites {
         }
     }
 
+    public interface IFontCollectionProvider : IDisposable {
+        [NotNull]
+        FontCollection GetCollection(Factory factory);
+    }
+
     /// <summary>
     /// This class is responsible for rendering arbitrary text. Every TextRenderer is specialized for a specific font and relies on
     /// a SpriteRenderer for rendering the text.
     /// </summary>
     public class TextBlockRenderer : IDisposable {
-        static readonly Dictionary<Type, DeviceDescriptor> _deviceDescriptors;
+        private static readonly Dictionary<Type, DeviceDescriptor> DeviceDescriptors;
 
         private DeviceDescriptor _desc;
         private static readonly object LockObject;
@@ -117,7 +126,7 @@ namespace AcTools.Render.Base.Sprites {
         /// </summary>
         /// <remarks>
         /// PIX compatibility means that no shared resource is used.
-        /// However, this will result in no visible text being drawn. 
+        /// However, this will result in no visible text being drawn.
         /// The geometry itself will be visible in PIX.
         /// </remarks>
         public static bool PixCompatible { get; set; }
@@ -125,13 +134,17 @@ namespace AcTools.Render.Base.Sprites {
         static TextBlockRenderer() {
             PixCompatible = false;
             LockObject = new object();
-            _deviceDescriptors = new Dictionary<Type, DeviceDescriptor>();
+            DeviceDescriptors = new Dictionary<Type, DeviceDescriptor>();
         }
-        
+
         private readonly Dictionary<byte, CharTableDescription> _charTables = new Dictionary<byte, CharTableDescription>();
         private readonly RenderTargetProperties _rtp;
-        
-        public TextBlockRenderer(SpriteRenderer sprite, String fontName, FontWeight fontWeight,
+        private readonly IFontCollectionProvider _fcp;
+
+        public TextBlockRenderer(SpriteRenderer sprite, string fontName, FontWeight fontWeight,
+                FontStyle fontStyle, FontStretch fontStretch, float fontSize) : this(sprite, null, fontName, fontWeight, fontStyle, fontStretch, fontSize) {}
+
+        public TextBlockRenderer(SpriteRenderer sprite, [CanBeNull] IFontCollectionProvider collection, string fontName, FontWeight fontWeight,
                 FontStyle fontStyle, FontStretch fontStretch, float fontSize) {
             AssertDevice();
             IncRefCount();
@@ -148,17 +161,23 @@ namespace AcTools.Render.Base.Sprites {
                     MinimumFeatureLevel = FeatureLevel.Direct3D10
                 };
 
-                Font = ((Factory)WriteFactory).CreateTextFormat(fontName, fontWeight, fontStyle, fontStretch, fontSize,
-                        CultureInfo.CurrentCulture.Name);
+                if (collection != null) {
+                    _fcp = collection;
+                    var c = collection.GetCollection(WriteFactory);
+                    Font = WriteFactory.CreateTextFormat(fontName, c, fontWeight, fontStyle, fontStretch, fontSize,
+                            CultureInfo.CurrentCulture.Name);
+                } else {
+                    Font = WriteFactory.CreateTextFormat(fontName, fontWeight, fontStyle, fontStretch, fontSize, CultureInfo.CurrentCulture.Name);
+                }
             } finally {
                 Monitor.Exit(sprite.Device);
             }
 
             CreateCharTable(0);
         }
-        
+
         protected TextLayout GetTextLayout(string s) {
-            return new TextLayout((Factory)WriteFactory, s, Font);
+            return new TextLayout(WriteFactory, s, Font);
         }
 
         protected IDisposable CreateFontMapTexture(int width, int height, CharRenderCall[] drawCalls) {
@@ -195,7 +214,7 @@ namespace AcTools.Render.Base.Sprites {
 
             color.Dispose();
 
-            // This is a workaround for Windows 8.1 machines. 
+            // This is a workaround for Windows 8.1 machines.
             // If these lines would not be present, the shared resource would be empty.
             // TODO: find a nicer solution
             using (var ms = new MemoryStream()) Texture2D.ToStream(texture, ImageFileFormat.Bmp, ms);
@@ -353,136 +372,92 @@ namespace AcTools.Render.Base.Sprites {
             }
         }
 
-        /// <summary>
-        /// Draws the string in the specified coordinate system.
-        /// </summary>
-        /// <param name="text">The text to draw</param>
-        /// <param name="position">A position in the chosen coordinate system where the top left corner of the first character will be</param>
-        /// <param name="realFontSize">The real font size in the chosen coordinate system</param>
-        /// <param name="color">The color in which to draw the text</param>
-        /// <param name="coordinateType">The chosen coordinate system</param>
-        /// <returns>The StringMetrics for the rendered text</returns>
-        public StringMetrics DrawString(string text, Vector2 position, float realFontSize, Color4 color, CoordinateType coordinateType) {
+        public StringMetrics DrawString(string text, Vector2 position, float angle, float realFontSize, Color4 color, CoordinateType coordinateType) {
             StringMetrics sm;
-            IterateStringEm(text, position, true, realFontSize, color, coordinateType, out sm);
+            IterateStringEm(text, position, angle, true, realFontSize, color, coordinateType, out sm);
             return sm;
         }
 
-        /// <summary>
-        /// Draws the string untransformed in absolute coordinate system.
-        /// </summary>
-        /// <param name="text">The text to draw</param>
-        /// <param name="position">A position in absolute coordinates where the top left corner of the first character will be</param>
-        /// <param name="color">The color in which to draw the text</param>
-        /// <returns>The StringMetrics for the rendered text</returns>
-        public StringMetrics DrawString(string text, Vector2 position, Color4 color) {
-            return DrawString(text, position, FontSize, color, CoordinateType.Absolute);
+        public StringMetrics DrawString(string text, float angle, Vector2 position, Color4 color) {
+            return DrawString(text, position, angle, FontSize, color, CoordinateType.Absolute);
         }
 
-        /// <summary>
-        /// Measures the untransformed string in absolute coordinate system.
-        /// </summary>
-        /// <param name="text">The text to measure</param>
-        /// <returns>The StringMetrics for the text</returns>
         public StringMetrics MeasureString(string text) {
             StringMetrics sm;
-            IterateString(text, Vector2.Zero, false, 1, new Color4(), CoordinateType.Absolute, out sm);
+            IterateString(text, Vector2.Zero, 0f, false, 1, new Color4(), CoordinateType.Absolute, out sm);
             return sm;
         }
 
-        /// <summary>
-        /// Measures the string in the specified coordinate system.
-        /// </summary>
-        /// <param name="text">The text to measure</param>
-        /// <param name="realFontSize">The real font size in the chosen coordinate system</param>
-        /// <param name="coordinateType">The chosen coordinate system</param>
-        /// <returns>The StringMetrics for the text</returns>
-        public StringMetrics MeasureString(string text, float realFontSize, CoordinateType coordinateType) {
+        public StringMetrics MeasureString(string text, float angle, float realFontSize, CoordinateType coordinateType) {
             StringMetrics sm;
-            IterateStringEm(text, Vector2.Zero, false, realFontSize, new Color4(), coordinateType, out sm);
+            IterateStringEm(text, Vector2.Zero, angle, false, realFontSize, new Color4(), coordinateType, out sm);
             return sm;
         }
 
-        /// <summary>
-        /// Draws the string in the specified coordinate system aligned in the given rectangle. The text is not clipped or wrapped.
-        /// </summary>
-        /// <param name="text">The text to draw</param>
-        /// <param name="rect">The rectangle in which to align the text</param>
-        /// <param name="align">Alignment of text in rectangle</param>
-        /// <param name="realFontSize">The real font size in the chosen coordinate system</param>
-        /// <param name="color">The color in which to draw the text</param>
-        /// <param name="coordinateType">The chosen coordinate system</param>
-        /// <returns>The StringMetrics for the rendered text</returns>
-        public StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, float realFontSize, Color4 color,
-                CoordinateType coordinateType) {
-            // If text is aligned top and left, no adjustment has to be made
-            if (align.HasFlag(TextAlignment.Top) && align.HasFlag(TextAlignment.Left)) {
-                return DrawString(text, new Vector2(rect.X, rect.Y), realFontSize, color, coordinateType);
-            }
+        public StringMetrics DrawString(string text, Vector2 position, float angle, TextAlignment align, float realFontSize, Color4 color) {
+            float left, top, width, height;
 
-            text = text.Replace("\r", "");
-
-            var rawTextMetrics = MeasureString(text, realFontSize, coordinateType);
-            var mMetrics = MeasureString("m", realFontSize, coordinateType);
-
-            float startY;
-            if (align.HasFlag(TextAlignment.Top)) {
-                startY = rect.Top;
-            } else if (align.HasFlag(TextAlignment.VerticalCenter)) {
-                startY = rect.Top + rect.Height / 2 - rawTextMetrics.Size.Y / 2;
+            if (align.HasFlag(TextAlignment.HorizontalCenter)) {
+                left = -10e3f + position.X;
+                width = 20e3f;
+            } else if (align.HasFlag(TextAlignment.Right)) {
+                left = -20e3f + position.X;
+                width = 20e3f;
             } else {
-                startY = rect.Bottom - rawTextMetrics.Size.Y;
+                left = position.X;
+                width = 20e3f;
             }
 
-            var totalMetrics = new StringMetrics();
-
-            // break text into lines
-            var lines = text.Split('\n');
-
-            for (var i = 0; i < lines.Length; i++) {
-                var line = lines[i];
-
-                float startX;
-                if (align.HasFlag(TextAlignment.Left)) {
-                    startX = rect.X;
-                } else {
-                    var lineMetrics = MeasureString(line, realFontSize, coordinateType);
-                    startX = align.HasFlag(TextAlignment.HorizontalCenter) ?
-                            rect.X + rect.Width / 2 - lineMetrics.Size.X / 2 :
-                            rect.Right - lineMetrics.Size.X;
-                }
-
-                {
-                    var lineMetrics = DrawString(line, new Vector2(startX, startY), realFontSize, color, coordinateType);
-                    startY += mMetrics.Size.Y < 0 ?
-                            Math.Min(lineMetrics.Size.Y, mMetrics.Size.Y) :
-                            Math.Max(lineMetrics.Size.Y, mMetrics.Size.Y);
-                    totalMetrics.Merge(lineMetrics);
-                }
+            if (align.HasFlag(TextAlignment.VerticalCenter)) {
+                top = -10e3f + position.Y;
+                height = 20e3f;
+            } else if (align.HasFlag(TextAlignment.Bottom)) {
+                top = -20e3f + position.Y;
+                height = 20e3f;
+            } else {
+                top = position.Y;
+                height = 20e3f;
             }
 
-            return totalMetrics;
+            return DrawString(text, new RectangleF(left, top, width, height), angle, align, realFontSize, color, CoordinateType.Absolute);
         }
 
-        /// <summary>
-        /// Draws the string unscaled in absolute coordinate system aligned in the given rectangle. The text is not clipped or wrapped.
-        /// </summary>
-        /// <param name="text">Text to draw</param>
-        /// <param name="rect">A position in absolute coordinates where the top left corner of the first character will be</param>
-        /// <param name="align">Alignment in rectangle</param>
-        /// <param name="color">Color in which to draw the text</param>
-        /// <returns>The StringMetrics for the rendered text</returns>
-        public StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, Color4 color) {
-            return DrawString(text, rect, align, FontSize, color, CoordinateType.Absolute);
+        // TODO: support for multiline strings plus angle
+        public StringMetrics DrawString(string text, RectangleF rect, float angle, TextAlignment align, float realFontSize, Color4 color,
+                CoordinateType coordinateType) {
+            if (align.HasFlag(TextAlignment.Top) && align.HasFlag(TextAlignment.Left)) {
+                return DrawString(text, new Vector2(rect.X, rect.Y), angle, realFontSize, color, coordinateType);
+            }
+
+            var m = MeasureString(text, angle, realFontSize, coordinateType);
+            var y = align.HasFlag(TextAlignment.Top) ? rect.Top :
+                    align.HasFlag(TextAlignment.VerticalCenter) ? rect.Top + rect.Height / 2 - m.Size.Y / 2 :
+                            rect.Bottom - m.Size.Y;
+            var p = align.HasFlag(TextAlignment.Left) ? new Vector2(0f, y) :
+                    new Vector2(align.HasFlag(TextAlignment.HorizontalCenter) ?
+                            rect.X + rect.Width / 2 - m.Size.X / 2 :
+                            rect.X + rect.Width - m.Size.X, y);
+
+            if (angle != 0f) {
+                var o = m.Size / 2f;
+                o.Y /= 2f;
+                p += o - SpriteRenderer.Rotate(o, (float)Math.Sin(angle), (float)Math.Cos(angle));
+            }
+
+            return DrawString(text, p, angle, realFontSize, color, coordinateType);
         }
 
-        private void IterateStringEm(string text, Vector2 position, bool draw, float realFontSize, Color4 color, CoordinateType coordinateType,
+        public StringMetrics DrawString(string text, RectangleF rect, float angle, TextAlignment align, Color4 color) {
+            return DrawString(text, rect, angle, align, FontSize, color, CoordinateType.Absolute);
+        }
+
+        private void IterateStringEm(string text, Vector2 position, float angle, bool draw, float realFontSize, Color4 color, CoordinateType coordinateType,
                 out StringMetrics metrics) {
             var scale = realFontSize / FontSize;
-            IterateString(text, position, draw, scale, color, coordinateType, out metrics);
+            IterateString(text, position, angle, draw, scale, color, coordinateType, out metrics);
         }
 
-        private void IterateString(string text, Vector2 position, bool draw, float scale, Color4 color, CoordinateType coordinateType,
+        private void IterateString(string text, Vector2 position, float angle, bool draw, float scale, Color4 color, CoordinateType coordinateType,
                 out StringMetrics metrics) {
             metrics = new StringMetrics();
             float scalY = coordinateType == CoordinateType.SNorm ? -1 : 1;
@@ -490,27 +465,56 @@ namespace AcTools.Render.Base.Sprites {
             var visualText = NBidi.NBidi.LogicalToVisual(text);
             var codePoints = Helpers.ConvertToCodePointArray(visualText);
 
+            float sine, cosine;
+            if (angle != 0f) {
+                sine = (float)Math.Sin(angle);
+                cosine = (float)Math.Cos(angle);
+            } else {
+                sine = cosine = 0f;
+            }
+
+            var x = 0f;
+            var y = Lazier.Create(() => Math.Abs(GetCharDescription('M').CharSize.Y * scale * scalY));
+
             for (var i = 0; i < codePoints.Length; i++) {
                 var c = codePoints[i];
-
                 var charDesc = GetCharDescription(c);
                 var charMetrics = charDesc.ToStringMetrics(position, scale, scale * scalY);
-                if (draw) {
-                    if (charMetrics.FullRectSize.X != 0 && charMetrics.FullRectSize.Y != 0) {
-                        var posY = position.Y - scalY * charMetrics.OverhangTop;
-                        var posX = position.X - charMetrics.OverhangLeft;
-                        Sprite.Draw(charDesc.TableDescription.Srv, new Vector2(posX, posY), charMetrics.FullRectSize, Vector2.Zero, 0,
-                                charDesc.TexCoordsStart, charDesc.TexCoordsSize, color, coordinateType);
+                metrics.Merge(charMetrics);
+
+                if (c != '\r' && c != '\n') {
+                    if (draw) {
+                        var h = charMetrics.FullRectSize.Y;
+                        if (h != 0 && charMetrics.FullRectSize.X != 0) {
+                            var fix = new Vector2(-charMetrics.OverhangLeft, -scalY * charMetrics.OverhangTop);
+                            if (angle != 0f) {
+                                fix = SpriteRenderer.Rotate(fix, sine, cosine);
+                            }
+
+                            Sprite.Draw(charDesc.TableDescription.Srv, position + fix, charMetrics.FullRectSize,
+                                    Vector2.Zero, sine, cosine, charDesc.TexCoordsStart, charDesc.TexCoordsSize, color, coordinateType);
+                        }
                     }
                 }
 
-                metrics.Merge(charMetrics);
+                var delta = new Vector2(charMetrics.Size.X, 0f);
 
-                position.X += charMetrics.Size.X;
+                if (c == '\r') {
+                    delta.X = -x;
+                    x = 0f;
+                } else {
+                    x += delta.X;
+                }
 
-                // Break newlines
-                if (c == '\r') position.X = metrics.TopLeft.X;
-                if (c == '\n') position.Y = metrics.BottomRight.Y - charMetrics.Size.Y / 2;
+                if (c == '\n') {
+                    delta.Y += y.Value;
+                }
+
+                if (angle != 0f) {
+                    delta = SpriteRenderer.Rotate(delta, sine, cosine);
+                }
+
+                position += delta;
             }
         }
 
@@ -524,7 +528,7 @@ namespace AcTools.Render.Base.Sprites {
         void AssertDevice() {
             DeviceDescriptor desc;
             lock (LockObject) {
-                if (!_deviceDescriptors.TryGetValue(GetType(), out desc)) _deviceDescriptors[GetType()] = desc = CreateDevicesAndFactories();
+                if (!DeviceDescriptors.TryGetValue(GetType(), out desc)) DeviceDescriptors[GetType()] = desc = CreateDevicesAndFactories();
             }
 
             _desc = desc;
@@ -532,23 +536,21 @@ namespace AcTools.Render.Base.Sprites {
 
         private void DecRefCount() {
             DeviceDescriptor desc;
-            if (_deviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount--;
+            if (DeviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount--;
             if (desc != null && desc.ReferenceCount == 0) {
                 desc.DisposeAll();
-                _deviceDescriptors.Remove(GetType());
+                DeviceDescriptors.Remove(GetType());
 
             }
         }
 
         private void IncRefCount() {
             DeviceDescriptor desc;
-            if (_deviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount++;
+            if (DeviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount++;
         }
 
         protected IDisposable D3DDevice10 => _desc.D3DDevice10;
-
         protected Factory WriteFactory => _desc.WriteFactory;
-
         protected IDisposable D2DFactory => _desc.D2DFactory;
 
         #region IDisposable Support
@@ -559,6 +561,7 @@ namespace AcTools.Render.Base.Sprites {
         /// </summary>
         public void Dispose() {
             if (!_disposed) {
+                // _fcp?.Dispose();
                 Font.Dispose();
 
                 foreach (var table in _charTables) {

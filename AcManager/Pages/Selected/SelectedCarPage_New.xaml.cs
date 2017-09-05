@@ -181,11 +181,11 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
                     (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
 
-            private DelegateCommand _driveCommand;
+            private AsyncCommand _driveCommand;
 
-            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
+                        !await QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
                     DriveOptionsCommand.Execute();
                 }
             }, () => SelectedObject.Enabled));
@@ -275,7 +275,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.Filename).Forget();
                     });
                 }
             }

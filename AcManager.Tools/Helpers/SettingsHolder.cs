@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using AcManager.Tools.AcManagersNew;
@@ -652,6 +653,12 @@ namespace AcManager.Tools.Helpers {
                     ToolsStrings.Settings_Starter_Naive,
                     ToolsStrings.Settings_Starter_Naive_Description, requiresSteam: false);
 
+            public static readonly StarterType DeveloperStarterType = new StarterType(
+                    "Developer",
+                    "Developer",
+                    "Doesn’t run “acs.exe” expecting you to run it manually, only prepares “race.ini” and waits for “race_out.json” to change.",
+                    requiresSteam: false);
+
             private StarterType _selectedStarterType;
 
             [NotNull]
@@ -713,7 +720,8 @@ namespace AcManager.Tools.Helpers {
                 UiModuleStarterType,
                 // StarterPlusType,
                 SseStarterType,
-                NaiveStarterType
+                NaiveStarterType,
+                DeveloperStarterType
             });
 
             private bool? _presetsPerModeAutoUpdate;
@@ -1016,6 +1024,19 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _skipPracticeResults)) return;
                     _skipPracticeResults = value;
                     ValuesStorage.Set("Settings.DriveSettings.SkipPracticeResults", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _raceResultsLimit;
+
+            public int RaceResultsLimit {
+                get => _raceResultsLimit ?? (_raceResultsLimit = ValuesStorage.GetInt("Settings.DriveSettings.RaceResultsLimit", 1000)).Value;
+                set {
+                    value = value.Round(10);
+                    if (Equals(value, _raceResultsLimit)) return;
+                    _raceResultsLimit = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RaceResultsLimit", value);
                     OnPropertyChanged();
                 }
             }
@@ -1847,6 +1868,7 @@ namespace AcManager.Tools.Helpers {
                 new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
                 new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true),
                 new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
+                new MissingContentSearchEntry("AC Drifting Pro", (type, id) => $"http://www.acdriftingpro.com/?s={HttpUtility.UrlEncode(id)}", false),
                 new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
             });
 

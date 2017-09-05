@@ -95,7 +95,6 @@ namespace AcManager.Tools.Profile {
             RaiseEntriesChanged();
 
             var basic = e.StartProperties.BasicProperties;
-            var bestLap = e.Result?.GetExtraByType<Game.ResultExtraBestLap>();
 
             var carId = basic?.CarId;
             var trackId = basic?.TrackId;
@@ -129,6 +128,7 @@ namespace AcManager.Tools.Profile {
 
                 time = sharedTime.Value;
             } else {
+                var bestLap = e.Result?.GetExtraByType<Game.ResultExtraBestLap>();
                 time = carId == null || trackId == null || bestLap == null ||
                         bestLap.IsCancelled ? (TimeSpan?)null : bestLap.Time;
             }

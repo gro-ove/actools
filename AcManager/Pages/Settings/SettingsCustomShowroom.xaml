@@ -13,7 +13,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsCustomShowroom">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel Style="{StaticResource SettingsPanel}">
 

@@ -8,7 +8,7 @@
   </UserControl.Resources>
 
   <ScrollViewer mui:SaveScroll.Key="AcSettingsSystem">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel Style="{StaticResource SettingsPanel}">
         <Viewbox Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Top">

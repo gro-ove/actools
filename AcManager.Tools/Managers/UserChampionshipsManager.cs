@@ -71,18 +71,18 @@ namespace AcManager.Tools.Managers {
 
                 case KunosCareerObjectType.Championship:
                     if (e.Result.NumberOfSessions > 0) {
-                        var places = e.Result.Sessions.Last().GetTakenPlacesPerCar();
-                        ev.TakenPlace = places[0] + 1;
+                        var places = e.Result.Sessions?.Last().GetTakenPlacesPerCar();
+                        ev.TakenPlace = places?[0] + 1 ?? 0;
                         ev.IsPassed = true;
 
                         var nextEvent = career.ExtendedRounds.FirstOrDefault(x => x.Index == careerProperties.RoundIndex + 1);
                         if (nextEvent != null) nextEvent.IsAvailable = true;
 
                         var pointsPerPlace = career.Rules.Points;
-                        var playerPointsDelta = pointsPerPlace.ElementAtOrDefault(places[0]);
+                        var playerPointsDelta = pointsPerPlace.ElementAtOrDefault(places?[0] ?? -1);
 
                         if (career.PointsForBestLap != 0) {
-                            var bestLap = e.Result.Sessions.SelectMany(x => x.BestLaps).MinEntryOrDefault(x => x.Time);
+                            var bestLap = e.Result.Sessions?.SelectMany(x => x.BestLaps).MinEntryOrDefault(x => x.Time);
                             if (bestLap == null) {
                                 Logging.Debug("Best lap: not set");
                             } else {
@@ -103,7 +103,7 @@ namespace AcManager.Tools.Managers {
                         }
 
                         if (career.PointsForPolePosition != 0) {
-                            var bestLap = e.Result.Sessions.Where(x => x.Type == Game.SessionType.Qualification)
+                            var bestLap = e.Result.Sessions?.Where(x => x.Type == Game.SessionType.Qualification)
                                            .SelectMany(x => x.BestLaps)
                                            .MinEntryOrDefault(x => x.Time);
                             if (bestLap == null) {
@@ -130,7 +130,7 @@ namespace AcManager.Tools.Managers {
                         for (var i = career.Drivers.Count - 1; i >= 0; i--) {
                             var driver = career.Drivers[i];
                             if (driver.IsPlayer) continue;
-                            driver.Points += pointsPerPlace.ElementAtOrDefault(places.ElementAtOrDefault(i));
+                            driver.Points += pointsPerPlace.ElementAtOrDefault(places?.ElementAtOrDefault(i) ?? -1);
                         }
 
                         career.UpdateTakenPlaces();

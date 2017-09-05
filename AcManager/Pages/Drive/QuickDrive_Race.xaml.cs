@@ -13,6 +13,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -46,13 +47,13 @@ namespace AcManager.Pages.Drive {
 
 
         public QuickDriveModeViewModel Model {
-            get { return (QuickDriveModeViewModel)DataContext; }
-            set { DataContext = value; }
+            get => (QuickDriveModeViewModel)DataContext;
+            set => DataContext = value;
         }
 
         public ViewModel ActualModel => (ViewModel)DataContext;
 
-        public class ViewModel : QuickDriveModeViewModel, IHierarchicalItemPreviewProvider {
+        public class ViewModel : QuickDriveModeViewModel, IHierarchicalItemPreviewProvider, IRaceGridModeViewModel {
             #region Jump start penalties
             public Game.JumpStartPenaltyType[] JumpStartPenaltyTypes { get; } = {
                 Game.JumpStartPenaltyType.None,
@@ -85,7 +86,7 @@ namespace AcManager.Pages.Drive {
             private Game.JumpStartPenaltyType _jumpStartPenalty;
 
             public Game.JumpStartPenaltyType JumpStartPenalty {
-                get { return _jumpStartPenalty; }
+                get => _jumpStartPenalty;
                 set {
                     if (Equals(value, _jumpStartPenalty)) return;
                     _jumpStartPenalty = value;
@@ -98,7 +99,7 @@ namespace AcManager.Pages.Drive {
             private bool _penalties;
 
             public bool Penalties {
-                get { return _penalties; }
+                get => _penalties;
                 set {
                     if (value == _penalties) return;
                     _penalties = value;
@@ -114,7 +115,7 @@ namespace AcManager.Pages.Drive {
             private int _lapsNumber;
 
             public int LapsNumber {
-                get { return _lapsNumber; }
+                get => _lapsNumber;
                 set {
                     if (Equals(value, _lapsNumber)) return;
                     _lapsNumber = value.Clamp(1, LapsNumberMaximum);
@@ -125,6 +126,7 @@ namespace AcManager.Pages.Drive {
             }
             #endregion
 
+            [NotNull]
             public RaceGridViewModel RaceGridViewModel { get; }
 
             protected class OldSaveableData {
@@ -277,7 +279,8 @@ namespace AcManager.Pages.Drive {
             }
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
-                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
+                    string serializedQuickDrivePreset) {
                 var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId ?? "");
                 var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId ?? "", basicProperties.TrackConfigurationId);
 
@@ -318,7 +321,10 @@ namespace AcManager.Pages.Drive {
                     AssistsProperties = assistsProperties,
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,
-                    ModeProperties = GetModeProperties(botCars)
+                    ModeProperties = GetModeProperties(botCars),
+                    AdditionalPropertieses = {
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
+                    }
                 });
             }
 
@@ -371,6 +377,10 @@ namespace AcManager.Pages.Drive {
                             ? $"Starting position: [b]{GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}[/b]" : null,
                 }.NonNull().JoinToString(Environment.NewLine);
                 return new BbCodeBlock { BbCode = description };
+            }
+
+            public void SetRaceGridData(string serializedRaceGrid) {
+                RaceGridViewModel?.ImportFromPresetData(serializedRaceGrid);
             }
         }
 

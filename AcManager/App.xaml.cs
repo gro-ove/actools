@@ -31,6 +31,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -66,7 +67,7 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable {
+    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable, IGameSessionNameProvider {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -226,6 +227,7 @@ namespace AcManager {
 
             GameWrapper.RegisterFactory(new DefaultAssistsFactory());
             LapTimesManager.Instance.SetListener();
+            RaceResultsStorage.Instance.SetListener();
 
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
@@ -315,6 +317,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
+            GameResultExtension.RegisterNameProvider(this);
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
             CarBlock.CarSetupsView = new CarSetupsView();
 
@@ -587,6 +590,14 @@ namespace AcManager {
 
         public void Dispose() {
             DisposeHelper.Dispose(ref _hibernator);
+        }
+
+        string IGameSessionNameProvider.GetSessionName(Game.ResultSession parsedData) {
+            if (parsedData.Name == "RSR Hotlap" || parsedData.Name == AppStrings.Rsr_SessionName) {
+                return AppStrings.Rsr_SessionName;
+            }
+
+            return null;
         }
     }
 }

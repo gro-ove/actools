@@ -66,18 +66,18 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private CommandBase _driveCommand;
+            private AsyncCommand _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !QuickDrive.Run(track: SelectedTrackConfiguration)) {
-                    DriveOptionsCommand.Execute(null);
+                        !await QuickDrive.RunAsync(track: SelectedTrackConfiguration)) {
+                    DriveOptionsCommand.Execute();
                 }
             }, () => SelectedTrackConfiguration.Enabled));
 
-            private CommandBase _driveOptionsCommand;
+            private DelegateCommand _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(track: SelectedTrackConfiguration);
             }, () => SelectedTrackConfiguration.Enabled));
 
@@ -102,7 +102,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunPreset(p.Filename, track: SelectedTrackConfiguration);
+                        QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.Filename).Forget();
                     });
                 }
             }

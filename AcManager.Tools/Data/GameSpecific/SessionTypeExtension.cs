@@ -19,6 +19,8 @@ namespace AcManager.Tools.Data.GameSpecific {
                     return ToolsStrings.Session_TimeAttack;
                 case Game.SessionType.Drift:
                     return ToolsStrings.Session_Drift;
+                case Game.SessionType.Drag:
+                    return ToolsStrings.Session_Drag;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

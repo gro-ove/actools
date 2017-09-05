@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -48,6 +50,13 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
+
+            /*Dispatcher.InvokeAsync(async () => {
+                await Task.Delay(1000);
+                if (Model.Selected != null) {
+                    ListBox.ScrollIntoView(ListBox.SelectedItem);
+                }
+            });*/
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -59,7 +68,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public SpecialEventObject Selected {
-                get { return _selected; }
+                get => _selected;
                 set {
                     if (Equals(value, _selected)) return;
                     _selected = value;
@@ -82,6 +91,11 @@ namespace AcManager.Pages.Drive {
                 }
 
                 List.CustomSort = this;
+
+                if (_selectNext != null) {
+                    Selected = _selectNext;
+                    _selectNext = null;
+                }
             }
 
             private void OnCurrentChanged(object sender, EventArgs e) {
@@ -207,7 +221,7 @@ namespace AcManager.Pages.Drive {
             var scale = 1d + ((ActualHeight - 640d) / 540d).Saturate();
             if (scale < 1.3) scale = 1d;
             if (Math.Abs(scale - _scale) < 0.2) return;
-            
+
             _tilePanel.ItemWidth = 195d * scale;
             _tilePanel.ItemHeight = 110d * scale;
             _scale = scale;
@@ -222,6 +236,17 @@ namespace AcManager.Pages.Drive {
         private void TilePanel_OnLoaded(object sender, RoutedEventArgs e) {
             _tilePanel = (VirtualizingTilePanel)sender;
             ResizeTiles();
+        }
+
+        public static void NavigateToPage() {
+            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/SpecialEvents.xaml", UriKind.Relative));
+        }
+
+        private static SpecialEventObject _selectNext;
+
+        public static void Show(SpecialEventObject select) {
+            _selectNext = select;
+            NavigateToPage();
         }
     }
 }

@@ -10,7 +10,11 @@ namespace AcTools.Utils {
         public T Get(Func<T> fn) {
             if (!_set) {
                 _set = true;
-                _value = fn();
+                try {
+                    _value = fn();
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                }
             }
 
             return _value;

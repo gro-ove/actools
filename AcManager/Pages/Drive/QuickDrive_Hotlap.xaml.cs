@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Profile;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
@@ -8,7 +9,7 @@ namespace AcManager.Pages.Drive {
             private bool _ghostCar;
 
             public bool GhostCar {
-                get { return _ghostCar; }
+                get => _ghostCar;
                 set {
                     if (value == _ghostCar) return;
                     _ghostCar = value;
@@ -20,7 +21,7 @@ namespace AcManager.Pages.Drive {
             private double _ghostCarAdvantage;
 
             public double GhostCarAdvantage {
-                get { return _ghostCarAdvantage; }
+                get => _ghostCarAdvantage;
                 set {
                     if (Equals(value, _ghostCarAdvantage)) return;
                     _ghostCarAdvantage = value;
@@ -58,7 +59,8 @@ namespace AcManager.Pages.Drive {
             #endregion
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
-                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
+                    string serializedQuickDrivePreset) {
                 basicProperties.Ballast = PlayerBallast;
                 basicProperties.Restrictor = PlayerRestrictor;
                 await StartAsync(new Game.StartProperties {
@@ -71,6 +73,9 @@ namespace AcManager.Pages.Drive {
                         GhostCar = GhostCar,
                         GhostCarAdvantage = GhostCarAdvantage,
                         RecordGhostCar = SettingsHolder.Drive.AlwaysRecordGhost ? true : (bool?)null
+                    },
+                    AdditionalPropertieses = {
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
                     }
                 });
             }
@@ -81,8 +86,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public QuickDriveModeViewModel Model {
-            get { return (QuickDriveModeViewModel)DataContext; }
-            set { DataContext = value; }
+            get => (QuickDriveModeViewModel)DataContext;
+            set => DataContext = value;
         }
     }
 }

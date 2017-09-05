@@ -1,0 +1,4 @@
+name: NVIDIA Texture Tools
+url: https://github.com/castano/nvidia-texture-tools
+content: LICENSE
+sid: tjafbv0v

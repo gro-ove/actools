@@ -40,9 +40,9 @@
       </StackPanel>
 
       <StackPanel Margin="{StaticResource ElementMargin}">
-        <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" Postfix='%'
-            Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
-        <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
+        <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
+        <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
+            Value="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
       </StackPanel>
     </UniformGrid>
 

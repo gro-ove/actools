@@ -221,17 +221,17 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunPreset(p.Filename, Car, CarSkin?.Id, track: Track);
+                        QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.Filename).Forget();
                     });
                 }
             }
             #endregion
 
-            private DelegateCommand _driveCommand;
+            private AsyncCommand _driveCommand;
 
-            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !QuickDrive.Run(Car, CarSkin?.Id, track: Track)) {
+                        !await QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track)) {
                     DriveOptionsCommand.Execute();
                 }
             }));

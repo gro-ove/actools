@@ -18,6 +18,26 @@ namespace AcTools.Utils.Helpers {
             return attr?.Description;
         }
 
+        public static T FindClosest<T>(this int value) where T : struct {
+            if (Enum.IsDefined(typeof(T), value)){
+                return (T)(object)value;
+            }
+
+            var minDistance = int.MaxValue;
+            var minValue = default(T);
+            foreach (var enumValue in Enum.GetValues(typeof(T))){
+                var intValue = (int)enumValue;
+                if (intValue == value) return (T)enumValue;
+                var distance = Math.Abs(intValue - value);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minValue = (T)enumValue;
+                }
+            }
+
+            return minValue;
+        }
+
         public static T[] GetValues<T>() where T : struct {
             return Enum.GetValues(typeof(T)).OfType<T>().ToArray();
         }

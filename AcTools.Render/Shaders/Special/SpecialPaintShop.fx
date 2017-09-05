@@ -24,7 +24,7 @@
 		AddressU = WRAP;
 		AddressV = WRAP;
 	};
-	
+
 // input sources
 	Texture2D gInputMap;
 	Texture2D gAoMap;
@@ -73,7 +73,7 @@
 	float4 SimpleBlending(float4 background, float4 foreground) {
 		return float4(foreground.rgb * foreground.a + background.rgb * (1 - foreground.a), foreground.a + background.a * (1 - foreground.a));
 	}
-	
+
 // input resources
 	cbuffer cbPerObject : register(b0) {
 		float4 gColor;

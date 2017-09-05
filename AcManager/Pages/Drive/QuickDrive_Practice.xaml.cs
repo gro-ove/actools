@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Profile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 
@@ -11,7 +12,7 @@ namespace AcManager.Pages.Drive {
             private Game.StartType _selectedStartType;
 
             public Game.StartType SelectedStartType {
-                get { return _selectedStartType; }
+                get => _selectedStartType;
                 set {
                     if (Equals(value, _selectedStartType)) return;
                     _selectedStartType = value;
@@ -46,7 +47,8 @@ namespace AcManager.Pages.Drive {
             #endregion
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
-                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
+                    string serializedQuickDrivePreset) {
                 basicProperties.Ballast = PlayerBallast;
                 basicProperties.Restrictor = PlayerRestrictor;
                 await StartAsync(new Game.StartProperties {
@@ -57,6 +59,9 @@ namespace AcManager.Pages.Drive {
                     ModeProperties = new Game.PracticeProperties {
                         Penalties = Penalties,
                         StartType = SelectedStartType
+                    },
+                    AdditionalPropertieses = {
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
                     }
                 });
             }
@@ -67,8 +72,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public QuickDriveModeViewModel Model {
-            get { return (QuickDriveModeViewModel)DataContext; }
-            set { DataContext = value; }
+            get => (QuickDriveModeViewModel)DataContext;
+            set => DataContext = value;
         }
     }
 }

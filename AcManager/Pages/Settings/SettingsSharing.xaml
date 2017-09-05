@@ -19,7 +19,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsSharing">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True" Margin="0">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True" Margin="0">
 
       <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
         <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">

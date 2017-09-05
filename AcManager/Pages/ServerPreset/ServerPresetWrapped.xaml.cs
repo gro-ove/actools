@@ -7,7 +7,7 @@ namespace AcManager.Pages.ServerPreset {
         public ServerPresetWrapped() {
             InitializeComponent();
             this.AddWidthCondition(800).Add(x => {
-                Grid.StackMode = !x;
+                Grid.VerticalStackMode = !x;
                 ScrollViewer.VerticalScrollBarVisibility = x ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto;
                 Grid.Columns = x ? 2 : 1;
             });

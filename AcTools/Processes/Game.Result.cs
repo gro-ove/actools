@@ -10,32 +10,33 @@ using Newtonsoft.Json.Linq;
 namespace AcTools.Processes {
     public partial class Game {
         public class Result {
-            [JsonProperty(PropertyName = "track")]
-            public string TrackId;
+            [JsonProperty(PropertyName = "track"), CanBeNull]
+            public string TrackId { get; set; }
 
-            [JsonProperty(PropertyName = "players")]
-            public ResultPlayer[] Players;
+            [JsonProperty(PropertyName = "players"), CanBeNull]
+            public ResultPlayer[] Players { get; set; }
 
             [JsonProperty(PropertyName = "number_of_sessions")]
-            public int NumberOfSessions;
+            public int NumberOfSessions { get; set; }
 
-            [JsonProperty(PropertyName = "sessions")]
-            public ResultSession[] Sessions;
+            [JsonProperty(PropertyName = "sessions"), CanBeNull]
+            public ResultSession[] Sessions { get; set; }
 
-            [JsonProperty(PropertyName = "extras"), JsonConverter(typeof(ResultExtraConverter))]
-            public ResultExtra[] Extras;
+            [JsonProperty(PropertyName = "extras"), JsonConverter(typeof(ResultExtraConverter)), CanBeNull]
+            public ResultExtra[] Extras { get; set; }
 
             [CanBeNull]
             public T GetExtraByType<T>() where T : ResultExtra {
-                return Extras.OfType<T>().FirstOrDefault();
+                return Extras?.OfType<T>().FirstOrDefault();
             }
 
             public bool GetExtraByType<T>(out T value) where T : ResultExtra {
-                value = Extras.OfType<T>().FirstOrDefault();
+                value = Extras?.OfType<T>().FirstOrDefault();
                 return value != null;
             }
 
-            public bool IsNotCancelled => NumberOfSessions == Sessions.Length && (Sessions.Any(x => x.IsNotCancelled) || Extras.Any(x => x.IsNotCancelled));
+            public bool IsNotCancelled => NumberOfSessions == Sessions?.Length &&
+                    (Sessions.Any(x => x.IsNotCancelled) || Extras?.Any(x => x.IsNotCancelled) == true);
 
             public string GetDescription() {
                 return $"(Track={TrackId}, Sessions={NumberOfSessions}, " +
@@ -47,7 +48,7 @@ namespace AcTools.Processes {
 
         public class ResultExtra {
             [JsonProperty(PropertyName = "name")]
-            public string Name;
+            public string Name { get; set; }
 
             public bool IsCancelled => !IsNotCancelled;
 
@@ -60,7 +61,7 @@ namespace AcTools.Processes {
 
         public class ResultExtraBestLap : ResultExtra {
             [JsonConverter(typeof(MillisecondsToTimeSpanConverter)), JsonProperty(PropertyName = "time")]
-            public TimeSpan Time;
+            public TimeSpan Time { get; set; }
 
             public override bool IsNotCancelled => Time != TimeSpan.Zero;
 
@@ -71,13 +72,13 @@ namespace AcTools.Processes {
 
         public class ResultExtraSpecialEvent : ResultExtra {
             [JsonProperty(PropertyName = "guid")]
-            public string Guid;
+            public string Guid { get; set; }
 
             [JsonProperty(PropertyName = "max")]
-            public int Max;
+            public int Max { get; set; }
 
             [JsonProperty(PropertyName = "tier")]
-            public int Tier;
+            public int Tier { get; set; }
 
             public override bool IsNotCancelled => Guid != string.Empty || Max != 0 || Tier != -1;
 
@@ -88,7 +89,7 @@ namespace AcTools.Processes {
 
         public class ResultExtraTimeAttack : ResultExtra {
             [JsonProperty(PropertyName = "points")]
-            public int Points;
+            public int Points { get; set; }
 
             public override bool IsNotCancelled => Points > 0;
 
@@ -99,13 +100,13 @@ namespace AcTools.Processes {
 
         public class ResultExtraDrift : ResultExtra {
             [JsonProperty(PropertyName = "points")]
-            public int Points;
+            public int Points { get; set; }
 
             [JsonProperty(PropertyName = "combos")]
-            public int MaxCombo;
+            public int MaxCombo { get; set; }
 
             [JsonProperty(PropertyName = "levels")]
-            public int MaxLevel;
+            public int MaxLevel { get; set; }
 
             public override bool IsNotCancelled => Points > 0 || MaxCombo != 0 || MaxLevel != 0;
 
@@ -116,16 +117,16 @@ namespace AcTools.Processes {
 
         public class ResultExtraDrag : ResultExtra {
             [JsonProperty(PropertyName = "total")]
-            public int Total;
+            public int Total { get; set; }
 
             [JsonProperty(PropertyName = "wins")]
-            public int Wins;
+            public int Wins { get; set; }
 
             [JsonProperty(PropertyName = "runs")]
-            public int Runs;
+            public int Runs { get; set; }
 
             [JsonConverter(typeof(MillisecondsToTimeSpanConverter)), JsonProperty(PropertyName = "reaction_time")]
-            public TimeSpan ReactionTime;
+            public TimeSpan ReactionTime { get; set; }
 
             public override bool IsNotCancelled => Runs > 0;
 
@@ -205,9 +206,14 @@ namespace AcTools.Processes {
         }
 
         public class ResultPlayer {
-            public string Name;
-            public string CarId;
-            public string CarSkinId;
+            [JsonProperty("name"), CanBeNull]
+            public string Name { get; set; }
+
+            [JsonProperty("car"), CanBeNull]
+            public string CarId { get; set; }
+
+            [JsonProperty("skin"), CanBeNull]
+            public string CarSkinId { get; set; }
 
             public string GetDescription() {
                 return $"({Name} in {CarId})";
@@ -230,28 +236,28 @@ namespace AcTools.Processes {
             /// Starts from 0.
             /// </summary>
             [JsonProperty(PropertyName = "lap")]
-            public int LapId;
+            public int LapId { get; set; }
 
             /// <summary>
             /// Starts from 0.
             /// </summary>
             [JsonProperty(PropertyName = "car")]
-            public int CarNumber;
+            public int CarNumber { get; set; }
 
             [JsonProperty(PropertyName = "cuts")]
-            public int Cuts;
+            public int Cuts { get; set; }
 
-            [JsonProperty(PropertyName = "tyre")]
-            public string TyresShortName;
+            [JsonProperty(PropertyName = "tyre"), CanBeNull]
+            public string TyresShortName { get; set; }
 
             [JsonProperty(PropertyName = "sectors"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
-            public TimeSpan[] SectorsTime;
+            public TimeSpan[] SectorsTime { get; set; }
 
             /// <summary>
             /// Milliseconds.
             /// </summary>
             [JsonProperty(PropertyName = "time"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
-            public TimeSpan Time;
+            public TimeSpan Time { get; set; }
         }
 
         public class ResultBestLap {
@@ -259,60 +265,60 @@ namespace AcTools.Processes {
             /// Starts from 0.
             /// </summary>
             [JsonProperty(PropertyName = "lap")]
-            public int LapId;
+            public int LapId { get; set; }
 
             /// <summary>
             /// Starts from 0.
             /// </summary>
             [JsonProperty(PropertyName = "car")]
-            public int CarNumber;
+            public int CarNumber { get; set; }
 
             /// <summary>
             /// Milliseconds.
             /// </summary>
             [JsonProperty(PropertyName = "time"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
-            public TimeSpan Time;
+            public TimeSpan Time { get; set; }
         }
 
         public class ResultSession {
-            [JsonProperty(PropertyName = "name")]
-            public string Name;
+            [JsonProperty(PropertyName = "name"), CanBeNull]
+            public string Name { get; set; }
 
             /// <summary>
             /// Starts from 0.
             /// </summary>
             [JsonProperty(PropertyName = "event")]
-            public int EventId;
+            public int EventId { get; set; }
 
             [JsonProperty(PropertyName = "type")]
-            public SessionType Type;
+            public SessionType Type { get; set; }
 
             [JsonProperty(PropertyName = "lapsCount")]
-            public int LapsCount;
+            public int LapsCount { get; set; }
 
             /// <summary>
             /// Minutes.
             /// </summary>
             [JsonProperty(PropertyName = "duration"), JsonConverter(typeof(MinutesToTimeSpanConverter))]
-            public TimeSpan Duration;
+            public TimeSpan Duration { get; set; }
 
             /// <summary>
             /// [Car ID] = Laps
             /// </summary>
-            [JsonProperty(PropertyName = "laps")]
-            public ResultLap[] Laps;
+            [JsonProperty(PropertyName = "laps"), CanBeNull]
+            public ResultLap[] Laps { get; set; }
 
-            [JsonProperty(PropertyName = "lapstotal")]
-            public int[] LapsTotalPerCar;
+            [JsonProperty(PropertyName = "lapstotal"), CanBeNull]
+            public int[] LapsTotalPerCar { get; set; }
 
-            [JsonProperty(PropertyName = "bestLaps")]
-            public ResultBestLap[] BestLaps;
+            [JsonProperty(PropertyName = "bestLaps"), CanBeNull]
+            public ResultBestLap[] BestLaps { get; set; }
 
             /// <summary>
             /// [Place] = Car ID
             /// </summary>
             [JsonProperty(PropertyName = "raceResult"), CanBeNull]
-            public int[] CarPerTakenPlace;
+            public int[] CarPerTakenPlace { get; set; }
 
             public bool IsNotCancelled {
                 get {
@@ -322,18 +328,18 @@ namespace AcTools.Processes {
 
                         case SessionType.Qualification:
                         case SessionType.Race:
-                            return LapsTotalPerCar.Contains(LapsCount);
+                            return LapsTotalPerCar?.Contains(LapsCount) == true;
 
                         case SessionType.Drift:
                         case SessionType.Hotlap:
                         case SessionType.TimeAttack:
-                            return LapsTotalPerCar.FirstOrDefault() > 0;
+                            return LapsTotalPerCar?.FirstOrDefault() > 0;
 
                         case SessionType.Booking:
                             return true;
 
                         case SessionType.Drag:
-                            return LapsTotalPerCar.FirstOrDefault() > 0;
+                            return LapsTotalPerCar?.FirstOrDefault() > 0;
 
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -345,8 +351,9 @@ namespace AcTools.Processes {
             /// Eighter a racing place or a place based on best lap time.
             /// </summary>
             /// <returns>[Place] = Car ID (starts with 0)</returns>
+            [CanBeNull]
             public int[] GetCarPerTakenPlace() {
-                return CarPerTakenPlace ?? BestLaps
+                return CarPerTakenPlace ?? BestLaps?
                         .GroupBy(x => x.CarNumber)
                         .Select(x => x.MinEntryOrDefault(y => y.Time))
                         .NonNull()
@@ -358,8 +365,9 @@ namespace AcTools.Processes {
             /// Eighter a racing place or a place based on best lap time.
             /// </summary>
             /// <returns>[Car ID] = Place (starts with 0!)</returns>
+            [CanBeNull]
             public int[] GetTakenPlacesPerCar() {
-                return GetCarPerTakenPlace().Select((x, i) => new[] { x, i }).OrderBy(x => x[0]).Select(x => x[1]).ToArray();
+                return GetCarPerTakenPlace()?.Select((x, i) => new[] { x, i }).OrderBy(x => x[0]).Select(x => x[1]).ToArray();
             }
 
             public string GetDescription() {

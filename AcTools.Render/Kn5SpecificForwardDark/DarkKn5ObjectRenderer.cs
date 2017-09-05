@@ -1266,8 +1266,8 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 do {
                     direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
                 } while (direction.LengthSquared() > 1f);
-                direction.Normalize();
-                direction *= MathF.Pow(MathUtils.Random(0f, 1f), 0.4f);
+                // direction.Normalize();
+                // direction *= MathF.Pow(MathUtils.Random(0f, 1f), 0.4f);
             }
 
             var bokeh = camera.Right * direction.X + camera.Up * direction.Y;
@@ -1356,6 +1356,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         }
 
         public override void Draw() {
+            if (IsPaused) return;
             if (UseDof && UseAccumulationDof) {
                 _realTimeAccumulationMode = true;
                 if (IsDirty) {

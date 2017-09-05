@@ -69,9 +69,9 @@ namespace AcManager.Tools {
 
             var information = new UserChampionshipInformation {
                 Name = mainDataJson.GetStringValueOnly("name"),
-                Description = extraDataJson.GetStringValueOnly("description"),
-                Author = extraDataJson.GetStringValueOnly("author"),
-                Difficulty = extraDataJson.GetStringValueOnly("difficulty"),
+                Description = extraDataJson?.GetStringValueOnly("description"),
+                Author = extraDataJson?.GetStringValueOnly("author"),
+                Difficulty = extraDataJson?.GetStringValueOnly("difficulty"),
             };
 
             if (previewImage != null) {

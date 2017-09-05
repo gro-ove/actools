@@ -81,6 +81,10 @@ namespace AcManager.Pages.Drive {
         }
     }
 
+    public interface IRaceGridModeViewModel {
+        void SetRaceGridData([NotNull] string serializedRaceGrid);
+    }
+
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
         protected ISaveHelper Saveable { set; get; }
 
@@ -115,9 +119,9 @@ namespace AcManager.Pages.Drive {
                                 t => t.Tags.Add(tag));
         }
 
-        public abstract Task Drive(Game.BasicProperties basicProperties,
-                Game.AssistsProperties assistsProperties,
-                Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);
+        public abstract Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
+                Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
+                string serializedQuickDrivePreset);
 
         protected Task StartAsync(Game.StartProperties properties) {
             return GameWrapper.StartAsync(properties);

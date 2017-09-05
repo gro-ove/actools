@@ -5,6 +5,7 @@ using System.Linq;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;

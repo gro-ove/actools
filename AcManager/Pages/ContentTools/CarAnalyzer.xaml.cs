@@ -110,43 +110,43 @@ namespace AcManager.Pages.ContentTools {
             }));
 
             #region Open In Showroom
-            private CommandBase _openInShowroomCommand;
+            private DelegateCommand _openInShowroomCommand;
 
-            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
+            public DelegateCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute(o);
+                    OpenInCustomShowroomCommand.Execute();
                     return;
                 }
 
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(Car, Car.SelectedSkin?.Id)) {
-                    OpenInShowroomOptionsCommand.Execute(null);
+                    OpenInShowroomOptionsCommand.Execute();
                 }
-            }, o => Car.Enabled && Car.SelectedSkin != null));
+            }, () => Car.Enabled && Car.SelectedSkin != null));
 
-            private CommandBase _openInShowroomOptionsCommand;
+            private DelegateCommand _openInShowroomOptionsCommand;
 
-            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
                 new CarOpenInShowroomDialog(Car, Car.SelectedSkin?.Id).ShowDialog();
             }, () => Car.Enabled && Car.SelectedSkin != null));
 
-            private CommandBase _openInCustomShowroomCommand;
+            private AsyncCommand _openInCustomShowroomCommand;
 
-            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+            public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
                     (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(Car, Car.SelectedSkin)));
 
-            private CommandBase _driveCommand;
+            private AsyncCommand _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !QuickDrive.Run(Car, Car.SelectedSkin?.Id)) {
-                    DriveOptionsCommand.Execute(null);
+                        !await QuickDrive.RunAsync(Car, Car.SelectedSkin?.Id)) {
+                    DriveOptionsCommand.Execute();
                 }
             }, () => Car.Enabled));
 
-            private CommandBase _driveOptionsCommand;
+            private DelegateCommand _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(Car, Car.SelectedSkin?.Id);
             }, () => Car.Enabled));
             #endregion

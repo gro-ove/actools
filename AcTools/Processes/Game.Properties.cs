@@ -380,12 +380,14 @@ namespace AcTools.Processes {
             }
         }
 
+        public static readonly string TrackDaySessionName = "Track Day";
+
         public class TrackdayProperties : RaceProperties {
             public bool UsePracticeSessionType = false;
 
             protected override void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection(null) {
-                    ["NAME"] = "Track Day",
+                    ["NAME"] = TrackDaySessionName,
                     ["DURATION_MINUTES"] = 720,
                     ["SPAWN_SET"] = StartType.Pit.Id,
                     ["TYPE"] = UsePracticeSessionType ? SessionType.Practice : SessionType.Qualification

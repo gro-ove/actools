@@ -74,3 +74,6 @@ Questionable solution. Basically, it runs AC without Steam. So:
 
  • [b]Naive Starter[/b]
 CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.
+
+ • [b]Developer Starter[/b]
+Doesn’t run [i]acs.exe[/i] expecting you to run it manually, only prepares [i]race.ini[/i] and waits for [i]race_out.json[/i] to change. Also, by the way, you can use pre-race event command to create your own starter this way.

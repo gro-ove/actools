@@ -358,9 +358,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _outlineBuffer);
             DisposeHelper.Dispose(ref _outlineDepthBuffer);
-
             DisposePaintShop();
-
             base.DisposeOverride();
         }
     }

@@ -84,7 +84,7 @@
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Waiting}" VerticalAlignment="Center" HorizontalAlignment="Center">
       <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Style="{StaticResource WaveProgressRingStyle}"
           Effect="{DynamicResource GameLoadingAnimationEffect}" />
-      <TextBlock Text="{Binding WaitingStatus}" />
+      <TextBlock Text="{Binding WaitingStatus}" TextAlignment="Center" />
     </StackPanel>
 
     <!-- Cancelled (AC might crashed) -->

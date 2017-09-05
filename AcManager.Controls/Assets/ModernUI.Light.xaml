@@ -47,6 +47,7 @@
   <SolidColorBrush x:Key="CardBorder" Color="#CCCCCC" />
   <SolidColorBrush x:Key="CardHeaderBackground" Color="#FAFAFA" />
   <SolidColorBrush x:Key="CardHeaderText" Color="#000000" />
+  <SolidColorBrush x:Key="CardHeaderTextDisabled" Color="#292929" />
 
   <!-- For semi-transparent list items -->
 	<SolidColorBrush x:Key="ItemBackgroundSelectedSubtle" Color="{DynamicResource AccentColor}" Opacity="0.04" />

@@ -36,6 +36,16 @@
       <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
 
       <StackPanel Margin="0 20 20 0">
+        <TextBlock Text="Better Images" Style="{StaticResource SettingsPanel.Heading2.First}" />
+
+        <DockPanel>
+          <Label Content="Crop transparent:" DockPanel.Dock="Left" Width="200" />
+          <mui:BetterImage DockPanel.Dock="Left" HorizontalAlignment="Left" Height="80" Width="80" Background="Gray"
+              Filename="{Binding Default.OutlineImage, Source={x:Static t:TracksManager.Instance}}" CropTransparentAreas="True" />
+        </DockPanel>
+      </StackPanel>
+
+      <StackPanel Margin="0 20 20 0">
         <TextBlock Text="Progress Rings" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <DockPanel>

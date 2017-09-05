@@ -20,6 +20,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class KunosCareerObject : AcIniObject, IComparer {
@@ -523,6 +524,7 @@ namespace AcManager.Tools.Objects {
 
         private IReadOnlyList<int> _championshipAiPoints;
 
+        [CanBeNull]
         public IReadOnlyList<int> ChampionshipAiPoints {
             get => _championshipAiPoints;
             set {
@@ -720,7 +722,7 @@ namespace AcManager.Tools.Objects {
                                         Place = x.TakenPlace
                                     }).TakeWhile(x => x.Place != 0).ToDictionary(x => x.Key, x => x.Place),
                                     ChampionshipPoints,
-                                    ChampionshipAiPoints.Select((x, i) => new {
+                                    ChampionshipAiPoints?.Select((x, i) => new {
                                         Key = i,
                                         Points = x
                                     }).ToDictionary(x => x.Key, x => x.Points)),

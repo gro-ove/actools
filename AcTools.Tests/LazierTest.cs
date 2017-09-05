@@ -66,6 +66,23 @@ namespace AcTools.Tests {
             Assert.AreEqual(4, i);
             await Task.Delay(50);
             Assert.AreEqual(4, l.Value);
+
+            l.Reset();
+            Assert.AreEqual(5, l.ForceGetValue().Result);
+        }
+    }
+
+    [TestFixture]
+    public class LazierThisTest {
+        [Test]
+        public void Test() {
+            var busy = new LazierThis<int>();
+            var value = 0;
+            var result = busy.Get(() => ++value);
+            var result2 = busy.Get(() => ++value);
+            Assert.AreEqual(1, value);
+            Assert.AreEqual(1, result);
+            Assert.AreEqual(1, result2);
         }
     }
 }

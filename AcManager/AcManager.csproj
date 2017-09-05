@@ -392,6 +392,9 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Sources.xaml.cs">
       <DependentUpon>LapTimes_Sources.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Miscellaneous\RaceResults.xaml.cs">
+      <DependentUpon>RaceResults.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Miscellaneous\MostUsed.xaml.cs">
       <DependentUpon>MostUsed.xaml</DependentUpon>
     </Compile>
@@ -933,6 +936,10 @@
     <Page Include="Pages\Miscellaneous\LapTimes_Sources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Miscellaneous\RaceResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Miscellaneous\MostUsed.xaml">
       <SubType>Designer</SubType>
@@ -1504,6 +1511,7 @@
     <None Include="About\ImportantTips\Custom Showroom Color Grading.txt" />
     <None Include="About\ImportantTips\Fake Cars.txt" />
     <None Include="About\ImportantTips\Generic Mods.txt" />
+    <None Include="About\ImportantTips\Paint Shop.txt" />
     <None Include="About\ImportantTips\Python Apps Versions.txt" />
     <Content Include="About\Licenses\7ZipExtra\License.txt" />
     <None Include="About\ImportantTips\Track Skins.txt" />
@@ -1518,6 +1526,7 @@
     <None Include="About\Licenses\LevelDB.net\LICENSE" />
     <None Include="About\Licenses\LevelDB\LICENSE" />
     <None Include="About\Licenses\MoonSharp\LICENSE" />
+    <None Include="About\Licenses\NVIDIATextureTools\LICENSE" />
     <None Include="About\Licenses\OxyPlot\LICENSE" />
     <None Include="About\Licenses\SharpCompress\LICENSE.md" />
     <None Include="About\Licenses\SlimDX\LICENSE" />
@@ -1800,6 +1809,7 @@
     <Content Include="About\Licenses\MegaApiClient\MegaApiClient.txt" />
     <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />
     <Content Include="About\Licenses\MoonSharp\MoonSharp.txt" />
+    <Content Include="About\Licenses\NVIDIATextureTools\NVIDIATextureTools.txt" />
     <Content Include="About\Licenses\OxyPlot\OxyPlot.txt" />
     <Content Include="About\Licenses\SharpCompress\SharpCompress.txt" />
     <Content Include="About\Licenses\SlimDX.dx11\LICENSE.txt" />

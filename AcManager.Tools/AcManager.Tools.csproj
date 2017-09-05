@@ -184,6 +184,7 @@
     <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Data\GameSpecific\CommonSessionResult.cs" />
     <Compile Include="Data\GameSpecific\DriftSessionResult.cs" />
+    <Compile Include="Data\GameSpecific\GameResultExtension.cs" />
     <Compile Include="Data\GameSpecific\PlaceConditions.cs" />
     <Compile Include="Data\GameSpecific\PlaceConditionsType.cs" />
     <Compile Include="Data\GameSpecific\SessionResult.cs" />
@@ -420,6 +421,7 @@
     <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="Objects\SpecialEventObject.cs" />
     <Compile Include="Objects\WeatherColorEntry.cs" />
+    <Compile Include="Profile\RaceResultsStorage.cs" />
     <Compile Include="Profile\SessionStats.cs" />
     <Compile Include="Profile\PlayerStatsManager.cs" />
     <Compile Include="Profile\RaceWebServer.cs" />
@@ -440,6 +442,7 @@
     <Compile Include="SharedMemory\AcSharedEventArgs.cs" />
     <Compile Include="SharedMemory\AcSharedStaticInfo.cs" />
     <Compile Include="Starters\AppIdStarter.cs" />
+    <Compile Include="Starters\DeveloperStarter.cs" />
     <Compile Include="Starters\ModuleStarter.cs" />
     <Compile Include="Starters\SteamStarter.cs" />
     <Compile Include="Starters\SidePassageStarter.cs" />
@@ -464,7 +467,6 @@
     <Compile Include="Helpers\BuildInformation.cs" />
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
     <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
-    <Compile Include="Helpers\HashAlgorithmExtension.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
     <Compile Include="Helpers\TimeSpanExtension.cs" />
     <Compile Include="ContentInstallation\PasswordException.cs" />

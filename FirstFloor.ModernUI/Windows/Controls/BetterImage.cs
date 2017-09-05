@@ -25,6 +25,11 @@ using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Brushes = System.Windows.Media.Brushes;
+using Color = System.Windows.Media.Color;
+using FontFamily = System.Windows.Media.FontFamily;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 #if ZIP_SUPPORT
 using System.IO.Compression;
@@ -361,6 +366,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(CropUnitsProperty, value);
         }
 
+        public static readonly DependencyProperty CropTransparentAreasProperty = DependencyProperty.Register(nameof(CropTransparentAreas), typeof(bool),
+                typeof(BetterImage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
+                    ((BetterImage)o)._cropTransparentAreas = (bool)e.NewValue;
+                }));
+
+        private bool _cropTransparentAreas;
+
+        /// <summary>
+        /// If enabled, Crop and CropUnits will be overwritten!
+        /// </summary>
+        public bool CropTransparentAreas {
+            get => _cropTransparentAreas;
+            set => SetValue(CropTransparentAreasProperty, value);
+        }
+
         private void SetBitmapEntryDirectly(BitmapEntry value) {
             Filename = null;
             SetCurrent(value);
@@ -575,7 +595,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } catch (FileNotFoundException) {
                 return BitmapEntry.Empty;
             } catch (Exception e) {
-                Logging.Warning("Loading failed: " + e);
+                Logging.Warning(e);
                 return BitmapEntry.Empty;
             }
         }
@@ -606,7 +626,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
-                    Logging.Debug($"{filename}: {stream}");
                     if (stream != null) {
                         using (stream) {
                             var result = new byte[stream.Length];
@@ -861,7 +880,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     // array thing inside of the list
                     if (cache.Count == OptionCacheTotalEntries) {
                         if (OptionMarkCached) {
-                            Logging.Debug($"total cached: {cache.Count} entries (capacity: {cache.Capacity})");
+                            Logging.Debug($"Total cached: {cache.Count} entries (capacity: {cache.Capacity})");
                         }
 
                         cache.RemoveAt(0);
@@ -886,7 +905,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     total += cache[i].Value.Size;
                     if (total > OptionCacheTotalSize) {
                         if (OptionMarkCached) {
-                            Logging.Debug($"total cached size: {total / 1024d / 1024:F2} MB, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
+                            Logging.Debug($"Total cached size: {total / 1024d / 1024:F2} MB, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
                         }
 
                         cache.RemoveRange(0, i + 1);
@@ -895,7 +914,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 if (OptionMarkCached) {
-                    Logging.Debug($"total cached size: {total / 1024d / 1024:F2} MB, no need to remove anything");
+                    Logging.Debug($"Total cached size: {total / 1024d / 1024:F2} MB, no need to remove anything");
                 }
             }
         }
@@ -928,7 +947,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var decodeWidth = DecodeWidth;
                 if (decodeWidth >= 0) return decodeWidth;
 
-                if (Crop.HasValue) return -1;
+                if (Crop.HasValue || CropTransparentAreas) return -1;
 
                 var maxWidth = MaxWidth;
                 if (!double.IsPositiveInfinity(maxWidth)) return (int)maxWidth;
@@ -1196,27 +1215,72 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 (_cachedFormattedText = new FormattedText(@"Cached", CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
                         new Typeface(new FontFamily(@"Arial").ToString()), 12, Brushes.Red));
 
+        private WeakReference<ImageSource> _lastCropMaskRef;
+        private Rect? _lastCropMaskRect;
+
+        private unsafe Rect? FindCropMask(ImageSource img){
+            if (_lastCropMaskRef != null && _lastCropMaskRef.TryGetTarget(out var v) && ReferenceEquals(v, img)) {
+                return _lastCropMaskRect;
+            }
+
+            var b = (BitmapImage)img;
+            if (b.Format.Masks.Count != 4) return null;
+
+            int w = b.PixelWidth, h = b.PixelHeight, s = (w * b.Format.BitsPerPixel + 7) / 8;
+            var a = new byte[h * s];
+            b.CopyPixels(a, s, 0);
+
+            var k = b.Format.Masks.ElementAtOrDefault(0).Mask;
+            if (k == null) return null;
+
+            var m = BitConverter.ToUInt32(k.Reverse().ToArray(), 0);
+            int x0 = w, y0 = h, x1 = 0, y1 = 0;
+            fixed (byte* p = a) {
+                var u = (uint*)p;
+                var o = 0;
+                for (var y = 0; y < h; y++){
+                    for (var x = 0; x < w; x++){
+                        if ((u[o++] & m) != 0){
+                            if (x < x0) x0 = x;
+                            if (y < y0) y0 = y;
+                            if (x > x1) x1 = x;
+                            if (y > y1) y1 = y;
+                        }
+                    }
+                }
+            }
+
+            _lastCropMaskRef = new WeakReference<ImageSource>(img);
+            _lastCropMaskRect = x1 == 0 ? (Rect?)null : new Rect(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+            return _lastCropMaskRect;
+        }
+
         protected override void OnRender(DrawingContext dc) {
-            if (_current.BitmapSource == null && HideBroken) return;
+            var bi = _current.BitmapSource;
+            if (bi == null && HideBroken) return;
 
             dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
 
             var broken = false;
-            if (_current.BitmapSource == null) {
+            if (bi == null) {
                 broken = true;
-            } else if (Crop.HasValue) {
-                try {
-                    var crop = Crop.Value;
-                    var cropped = new CroppedBitmap((BitmapSource)_current.BitmapSource, CropUnits == ImageCropMode.Relative ? new Int32Rect(
-                            (int)(crop.Left * _current.Width), (int)(crop.Top * _current.Height),
-                            (int)(crop.Width * _current.Width), (int)(crop.Height * _current.Height)) : new Int32Rect(
-                                    (int)crop.Left, (int)crop.Top, (int)crop.Width, (int)crop.Height));
-                    dc.DrawImage(cropped, new Rect(_offset, _size));
-                } catch (ArgumentException) {
-                    broken = true;
-                }
             } else {
-                dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
+                var cropNullable = CropTransparentAreas ? FindCropMask(bi) : Crop;
+                if (cropNullable.HasValue) {
+                    try {
+                        var crop = cropNullable.Value;
+                        var cropped = new CroppedBitmap((BitmapSource)bi, CropTransparentAreas || CropUnits != ImageCropMode.Relative ?
+                                new Int32Rect((int)crop.Left, (int)crop.Top, (int)crop.Width, (int)crop.Height) :
+                                new Int32Rect(
+                                        (int)(crop.Left * _current.Width), (int)(crop.Top * _current.Height),
+                                        (int)(crop.Width * _current.Width), (int)(crop.Height * _current.Height)));
+                        dc.DrawImage(cropped, new Rect(_offset, _size));
+                    } catch (ArgumentException) {
+                        broken = true;
+                    }
+                } else {
+                    dc.DrawImage(bi, new Rect(_offset, _size));
+                }
             }
 
             if (broken && ShowBroken && _broken) {
@@ -1273,16 +1337,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private Size MeasureArrangeHelper(Size inputSize) {
-            if (_current.BitmapSource == null) {
+            var bi = _current.BitmapSource;
+            if (bi == null) {
                 return new Size(double.IsNaN(Width) ? 0d : Width, double.IsNaN(Height) ? 0d : Height);
             }
 
             Size size;
-            if (Crop.HasValue) {
-                var crop = Crop.Value;
-                size = CropUnits == ImageCropMode.Relative ?
-                        new Size(crop.Width * _current.Width, crop.Height * _current.Height) :
-                        new Size(crop.Width, crop.Height);
+            var cropNullable = CropTransparentAreas ? FindCropMask(bi) : Crop;
+            if (cropNullable.HasValue) {
+                var crop = cropNullable.Value;
+                size = CropTransparentAreas || CropUnits != ImageCropMode.Relative ?
+                        new Size(crop.Width, crop.Height) :
+                        new Size(crop.Width * _current.Width, crop.Height * _current.Height);
             } else {
                 size = new Size(_current.Width, _current.Height);
             }

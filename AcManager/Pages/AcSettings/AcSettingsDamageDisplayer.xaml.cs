@@ -39,7 +39,7 @@ namespace AcManager.Pages.AcSettings {
 
             var watcher = new DirectoryWatcher(_directory, "*.png");
             watcher.Update += OnWatcherUpdate;
-            this.OnActualUnload(() => watcher.Dispose());
+            this.OnActualUnload(watcher);
         }
 
         private void OnVideoPropertyChanged(object sender, PropertyChangedEventArgs e) {

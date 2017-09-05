@@ -8,6 +8,7 @@ using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -72,17 +73,17 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunPreset(p.Filename, trackSkin: SelectedObject);
+                        QuickDrive.RunAsync(trackSkin: SelectedObject, presetFilename: p.Filename).Forget();
                     });
                 }
             }
             #endregion
 
-            private DelegateCommand _driveCommand;
+            private AsyncCommand _driveCommand;
 
-            public DelegateCommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !QuickDrive.Run(trackSkin: SelectedObject)) {
+                        !await QuickDrive.RunAsync(trackSkin: SelectedObject)) {
                     DriveOptionsCommand.Execute();
                 }
             }, () => SelectedObject.Enabled));

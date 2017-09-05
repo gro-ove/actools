@@ -74,8 +74,8 @@
       <Private>False</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
-    <Reference Include="DdsCompress, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\DdsCompress-$(ActualPlatform)\DdsCompress.dll</HintPath>
+    <Reference Include="Nvidia.TextureTools.Compress, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\Nvidia.TextureTools.Compress-$(ActualPlatform)\Nvidia.TextureTools.Compress.dll</HintPath>
       <Private>False</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
@@ -193,6 +193,12 @@
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.CarSlot.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.Movement.cs" />
     <Compile Include="Kn5SpecificForward\IPaintShopRenderer.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopFontSource.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopPatternColorReference.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopPatternNumbers.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopSource.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopSourceChannel.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopSourceParams.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Camera.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Textures.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.PaintShop.cs" />

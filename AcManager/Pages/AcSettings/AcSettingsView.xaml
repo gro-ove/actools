@@ -9,7 +9,7 @@
   </UserControl.Resources>
 
   <ScrollViewer mui:SaveScroll.Key="AcSettingsView">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" StackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
       <StackPanel Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="{x:Static t:ToolsStrings.AcSettings_View_UnitsLabel}" />

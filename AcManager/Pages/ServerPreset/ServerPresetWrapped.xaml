@@ -197,7 +197,7 @@
   </UserControl.Resources>
 
   <ScrollViewer x:Name="ScrollViewer">
-    <mui:SpacingUniformGrid x:Name="Grid" VerticalSpacing="20" HorizontalSpacing="20" Columns="1" StackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" VerticalSpacing="20" HorizontalSpacing="20" Columns="1" VerticalStackMode="True">
       <ScrollViewer Padding="0 0 0 20">
         <StackPanel Style="{StaticResource SettingsPanel}"><!--
     <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">

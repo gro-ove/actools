@@ -383,7 +383,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     new Vector3(0.5f);
             onScreenPosition.Y = 1f - onScreenPosition.Y;
             _debugText.DrawString(text,
-                    new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f),
+                    new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f), 0f,
                     TextAlignment.HorizontalCenter | TextAlignment.VerticalCenter, 12f, color,
                     CoordinateType.Absolute);
         }

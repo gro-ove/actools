@@ -60,7 +60,7 @@ namespace AcManager.Pages.Lists {
         protected override void OnItemDoubleClick(AcObjectNew obj) {
             var weather = obj as WeatherObject;
             if (weather == null) return;
-            QuickDrive.Show(weather: weather);
+            QuickDrive.Show(weatherId: weather.Id);
         }
     }
 }

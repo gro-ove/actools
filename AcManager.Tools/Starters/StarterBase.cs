@@ -85,11 +85,11 @@ namespace AcManager.Tools.Starters {
 
         public async Task<Process> WaitUntilGameAsync(CancellationToken cancellation) {
             if (GameProcess != null) {
-                Logging.Debug("game is already here!");
+                Logging.Debug("Game is already here!");
                 return GameProcess;
             }
 
-            Logging.Debug("waiting for game�");
+            Logging.Debug("Waiting for game…");
 
             try {
                 var nothing = 0;
@@ -110,7 +110,7 @@ namespace AcManager.Tools.Starters {
                 return null;
             }
 
-            Logging.Debug("here it is!");
+            Logging.Debug("Here it is!");
             return GameProcess;
         }
 

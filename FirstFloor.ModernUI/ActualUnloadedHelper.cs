@@ -15,6 +15,10 @@ namespace FirstFloor.ModernUI {
             });
         }
 
+        public static void OnActualUnload([NotNull] this FrameworkElement fe, IDisposable disposable) {
+            fe.OnActualUnload(() => disposable?.Dispose());
+        }
+
         public static async void OnActualUnload([NotNull] this FrameworkElement fe, Action action) {
             var unloading = false;
 

@@ -53,6 +53,23 @@ namespace AcManager.Pages.Drive {
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
 
+        private const string ModeDriftPath = "/Pages/Drive/QuickDrive_Drift.xaml";
+        private const string ModeHotlapPath = "/Pages/Drive/QuickDrive_Hotlap.xaml";
+        private const string ModePracticePath = "/Pages/Drive/QuickDrive_Practice.xaml";
+        private const string ModeRacePath = "/Pages/Drive/QuickDrive_Race.xaml";
+        private const string ModeTrackdayPath = "/Pages/Drive/QuickDrive_Trackday.xaml";
+        private const string ModeWeekendPath = "/Pages/Drive/QuickDrive_Weekend.xaml";
+        private const string ModeTimeAttackPath = "/Pages/Drive/QuickDrive_TimeAttack.xaml";
+        private const string ModeDragPath = "/Pages/Drive/QuickDrive_Drag.xaml";
+        public static readonly Uri ModeDrift =  new Uri(ModeDriftPath, UriKind.Relative);
+        public static readonly Uri ModeHotlap =  new Uri(ModeHotlapPath, UriKind.Relative);
+        public static readonly Uri ModePractice =  new Uri(ModePracticePath, UriKind.Relative);
+        public static readonly Uri ModeRace =  new Uri(ModeRacePath, UriKind.Relative);
+        public static readonly Uri ModeTrackday =  new Uri(ModeTrackdayPath, UriKind.Relative);
+        public static readonly Uri ModeWeekend =  new Uri(ModeWeekendPath, UriKind.Relative);
+        public static readonly Uri ModeTimeAttack =  new Uri(ModeTimeAttackPath, UriKind.Relative);
+        public static readonly Uri ModeDrag =  new Uri(ModeDragPath, UriKind.Relative);
+
         private ViewModel Model => (ViewModel)DataContext;
 
         public Task LoadAsync(CancellationToken cancellationToken) {
@@ -68,15 +85,16 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             OnSizeChanged(null, null);
 
-            DataContext = new ViewModel(null, true,
+            DataContext = new ViewModel(_selectNextSerializedPreset, true,
                     _selectNextCar, _selectNextCarSkinId,
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
-                    weatherId: _selectNextWeather?.Id, mode: _selectNextMode);
+                    weatherId: _selectNextWeather?.Id,
+                    mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid);
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
             this.OnActualUnload(() => {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
-                        OnTrackStateChanged);
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(Model.TrackState,
+                        nameof(INotifyPropertyChanged.PropertyChanged), OnTrackStateChanged);
             });
 
             _current = new WeakReference<QuickDrive>(this);
@@ -122,12 +140,14 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.RandomTemperatureCommand, new KeyGesture(Key.D5, ModifierKeys.Control | ModifierKeys.Alt)),
             });
 
+            _selectNextSerializedPreset = null;
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
             _selectNextTrackSkin = null;
             _selectNextWeather = null;
             _selectNextMode = null;
+            _selectNextSerializedRaceGrid = null;
 
             this.OnActualUnload(() => {
                 Model.Unload();
@@ -245,41 +265,41 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
 
                     switch (value.OriginalString) {
-                        case "/Pages/Drive/QuickDrive_Drift.xaml":
+                        case ModeDriftPath:
                             SelectedModeViewModel = new QuickDrive_Drift.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Hotlap.xaml":
+                        case ModeHotlapPath:
                             SelectedModeViewModel = new QuickDrive_Hotlap.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Practice.xaml":
+                        case ModePracticePath:
                             SelectedModeViewModel = new QuickDrive_Practice.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Race.xaml":
+                        case ModeRacePath:
                             SelectedModeViewModel = new QuickDrive_Race.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Trackday.xaml":
+                        case ModeTrackdayPath:
                             SelectedModeViewModel = new QuickDrive_Trackday.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Weekend.xaml":
+                        case ModeWeekendPath:
                             SelectedModeViewModel = new QuickDrive_Weekend.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
+                        case ModeTimeAttackPath:
                             SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_Drag.xaml":
+                        case ModeDragPath:
                             SelectedModeViewModel = new QuickDrive_Drag.ViewModel(!_skipLoading);
                             break;
 
                         default:
                             Logging.Warning("Not supported mode: " + value);
-                            SelectedMode = new Uri("/Pages/Drive/QuickDrive_Practice.xaml", UriKind.Relative);
+                            SelectedMode = ModePractice;
                             break;
                     }
                 }
@@ -331,7 +351,6 @@ namespace AcManager.Pages.Drive {
             }
 
             private void OnCarDataChanged(object sender, DataChangedEventArgs dataChangedEventArgs) {
-                Logging.Here();
                 var car = SelectedCar;
                 SelectedCarRepairSuggestions = car != null && car.Author != AcCommonObject.AuthorKunos ?
                         CarRepair.GetRepairSuggestions(car, false, true).ToList() : null;
@@ -434,10 +453,11 @@ namespace AcManager.Pages.Drive {
 
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
-                    Uri mode = null) {
+                    Uri mode = null, string serializedRaceGrid = null) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
                 _weatherId = weatherId;
+                // _serializedRaceGrid = serializedRaceGrid;
                 _forceTime = time;
 
                 if (trackSkin != null) {
@@ -542,7 +562,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsManualTime = false;
                     RealConditionsLocalWeather = false;
 
-                    SelectedMode = new Uri("/Pages/Drive/QuickDrive_Race.xaml", UriKind.Relative);
+                    SelectedMode = ModeRace;
                     SelectedCar = CarsManager.Instance.GetDefault();
                     SelectedTrack = TracksManager.Instance.GetDefault();
                     SelectedWeather = WeatherManager.Instance.GetDefault();
@@ -592,6 +612,10 @@ namespace AcManager.Pages.Drive {
 
                 if (mode != null) {
                     SelectedMode = mode;
+                }
+
+                if (serializedRaceGrid != null) {
+                    (SelectedModeViewModel as IRaceGridModeViewModel).SetRaceGridData(serializedRaceGrid);
                 }
 
                 UpdateConditions();
@@ -767,7 +791,7 @@ namespace AcManager.Pages.Drive {
                         WindDirectionDeg = RandomWindDirection ? MathUtils.Random(0, 360) : WindDirection,
                         WindSpeedMin = RandomWindSpeed ? 2 : WindSpeedMin,
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
-                    }, TrackState.ToProperties());
+                    }, TrackState.ToProperties(), ExportToPresetData());
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
                 }
@@ -825,39 +849,6 @@ namespace AcManager.Pages.Drive {
             public void Unload() {}
         }
 
-        public static bool Run(
-                CarObject car = null, string carSkinId = null,  string carSetupId = null,
-                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
-                Uri mode = null) {
-            return new ViewModel(string.Empty, false, car, carSkinId, carSetupId, track, trackSkin, mode: mode).Run();
-        }
-
-        public static bool RunHotlap(
-                CarObject car = null, string carSkinId = null, string carSetupId = null,
-                TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
-            return Run(car, carSkinId, carSetupId, track, trackSkin, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
-        }
-
-        public static async Task<bool> RunAsync(
-                CarObject car = null, string carSkinId = null, string carSetupId = null,
-                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
-                string weatherId = null, int? time = null) {
-            var model = new ViewModel(string.Empty, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time);
-            if (!model.GoCommand.CanExecute(null)) return false;
-            await model.Go();
-            return true;
-        }
-
-        public static bool RunPreset(string presetFilename,
-                CarObject car = null, string carSkinId = null, string carSetupId = null,
-                TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
-            return new ViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, carSetupId, track, trackSkin).Run();
-        }
-
-        public static bool RunSerializedPreset(string preset) {
-            return new ViewModel(preset, false).Run();
-        }
-
         public static void LoadPreset(string presetFilename) {
             UserPresetsControl.LoadPreset(PresetableKeyValue, presetFilename);
             NavigateToPage();
@@ -875,16 +866,23 @@ namespace AcManager.Pages.Drive {
             (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
         }
 
+        private static string _selectNextSerializedPreset;
         private static CarObject _selectNextCar;
         private static string _selectNextCarSkinId;
         private static TrackObjectBase _selectNextTrack;
         private static TrackSkinObject _selectNextTrackSkin;
         private static WeatherObject _selectNextWeather;
         private static Uri _selectNextMode;
+        private static string _selectNextSerializedRaceGrid;
 
-        public static void Show(CarObject car = null, string carSkinId = null,
+        public static void Show(
+                CarObject car = null, string carSkinId = null, string carSetupId = null,
                 TrackObjectBase track = null, TrackSkinObject trackSkin = null,
-                Uri mode = null, WeatherObject weather = null) {
+                string weatherId = null, int? time = null,
+                string serializedPreset = null, string presetFilename = null,
+                Uri mode = null, string serializedRaceGrid = null) {
+            var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);
+
             QuickDrive current;
             if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
                 var vm = current.Model;
@@ -903,18 +901,35 @@ namespace AcManager.Pages.Drive {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             if (mainWindow == null) return;
 
+            _selectNextSerializedPreset = serializedPreset ?? (presetFilename != null ? File.ReadAllText(presetFilename) : null);
             _selectNextCar = car;
             _selectNextCarSkinId = carSkinId;
+            // TODO: carSetupId?
+
             _selectNextTrack = track;
             _selectNextTrackSkin = trackSkin;
             _selectNextWeather = weather;
             _selectNextMode = mode;
+            _selectNextSerializedRaceGrid = serializedRaceGrid;
 
             NavigateToPage();
         }
 
-        public static void ShowHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, TrackSkinObject trackSkin = null) {
-            Show(car, carSkinId, track, trackSkin, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
+        public static async Task<bool> RunAsync(
+                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
+                string weatherId = null, int? time = null,
+                string serializedPreset = null, string presetFilename = null,
+                Uri mode = null, string serializedRaceGrid = null) {
+            if (serializedPreset == null) {
+                serializedPreset = presetFilename != null ? File.ReadAllText(presetFilename) : string.Empty;
+            }
+
+            var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time,
+                    mode: mode, serializedRaceGrid: serializedRaceGrid);
+            if (!model.GoCommand.CanExecute(null)) return false;
+            await model.Go();
+            return true;
         }
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();

@@ -47,6 +47,10 @@ namespace AcManager.Tools.Starters {
                 return new AppIdStarter();
             }
 
+            if (type == SettingsHolder.DriveSettings.DeveloperStarterType) {
+                return new DeveloperStarter();
+            }
+
             if (type == SettingsHolder.DriveSettings.TrickyStarterType) {
                 return new TrickyStarter(AcRootDirectory.Instance.Value) {
                     Use32Version = SettingsHolder.Drive.Use32BitVersion

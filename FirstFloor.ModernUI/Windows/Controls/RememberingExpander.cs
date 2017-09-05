@@ -28,15 +28,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((RememberingExpander)o).OnKeyChanged((string)e.NewValue);
         }
 
+        private readonly Busy _busy = new Busy();
+        private bool _loaded;
+
         private void OnKeyChanged(string newValue) {
             if (newValue != null) {
-                IsExpanded = ValuesStorage.GetBool(newValue, DefaultValue);
+                _busy.DoDelay(() => {
+                    IsExpanded = ValuesStorage.GetBool(newValue, DefaultValue);
+                    _loaded = true;
+                }, 10);
             }
         }
 
         protected override void OnExpanded() {
             base.OnExpanded();
-            if (Key != null) {
+            if (_loaded) {
                 if (DefaultValue) {
                     ValuesStorage.Remove(Key);
                 } else {
@@ -47,7 +53,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected override void OnCollapsed() {
             base.OnCollapsed();
-            if (Key != null) {
+            if (_loaded) {
                 if (!DefaultValue) {
                     ValuesStorage.Remove(Key);
                 } else {

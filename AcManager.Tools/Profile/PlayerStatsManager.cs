@@ -8,6 +8,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -201,7 +202,7 @@ namespace AcManager.Tools.Profile {
 
         [CanBeNull]
         public SessionStats Last {
-            get { return _last; }
+            get => _last;
             private set {
                 if (Equals(value, _last)) return;
                 _last = value;
@@ -232,6 +233,7 @@ namespace AcManager.Tools.Profile {
             if (_setListener) return;
             _setListener = true;
 
+            GameWrapper.Started += OnSessionStarted;
             AcSharedMemory.Instance.Start += OnStart;
             AcSharedMemory.Instance.Finish += OnFinish;
             AcSharedMemory.Instance.Updated += OnUpdated;
@@ -240,6 +242,10 @@ namespace AcManager.Tools.Profile {
                 _webServer = new RaceWebServer();
                 _webServer.Start(OptionRunStatsWebserver, OptionWebserverFilename);
             }
+        }
+
+        private void OnSessionStarted(object sender, GameStartedArgs gameStartedArgs) {
+            Last = null;
         }
 
         private void OnStart(object sender, EventArgs e) {

@@ -559,7 +559,7 @@ namespace AcTools.Utils.Helpers {
             return result;
         }
 
-        [ItemNotNull, Pure]
+        [NotNull, ItemNotNull, Pure]
         public static IEnumerable<T> NonNull<T>([ItemCanBeNull, NotNull] this IEnumerable<T> source) where T : class {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Where(i => i != null);

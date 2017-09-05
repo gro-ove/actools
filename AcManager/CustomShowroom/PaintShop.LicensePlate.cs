@@ -325,7 +325,7 @@ namespace AcManager.CustomShowroom {
                 if (data == null) return;
 
                 var style = data["style"]?.ToString();
-                var selected = Styles.FirstOrDefault(x => string.Equals(x.Name, style, StringComparison.OrdinalIgnoreCase));
+                var selected = Styles.FirstOrDefault(x => string.Equals(x?.Name, style, StringComparison.OrdinalIgnoreCase));
                 if (selected == null) {
                     Logging.Warning($"Style not found: {style}");
                     return;

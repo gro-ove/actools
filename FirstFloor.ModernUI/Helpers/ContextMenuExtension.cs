@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Helpers {
     public static class ContextMenuExtension {
         public static ContextMenu AddItem([NotNull] this ContextMenu menu, string header, ICommand command, string shortcut = null, object icon = null,
-                Geometry iconData = null, bool isEnabled = true, string toolTip = null) {
+                Geometry iconData = null, bool isEnabled = true, string toolTip = null, Style style = null) {
             if (menu == null) throw new ArgumentNullException(nameof(menu));
 
             if (icon == null && iconData != null) {
@@ -30,15 +30,20 @@ namespace FirstFloor.ModernUI.Helpers {
                 icon = path;
             }
 
-            menu.Items.Add(new MenuItem {
+            var item = new MenuItem {
                 Header = header.ToTitle(),
                 Icon = icon,
                 IsEnabled = isEnabled,
                 Command = command,
                 ToolTip = toolTip,
                 InputGestureText = shortcut
-            });
+            };
 
+            if (style != null) {
+                item.Style = style;
+            }
+
+            menu.Items.Add(item);
             return menu;
         }
 

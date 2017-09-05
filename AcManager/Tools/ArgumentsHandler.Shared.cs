@@ -60,7 +60,7 @@ namespace AcManager.Tools {
                     return ProcessSharedTrackStatePreset(shared, data);
 
                 case SharedEntryType.QuickDrivePreset:
-                    return ProcessSharedQuickDrivePreset(shared, data);
+                    return await ProcessSharedQuickDrivePreset(shared, data);
 
                 case SharedEntryType.RaceGridPreset:
                     return ProcessSharedRaceGridPreset(shared, data);
@@ -194,7 +194,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data) {
+        private static async Task<ArgumentHandleResult> ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, AppStrings.Arguments_Shared_JustGo);
             switch (result) {
                 case Choise.Save:
@@ -211,7 +211,7 @@ namespace AcManager.Tools {
                     QuickDrive.LoadSerializedPreset(data.ToUtf8String());
                     return ArgumentHandleResult.SuccessfulShow;
                 case Choise.Extra: // just go
-                    if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
+                    if (!await QuickDrive.RunAsync(serializedPreset: data.ToUtf8String())) {
                         throw new InformativeException(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                     }
 

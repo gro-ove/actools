@@ -47,7 +47,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
     public abstract class OneDriveUploaderUploaderBase : FileUploaderBase {
         protected OneDriveUploaderUploaderBase(IStorage storage, string name, string description, bool supportsSigning, bool supportsDirectories) :
                 base(storage, name,
-                        new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/OneDriveUploader.png", UriKind.Relative),
+                        new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/OneDrive.png", UriKind.Relative),
                         description, supportsSigning, supportsDirectories) {
             Request.AuthorizationTokenType = "bearer";
         }

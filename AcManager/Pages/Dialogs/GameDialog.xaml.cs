@@ -78,6 +78,12 @@ namespace AcManager.Pages.Dialogs {
             };
         }
 
+        public GameDialog(Game.Result readyResult) {
+            DataContext = new ViewModel();
+            InitializeComponent();
+            ((IGameUi)this).OnResult(readyResult, null);
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e) {
             var effect = ProgressRing.Effect as DropShadowEffect;
             if (effect != null) {
@@ -123,8 +129,12 @@ namespace AcManager.Pages.Dialogs {
                     Model.WaitingStatus = AppStrings.Race_Preparing;
                     break;
                 case Game.ProgressState.Launching:
-                    Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_LaunchingGame :
-                            _mode == GameMode.Replay ? AppStrings.Race_LaunchingReplay : AppStrings.Race_LaunchingBenchmark;
+                    if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.DeveloperStarterType) {
+                        Model.WaitingStatus = "Now, run AC…";
+                    } else {
+                        Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_LaunchingGame :
+                                _mode == GameMode.Replay ? AppStrings.Race_LaunchingReplay : AppStrings.Race_LaunchingBenchmark;
+                    }
                     break;
                 case Game.ProgressState.Waiting:
                     Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_Waiting :
@@ -154,28 +164,29 @@ namespace AcManager.Pages.Dialogs {
             }
 
             if (result.GetExtraByType<Game.ResultExtraTimeAttack>(out var timeAttack)) {
-                var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
+                var bestLapTime = result.Sessions?.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
                 return new TimeAttackFinishedData {
                     Points = timeAttack.Points,
-                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                    Laps = result.Sessions?.Sum(x => x.LapsTotalPerCar?.FirstOrDefault() ?? 0) ?? 0,
                     BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
                     TakenPlace = takenPlace
                 };
             }
 
-            if (result.GetExtraByType<Game.ResultExtraBestLap>(out var bestLap) && bestLap.IsNotCancelled && result.Sessions.Length == 1 &&
-                    (result.Players.Length == 1 || result.Sessions[0].Name == "Track Day")) {
+            if (result.GetExtraByType<Game.ResultExtraBestLap>(out var bestLap) && bestLap.IsNotCancelled && result.Sessions?.Length == 1 &&
+                    result.Players?.Length == 1) {
                 var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
 
                 var sectorsPerSections = result.Sessions.SelectMany(x => from lap in x.Laps where lap.CarNumber == 0 select lap.SectorsTime).ToList();
                 var theoreticallLapTime = sectorsPerSections.FirstOrDefault()?.Select((x, i) => sectorsPerSections.Select(y => y[i]).Min()).Sum();
 
-                return result.Sessions[0].Name == "Track Day" ? new TrackDayFinishedData {
-                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                return result.Sessions[0].Name == AppStrings.Rsr_SessionName ? new RsrFinishedData {
+                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar?.FirstOrDefault() ?? 0),
                     BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
                     TheoreticallLapTime = theoreticallLapTime,
+                    TakenPlace = takenPlace
                 } : new HotlapFinishedData {
-                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
+                    Laps = result.Sessions.Sum(x => x.LapsTotalPerCar?.FirstOrDefault() ?? 0),
                     BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
                     TheoreticallLapTime = theoreticallLapTime,
                     TakenPlace = takenPlace
@@ -186,8 +197,25 @@ namespace AcManager.Pages.Dialogs {
             var playerName = isOnline && SettingsHolder.Drive.DifferentPlayerNameOnline
                     ? SettingsHolder.Drive.PlayerNameOnline : SettingsHolder.Drive.PlayerName;
 
+            if (result.Sessions?.Length == 1 && result.Sessions[0].Name == Game.TrackDaySessionName && result.Players?.Length > 1) {
+                var session = result.Sessions[0];
+                var playerLaps = session.LapsTotalPerCar?[0] ?? 1;
+                session.LapsTotalPerCar = session.LapsTotalPerCar?.Select(x => Math.Min(x, playerLaps)).ToArray();
+                session.Laps = session.Laps?.Where(x => x.LapId < playerLaps).ToArray();
+                session.BestLaps = session.BestLaps?.Select(x => {
+                    if (x.LapId < playerLaps) return x;
+                    var best = session.Laps?.Where(y => y.CarNumber == x.CarNumber).MinEntryOrDefault(y => y.Time);
+                    if (best == null) return null;
+                    return new Game.ResultBestLap {
+                        Time = best.Time,
+                        LapId = best.LapId,
+                        CarNumber = x.CarNumber
+                    };
+                }).NonNull().ToArray();
+            }
+
             var dragExtra = result.GetExtraByType<Game.ResultExtraDrag>();
-            var sessionsData = result.Sessions.Select(session => {
+            var sessionsData = result.Sessions?.Select(session => {
                 int[] takenPlaces;
                 SessionFinishedData data;
 
@@ -205,21 +233,21 @@ namespace AcManager.Pages.Dialogs {
                         delta <= 0 ? 0 : 1
                     };
                 } else {
-                    data = new SessionFinishedData(session.Name.ApartFromLast(@" Session"));
+                    data = new SessionFinishedData(session.Name?.ApartFromLast(@" Session"));
                     takenPlaces = session.GetTakenPlacesPerCar();
                 }
 
-                var sessionBestLap = session.BestLaps.MinEntryOrDefault(x => x.Time);
+                var sessionBestLap = session.BestLaps?.MinEntryOrDefault(x => x.Time);
                 var sessionBest = sessionBestLap?.Time;
 
                 data.PlayerEntries = (
                         from player in result.Players
-                        let car = CarsManager.Instance.GetById(player.CarId)
-                        let carSkin = car.GetSkinById(player.CarSkinId)
+                        let car = CarsManager.Instance.GetById(player.CarId ?? "")
+                        let carSkin = car.GetSkinById(player.CarSkinId ?? "")
                         select new { Player = player, Car = car, CarSkin = carSkin }
                         ).Select((entry, i) => {
-                            var bestLapTime = session.BestLaps.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;
-                            var laps = session.Laps.Where(x => x.CarNumber == i).Select(x => new SessionFinishedData.PlayerLapEntry {
+                            var bestLapTime = session.BestLaps?.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;
+                            var laps = session.Laps?.Where(x => x.CarNumber == i).Select(x => new SessionFinishedData.PlayerLapEntry {
                                 LapNumber = x.LapId + 1,
                                 Sectors = x.SectorsTime,
                                 Cuts = x.Cuts,
@@ -229,9 +257,9 @@ namespace AcManager.Pages.Dialogs {
                                 DeltaToSessionBest = sessionBest.HasValue ? x.Time - sessionBest.Value : (TimeSpan?)null,
                             }).ToArray();
 
-                            var lapTimes = laps.Skip(1).Select(x => x.Total.TotalSeconds).Where(x => x > 10d).ToList();
+                            var lapTimes = laps?.Skip(1).Select(x => x.Total.TotalSeconds).Where(x => x > 10d).ToList();
                             double? progress, spread;
-                            if (lapTimes.Count < 2) {
+                            if (lapTimes == null || lapTimes.Count < 2) {
                                 progress = null;
                                 spread = null;
                             } else {
@@ -248,12 +276,12 @@ namespace AcManager.Pages.Dialogs {
                                 Index = i,
                                 Car = entry.Car,
                                 CarSkin = entry.CarSkin,
-                                TakenPlace = i < takenPlaces.Length ? takenPlaces[i] + 1 : DefinitelyNonPrizePlace,
-                                PrizePlace = takenPlaces.Length > 1,
-                                LapsCount = session.LapsTotalPerCar.ElementAtOrDefault(i),
+                                TakenPlace = i < takenPlaces?.Length ? takenPlaces[i] + 1 : DefinitelyNonPrizePlace,
+                                PrizePlace = takenPlaces?.Length > 1,
+                                LapsCount = session.LapsTotalPerCar?.ElementAtOrDefault(i) ?? 0,
                                 BestLapTime = bestLapTime,
                                 DeltaToSessionBest = sessionBestLap?.CarNumber == i ? null : bestLapTime - sessionBest,
-                                TotalTime = session.Laps.Where(x => x.CarNumber == i).Select(x => x.SectorsTime.Sum()).Sum(),
+                                TotalTime = session.Laps?.Where(x => x.CarNumber == i).Select(x => x.SectorsTime.Sum()).Sum(),
                                 Laps = laps,
                                 LapTimeProgress = progress,
                                 LapTimeSpread = spread
@@ -300,11 +328,12 @@ namespace AcManager.Pages.Dialogs {
                 return data;
             }).ToList();
 
-            return sessionsData.Count == 1 ? (BaseFinishedData)sessionsData.First() :
-                    sessionsData.Any() ? new SessionsFinishedData(sessionsData) : null;
+            return sessionsData?.Count == 1 ? (BaseFinishedData)sessionsData.First() :
+                    sessionsData?.Any() == true ? new SessionsFinishedData(sessionsData) : null;
         }
 
         public abstract class BaseFinishedData : NotifyPropertyChanged {
+            [CanBeNull]
             public abstract string Title { get; }
 
             public int TakenPlace { get; set; }
@@ -396,7 +425,7 @@ namespace AcManager.Pages.Dialogs {
                 public TimeSpan? DeltaToSessionBest { get; set; }
             }
 
-            public SessionFinishedData(string title) {
+            public SessionFinishedData([CanBeNull] string title) {
                 Title = title;
             }
 
@@ -454,6 +483,10 @@ namespace AcManager.Pages.Dialogs {
             public TimeSpan? TheoreticallLapTime { get; set; }
         }
 
+        public class RsrFinishedData : HotlapFinishedData {
+            public override string Title { get; } = AppStrings.Rsr_SessionName;
+        }
+
         public class DragFinishedData : SessionFinishedData {
             public int Total { get; set; }
             public int Wins { get; set; }
@@ -463,7 +496,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
-            if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
+            if (result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
                     && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults
                     || _properties?.GetAdditional<WhatsGoingOn>() == null
                             && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null)) {
@@ -576,7 +609,7 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new ContentControl[] {
                 fixButton,
                 fixButton == null ? saveReplayButton : null,
-                fixButton == null ? tryAgainButton : null,
+                fixButton == null && _properties != null ? tryAgainButton : null,
                 CloseButton
             };
         }
