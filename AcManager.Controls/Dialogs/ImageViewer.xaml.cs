@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -328,20 +329,16 @@ namespace AcManager.Controls.Dialogs {
                     throw new NotSupportedException();
                 }
 
-                var dialog = new SaveFileDialog {
-                    Filter = FileDialogFilters.ImagesFilter,
+                var filename = FileRelatedDialogs.Save(new SaveDialogParams {
+                    Filters = { DialogFilterPiece.ImageFiles },
                     Title = SaveableTitle,
-                    DefaultExt = Path.GetExtension(origin)
-                };
-
-                if (SaveDirectory != null) {
-                    dialog.InitialDirectory = SaveDirectory;
-                }
-
-                if (dialog.ShowDialog() != true) return;
+                    DetaultExtension = Path.GetExtension(origin),
+                    InitialDirectory = SaveDirectory
+                });
+                if (filename == null) return;
 
                 try {
-                    await Task.Run(() => File.Copy(origin, dialog.FileName, true));
+                    await Task.Run(() => File.Copy(origin, filename, true));
                 } catch (Exception ex) {
                     NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }

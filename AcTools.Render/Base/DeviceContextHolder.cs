@@ -362,7 +362,8 @@ namespace AcTools.Render.Base {
             ShaderResourceView texture;
 
             if (!_randomTextures.TryGetValue(size, out texture)) {
-                texture = CreateTextureView(width, height, (x, y) => Color.FromArgb((int)(MathUtils.Random() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
+                var r = new Random((width * 397) ^ height);
+                texture = CreateTextureView(width, height, (x, y) => Color.FromArgb((int)(r.NextDouble() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
                 _randomTextures[size] = texture;
             }
 

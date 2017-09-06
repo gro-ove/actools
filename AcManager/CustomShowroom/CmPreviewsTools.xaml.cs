@@ -272,6 +272,7 @@ namespace AcManager.CustomShowroom {
                     if (car == null || skin == null) throw new Exception("Car or skin are not defined");
 
                     PrepareUpdater();
+                    Renderer.IsPaused = true;
 
                     var temporary = FilesStorage.Instance.GetTemporaryFilename("Preview test.jpg");
                     var presetName = GetPresetName();
@@ -301,6 +302,8 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t update preview", e);
                     _errors = null;
+                } finally {
+                    Renderer.IsPaused = false;
                 }
             }));
 
@@ -311,10 +314,15 @@ namespace AcManager.CustomShowroom {
                 var skin = Skin;
                 if (car == null || skin == null) throw new Exception("Car or skin are not defined");
 
-                PrepareUpdater();
-                _errors = await UpdatePreviewAsync(new[] {
-                    new ToUpdatePreview(car, skin)
-                }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
+                try {
+                    Renderer.IsPaused = true;
+                    PrepareUpdater();
+                    _errors = await UpdatePreviewAsync(new[] {
+                        new ToUpdatePreview(car, skin)
+                    }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
+                } finally {
+                    Renderer.IsPaused = false;
+                }
             }));
 
             private AsyncCommand _applyAllCommand;
@@ -323,10 +331,15 @@ namespace AcManager.CustomShowroom {
                 var car = Car;
                 if (car == null) return;
 
-                PrepareUpdater();
-                _errors = await UpdatePreviewAsync(ToUpdate ?? new[] {
-                    new ToUpdatePreview(car)
-                }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
+                try {
+                    Renderer.IsPaused = true;
+                    PrepareUpdater();
+                    _errors = await UpdatePreviewAsync(ToUpdate ?? new[] {
+                        new ToUpdatePreview(car)
+                    }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
+                } finally {
+                    Renderer.IsPaused = false;
+                }
             }));
             #endregion
 

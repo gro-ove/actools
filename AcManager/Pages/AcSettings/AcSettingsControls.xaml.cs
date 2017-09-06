@@ -19,6 +19,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -55,29 +56,19 @@ namespace AcManager.Pages.AcSettings {
             private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand<string>(o => {
-                var dialog = new SaveFileDialog {
-                    InitialDirectory = ControlsSettings.UserPresetsDirectory,
-                    FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
-                    Filter = string.Format(ToolsStrings.Presets_FileFilter, @".ini"),
-                    DefaultExt = @".ini",
-                    OverwritePrompt = true
-                };
-
                 var filename = Controls.CurrentPresetFilename;
-                if (filename != null && FileUtils.IsAffected(ControlsSettings.UserPresetsDirectory, filename)) {
-                    dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(ControlsSettings.PresetsDirectory, filename));
-                    dialog.FileName = Path.GetFileNameWithoutExtension(filename);
-                }
+                filename = FileRelatedDialogs.Save(new SaveDialogParams {
+                    InitialDirectory = ControlsSettings.UserPresetsDirectory,
+                    Filters = { new DialogFilterPiece("Presets", "*.ini") },
+                    DetaultExtension = ".ini",
+                    DefaultFileName = o ?? Path.GetFileNameWithoutExtension(filename),
+                    CustomPlaces = {
+                        new FileDialogCustomPlace(ControlsSettings.UserPresetsDirectory)
+                    }
+                }, filename != null && FileUtils.IsAffected(ControlsSettings.UserPresetsDirectory, filename)
+                        && o == null ? filename : null);
+                if (filename == null) return;
 
-                if (o != null) {
-                    dialog.FileName = o;
-                }
-
-                if (dialog.ShowDialog() != true) {
-                    return;
-                }
-
-                filename = dialog.FileName;
                 if (!FileUtils.IsAffected(ControlsSettings.UserPresetsDirectory, filename)) {
                     if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
                                                  ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {

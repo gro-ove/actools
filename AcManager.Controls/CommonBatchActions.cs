@@ -331,7 +331,7 @@ namespace AcManager.Controls {
 
         #region Utils
         [CanBeNull]
-        public static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension) {
+        private static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension) {
             var objs = o.ToIReadOnlyListIfItIsNot();
             if (objs.Count == 0) return null;
 
@@ -342,19 +342,16 @@ namespace AcManager.Controls {
                 name = name.Substring(0, 160 - last.Length) + last;
             }
 
-            var dialog = new SaveFileDialog {
+            return FileRelatedDialogs.Save(new SaveDialogParams {
                 Title = objs.Count == 1 ? $"Pack {objs[0].DisplayName}" : $"Pack {objs.Count} {PluralizingConverter.Pluralize(objs.Count, "Object")}",
-                InitialDirectory = ValuesStorage.GetString("_packDir"),
-                Filter = extension == ".zip" ? FileDialogFilters.ZipFilter : extension == ".exe" ? FileDialogFilters.ApplicationsFilter :
-                        extension == ".tar.gz" ? FileDialogFilters.TarGzFilter : FileDialogFilters.ArchivesFilter,
-                DefaultExt = extension,
-                FileName = name
-            };
-
-            if (dialog.ShowDialog() != true) return null;
-            ValuesStorage.Set("_packDir", Path.GetDirectoryName(dialog.FileName));
-
-            return dialog.FileName;
+                Filters = {
+                    extension == ".zip" ? DialogFilterPiece.ZipFiles : extension == ".exe" ? DialogFilterPiece.Applications :
+                            extension == ".tar.gz" ? DialogFilterPiece.TarGZipFiles : DialogFilterPiece.Archives
+                },
+                DetaultExtension = extension,
+                DirectorySaveKey = "packDir",
+                DefaultFileName = name
+            });
         }
 
         [CanBeNull]

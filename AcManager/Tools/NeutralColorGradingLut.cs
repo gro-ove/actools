@@ -1,6 +1,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;
 using Bitmap = System.Drawing.Bitmap;
@@ -39,17 +41,14 @@ namespace AcManager.Tools {
             Marshal.Copy(data, 0, ptr, row);
             bitmap.UnlockBits(bits);
 
-            var dialog = new SaveFileDialog {
-                Filter = FileDialogFilters.ImagesFilter,
-                DefaultExt = ".png",
-                FileName = "Neutral color grading.png"
-            };
-
-            if (dialog.ShowDialog() != true) {
-                return;
-            }
-
-            bitmap.Save(dialog.FileName);
+            var filename = FileRelatedDialogs.Save(new SaveDialogParams {
+                Filters = { DialogFilterPiece.ImageFiles },
+                DetaultExtension = ".png",
+                DirectorySaveKey = "neutralColorLut",
+                DefaultFileName = "Neutral color grading.png"
+            });
+            if (filename == null) return;
+            bitmap.Save(filename);
         }
     }
 }

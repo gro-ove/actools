@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -15,14 +16,15 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxNoiseMap.SetResource(holder.GetRandomTexture(4, 4));
 
             var samplesKernel = new Vector4[EffectPpSsao.SampleCount];
+            var random = new Random(0);
             for (var i = 0; i < samplesKernel.Length; i++) {
-                samplesKernel[i].X = MathUtils.Random(-1f, 1f);
-                samplesKernel[i].Z = MathUtils.Random(-1f, 1f);
-                samplesKernel[i].Y = MathUtils.Random(0f, 1f);
+                samplesKernel[i].X = (float)(random.NextDouble() * 2d - 1d);
+                samplesKernel[i].Z = (float)(random.NextDouble() * 2d - 1d);
+                samplesKernel[i].Y = (float)random.NextDouble();
                 samplesKernel[i].Normalize();
 
                 var scale = (float)i / samplesKernel.Length;
-                scale = MathUtils.Lerp(0.1f, 1f, scale * scale);
+                scale = 0.1f.Lerp(1f, scale * scale);
                 samplesKernel[i] *= scale;
             }
 

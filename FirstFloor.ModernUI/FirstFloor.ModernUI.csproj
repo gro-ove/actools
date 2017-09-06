@@ -121,6 +121,7 @@
     <Compile Include="Dialogs\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SaveDialog.cs" />
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>

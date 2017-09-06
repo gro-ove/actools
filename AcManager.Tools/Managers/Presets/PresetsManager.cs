@@ -7,6 +7,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -128,25 +129,17 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             var presetsDirectory = EnsureDirectory(category);
-            var dialog = new SaveFileDialog {
+
+            filename = FileRelatedDialogs.Save(new SaveDialogParams {
+                Filters = { new DialogFilterPiece("Presets", "*" + category.Extension) },
                 InitialDirectory = presetsDirectory,
-                Filter = string.Format(ToolsStrings.Presets_FileFilter, category.Extension),
-                DefaultExt = category.Extension,
+                DetaultExtension = category.Extension,
                 CustomPlaces = {
                     new FileDialogCustomPlace(presetsDirectory)
                 }
-            };
+            }, filename);
+            if (filename == null) return false;
 
-            if (filename != null) {
-                dialog.InitialDirectory = Path.GetDirectoryName(filename);
-                dialog.FileName = Path.GetFileNameWithoutExtension(filename);
-            }
-
-            if (dialog.ShowDialog() != true) {
-                return false;
-            }
-
-            filename = dialog.FileName;
             if (!filename.StartsWith(presetsDirectory)) {
                 if (ModernDialog.ShowMessage(ToolsStrings.Presets_ChooseFileInInitialDirectory,
                         ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {

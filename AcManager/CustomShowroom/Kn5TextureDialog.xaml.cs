@@ -228,18 +228,17 @@ namespace AcManager.CustomShowroom {
             private CommandBase _exportCommand;
 
             public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
-                var dialog = new SaveFileDialog {
+                var filename = FileRelatedDialogs.Save(new SaveDialogParams {
                     InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
-                    Filter = string.Format("Textures (*.{0})|*.{0}", TextureFormat.ToLower()),
-                    DefaultExt = TextureFormat.ToLower(),
-                    FileName = TextureName
-                };
+                    Filters = { DialogFilterPiece.DdsFiles, DialogFilterPiece.ImageFiles },
+                    DetaultExtension = TextureFormat.ToLower(),
+                    DefaultFileName = TextureName,
+                });
 
-                if (dialog.ShowDialog() != true) return;
-
+                if (filename == null) return;
                 try {
                     using (WaitingDialog.Create("Saving…")) {
-                        await FileUtils.WriteAllBytesAsync(dialog.FileName, Data);
+                        await FileUtils.WriteAllBytesAsync(filename, Data);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotExport, e);
