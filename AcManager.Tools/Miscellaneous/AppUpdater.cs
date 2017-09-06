@@ -62,7 +62,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private static string VersionFromData(string data) {
-            return JsonConvert.DeserializeObject<AppManifest>(data).Version;
+            return JsonConvert.DeserializeObject<AppManifest>(data).Version.Trim();
         }
 
         private bool _isSupported = true;
@@ -258,7 +258,7 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 CheckSignatureOrThrow(filename);
                 Logging.Write("Update: signature is fine");
-            } catch (Exception e) {
+            } catch (Exception) {
                 Logging.Unexpected("Update: signature is wrong");
             }
         }

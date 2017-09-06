@@ -105,7 +105,11 @@ namespace AcManager.Tools.Profile {
 
             TimeSpan? time;
 
-            if (SettingsHolder.Drive.WatchForSharedMemory) {
+            if (e.Result?.GetExtraByType<Game.ResultExtraDrag>() != null) {
+                time = e.Result.Sessions?.Where(x => x.Type == Game.SessionType.Drag)
+                        .SelectMany(x => x.BestLaps?.Where(y => y.CarNumber == 0) ?? new Game.ResultBestLap[0])
+                        .MinEntryOrDefault(x => x.Time)?.Time;
+            } else if (SettingsHolder.Drive.WatchForSharedMemory) {
                 var last = PlayerStatsManager.Instance.Last;
                 if (last == null) {
                     Logging.Warning("Race finished, but PlayerStatsManager.Instance.Last is missing");

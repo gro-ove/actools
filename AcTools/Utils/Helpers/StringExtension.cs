@@ -25,11 +25,11 @@ namespace AcTools.Utils.Helpers {
             if (a == null) return b == null ? 0 : -1;
             if (b == null) return 1;
 
-            var ap = a.ApartFromFirst("v").Split('.');
-            var bp = b.ApartFromFirst("v").Split('.');
+            var ap = a.Trim().ApartFromFirst("v").Split('.');
+            var bp = b.Trim().ApartFromFirst("v").Split('.');
 
             for (var i = 0; i < ap.Length && i < bp.Length; i++) {
-                var c = AlphanumComparatorFast.Compare(ap[i], bp[i]);
+                var c = AlphanumComparatorFast.Compare(ap[i].Trim(), bp[i].Trim());
                 if (c != 0) return c;
             }
 

@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
                 try {
                     return _appVersion ??
                             (_appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion);
-                } catch (Exception e) {
+                } catch (Exception) {
                     return _appVersion = "0";
                 }
             }

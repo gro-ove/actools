@@ -99,7 +99,7 @@ namespace AcTools.GenericMods {
         }
 
         private IniFile GetState() {
-            return new IniFile(Path.Combine(ModsDirectory, ConfigFileName));
+            return new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
         }
 
         private void LoadState(IniFile state) {
@@ -165,7 +165,7 @@ namespace AcTools.GenericMods {
             return _busy.Delay(() => Task.Run(() => _operationBusy.Do(() => {
                 Debug($"Enabling {mod.DisplayName}…");
 
-                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName));
+                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
                 iniFile["MODS"].Set(mod.DisplayName, int.MaxValue);
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in CheckConflicts(mod).Select(x => x.ModName).Distinct()) {
@@ -241,7 +241,7 @@ namespace AcTools.GenericMods {
                             $"“{mod.DisplayName}” cannot be disabled as {mod.DependsOn.Select(x => $"“{x}”").JoinToReadableString()} has overwritten files and must be removed first.");
                 }
 
-                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName));
+                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
                 iniFile["MODS"].Remove(mod.DisplayName);
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in dependancies.Select(x => new {

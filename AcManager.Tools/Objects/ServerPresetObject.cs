@@ -277,8 +277,12 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _randomizeSkinsCommand;
 
         public DelegateCommand RandomizeSkinsCommand => _randomizeSkinsCommand ?? (_randomizeSkinsCommand = new DelegateCommand(() => {
-            foreach (var driverEntry in DriverEntries) {
-                driverEntry.RandomSkinCommand.Execute();
+            var cars = DriverEntries.Select(x => x.CarObject).NonNull().Select(x => new {
+                Car = x,
+                Skins = GoodShuffle.Get(x.EnabledOnlySkins)
+            }).ToList();
+            foreach (var d in DriverEntries) {
+                d.CarSkinId = cars.FirstOrDefault(x => x.Car == d.CarObject)?.Skins.Next.Id;
             }
         }));
 

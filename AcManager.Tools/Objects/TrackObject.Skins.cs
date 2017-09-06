@@ -137,8 +137,9 @@ namespace AcManager.Tools.Objects {
             }
 
             var directory = DefaultSkinDirectory;
-            var toInstall = toInstallTemporary.ToDictionary(x => x.Value.Item2, x => Path.Combine(directory, x.Key));
+            FileUtils.EnsureDirectoryExists(directory);
 
+            var toInstall = toInstallTemporary.ToDictionary(x => x.Value.Item2, x => Path.Combine(directory, x.Key));
             // Logging.Debug(toInstall.Select(x => $"{x.Key.ApartFromFirst(Location)} → {x.Value.ApartFromFirst(Location)}").JoinToString('\n'));
 
             var skinsCombinedFileName = Path.GetFileName(SkinsCombinedFilename);

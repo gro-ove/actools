@@ -124,10 +124,10 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         try {
                             await Task.Delay(300);
                             reloadAction();
+                            break;
                         } catch (IOException e) {
                             AcToolsLogging.Write(e);
                         }
-                        break;
                     }
                 } finally {
                     reloading = false;

@@ -120,6 +120,7 @@ namespace AcManager.Tools.Profile {
                 w.Write(nameof(BestLap), BestLap);
                 w.Write(nameof(BestLapId), BestLapId);
 
+                w.WriteNonDefault(nameof(TotalCrashes), TotalCrashes);
                 w.WriteNonDefault(nameof(GoneOffroad), GoneOffroad);
                 w.WriteNonDefault(nameof(Penalties), Penalties);
 
@@ -427,7 +428,7 @@ namespace AcManager.Tools.Profile {
                 var distance = graphics.CarCoordinates - previous.Graphics.CarCoordinates;
                 var calcSpeed = distance.Length() / 1e3 / time.TotalHours;
 
-                /* compare calculated from coordinates speed with actual speed — if much more, 
+                /* compare calculated from coordinates speed with actual speed — if much more,
                  * assume that car was teleported */
                 var jumped = calcSpeed > physics.SpeedKmh * 3d + 10;
                 if (jumped) {

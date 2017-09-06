@@ -310,6 +310,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                     if (Equals(maxSize, 0d)) {
                                         image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
                                             Path = new PropertyPath(nameof(TextBlock.FontSize)),
+                                            FallbackValue = 16d,
                                             RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
                                             Converter = new MultiplyConverter(),
                                         });
@@ -331,7 +332,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                     };
                                 }
 
-                                var container = new InlineUIContainer { Child = image };
+                                var container = new InlineUIContainer { Child = image, Tag = token.Value };
                                 parent.Inlines.Add(container);
                                 continue;
                             }

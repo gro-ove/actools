@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,10 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public enum IniFileMode {
-        Normal, Comments, ValuesWithSemicolons
+        Normal,
+        Comments,
+        ValuesWithSemicolons,
+        SquareBracketsWithin
     }
 
     public class IniFile : DataFileBase, IEnumerable<KeyValuePair<string, IniFileSection>> {
@@ -98,7 +102,7 @@ namespace AcTools.DataFile {
         }
 
         protected override void ParseString([NotNull] string data) {
-            if (IniFileMode == IniFileMode.ValuesWithSemicolons) {
+            if (IniFileMode == IniFileMode.ValuesWithSemicolons || IniFileMode == IniFileMode.SquareBracketsWithin) {
                 ParseStringWithSemicolons(data);
                 return;
             }
@@ -164,6 +168,7 @@ namespace AcTools.DataFile {
         }
 
         private void ParseStringWithSemicolons(string data) {
+            var sbw = IniFileMode == IniFileMode.SquareBracketsWithin;
             Clear();
 
             IniFileSection currentSection = null;
@@ -174,7 +179,7 @@ namespace AcTools.DataFile {
                 var c = data[i];
                 switch (c) {
                     case '[':
-                        if (key != null) goto default;
+                        if (key != null || sbw && started != -1) goto default;
                         ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
 
                         var s = ++i;
@@ -329,33 +334,39 @@ namespace AcTools.DataFile {
         }
 
         private void Prepare(string v, StringBuilder s) {
-            if (IniFileMode == IniFileMode.ValuesWithSemicolons) {
-                for (var i = 0; i < v.Length; i++) {
-                    var c = v[i];
-                    switch (c) {
-                        case '[':
-                        case ']':
-                            s.Append('_');
-                            break;
-                        default:
-                            s.Append(c);
-                            break;
+            switch (IniFileMode) {
+                case IniFileMode.SquareBracketsWithin:
+                    s.Append(v);
+                    break;
+                case IniFileMode.ValuesWithSemicolons:
+                    for (var i = 0; i < v.Length; i++) {
+                        var c = v[i];
+                        switch (c) {
+                            case '[':
+                            case ']':
+                                s.Append('_');
+                                break;
+                            default:
+                                s.Append(c);
+                                break;
+                        }
                     }
-                }
-            } else {
-                for (var i = 0; i < v.Length; i++) {
-                    var c = v[i];
-                    switch (c) {
-                        case '[':
-                        case ']':
-                        case ';':
-                            s.Append('_');
-                            break;
-                        default:
-                            s.Append(c);
-                            break;
+                    break;
+                default:
+                    for (var i = 0; i < v.Length; i++) {
+                        var c = v[i];
+                        switch (c) {
+                            case '[':
+                            case ']':
+                            case ';':
+                                s.Append('_');
+                                break;
+                            default:
+                                s.Append(c);
+                                break;
+                        }
                     }
-                }
+                    break;
             }
         }
 
@@ -367,6 +378,8 @@ namespace AcTools.DataFile {
 
         public override string Stringify() {
             var s = new StringBuilder();
+            var commentaryPrefix = IniFileMode == IniFileMode.ValuesWithSemicolons ||
+                    IniFileMode == IniFileMode.SquareBracketsWithin ? " // " : " ; ";
 
             foreach (var pair in Content) {
                 var section = pair.Value;
@@ -378,7 +391,7 @@ namespace AcTools.DataFile {
 
                 var commentary = section.Commentary;
                 if (commentary != null) {
-                    s.Append(IniFileMode == IniFileMode.ValuesWithSemicolons ? " // " : " ; ");
+                    s.Append(commentaryPrefix);
                     s.Append(commentary);
                 }
 
@@ -391,7 +404,7 @@ namespace AcTools.DataFile {
                     Prepare(sub.Value, s);
 
                     if (commentaries?.TryGetValue(sub.Key, out commentary) == true) {
-                        s.Append(IniFileMode == IniFileMode.ValuesWithSemicolons ? " // " : " ; ");
+                        s.Append(commentaryPrefix);
                         s.Append(commentary);
                     }
 

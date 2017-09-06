@@ -49,7 +49,7 @@ namespace AcManager.Tools.Profile {
             private double _totalTwoWheels;
 
             /// <summary>
-            /// Don’t forget to set Storage later if needed.
+            /// Donâ€™t forget to set Storage later if needed.
             /// </summary>
             [JsonConstructor]
             public OverallStats() { }
@@ -67,7 +67,7 @@ namespace AcManager.Tools.Profile {
             /* extremums */
             [JsonProperty]
             public double MaxDistancePerCar {
-                get { return _maxDistancePerCar; }
+                get => _maxDistancePerCar;
                 internal set {
                     if (value.Equals(_maxDistancePerCar)) return;
                     _maxDistancePerCar = value;
@@ -79,7 +79,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string MaxDistancePerCarCarId {
-                get { return _maxDistancePerCarCarId; }
+                get => _maxDistancePerCarCarId;
                 internal set {
                     if (value == _maxDistancePerCarCarId) return;
                     _maxDistancePerCarCarId = value;
@@ -89,7 +89,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double MaxDistancePerTrack {
-                get { return _maxDistancePerTrack; }
+                get => _maxDistancePerTrack;
                 internal set {
                     if (value.Equals(_maxDistancePerTrack)) return;
                     _maxDistancePerTrack = value;
@@ -101,7 +101,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string MaxDistancePerTrackTrackId {
-                get { return _maxDistancePerTrackTrackId; }
+                get => _maxDistancePerTrackTrackId;
                 internal set {
                     if (value == _maxDistancePerTrackTrackId) return;
                     _maxDistancePerTrackTrackId = value;
@@ -111,7 +111,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double MaxSpeed {
-                get { return _maxSpeed; }
+                get => _maxSpeed;
                 internal set {
                     if (value.Equals(_maxSpeed)) return;
                     _maxSpeed = value;
@@ -121,7 +121,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string MaxSpeedCarId {
-                get { return _maxSpeedCarId; }
+                get => _maxSpeedCarId;
                 internal set {
                     if (value == _maxSpeedCarId) return;
                     _maxSpeedCarId = value;
@@ -131,7 +131,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double LongestAirborne {
-                get { return _longestAirborne; }
+                get => _longestAirborne;
                 internal set {
                     if (value.Equals(_longestAirborne)) return;
                     _longestAirborne = value;
@@ -141,7 +141,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string LongestAirborneCarId {
-                get { return _longestAirborneCarId; }
+                get => _longestAirborneCarId;
                 internal set {
                     if (value == _longestAirborneCarId) return;
                     _longestAirborneCarId = value;
@@ -151,7 +151,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double LongestWheelie {
-                get { return _longestWheelie; }
+                get => _longestWheelie;
                 internal set {
                     if (value.Equals(_longestWheelie)) return;
                     _longestWheelie = value;
@@ -161,7 +161,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string LongestWheelieCarId {
-                get { return _longestWheelieCarId; }
+                get => _longestWheelieCarId;
                 internal set {
                     if (value == _longestWheelieCarId) return;
                     _longestWheelieCarId = value;
@@ -171,7 +171,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double LongestTwoWheels {
-                get { return _longestTwoWheels; }
+                get => _longestTwoWheels;
                 internal set {
                     if (value.Equals(_longestTwoWheels)) return;
                     _longestTwoWheels = value;
@@ -181,7 +181,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public string LongestTwoWheelsCarId {
-                get { return _longestTwoWheelsCarId; }
+                get => _longestTwoWheelsCarId;
                 internal set {
                     if (value == _longestTwoWheelsCarId) return;
                     _longestTwoWheelsCarId = value;
@@ -195,7 +195,7 @@ namespace AcManager.Tools.Profile {
             /// </summary>
             [JsonProperty]
             public double Distance {
-                get { return _distance; }
+                get => _distance;
                 internal set {
                     if (value.Equals(_distance)) return;
                     _distance = value;
@@ -213,7 +213,7 @@ namespace AcManager.Tools.Profile {
             /// </summary>
             [JsonProperty]
             public double FuelBurnt {
-                get { return _fuelBurnt; }
+                get => _fuelBurnt;
                 internal set {
                     if (value.Equals(_fuelBurnt)) return;
                     _fuelBurnt = value;
@@ -224,7 +224,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public TimeSpan Time {
-                get { return _time; }
+                get => _time;
                 internal set {
                     if (value.Equals(_time)) return;
                     _time = value;
@@ -237,7 +237,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public int SessionsCount {
-                get { return _sessionsCount; }
+                get => _sessionsCount;
                 set {
                     if (Equals(value, _sessionsCount)) return;
                     _sessionsCount = value;
@@ -247,7 +247,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public int GoneOffroadTimes {
-                get { return _goneOffroadTimes; }
+                get => _goneOffroadTimes;
                 internal set {
                     if (value == _goneOffroadTimes) return;
                     _goneOffroadTimes = value;
@@ -257,7 +257,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double TotalAirborne {
-                get { return _totalAirborne; }
+                get => _totalAirborne;
                 internal set {
                     if (value.Equals(_totalAirborne)) return;
                     _totalAirborne = value;
@@ -267,7 +267,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double TotalWheelie {
-                get { return _totalWheelie; }
+                get => _totalWheelie;
                 internal set {
                     if (value.Equals(_totalWheelie)) return;
                     _totalWheelie = value;
@@ -277,7 +277,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double TotalTwoWheels {
-                get { return _totalTwoWheels; }
+                get => _totalTwoWheels;
                 internal set {
                     if (value.Equals(_totalTwoWheels)) return;
                     _totalTwoWheels = value;
@@ -289,7 +289,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public double TotalTyreWear {
-                get { return _totalTyreWear; }
+                get => _totalTyreWear;
                 set {
                     if (Equals(value, _totalTyreWear)) return;
                     _totalTyreWear = value;
@@ -302,7 +302,7 @@ namespace AcManager.Tools.Profile {
 
             [JsonProperty]
             public int TotalCrashes {
-                get { return _totalCrashes; }
+                get => _totalCrashes;
                 set {
                     if (Equals(value, _totalCrashes)) return;
                     _totalCrashes = value;

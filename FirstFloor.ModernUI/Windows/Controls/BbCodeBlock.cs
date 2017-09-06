@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -244,7 +245,54 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             AddHandler(FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
             AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(OnRequestNavigate));
+
+            /*CommandManager.RegisterClassCommandBinding(typeof(SelectableBbCodeBlock),
+                    new CommandBinding(ApplicationCommands.Copy, OnCopy, OnCanExecuteCopy));*/
         }
+
+        /*private static void OnCanExecuteCopy(object target, CanExecuteRoutedEventArgs args) {
+            var block = (SelectableBbCodeBlock)target;
+            args.CanExecute = block.IsEnabled && !block.Selection.IsEmpty;
+        }
+
+        private static void OnCopy(object sender, ExecutedRoutedEventArgs e) {
+            var block = (SelectableBbCodeBlock)sender;
+            Clipboard.SetText(GetInlineText(block));
+            e.Handled = true;
+        }
+
+        private static string GetInlineText(RichTextBox block) {
+            var b = new StringBuilder();
+            var s = block.Selection;
+
+            void Process(Inline inline) {
+                if (!s.Contains(inline.ContentStart)) return;
+
+                s.Text
+
+                if (inline is InlineUIContainer uiContainer){
+                    b.Append(uiContainer.Tag);
+                } else  if (inline is Span span) {
+                    foreach (var i in span.Inlines) {
+                        Process(i);
+                    }
+                } else if (inline is Run) {
+                    var run = (Run)inline;
+                    b.Append(run.Text);
+                } else if (inline is LineBreak) {
+                    b.Append(Environment.NewLine);
+                } else {
+                    Logging.Debug(inline.GetType().Name);
+                }
+            }
+
+            foreach (var p in block.Document.Blocks.OfType<Paragraph>()) {
+                foreach (var inline in p.Inlines) {
+                    Process(inline);
+                }
+            }
+            return b.ToString();
+        }*/
 
         private static void OnBbCodeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((SelectableBbCodeBlock)o).UpdateDirty();
@@ -289,7 +337,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
-                var item = new Paragraph(BbCodeBlock.Parse(bbCode, this, LinkNavigator)) {
+                var item = new Paragraph(BbCodeBlock.ParseEmoji(bbCode, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
                 };
 
