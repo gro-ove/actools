@@ -80,6 +80,7 @@
     <Compile Include="ITestEntry.cs" />
     <Compile Include="TestEntries\DateTimeTestEntry.cs" />
     <Compile Include="TestEntries\DistanceTestEntry.cs" />
+    <Compile Include="TestEntries\FileSizeTestEntry.cs" />
     <Compile Include="TestEntries\IntTestEntry.cs" />
     <Compile Include="TestEntries\NumberTestEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

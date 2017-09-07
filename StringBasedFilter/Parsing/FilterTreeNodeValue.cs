@@ -60,6 +60,12 @@ namespace StringBasedFilter.Parsing {
                         (ITestEntry)new ConstTestEntry(false);
             }
 
+            if (FileSizeTestEntry.IsDistanceKey(key) || FileSizeTestEntry.IsDistanceValue(value)) {
+                double num;
+                return FileSizeTestEntry.ToBytes(value, out num) ? new FileSizeTestEntry(op, num) :
+                        (ITestEntry)new ConstTestEntry(false);
+            }
+
             if (point != -1 || value.IndexOf(',') != -1) {
                 double num;
                 return FlexibleParser.TryParseDouble(value, out num) ? new NumberTestEntry(op, num) :

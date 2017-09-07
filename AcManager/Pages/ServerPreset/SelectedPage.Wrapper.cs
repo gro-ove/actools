@@ -332,18 +332,35 @@ namespace AcManager.Pages.ServerPreset {
             }
         }));
 
+        public class PackCarDataHolder : NotifyPropertyChanged {
+            private bool _value = ValuesStorage.GetBool("serverWrapper:packCarData", true);
+
+            public bool Value {
+                get => _value;
+                set {
+                    if (Equals(value, _value)) return;
+                    _value = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set("serverWrapper:packCarData", value);
+                }
+            }
+        }
+
+        public static PackCarDataHolder PackCarData = new PackCarDataHolder();
+        public bool IsCarObject => AcObject is CarObject;
+
         private string GetTypePrefix() {
             switch (AcObject) {
                 case CarObject car:
-                    return $"car-{car.Id}-{car.Version}";
+                    return $"car-{car.Id}-{car.Version}.zip";
                 case CarSkinObject skin:
-                    return $"skin-{skin.CarId}-{skin.Id}";
+                    return $"skin-{skin.CarId}-{skin.Id}.zip";
                 case TrackObject track:
-                    return $"track-{track.Id}-{track.Version}";
+                    return $"track-{track.Id}-{track.Version}.zip";
                 case WeatherObject weather:
-                    return $"weather-{weather.Id}";
+                    return $"weather-{weather.Id}.zip";
                 default:
-                    return $"something-{AcObject.Id}";
+                    return $"something-{AcObject.Id}.zip";
             }
         }
 
@@ -351,14 +368,14 @@ namespace AcManager.Pages.ServerPreset {
             var filename = Filename;
 
             FileUtils.EnsureDirectoryExists(_contentDirectory);
-            var newFilename = FileUtils.EnsureUnique(Path.Combine(_contentDirectory, GetTypePrefix()), "-{0}.zip", true, 0);
+            var newFilename = FileUtils.EnsureUnique(Path.Combine(_contentDirectory, GetTypePrefix()), "-{0}", true, 0);
 
             AcCommonObject.AcCommonObjectPackerParams packParams;
             switch (AcObject) {
                 case CarObject _:
                     packParams = new CarObject.CarPackerParams {
                         IncludeTemplates = false,
-                        PackData = true
+                        PackData = PackCarData.Value
                     };
                     break;
 

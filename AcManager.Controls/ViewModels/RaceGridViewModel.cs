@@ -99,7 +99,7 @@ namespace AcManager.Controls.ViewModels {
             public bool? ShuffleCandidates;
             public int? OpponentsNumber, StartingPosition;
 
-            public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly;
+            public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly /* not needed to be saved */;
             public double AiLevelArrangeRandom = 0.1, AiLevel = 95, AiLevelMin = 85;
 
             public bool? AiAggressionArrangeReverse;
@@ -121,11 +121,18 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("AiLevels", AiLevels);
                 w.Write("AiAggressions", AiAggressions);
 
+                w.Write("Ballasts", Ballasts);
+                w.Write("Restrictors", Restrictors);
+
+                w.WriteNonDefault("PlayerBallast", PlayerBallast);
+                w.WriteNonDefault("PlayerRestrictor", PlayerRestrictor);
+
                 w.Write("Names", Names);
                 w.Write("Nationalities", Nationalities);
                 w.Write("SkinIds", SkinIds);
                 w.Write("AiLimitations", AiLimitations);
 
+                w.Write("ShuffleCandidates", ShuffleCandidates);
                 w.Write("OpponentsNumber", OpponentsNumber);
                 w.Write("StartingPosition", StartingPosition);
 
@@ -166,6 +173,7 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _playerBallast)) return;
                 _playerBallast = value;
                 OnPropertyChanged();
+                SaveLater();
 
                 if (PlayerEntry != null) {
                     PlayerEntry.Ballast = value;
@@ -181,6 +189,7 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _playerRestrictor)) return;
                 _playerRestrictor = value;
                 OnPropertyChanged();
+                SaveLater();
 
                 if (PlayerEntry != null) {
                     PlayerEntry.Restrictor = value;
@@ -209,6 +218,9 @@ namespace AcManager.Controls.ViewModels {
                     AiAggressionMin = AiAggressionMin,
                     AiAggressionArrangeRandom = AiAggressionArrangeRandom,
                     AiAggressionArrangeReverse = AiAggressionArrangeReverse,
+
+                    PlayerBallast = PlayerBallast,
+                    PlayerRestrictor = PlayerRestrictor,
                 };
 
                 if (Mode == BuiltInGridMode.Custom) {
@@ -260,9 +272,6 @@ namespace AcManager.Controls.ViewModels {
                         data.AiLimitations = filtered.Select(x => x.AiLimitationDetailsData).ToArray();
                     }
                 }
-
-                data.PlayerBallast = PlayerBallast;
-                data.PlayerRestrictor = PlayerRestrictor;
 
                 return data;
             }, data => {

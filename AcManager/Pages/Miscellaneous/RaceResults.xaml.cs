@@ -74,7 +74,7 @@ namespace AcManager.Pages.Miscellaneous {
             return d.GetFiles("*.json", SearchOption.TopDirectoryOnly)
                     .OrderByDescending(x => x.LastWriteTime)
                     .Select(x => {
-                        var e = existing.FirstOrDefault(y => string.Equals(y.FileInfo.Name, x.Name, StringComparison.Ordinal));
+                        var e = existing.FirstOrDefault(y => string.Equals(y.DisplayName, x.Name, StringComparison.Ordinal));
                         if (e != null && e.Date == x.LastWriteTime) return e;
                         return new RaceResultsObject(x);
                     });
@@ -146,11 +146,19 @@ namespace AcManager.Pages.Miscellaneous {
             }
         }
 
-        public class RaceResultsObject : NotifyPropertyChanged {
-            public FileInfo FileInfo { get; }
+        public sealed class RaceResultsObject : Displayable {
+            public string Filename { get; }
+            public DateTime CreationTime { get; }
+            public DateTime LastWriteTime { get; }
+            public long Size { get; }
 
             public RaceResultsObject(FileInfo fileInfo) {
-                FileInfo = fileInfo;
+                Filename = fileInfo.FullName;
+                CreationTime = fileInfo.CreationTime;
+                LastWriteTime = fileInfo.LastWriteTime;
+                Size = fileInfo.Length;
+                DisplayName = fileInfo.Name;
+
                 PlayerCar = Lazier.CreateAsync(() => CarsManager.Instance.GetByIdAsync(Parsed?.Players?.FirstOrDefault()?.CarId ?? ""));
                 Cars = Lazier.CreateAsync(async () => (await (Parsed?.Players?.Select(x => x.CarId)
                                                                      .Distinct()
@@ -165,7 +173,7 @@ namespace AcManager.Pages.Miscellaneous {
             public Lazier<List<WrappedCarObject>> Cars { get; }
 
 #pragma warning disable 649
-            public DateTime Date => _date.Get(() => FileInfo.LastWriteTime);
+            public DateTime Date => _date.Get(() => LastWriteTime);
             private LazierThis<DateTime> _date;
 
             public string DateDeltaString => _dateDeltaString.Get(() => $"{(DateTime.Now - Date).ToReadableTime()} ago");
@@ -175,7 +183,7 @@ namespace AcManager.Pages.Miscellaneous {
             private LazierThis<string> _dateString;
 
             [CanBeNull]
-            public JObject JObject => _jObject.Get(() => JObject.Parse(File.ReadAllText(FileInfo.FullName)));
+            public JObject JObject => _jObject.Get(() => JObject.Parse(File.ReadAllText(Filename)));
             private LazierThis<JObject> _jObject;
 
             [CanBeNull]
@@ -452,7 +460,7 @@ namespace AcManager.Pages.Miscellaneous {
             private DelegateCommand _viewInExplorerCommand;
 
             public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewFile(FileInfo.FullName);
+                WindowsHelper.ViewFile(Filename);
             }));
 
             private bool _isDeleted;
@@ -483,8 +491,8 @@ namespace AcManager.Pages.Miscellaneous {
                 var isDeleting = IsDeleting;
                 try {
                     IsDeleting = true;
-                    FileUtils.Recycle(FileInfo.FullName);
-                    if (!File.Exists(FileInfo.FullName)) {
+                    FileUtils.Recycle(Filename);
+                    if (!File.Exists(Filename)) {
                         IsDeleted = true;
                     }
                 } finally {

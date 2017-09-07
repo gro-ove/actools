@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using SharpCompress.Common;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
 using SharpCompress.Writers;
 using SharpCompress.Writers.GZip;
 
@@ -155,10 +158,17 @@ namespace AcManager.Pages.Dialogs {
                 if (cancellation.IsCancellationRequested || list == null) return null;
 
                 await Task.Run(() => {
-                    var memory = new MemoryStream();
+                    Stream outputStream;
+                    if (Mode == ServerPresetPackMode.Windows) {
+                        outputStream = File.Create(destination);
+                    } else {
+                        outputStream = new GZipStream(File.Create(destination), CompressionMode.Compress,
+                                CompressionLevel.BestCompression, false,
+                                Encoding.UTF8) { FileName = @"tar.tar" };
+                    }
 
                     try {
-                        using (var writer = WriterFactory.Open(memory,
+                        using (var writer = WriterFactory.Open(outputStream,
                                 Mode != ServerPresetPackMode.Windows ? ArchiveType.Tar : ArchiveType.Zip,
                                 new WriterOptions(Mode != ServerPresetPackMode.Windows ? CompressionType.None : CompressionType.Deflate) {
                                     LeaveStreamOpen = true
@@ -178,23 +188,12 @@ namespace AcManager.Pages.Dialogs {
                         }
 
                         if (Mode == ServerPresetPackMode.Windows) {
-                            memory.AddZipDescription(Server.Name);
-                            File.WriteAllBytes(destination, memory.ToArray());
-                        } else {
-                            memory.Position = 0;
-
-                            using (var actualMemory = new MemoryStream()) {
-                                using (var writer2 = new GZipWriter(actualMemory)) {
-                                    writer2.Write(@"tar.tar", memory);
-                                }
-
-                                File.WriteAllBytes(destination, actualMemory.ToArray());
-                            }
+                            outputStream.AddZipDescription(Server.Name);
                         }
                     } finally {
                         // not needed here actually, but if it’s IDisposable, let’s keep it clean
                         list.DisposeEverything();
-                        memory.Dispose();
+                        outputStream.Dispose();
                     }
                 });
 

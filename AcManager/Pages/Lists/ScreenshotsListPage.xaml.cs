@@ -1,95 +1,216 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
     public sealed class Screenshot : Displayable {
-        public Screenshot(string filename, DateTime creationTime, long size) {
-            Filename = filename;
-            CreationTime = creationTime;
-            Size = size;
-            DisplayName = Path.GetFileName(filename);
+        public Screenshot(FileInfo fileInfo) {
+            Filename = fileInfo.FullName;
+            CreationTime = fileInfo.CreationTime;
+            LastWriteTime = fileInfo.LastWriteTime;
+            Size = fileInfo.Length;
+            DisplayName = fileInfo.Name;
         }
 
         public string Filename { get; }
-
         public DateTime CreationTime { get; }
-
+        public DateTime LastWriteTime { get; }
         public long Size { get; }
+
+        private DelegateCommand _viewInExplorerCommand;
+
+        public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
+            WindowsHelper.ViewFile(Filename);
+        }));
+
+        private bool _isDeleted;
+
+        public bool IsDeleted {
+            get => _isDeleted;
+            private set {
+                if (Equals(value, _isDeleted)) return;
+                _isDeleted = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isDeleting;
+
+        public bool IsDeleting {
+            get => _isDeleting;
+            private set {
+                if (value == _isDeleting) return;
+                _isDeleting = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DelegateCommand _deleteCommand;
+
+        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
+            var isDeleting = IsDeleting;
+            try {
+                IsDeleting = true;
+                FileUtils.Recycle(Filename);
+                if (!File.Exists(Filename)) {
+                    IsDeleted = true;
+                }
+            } finally {
+                IsDeleting = isDeleting;
+            }
+        }));
+    }
+
+    public class FileTester : ITester<FileInfo> {
+        public static readonly FileTester Instance = new FileTester();
+
+        public string ParameterFromKey(string key) {
+            return null;
+        }
+
+        public bool Test(FileInfo obj, string key, ITestEntry value) {
+            switch (key) {
+                case "date":
+                    return value.Test(obj.CreationTime);
+                case "age":
+                    return value.Test((DateTime.Now - obj.CreationTime).TotalDays);
+                case "size":
+                    return value.Test(obj.Length);
+            }
+
+            return value.Test(obj.FullName);
+        }
     }
 
     public partial class ScreenshotsListPage : ILoadableContent, IParametrizedUriContent {
-        private static readonly Regex Filter = new Regex(@"\.(jpe?g|gif|bmp|png)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ImageFilter = new Regex(@"\.(jpe?g|gif|bmp|png)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        private static Screenshot[] GetFiles(string filter) {
-            var directory = FileUtils.GetDocumentsScreensDirectory();
+        private static IEnumerable<Screenshot> GetFiles(string directory, IFilter<FileInfo> filter) {
             if (!Directory.Exists(directory)) return new Screenshot[0];
-            return new DirectoryInfo(directory).GetFiles(filter).Where(x => Filter.IsMatch(x.Name))
-                .OrderByDescending(x => x.CreationTime)
-                .Select(x => new Screenshot(x.FullName, x.CreationTime, x.Length)).ToArray();
+            return new DirectoryInfo(directory).GetFiles("*.*").Where(x => ImageFilter.IsMatch(x.Name) && filter.Test(x))
+                                               .OrderByDescending(x => x.CreationTime)
+                                               .Select(x => new Screenshot(x));
         }
 
-        private string _filter;
-        private Screenshot[] _images;
+        private static IEnumerable<Screenshot> GetUpdateEntries(string directory, IFilter<FileInfo> filter, IList<Screenshot> existing) {
+            if (!Directory.Exists(directory)) return new Screenshot[0];
+            return new DirectoryInfo(directory).GetFiles("*.*").Where(x => ImageFilter.IsMatch(x.Name) && filter.Test(x))
+                                               .OrderByDescending(x => x.CreationTime)
+                                               .Select(x => {
+                                                   var e = existing.FirstOrDefault(y => string.Equals(y.DisplayName, x.Name, StringComparison.Ordinal));
+                                                   if (e != null && e.LastWriteTime == x.LastWriteTime) return e;
+                                                   return new Screenshot(x);
+                                               });
+        }
+
+        private string _directory;
+        private IFilter<FileInfo> _filter;
+        private List<Screenshot> _images;
 
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            _filter = filter == null ? @"*" : $"*{filter}*";
+            _filter = filter == null ? Filter<FileInfo>.Any : Filter.Create(FileTester.Instance, filter);
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
-            _images = await Task.Run(() => GetFiles(_filter), cancellationToken);
+            _directory = FileUtils.GetDocumentsScreensDirectory();
+            _images = await Task.Run(() => GetFiles(_directory, _filter).ToList(), cancellationToken);
         }
 
         public void Load() {
-            _images = GetFiles(_filter);
+            _directory = FileUtils.GetDocumentsScreensDirectory();
+            _images = GetFiles(_directory, _filter).ToList();
         }
 
         public ViewModel Model => (ViewModel)DataContext;
 
         public void Initialize() {
-            DataContext = new ViewModel(_images);
+            DataContext = new ViewModel(_directory, _filter, _images);
+            this.OnActualUnload(Model);
             _images = null;
-
             InitializeComponent();
         }
 
-        private void ScreenshotsListPage_OnLoaded(object sender, RoutedEventArgs e) {
-            Model.Load();
-        }
+        public class ViewModel : IDisposable {
+            public ChangeableObservableCollection<Screenshot> Screenshots { get; }
 
-        private void ScreenshotsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            Model.Unload();
-        }
+            private readonly string _directory;
+            private readonly IFilter<FileInfo> _filter;
+            private readonly DirectoryWatcher _watcher;
+            private readonly Busy _busy = new Busy(true);
 
-        public class ViewModel {
-            public Screenshot[] Screenshots { get; }
-
-            public ViewModel(Screenshot[] screenshots) {
-                Screenshots = screenshots;
+            public ViewModel(string directory, IFilter<FileInfo> filter, IEnumerable<Screenshot> screenshots) {
+                Screenshots = new ChangeableObservableCollection<Screenshot>(screenshots);
+                Screenshots.ItemPropertyChanged += OnPropertyChanged;
+                _directory = directory;
+                _filter = filter;
+                _watcher = new DirectoryWatcher(directory);
+                _watcher.Update += OnUpdate;
             }
 
-            public void Load() {}
-            public void Unload() {}
+            private void OnUpdate(object sender, FileSystemEventArgs fileSystemEventArgs) {
+                _busy.DoDelay(() => Screenshots.ReplaceEverythingBy(GetUpdateEntries(_directory, _filter, Screenshots)), 300);
+            }
+
+            private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(Screenshot.IsDeleting)) {
+                    _busy.Delay(1000);
+                }
+
+                if (e.PropertyName == nameof(Screenshot.IsDeleted)) {
+                    Screenshots.Remove((Screenshot)sender);
+                }
+            }
+
+            public void Dispose() {
+                _watcher?.Dispose();
+            }
         }
 
-        private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnItemClick(object sender, MouseButtonEventArgs e) {
+            if (Keyboard.Modifiers != ModifierKeys.None || e.Handled) return;
+
             var screenshot = (sender as FrameworkElement)?.DataContext as Screenshot;
             if (screenshot == null) return;
 
+            e.Handled = true;
             new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot),
                     4000, details: x => Path.GetFileName(x as string)).ShowDialog();
+        }
+
+        private void OnContextMenu(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
+
+            var image = ((FrameworkElement)sender).DataContext as Screenshot;
+            if (image == null) return;
+
+            e.Handled = true;
+            new ContextMenu()
+                    .AddItem("View In Explorer", image.ViewInExplorerCommand)
+                    .AddItem("Remove To Recycle Bin", image.DeleteCommand)
+                    .IsOpen = true;
+        }
+
+        private void OnRightButtonDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
         }
     }
 }

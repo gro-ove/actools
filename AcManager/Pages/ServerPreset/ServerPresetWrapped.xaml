@@ -142,6 +142,9 @@
               <ContextMenu>
                 <MenuItem Header="Select Existing Archive" Command="{Binding SelectFileCommand}" />
                 <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
+                <Separator Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <MenuItem Header="Pack Car Data" IsCheckable="True" IsChecked="{Binding Value, Source={x:Static local:WrapperContentObject.PackCarData}}"
+                    StaysOpenOnClick="True" Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </ContextMenu>
             </mui:ContextMenuButton>
             <Label Content="Packed archive:" />
@@ -241,8 +244,7 @@
           </CheckBox>
 
           <DockPanel ToolTip="Set some limit if you want for clients downloading content from the server to not take all bandwidth" Background="Transparent">
-            <mui:ValueLabel Padding="8 0 0 0" Value="{Binding SelectedObject.DisplayWrapperDownloadSpeedLimit}" Background="Transparent"
-                Content="Speed limit" />
+            <mui:ValueLabel Padding="8 0 0 0" Value="{Binding SelectedObject.DisplayWrapperDownloadSpeedLimit}" Background="Transparent" Content="Speed limit" />
             <Slider Minimum="0" Maximum="1" TickPlacement="BottomRight" TickFrequency="0.1">
               <Slider.Value>
                 <Binding Path="SelectedObject.WrapperDownloadSpeedLimit">

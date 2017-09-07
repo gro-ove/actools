@@ -185,8 +185,8 @@ namespace AcManager.Controls.Dialogs {
 
                 for (var i = 0; i < _images.Length; i++) {
                     var offset = (i - position).Abs();
-                    if (offset > 1) {
-                        Unload(position);
+                    if (offset > 5) {
+                        Unload(i);
                     }
                 }
             }

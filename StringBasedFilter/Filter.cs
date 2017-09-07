@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -8,7 +9,7 @@ namespace StringBasedFilter {
     /// <summary>
     /// Typed version with fixed ITester.
     /// </summary>
-    internal class Filter<T> : Filter, IFilter<T> {
+    public class Filter<T> : Filter, IFilter<T> {
         private readonly ITester<T> _tester;
 
         public Filter(ITester<T> tester, string filter, FilterParams filterParams) : base(filter, filterParams) {
@@ -28,13 +29,28 @@ namespace StringBasedFilter {
         public bool IsAffectedBy(string propertyName) {
             return IsAffectedBy(_tester, propertyName);
         }
+
+        private class FilterAny : IFilter<T> {
+            public string Source => "*";
+
+            public bool Test(T obj) {
+                return true;
+            }
+
+            public bool IsAffectedBy(string propertyName) {
+                return false;
+            }
+        }
+
+        private static readonly Lazy<IFilter<T>> AnyLazy = new Lazy<IFilter<T>>(() => new FilterAny());
+        public static IFilter<T> Any => AnyLazy.Value;
     }
 
     /// <summary>
     /// Untyped version with variable ITester.
     /// </summary>
     public class Filter : IFilter {
-        // some of users just can’t be bothered to spend a bit of time 
+        // some of users just can’t be bothered to spend a bit of time
         // to read how the whole system works, so here you go
         public static bool OptionSimpleMatching = false;
 

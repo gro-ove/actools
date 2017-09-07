@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
-    internal class DistanceTestEntry : ITestEntry {
+    internal class FileSizeTestEntry : ITestEntry {
         private readonly Operator _op;
         private readonly double _metersValue;
 
@@ -12,25 +12,25 @@ namespace StringBasedFilter.TestEntries {
             return (_op == Operator.Less ? "<" : _op == Operator.Equal ? "=" : ">") + _metersValue.ToString(CultureInfo.InvariantCulture);
         }
 
-        internal DistanceTestEntry(Operator op, double metersValue) {
+        internal FileSizeTestEntry(Operator op, double metersValue) {
             _op = op;
             _metersValue = metersValue;
         }
 
         public static bool IsDistanceKey(string key) {
-            return string.Equals(key, "len", StringComparison.Ordinal) ||
-                    string.Equals(key, "length", StringComparison.Ordinal) ||
-                    string.Equals(key, "distance", StringComparison.Ordinal);
+            return string.Equals(key, "size", StringComparison.Ordinal);
         }
 
         public static bool IsDistanceValue(string value) {
-            return value.IndexOf("km", StringComparison.InvariantCultureIgnoreCase) != -1 ||
-                    value.IndexOf("mm", StringComparison.InvariantCultureIgnoreCase) != -1 ||
-                    value.IndexOf("км", StringComparison.InvariantCultureIgnoreCase) != -1 ||
-                    value.IndexOf("мм", StringComparison.InvariantCultureIgnoreCase) != -1;
+            return value.IndexOf("kb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("mb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("gb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("кб", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("мб", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("гб", StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
-        public static bool ToMeters([CanBeNull] string value, out double meters) {
+        public static bool ToBytes([CanBeNull] string value, out double meters) {
             if (value == null) {
                 meters = 0d;
                 return false;
@@ -40,14 +40,15 @@ namespace StringBasedFilter.TestEntries {
                 return false;
             }
 
-            if (value.IndexOf("km", StringComparison.InvariantCultureIgnoreCase) != -1 ||
-                    value.IndexOf("км", StringComparison.InvariantCultureIgnoreCase) != -1) {
+            if (value.IndexOf("kb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("кб", StringComparison.InvariantCultureIgnoreCase) != -1) {
                 meters *= 1e3;
-            }
-
-            if (value.IndexOf("mm", StringComparison.InvariantCultureIgnoreCase) != -1 ||
-                    value.IndexOf("мм", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                meters /= 1e2;
+            } else if (value.IndexOf("mb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("мб", StringComparison.InvariantCultureIgnoreCase) != -1) {
+                meters *= 1e6;
+            } else if (value.IndexOf("gb", StringComparison.InvariantCultureIgnoreCase) != -1 ||
+                    value.IndexOf("гб", StringComparison.InvariantCultureIgnoreCase) != -1) {
+                meters *= 1e9;
             }
 
             return true;
@@ -55,7 +56,7 @@ namespace StringBasedFilter.TestEntries {
 
         public bool Test(string value) {
             double val;
-            return ToMeters(value, out val) && Test(val);
+            return ToBytes(value, out val) && Test(val);
         }
 
         public bool Test(double value) {
