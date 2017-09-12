@@ -18,64 +18,64 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(RoundSlider));
 
         public bool IsThumbDragging {
-            get { return (bool)GetValue(IsThumbDraggingProperty); }
-            set { SetValue(IsThumbDraggingProperty, value); }
+            get => GetValue(IsThumbDraggingProperty) as bool? == true;
+            set => SetValue(IsThumbDraggingProperty, value);
         }
 
         public static readonly DependencyProperty TickBrushProperty = DependencyProperty.Register(nameof(TickBrush), typeof(Brush),
                 typeof(RoundSlider));
 
         public Brush TickBrush {
-            get { return (Brush)GetValue(TickBrushProperty); }
-            set { SetValue(TickBrushProperty, value); }
+            get => (Brush)GetValue(TickBrushProperty);
+            set => SetValue(TickBrushProperty, value);
         }
 
         public static readonly DependencyProperty TickThicknessProperty = DependencyProperty.Register(nameof(TickThickness), typeof(double),
                 typeof(RoundSlider));
 
         public double TickThickness {
-            get { return (double)GetValue(TickThicknessProperty); }
-            set { SetValue(TickThicknessProperty, value); }
+            get => GetValue(TickThicknessProperty) as double? ?? 0d;
+            set => SetValue(TickThicknessProperty, value);
         }
 
         public static readonly DependencyProperty TickLengthProperty = DependencyProperty.Register(nameof(TickLength), typeof(double),
                 typeof(RoundSlider));
 
         public double TickLength {
-            get { return (double)GetValue(TickLengthProperty); }
-            set { SetValue(TickLengthProperty, value); }
+            get => GetValue(TickLengthProperty) as double? ?? 0d;
+            set => SetValue(TickLengthProperty, value);
         }
 
         public static readonly DependencyProperty TickOffsetProperty = DependencyProperty.Register(nameof(TickOffset), typeof(double),
                 typeof(RoundSlider));
 
         public double TickOffset {
-            get { return (double)GetValue(TickOffsetProperty); }
-            set { SetValue(TickOffsetProperty, value); }
+            get => GetValue(TickOffsetProperty) as double? ?? 0d;
+            set => SetValue(TickOffsetProperty, value);
         }
-        
+
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(nameof(Content), typeof(object),
                 typeof(RoundSlider));
 
         public object Content {
-            get { return GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
+            get => GetValue(ContentProperty);
+            set => SetValue(ContentProperty, value);
         }
 
         public static readonly DependencyProperty ContentWidthProperty = DependencyProperty.Register(nameof(ContentWidth), typeof(double),
                 typeof(RoundSlider));
 
         public double ContentWidth {
-            get { return (double)GetValue(ContentWidthProperty); }
-            set { SetValue(ContentWidthProperty, value); }
+            get => GetValue(ContentWidthProperty) as double? ?? 0d;
+            set => SetValue(ContentWidthProperty, value);
         }
 
         public static readonly DependencyProperty ContentHeightProperty = DependencyProperty.Register(nameof(ContentHeight), typeof(double),
                 typeof(RoundSlider));
 
         public double ContentHeight {
-            get { return (double)GetValue(ContentHeightProperty); }
-            set { SetValue(ContentHeightProperty, value); }
+            get => GetValue(ContentHeightProperty) as double? ?? 0d;
+            set => SetValue(ContentHeightProperty, value);
         }
 
         private Thumb _thumb;
@@ -134,7 +134,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnThumbDragCompleted(object sender, DragCompletedEventArgs e) {
             IsThumbDragging = false;
         }
-        
+
         private static double RoundTo(double value, double precision = 1d) {
             if (Equals(precision, 0d)) return value;
             return Math.Round(value / precision) * precision;
@@ -144,7 +144,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var position = Mouse.GetPosition(_wrapper);
             position.X -= _wrapper.ActualWidth / 2d;
             position.Y -= _wrapper.ActualHeight / 2d;
-            
+
             var angle = Math.Atan2(Math.Abs(position.X), position.X > 0 ? -position.Y : position.Y) / Math.PI + (position.X > 0 ? 1d : 0d);
             var value = Minimum + (Maximum - Minimum) * angle / 2d;
             Value = IsSnapToTickEnabled ? RoundTo(value, TickFrequency) : value;

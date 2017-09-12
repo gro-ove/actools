@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BbCodeBlock), new PropertyMetadata(true));
 
         public bool EmojiSupport {
-            get => (bool)GetValue(EmojiSupportProperty);
+            get => GetValue(EmojiSupportProperty) as bool? == true;
             set => SetValue(EmojiSupportProperty, value);
         }
 
@@ -140,8 +140,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     continue;
                 }
 
-                int length;
-                if (Emoji.IsEmoji(bbCode, i, out length)) {
+                if (Emoji.IsEmoji(bbCode, i, out var length)) {
                     if (lastIndex != i) {
                         converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
                     }

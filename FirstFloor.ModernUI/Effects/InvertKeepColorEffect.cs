@@ -17,8 +17,8 @@ namespace FirstFloor.ModernUI.Effects {
         public static readonly DependencyProperty InputProperty = RegisterPixelShaderSamplerProperty("Input", typeof(InvertKeepColorEffect), 0);
 
         public Brush Input {
-            get { return (Brush)GetValue(InputProperty); }
-            set { SetValue(InputProperty, value); }
+            get => (Brush)GetValue(InputProperty);
+            set => SetValue(InputProperty, value);
         }
     }
 }

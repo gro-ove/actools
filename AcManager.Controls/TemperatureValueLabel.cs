@@ -16,24 +16,24 @@ namespace AcManager.Controls {
                 typeof(TemperatureBlock), new FrameworkPropertyMetadata("\u202A", OnModeChanged));
 
         public string Space {
-            get { return (string)GetValue(SpaceProperty); }
-            set { SetValue(SpaceProperty, value); }
+            get => (string)GetValue(SpaceProperty);
+            set => SetValue(SpaceProperty, value);
         }
 
         public static readonly DependencyProperty PrefixProperty = DependencyProperty.Register(nameof(Prefix), typeof(string),
                 typeof(TemperatureBlock), new FrameworkPropertyMetadata("", OnModeChanged));
 
         public string Prefix {
-            get { return (string)GetValue(PrefixProperty); }
-            set { SetValue(PrefixProperty, value); }
+            get => (string)GetValue(PrefixProperty);
+            set => SetValue(PrefixProperty, value);
         }
 
         public static readonly DependencyProperty RoundingProperty = DependencyProperty.Register(nameof(Rounding), typeof(double),
                 typeof(TemperatureBlock), new FrameworkPropertyMetadata(1d));
 
         public double Rounding {
-            get { return (double)GetValue(RoundingProperty); }
-            set { SetValue(RoundingProperty, value); }
+            get => GetValue(RoundingProperty) as double? ?? 0d;
+            set => SetValue(RoundingProperty, value);
         }
 
         public new static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(double),
@@ -45,16 +45,16 @@ namespace AcManager.Controls {
         private double _text;
 
         public new double Text {
-            get { return _text; }
-            set { SetValue(TextProperty, value); }
+            get => _text;
+            set => SetValue(TextProperty, value);
         }
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(TemperatureUnitMode),
                 typeof(TemperatureBlock), new PropertyMetadata(OnModeChanged));
 
         public TemperatureUnitMode Mode {
-            get { return (TemperatureUnitMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            set => SetValue(ModeProperty, value);
         }
 
         private static void OnModeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -89,16 +89,16 @@ namespace AcManager.Controls {
                 typeof(TemperatureValueLabel));
 
         public TemperatureUnitMode Mode {
-            get { return (TemperatureUnitMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            set => SetValue(ModeProperty, value);
         }
 
         public static readonly DependencyProperty FahrenheitPostfixProperty = DependencyProperty.Register(nameof(FahrenheitPostfix), typeof(string),
                 typeof(TemperatureValueLabel));
 
         public string FahrenheitPostfix {
-            get { return (string)GetValue(FahrenheitPostfixProperty); }
-            set { SetValue(FahrenheitPostfixProperty, value); }
+            get => (string)GetValue(FahrenheitPostfixProperty);
+            set => SetValue(FahrenheitPostfixProperty, value);
         }
     }
 
@@ -111,16 +111,16 @@ namespace AcManager.Controls {
                 typeof(DoubleTemperatureValueLabel));
 
         public TemperatureUnitMode Mode {
-            get { return (TemperatureUnitMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            set => SetValue(ModeProperty, value);
         }
 
         public static readonly DependencyProperty FahrenheitPostfixProperty = DependencyProperty.Register(nameof(FahrenheitPostfix), typeof(string),
                 typeof(DoubleTemperatureValueLabel));
 
         public string FahrenheitPostfix {
-            get { return (string)GetValue(FahrenheitPostfixProperty); }
-            set { SetValue(FahrenheitPostfixProperty, value); }
+            get => (string)GetValue(FahrenheitPostfixProperty);
+            set => SetValue(FahrenheitPostfixProperty, value);
         }
     }
 }

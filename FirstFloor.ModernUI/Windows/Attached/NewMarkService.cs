@@ -11,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetNew(DependencyObject d) {
-            return (bool)d.GetValue(NewProperty);
+            return d.GetValue(NewProperty) as bool? == true;
         }
 
         public static void SetNew(DependencyObject d, bool value) {
@@ -19,12 +19,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void OnLimitedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var u = d as FrameworkElement;
-            if (u == null) return;
-
+            if (!(d is FrameworkElement u)) return;
             u.Loaded += Control_Loaded;
         }
-        
+
         private static void Control_Loaded(object sender, RoutedEventArgs e) {
             var c = (UIElement)sender;
             if (GetNew(c)) {

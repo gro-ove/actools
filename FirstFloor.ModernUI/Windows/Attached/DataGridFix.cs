@@ -4,7 +4,7 @@ using System.Windows.Controls;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class DataGridFix {
         public static bool GetEnabled(DependencyObject obj) {
-            return (bool)obj.GetValue(EnabledProperty);
+            return obj.GetValue(EnabledProperty) as bool? == true;
         }
 
         public static void SetEnabled(DependencyObject obj, bool value) {
@@ -15,9 +15,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(DataGridFix), new UIPropertyMetadata(OnEnabledChanged));
 
         private static void OnEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as DataGrid;
-            if (element == null || !(e.NewValue is bool)) return;
-
+            if (!(d is DataGrid element) || !(e.NewValue is bool)) return;
             var newValue = (bool)e.NewValue;
             if (newValue) {
                 element.Loaded += OnDataGridLoaded;

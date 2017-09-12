@@ -277,7 +277,7 @@
               </DockPanel>
 
               <!-- Finished -->
-              <DockPanel>
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}">
                 <mui:ReferenceSwitch Value="{Binding Failed}">
                   <mui:ReferenceSwitch.Null>
                     <DockPanel>
@@ -292,7 +292,9 @@
                           Margin="0 0 8 0" VerticalAlignment="Center" />
                       <Button DockPanel.Dock="Bottom" Content="View Downloaded File In Explorer" Command="{Binding ViewInExplorerCommand}" Margin="0 4 0 0"
                           Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" />
+                      <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" DockPanel.Dock="Top" />
+                      <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" Style="{StaticResource Small}" Margin="0 2 0 0"
+                          Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                     </DockPanel>
                   </mui:ReferenceSwitch.NonNull>
                 </mui:ReferenceSwitch>

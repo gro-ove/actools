@@ -33,19 +33,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Dependency Properties
         [TypeConverter(typeof(LengthConverter))]
         public double ItemHeight {
-            get { return (double)GetValue(ItemHeightProperty); }
-            set { SetValue(ItemHeightProperty, value); }
+            get => GetValue(ItemHeightProperty) as double? ?? default(double);
+            set => SetValue(ItemHeightProperty, value);
         }
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemWidth {
-            get { return (double)GetValue(ItemWidthProperty); }
-            set { SetValue(ItemWidthProperty, value); }
+            get => GetValue(ItemWidthProperty) as double? ?? default(double);
+            set => SetValue(ItemWidthProperty, value);
         }
 
         public Orientation Orientation {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            set => SetValue(OrientationProperty, value);
         }
 
         public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register("ItemHeight", typeof(double), typeof(VirtualizingWrapPanel),
@@ -361,10 +361,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 double maxItemSize = 0;
                 var currentSection = GetFirstVisibleSection();
                 while (current < itemCount) {
-                    bool newlyRealized;
-
-                    // Get or create the child                    
-                    var child = (UIElement)_generator.GenerateNext(out newlyRealized);
+                    // Get or create the child
+                    var child = (UIElement)_generator.GenerateNext(out var newlyRealized);
                     if (newlyRealized) {
                         // Figure out if we need to insert the child at the end or somewhere in the middle
                         if (childIndex >= _children.Count) {
@@ -526,8 +524,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ScrollViewer _owner;
 
         public ScrollViewer ScrollOwner {
-            get { return _owner; }
-            set { _owner = value; }
+            get => _owner;
+            set => _owner = value;
         }
 
         public void SetHorizontalOffset(double offset) {

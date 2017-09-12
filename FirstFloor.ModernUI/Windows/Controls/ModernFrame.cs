@@ -104,9 +104,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             // handle fragment navigation
-            string newFragment;
             var oldValueNoFragment = NavigationHelper.RemoveFragment(oldValue);
-            var newValueNoFragment = NavigationHelper.RemoveFragment(newValue, out newFragment);
+            var newValueNoFragment = NavigationHelper.RemoveFragment(newValue, out var newFragment);
 
             if (newValueNoFragment != null && newValueNoFragment.Equals(oldValueNoFragment)) {
                 // fragment navigation
@@ -367,8 +366,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (contentIsError) return;
 
             // and raise optional fragment navigation events
-            string fragment;
-            NavigationHelper.RemoveFragment(newSource, out fragment);
+            NavigationHelper.RemoveFragment(newSource, out var fragment);
             if (fragment == null) return;
 
             // fragment navigation
@@ -383,9 +381,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var refs = _childFrames.ToArray();
             foreach (var r in refs) {
                 var valid = false;
-                ModernFrame frame;
 
-                if (r.TryGetTarget(out frame)) {
+                if (r.TryGetTarget(out var frame)) {
                     // check if frame is still an actual child (not the case when child is removed, but not yet garbage collected)
                     if (ReferenceEquals(NavigationHelper.FindFrame(null, frame), this)) {
                         valid = true;
@@ -443,8 +440,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private bool HandleRoutedEvent(CanExecuteRoutedEventArgs args) {
-            var originalSource = args.OriginalSource as DependencyObject;
-            return originalSource != null &&
+            return args.OriginalSource is DependencyObject originalSource &&
                 ReferenceEquals(originalSource.AncestorsAndSelf().OfType<ModernFrame>().FirstOrDefault(), this);
         }
 
@@ -537,8 +533,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private bool ShouldKeepContentAlive(object content) {
-            var o = content as DependencyObject;
-            if (o == null) return KeepContentAlive;
+            if (!(content is DependencyObject o)) return KeepContentAlive;
             var result = GetKeepAlive(o);
 
             // if a value exists for given content, use it
@@ -554,17 +549,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static void SetKeepAlive(DependencyObject o, bool? value) {
-            if (o == null) {
-                throw new ArgumentNullException(nameof(o));
-            }
+            if (o == null) throw new ArgumentNullException(nameof(o));
             o.SetValue(KeepAliveProperty, value);
         }
 
         public static bool GetKeepContentAlive(DependencyObject o) {
-            if (o == null) {
-                throw new ArgumentNullException(nameof(o));
-            }
-            return (bool)o.GetValue(KeepContentAliveProperty);
+            if (o == null) throw new ArgumentNullException(nameof(o));
+            return o.GetValue(KeepContentAliveProperty) as bool? == true;
         }
 
         public static void SetKeepContentAlive(DependencyObject o, bool value) {
@@ -575,46 +566,42 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public bool KeepContentAlive {
-            get { return (bool)GetValue(KeepContentAliveProperty); }
-            set { SetValue(KeepContentAliveProperty, value); }
+            get => GetValue(KeepContentAliveProperty) as bool? == true;
+            set => SetValue(KeepContentAliveProperty, value);
         }
 
         public IContentLoader ContentLoader {
-            get { return (IContentLoader)GetValue(ContentLoaderProperty); }
-            set { SetValue(ContentLoaderProperty, value); }
+            get => (IContentLoader)GetValue(ContentLoaderProperty);
+            set => SetValue(ContentLoaderProperty, value);
         }
 
-        public bool IsLoadingContent => (bool)GetValue(IsLoadingContentProperty);
+        public bool IsLoadingContent => GetValue(IsLoadingContentProperty) as bool? == true;
 
         public Uri Source {
-            get { return (Uri)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
+            get => (Uri)GetValue(SourceProperty);
+            set => SetValue(SourceProperty, value);
         }
 
         public string TransitionName {
-            get { return (string)GetValue(TransitionNameProperty); }
-            set { SetValue(TransitionNameProperty, value); }
+            get => (string)GetValue(TransitionNameProperty);
+            set => SetValue(TransitionNameProperty, value);
         }
 
         public Uri TopSource {
-            get { return (Uri)GetValue(TopSourceProperty); }
-            set { SetValue(TopSourceProperty, value); }
+            get => (Uri)GetValue(TopSourceProperty);
+            set => SetValue(TopSourceProperty, value);
         }
 
         public static readonly DependencyProperty TopSourceProperty = DependencyProperty.RegisterAttached(nameof(TopSource), typeof(Uri),
                 typeof(ModernFrame), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
         public static Uri GetTopSource(DependencyObject o) {
-            if (o == null) {
-                throw new ArgumentNullException(nameof(o));
-            }
+            if (o == null) throw new ArgumentNullException(nameof(o));
             return (Uri)o.GetValue(TopSourceProperty);
         }
 
         public static void SetTopSource(DependencyObject o, Uri value) {
-            if (o == null) {
-                throw new ArgumentNullException(nameof(o));
-            }
+            if (o == null) throw new ArgumentNullException(nameof(o));
             o.SetValue(TopSourceProperty, value);
         }
     }

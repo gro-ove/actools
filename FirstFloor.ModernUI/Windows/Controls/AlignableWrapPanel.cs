@@ -20,7 +20,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemWidth {
-            get => (double)GetValue(ItemWidthProperty);
+            get => GetValue(ItemWidthProperty) as double? ?? 0d;
             set => SetValue(ItemWidthProperty, value);
         }
 
@@ -30,7 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemHeight {
-            get => (double)GetValue(ItemHeightProperty);
+            get => GetValue(ItemHeightProperty) as double? ?? 0d;
             set => SetValue(ItemHeightProperty, value);
         }
 
@@ -235,7 +235,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public HorizontalAlignment HorizontalContentAlignment {
-            get => (HorizontalAlignment)GetValue(HorizontalContentAlignmentProperty);
+            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
             set => SetValue(HorizontalContentAlignmentProperty, value);
         }
 
@@ -243,7 +243,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public VerticalAlignment VerticalContentAlignment {
-            get => (VerticalAlignment)GetValue(VerticalContentAlignmentProperty);
+            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
             set => SetValue(VerticalContentAlignmentProperty, value);
         }
     }

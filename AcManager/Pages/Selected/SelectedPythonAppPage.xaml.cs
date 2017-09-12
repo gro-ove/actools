@@ -10,6 +10,7 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -111,8 +112,7 @@ namespace AcManager.Pages.Selected {
         private void OnUnloaded(object sender, RoutedEventArgs e) {}
 
         private void OnFileButtonClick(object sender, RoutedEventArgs e) {
-            var entry = ((FrameworkElement)sender).DataContext as PythonAppConfigFileValue;
-            if (entry == null) return;
+            if (!(((FrameworkElement)sender).DataContext is PythonAppConfigFileValue entry)) return;
 
             try {
                 if (entry.DirectoryMode) {
@@ -131,9 +131,9 @@ namespace AcManager.Pages.Selected {
                     }
 
                     var dialog = new OpenFileDialog {
-                        Filter = entry.Filter,
+                        Filter = entry.Filter ?? DialogFilterPiece.AllFiles.WinFilter,
                         InitialDirectory = directory,
-                        FileName = Path.GetFileName(entry.Value)
+                        FileName = Path.GetFileName(entry.Value) ?? ""
                 };
 
                     if (dialog.ShowDialog() == true) {

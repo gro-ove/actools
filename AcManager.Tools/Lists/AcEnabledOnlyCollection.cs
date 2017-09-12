@@ -130,6 +130,7 @@ namespace AcManager.Tools.Lists {
         }
 
         public int IndexOf(T item) {
+            if (item == null) return -1;
             return _view.IndexOf(item);
         }
 
@@ -202,8 +203,7 @@ namespace AcManager.Tools.Lists {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void OnWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            var o = e.OldValue as T;
-            if (o != null) {
+            if (e.OldValue is T o) {
                 Remove(o);
             }
 
@@ -233,14 +233,12 @@ namespace AcManager.Tools.Lists {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e) {
-            var notify = e as NotifyCollectionChangedEventArgs;
-            if (notify != null) {
+            if (e is NotifyCollectionChangedEventArgs notify) {
                 OnCollectionChanged(sender, notify);
                 return true;
             }
 
-            var wrapped = e as WrappedValueChangedEventArgs;
-            if (wrapped != null) {
+            if (e is WrappedValueChangedEventArgs wrapped) {
                 OnWrappedValueChanged(sender, wrapped);
                 return true;
             }

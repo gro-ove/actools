@@ -16,8 +16,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
 
         public bool ResetElementNameBindings {
-            get { return (bool)GetValue(ResetElementNameBindingsProperty); }
-            set { SetValue(ResetElementNameBindingsProperty, value); }
+            get => GetValue(ResetElementNameBindingsProperty) as bool? == true;
+            set => SetValue(ResetElementNameBindingsProperty, value);
         }
 
         public static readonly DependencyPropertyKey ContentPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Content), typeof(object),
@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void SetActiveChild(UIElement child) {
             if (ReferenceEquals(_child, child)) return;
-            
+
             _child = child;
             SetValue(ContentPropertyKey, child);
 
@@ -48,9 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            var b = sender as BaseSwitch;
-            if (b == null) return;
-            
+            if (!(sender is BaseSwitch b)) return;
             b.UpdateActiveChild();
             b.InvalidateMeasure();
             b.InvalidateVisual();
@@ -65,10 +63,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             UpdateActiveChild();
             return base.MeasureOverride(constraint);
         }
-        
+
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as UIElement;
-            if (element != null) {
+            if (d is UIElement element) {
                 (VisualTreeHelper.GetParent(element) as BaseSwitch)?.UpdateActiveChild();
             }
         }
@@ -83,9 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public bool MoveNext() { return false; }
 
-        public object Current {
-            get { throw new InvalidOperationException(); }
-        }
+        public object Current => throw new InvalidOperationException();
 
         private static IEnumerator _instance;
     }

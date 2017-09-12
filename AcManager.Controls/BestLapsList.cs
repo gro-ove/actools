@@ -38,14 +38,14 @@ namespace AcManager.Controls {
 
         public static readonly DependencyProperty LoadingProperty = LoadingPropertyKey.DependencyProperty;
 
-        public bool Loading => (bool)GetValue(LoadingProperty);
+        public bool Loading => GetValue(LoadingProperty) as bool? == true;
 
         public static readonly DependencyPropertyKey SingleEntryModePropertyKey = DependencyProperty.RegisterReadOnly(nameof(SingleEntryMode), typeof(bool),
                 typeof(BestLapsList), new PropertyMetadata(false));
 
         public static readonly DependencyProperty SingleEntryModeProperty = SingleEntryModePropertyKey.DependencyProperty;
 
-        public bool SingleEntryMode => (bool)GetValue(SingleEntryModeProperty);
+        public bool SingleEntryMode => GetValue(SingleEntryModeProperty) as bool? == true;
 
         public static readonly DependencyProperty CarIdProperty = DependencyProperty.Register(nameof(CarId), typeof(string),
                 typeof(BestLapsList), new PropertyMetadata(null, (o, e) => {
@@ -56,8 +56,8 @@ namespace AcManager.Controls {
         private string _carId;
 
         public string CarId {
-            get { return _carId; }
-            set { SetValue(CarIdProperty, value); }
+            get => _carId;
+            set => SetValue(CarIdProperty, value);
         }
 
         public static readonly DependencyProperty TrackIdProperty = DependencyProperty.Register(nameof(TrackId), typeof(string),
@@ -69,8 +69,8 @@ namespace AcManager.Controls {
         private string _trackId;
 
         public string TrackId {
-            get { return _trackId; }
-            set { SetValue(TrackIdProperty, value); }
+            get => _trackId;
+            set => SetValue(TrackIdProperty, value);
         }
 
         public static readonly DependencyProperty LimitProperty = DependencyProperty.Register(nameof(Limit), typeof(int),
@@ -82,8 +82,8 @@ namespace AcManager.Controls {
         private int _limit = 10;
 
         public int Limit {
-            get { return _limit; }
-            set { SetValue(LimitProperty, value); }
+            get => _limit;
+            set => SetValue(LimitProperty, value);
         }
 
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(nameof(Order), typeof(BestLapsOrder),
@@ -94,8 +94,8 @@ namespace AcManager.Controls {
         private BestLapsOrder _order = BestLapsOrder.FastestFirst;
 
         public BestLapsOrder Order {
-            get { return _order; }
-            set { SetValue(OrderProperty, value); }
+            get => _order;
+            set => SetValue(OrderProperty, value);
         }
 
         private bool _dirty;
@@ -134,7 +134,7 @@ namespace AcManager.Controls {
 
                 SetValue(LoadingPropertyKey, true);
                 await LapTimesManager.Instance.UpdateAsync();
-                
+
                 if (singleEntryMode) {
                     var entry = LapTimesManager.Instance.Entries.FirstOrDefault(x => x.CarId == carId && x.TrackAcId == trackAcId);
                     _lapTimes.ReplaceEverythingBy_Direct(entry == null ? new LapTimeWrapped[0] : new[] { new LapTimeWrapped(entry) });
@@ -169,16 +169,16 @@ namespace AcManager.Controls {
                 typeof(BestLapsList), new FrameworkPropertyMetadata(true));
 
         public bool ShowTitle {
-            get { return (bool)GetValue(ShowTitleProperty); }
-            set { SetValue(ShowTitleProperty, value); }
+            get => GetValue(ShowTitleProperty) as bool? == true;
+            set => SetValue(ShowTitleProperty, value);
         }
 
         public static readonly DependencyProperty EntryPaddingProperty = DependencyProperty.Register(nameof(EntryPadding), typeof(Thickness),
                 typeof(BestLapsList), new FrameworkPropertyMetadata(new Thickness(20d, 0d, 0d, 0d)));
 
         public Thickness EntryPadding {
-            get { return (Thickness)GetValue(EntryPaddingProperty); }
-            set { SetValue(EntryPaddingProperty, value); }
+            get => GetValue(EntryPaddingProperty) as Thickness? ?? default(Thickness);
+            set => SetValue(EntryPaddingProperty, value);
         }
     }
 }

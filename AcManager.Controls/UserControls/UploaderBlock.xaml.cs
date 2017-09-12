@@ -16,7 +16,7 @@ namespace AcManager.Controls.UserControls {
         [CanBeNull]
         private UploaderParams Model => DataContext as UploaderParams;
 
-        private SizeRelatedCondition<UploaderBlock, double> _sizeRelatedCondition;
+        private readonly SizeRelatedCondition<UploaderBlock, double> _sizeRelatedCondition;
 
         public UploaderBlock() {
             InitializeComponent();
@@ -51,16 +51,18 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
-            if (Model != null) {
-                Model.PropertyChanged += OnPropertyChanged;
-                Model.Prepare().Forget();
-                _sizeRelatedCondition.ListenOnProperty(Model, nameof(Model.SelectedUploader));
+            var model = Model;
+            if (model != null) {
+                model.PropertyChanged += OnPropertyChanged;
+                model.Prepare().Forget();
+                _sizeRelatedCondition.ListenOnProperty(model, nameof(model.SelectedUploader));
             }
         }
 
         private void OnTreeSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            if (Model == null) return;
-            Model.UploaderDirectory = UploaderDirectoriesTreeView.SelectedItem as DirectoryEntry ?? Model.UploaderDirectories?.FirstOrDefault();
+            var model = Model;
+            if (model == null) return;
+            model.UploaderDirectory = UploaderDirectoriesTreeView.SelectedItem as DirectoryEntry ?? model.UploaderDirectories?.FirstOrDefault();
         }
     }
 }

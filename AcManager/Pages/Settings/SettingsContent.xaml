@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:loaders="clr-namespace:AcManager.Tools.Helpers.Loaders;assembly=AcManager.Tools" mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -78,7 +78,7 @@
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <DockPanel>
+        <DockPanel Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
           <Label Content="RaceDepartment credentials:" ToolTip="Optional, default will be used if not set" Background="Transparent" />
           <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
             <mui:BetterTextBox Text="{Binding Holder.RdLogin}" ToolTip="Login (nickname or e-mail)" Placeholder="Login" />
@@ -86,14 +86,14 @@
           </mui:SpacingUniformGrid>
         </DockPanel>
 
-        <DockPanel>
+        <DockPanel Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
           <Label Content="RaceDepartment proxy:" Background="Transparent" />
           <mui:BetterTextBox Text="{Binding Holder.RdProxy}" Placeholder="None" />
         </DockPanel>
 
         <c:MessageBlock>
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>If you want to install content from RD, AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.BbCode>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.BbCode>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

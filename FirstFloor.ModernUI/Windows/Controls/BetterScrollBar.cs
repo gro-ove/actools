@@ -8,10 +8,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty MinThumbLengthProperty = DependencyProperty.Register(nameof(MinThumbLength), typeof(double),
                 typeof(BetterScrollBar), new UIPropertyMetadata(40d, OnMinThumbLengthPropertyChanged));
-        
+
         public double MinThumbLength {
-            get { return (double)GetValue(MinThumbLengthProperty); }
-            set { SetValue(MinThumbLengthProperty, value); }
+            get => GetValue(MinThumbLengthProperty) as double? ?? 0d;
+            set => SetValue(MinThumbLengthProperty, value);
         }
 
         private static void OnMinThumbLengthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {

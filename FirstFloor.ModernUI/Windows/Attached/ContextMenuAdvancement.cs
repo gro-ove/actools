@@ -17,7 +17,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetPropagateToChildren(DependencyObject obj) {
-            return (bool)obj.GetValue(PropagateToChildrenProperty);
+            return obj.GetValue(PropagateToChildrenProperty) as bool? == true;
         }
 
         public static void SetPropagateToChildren(DependencyObject obj, bool value) {
@@ -28,9 +28,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(ContextMenuAdvancement), new UIPropertyMetadata(OnPropagateToChildrenChanged));
 
         private static void OnPropagateToChildrenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as FrameworkElement;
-            if (element == null || !(e.NewValue is bool)) return;
-
+            if (!(d is FrameworkElement element) || !(e.NewValue is bool)) return;
             var newValue = (bool)e.NewValue;
             if (newValue) {
                 element.PreviewMouseDown += OnMouseDown;

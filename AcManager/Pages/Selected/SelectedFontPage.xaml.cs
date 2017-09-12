@@ -132,7 +132,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            TextBox.Text = ValuesStorage.GetString(KeyTestText, @"0123456789 Test");
+            TextBox.Text = ValuesStorage.GetString(KeyTestText) ?? @"0123456789 Test";
         }
 
         private void RedrawTestText() {

@@ -74,16 +74,16 @@ namespace AcManager.Controls.Video {
                 typeof(VideoPlayer));
 
         public bool AutoPlay {
-            get { return (bool)GetValue(AutoPlayProperty); }
-            set { SetValue(AutoPlayProperty, value); }
+            get => GetValue(AutoPlayProperty) as bool? == true;
+            set => SetValue(AutoPlayProperty, value);
         }
 
         public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch), typeof(VideoPlayer),
                 new PropertyMetadata(Stretch.Uniform, OnStretchChanged));
 
         public Stretch Stretch {
-            get { return (Stretch)GetValue(StretchProperty); }
-            set { SetValue(StretchProperty, value); }
+            get => GetValue(StretchProperty) as Stretch? ?? default(Stretch);
+            set => SetValue(StretchProperty, value);
         }
 
         private static void OnStretchChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -98,8 +98,8 @@ namespace AcManager.Controls.Video {
                 new PropertyMetadata(OnSourceChanged));
 
         public Uri Source {
-            get { return (Uri)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
+            get => (Uri)GetValue(SourceProperty);
+            set => SetValue(SourceProperty, value);
         }
 
         private static void OnSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -114,8 +114,8 @@ namespace AcManager.Controls.Video {
                 new PropertyMetadata(false, OnIsLoopedChanged));
 
         public bool IsLooped {
-            get { return (bool)GetValue(IsLoopedProperty); }
-            set { SetValue(IsLoopedProperty, value); }
+            get => GetValue(IsLoopedProperty) as bool? == true;
+            set => SetValue(IsLoopedProperty, value);
         }
 
         private static void OnIsLoopedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -130,8 +130,8 @@ namespace AcManager.Controls.Video {
                 new PropertyMetadata(1d, OnVolumeChanged));
 
         public double Volume {
-            get { return (double)GetValue(VolumeProperty); }
-            set { SetValue(VolumeProperty, value); }
+            get => GetValue(VolumeProperty) as double? ?? 0d;
+            set => SetValue(VolumeProperty, value);
         }
 
         private static void OnVolumeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -154,23 +154,17 @@ namespace AcManager.Controls.Video {
         UIElement Initialize();
 
         Uri Source { get; set; }
-
         Stretch Stretch { get; set; }
 
         bool IsLooped { get; set; }
-
         double Volume { get; set; }
 
         void Play();
-
         void PlayRandomly();
-
         void Pause();
-
         void Stop();
 
         event EventHandler Started;
-
         event EventHandler Ended;
     }
 }

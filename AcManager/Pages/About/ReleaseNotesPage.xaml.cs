@@ -52,7 +52,7 @@ namespace AcManager.Pages.About {
             private ListCollectionView _notesList;
 
             public ListCollectionView NotesList {
-                get { return _notesList; }
+                get => _notesList;
                 set {
                     if (Equals(value, _notesList)) return;
                     _notesList = value;
@@ -61,6 +61,8 @@ namespace AcManager.Pages.About {
             }
 
             public int Compare(object x, object y) {
+                if (x == null) return y == null ? 0 : 1;
+                if (y == null) return -1;
                 return -((PieceOfInformation)x).Version.CompareAsVersionTo(((PieceOfInformation)y).Version);
             }
         }

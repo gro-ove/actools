@@ -22,7 +22,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectHeaderSection));
 
         public bool ShowIcon {
-            get => (bool)GetValue(ShowIconProperty);
+            get => GetValue(ShowIconProperty) as bool? == true;
             set => SetValue(ShowIconProperty, value);
         }
 

@@ -312,7 +312,7 @@ namespace AcTools.Utils {
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public static string GetOriginalFilename(string filename) {
+        public static string GetOriginalFilename([NotNull] string filename) {
             var directory = Path.GetDirectoryName(filename);
             var name = Path.GetFileName(filename);
             if (directory == null) return filename;

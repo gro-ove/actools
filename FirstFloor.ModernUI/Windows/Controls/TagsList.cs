@@ -19,8 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private CommandBase _changeCommand;
 
         public ICommand ChangeCommand => _changeCommand ?? (_changeCommand = new DelegateCommand<TextBox>(o => {
-            var originalValue = o?.DataContext as string;
-            if (originalValue == null) return;
+            if (!(o?.DataContext is string originalValue)) return;
 
             var newValue = o.Text.Trim();
             if (Equals(originalValue, newValue)) return;
@@ -74,9 +73,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             base.OnApplyTemplate();
 
-            var textBox = Template.FindName("PART_NewTagTextBox", this) as ComboBox;
-            if (textBox == null) return;
-
+            if (!(Template.FindName("PART_NewTagTextBox", this) is ComboBox textBox)) return;
             textBox.PreviewKeyDown += TextBox_KeyDown;
             textBox.LostFocus += TextBox_LostFocus;
             _previousTextBox = textBox;
@@ -97,9 +94,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (e.Key != Key.Back && e.Key != Key.Enter && e.Key != Key.Tab &&
                     e.Key != Key.Escape) return;
 
-            var textBox = sender as ComboBox;
-            if (textBox == null) return;
-
+            if (!(sender is ComboBox textBox)) return;
             if (e.Key != Key.Back) {
                 if (string.IsNullOrWhiteSpace(textBox.Text)) return;
 
@@ -144,7 +139,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(TagsList));
 
         public bool IsReadOnly {
-            get => (bool)GetValue(IsReadOnlyProperty);
+            get => GetValue(IsReadOnlyProperty) as bool? == true;
             set => SetValue(IsReadOnlyProperty, value);
         }
     }

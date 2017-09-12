@@ -247,9 +247,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             Purge();
             foreach (var reference in Elements) {
-                FrameworkElement f;
-                if (!reference.TryGetTarget(out f)) return;
-
+                if (!reference.TryGetTarget(out var f)) return;
                 if (GetHint(f) == hint.Id && f.IsLoaded && TryToShow(f, hint)) {
                     eventArgs.Shown = true;
                     return;
@@ -260,16 +258,13 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static readonly List<WeakReference<FrameworkElement>> Elements = new List<WeakReference<FrameworkElement>>(10);
 
         private static void Purge() {
-            foreach (var toDelete in Elements.Where(x => {
-                FrameworkElement f;
-                return !x.TryGetTarget(out f);
-            }).ToList()) {
+            foreach (var toDelete in Elements.Where(x => !x.TryGetTarget(out _)).ToList()) {
                 Elements.Remove(toDelete);
             }
         }
 
         public static bool GetHintsDecorator(DependencyObject obj) {
-            return (bool)obj.GetValue(HintsDecoratorProperty);
+            return obj.GetValue(HintsDecoratorProperty) as bool? == true;
         }
 
         public static void SetHintsDecorator(DependencyObject obj, bool value) {
@@ -291,16 +286,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyHintsService), new UIPropertyMetadata(OnHintChanged));
 
         private static void OnHintChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var u = d as FrameworkElement;
-            if (u == null) return;
-
+            if (!(d is FrameworkElement u)) return;
             Purge();
 
-            var reference = Elements.FirstOrDefault(x => {
-                FrameworkElement f;
-                return x.TryGetTarget(out f) && ReferenceEquals(f, u);
-            });
-
+            var reference = Elements.FirstOrDefault(x => x.TryGetTarget(out var f) && ReferenceEquals(f, u));
             if (GetHint(u) == null) {
                 if (reference != null) {
                     Elements.Remove(reference);
@@ -317,9 +306,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void OnElementLoaded(object sender, RoutedEventArgs routedEventArgs) {
-            var e = sender as FrameworkElement;
-            if (e == null || !GetTriggerOnLoad(e) || !e.IsVisible) return;
-
+            if (!(sender is FrameworkElement e) || !GetTriggerOnLoad(e) || !e.IsVisible) return;
             var id = GetHint(e);
             _nextHint = Tuple.Create(id, e);
             Hints.FirstOrDefault(x => x.Id == id)?.Trigger();
@@ -335,7 +322,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         #region Style-related
         public static HorizontalAlignment GetHorizontalAlignment(DependencyObject obj) {
-            return (HorizontalAlignment)obj.GetValue(HorizontalAlignmentProperty);
+            return obj.GetValue(HorizontalAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
         }
 
         public static void SetHorizontalAlignment(DependencyObject obj, HorizontalAlignment value) {
@@ -346,7 +333,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalAlignment(DependencyObject obj) {
-            return (VerticalAlignment)obj.GetValue(VerticalAlignmentProperty);
+            return obj.GetValue(VerticalAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
         }
 
         public static void SetVerticalAlignment(DependencyObject obj, VerticalAlignment value) {
@@ -358,7 +345,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
 
         public static HorizontalAlignment GetHorizontalContentAlignment(DependencyObject obj) {
-            return (HorizontalAlignment)obj.GetValue(HorizontalContentAlignmentProperty);
+            return obj.GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
         }
 
         public static void SetHorizontalContentAlignment(DependencyObject obj, HorizontalAlignment value) {
@@ -370,7 +357,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalContentAlignment(DependencyObject obj) {
-            return (VerticalAlignment)obj.GetValue(VerticalContentAlignmentProperty);
+            return obj.GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
         }
 
         public static void SetVerticalContentAlignment(DependencyObject obj, VerticalAlignment value) {
@@ -382,7 +369,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.None));
 
         public static double GetOffsetX(DependencyObject obj) {
-            return (double)obj.GetValue(OffsetXProperty);
+            return obj.GetValue(OffsetXProperty) as double? ?? 0d;
         }
 
         public static void SetOffsetX(DependencyObject obj, double value) {
@@ -393,7 +380,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.None));
 
         public static double GetOffsetY(DependencyObject obj) {
-            return (double)obj.GetValue(OffsetYProperty);
+            return obj.GetValue(OffsetYProperty) as double? ?? 0d;
         }
 
         public static void SetOffsetY(DependencyObject obj, double value) {
@@ -404,7 +391,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.None));
 
         public static bool GetTriggerOnLoad(DependencyObject obj) {
-            return (bool)obj.GetValue(TriggerOnLoadProperty);
+            return obj.GetValue(TriggerOnLoadProperty) as bool? == true;
         }
 
         public static void SetTriggerOnLoad(DependencyObject obj, bool value) {

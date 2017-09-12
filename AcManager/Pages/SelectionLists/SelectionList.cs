@@ -373,8 +373,7 @@ namespace AcManager.Pages.SelectionLists {
             if (e.Key == Key.Enter) {
                 e.Handled = true;
 
-                var selected = SelectedItem as TItem;
-                if (selected != null) {
+                if (SelectedItem is TItem selected) {
                     NavigationCommands.GoToPage.Execute(GetPageAddress(selected), (IInputElement)sender);
                 }
             }
@@ -383,14 +382,13 @@ namespace AcManager.Pages.SelectionLists {
         protected void OnItemMouseDown(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
 
-            var selected = ((FrameworkElement)sender).DataContext as TItem;
-            if (selected != null) {
+            if (((FrameworkElement)sender).DataContext is TItem selected) {
                 NavigationCommands.GoToPage.Execute(GetPageAddress(selected), (IInputElement)sender);
             }
         }
 
         bool IEqualityComparer<TItem>.Equals(TItem x, TItem y) {
-            return x.IsSameAs(y);
+            return x?.IsSameAs(y) == true;
         }
 
         int IEqualityComparer<TItem>.GetHashCode(TItem obj) {

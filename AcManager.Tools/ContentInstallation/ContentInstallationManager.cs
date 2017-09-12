@@ -47,9 +47,9 @@ namespace AcManager.Tools.ContentInstallation {
             var entry = new ContentInstallationEntry(source, installationParams);
             ActionExtension.InvokeInMainThread(() => Queue.Add(entry));
             var result = await entry.RunAsync();
-            _tasks.Remove(source);
+            ActionExtension.InvokeInMainThread(() => RemoveLater(entry));
             await Task.Delay(1);
-            RemoveLater(entry);
+            _tasks.Remove(source);
             return result;
         }
 
@@ -75,7 +75,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private async void RemoveLater(ContentInstallationEntry entry) {
             if (entry.Cancelled || entry.Failed == null) {
-                await Task.Delay(entry.Cancelled ? OptionCancelledDelay : OptionSuccessDelay);
+                if (!entry.UserCancelled) {
+                    await Task.Delay(entry.Cancelled ? OptionCancelledDelay : OptionSuccessDelay);
+                }
+
                 Remove(entry);
             } else {
                 entry.PropertyChanged += (sender, args) => {

@@ -20,8 +20,8 @@ namespace AcManager.Controls {
                                                                                              typeof(AcToolBar));
 
         public Collection<ToolBar> ToolBars {
-            get { return (Collection<ToolBar>)GetValue(ToolBarsProperty); }
-            set { SetValue(ToolBarsProperty, value); }
+            get => (Collection<ToolBar>)GetValue(ToolBarsProperty);
+            set => SetValue(ToolBarsProperty, value);
         }
 
         public override void OnApplyTemplate() {
@@ -38,25 +38,25 @@ namespace AcManager.Controls {
                 typeof(AcToolBar), new PropertyMetadata(false));
 
         public bool FitWidth {
-            get { return (bool)GetValue(FitWidthProperty); }
-            set { SetValue(FitWidthProperty, value); }
+            get => GetValue(FitWidthProperty) as bool? == true;
+            set => SetValue(FitWidthProperty, value);
         }
 
         #region Toggling attributes
         public static readonly DependencyProperty IsTogglableProperty = DependencyProperty.Register("IsTogglable", typeof(bool),
             typeof(AcToolBar), new PropertyMetadata());
-        
+
         public bool IsTogglable {
-            get { return (bool)GetValue(IsTogglableProperty); }
-            set { SetValue(IsTogglableProperty, value); }
+            get => GetValue(IsTogglableProperty) as bool? == true;
+            set => SetValue(IsTogglableProperty, value);
         }
 
         public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool),
             typeof(AcToolBar), new PropertyMetadata(false));
 
         public bool IsActive {
-            get { return (bool)GetValue(IsActiveProperty); }
-            set { SetValue(IsActiveProperty, value); }
+            get => GetValue(IsActiveProperty) as bool? == true;
+            set => SetValue(IsActiveProperty, value);
         }
         #endregion
     }

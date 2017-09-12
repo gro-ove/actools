@@ -13,8 +13,8 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
-    /// Represents a control with a single piece of content and when that content 
-    /// changes performs a transition animation. 
+    /// Represents a control with a single piece of content and when that content
+    /// changes performs a transition animation.
     /// </summary>
     /// <QualityBand>Experimental</QualityBand>
     /// <remarks>The API for this control will change considerably in the future.</remarks>
@@ -85,7 +85,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// a transition.
         /// </summary>
         public bool IsTransitioning {
-            get { return (bool)GetValue(IsTransitioningProperty); }
+            get => GetValue(IsTransitioningProperty) as bool? == true;
             private set {
                 _allowIsTransitioningWrite = true;
                 SetValue(IsTransitioningProperty, value);
@@ -148,8 +148,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// directly to the VisualStates inside the PresentationStates group.
         /// </summary>
         public string Transition {
-            get { return GetValue(TransitionProperty) as string; }
-            set { SetValue(TransitionProperty, value); }
+            get => GetValue(TransitionProperty) as string;
+            set => SetValue(TransitionProperty, value);
         }
 
         /// <summary>
@@ -202,8 +202,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// will be aborted when setting new content during a transition.
         /// </summary>
         public bool RestartTransitionOnContentChange {
-            get { return (bool)GetValue(RestartTransitionOnContentChangeProperty); }
-            set { SetValue(RestartTransitionOnContentChangeProperty, value); }
+            get => GetValue(RestartTransitionOnContentChangeProperty) as bool? == true;
+            set => SetValue(RestartTransitionOnContentChangeProperty, value);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Builds the visual tree for the TransitioningContentControl control 
+        /// Builds the visual tree for the TransitioningContentControl control
         /// when a new template is applied.
         /// </summary>
         public override void OnApplyTemplate() {

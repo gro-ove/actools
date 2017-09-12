@@ -76,8 +76,8 @@ namespace AcManager.Controls.UserControls {
                 typeof(WebBlock), new PropertyMetadata(true, OnIsAddressBarVisibleChanged));
 
         public bool IsAddressBarVisible {
-            get { return (bool)GetValue(IsAddressBarVisibleProperty); }
-            set { SetValue(IsAddressBarVisibleProperty, value); }
+            get => GetValue(IsAddressBarVisibleProperty) as bool? == true;
+            set => SetValue(IsAddressBarVisibleProperty, value);
         }
 
         private static void OnIsAddressBarVisibleChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -92,16 +92,16 @@ namespace AcManager.Controls.UserControls {
                 typeof(WebBlock), new PropertyMetadata(true));
 
         public bool OpenNewWindowsExternally {
-            get { return (bool)GetValue(OpenNewWindowsExternallyProperty); }
-            set { SetValue(OpenNewWindowsExternallyProperty, value); }
+            get => GetValue(OpenNewWindowsExternallyProperty) as bool? == true;
+            set => SetValue(OpenNewWindowsExternallyProperty, value);
         }
 
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),
                 typeof(WebBlock), new PropertyMetadata(OnUserAgentChanged));
 
         public string UserAgent {
-            get { return (string)GetValue(UserAgentProperty); }
-            set { SetValue(UserAgentProperty, value); }
+            get => (string)GetValue(UserAgentProperty);
+            set => SetValue(UserAgentProperty, value);
         }
 
         private static void OnUserAgentChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -118,8 +118,8 @@ namespace AcManager.Controls.UserControls {
 
         [CanBeNull]
         public ICustomStyleProvider StyleProvider {
-            get { return (ICustomStyleProvider)GetValue(StyleProviderProperty); }
-            set { SetValue(StyleProviderProperty, value); }
+            get => (ICustomStyleProvider)GetValue(StyleProviderProperty);
+            set => SetValue(StyleProviderProperty, value);
         }
 
         private static void OnStyleProviderChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -135,8 +135,8 @@ namespace AcManager.Controls.UserControls {
 
         [CanBeNull]
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         public static readonly DependencyProperty StartPageProperty = DependencyProperty.Register(nameof(StartPage), typeof(string),
@@ -144,8 +144,8 @@ namespace AcManager.Controls.UserControls {
 
         [CanBeNull]
         public string StartPage {
-            get { return (string)GetValue(StartPageProperty); }
-            set { SetValue(StartPageProperty, value); }
+            get => (string)GetValue(StartPageProperty);
+            set => SetValue(StartPageProperty, value);
         }
 
         private static void OnStartPageChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

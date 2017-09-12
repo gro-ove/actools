@@ -14,11 +14,11 @@ namespace FirstFloor.ModernUI.Effects {
         }
 
         public static readonly DependencyProperty SaturationProperty = DependencyProperty.Register("Saturation", typeof(double),
-                typeof(ColorPickerSaturationPaletteEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(0), CoerceSaturationFactor));
+                typeof(ColorPickerSaturationPaletteEffect), new UIPropertyMetadata(0d, PixelShaderConstantCallback(0), CoerceSaturationFactor));
 
         public double Saturation {
-            get { return (double)GetValue(SaturationProperty); }
-            set { SetValue(SaturationProperty, value); }
+            get => GetValue(SaturationProperty) as double? ?? 0d;
+            set => SetValue(SaturationProperty, value);
         }
 
         private static object CoerceSaturationFactor(DependencyObject d, object value) {

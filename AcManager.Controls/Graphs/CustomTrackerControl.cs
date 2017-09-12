@@ -15,8 +15,8 @@ namespace AcManager.Controls.Graphs {
                 typeof(CustomTrackerControl), new PropertyMetadata(OnPositionOverrideChanged));
 
         public ScreenPoint PositionOverride {
-            get { return (ScreenPoint)GetValue(PositionOverrideProperty); }
-            set { SetValue(PositionOverrideProperty, value); }
+            get => GetValue(PositionOverrideProperty) as ScreenPoint? ?? default(ScreenPoint);
+            set => SetValue(PositionOverrideProperty, value);
         }
 
         private static void OnPositionOverrideChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -27,19 +27,19 @@ namespace AcManager.Controls.Graphs {
                 typeof(CustomTrackerControl), new PropertyMetadata(OnLineExtentsOverrideChanged));
 
         public OxyRect LineExtentsOverride {
-            get { return (OxyRect)GetValue(LineExtentsOverrideProperty); }
-            set { SetValue(LineExtentsOverrideProperty, value); }
+            get => GetValue(LineExtentsOverrideProperty) as OxyRect? ?? default(OxyRect);
+            set => SetValue(LineExtentsOverrideProperty, value);
         }
 
         private static void OnLineExtentsOverrideChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((CustomTrackerControl)o).UpdatePositionAndLineExtents();
         }
 
-        private Popup _popup;
+        // private Popup _popup;
 
         public override void OnApplyTemplate() {
             UpdatePositionAndLineExtents();
-            _popup = GetTemplateChild("PART_Popup") as Popup;
+            // _popup = GetTemplateChild("PART_Popup") as Popup;
             base.OnApplyTemplate();
         }
 

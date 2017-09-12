@@ -66,7 +66,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetForceDisabled(DependencyObject obj) {
-            return (bool)obj.GetValue(ForceDisabledProperty);
+            return obj.GetValue(ForceDisabledProperty) as bool? == true;
         }
 
         public static void SetForceDisabled(DependencyObject obj, bool value) {
@@ -78,7 +78,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
 
         public static bool GetEnabled(FrameworkElement obj) {
-            return (bool)obj.GetValue(EnabledProperty);
+            return obj.GetValue(EnabledProperty) as bool? == true;
         }
 
         public static void SetEnabled(FrameworkElement obj, bool value) {
@@ -100,7 +100,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(Draggable), new PropertyMetadata(null, OnEnabledChanged));
 
         public static bool GetKeepSelection(DependencyObject obj) {
-            return (bool)obj.GetValue(KeepSelectionProperty);
+            return obj.GetValue(KeepSelectionProperty) as bool? == true;
         }
 
         public static void SetKeepSelection(DependencyObject obj, bool value) {
@@ -111,7 +111,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(Draggable), new PropertyMetadata(false));
 
         public static bool GetIsDestinationHighlighted(DependencyObject obj) {
-            return (bool)obj.GetValue(IsDestinationHighlightedProperty);
+            return obj.GetValue(IsDestinationHighlightedProperty) as bool? == true;
         }
 
         public static void SetIsDestinationHighlighted(DependencyObject obj, bool value) {
@@ -128,8 +128,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (e.Property == EnabledProperty && (GetData(element) != null || e.OldValue as bool? != false)) return;
 
             MouseEventHandler handler;
-            var grid = element as DataGrid;
-            if (grid != null) {
+            if (element is DataGrid grid) {
                 handler = OnDataGridMouseMove;
             } else if (element is ListBox) {
                 handler = OnListBoxMouseMove;
@@ -157,8 +156,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnElementMouseDown(object sender, MouseButtonEventArgs e) {
             if (!e.Handled) {
-                var element = sender as FrameworkElement;
-                if (element != null && !IgnoreSpecialControls(sender, e)) {
+                if (sender is FrameworkElement element && !IgnoreSpecialControls(sender, e)) {
                     if (GetForceDisabled(element)) return;
 
                     _previous = element;
@@ -286,9 +284,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static bool MoveFromItemsControl(IInputElement element, MouseEventArgs e) {
-            var items = element as ItemsControl;
-            if (items == null) return false;
-
+            if (!(element is ItemsControl items)) return false;
             var item = items.GetFromPoint<FrameworkElement>(e.GetPosition(element))?
                             .GetParents()
                             .OfType<FrameworkElement>()
@@ -309,8 +305,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static bool IgnoreSpecialControls(object sender, MouseEventArgs e) {
             var reference = sender as UIElement;
-            var element = reference?.InputHitTest(e.GetPosition(reference)) as DependencyObject;
-            if (element == null || IsIgnored(element) ||
+            if (!(reference?.InputHitTest(e.GetPosition(reference)) is DependencyObject element) || IsIgnored(element) ||
                     reference.FindVisualChildren<Popup>().Any(x => x.IsOpen)) return true;
             return element.GetParents().TakeWhile(parent => !ReferenceEquals(parent, sender)).Any(IsIgnored);
         }
@@ -354,9 +349,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(Draggable), new UIPropertyMetadata(OnDestinationChanged));
 
         private static void OnDestinationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as ItemsControl;
-            if (element == null) return;
-
+            if (!(d is ItemsControl element)) return;
             if (e.NewValue != null) {
                 var type = e.NewValue as Type;
                 if (type != null) {
@@ -383,9 +376,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(Draggable), new UIPropertyMetadata(OnDestinationConverterChanged));
 
         private static void OnDestinationConverterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as ItemsControl;
-            if (element == null || !(e.NewValue is IDraggableDestinationConverter)) return;
-
+            if (!(d is ItemsControl element) || !(e.NewValue is IDraggableDestinationConverter)) return;
             var newValue = (IDraggableDestinationConverter)e.NewValue;
             if (newValue != null) {
                 element.Drop += OnDestinationConverterDrop;
@@ -468,7 +459,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 var sourceList = GetActualList(source) as IList;
 
                 if (destinationList == null) {
-                    Logging.Warning("Can’t find target: " + destination.ItemsSource);
+                    Logging.Warning("Canâ€™t find target: " + destination.ItemsSource);
                     e.Effects = DragDropEffects.None;
                     return;
                 }

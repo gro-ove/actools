@@ -89,9 +89,10 @@ namespace AcManager.Pages.Lists {
             }
 
             public void Unload() {
-                if (_enabler != null) {
-                    _enabler.Mods.ItemPropertyChanged -= OnItemPropertyChanged;
-                    _enabler.Mods.CollectionChanged -= OnCollectionChanged;
+                var enabler = _enabler;
+                if (enabler != null) {
+                    enabler.Mods.ItemPropertyChanged -= OnItemPropertyChanged;
+                    enabler.Mods.CollectionChanged -= OnCollectionChanged;
                 }
             }
 
@@ -101,14 +102,8 @@ namespace AcManager.Pages.Lists {
                                 (Predicate<object>)(o => (o as GenericMod)?.IsEnabled == true) :
                                 (o => (o as GenericMod)?.IsEnabled == false))
                         : (enabled ?
-                                (Predicate<object>)(o => {
-                                    var m = o as GenericMod;
-                                    return m != null && (_filter.Test(m.DisplayName) && m.IsEnabled);
-                                }) :
-                                (o => {
-                                    var m = o as GenericMod;
-                                    return m != null && (_filter.Test(m.DisplayName) && !m.IsEnabled);
-                                }));
+                                (Predicate<object>)(o => o is GenericMod m && _filter.Test(m.DisplayName) && m.IsEnabled) :
+                                (o => o is GenericMod m && _filter.Test(m.DisplayName) && !m.IsEnabled));
             }
 
             private void Prepare(BetterListCollectionView view, string key) {
@@ -127,8 +122,7 @@ namespace AcManager.Pages.Lists {
 
                 LoadCurrent();
                 view.CurrentChanged += async (sender, args) => {
-                    var selected = view.CurrentItem as GenericMod;
-                    if (selected != null) {
+                    if (view.CurrentItem is GenericMod selected) {
                         ValuesStorage.Set(storageKey, selected.DisplayName);
                     } else {
                         await Task.Delay(1);
@@ -153,10 +147,7 @@ namespace AcManager.Pages.Lists {
             private AsyncCommand _enableCommand;
 
             public AsyncCommand EnableCommand => _enableCommand ?? (_enableCommand = new AsyncCommand(() => _busy.Task(async () => {
-                if (_enabler == null || Disabled == null) return;
-
-                var selected = Disabled.CurrentItem as GenericMod;
-                if (selected == null) return;
+                if (_enabler == null || Disabled == null || !(Disabled.CurrentItem is GenericMod selected)) return;
 
                 var conflicts = await _enabler.CheckConflictsAsync(selected);
                 if (conflicts.Length > 0 && ModernDialog.ShowMessage(
@@ -185,10 +176,7 @@ namespace AcManager.Pages.Lists {
             private AsyncCommand _disableCommand;
 
             public AsyncCommand DisableCommand => _disableCommand ?? (_disableCommand = new AsyncCommand(() => _busy.Task(async () => {
-                if (_enabler == null || Enabled == null) return;
-
-                var selected = Enabled.CurrentItem as GenericMod;
-                if (selected == null) return;
+                if (_enabler == null || Enabled == null || !(Enabled.CurrentItem is GenericMod selected)) return;
 
                 try {
                     using (var waiting = WaitingDialog.Create("Disabling mod…")) {
@@ -293,9 +281,7 @@ namespace AcManager.Pages.Lists {
 
         private void OnItemClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount != 2) return;
-
-            var item = (sender as FrameworkElement)?.DataContext as GenericMod;
-            if (item == null) return;
+            if (!((sender as FrameworkElement)?.DataContext is GenericMod item)) return;
 
             if (item.IsEnabled) {
                 Model.DisableCommand.Execute();

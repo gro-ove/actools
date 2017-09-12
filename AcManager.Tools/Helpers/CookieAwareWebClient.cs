@@ -30,6 +30,16 @@ namespace AcManager.Tools.Helpers {
             });
         }
 
+        private string _accept;
+
+        public IDisposable SetAccept(string accept) {
+            var oldValue = _accept;
+            _accept = accept;
+            return new ActionAsDisposable(() => {
+                _accept = oldValue;
+            });
+        }
+
         private bool? _autoRedirect;
 
         public IDisposable SetAutoRedirect(bool value) {
@@ -76,6 +86,10 @@ namespace AcManager.Tools.Helpers {
 
                 if (!string.IsNullOrEmpty(_contentType)) {
                     webRequest.ContentType = _contentType;
+                }
+
+                if (!string.IsNullOrEmpty(_accept)) {
+                    webRequest.Accept = _accept;
                 }
 
                 if (!string.IsNullOrEmpty(_method)) {

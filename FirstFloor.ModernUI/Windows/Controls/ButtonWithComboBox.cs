@@ -21,14 +21,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty IsProcessingProperty = IsProcessingPropertyKey.DependencyProperty;
 
-        public bool IsProcessing => (bool)GetValue(IsProcessingProperty);
+        public bool IsProcessing => GetValue(IsProcessingProperty) as bool? == true;
 
         public static readonly DependencyPropertyKey CancellablePropertyKey = DependencyProperty.RegisterReadOnly(nameof(Cancellable), typeof(bool),
                 typeof(AsyncButton), new PropertyMetadata(false));
 
         public static readonly DependencyProperty CancellableProperty = CancellablePropertyKey.DependencyProperty;
 
-        public bool Cancellable => (bool)GetValue(CancellableProperty);
+        public bool Cancellable => GetValue(CancellableProperty) as bool? == true;
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e) {
             base.OnPropertyChanged(e);
@@ -142,7 +142,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ButtonWithComboBox));
 
         public object ButtonToolTip {
-            get => (object)GetValue(ButtonToolTipProperty);
+            get => GetValue(ButtonToolTipProperty);
             set => SetValue(ButtonToolTipProperty, value);
         }
 

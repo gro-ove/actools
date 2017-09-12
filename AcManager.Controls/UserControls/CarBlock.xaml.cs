@@ -58,7 +58,7 @@ namespace AcManager.Controls.UserControls {
                 typeof(CarBlock), new PropertyMetadata(true));
 
         public bool ShowSkinsAndPreview {
-            get => (bool)GetValue(ShowSkinsAndPreviewProperty);
+            get => GetValue(ShowSkinsAndPreviewProperty) as bool? == true;
             set => SetValue(ShowSkinsAndPreviewProperty, value);
         }
 
@@ -78,7 +78,7 @@ namespace AcManager.Controls.UserControls {
                 typeof(CarBlock));
 
         public bool SelectSkin {
-            get => (bool)GetValue(SelectSkinProperty);
+            get => GetValue(SelectSkinProperty) as bool? == true;
             set => SetValue(SelectSkinProperty, value);
         }
 
@@ -86,7 +86,7 @@ namespace AcManager.Controls.UserControls {
                 typeof(CarBlock));
 
         public bool OpenShowroom {
-            get => (bool)GetValue(OpenShowroomProperty);
+            get => GetValue(OpenShowroomProperty) as bool? == true;
             set => SetValue(OpenShowroomProperty, value);
         }
 

@@ -17,8 +17,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernDialog), new PropertyMetadata(true));
 
         public bool ShowTopBlob {
-            get { return (bool)GetValue(ShowTopBlobProperty); }
-            set { SetValue(ShowTopBlobProperty, value); }
+            get => GetValue(ShowTopBlobProperty) as bool? == true;
+            set => SetValue(ShowTopBlobProperty, value);
         }
 
         /// <summary>
@@ -188,16 +188,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets or sets the background content of this window instance.
         /// </summary>
         public object BackgroundContent {
-            get { return GetValue(BackgroundContentProperty); }
-            set { SetValue(BackgroundContentProperty, value); }
+            get => GetValue(BackgroundContentProperty);
+            set => SetValue(BackgroundContentProperty, value);
         }
 
         /// <summary>
         /// Gets or sets the dialog buttons.
         /// </summary>
         public IEnumerable<Control> Buttons {
-            get { return (IEnumerable<Control>)GetValue(ButtonsProperty); }
-            set { SetValue(ButtonsProperty, value); }
+            get => (IEnumerable<Control>)GetValue(ButtonsProperty);
+            set => SetValue(ButtonsProperty, value);
         }
 
         /// <summary>
@@ -323,40 +323,40 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernDialog));
 
         public string IconSource {
-            get { return (string)GetValue(IconSourceProperty); }
-            set { SetValue(IconSourceProperty, value); }
+            get => (string)GetValue(IconSourceProperty);
+            set => SetValue(IconSourceProperty, value);
         }
 
         public static readonly DependencyProperty ButtonRowContentAlignmentProperty = DependencyProperty.Register(nameof(ButtonRowContentAlignment),
                 typeof(HorizontalAlignment), typeof(ModernDialog));
 
         public HorizontalAlignment ButtonRowContentAlignment {
-            get { return (HorizontalAlignment)GetValue(ButtonRowContentAlignmentProperty); }
-            set { SetValue(ButtonRowContentAlignmentProperty, value); }
+            get => GetValue(ButtonRowContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            set => SetValue(ButtonRowContentAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty ButtonsRowContentProperty = DependencyProperty.Register(nameof(ButtonsRowContent), typeof(object),
                 typeof(ModernDialog));
 
         public object ButtonsRowContent {
-            get { return GetValue(ButtonsRowContentProperty); }
-            set { SetValue(ButtonsRowContentProperty, value); }
+            get => GetValue(ButtonsRowContentProperty);
+            set => SetValue(ButtonsRowContentProperty, value);
         }
 
         public static readonly DependencyProperty ButtonsMarginProperty = DependencyProperty.Register(nameof(ButtonsMargin), typeof(Thickness),
                 typeof(ModernDialog));
 
         public Thickness ButtonsMargin {
-            get { return (Thickness)GetValue(ButtonsMarginProperty); }
-            set { SetValue(ButtonsMarginProperty, value); }
+            get => GetValue(ButtonsMarginProperty) as Thickness? ?? default(Thickness);
+            set => SetValue(ButtonsMarginProperty, value);
         }
 
         public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(nameof(ShowTitle), typeof(bool),
                 typeof(ModernDialog), new PropertyMetadata(true));
 
         public bool ShowTitle {
-            get { return (bool)GetValue(ShowTitleProperty); }
-            set { SetValue(ShowTitleProperty, value); }
+            get => GetValue(ShowTitleProperty) as bool? ?? default(bool);
+            set => SetValue(ShowTitleProperty, value);
         }
 
         public static MessageBoxResult? GetButtonBehavior(DependencyObject obj) {
@@ -371,9 +371,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(FatalErrorMessage), new UIPropertyMetadata(null, OnButtonBehaviorChanged));
 
         private static void OnButtonBehaviorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as Button;
-            if (element == null) return;
-
+            if (!(d is Button element)) return;
             var newValue = (MessageBoxResult?)e.NewValue;
             if (newValue.HasValue) {
                 element.Click += OnButtonBehavorClick;
@@ -458,16 +456,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(FatalErrorMessage));
 
         public string Message {
-            get { return (string)GetValue(MessageProperty); }
-            set { SetValue(MessageProperty, value); }
+            get => (string)GetValue(MessageProperty);
+            set => SetValue(MessageProperty, value);
         }
 
         public static readonly DependencyProperty StackTraceProperty = DependencyProperty.Register(nameof(StackTrace), typeof(string),
                 typeof(FatalErrorMessage));
 
         public string StackTrace {
-            get { return (string)GetValue(StackTraceProperty); }
-            set { SetValue(StackTraceProperty, value); }
+            get => (string)GetValue(StackTraceProperty);
+            set => SetValue(StackTraceProperty, value);
         }
 
         private ICommand _copyCommand;

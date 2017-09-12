@@ -72,7 +72,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
         public Color Color {
-            get => (Color)GetValue(ColorProperty);
+            get => GetValue(ColorProperty) as Color? ?? default(Color);
             set => SetValue(ColorProperty, value);
         }
 
@@ -112,12 +112,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private class InnerColorToBrushConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                var c = value as Color?;
-                if (c == null) {
+                if (!(value is Color c)) {
                     return null;
                 }
 
-                var brush = new SolidColorBrush(c.Value);
+                var brush = new SolidColorBrush(c);
                 brush.Freeze();
                 return brush;
             }

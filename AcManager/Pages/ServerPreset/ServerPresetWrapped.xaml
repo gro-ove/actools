@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" PreviewMouseWheel="OnPreviewMouseWheel">
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" PreviewMouseWheel="OnMouseWheel" Background="Transparent">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -201,7 +201,7 @@
 
   <ScrollViewer x:Name="ScrollViewer">
     <mui:SpacingUniformGrid x:Name="Grid" VerticalSpacing="20" HorizontalSpacing="20" Columns="1" VerticalStackMode="True">
-      <ScrollViewer Padding="0 0 0 20">
+      <ScrollViewer Padding="0 0 0 20" x:Name="ScrollViewerLeft">
         <StackPanel Style="{StaticResource SettingsPanel}"><!--
     <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
       <Run Text="AC Server Wrapper" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
@@ -258,7 +258,7 @@
         </StackPanel>
       </ScrollViewer>
 
-      <ScrollViewer Padding="0 0 0 20">
+      <ScrollViewer Padding="0 0 0 20" x:Name="ScrollViewerRight">
         <mui:SpacingStackPanel Spacing="20" Margin="0 0 20 200">
           <ItemsControl ItemsSource="{Binding WrapperContentCars}" ItemTemplate="{StaticResource SharedItemTemplate}"
               ItemsPanel="{StaticResource SharedItemsPanel}" />

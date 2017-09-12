@@ -360,6 +360,9 @@ namespace AcManager.Pages.Dialogs {
                 var xt = (TyresEntry)x;
                 var yt = (TyresEntry)y;
 
+                if (xt == null) return yt == null ? 0 : 1;
+                if (yt == null) return -1;
+
                 var xm = xt.AppropriateLevelFront < xt.AppropriateLevelRear ? xt.AppropriateLevelFront : xt.AppropriateLevelRear;
                 var ym = yt.AppropriateLevelFront < yt.AppropriateLevelRear ? yt.AppropriateLevelFront : yt.AppropriateLevelRear;
                 if (xm != ym) return xm - ym;
@@ -1174,7 +1177,7 @@ namespace AcManager.Pages.Dialogs {
                 typeof(TyresPlace));
 
         public TyresAppropriateLevel Level {
-            get => (TyresAppropriateLevel)GetValue(LevelProperty);
+            get => GetValue(LevelProperty) as TyresAppropriateLevel? ?? TyresAppropriateLevel.F;
             set => SetValue(LevelProperty, value);
         }
     }

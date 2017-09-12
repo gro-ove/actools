@@ -123,20 +123,28 @@ namespace AcManager.Controls.Dialogs {
         public class ViewModel : NotifyPropertyChanged {
             [CanBeNull]
             private readonly ImageViewerDetailsCallback _details;
+
+            [NotNull]
             private readonly object[] _images;
+
+            [NotNull]
+            private int _imagesLength;
+
+            [NotNull]
             private readonly object[] _originalImages;
 
             public ViewModel(IEnumerable<object> images, int position, [CanBeNull] ImageViewerDetailsCallback details) {
                 _details = details;
                 _originalImages = images.ToArray();
                 _images = _originalImages.ToArray();
+                _imagesLength = _images.Length;
 
                 CurrentPosition = position;
                 UpdateCurrent();
             }
 
             private void Preload(int position) {
-                if (position < 0 || position >= _images.Length) return;
+                if (position < 0 || position >= _imagesLength) return;
 
                 string path;
                 lock (_images) {
@@ -183,7 +191,7 @@ namespace AcManager.Controls.Dialogs {
                 Preload(position + 1);
                 Preload(position - 1);
 
-                for (var i = 0; i < _images.Length; i++) {
+                for (var i = 0; i < _imagesLength; i++) {
                     var offset = (i - position).Abs();
                     if (offset > 5) {
                         Unload(i);
@@ -196,7 +204,7 @@ namespace AcManager.Controls.Dialogs {
             public int CurrentPosition {
                 get => _currentPosition;
                 set {
-                    value = value.Clamp(0, _images.Length - 1);
+                    value = value.Clamp(0, _imagesLength - 1);
                     if (Equals(value, _currentPosition)) return;
 
                     var oldPosition = _currentPosition;
@@ -208,7 +216,7 @@ namespace AcManager.Controls.Dialogs {
                     OnPropertyChanged(nameof(CurrentImageName));
                     OnPropertyChanged(nameof(CurrentOriginalImage));
 
-                    var last = _images.Length - 1;
+                    var last = _imagesLength - 1;
                     if (oldPosition == 0 || value == 0) {
                         _previousCommand?.RaiseCanExecuteChanged();
                     }
@@ -319,13 +327,12 @@ namespace AcManager.Controls.Dialogs {
 
             public ICommand NextCommand => _nextCommand ?? (_nextCommand = new DelegateCommand(() => {
                 CurrentPosition++;
-            }, () => CurrentPosition < _images.Length - 1));
+            }, () => CurrentPosition < _imagesLength - 1));
 
             private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async () => {
-                var origin = CurrentOriginalImage as string;
-                if (origin == null) {
+                if (!(CurrentOriginalImage is string origin)) {
                     throw new NotSupportedException();
                 }
 

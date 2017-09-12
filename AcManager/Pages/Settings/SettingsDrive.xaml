@@ -111,7 +111,8 @@
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Drive_NationalityLabel}" />
-          <mui:BetterTextBox Text="{Binding Drive.PlayerNationality}" Placeholder="?" />
+          <mui:BetterComboBox Text="{Binding Drive.PlayerNationality}" Placeholder="?"
+              ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
         </DockPanel>
 
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">

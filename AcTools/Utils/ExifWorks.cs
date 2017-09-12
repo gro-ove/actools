@@ -347,8 +347,7 @@ namespace AcTools.Utils {
         /// </summary>
         /// <param name="bitmap">Bitmap to read exif information from</param>
         public ExifWorks(Image bitmap) {
-            if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
-            _image = bitmap;
+            _image = bitmap ?? throw new ArgumentNullException(nameof(bitmap));
         }
 
         /// <summary>
@@ -373,7 +372,7 @@ namespace AcTools.Utils {
         /// <value>Encoding used for string metadata</value>
         /// <remarks>Default encoding is UTF-8</remarks>
         public Encoding Encoding {
-            get { return _encoding; }
+            get => _encoding;
             set {
                 if (value == null) throw new ArgumentNullException();
                 _encoding = Encoding;
@@ -401,7 +400,7 @@ namespace AcTools.Utils {
         /// Software used for processing (EXIF Software).
         /// </summary>
         public string Software {
-            get { return GetPropertyString(TagNames.SoftwareUsed); }
+            get => GetPropertyString(TagNames.SoftwareUsed);
             set {
                 try {
                     SetPropertyString(TagNames.SoftwareUsed, value);
@@ -415,7 +414,7 @@ namespace AcTools.Utils {
         /// Subject (EXIF Subject).
         /// </summary>
         public string Subject {
-            get { return GetPropertyString(TagNames.ExifSubjectDist); }
+            get => GetPropertyString(TagNames.ExifSubjectDist);
             set {
                 try {
                     SetPropertyString(TagNames.SoftwareUsed, value);
@@ -530,7 +529,7 @@ namespace AcTools.Utils {
         }
 
         public string Title {
-            get { return GetPropertyString(TagNames.ImageTitle); }
+            get => GetPropertyString(TagNames.ImageTitle);
             set {
                 try {
                     SetPropertyString(TagNames.ImageTitle, value);
@@ -541,7 +540,7 @@ namespace AcTools.Utils {
         }
 
         public string UserComment {
-            get { return GetPropertyString(TagNames.ExifUserComment); }
+            get => GetPropertyString(TagNames.ExifUserComment);
             set {
                 try {
                     SetPropertyString(TagNames.ExifUserComment, value);
@@ -555,7 +554,7 @@ namespace AcTools.Utils {
         /// Artist name (EXIF Artist).
         /// </summary>
         public string Artist {
-            get { return GetPropertyString(TagNames.Artist); }
+            get => GetPropertyString(TagNames.Artist);
             set {
                 try {
                     SetPropertyString(TagNames.Artist, value);
@@ -569,7 +568,7 @@ namespace AcTools.Utils {
         /// Image description (EXIF ImageDescription).
         /// </summary>
         public string Description {
-            get { return GetPropertyString(TagNames.ImageDescription); }
+            get => GetPropertyString(TagNames.ImageDescription);
             set {
                 try {
                     SetPropertyString(TagNames.ImageDescription, value);
@@ -583,7 +582,7 @@ namespace AcTools.Utils {
         /// Image copyright (EXIF Copyright).
         /// </summary>
         public string Copyright {
-            get { return GetPropertyString(TagNames.Copyright); }
+            get => GetPropertyString(TagNames.Copyright);
             set {
                 try {
                     SetPropertyString(TagNames.Copyright, value);
@@ -608,7 +607,7 @@ namespace AcTools.Utils {
                     return 1 / Math.Pow(2, GetPropertyRational(TagNames.ExifShutterSpeed).ToDouble());
                 }
 
-                // Can't figure out 
+                // Can't figure out
                 return 0;
             }
         }
@@ -762,7 +761,8 @@ namespace AcTools.Utils {
         }
 
         private static T CreateInstance<T>(params object[] args) {
-            return (T)typeof(T).Assembly.CreateInstance(typeof(T).FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, args, null, null);
+            return (T)typeof(T).Assembly.CreateInstance(typeof(T).FullName ?? "", false,
+                    BindingFlags.Instance | BindingFlags.NonPublic, null, args, null, null);
         }
 
         /// <summary>

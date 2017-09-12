@@ -30,16 +30,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(LabeledToggleButton));
 
         public bool HighlightChecked {
-            get { return (bool)GetValue(HighlightCheckedProperty); }
-            set { SetValue(HighlightCheckedProperty, value); }
+            get => GetValue(HighlightCheckedProperty) as bool? == true;
+            set => SetValue(HighlightCheckedProperty, value);
         }
 
         public static readonly DependencyProperty AnimationSpeedProperty = DependencyProperty.Register(nameof(AnimationSpeed), typeof(double),
                 typeof(LabeledToggleButton), new PropertyMetadata(150d));
 
         public double AnimationSpeed {
-            get { return (double)GetValue(AnimationSpeedProperty); }
-            set { SetValue(AnimationSpeedProperty, value); }
+            get => GetValue(AnimationSpeedProperty) as double? ?? 0d;
+            set => SetValue(AnimationSpeedProperty, value);
         }
 
         private DateTime _previous;
@@ -138,16 +138,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(LabeledToggleButton));
 
         public string LabelUnchecked {
-            get { return (string)GetValue(LabelUncheckedProperty); }
-            set { SetValue(LabelUncheckedProperty, value); }
+            get => (string)GetValue(LabelUncheckedProperty);
+            set => SetValue(LabelUncheckedProperty, value);
         }
 
         public static readonly DependencyProperty LabelCheckedProperty = DependencyProperty.Register(nameof(LabelChecked), typeof(string),
                 typeof(LabeledToggleButton));
 
         public string LabelChecked {
-            get { return (string)GetValue(LabelCheckedProperty); }
-            set { SetValue(LabelCheckedProperty, value); }
+            get => (string)GetValue(LabelCheckedProperty);
+            set => SetValue(LabelCheckedProperty, value);
         }
     }
 }

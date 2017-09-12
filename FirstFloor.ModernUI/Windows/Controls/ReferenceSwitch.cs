@@ -8,24 +8,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public object Value {
-            get { return GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
         }
 
         public static readonly DependencyProperty NullProperty = DependencyProperty.Register(nameof(Null), typeof(UIElement),
                 typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement Null {
-            get { return (UIElement)GetValue(NullProperty); }
-            set { SetValue(NullProperty, value); }
+            get => (UIElement)GetValue(NullProperty);
+            set => SetValue(NullProperty, value);
         }
 
         public static readonly DependencyProperty NonNullProperty = DependencyProperty.Register(nameof(NonNull), typeof(UIElement),
                 typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement NonNull {
-            get { return (UIElement)GetValue(NonNullProperty); }
-            set { SetValue(NonNullProperty, value); }
+            get => (UIElement)GetValue(NonNullProperty);
+            set => SetValue(NonNullProperty, value);
         }
 
         protected override UIElement GetChild() {

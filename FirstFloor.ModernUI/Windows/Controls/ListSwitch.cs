@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public UIElement this[int index] {
-            get { return UiElements[index]; }
+            get => UiElements[index];
             set {
                 var vc = UiElements;
                 if (!ReferenceEquals(vc[index], value)) {
@@ -90,8 +90,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         object IList.this[int index] {
-            get { return this[index]; }
-            set { this[index] = (UIElement)value; }
+            get => this[index];
+            set => this[index] = (UIElement)value;
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

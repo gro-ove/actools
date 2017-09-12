@@ -56,6 +56,8 @@ namespace AcManager.Tools.ContentInstallation {
         public AsyncProgressEntry Progress {
             get => _progress;
             set {
+                if (_progress.IsReady) return;
+
                 if (Equals(value, _progress)) return;
                 _progress = value;
                 OnPropertyChanged();
@@ -82,8 +84,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private DelegateCommand _cancelCommand;
 
-        public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(Cancel,
-                () => _cancellationTokenSource != null || Failed != null && !Cancelled));
+        public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(() => {
+            UserCancelled = true;
+            Cancel();
+        }, () => _cancellationTokenSource != null || Failed != null && !Cancelled));
 
         private void Cancel() {
             Cancelled = true;
@@ -97,6 +101,7 @@ namespace AcManager.Tools.ContentInstallation {
         public string Failed {
             get => _failed;
             set {
+                value = value.ToSentence();
                 if (Equals(value, _failed)) return;
                 _failed = value;
                 OnPropertyChanged();
@@ -104,11 +109,33 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        private string _failedCommentary;
+
+        public string FailedCommentary {
+            get => _failedCommentary;
+            set {
+                if (Equals(value, _failedCommentary)) return;
+                _failedCommentary = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _userCancelled;
+
+        public bool UserCancelled {
+            get => _userCancelled;
+            private set {
+                if (Equals(value, _userCancelled)) return;
+                _userCancelled = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _cancelled;
 
         public bool Cancelled {
             get => _cancelled;
-            set {
+            private set {
                 if (Equals(value, _cancelled)) return;
                 _cancelled = value;
                 OnPropertyChanged();
@@ -357,7 +384,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private TaskbarHolder _taskbar;
 
-        public async Task<bool> RunAsyncInner() {
+        private async Task<bool> RunAsyncInner() {
             IProgress<AsyncProgressEntry> progress = this;
             ContentInstallationManager.Instance.UpdateBusyDoingSomething();
 
@@ -382,6 +409,7 @@ namespace AcManager.Tools.ContentInstallation {
 
                         try {
                             LoadedFilename = GetLoaderDestination();
+                            // await Task.Delay(1);
                             await FlexibleLoader.LoadAsyncTo(Source,
                                     LoadedFilename,
                                     metaInformationCallback: information => {
@@ -414,6 +442,11 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);
+                            return false;
+                        } catch (InformativeException e) {
+                            Logging.Warning(e);
+                            Failed = $"Can’t download file: {e.Message.ToSentenceMember()}";
+                            FailedCommentary = e.SolutionCommentary;
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);

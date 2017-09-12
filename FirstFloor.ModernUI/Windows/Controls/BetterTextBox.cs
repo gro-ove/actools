@@ -208,7 +208,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterComboBox), new PropertyMetadata(OnNullableChanged));
 
         public bool Nullable {
-            get => (bool)GetValue(NullableProperty);
+            get => GetValue(NullableProperty) as bool? == true;
             set => SetValue(NullableProperty, value);
         }
 
@@ -226,7 +226,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterTextBox), new FrameworkPropertyMetadata(0.5));
 
         public double PlaceholderOpacity {
-            get => (double)GetValue(PlaceholderOpacityProperty);
+            get => GetValue(PlaceholderOpacityProperty) as double? ?? 0d;
             set => SetValue(PlaceholderOpacityProperty, value);
         }
 
@@ -271,7 +271,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static SpecialMode GetMode(DependencyObject obj) {
-            return (SpecialMode)obj.GetValue(ModeProperty);
+            return obj.GetValue(ModeProperty) as SpecialMode? ?? default(SpecialMode);
         }
 
         public static void SetMode(DependencyObject obj, SpecialMode value) {
@@ -294,7 +294,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 
         public static double GetModeLabelValue(DependencyObject obj) {
-            return (double)obj.GetValue(ModeLabelValueProperty);
+            return obj.GetValue(ModeLabelValueProperty) as double? ?? 0d;
         }
 
         public static void SetModeLabelValue(DependencyObject obj, double value) {
@@ -306,7 +306,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 
         public static double GetMinimum(DependencyObject obj) {
-            return (double)obj.GetValue(MinimumProperty);
+            return obj.GetValue(MinimumProperty) as double? ?? 0d;
         }
 
         public static void SetMinimum(DependencyObject obj, double value) {
@@ -318,7 +318,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 
         public static double GetMaximum(DependencyObject obj) {
-            return (double)obj.GetValue(MaximumProperty);
+            return obj.GetValue(MaximumProperty) as double? ?? 0d;
         }
 
         public static void SetMaximum(DependencyObject obj, double value) {
@@ -361,8 +361,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             switch (mode) {
                 case SpecialMode.Number: {
-                    double value;
-                    if (!FlexibleParser.TryParseDouble(text, out value)) return null;
+                    if (!FlexibleParser.TryParseDouble(text, out var value)) return null;
 
                     if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
                         delta *= 0.1;
@@ -385,8 +384,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #pragma warning disable 612
                 case SpecialMode.Positive: {
 #pragma warning restore 612
-                    int value;
-                    if (!FlexibleParser.TryParseInt(text, out value)) return null;
+                    if (!FlexibleParser.TryParseInt(text, out var value)) return null;
 
                     if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
                         delta *= 10.0;
@@ -410,8 +408,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 case SpecialMode.IntegerOrMinusOneLabel:
                 case SpecialMode.IntegerOrZeroLabel: {
 #pragma warning restore 612
-                    int value;
-                    var skip = !FlexibleParser.TryParseInt(text, out value);
+                    var skip = !FlexibleParser.TryParseInt(text, out var value);
 
                     if (skip) {
                         value = GetLabelValue();
@@ -441,15 +438,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     switch (splitted.Length) {
                         case 2: {
-                            int hours, minutes;
-                            if (!FlexibleParser.TryParseInt(splitted[0], out hours) || !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
+                            if (!FlexibleParser.TryParseInt(splitted[0], out var hours) || !FlexibleParser.TryParseInt(splitted[1], out var minutes)) {
+                                return null;
+                            }
+
                             totalSeconds = (splitted[0].StartsWith(@"-") ? -1 : 1) * (Math.Abs(hours) * 60 + Math.Abs(minutes)) * 60;
                             break;
                         }
                         case 3: {
-                            int hours, minutes, seconds;
-                            if (!FlexibleParser.TryParseInt(splitted[0], out hours) || !FlexibleParser.TryParseInt(splitted[1], out minutes) ||
-                                    !FlexibleParser.TryParseInt(splitted[2], out seconds)) return null;
+                            if (!FlexibleParser.TryParseInt(splitted[0], out var hours) || !FlexibleParser.TryParseInt(splitted[1], out var minutes) ||
+                                    !FlexibleParser.TryParseInt(splitted[2], out var seconds)) {
+                                return null;
+                            }
+
                             totalSeconds = (splitted[0].StartsWith(@"-") ? -1 : 1) * (Math.Abs(hours) * 60 + Math.Abs(minutes)) * 60 + Math.Abs(seconds);
                             break;
                         }
@@ -502,8 +503,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         index = 0;
                     }
 
-                    int value;
-                    if (FlexibleParser.TryParseInt(splitted[index], out value)) {
+                    if (FlexibleParser.TryParseInt(splitted[index], out var value)) {
                         splitted[index] = FlexibleParser.ReplaceDouble(splitted[index], value + delta);
                     }
 

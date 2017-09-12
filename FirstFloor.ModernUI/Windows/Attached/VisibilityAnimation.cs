@@ -5,7 +5,7 @@ using System.Windows.Media.Animation;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public class VisibilityAnimation : DependencyObject {
         public static TimeSpan GetDuration(DependencyObject obj) {
-            return (TimeSpan)obj.GetValue(DurationProperty);
+            return obj.GetValue(DurationProperty) as TimeSpan? ?? default(TimeSpan);
         }
 
         public static void SetDuration(DependencyObject obj, TimeSpan value) {
@@ -27,8 +27,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(VisibilityAnimation), new UIPropertyMetadata(null, OnVisibleChanged));
 
         private static void OnVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as UIElement;
-            if (element == null || !(e.NewValue is bool?)) return;
+            if (!(d is UIElement element) || !(e.NewValue is bool)) return;
 
             var oldValue = e.OldValue as bool?;
             var newValue = (bool?)e.NewValue == true;

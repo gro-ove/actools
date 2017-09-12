@@ -4,7 +4,7 @@ using System.Windows.Media;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class RelativeTranslateTransform {
         public static double GetX(DependencyObject obj) {
-            return (double)obj.GetValue(XProperty);
+            return obj.GetValue(XProperty) as double? ?? 0d;
         }
 
         public static void SetX(DependencyObject obj, double value) {
@@ -15,13 +15,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(RelativeTranslateTransform), new UIPropertyMetadata(0d, OnXChanged));
 
         private static void OnXChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as FrameworkElement;
-            if (element == null || !(e.NewValue is double)) return;
+            if (!(d is FrameworkElement element) || !(e.NewValue is double)) return;
             Update(element);
         }
 
         public static double GetY(DependencyObject obj) {
-            return (double)obj.GetValue(YProperty);
+            return obj.GetValue(YProperty) as double? ?? 0d;
         }
 
         public static void SetY(DependencyObject obj, double value) {
@@ -32,8 +31,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(RelativeTranslateTransform), new UIPropertyMetadata(0d, OnYChanged));
 
         private static void OnYChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as FrameworkElement;
-            if (element == null || !(e.NewValue is double)) return;
+            if (!(d is FrameworkElement element) || !(e.NewValue is double)) return;
             Update(element);
         }
 

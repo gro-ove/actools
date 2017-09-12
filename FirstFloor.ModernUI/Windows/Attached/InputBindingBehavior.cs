@@ -7,7 +7,7 @@ using FirstFloor.ModernUI.Commands;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class InputBindingBehavior {
         public static bool GetPropagateInputBindingsToWindow(FrameworkElement obj) {
-            return (bool)obj.GetValue(PropagateInputBindingsToWindowProperty);
+            return obj.GetValue(PropagateInputBindingsToWindowProperty) as bool? == true;
         }
 
         public static void SetPropagateInputBindingsToWindow(FrameworkElement obj, bool value) {
@@ -20,8 +20,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnPropagateInputBindingsToWindowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = (FrameworkElement)d;
-            element.Loaded += FrameworkElement_Loaded;
-            element.Unloaded += FrameworkElement_Unloaded;
+            element.Loaded += OnLoaded;
+            element.Unloaded += OnUnloaded;
         }
 
         public static void UpdateBindings(FrameworkElement obj) {
@@ -89,19 +89,17 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        private static void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
+        private static void OnUnloaded(object sender, RoutedEventArgs e) {
             /*var element = (FrameworkElement)sender;
             element.Unloaded -= FrameworkElement_Unloaded;
             RemoveBindings(element);*/
-
             RemoveBindings((FrameworkElement)sender);
         }
 
-        private static void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
+        private static void OnLoaded(object sender, RoutedEventArgs e) {
             /*var element = (FrameworkElement)sender;
             element.Loaded -= FrameworkElement_Loaded;
             SetBindings(element);*/
-
             SetBindings((FrameworkElement)sender);
         }
     }

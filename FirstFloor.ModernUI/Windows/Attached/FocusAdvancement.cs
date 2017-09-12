@@ -11,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     public static class FocusAdvancement {
         [Obsolete]
         public static bool GetAdvancesByEnterKey(DependencyObject obj) {
-            return (bool)obj.GetValue(AdvancesByEnterKeyProperty);
+            return obj.GetValue(AdvancesByEnterKeyProperty) as bool? == true;
         }
 
         [Obsolete]
@@ -24,9 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             typeof(bool), typeof(FocusAdvancement), new UIPropertyMetadata(OnAdvancesByEnterKeyPropertyChanged));
 
         private static void OnAdvancesByEnterKeyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as UIElement;
-            if (element == null) return;
-
+            if (!(d is UIElement element)) return;
             if ((bool)e.NewValue) {
                 element.PreviewKeyDown += OnKeyDown;
             } else {
@@ -35,9 +33,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool MoveFocus([CanBeNull] this DependencyObject element, FocusNavigationDirection direction = FocusNavigationDirection.Next) {
-            var e = element as UIElement;
-            if (e == null) return false;
-
+            if (!(element is UIElement e)) return false;
             e.MoveFocus(new TraversalRequest(direction));
             return true;
         }

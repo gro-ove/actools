@@ -33,8 +33,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private static void OnAutoCompleteItemsSource(object sender, DependencyPropertyChangedEventArgs e) {
-            var tb = sender as TextBox;
-            if (tb == null) return;
+            if (!(sender is TextBox tb)) return;
 
             //If we’re being removed, remove the callbacks
             if (e.NewValue == null) {
@@ -50,7 +49,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         #region String Comparison
         public static StringComparison GetAutoCompleteStringComparison(DependencyObject obj) {
-            return (StringComparison)obj.GetValue(AutoCompleteStringComparison);
+            return obj.GetValue(AutoCompleteStringComparison) as StringComparison? ?? default(StringComparison);
         }
 
         public static void SetAutoCompleteStringComparison(DependencyObject obj, StringComparison value) {
@@ -83,9 +82,7 @@ namespace FirstFloor.ModernUI.Presentation {
             if ((from change in e.Changes where change.RemovedLength > 0 select change).Any() &&
                     (from change in e.Changes where change.AddedLength > 0 select change).Any() == false) return;
 
-            var tb = e.OriginalSource as TextBox;
-            if (sender == null || tb == null) return;
-
+            if (sender == null || !(e.OriginalSource is TextBox tb)) return;
             var values = GetAutoCompleteItemsSource(tb);
             //No reason to search if we don’t have any values.
             if (values == null) return;

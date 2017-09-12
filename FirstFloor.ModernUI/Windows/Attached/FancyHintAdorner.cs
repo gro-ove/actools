@@ -21,16 +21,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(HorizontalAlignment), typeof(FancyHintControl));
 
         public HorizontalAlignment HorizontalPositionAlignment {
-            get { return (HorizontalAlignment)GetValue(HorizontalPositionAlignmentProperty); }
-            set { SetValue(HorizontalPositionAlignmentProperty, value); }
+            get => GetValue(HorizontalPositionAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            set => SetValue(HorizontalPositionAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty VerticalPositionAlignmentProperty = DependencyProperty.Register(nameof(VerticalPositionAlignment),
                 typeof(VerticalAlignment), typeof(FancyHintControl));
 
         public VerticalAlignment VerticalPositionAlignment {
-            get { return (VerticalAlignment)GetValue(VerticalPositionAlignmentProperty); }
-            set { SetValue(VerticalPositionAlignmentProperty, value); }
+            get => GetValue(VerticalPositionAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            set => SetValue(VerticalPositionAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty HintProperty = DependencyProperty.Register(nameof(Hint), typeof(FancyHint),
@@ -113,8 +113,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
                 cell.PreviewMouseDown += OnMouseDown;
 
-                var disableButton = GetByName("PART_DisableHintsButton") as Button;
-                if (disableButton != null) {
+                if (GetByName("PART_DisableHintsButton") is Button disableButton) {
                     disableButton.Command = new DelegateCommand(() => {
                         FancyHintsService.Instance.Enabled = false;
                         Close();

@@ -80,7 +80,7 @@
                         <TextBlock Text="{Binding Date}" VerticalAlignment="Center" />
                         <TextBlock Text="{Binding ModeSummary}" VerticalAlignment="Center" FontWeight="Bold" />
 
-                        <TextBlock Text="{Binding DateDeltaString}" Style="{StaticResource Small}" VerticalAlignment="Center" />
+                        <mui:TimePassedBlock From="{Binding Date}" Style="{StaticResource Small}" VerticalAlignment="Center" />
                         <TextBlock Text="{Binding ModeDetails.Value}" Style="{StaticResource Small}" VerticalAlignment="Center" />
                       </mui:SpacingUniformGrid>
 

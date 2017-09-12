@@ -10,8 +10,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemWidth {
-            get { return (double)GetValue(ItemWidthProperty); }
-            set { SetValue(ItemWidthProperty, value); }
+            get => GetValue(ItemWidthProperty) as double? ?? 0d;
+            set => SetValue(ItemWidthProperty, value);
         }
 
         public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register(nameof(ItemHeight),
@@ -19,16 +19,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemHeight {
-            get { return (double)GetValue(ItemHeightProperty); }
-            set { SetValue(ItemHeightProperty, value); }
+            get => GetValue(ItemHeightProperty) as double? ?? 0d;
+            set => SetValue(ItemHeightProperty, value);
         }
 
         public static readonly DependencyProperty OrientationProperty = StackPanel.OrientationProperty.AddOwner(typeof(StretchyWrapPanel),
                 new FrameworkPropertyMetadata(Orientation.Horizontal, FrameworkPropertyMetadataOptions.AffectsMeasure, OnOrientationChanged));
 
         public Orientation Orientation {
-            get { return _orientation; }
-            set { SetValue(OrientationProperty, value); }
+            get => _orientation;
+            set => SetValue(OrientationProperty, value);
         }
 
         private static void OnOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -41,8 +41,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(StretchyWrapPanel), new PropertyMetadata(true, OnStretchProportionallyChanged));
 
         public bool StretchProportionally {
-            get { return _stretchProportionally; }
-            set { SetValue(StretchProportionallyProperty, value); }
+            get => _stretchProportionally;
+            set => SetValue(StretchProportionallyProperty, value);
         }
 
         private static void OnStretchProportionallyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             private readonly Orientation _orientation;
 
             internal double Width {
-                get { return _orientation == Orientation.Horizontal ? U : V; }
+                get => _orientation == Orientation.Horizontal ? U : V;
                 set {
                     if (_orientation == Orientation.Horizontal) {
                         U = value;
@@ -80,7 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             internal double Height {
-                get { return _orientation == Orientation.Horizontal ? V : U; }
+                get => _orientation == Orientation.Horizontal ? V : U;
                 set {
                     if (_orientation == Orientation.Horizontal) {
                         V = value;
@@ -125,7 +125,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     curLineSize = sz;
 
                     if (sz.U > uvConstraint.U) {
-                        // The element is wider then the constrint - give it a separate line             
+                        // The element is wider then the constrint - give it a separate line
                         panelSize.U = Math.Max(sz.U, panelSize.U);
                         panelSize.V += sz.V;
                         curLineSize = new UVSize(Orientation);
@@ -176,7 +176,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     curLineSize = sz;
 
                     if (sz.U > uvFinalSize.U) {
-                        // The element is wider then the constraint - give it a separate line     
+                        // The element is wider then the constraint - give it a separate line
                         // Switch to next line which only contain one element
                         if (!useItemU && StretchProportionally) {
                             ArrangeLineProportionally(accumulatedV, sz.V, i, ++i, uvFinalSize.Width);

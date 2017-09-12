@@ -121,8 +121,7 @@ namespace AcManager.Tools {
                 ShapeColorsNumber = 3;
             }
 
-            var properties = element.Tag as string;
-            if (properties == null) return;
+            if (!(element.Tag is string properties)) return;
 
             foreach (var s in properties.Split(';')) {
                 var pair = s.Split(new[] { '=', ':' }, 2);
@@ -533,7 +532,7 @@ namespace AcManager.Tools {
                             }
                         }
 
-                        var bytes = texturesKn5.TexturesData.GetValueOrDefault(textureName);
+                        var bytes = texturesKn5?.TexturesData.GetValueOrDefault(textureName);
                         return bytes == null ? Colors.White :
                                 ImageUtils.GetTextureColor(GetReader().ToPngNoFormat(bytes, true, new System.Drawing.Size(16, 16))).ToColor();
                     }

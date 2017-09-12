@@ -3,7 +3,7 @@ using System.Windows;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class FancyScrollHelper {
         public static bool GetInvertLocation(DependencyObject obj) {
-            return (bool)obj.GetValue(InvertLocationProperty);
+            return obj.GetValue(InvertLocationProperty) as bool? == true;
         }
 
         public static void SetInvertLocation(DependencyObject obj, bool value) {
@@ -14,7 +14,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyScrollHelper), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
         public static bool GetOutside(DependencyObject obj) {
-            return (bool)obj.GetValue(OutsideProperty);
+            return obj.GetValue(OutsideProperty) as bool? == true;
         }
 
         public static void SetOutside(DependencyObject obj, bool value) {
@@ -26,7 +26,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
 
         public static bool GetIsMouseOver(DependencyObject obj) {
-            return (bool)obj.GetValue(IsMouseOverProperty);
+            return obj.GetValue(IsMouseOverProperty) as bool? == true;
         }
 
         public static void SetIsMouseOver(DependencyObject obj, bool value) {

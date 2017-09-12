@@ -71,7 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
         public HorizontalAlignment LinksHorizontalAlignment {
-            get => (HorizontalAlignment)GetValue(LinksHorizontalAlignmentProperty);
+            get => GetValue(LinksHorizontalAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
             set => SetValue(LinksHorizontalAlignmentProperty, value);
         }
 
@@ -82,12 +82,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public Thickness LinksMargin {
-            get => (Thickness)GetValue(LinksMarginProperty);
+            get => GetValue(LinksMarginProperty) as Thickness? ?? default(Thickness);
             set => SetValue(LinksMarginProperty, value);
         }
 
         public Thickness FrameMargin {
-            get => (Thickness)GetValue(FrameMarginProperty);
+            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
             set => SetValue(FrameMarginProperty, value);
         }
 
@@ -95,7 +95,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernTab));
 
         public SavePolicy SavePolicy {
-            get => (SavePolicy)GetValue(SavePolicyProperty);
+            get => GetValue(SavePolicyProperty) as SavePolicy? ?? default(SavePolicy);
             set => SetValue(SavePolicyProperty, value);
         }
 
@@ -188,8 +188,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnLinkListSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var link = _linkList.SelectedItem as Link;
-            if (link != null && link.Source != SelectedSource) {
+            if (_linkList.SelectedItem is Link link && link.Source != SelectedSource) {
                 SetCurrentValue(SelectedSourceProperty, link.Source);
             }
         }
@@ -212,7 +211,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public TabLayout Layout {
-            get => (TabLayout)GetValue(LayoutProperty);
+            get => GetValue(LayoutProperty) as TabLayout? ?? default(TabLayout);
             set {
                 Title = null;
                 SetValue(LayoutProperty, value);
@@ -225,7 +224,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public GridLength ListWidth {
-            get => (GridLength)GetValue(ListWidthProperty);
+            get => GetValue(ListWidthProperty) as GridLength? ?? default(GridLength);
             set => SetValue(ListWidthProperty, value);
         }
 

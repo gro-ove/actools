@@ -215,7 +215,7 @@ namespace AcManager.Controls {
                 typeof(AcListPage), new FrameworkPropertyMetadata(new BoolHolder(), FrameworkPropertyMetadataOptions.Inherits));
 
         public static bool GetNarrowList(DependencyObject obj) {
-            return (bool)obj.GetValue(NarrowListProperty);
+            return obj.GetValue(NarrowListProperty) as bool? == true;
         }
 
         public static void SetNarrowList(DependencyObject obj, bool value) {
@@ -342,8 +342,7 @@ namespace AcManager.Controls {
             foreach (var group in dict.Values.Where(x => x.Count == 1)) {
                 foreach (var value in dict.Values) {
                     if (value.Contains(group)) {
-                        var action = group[0] as BatchAction;
-                        if (action != null) {
+                        if (group[0] is BatchAction action) {
                             action.DisplayName = group.DisplayName + @"\" + action.BaseDisplayName;
                         }
 
@@ -531,12 +530,13 @@ namespace AcManager.Controls {
         public override void OnApplyTemplate() {
             DisposeHelper.Dispose(ref _listSizeConditions);
 
-            if (_list != null) {
-                _list.PreviewMouseLeftButtonDown -= OnLeftMouseDown;
-                _list.PreviewMouseRightButtonDown -= OnRightMouseDown;
-                _list.PreviewMouseRightButtonUp -= OnRightMouseUp;
-                _list.PreviewKeyDown -= OnKeyDown;
-                _list.SizeChanged -= OnListSizeChanged;
+            var list = _list;
+            if (list != null) {
+                list.PreviewMouseLeftButtonDown -= OnLeftMouseDown;
+                list.PreviewMouseRightButtonDown -= OnRightMouseDown;
+                list.PreviewMouseRightButtonUp -= OnRightMouseUp;
+                list.PreviewKeyDown -= OnKeyDown;
+                list.SizeChanged -= OnListSizeChanged;
             }
 
             if (_addButton != null) {
@@ -575,26 +575,27 @@ namespace AcManager.Controls {
             //_frame = GetTemplateChild(@"PART_Frame") as FrameworkElement;
             //_batchActionParamsAnimation = GetTemplateChild(@"PART_BatchActionParams_Animation") as DoubleAnimation;
 
-            if (_list != null) {
-                _list.ScrollIntoView(_list.SelectedItem);
-                _list.PreviewMouseLeftButtonDown += OnLeftMouseDown;
-                _list.PreviewMouseRightButtonDown += OnRightMouseDown;
-                _list.PreviewMouseRightButtonUp += OnRightMouseUp;
-                _list.PreviewKeyDown += OnKeyDown;
-                _list.SizeChanged += OnListSizeChanged;
+            list = _list;
+            if (list != null) {
+                list.ScrollIntoView(list.SelectedItem);
+                list.PreviewMouseLeftButtonDown += OnLeftMouseDown;
+                list.PreviewMouseRightButtonDown += OnRightMouseDown;
+                list.PreviewMouseRightButtonUp += OnRightMouseUp;
+                list.PreviewKeyDown += OnKeyDown;
+                list.SizeChanged += OnListSizeChanged;
                 _listSizeConditions = new SizeRelatedCondition[] {
-                    _list.AddWidthCondition(80)
+                    list.AddWidthCondition(80)
                          .Add(() => _batchActionCloseButton)
                          .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
                                  (c, x) => c.ColumnDefinitions[1].Width = new GridLength(x ? 8 : 0, GridUnitType.Pixel)),
-                    _list.AddWidthCondition(140)
+                    list.AddWidthCondition(140)
                          .Add(() => _scrollToSelectedButton)
                          .Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_RunButton_Text")),
-                    _list.AddWidthCondition(180)
+                    list.AddWidthCondition(180)
                          .Add(() => (FrameworkElement)GetTemplateChild("PART_BatchBlock_CloseButton_Text"))
                          .Add(x => (Grid)GetTemplateChild("PART_BatchBlock_ButtonsGrid"),
                                  (c, x) => c.ColumnDefinitions.Last().Width = new GridLength(1, x ? GridUnitType.Star : GridUnitType.Auto)),
-                    _list.AddWidthCondition(200).Add(x => SetNarrowList(_list, !x)),
+                    list.AddWidthCondition(200).Add(x => SetNarrowList(list, !x)),
                 };
             }
 
@@ -788,7 +789,7 @@ namespace AcManager.Controls {
                 typeof(AcListPage));
 
         public bool IsGroupingEnabled {
-            get => (bool)GetValue(IsGroupingEnabledProperty);
+            get => GetValue(IsGroupingEnabledProperty) as bool? == true;
             set => SetValue(IsGroupingEnabledProperty, value);
         }
         #endregion

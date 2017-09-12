@@ -33,6 +33,8 @@ namespace FirstFloor.ModernUI.Dialogs {
         public string Filter { get; }
         public string ShortName { get; }
         public string BaseExtension { get; }
+
+        public string WinFilter => $"{DisplayName}|{Filter}";
     }
 
     public abstract class DialogParamsBase {
@@ -99,10 +101,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 var key = p.ActualSaveKey;
                 var filters = p.GetFilters().ToList();
                 var dialog = new OpenFileDialog {
-                    Title = p.Title,
-                    InitialDirectory = key == null ? p.InitialDirectory :
-                            ValuesStorage.GetString(key, p.InitialDirectory),
-                    Filter = string.Join("|", filters.Select(x => $"{x.DisplayName}|{x.Filter}")),
+                    Filter = string.Join("|", filters.Select(x => x.WinFilter)),
                     DefaultExt = p.DetaultExtension ?? filters[0].BaseExtension,
                     CheckFileExists = p.CheckFileExists,
                     RestoreDirectory = p.RestoreDirectory,
@@ -110,12 +109,22 @@ namespace FirstFloor.ModernUI.Dialogs {
                     ValidateNames = p.ValidateNames,
                 };
 
+                if (p.Title != null) {
+                    dialog.Title = p.Title;
+                }
+
+                var initial = key == null ? p.InitialDirectory :
+                        ValuesStorage.GetString(key, p.InitialDirectory);
+                if (initial != null) {
+                    dialog.InitialDirectory = initial;
+                }
+
                 foreach (var place in p.CustomPlaces) {
                     dialog.CustomPlaces.Add(place);
                 }
 
                 if (currentFilename != null) {
-                    dialog.InitialDirectory = Path.GetDirectoryName(currentFilename);
+                    dialog.InitialDirectory = Path.GetDirectoryName(currentFilename) ?? "";
                     dialog.FileName = Path.GetFileNameWithoutExtension(currentFilename);
                 }
 
@@ -139,9 +148,6 @@ namespace FirstFloor.ModernUI.Dialogs {
                 var key = p.ActualSaveKey;
                 var filters = p.GetFilters().ToList();
                 var dialog = new SaveFileDialog {
-                    Title = p.Title,
-                    InitialDirectory = key == null ? p.InitialDirectory :
-                            ValuesStorage.GetString(key, p.InitialDirectory),
                     Filter = string.Join("|", filters.Select(x => $"{x.DisplayName}|{x.Filter}")),
                     DefaultExt = p.DetaultExtension ?? filters[0].BaseExtension,
                     AddExtension = p.AddExtension,
@@ -151,15 +157,28 @@ namespace FirstFloor.ModernUI.Dialogs {
                     RestoreDirectory = p.RestoreDirectory,
                     DereferenceLinks = p.DereferenceLinks,
                     ValidateNames = p.ValidateNames,
-                    FileName = p.DefaultFileName,
                 };
+
+                if (p.Title != null) {
+                    dialog.Title = p.Title;
+                }
+
+                if (p.DefaultFileName != null) {
+                    dialog.FileName = p.DefaultFileName;
+                }
+
+                var initial = key == null ? p.InitialDirectory :
+                        ValuesStorage.GetString(key, p.InitialDirectory);
+                if (initial != null) {
+                    dialog.InitialDirectory = initial;
+                }
 
                 foreach (var place in p.CustomPlaces) {
                     dialog.CustomPlaces.Add(place);
                 }
 
                 if (currentFilename != null) {
-                    dialog.InitialDirectory = Path.GetDirectoryName(currentFilename);
+                    dialog.InitialDirectory = Path.GetDirectoryName(currentFilename) ?? "";
                     dialog.FileName = Path.GetFileNameWithoutExtension(currentFilename);
                 }
 

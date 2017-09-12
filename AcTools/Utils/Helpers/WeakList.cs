@@ -35,11 +35,8 @@ namespace AcTools.Utils.Helpers {
 
         [CanBeNull]
         public T this[int index] {
-            get {
-                T r;
-                return _innerList[index].TryGetTarget(out r) ? r : null;
-            }
-            set { _innerList[index] = new WeakReference<T>(value); }
+            get => _innerList[index].TryGetTarget(out var r) ? r : null;
+            set => _innerList[index] = new WeakReference<T>(value);
         }
         #endregion
 
@@ -95,8 +92,7 @@ namespace AcTools.Utils.Helpers {
         public void Purge(bool force = false) {
             var now = DateTime.Now;
             if (force || (now - _lastPurged).TotalSeconds > 10) {
-                T r;
-                _innerList.RemoveAll(x => !x.TryGetTarget(out r));
+                _innerList.RemoveAll(x => !x.TryGetTarget(out _));
                 _lastPurged = now;
             }
         }

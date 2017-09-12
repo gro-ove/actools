@@ -120,7 +120,7 @@ namespace AcManager.Tools.Objects {
         private string _version;
 
         public string Version {
-            get { return _version; }
+            get => _version;
             private set {
                 if (value == _version) return;
                 _version = value;
@@ -226,8 +226,7 @@ namespace AcManager.Tools.Objects {
             }
 
             public string Get(string key) {
-                string param, section, file;
-                Parse(key, out param, out section, out file);
+                Parse(key, out var param, out var section, out var file);
 
                 var sections = file == null ? _config : _root.FirstOrDefault(x => string.Equals(x.DisplayName, file, StringComparison.OrdinalIgnoreCase))?.Sections;
                 if (sections == null) return null;
@@ -311,7 +310,7 @@ namespace AcManager.Tools.Objects {
         private bool _changed;
 
         public bool Changed {
-            get { return _changed; }
+            get => _changed;
             set {
                 if (Equals(value, _changed)) return;
                 _changed = value;
@@ -409,7 +408,7 @@ namespace AcManager.Tools.Objects {
         private string _value;
 
         public string Value {
-            get { return _value; }
+            get => _value;
             set {
                 if (Equals(value, _value)) return;
                 _value = value;
@@ -421,7 +420,7 @@ namespace AcManager.Tools.Objects {
         private bool _isEnabled = true;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (Equals(value, _isEnabled)) return;
                 _isEnabled = value;
@@ -507,7 +506,7 @@ namespace AcManager.Tools.Objects {
         private bool _isResettable;
 
         public bool IsResettable {
-            get { return _isResettable; }
+            get => _isResettable;
             set {
                 if (value == _isResettable) return;
                 _isResettable = value;
@@ -670,7 +669,7 @@ namespace AcManager.Tools.Objects {
         private readonly string _falseValue;
 
         public new bool Value {
-            get { return base.Value == _trueValue; }
+            get => base.Value == _trueValue;
             set {
                 if (Equals(value, Value)) return;
                 base.Value = value ? _trueValue : _falseValue;
@@ -697,7 +696,7 @@ namespace AcManager.Tools.Objects {
 
     public class PythonAppConfigNumberValue : PythonAppConfigValue {
         public new double Value {
-            get { return FlexibleParser.TryParseDouble(base.Value) ?? 0d; }
+            get => FlexibleParser.TryParseDouble(base.Value) ?? 0d;
             set {
                 if (Equals(value, Value)) return;
                 base.Value = value.ToInvariantString();
@@ -709,8 +708,8 @@ namespace AcManager.Tools.Objects {
         public IReadOnlyList<SettingEntry> Values { get; }
 
         public new SettingEntry Value {
-            get { return Values.GetByIdOrDefault(base.Value) ?? Values.FirstOrDefault(); }
-            set { base.Value = value.Value; }
+            get => Values.GetByIdOrDefault(base.Value) ?? Values.FirstOrDefault();
+            set => base.Value = value.Value;
         }
 
         public PythonAppConfigOptionsValue(IReadOnlyList<SettingEntry> values) {

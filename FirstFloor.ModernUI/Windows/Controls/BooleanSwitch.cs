@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, OnChildDefiningPropertyChanged));
 
         public bool Value {
-            get => (bool)GetValue(ValueProperty);
+            get => GetValue(ValueProperty) as bool? == true;
             set => SetValue(ValueProperty, value);
         }
 

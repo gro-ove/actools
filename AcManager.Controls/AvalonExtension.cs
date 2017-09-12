@@ -38,7 +38,7 @@ namespace AcManager.Controls {
         public static IValueConverter LinesArrayToTextConverter = new LinesArrayToTextConverterInner();
 
         internal static bool GetInitialized(DependencyObject obj) {
-            return (bool)obj.GetValue(InitializedProperty);
+            return obj.GetValue(InitializedProperty) as bool? == true;
         }
 
         internal static void SetInitialized(DependencyObject obj, bool value) {
@@ -51,9 +51,7 @@ namespace AcManager.Controls {
         private static bool _isBusy;
 
         private static void OnInitializedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as TextEditor;
-            if (element == null || !(e.NewValue is bool)) return;
-
+            if (!(d is TextEditor element) || !(e.NewValue is bool)) return;
             var newValue = (bool)e.NewValue;
 
             if (newValue) {
@@ -106,9 +104,7 @@ namespace AcManager.Controls {
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (_isBusy) return;
 
-            var element = d as TextEditor;
-            if (element == null || !(e.NewValue is string)) return;
-
+            if (!(d is TextEditor element) || !(e.NewValue is string)) return;
             SetInitialized(element, true);
             var newValue = (string)e.NewValue;
 
@@ -122,7 +118,7 @@ namespace AcManager.Controls {
         }
 
         public static AvalonEditMode GetMode(DependencyObject obj) {
-            return (AvalonEditMode)obj.GetValue(ModeProperty);
+            return obj.GetValue(ModeProperty) as AvalonEditMode? ?? default(AvalonEditMode);
         }
 
         public static void SetMode(DependencyObject obj, AvalonEditMode value) {
@@ -133,8 +129,7 @@ namespace AcManager.Controls {
                 typeof(AvalonExtension), new UIPropertyMetadata(AvalonEditMode.Text, OnModeChanged));
 
         private static void OnModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as TextEditor;
-            if (element == null || !(e.NewValue is AvalonEditMode)) return;
+            if (!(d is TextEditor element) || !(e.NewValue is AvalonEditMode)) return;
 
             // TODO: Live changing
             element.Loaded += OnTextEditorLoaded;

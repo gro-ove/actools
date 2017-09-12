@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -17,11 +18,14 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Dialogs {
     public partial class Prompt : IValueConverter {
+        private readonly bool _multiline;
+
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, bool required,
                 int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed) {
             DataContext = new ViewModel(description, defaultValue, watermark, toolTip, required);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
+            _multiline = multiline;
 
             if (required) {
                 OkButton.SetBinding(IsEnabledProperty, new Binding {
@@ -62,8 +66,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                     ValidatesOnDataErrors = true
                 });
 
-                var textBox = comboBox.Template?.FindName(@"PART_EditableTextBox", comboBox) as TextBox;
-                if (textBox != null) {
+                if (comboBox.Template?.FindName(@"PART_EditableTextBox", comboBox) is TextBox textBox) {
                     textBox.SelectAll();
                     textBox.Focus();
                 } else {
@@ -103,12 +106,24 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
 
             Panel.Children.Add(element);
+
             if (toolTip != null) element.SetValue(ToolTipProperty, toolTip);
+
+            PreviewKeyDown += OnKeyDown;
+            element.PreviewKeyDown += OnKeyDown;
 
             Closing += (sender, args) => {
                 if (MessageBoxResult != MessageBoxResult.OK) return;
                 Result = Model.Text;
             };
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs args) {
+            if (args.Key == Key.Escape || args.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control) {
+                CloseWithResult(MessageBoxResult.Cancel);
+            } else if (!_multiline && args.Key == Key.Enter) {
+                CloseWithResult(MessageBoxResult.OK);
+            }
         }
 
         private ViewModel Model => (ViewModel)DataContext;

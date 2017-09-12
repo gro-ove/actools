@@ -249,7 +249,7 @@ float4 ps_Tyres(PS_IN pin) : SV_Target {
 		lighted *= 1.0 - refl.a;
 	}
 
-	return float4(lighted + refl.rgb * refl.a * alpha, alpha);
+	return float4(lighted + refl.rgb * refl.a * alpha, 1.0);
 }
 
 technique10 Tyres {

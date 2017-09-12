@@ -85,7 +85,7 @@ namespace AcManager.CustomShowroom {
 
             private class DistinctComparer : IEqualityComparer<SurfaceDescription> {
                 public bool Equals(SurfaceDescription x, SurfaceDescription y) {
-                    return x.Key.Equals(y.Key, StringComparison.Ordinal);
+                    return x?.Key.Equals(y?.Key, StringComparison.Ordinal) == true;
                 }
 
                 public int GetHashCode(SurfaceDescription obj) {

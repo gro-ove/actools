@@ -549,7 +549,7 @@
     <value>Can’t download file</value>
   </data>
   <data name="DirectLoader_AcClubChanged" xml:space="preserve">
-    <value>AssettoCorsa.club is changed.</value>
+    <value>AssettoCorsa.club has changed.</value>
   </data>
   <data name="DirectLoader_RecursionDetected" xml:space="preserve">
     <value>Recursion detected</value>
@@ -562,10 +562,10 @@
     <value>Make sure Internet connection is available.</value>
   </data>
   <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
-    <value>Google Drive is changed.</value>
+    <value>Google Drive has changed.</value>
   </data>
   <data name="DirectLoader_RdChanged" xml:space="preserve">
-    <value>RaceDepartment is changed.</value>
+    <value>RaceDepartment has changed.</value>
   </data>
   <data name="Common_SteamIdIsMissing" xml:space="preserve">
     <value>Steam ID is missing</value>

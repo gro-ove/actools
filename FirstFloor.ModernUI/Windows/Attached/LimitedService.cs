@@ -17,9 +17,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(ComboBoxAdvancement), new UIPropertyMetadata(OnDisplayConverterChanged));
 
         private static void OnDisplayConverterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as ComboBox;
-            if (element == null || !(e.NewValue is IValueConverter)) return;
-
+            if (!(d is ComboBox element) || !(e.NewValue is IValueConverter)) return;
             var newValue = (IValueConverter)e.NewValue;
             if (newValue == null) {
                 element.ItemTemplate = null;
@@ -47,7 +45,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetLimited(DependencyObject d) {
-            return (bool)d.GetValue(LimitedProperty);
+            return d.GetValue(LimitedProperty) as bool? == true;
         }
 
         public static void SetLimited(DependencyObject d, bool value) {
@@ -56,9 +54,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnLimitedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (OptionNonLimited) return;
-
-            var u = d as FrameworkElement;
-            if (u != null) {
+            if (d is FrameworkElement u) {
                 u.Loaded += OnControlLoaded;
             }
         }

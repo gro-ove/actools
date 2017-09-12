@@ -15,7 +15,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public Orientation Orientation {
-            get => (Orientation)GetValue(OrientationProperty);
+            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
             set => SetValue(OrientationProperty, value);
         }
         #endregion

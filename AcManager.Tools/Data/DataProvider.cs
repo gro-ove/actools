@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -23,36 +25,90 @@ namespace AcManager.Tools.Data {
         }
 
         private DataProvider() {
-            FilesStorage.Instance.Watcher(ContentCategory.Miscellaneous).Update += DataProvider_Update;
+            FilesStorage.Instance.Watcher(ContentCategory.Miscellaneous).Update += OnUpdate;
+
+            _nameNationalities = Lazier.Create(() => NationalitiesAndNames.SelectMany(
+                    x => from y in x.Value select new NameNationality { Name = y, Nationality = x.Key }).ToList());
+
+            _countryToIds = Lazier.Create<IReadOnlyDictionary<string, string>>(() => CountryByIds.ToDictionary(x => x.Value, x => x.Key));
+            _countryToKunosIds = Lazier.Create<IReadOnlyDictionary<string, string>>(() => CountryByKunosIds.ToDictionary(x => x.Value, x => x.Key));
+
+            _carYears = Lazier.Create<IReadOnlyDictionary<string, int>>(() => Years.GetValueOrDefault("cars") ?? new Dictionary<string, int>());
+            _trackYears = Lazier.Create<IReadOnlyDictionary<string, int>>(() => Years.GetValueOrDefault("tracks") ?? new Dictionary<string, int>());
+            _showroomYears = Lazier.Create<IReadOnlyDictionary<string, int>>(() => Years.GetValueOrDefault("showrooms") ?? new Dictionary<string, int>());
         }
 
         public void RefreshData() {
-            _dlcInformations = null;
-            _kunosContent = null;
-            _tagCountries = null;
-            _brandCountries = null;
-            _countries = null;
+            _nameNationalities.Reset();
+            _countryToIds.Reset();
+            _countryToKunosIds.Reset();
+            _carYears.Reset();
+            _trackYears.Reset();
+            _showroomYears.Reset();
+
+            _kunosContent.Reset();
+            _dlcInformations.Reset();
+            _kunosSkins.Reset();
+            _nationalitiesAndNames.Reset();
+            _tagCountries.Reset();
+            _countries.Reset();
+            _showroomsPreviews.Reset();
+            _countryByIds.Reset();
+            _countryByKunosIds.Reset();
+            _brandCountries.Reset();
+            _years.Reset();
         }
 
-        private void DataProvider_Update(object sender, EventArgs e) {
+        private void OnUpdate(object sender, EventArgs e) {
             RefreshData();
         }
 
-        private KunosDlcInformation[] _dlcInformations;
+        #region Loading methods
+        [Localizable(false), NotNull]
+        private static Func<T> Load<T>(string fileName) where T : class, new() {
+            return () => {
+                try {
+                    return JsonConvert.DeserializeObject<T>(
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, fileName)) ?? throw new Exception("Can’t load data");
+                } catch (Exception e) {
+                    Logging.Warning($"Cannot load {fileName}: {e}");
+                    return new T();
+                }
+            };
+        }
 
-        public KunosDlcInformation[] DlcInformations => _dlcInformations ?? (_dlcInformations =
-                FilesStorage.Instance.LoadJsonContentFile<KunosDlcInformation[]>(ContentCategory.Miscellaneous, "KunosDlcs.json") ??
-                        new KunosDlcInformation[0]);
-
-        private Dictionary<string, string[]> _kunosContent;
+        [Localizable(false), NotNull]
+        private static Func<TResult> Load<TJson, TResult>(string fileName, Func<TJson, TResult> load) where TJson : class where TResult : new() {
+            return () => {
+                try {
+                    return load(JsonConvert.DeserializeObject<TJson>(
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, fileName)) ?? throw new Exception("Can’t load data"));
+                } catch (Exception e) {
+                    Logging.Warning($"Cannot load {fileName}: {e}");
+                    return new TResult();
+                }
+            };
+        }
 
         [NotNull]
-        public IReadOnlyDictionary<string, string[]> KunosContent {
-            get {
-                if (_kunosContent != null) return _kunosContent;
+        private static Func<T> Load<T>(string fileName, Func<JObject, T> load) where T : new() {
+            return () => {
+                try {
+                    return load(FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Miscellaneous, fileName) ?? throw new Exception("Can’t load data"));
+                } catch (Exception e) {
+                    Logging.Warning($"Cannot load {fileName}: {e}");
+                    return new T();
+                }
+            };
+        }
+                #endregion
 
-                var j = FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Miscellaneous, "KunosContent.json");
-                if (j != null) {
+        #region Kunos content
+        [NotNull]
+        public IReadOnlyDictionary<string, string[]> KunosContent => _kunosContent.RequireValue;
+
+        private readonly Lazier<Dictionary<string, string[]>> _kunosContent = Lazier.Create(
+                Load("KunosContent.json", j => {
                     var layouts = new List<string>();
                     var jLayouts = j[@"layouts"] as JObject;
                     if (jLayouts != null) {
@@ -64,251 +120,109 @@ namespace AcManager.Tools.Data {
                         }
                     }
 
-                    _kunosContent = new Dictionary<string, string[]> {
+                    return new Dictionary<string, string[]> {
                         [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"layouts"] = layouts.ToArray(),
                         [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"drivers"] = (j[@"drivers"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                         [@"fonts"] = (j[@"fonts"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                     };
-                } else {
-                    _kunosContent = new Dictionary<string, string[]> {
-                        [@"tracks"] = new string[] { },
-                        [@"layouts"] = new string[] { },
-                        [@"showrooms"] = new string[] { },
-                        [@"drivers"] = new string[] { },
-                        [@"fonts"] = new string[] { },
-                    };
-
-                    Logging.Warning("Cannot load KunosContent.json");
-                }
-                return _kunosContent;
-            }
-        }
-
-        private Dictionary<string, string[]> _kunosSkins;
-        private readonly object _kunosSkinsSync = new object();
-
-        public IReadOnlyDictionary<string, string[]> KunosSkins {
-            get {
-                if (_kunosSkins != null) return _kunosSkins;
-
-                lock (_kunosSkinsSync) {
-                    _kunosSkins = FilesStorage.Instance.LoadJsonContentFile<Dictionary<string, string[]>>(ContentCategory.Miscellaneous,
-                            "KunosSkins.json") ?? new Dictionary<string, string[]>();
-                    return _kunosSkins;
-                }
-            }
-        }
-
-        private Dictionary<string, string[]> _nationalitiesAndNames;
-        private List<NameNationality> _nameNationalities;
+                }));
 
         [NotNull]
-        public IReadOnlyDictionary<string, string[]> NationalitiesAndNames {
-            get {
-                if (_nationalitiesAndNames != null) return _nationalitiesAndNames;
+        public IReadOnlyList<KunosDlcInformation> DlcInformations => _dlcInformations.RequireValue;
 
-                _nationalitiesAndNames = FilesStorage.Instance.LoadJsonContentFile<Dictionary<string, string[]>>(ContentCategory.Miscellaneous,
-                        "NationalitiesAndNames.json");
-                if (_nationalitiesAndNames != null) return _nationalitiesAndNames;
-
-                _nationalitiesAndNames = new Dictionary<string, string[]>();
-                Logging.Warning("Cannot load NationalitiesAndNames.json");
-                return _nationalitiesAndNames;
-            }
-        }
+        private readonly Lazier<List<KunosDlcInformation>> _dlcInformations = Lazier.Create(
+                Load<List<KunosDlcInformation>>("KunosDlcs.json"));
 
         [NotNull]
-        public IList<NameNationality> NationalitiesAndNamesList {
-            get {
-                if (_nameNationalities != null) return _nameNationalities;
-                _nameNationalities = NationalitiesAndNames.SelectMany(
-                                x => from y in x.Value select new NameNationality { Name = y, Nationality = x.Key }).ToList();
-                return _nameNationalities;
-            }
-        }
+        public IReadOnlyDictionary<string, string[]> KunosSkins => _kunosSkins.RequireValue;
 
-        private Dictionary<string, string> _tagCountries;
+        private readonly Lazier<Dictionary<string, string[]>> _kunosSkins = Lazier.Create(
+                Load<Dictionary<string, string[]>>("KunosSkins.json"));
+        #endregion
+
+        #region Nationalities and names for AI drivers
+        [NotNull]
+        public IReadOnlyDictionary<string, string[]> NationalitiesAndNames => _nationalitiesAndNames.RequireValue;
+
+        private readonly Lazier<Dictionary<string, string[]>> _nationalitiesAndNames = Lazier.Create(
+                Load<Dictionary<string, string[]>>("NationalitiesAndNames.json"));
+
+        private Lazier<List<NameNationality>> _nameNationalities;
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> TagCountries {
-            get {
-                if (_tagCountries != null) return _tagCountries;
+        public IList<NameNationality> NationalitiesAndNamesList => _nameNationalities.RequireValue;
+        #endregion
 
-                try {
-                    _tagCountries = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "TagCountries.json"))
-                            .ManyToDictionaryK(x => x.Value, x => x.Key);
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load TagCountries.json: " + e);
-                    _tagCountries = new Dictionary<string, string>();
-                }
-
-                return _tagCountries;
-            }
-        }
-
-        private Dictionary<string, string> _countries;
+        #region Countries
+        private Lazier<IReadOnlyDictionary<string, string>> _countryToIds;
+        private Lazier<IReadOnlyDictionary<string, string>> _countryToKunosIds;
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> Countries {
-            get {
-                if (_countries != null) return _countries;
+        public IReadOnlyDictionary<string, string> Countries => _countries.RequireValue;
 
-                try {
-                    _countries = JsonConvert.DeserializeObject<string[]>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Countries.json"))
-                        .ToDictionary(x => x.ToLower(CultureInfo.InvariantCulture), x => x);
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load Countries.json: " + e);
-                    _countries = new Dictionary<string, string>();
-                }
-
-                return _countries;
-            }
-        }
-
-        private Dictionary<string, string> _showroomsPreviews;
+        private readonly Lazier<Dictionary<string, string>> _countries = Lazier.Create(
+                Load<string[], Dictionary<string, string>>("Countries.json", j => j.ToDictionary(x => x.ToLower(CultureInfo.InvariantCulture), x => x)));
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> ShowroomsPreviews {
-            get {
-                if (_showroomsPreviews != null) return _showroomsPreviews;
+        public IReadOnlyDictionary<string, string> ShowroomsPreviews => _showroomsPreviews.RequireValue;
 
-                try {
-                    _showroomsPreviews = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "ShowroomsPreviews.json"));
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load ShowroomsPreviews.json: " + e);
-                    _showroomsPreviews = new Dictionary<string, string>();
-                }
-
-                return _showroomsPreviews;
-            }
-        }
-
-        private Dictionary<string, string> _countryByIds;
+        private readonly Lazier<Dictionary<string, string>> _showroomsPreviews = Lazier.Create(
+                Load<Dictionary<string, string>>("ShowroomsPreviews.json"));
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> CountryByIds {
-            get {
-                if (_countryByIds != null) return _countryByIds;
+        public IReadOnlyDictionary<string, string> CountryByIds => _countryByIds.RequireValue;
 
-                try {
-                    _countryByIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "CountryIds.json"));
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load CountryIds.json: " + e);
-                    _countryByIds = new Dictionary<string, string>();
-                }
-
-                return _countryByIds;
-            }
-        }
-
-        private Dictionary<string, string> _countryByKunosIds;
+        private readonly Lazier<Dictionary<string, string>> _countryByIds = Lazier.Create(
+                Load<Dictionary<string, string>>("CountryIds.json"));
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> CountryByKunosIds {
-            get {
-                if (_countryByKunosIds != null) return _countryByKunosIds;
+        public IReadOnlyDictionary<string, string> CountryByKunosIds => _countryByKunosIds.RequireValue;
 
-                try {
-                    _countryByKunosIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "KunosCountryIds.json"));
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load KunosCountryIds.json: " + e);
-                    _countryByKunosIds = new Dictionary<string, string>();
-                }
+        private readonly Lazier<Dictionary<string, string>> _countryByKunosIds = Lazier.Create(
+                Load<Dictionary<string, string>>("KunosCountryIds.json"));
 
-                return _countryByKunosIds;
-            }
-        }
-
-        private Dictionary<string, string> _countryToIds;
+        public IEnumerable<string> KunosIdsCountries => CountryByKunosIds.Values;
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> CountryToIds {
-            get {
-                if (_countryToIds != null) return _countryToIds;
-
-                _countryToIds = new Dictionary<string, string>(CountryByIds.Count);
-                foreach (var pair in CountryByIds) {
-                    _countryToIds[pair.Value] = pair.Key;
-                }
-                return _countryToIds;
-            }
-        }
-
-        private Dictionary<string, string> _countryToKunosIds;
+        public IReadOnlyDictionary<string, string> CountryToIds => _countryToIds.RequireValue;
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> CountryToKunosIds {
-            get {
-                if (_countryToKunosIds != null) return _countryToKunosIds;
-
-                _countryToKunosIds = new Dictionary<string, string>(CountryByKunosIds.Count);
-                foreach (var pair in CountryByKunosIds) {
-                    _countryToKunosIds[pair.Value] = pair.Key;
-                }
-                return _countryToKunosIds;
-            }
-        }
-
-        private Dictionary<string, string> _brandCountries;
+        public IReadOnlyDictionary<string, string> CountryToKunosIds => _countryToKunosIds.RequireValue;
 
         [NotNull]
-        public IReadOnlyDictionary<string, string> BrandCountries {
-            get {
-                if (_brandCountries != null) return _brandCountries;
+        public IReadOnlyDictionary<string, string> TagCountries => _tagCountries.RequireValue;
 
-                try {
-                    _brandCountries = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "BrandCountries.json"))
-                            .ManyToDictionaryK(x => x.Value, x => x.Key);
-                } catch(Exception e) {
-                    Logging.Warning("Cannot load BrandCountries.json: " + e);
-                    _brandCountries = new Dictionary<string, string>();
-                }
-
-                return _brandCountries;
-            }
-        }
-
-        private Dictionary<string, Dictionary<string, int>> _years;
+        private readonly Lazier<Dictionary<string, string>> _tagCountries = Lazier.Create(
+                Load<Dictionary<string, string[]>, Dictionary<string, string>>("TagCountries.json", j => j.ManyToDictionaryK(x => x.Value, x => x.Key)));
 
         [NotNull]
-        private IReadOnlyDictionary<string, Dictionary<string, int>> Years {
-            get {
-                if (_years != null) return _years;
+        public IReadOnlyDictionary<string, string> BrandCountries => _brandCountries.RequireValue;
 
-                try {
-                    _years = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Years.json"));
-                } catch (Exception e) {
-                    Logging.Warning("Cannot load Years.json: " + e);
-                    _years = new Dictionary<string, Dictionary<string, int>>();
-                }
+        private readonly Lazier<Dictionary<string, string>> _brandCountries = Lazier.Create(
+                Load<Dictionary<string, string[]>, Dictionary<string, string>>("BrandCountries.json", j => j.ManyToDictionaryK(x => x.Value, x => x.Key)));
+        #endregion
 
-                return _years;
-            }
-        }
+        #region Years
+        [NotNull]
+        public IReadOnlyDictionary<string, Dictionary<string, int>> Years => _years.RequireValue;
 
-        private Dictionary<string, int> _carYears;
+        private readonly Lazier<Dictionary<string, Dictionary<string, int>>> _years = Lazier.Create(
+                Load<Dictionary<string, Dictionary<string, int>>>("Years.json"));
+
+        private readonly Lazier<IReadOnlyDictionary<string, int>> _carYears;
+        private readonly Lazier<IReadOnlyDictionary<string, int>> _trackYears;
+        private readonly Lazier<IReadOnlyDictionary<string, int>> _showroomYears;
 
         [NotNull]
-        public IReadOnlyDictionary<string, int> CarYears => _carYears ?? (_carYears = Years.GetValueOrDefault("cars") ?? new Dictionary<string, int>());
-
-        private Dictionary<string, int> _trackYears;
+        public IReadOnlyDictionary<string, int> CarYears => _carYears.RequireValue;
 
         [NotNull]
-        public IReadOnlyDictionary<string, int> TrackYears => _trackYears ?? (_trackYears = Years.GetValueOrDefault("tracks") ?? new Dictionary<string, int>());
-
-        private Dictionary<string, int> _showroomYears;
+        public IReadOnlyDictionary<string, int> TrackYears => _trackYears.RequireValue;
 
         [NotNull]
-        public IReadOnlyDictionary<string, int> ShowroomYears
-            => _showroomYears ?? (_showroomYears = Years.GetValueOrDefault("showrooms") ?? new Dictionary<string, int>());
+        public IReadOnlyDictionary<string, int> ShowroomYears => _showroomYears.RequireValue;
+        #endregion
     }
 }

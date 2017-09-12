@@ -22,8 +22,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(VirtualizingTilePanel), new PropertyMetadata(Orientation.Horizontal));
 
         public Orientation Orientation {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            set => SetValue(OrientationProperty, value);
         }
 
         public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingTilePanel),
@@ -38,7 +38,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _isInMeasure;
 
         private static int GetVirtualItemIndex(DependencyObject obj) {
-            return (int)obj.GetValue(VirtualItemIndexProperty);
+            return obj.GetValue(VirtualItemIndexProperty) as int? ?? 0;
         }
 
         private static void SetVirtualItemIndex(DependencyObject obj, int value) {
@@ -46,13 +46,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public double ItemHeight {
-            get { return (double)GetValue(ItemHeightProperty); }
-            set { SetValue(ItemHeightProperty, value); }
+            get => GetValue(ItemHeightProperty) as double? ?? default(double);
+            set => SetValue(ItemHeightProperty, value);
         }
 
         public double ItemWidth {
-            get { return (double)GetValue(ItemWidthProperty); }
-            set { SetValue(ItemWidthProperty, value); }
+            get => GetValue(ItemWidthProperty) as double? ?? default(double);
+            set => SetValue(ItemWidthProperty, value);
         }
 
         public VirtualizingTilePanel() {
@@ -78,8 +78,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Size DetectItemSize(Size limitation) {
             var generatorStartPosition = _itemsGenerator.GeneratorPositionFromIndex(0);
             using (_itemsGenerator.StartAt(generatorStartPosition, GeneratorDirection.Forward, true)) {
-                bool newlyRealized;
-                var child = (UIElement)_itemsGenerator.GenerateNext(out newlyRealized);
+                var child = (UIElement)_itemsGenerator.GenerateNext(out _);
                 _itemsGenerator.PrepareItemContainer(child);
                 child.Measure(limitation);
                 return child.DesiredSize;
@@ -112,7 +111,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var extentInfo = GetExtentInfo(availableSize);
             EnsureScrollOffsetIsWithinConstrains(extentInfo);
-                
+
             var layoutInfo = GetLayoutInfo(availableSize, _itemWidth, _itemHeight, extentInfo);
             RecycleItems(layoutInfo);
 
@@ -173,8 +172,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             using (_itemsGenerator.StartAt(generatorStartPosition, GeneratorDirection.Forward, true)) {
                 for (var itemIndex = layoutInfo.FirstRealizedItemIndex; itemIndex <= layoutInfo.LastRealizedItemIndex; itemIndex++, visualIndex++) {
-                    bool newlyRealized;
-                    var child = (UIElement)_itemsGenerator.GenerateNext(out newlyRealized);
+                    var child = (UIElement)_itemsGenerator.GenerateNext(out var newlyRealized);
                     if (child == null) continue;
 
                     SetVirtualItemIndex(child, itemIndex);
@@ -312,7 +310,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // we need to ensure that there is one realized item prior to the first visible item, and one after the last visible item,
             // so that keyboard navigation works properly. For example, when focus is on the first visible item, and the user
-            // navigates up, the ListBox selects the previous item, and the scrolls that into view - and this triggers the loading of the rest of the items 
+            // navigates up, the ListBox selects the previous item, and the scrolls that into view - and this triggers the loading of the rest of the items
             // in that row
 
             if (Orientation == Orientation.Horizontal) {
@@ -489,8 +487,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void HandleItemDimensionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var t = d as VirtualizingTilePanel;
-            if (t == null) return;
+            if (!(d is VirtualizingTilePanel t)) return;
             t.InvalidateMeasure();
             t._itemWidth = double.PositiveInfinity;
             t._itemHeight = double.PositiveInfinity;
@@ -546,22 +543,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty HorizontalContentAlignmentProperty = DependencyProperty.Register(nameof(HorizontalContentAlignment), typeof(HorizontalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public HorizontalAlignment HorizontalContentAlignment {
-            get { return (HorizontalAlignment)GetValue(HorizontalContentAlignmentProperty); }
-            set { SetValue(HorizontalContentAlignmentProperty, value); }
+            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            set => SetValue(HorizontalContentAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty VerticalContentAlignmentProperty = DependencyProperty.Register(nameof(VerticalContentAlignment), typeof(VerticalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public VerticalAlignment VerticalContentAlignment {
-            get { return (VerticalAlignment)GetValue(VerticalContentAlignmentProperty); }
-            set { SetValue(VerticalContentAlignmentProperty, value); }
+            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            set => SetValue(VerticalContentAlignmentProperty, value);
         }
 
         #region Initialization
         static VirtualizingTilePanel() {
             var style = CreateDefaultStyles();
             StyleProperty.OverrideMetadata(typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(style));
-            
+
             // Supported.
             CacheLengthProperty.OverrideMetadata(typeof(VirtualizingTilePanel),
                     new FrameworkPropertyMetadata(new VirtualizationCacheLength(1, 1)));

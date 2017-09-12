@@ -48,10 +48,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             VerticalOffsetProperty = ContextMenuService.VerticalOffsetProperty.AddOwner(typeof(SplitButton),
                     new FrameworkPropertyMetadata(0.0, OnVerticalOffsetChanged));
         }
-        
+
         /*
          * Overrides
-         * 
+         *
         */
 
         /// <summary>
@@ -61,8 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             base.OnApplyTemplate();
 
             // set up the click event handler for the dropdown button
-            var dropDown = Template.FindName("PART_DropDown", this) as ButtonBase;
-            if (dropDown != null) dropDown.Click += Dropdown_Click;
+            if (Template.FindName("PART_DropDown", this) is ButtonBase dropDown) dropDown.Click += Dropdown_Click;
         }
 
         /// <summary>
@@ -82,9 +81,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         /*
          * Properties
-         * 
+         *
         */
-        
+
         /// <summary>
         /// The Split Button’s Items property maps to the base classes ContextMenu.Items property
         /// </summary>
@@ -92,47 +91,47 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         /*
          * DependencyProperty CLR wrappers
-         * 
+         *
         */
 
         /// <summary>
-        /// Gets or sets the IsContextMenuOpen property. 
+        /// Gets or sets the IsContextMenuOpen property.
         /// </summary>
         public bool IsContextMenuOpen {
-            get { return (bool)GetValue(IsContextMenuOpenProperty); }
-            set { SetValue(IsContextMenuOpenProperty, value); }
+            get => GetValue(IsContextMenuOpenProperty) as bool? ?? default(bool);
+            set => SetValue(IsContextMenuOpenProperty, value);
         }
-        
+
         /// <summary>
         /// Placement of the Context menu
         /// </summary>
         public PlacementMode Placement {
-            get { return (PlacementMode)GetValue(PlacementProperty); }
-            set { SetValue(PlacementProperty, value); }
+            get => GetValue(PlacementProperty) as PlacementMode? ?? default(PlacementMode);
+            set => SetValue(PlacementProperty, value);
         }
-        
+
         /// <summary>
         /// PlacementRectangle of the Context menu
         /// </summary>
         public Rect PlacementRectangle {
-            get { return (Rect)GetValue(PlacementRectangleProperty); }
-            set { SetValue(PlacementRectangleProperty, value); }
+            get => GetValue(PlacementRectangleProperty) as Rect? ?? default(Rect);
+            set => SetValue(PlacementRectangleProperty, value);
         }
-        
+
         /// <summary>
         /// HorizontalOffset of the Context menu
         /// </summary>
         public double HorizontalOffset {
-            get { return (double)GetValue(HorizontalOffsetProperty); }
-            set { SetValue(HorizontalOffsetProperty, value); }
+            get => GetValue(HorizontalOffsetProperty) as double? ?? default(double);
+            set => SetValue(HorizontalOffsetProperty, value);
         }
 
         /// <summary>
         /// VerticalOffset of the Context menu
         /// </summary>
         public double VerticalOffset {
-            get { return (double)GetValue(VerticalOffsetProperty); }
-            set { SetValue(VerticalOffsetProperty, value); }
+            get => GetValue(VerticalOffsetProperty) as double? ?? default(double);
+            set => SetValue(VerticalOffsetProperty, value);
         }
 
         /// <summary>
@@ -144,13 +143,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         ///     Dropdown            - the button acts like a combobox, clicking anywhere on the button opens the Context Menu
         /// </remarks>
         public SplitButtonMode Mode {
-            get { return (SplitButtonMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+            get => GetValue(ModeProperty) as SplitButtonMode? ?? default(SplitButtonMode);
+            set => SetValue(ModeProperty, value);
         }
 
         /*
          * DependencyPropertyChanged callbacks
-         * 
+         *
         */
 
         private static void OnIsContextMenuOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -166,18 +165,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Placement Property changed callback, pass the value through to the buttons context menu
         /// </summary>
         private static void OnPlacementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var s = d as SplitButton;
-            if (s != null) {
+            if (d is SplitButton s) {
                 s.ContextMenu.Placement = (PlacementMode)e.NewValue;
             }
         }
-        
+
         /// <summary>
         /// PlacementRectangle Property changed callback, pass the value through to the buttons context menu
         /// </summary>
         private static void OnPlacementRectangleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var s = d as SplitButton;
-            if (s != null) {
+            if (d is SplitButton s) {
                 s.ContextMenu.PlacementRectangle = (Rect)e.NewValue;
             }
         }
@@ -186,8 +183,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// HorizontalOffset Property changed callback, pass the value through to the buttons context menu
         /// </summary>
         private static void OnHorizontalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var s = d as SplitButton;
-            if (s != null) {
+            if (d is SplitButton s) {
                 s.ContextMenu.HorizontalOffset = (double)e.NewValue;
             }
         }
@@ -196,8 +192,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// VerticalOffset Property changed callback, pass the value through to the buttons context menu
         /// </summary>
         private static void OnVerticalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var s = d as SplitButton;
-            if (s != null) {
+            if (d is SplitButton s) {
                 s.ContextMenu.VerticalOffset = (double)e.NewValue;
             }
         }
@@ -220,7 +215,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         /*
          * Helper Methods
-         * 
+         *
         */
 
         /// <summary>
@@ -234,7 +229,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         /*
          * Events
-         * 
+         *
         */
 
         /// <summary>

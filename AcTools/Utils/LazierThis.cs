@@ -3,6 +3,7 @@ using System;
 namespace AcTools.Utils {
     // Added, because usual Lazier or Lazy can’t be initialized from field initializer (or delegate
     // or func won’t be able to use “this”).
+    // BUG: Apparently, whole idea was stupid and it’s quite unreliable.
     public struct LazierThis<T> {
         private bool _set;
         private T _value;

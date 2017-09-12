@@ -305,8 +305,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 _skipNext = true;
                 var b = (BetterImage)o;
-                var potentialFilename = e.NewValue as string;
-                if (potentialFilename != null) {
+                if (e.NewValue is string potentialFilename) {
                     b.ImageSource = null;
                     b.Filename = potentialFilename;
                 } else if (e.NewValue is BitmapEntry) {
@@ -394,7 +393,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterImage));
 
         public bool ForceFill {
-            get => (bool)GetValue(ForceFillProperty);
+            get => GetValue(ForceFillProperty) as bool? == true;
             set => SetValue(ForceFillProperty, value);
         }
 

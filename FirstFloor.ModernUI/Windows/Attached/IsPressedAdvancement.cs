@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetIsPressed(UIElement element) {
-            return (bool)element.GetValue(IsPressedProperty);
+            return element.GetValue(IsPressedProperty) as bool? == true;
         }
 
         public static void SetIsPressed(UIElement element, bool val) {
@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static bool GetAttachIsPressed(UIElement element) {
-            return (bool)element.GetValue(AttachIsPressedProperty);
+            return element.GetValue(AttachIsPressedProperty) as bool? == true;
         }
 
         public static void SetAttachIsPressed(UIElement element, bool val) {

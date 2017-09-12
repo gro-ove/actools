@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow));
 
         public Thickness FrameMargin {
-            get => (Thickness)GetValue(FrameMarginProperty);
+            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
             set => SetValue(FrameMarginProperty, value);
         }
 
@@ -90,6 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public LinkGroup CurrentLinkGroup => _menu?.SelectedLinkGroup;
 
+        /// <inheritdoc />
         /// <summary>
         /// When overridden in a derived class, is invoked whenever application code or internal processes call System.Windows.FrameworkElement.ApplyTemplate().
         /// </summary>
@@ -142,7 +143,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var eParameter = (e.Parameter as Link)?.Source ?? e.Parameter;
-            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var targetName)) {
+            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -154,19 +155,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // in case of command uri, check if ICommand.CanExecute is true
             // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements?
-            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var targetName)) {
+            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
                 return;
             }
 
-            ICommand command;
-            if (LinkNavigator.Commands.TryGetValue(uri, out command)) {
+            if (LinkNavigator.Commands.TryGetValue(uri, out var command)) {
                 e.CanExecute = command.CanExecute(parameter);
             }
         }
 
         private void OnNavigateLink(object sender, ExecutedRoutedEventArgs e) {
             if (LinkNavigator == null) return;
-            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var targetName)) {
+            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -223,7 +223,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets or sets a value indicating whether the window title is visible in the UI.
         /// </summary>
         public bool IsTitleVisible {
-            get => (bool)GetValue(IsTitleVisibleProperty);
+            get => GetValue(IsTitleVisibleProperty) as bool? == true;
             set => SetValue(IsTitleVisibleProperty, value);
         }
 
@@ -272,7 +272,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
 
         public Visibility BackButtonVisibility {
-            get => (Visibility)GetValue(BackButtonVisibilityProperty);
+            get => GetValue(BackButtonVisibilityProperty) as Visibility? ?? default(Visibility);
             set => SetValue(BackButtonVisibilityProperty, value);
         }
     }

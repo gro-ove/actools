@@ -51,7 +51,7 @@ namespace AcManager.Pages.Settings {
             public string Id { get; }
 
             public string Version { get; }
-            
+
             public double Coverity { get; }
 
             public long Size { get; }
@@ -63,7 +63,7 @@ namespace AcManager.Pages.Settings {
             private bool _isInstalled;
 
             public bool IsInstalled {
-                get { return _isInstalled; }
+                get => _isInstalled;
                 set {
                     if (Equals(value, _isInstalled)) return;
                     _isInstalled = value;
@@ -92,7 +92,7 @@ namespace AcManager.Pages.Settings {
 
         private class LocaleComparer : IEqualityComparer<LocaleEntry> {
             public bool Equals(LocaleEntry x, LocaleEntry y) {
-                return string.Equals(x.Id, y.Id, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(x?.Id, y?.Id, StringComparison.OrdinalIgnoreCase);
             }
 
             public int GetHashCode(LocaleEntry obj) {
@@ -108,7 +108,7 @@ namespace AcManager.Pages.Settings {
             private LocaleEntry _currentLocale;
 
             public LocaleEntry CurrentLocale {
-                get { return _currentLocale; }
+                get => _currentLocale;
                 set {
                     if (Equals(value, _currentLocale)) return;
                     var prev = _currentLocale;
@@ -127,7 +127,7 @@ namespace AcManager.Pages.Settings {
                     LocaleUpdater.CheckAndUpdateIfNeededCommand.Execute(null);
                 }
             }
-            
+
             public bool CustomLocale => CurrentLocale.Id == null;
 
             internal ViewModel() {
@@ -196,10 +196,7 @@ namespace AcManager.Pages.Settings {
             }
 
             private void LoadCurrentLocale() {
-                CurrentLocale = Locales.FirstOrDefault(x => x.Id == SettingsHolder.Locale.LocaleName);
-                if (CurrentLocale == null) {
-                    CurrentLocale = Locales.Last();
-                }
+                CurrentLocale = Locales.FirstOrDefault(x => x.Id == SettingsHolder.Locale.LocaleName) ?? Locales.Last();
             }
 
             private LocalePackageManifest[] _online;

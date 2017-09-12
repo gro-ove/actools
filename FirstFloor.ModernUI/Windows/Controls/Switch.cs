@@ -8,8 +8,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(Switch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public object Value {
-            get { return GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
         }
 
         public static object GetWhen(DependencyObject obj) {

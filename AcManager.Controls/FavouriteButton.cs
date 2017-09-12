@@ -16,16 +16,16 @@ namespace AcManager.Controls {
                 typeof(FavouriteButton));
 
         public Brush ActiveBrush {
-            get { return (Brush)GetValue(ActiveBrushProperty); }
-            set { SetValue(ActiveBrushProperty, value); }
+            get => (Brush)GetValue(ActiveBrushProperty);
+            set => SetValue(ActiveBrushProperty, value);
         }
 
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register(nameof(Data), typeof(PathData),
                 typeof(FavouriteButton));
 
         public PathData Data {
-            get { return (PathData)GetValue(DataProperty); }
-            set { SetValue(DataProperty, value); }
+            get => (PathData)GetValue(DataProperty);
+            set => SetValue(DataProperty, value);
         }
     }
 
@@ -38,32 +38,32 @@ namespace AcManager.Controls {
                 typeof(RatingBar));
 
         public Brush ActiveBrush {
-            get { return (Brush)GetValue(ActiveBrushProperty); }
-            set { SetValue(ActiveBrushProperty, value); }
+            get => (Brush)GetValue(ActiveBrushProperty);
+            set => SetValue(ActiveBrushProperty, value);
         }
 
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register(nameof(Data), typeof(PathData),
                 typeof(RatingBar));
 
         public PathData Data {
-            get { return (PathData)GetValue(DataProperty); }
-            set { SetValue(DataProperty, value); }
+            get => (PathData)GetValue(DataProperty);
+            set => SetValue(DataProperty, value);
         }
 
         public static readonly DependencyProperty RatingProperty = DependencyProperty.Register(nameof(Rating), typeof(double),
                 typeof(RatingBar), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double Rating {
-            get { return (double)GetValue(RatingProperty); }
-            set { SetValue(RatingProperty, value); }
+            get => GetValue(RatingProperty) as double? ?? default(double);
+            set => SetValue(RatingProperty, value);
         }
 
         public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register(nameof(IsReadOnly), typeof(bool),
                 typeof(RatingBar));
 
         public bool IsReadOnly {
-            get { return (bool)GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
+            get => GetValue(IsReadOnlyProperty) as bool? ?? default(bool);
+            set => SetValue(IsReadOnlyProperty, value);
         }
 
         private void Update(MouseEventArgs e) {

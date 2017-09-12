@@ -280,64 +280,64 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Set to 'true' to show the adorner or 'false' to hide the adorner.
         /// </summary>
         public bool IsAdornerVisible {
-            get { return (bool)GetValue(IsAdornerVisibleProperty); }
-            set { SetValue(IsAdornerVisibleProperty, value); }
+            get => GetValue(IsAdornerVisibleProperty)  as bool? == true;
+            set => SetValue(IsAdornerVisibleProperty, value);
         }
 
         /// <summary>
         /// Used in XAML to define the UI content of the adorner.
         /// </summary>
         public FrameworkElement AdornerContent {
-            get { return (FrameworkElement)GetValue(AdornerContentProperty); }
-            set { SetValue(AdornerContentProperty, value); }
+            get => (FrameworkElement)GetValue(AdornerContentProperty);
+            set => SetValue(AdornerContentProperty, value);
         }
 
         /// <summary>
         /// Specifies the horizontal placement of the adorner relative to the adorned control.
         /// </summary>
         public AdornerPlacement HorizontalAdornerPlacement {
-            get { return (AdornerPlacement)GetValue(HorizontalAdornerPlacementProperty); }
-            set { SetValue(HorizontalAdornerPlacementProperty, value); }
+            get => GetValue(HorizontalAdornerPlacementProperty) as AdornerPlacement? ?? AdornerPlacement.Inside;
+            set => SetValue(HorizontalAdornerPlacementProperty, value);
         }
 
         /// <summary>
         /// Specifies the vertical placement of the adorner relative to the adorned control.
         /// </summary>
         public AdornerPlacement VerticalAdornerPlacement {
-            get { return (AdornerPlacement)GetValue(VerticalAdornerPlacementProperty); }
-            set { SetValue(VerticalAdornerPlacementProperty, value); }
+            get => GetValue(VerticalAdornerPlacementProperty) as AdornerPlacement? ?? AdornerPlacement.Inside;
+            set => SetValue(VerticalAdornerPlacementProperty, value);
         }
 
         /// <summary>
         /// X offset of the adorner.
         /// </summary>
         public double AdornerOffsetX {
-            get { return (double)GetValue(AdornerOffsetXProperty); }
-            set { SetValue(AdornerOffsetXProperty, value); }
+            get => GetValue(AdornerOffsetXProperty) as double? ?? 0d;
+            set => SetValue(AdornerOffsetXProperty, value);
         }
 
         /// <summary>
         /// Y offset of the adorner.
         /// </summary>
         public double AdornerOffsetY {
-            get { return (double)GetValue(AdornerOffsetYProperty); }
-            set { SetValue(AdornerOffsetYProperty, value); }
+            get => GetValue(AdornerOffsetYProperty) as double? ?? 0d;
+            set => SetValue(AdornerOffsetYProperty, value);
         }
 
         /// <summary>
         /// Skip ScrollContentPresenter and connect only to AdornerDecorator.
         /// </summary>
         public bool AvoidUsingScrollContentPresenter {
-            get { return (bool)GetValue(AvoidUsingScrollContentPresenterProperty); }
-            set { SetValue(AvoidUsingScrollContentPresenterProperty, value); }
+            get => GetValue(AvoidUsingScrollContentPresenterProperty)  as bool? == true;
+            set => SetValue(AvoidUsingScrollContentPresenterProperty, value);
         }
 
         /// <summary>
         /// Adorner’s order.
         /// </summary>
         public int Order {
-            get { return (int)GetValue(OrderProperty); }
-            set { SetValue(OrderProperty, value); }
+            get => GetValue(OrderProperty) as  int? ?? 0;
+            set => SetValue(OrderProperty, value);
         }
 
         #region Private Data Members
@@ -357,6 +357,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Private/Internal Functions
+        /// <inheritdoc />
         /// <summary>
         /// Static constructor to register command bindings.
         /// </summary>
@@ -439,14 +440,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
 
             foreach (var parent in visual.GetParents()) {
-                {
-                    var decorator = parent as AdornerDecorator;
-                    if (decorator != null) return decorator.AdornerLayer;
-                }
-
-                {
-                    var dialog = parent as Window;
-                    if (dialog != null) return dialog.FindVisualChild<AdornerDecorator>()?.AdornerLayer;
+                switch (parent) {
+                    case AdornerDecorator decorator:
+                        return decorator.AdornerLayer;
+                    case Window dialog:
+                        return dialog.FindVisualChild<AdornerDecorator>()?.AdornerLayer;
                 }
             }
 
@@ -506,7 +504,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Order for AdornedElementPlaceholder
         public static int GetZOrder(DependencyObject obj) {
-            return (int)obj.GetValue(ZOrderProperty);
+            return obj.GetValue(ZOrderProperty) as int? ?? 0;
         }
 
         public static void SetZOrder(DependencyObject obj, int value) {
@@ -517,8 +515,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(AdornedControl), new UIPropertyMetadata(OnZOrderChanged));
 
         private static void OnZOrderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as AdornedElementPlaceholder;
-            if (element == null || !(e.NewValue is int)) return;
+            if (!(d is AdornedElementPlaceholder element) || !(e.NewValue is int)) return;
             if (element.IsLoaded) {
                 UpdateAdornedElementPlaceholderZOrder(element);
             } else {

@@ -7,16 +7,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingStackPanel), new FrameworkPropertyMetadata(Orientation.Vertical, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public Orientation Orientation {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            set => SetValue(OrientationProperty, value);
         }
 
         public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(double),
                 typeof(SpacingStackPanel), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double Spacing {
-            get { return (double)GetValue(SpacingProperty); }
-            set { SetValue(SpacingProperty, value); }
+            get => GetValue(SpacingProperty) as double? ?? 0d;
+            set => SetValue(SpacingProperty, value);
         }
 
         protected override Size MeasureOverride(Size constraint) {

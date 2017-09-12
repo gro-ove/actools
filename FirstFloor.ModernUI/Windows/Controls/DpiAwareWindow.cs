@@ -154,7 +154,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty IconPathThicknessProperty = IconPathThicknessPropertyKey.DependencyProperty;
 
-        public double IconPathThickness => (double)GetValue(IconPathThicknessProperty);
+        public double IconPathThickness => GetValue(IconPathThicknessProperty) as double? ?? 0d;
 
         public void SetDpiMultiplier() {
             var multiplier = GetDpiMultiplier() * OptionScale;
@@ -195,28 +195,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ActualLeftProperty = ActualLeftPropertyKey.DependencyProperty;
 
-        public double ActualLeft => (double)GetValue(ActualLeftProperty);
+        public double ActualLeft => GetValue(ActualLeftProperty) as double? ?? 0d;
 
         public static readonly DependencyPropertyKey ActualTopPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualTop), typeof(double),
                 typeof(DpiAwareWindow), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty ActualTopProperty = ActualTopPropertyKey.DependencyProperty;
 
-        public double ActualTop => (double)GetValue(ActualTopProperty);
+        public double ActualTop => GetValue(ActualTopProperty) as double? ?? 0d;
 
         public static readonly DependencyPropertyKey ActualRightPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualRight), typeof(double),
                 typeof(DpiAwareWindow), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty ActualRightProperty = ActualRightPropertyKey.DependencyProperty;
 
-        public double ActualRight => (double)GetValue(ActualRightProperty);
+        public double ActualRight => GetValue(ActualRightProperty) as double? ?? 0d;
 
         public static readonly DependencyPropertyKey ActualBottomPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualBottom), typeof(double),
                 typeof(DpiAwareWindow), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty ActualBottomProperty = ActualBottomPropertyKey.DependencyProperty;
 
-        public double ActualBottom => (double)GetValue(ActualBottomProperty);
+        public double ActualBottom => GetValue(ActualBottomProperty) as double? ?? 0d;
 
         private void UpdateActualLocation() {
             if (WindowState == WindowState.Maximized) {
@@ -247,8 +247,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static extern bool GetWindowRect(IntPtr hWnd, out Win32Rect lpWindowRect);
 
         private Win32Rect GetWindowRectangle() {
-            Win32Rect rect;
-            GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
+            GetWindowRect(new WindowInteropHelper(this).Handle, out var rect);
             return rect;
         }
 
@@ -449,7 +448,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DpiAwareWindow));
 
         public bool IsDimmed {
-            get => (bool)GetValue(IsDimmedProperty);
+            get => GetValue(IsDimmedProperty) as bool? == true;
             set => SetValue(IsDimmedProperty, value);
         }
 

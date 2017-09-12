@@ -39,7 +39,7 @@ namespace AcManager.Tools.Objects {
 
         protected override KunosDlcInformation GetDlc() {
             var dlcs = DataProvider.Instance.DlcInformations;
-            for (var i = dlcs.Length - 1; i >= 0; i--) {
+            for (var i = dlcs.Count - 1; i >= 0; i--) {
                 var dlc = dlcs[i];
                 if (dlc.Cars.Contains(Id)) {
                     return dlc;

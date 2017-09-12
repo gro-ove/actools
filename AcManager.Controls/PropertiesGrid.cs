@@ -20,7 +20,7 @@ namespace AcManager.Controls {
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int FirstColumn {
-            get => (int)GetValue(FirstColumnProperty);
+            get => GetValue(FirstColumnProperty) as int? ?? 0;
             set => SetValue(FirstColumnProperty, value);
         }
 
@@ -28,7 +28,7 @@ namespace AcManager.Controls {
                 new FrameworkPropertyMetadata(2, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public int Columns {
-            get => (int)GetValue(ColumnsProperty);
+            get => GetValue(ColumnsProperty) as int? ?? 1;
             set => SetValue(ColumnsProperty, value);
         }
 
@@ -36,7 +36,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid));
 
         public int Rows {
-            get => (int)GetValue(RowsProperty);
+            get => GetValue(RowsProperty) as int? ?? 1;
             set => SetValue(RowsProperty, value);
         }
 
@@ -44,15 +44,15 @@ namespace AcManager.Controls {
                 typeof(bool), typeof(PropertiesGrid), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public bool WithoutMarginForEmptyLabels {
-            get { return (bool)GetValue(WithoutMarginForEmptyLabelsProperty); }
-            set { SetValue(WithoutMarginForEmptyLabelsProperty, value); }
+            get => GetValue(WithoutMarginForEmptyLabelsProperty) as bool? ?? false;
+            set => SetValue(WithoutMarginForEmptyLabelsProperty, value);
         }
 
         public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(nameof(HorizontalSpacing), typeof(double),
                 typeof(PropertiesGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double HorizontalSpacing {
-            get => (double)GetValue(HorizontalSpacingProperty);
+            get => GetValue(HorizontalSpacingProperty) as double? ?? 0d;
             set => SetValue(HorizontalSpacingProperty, value);
         }
 
@@ -60,7 +60,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double VerticalSpacing {
-            get => (double)GetValue(VerticalSpacingProperty);
+            get => GetValue(VerticalSpacingProperty) as double? ?? 0d;
             set => SetValue(VerticalSpacingProperty, value);
         }
 
@@ -68,7 +68,7 @@ namespace AcManager.Controls {
                 new FrameworkPropertyMetadata(80d, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public double LabelWidth {
-            get => (double)GetValue(LabelWidthProperty);
+            get => GetValue(LabelWidthProperty) as double? ?? 0d;
             set => SetValue(LabelWidthProperty, value);
         }
 
@@ -84,7 +84,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid));
 
         public FontWeight LabelFontWeight {
-            get => (FontWeight)GetValue(LabelFontWeightProperty);
+            get => GetValue(LabelFontWeightProperty) as FontWeight? ?? default(FontWeight);
             set => SetValue(LabelFontWeightProperty, value);
         }
 
@@ -92,7 +92,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid));
 
         public Thickness LabelPadding {
-            get => (Thickness)GetValue(LabelPaddingProperty);
+            get => GetValue(LabelPaddingProperty) as Thickness? ?? default(Thickness);
             set => SetValue(LabelPaddingProperty, value);
         }
 
@@ -267,8 +267,8 @@ namespace AcManager.Controls {
             // Label-related values
             _labelTypeface = new Typeface(LabelFontFamily, FontStyles.Normal, LabelFontWeight, FontStretches.Normal);
             _labelForeground = (Brush)GetValue(TextBlock.ForegroundProperty);
-            _labelFontSize = (double)GetValue(TextBlock.FontSizeProperty);
-            _formattingMode = (TextFormattingMode)GetValue(TextOptions.TextFormattingModeProperty);
+            _labelFontSize = GetValue(TextBlock.FontSizeProperty) as double? ?? 18d;
+            _formattingMode = GetValue(TextOptions.TextFormattingModeProperty) as TextFormattingMode? ?? TextFormattingMode.Display;
             _labelPadding = LabelPadding;
             _labelTextWidth = _labelWidth - _labelPadding.Left - _labelPadding.Right;
             _withoutMarginForEmptyLabels = WithoutMarginForEmptyLabels;

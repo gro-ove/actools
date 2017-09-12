@@ -7,8 +7,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernToggleButton), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public bool IsChecked {
-            get { return (bool)GetValue(IsCheckedProperty); }
-            set { SetValue(IsCheckedProperty, value); }
+            get => GetValue(IsCheckedProperty) as bool? == true;
+            set => SetValue(IsCheckedProperty, value);
         }
 
         protected override void OnClick() {
@@ -19,8 +19,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ModernToggleButton));
 
         public ICommand MoreCommand {
-            get { return (ICommand)GetValue(MoreCommandProperty); }
-            set { SetValue(MoreCommandProperty, value); }
+            get => (ICommand)GetValue(MoreCommandProperty);
+            set => SetValue(MoreCommandProperty, value);
         }
 
         private ContextMenuButton _contextMenuButton;

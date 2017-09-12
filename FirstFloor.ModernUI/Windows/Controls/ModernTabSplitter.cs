@@ -47,8 +47,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernTabSplitter), new PropertyMetadata(200d));
 
         public double InitialWidth {
-            get { return (double)GetValue(InitialWidthProperty); }
-            set { SetValue(InitialWidthProperty, value); }
+            get => GetValue(InitialWidthProperty) as double? ?? 200d;
+            set => SetValue(InitialWidthProperty, value);
         }
 
         private string SaveKeyValue => $"ModernTabSplitter:{SaveKey}";
@@ -57,8 +57,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernTabSplitter), new PropertyMetadata(@"ModernTab", OnSaveKeyChanged));
 
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {

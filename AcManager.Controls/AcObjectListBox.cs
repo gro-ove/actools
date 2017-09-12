@@ -50,7 +50,7 @@ namespace AcManager.Controls {
             typeof(AcObjectListBox), new PropertyMetadata(true));
 
         public bool IsFilteringEnabled {
-            get => (bool)GetValue(IsFilteringEnabledProperty);
+            get => GetValue(IsFilteringEnabledProperty) as bool? == true;
             set => SetValue(IsFilteringEnabledProperty, value);
         }
 
@@ -106,7 +106,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectListBox), new PropertyMetadata(SelectionMode.Single));
 
         public SelectionMode SelectionMode {
-            get => (SelectionMode)GetValue(SelectionModeProperty);
+            get => GetValue(SelectionModeProperty) as SelectionMode? ?? SelectionMode.Single;
             set => SetValue(SelectionModeProperty, value);
         }
 

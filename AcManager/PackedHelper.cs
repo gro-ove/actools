@@ -45,7 +45,7 @@ namespace AcManager {
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Log(string s) {
             if (_logFilename == null) return;
-            
+
             if (s == null) {
                 Directory.CreateDirectory(Path.GetDirectoryName(_logFilename) ?? "");
                 File.WriteAllBytes(_logFilename, new byte[0]);
@@ -76,7 +76,7 @@ namespace AcManager {
 
             Log(null);
             Handler = HandlerImpl;
-            
+
 #if DEBUG
             _references = null;
 #else
@@ -257,7 +257,7 @@ namespace AcManager {
             var msg = MessageBox.Show(
                     "Can’t load SlimDX library. Please, make sure you have Visual C++ Redistributable 2015 (x86) installed. Would you like to download it?\n\nPress “No” to use SlimDX from AC instead (now, this option should fixed).",
                     "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Asterisk);
-            
+
             switch (msg) {
                 case MessageBoxResult.Yes:
                     Log("User chose to download VS C++ 2015 x86");
@@ -266,12 +266,12 @@ namespace AcManager {
 
                 case MessageBoxResult.No:
                     Log("User chose to use DLL from AC");
-                    
+
                     var dialog = new OpenFileDialog {
                         Title = "Please, find some SlimDX.dll file",
                         CheckFileExists = true,
                         Filter = "SlimDX.dll|SlimDX.dll|All Files (*.*)|*",
-                        InitialDirectory = slimDx,
+                        InitialDirectory = slimDx ?? "",
                         Multiselect = false,
                         RestoreDirectory = false,
                         FileName = "SlimDX.dll",
@@ -293,7 +293,7 @@ namespace AcManager {
                             Environment.Exit(1);
                         }
                     }
-                    
+
                     break;
             }
 
@@ -396,7 +396,7 @@ namespace AcManager {
 
             Assembly result;
             if (_cached.TryGetValue(id, out result)) return result;
-            
+
             if (string.Equals(id, "System.Web", StringComparison.OrdinalIgnoreCase)) {
                 if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to download it?", "Error",
                         MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {

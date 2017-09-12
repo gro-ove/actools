@@ -8,9 +8,11 @@ using System.Web;
 using AcManager.Internal;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class RaceDepartmentLoader : DirectLoader {
+        public static bool OptionAllowed;
         public static bool OptionFailImmediately;
 
         public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?racedepartment\.com/downloads/", RegexOptions.IgnoreCase);
@@ -22,6 +24,11 @@ namespace AcManager.Tools.Helpers.Loaders {
         public RaceDepartmentLoader(string url) : base(url) { }
 
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
+            if (!OptionAllowed) {
+                throw new InformativeException("Prohibited",
+                        $@"CM can’t download files from RaceDepartment anymore. Please, [url={BbCodeBlock.EncodeAttribute(Url)}]download file manually[/url] and then drag’n’drop it to CM.");
+            }
+
             if (OptionFailImmediately) {
                 throw new NotSupportedException();
             }
@@ -29,16 +36,19 @@ namespace AcManager.Tools.Helpers.Loaders {
             async Task Login() {
                 var login = SettingsHolder.Content.RdLogin;
                 var password = SettingsHolder.Content.RdPassword;
-                var loginParams = string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password)
-                        ? InternalUtils.GetRdLoginParams()
-                        : new NameValueCollection {
-                            ["login"] = login,
-                            ["password"] = password,
-                        };
+
+                if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password)) {
+                    throw new InformativeException("RaceDepartment credentials are missing",
+                            $@"Go to Settings/Content and put your login and password in, or download file directly from RaceDepartment website.");
+                }
+
+                var loginParams = new NameValueCollection {
+                    ["login"] = login,
+                    ["password"] = password,
+                };
 
                 Logging.Debug($"Forbidden! Trying to login with provided params ({loginParams["login"]})");
                 var result = (await client.UploadValuesTaskAsync("http://www.racedepartment.com/login/login", loginParams)).ToUtf8String();
-
                 var error = Regex.Match(result, @"<div class=""errorPanel""><span class=""errors"">([\s\S]+?)(?:</span>\s*)?</div>");
                 if (error.Success) {
                     throw new Exception(error.Groups[1].Value);

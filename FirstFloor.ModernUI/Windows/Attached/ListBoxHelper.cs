@@ -7,7 +7,7 @@ using System.Windows.Input;
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class ListBoxHelper {
         public static bool GetProperMultiSelectionMode(DependencyObject obj) {
-            return (bool)obj.GetValue(ProperMultiSelectionModeProperty);
+            return obj.GetValue(ProperMultiSelectionModeProperty) as bool? == true;
         }
 
         public static void SetProperMultiSelectionMode(DependencyObject obj, bool value) {
@@ -18,9 +18,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(ListBoxHelper), new UIPropertyMetadata(OnProperMultiSelectionModeChanged));
 
         private static void OnProperMultiSelectionModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as ListBox;
-            if (element == null || !(e.NewValue is bool)) return;
-
+            if (!(d is ListBox element) || !(e.NewValue is bool)) return;
             var newValue = (bool)e.NewValue;
             if (newValue) {
                 element.SelectionMode = SelectionMode.Extended;

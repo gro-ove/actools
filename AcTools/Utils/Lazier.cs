@@ -36,6 +36,19 @@ namespace AcTools.Utils {
         private int _isSettingId;
         private T _value;
 
+        [NotNull]
+        public T RequireValue {
+            get {
+                var v = Value;
+                if (v == null) {
+                    throw new Exception($"Value of type {typeof(T).Name} is missing");
+                }
+                return v;
+            }
+        }
+
+        private readonly object _lock = new object();
+
         [CanBeNull]
         public T Value {
             get {
@@ -48,8 +61,11 @@ namespace AcTools.Utils {
                         return _isSet ? _value : _loadingValue;
                     }
 
-                    IsSet = true;
-                    _value = _fn == null ? default(T) : _fn.Invoke();
+                    lock (_lock) {
+                        // TODO: SHOULD ISSET GO FIRST?
+                        _value = _fn == null ? default(T) : _fn.Invoke();
+                        IsSet = true;
+                    }
                 }
 
                 return _value;

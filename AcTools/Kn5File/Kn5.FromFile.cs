@@ -141,6 +141,7 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
+        [NotNull]
         public static Kn5 FromFile(string filename, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
                 IKn5NodeLoader nodeLoader = null) {
             if (!File.Exists(filename)) {
@@ -161,6 +162,7 @@ namespace AcTools.Kn5File {
             return kn5;
         }
 
+        [NotNull]
         public static Kn5 FromStream(Stream entry, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
                 IKn5NodeLoader nodeLoader = null) {
             var kn5 = new Kn5(string.Empty);
@@ -177,6 +179,7 @@ namespace AcTools.Kn5File {
             return kn5;
         }
 
+        [NotNull]
         public static Kn5 FromBytes(byte[] data, IKn5TextureLoader textureLoader = null) {
             using (var memory = new MemoryStream(data)) {
                 return FromStream(memory, textureLoader);

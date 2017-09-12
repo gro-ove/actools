@@ -36,8 +36,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public string Label {
-            get { return _label; }
-            set { SetLabelInner(value); }
+            get => _label;
+            set => SetLabelInner(value);
         }
 
         private void SetLabelInner(string value) {
@@ -48,8 +48,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public Color? Color {
-            get { return _color; }
-            set { SetColorInner(value); }
+            get => _color;
+            set => SetColorInner(value);
         }
 
         private void SetColorInner(Color? value) {
@@ -59,7 +59,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public bool Hidden {
-            get { return _hidden; }
+            get => _hidden;
             set {
                 SetHiddenInner(value);
                 FileBasedOnlineSources.Instance.RaiseUpdated();
@@ -73,8 +73,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public bool Excluded {
-            get { return _excluded; }
-            set { SetExcludedInner(value); }
+            get => _excluded;
+            set => SetExcludedInner(value);
         }
 
         private void SetExcludedInner(bool value) {
@@ -214,13 +214,11 @@ namespace AcManager.Tools.Managers.Online {
 
         [NotNull]
         private Source GetInternalSource([NotNull] string key) {
-            Source source;
-            if (_sources.TryGetValue(key, out source)) {
+            if (_sources.TryGetValue(key, out var source)) {
                 return source;
             }
 
-            WeakReference<Source> removed;
-            if (_missing.TryGetValue(key, out removed) && removed.TryGetTarget(out source)) {
+            if (_missing.TryGetValue(key, out var removed) && removed.TryGetTarget(out source)) {
                 return source;
             }
 
@@ -253,11 +251,7 @@ namespace AcManager.Tools.Managers.Online {
             var files = Directory.GetFiles(RootDirectory, "*" + Extension, SearchOption.AllDirectories);
             foreach (var filename in files) {
                 var key = FileUtils.GetRelativePath(filename, RootDirectory).ToLowerInvariant().ApartFromLast(Extension);
-
-                Source source;
-                WeakReference<Source> removed;
-
-                if (_missing.TryGetValue(key, out removed) && removed.TryGetTarget(out source)) {
+                if (_missing.TryGetValue(key, out var removed) && removed.TryGetTarget(out var source)) {
                     _missing.Remove(key);
                     _sources[key] = source;
                     source.CheckIfChanged();
@@ -379,7 +373,7 @@ namespace AcManager.Tools.Managers.Online {
                 public static readonly Comparer ComparerInstance = new Comparer();
 
                 public bool Equals(ServerInformation x, ServerInformation y) {
-                    return x.Id == y.Id;
+                    return x?.Id == y?.Id;
                 }
 
                 public int GetHashCode(ServerInformation obj) {

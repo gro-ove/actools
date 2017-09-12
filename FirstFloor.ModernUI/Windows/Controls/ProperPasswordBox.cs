@@ -73,8 +73,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ProperPasswordBox), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPasswordChanged));
 
         public string Password {
-            get { return (string)GetValue(PasswordProperty); }
-            set { SetValue(PasswordProperty, value); }
+            get => (string)GetValue(PasswordProperty);
+            set => SetValue(PasswordProperty, value);
         }
 
         private static void OnPasswordChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -94,8 +94,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ProperPasswordBox));
 
         public bool VisiblePassword {
-            get { return (bool)GetValue(VisiblePasswordProperty); }
-            set { SetValue(VisiblePasswordProperty, value); }
+            get => GetValue(VisiblePasswordProperty) as bool? == true;
+            set => SetValue(VisiblePasswordProperty, value);
         }
 
         public static readonly DependencyProperty TogglePasswordVisibilityCommandProperty = DependencyProperty.Register(
@@ -103,8 +103,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ProperPasswordBox));
 
         public DelegateCommand TogglePasswordVisibilityCommand {
-            get { return (DelegateCommand)GetValue(TogglePasswordVisibilityCommandProperty); }
-            set { SetValue(TogglePasswordVisibilityCommandProperty, value); }
+            get => (DelegateCommand)GetValue(TogglePasswordVisibilityCommandProperty);
+            set => SetValue(TogglePasswordVisibilityCommandProperty, value);
         }
 
         public void TogglePasswordVisibility() {
@@ -125,24 +125,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ProperPasswordBox));
 
         public string Placeholder {
-            get { return (string)GetValue(PlaceholderProperty); }
-            set { SetValue(PlaceholderProperty, value); }
+            get => (string)GetValue(PlaceholderProperty);
+            set => SetValue(PlaceholderProperty, value);
         }
 
         public static readonly DependencyProperty CaretBrushProperty = DependencyProperty.Register(nameof(CaretBrush), typeof(Brush),
                 typeof(ProperPasswordBox));
 
         public Brush CaretBrush {
-            get { return (Brush)GetValue(CaretBrushProperty); }
-            set { SetValue(CaretBrushProperty, value); }
+            get => (Brush)GetValue(CaretBrushProperty);
+            set => SetValue(CaretBrushProperty, value);
         }
 
         public static readonly DependencyProperty SelectionBrushProperty = DependencyProperty.Register(nameof(SelectionBrush), typeof(Brush),
                 typeof(ProperPasswordBox));
 
         public Brush SelectionBrush {
-            get { return (Brush)GetValue(SelectionBrushProperty); }
-            set { SetValue(SelectionBrushProperty, value); }
+            get => (Brush)GetValue(SelectionBrushProperty);
+            set => SetValue(SelectionBrushProperty, value);
         }
     }
 }

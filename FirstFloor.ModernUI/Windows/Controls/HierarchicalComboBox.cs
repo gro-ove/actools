@@ -72,7 +72,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(LazyMenuItem), new PropertyMetadata(OnAutoPrepareChanged));
 
         public bool AutoPrepare {
-            get => (bool)GetValue(AutoPrepareProperty);
+            get => GetValue(AutoPrepareProperty) as bool? == true;
             set => SetValue(AutoPrepareProperty, value);
         }
 
@@ -90,8 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnSubmenuOpened(RoutedEventArgs e) {
-            var view = ItemsSource as HierarchicalItemsView;
-            if (view != null) {
+            if (ItemsSource is HierarchicalItemsView view) {
                 view.Prepare();
                 foreach (var item in view.OfType<LazyMenuItem>()) {
                     (item.ItemsSource as HierarchicalItemsView)?.Prepare();
@@ -102,8 +101,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnSubmenuClosed(RoutedEventArgs e) {
-            var view = ItemsSource as HierarchicalItemsView;
-            if (view != null) {
+            if (ItemsSource is HierarchicalItemsView view) {
                 view.Release();
                 foreach (var item in view.OfType<LazyMenuItem>()) {
                     (item.ItemsSource as HierarchicalItemsView)?.Release();
@@ -162,12 +160,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private WeakReference<HierarchicalComboBox> _temporaryParent;
 
         [CanBeNull]
-        internal IHierarchicalItemPreviewProvider PreviewProvider {
-            get {
-                HierarchicalComboBox provider;
-                return (_temporaryParent != null && _temporaryParent.TryGetTarget(out provider) ? provider : Parent)?.PreviewProvider;
-            }
-        }
+        internal IHierarchicalItemPreviewProvider PreviewProvider => (_temporaryParent != null &&
+                _temporaryParent.TryGetTarget(out var provider) ? provider : Parent)?.PreviewProvider;
 
         [NotNull]
         public ItemChosenCallback Handler { get; }
@@ -269,10 +263,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private UIElement Wrap([CanBeNull] object value, [CanBeNull] IValueConverter headerConverter) {
-            var direct = value as UIElement;
-            if (direct != null) {
-                var menuItem = value as MenuItem;
-                if (menuItem != null) {
+            if (value is UIElement direct) {
+                if (value is MenuItem menuItem) {
                     var actualValue = GetValue(menuItem);
                     if (actualValue != null) {
                         menuItem.Command = this;
@@ -288,8 +280,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var view = value as HierarchicalItemsView;
 
-            var shortDisplayable = (view?._source ?? value) as IShortDisplayable;
-            if (shortDisplayable != null) {
+            if ((view?._source ?? value) is IShortDisplayable shortDisplayable) {
                 result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
                     Source = shortDisplayable,
                     Path = new PropertyPath(nameof(IShortDisplayable.ShortDisplayName)),
@@ -316,8 +307,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Converter = new InnerCountToVisibilityConverter()
                 });
             } else {
-                var group = value as HierarchicalGroup;
-                if (group == null) {
+                if (!(value is HierarchicalGroup group)) {
                     result.Command = this;
                     result.CommandParameter = value;
                 } else {
@@ -441,7 +431,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HierarchicalComboBox));
 
         public Thickness InnerMargin {
-            get => (Thickness)GetValue(InnerMarginProperty);
+            get => GetValue(InnerMarginProperty) as Thickness? ?? default(Thickness);
             set => SetValue(InnerMarginProperty, value);
         }
 
@@ -493,8 +483,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static IEnumerable<object> Flatten([NotNull] IList list) {
             foreach (var o in list) {
-                var g = o as HierarchicalGroup;
-                if (g != null) {
+                if (o is HierarchicalGroup g) {
                     foreach (var c in Flatten(g)) {
                         yield return c;
                     }
@@ -506,8 +495,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static bool GetGroup([NotNull] IList list, object item, out HierarchicalGroup group) {
             foreach (var o in list) {
-                var g = o as HierarchicalGroup;
-                if (g == null) {
+                if (!(o is HierarchicalGroup g)) {
                     if (o == item) {
                         group = list as HierarchicalGroup;
                         return true;
@@ -554,7 +542,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HierarchicalComboBox), new FrameworkPropertyMetadata(true));
 
         public bool FixedMode {
-            get => (bool)GetValue(FixedModeProperty);
+            get => GetValue(FixedModeProperty) as bool? == true;
             set => SetValue(FixedModeProperty, value);
         }
 

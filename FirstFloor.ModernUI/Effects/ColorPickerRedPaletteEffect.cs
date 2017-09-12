@@ -17,8 +17,8 @@ namespace FirstFloor.ModernUI.Effects {
                 typeof(ColorPickerRedPaletteEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(0), CoerceSaturationFactor));
 
         public double Red {
-            get { return (double)GetValue(RedProperty); }
-            set { SetValue(RedProperty, value); }
+            get => GetValue(RedProperty) as double? ?? 0d;
+            set => SetValue(RedProperty, value);
         }
 
         private static object CoerceSaturationFactor(DependencyObject d, object value) {

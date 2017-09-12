@@ -210,7 +210,7 @@ namespace AcManager.Controls {
                 typeof(UserPresetsControl), new FrameworkPropertyMetadata(true));
 
         public bool ShowSaveButton {
-            get => (bool)GetValue(ShowSaveButtonProperty);
+            get => GetValue(ShowSaveButtonProperty) as bool? == true;
             set => SetValue(ShowSaveButtonProperty, value);
         }
 
@@ -480,7 +480,7 @@ namespace AcManager.Controls {
             typeof(bool), typeof(UserPresetsControl), null);
         public static readonly DependencyProperty ChangedProperty = ChangedPropertyKey.DependencyProperty;
 
-        public bool Changed => (bool)GetValue(ChangedProperty);
+        public bool Changed => GetValue(ChangedProperty) as bool? == true;
 
         private void SetChanged(bool? value = null) {
             if (_presetable == null || Changed == value) return;

@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Effects {
                 typeof(GrayscaleEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(0), CoerceSaturationFactor));
 
         public double SaturationFactor {
-            get => (double)GetValue(SaturationFactorProperty);
+            get => GetValue(SaturationFactorProperty) as double? ?? 0d;
             set => SetValue(SaturationFactorProperty, value);
         }
 

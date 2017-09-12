@@ -18,8 +18,8 @@ namespace FirstFloor.ModernUI.Effects {
                 typeof(ColorPickerBrightnessSliderEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(0), HueCoerceSaturationFactor));
 
         public double Hue {
-            get { return (double)GetValue(HueProperty); }
-            set { SetValue(HueProperty, value); }
+            get => GetValue(HueProperty) as double? ?? 0d;
+            set => SetValue(HueProperty, value);
         }
 
         private static object HueCoerceSaturationFactor(DependencyObject d, object value) {
@@ -30,8 +30,8 @@ namespace FirstFloor.ModernUI.Effects {
                 typeof(ColorPickerBrightnessSliderEffect), new UIPropertyMetadata(0.0, PixelShaderConstantCallback(1), SaturationCoerceSaturationFactor));
 
         public double Saturation {
-            get { return (double)GetValue(SaturationProperty); }
-            set { SetValue(SaturationProperty, value); }
+            get => GetValue(SaturationProperty) as double? ?? 0d;
+            set => SetValue(SaturationProperty, value);
         }
 
         private static object SaturationCoerceSaturationFactor(DependencyObject d, object value) {

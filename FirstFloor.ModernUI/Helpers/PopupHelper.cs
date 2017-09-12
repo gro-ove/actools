@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static bool GetRegister(DependencyObject obj) {
-            return (bool)obj.GetValue(RegisterProperty);
+            return obj.GetValue(RegisterProperty) as bool? == true;
         }
 
         public static void SetRegister(DependencyObject obj, bool value) {
@@ -24,9 +24,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 typeof(PopupHelper), new UIPropertyMetadata(OnRegisterChanged));
 
         private static void OnRegisterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var popup = d as Popup;
-            if (popup == null || !(e.NewValue is bool)) return;
-
+            if (!(d is Popup popup) || !(e.NewValue is bool)) return;
             var newValue = (bool)e.NewValue;
             if (newValue) {
                 popup.Opened += PopupOpened;
@@ -36,7 +34,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static int GetGroup(DependencyObject obj) {
-            return (int)obj.GetValue(GroupProperty);
+            return obj.GetValue(GroupProperty) as int? ?? 0;
         }
 
         public static void SetGroup(DependencyObject obj, int value) {
@@ -68,9 +66,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private static void PopupOpened(object sender, EventArgs eventArgs) {
-            var popup = sender as Popup;
-            if (popup == null) return;
-
+            if (!(sender is Popup popup)) return;
             var group = GetGroup(popup);
             foreach (var openPopup in GetOpenPopups().Where(x => !ReferenceEquals(x, popup) && (group == 0 || (group & GetGroup(x)) != 0))) {
                 openPopup.IsOpen = false;

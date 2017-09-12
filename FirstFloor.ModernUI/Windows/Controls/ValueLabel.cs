@@ -112,7 +112,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ValuesEqualProperty = ValuesEqualPropertyKey.DependencyProperty;
 
-        public bool ValuesEqual => (bool)GetValue(ValuesEqualProperty);
+        public bool ValuesEqual => GetValue(ValuesEqualProperty) as bool? == true;
 
         public static readonly DependencyProperty SeparatorProperty = DependencyProperty.Register(nameof(Separator), typeof(string),
                 typeof(DoubleValueLabel));
@@ -126,7 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleValueLabel));
 
         public bool JoinIfEqual {
-            get => (bool)GetValue(JoinIfEqualProperty);
+            get => GetValue(JoinIfEqualProperty) as bool? == true;
             set => SetValue(JoinIfEqualProperty, value);
         }
 
@@ -134,7 +134,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleValueLabel));
 
         public bool RelativeRange {
-            get => (bool)GetValue(RelativeRangeProperty);
+            get => GetValue(RelativeRangeProperty) as bool? == true;
             set => SetValue(RelativeRangeProperty, value);
         }
     }
@@ -192,7 +192,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ValueLabel));
 
         public bool ShowZeroAsOff {
-            get => (bool)GetValue(ShowZeroAsOffProperty);
+            get => GetValue(ShowZeroAsOffProperty) as bool? == true;
             set => SetValue(ShowZeroAsOffProperty, value);
         }
 
@@ -200,15 +200,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ValueLabel), new PropertyMetadata(true));
 
         public bool ShowPostfix {
-            get => (bool)GetValue(ShowPostfixProperty);
+            get => GetValue(ShowPostfixProperty) as bool? == true;
             set => SetValue(ShowPostfixProperty, value);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
             base.OnMouseLeftButtonUp(e);
-
-            var t = GetTemplateChild("PART_TextBox") as TextBox;
-            if (t != null && !t.IsFocused) {
+            if (GetTemplateChild("PART_TextBox") is TextBox t && !t.IsFocused) {
                 Keyboard.Focus(t);
             }
         }

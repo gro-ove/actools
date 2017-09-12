@@ -28,7 +28,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(false, OnChildDefiningPropertyChanged));
 
         public bool Value {
-            get => (bool)GetValue(ValueProperty);
+            get => GetValue(ValueProperty) as bool? == true;
             set => SetValue(ValueProperty, value);
         }
 
@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     ((BooleanLazySwitch)o)._collapseIfMissing = (bool)e.NewValue;
                 }));
 
-        private bool _collapseIfMissing = false;
+        private bool _collapseIfMissing;
 
         public bool CollapseIfMissing {
             get => _collapseIfMissing;

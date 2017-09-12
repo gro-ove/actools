@@ -36,6 +36,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Helpers.PresetsPerMode;
 using AcManager.Tools.Profile;
 using AcManager.Tools.Managers;
@@ -67,7 +68,7 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable, IGameSessionNameProvider {
+    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable, IGameSessionNameProvider, ICmRequestHandler {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -151,6 +152,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
             AppArguments.Set(AppFlag.GenericModsLogging, ref GenericModsEnabler.OptionLoggingEnabled);
             AppArguments.Set(AppFlag.SidekickOptimalRangeThreshold, ref SidekickHelper.OptionRangeThreshold);
+            AppArguments.Set(AppFlag.RdAllowed, ref RaceDepartmentLoader.OptionAllowed);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();
@@ -268,6 +270,7 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
+            FlexibleLoader.CmRequestHandler = this;
             PrepareUi();
 
             AppShortcut.Initialize("AcClub.ContentManager", "Content Manager");
@@ -519,14 +522,14 @@ namespace AcManager {
 
         private void InitializeUpdatableStuff() {
             DataUpdater.Initialize();
-            DataUpdater.Instance.Updated += DataUpdater_Updated;
+            DataUpdater.Instance.Updated += OnDataUpdated;
 
             if (AcRootDirectory.Instance.IsFirstRun) {
                 AppUpdater.OnFirstRun();
             }
 
             AppUpdater.Initialize();
-            AppUpdater.Instance.Updated += AppUpdater_Updated;
+            AppUpdater.Instance.Updated += OnAppUpdated;
 
             if (LocaleHelper.JustUpdated) {
                 Toast.Show(AppStrings.App_LocaleUpdated, string.Format(AppStrings.App_DataUpdated_Details, LocaleHelper.LoadedVersion));
@@ -536,11 +539,11 @@ namespace AcManager {
             LocaleUpdater.Instance.Updated += LocaleUpdater_Updated;
         }
 
-        private void DataUpdater_Updated(object sender, EventArgs e) {
+        private void OnDataUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_DataUpdated, string.Format(AppStrings.App_DataUpdated_Details, DataUpdater.Instance.InstalledVersion));
         }
 
-        private void AppUpdater_Updated(object sender, EventArgs e) {
+        private void OnAppUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_NewVersion,
                     string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
                         AppUpdater.Instance.FinishUpdateCommand.Execute();
@@ -598,6 +601,18 @@ namespace AcManager {
             }
 
             return null;
+        }
+
+        public bool Test(string request) {
+            return ArgumentsHandler.IsCustomUriScheme(request);
+        }
+
+        public string UnwrapDownloadUrl(string request) {
+            return ArgumentsHandler.UnwrapDownloadRequest(request);
+        }
+
+        public void Handle(string request) {
+            ArgumentsHandler.ProcessArguments(new[] { request }).Forget();
         }
     }
 }

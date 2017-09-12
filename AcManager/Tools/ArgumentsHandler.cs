@@ -130,10 +130,14 @@ namespace AcManager.Tools {
             return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
         }
 
+        public static bool IsCustomUriScheme(string argument) {
+            return argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.InvariantCultureIgnoreCase);
+        }
+
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {
             if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
 
-            if (argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.InvariantCultureIgnoreCase)) {
+            if (IsCustomUriScheme(argument)) {
                 return await ProcessUriRequest(argument);
             }
 

@@ -96,7 +96,7 @@ namespace AcManager.Controls.Graphs {
 
         public static readonly DependencyProperty IsEmptyProperty = IsEmptyPropertyKey.DependencyProperty;
 
-        public bool IsEmpty => (bool)GetValue(IsEmptyProperty);
+        public bool IsEmpty => GetValue(IsEmptyProperty) as bool? == true;
 
         protected void SetEmpty(bool isEmpty) {
             SetValue(IsEmptyPropertyKey, isEmpty);

@@ -158,7 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HistoricalTextBox), new PropertyMetadata(10, OnMaxSizeChanged));
 
         public int MaxSize {
-            get => (int)GetValue(MaxSizeProperty);
+            get => GetValue(MaxSizeProperty) as int? ?? 0;
             set => SetValue(MaxSizeProperty, value);
         }
 

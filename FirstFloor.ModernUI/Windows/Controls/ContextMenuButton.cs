@@ -234,7 +234,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ContextMenuButton));
 
         public bool PropagateToChildren {
-            get => (bool)GetValue(PropagateToChildrenProperty);
+            get => GetValue(PropagateToChildrenProperty) as bool? == true;
             set => SetValue(PropagateToChildrenProperty, value);
         }
     }

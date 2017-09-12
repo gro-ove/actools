@@ -464,12 +464,18 @@ namespace FirstFloor.ModernUI.Helpers {
             Exit -= OnExit;
         }
 
-        public int Count => _storage.Count;
+        public int Count {
+            get {
+                lock (_storage) {
+                    return _storage.Count;
+                }
+            }
+        }
 
         private TimeSpan? _previosSaveTime;
 
         public TimeSpan? PreviosSaveTime {
-            get { return _previosSaveTime; }
+            get => _previosSaveTime;
             set {
                 if (Equals(value, _previosSaveTime)) return;
                 _previosSaveTime = value;
@@ -614,17 +620,22 @@ namespace FirstFloor.ModernUI.Helpers {
         private void Load() {
             var w = Stopwatch.StartNew();
             if (_filename == null || !File.Exists(_filename)) {
-                _storage.Clear();
+                lock (_storage) {
+                    _storage.Clear();
+                }
                 return;
             }
 
             try {
                 var splitted = DecodeBytes(File.ReadAllBytes(_filename))
                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture), splitted.Skip(1));
+                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture),
+                        splitted.Skip(1));
             } catch (Exception e) {
-                Logging.Warning("Cannot load data: " + e);
-                _storage.Clear();
+                Logging.Warning(e);
+                lock (_storage) {
+                    _storage.Clear();
+                }
             }
 
             OnPropertyChanged(nameof(Count));
@@ -728,8 +739,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public string GetString([LocalizationRequired(false)] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             lock (_storage) {
-                string value;
-                return _storage.TryGetValue(key, out value) ? value : defaultValue;
+                return _storage.TryGetValue(key, out var value) ? value : defaultValue;
             }
         }
 
@@ -759,8 +769,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public void SetString([LocalizationRequired(false)] string key, string value) {
             lock (_storage) {
-                string previous;
-                var exists = _storage.TryGetValue(key, out previous);
+                var exists = _storage.TryGetValue(key, out var previous);
                 if (exists && previous == value) return;
 
                 _storage[key] = value;
@@ -847,7 +856,13 @@ namespace FirstFloor.ModernUI.Helpers {
             });
         }
 
-        public IEnumerable<string> Keys => _storage.Keys;
+        public IEnumerable<string> Keys {
+            get {
+                lock (_storage) {
+                    return _storage.Keys;
+                }
+            }
+        }
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator() {
             lock (_storage) {

@@ -20,8 +20,8 @@ namespace AcManager.Controls {
                 typeof(MessageBlock));
 
         public UIElementCollection Children {
-            get { return (UIElementCollection)GetValue(ChildrenProperty); }
-            set { SetValue(ChildrenProperty, value); }
+            get => (UIElementCollection)GetValue(ChildrenProperty);
+            set => SetValue(ChildrenProperty, value);
         }
 
         private Panel _panel;
@@ -72,8 +72,8 @@ namespace AcManager.Controls {
         private Visibility _visibility = Visibility.Visible;
 
         public new Visibility Visibility {
-            get { return _visibility; }
-            set { SetValue(VisibilityProperty, value); }
+            get => _visibility;
+            set => SetValue(VisibilityProperty, value);
         }
 
         public static readonly DependencyProperty CloseKeyProperty = DependencyProperty.Register(nameof(CloseKey), typeof(string),
@@ -87,8 +87,8 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         public string CloseKey {
-            get { return _closeKey; }
-            set { SetValue(CloseKeyProperty, value); }
+            get => _closeKey;
+            set => SetValue(CloseKeyProperty, value);
         }
 
         private void OnCloseKeyChanged() {
@@ -109,22 +109,22 @@ namespace AcManager.Controls {
 
         public static readonly DependencyProperty ClosedProperty = ClosedPropertyKey.DependencyProperty;
 
-        public bool Closed => (bool)GetValue(ClosedProperty);
+        public bool Closed => GetValue(ClosedProperty) as bool? == true;
 
         public static readonly DependencyProperty CloseButtonContentProperty = DependencyProperty.Register(nameof(CloseButtonContent), typeof(object),
                 typeof(MessageBlock), new PropertyMetadata(null));
 
         public object CloseButtonContent {
-            get { return GetValue(CloseButtonContentProperty); }
-            set { SetValue(CloseButtonContentProperty, value); }
+            get => GetValue(CloseButtonContentProperty);
+            set => SetValue(CloseButtonContentProperty, value);
         }
 
         public static readonly DependencyProperty CloseButtonContentStringFormatProperty = DependencyProperty.Register(nameof(CloseButtonContentStringFormat), typeof(string),
                 typeof(MessageBlock));
 
         public string CloseButtonContentStringFormat {
-            get { return (string)GetValue(CloseButtonContentStringFormatProperty); }
-            set { SetValue(CloseButtonContentStringFormatProperty, value); }
+            get => (string)GetValue(CloseButtonContentStringFormatProperty);
+            set => SetValue(CloseButtonContentStringFormatProperty, value);
         }
     }
 }

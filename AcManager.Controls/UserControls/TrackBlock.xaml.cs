@@ -14,24 +14,24 @@ namespace AcManager.Controls.UserControls {
                 typeof(TrackBlock), new PropertyMetadata(true));
 
         public bool ShowPreview {
-            get { return (bool)GetValue(ShowPreviewProperty); }
-            set { SetValue(ShowPreviewProperty, value); }
+            get => GetValue(ShowPreviewProperty) as bool? == true;
+            set => SetValue(ShowPreviewProperty, value);
         }
 
         public static readonly DependencyProperty TrackProperty = DependencyProperty.Register(nameof(Track), typeof(TrackObjectBase),
                 typeof(TrackBlock));
 
         public TrackObjectBase Track {
-            get { return (TrackObjectBase)GetValue(TrackProperty); }
-            set { SetValue(TrackProperty, value); }
+            get => (TrackObjectBase)GetValue(TrackProperty);
+            set => SetValue(TrackProperty, value);
         }
 
         public static readonly DependencyProperty PreviewContentProperty = DependencyProperty.Register(nameof(PreviewContent), typeof(object),
                 typeof(TrackBlock));
 
         public object PreviewContent {
-            get { return (object)GetValue(PreviewContentProperty); }
-            set { SetValue(PreviewContentProperty, value); }
+            get => GetValue(PreviewContentProperty);
+            set => SetValue(PreviewContentProperty, value);
         }
     }
 }

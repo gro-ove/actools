@@ -1474,8 +1474,8 @@ namespace AcManager.Tools.Helpers {
                 var dialog = new OpenFileDialog {
                     Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
                     Title = "Select Real Head Motion Application",
-                    InitialDirectory = Path.GetDirectoryName(RhmLocation),
-                    FileName = Path.GetFileName(RhmLocation)
+                    InitialDirectory = Path.GetDirectoryName(RhmLocation) ?? "",
+                    FileName = Path.GetFileName(RhmLocation) ?? ""
                 };
 
                 if (dialog.ShowDialog() == true) {
@@ -1490,8 +1490,8 @@ namespace AcManager.Tools.Helpers {
                     var dialog = new OpenFileDialog {
                         Filter = "Real Head Motion Settings|Settings.xml|XML Files (*.xml)|*.xml|All files (*.*)|*.*",
                         Title = "Select Real Head Motion Settings",
-                        InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation),
-                        FileName = Path.GetFileName(RhmSettingsLocation)
+                        InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation) ?? "",
+                        FileName = Path.GetFileName(RhmSettingsLocation) ?? ""
                     };
 
                     if (dialog.ShowDialog() == true) {
@@ -1854,6 +1854,8 @@ namespace AcManager.Tools.Helpers {
             private MissingContentSearchEntry[] _missingContentSearchEntries;
 
             public MissingContentSearchEntry[] MissingContentSearchEntries => _missingContentSearchEntries ?? (_missingContentSearchEntries = new[] {
+                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
+                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true),
                 new MissingContentSearchEntry("Assetto-DB.com (by ID, strict)", (type, id) => {
                     switch (type) {
                         case MissingContentType.Car:
@@ -1865,11 +1867,9 @@ namespace AcManager.Tools.Helpers {
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
                     }
                 }, false),
-                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
-                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true),
-                new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
+                // new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
                 new MissingContentSearchEntry("AC Drifting Pro", (type, id) => $"http://www.acdriftingpro.com/?s={HttpUtility.UrlEncode(id)}", false),
-                new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
+                // new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
             });
 
             private MissingContentSearchEntry _missingContentSearch;
@@ -2497,7 +2497,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _cefFilterAds;
 
             public bool CefFilterAds {
-                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.GetBool("Settings.PluginsSettings.CefFilterAds", true)).Value;
+                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.GetBool("Settings.PluginsSettings.CefFilterAds", false)).Value;
                 set {
                     if (Equals(value, _cefFilterAds)) return;
                     _cefFilterAds = value;

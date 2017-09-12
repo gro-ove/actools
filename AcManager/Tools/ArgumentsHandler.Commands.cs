@@ -27,6 +27,37 @@ using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
+        public static string UnwrapDownloadRequest(string request) {
+            if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
+                var splitted = request.Split(new[] { '/' }, 2);
+                if (splitted.Length != 2) return null;
+
+                var index = splitted[1].IndexOf('?');
+                if (index != -1) {
+                    splitted[1] = splitted[1].Substring(0, index);
+                }
+
+                return splitted[0] == "install" ? splitted[1] : null;
+            }
+
+            CustomUriRequest custom;
+            try {
+                custom = CustomUriRequest.Parse(request);
+            } catch (Exception e) when (e.IsCanceled()) {
+                return null;
+            } catch (Exception) {
+                NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
+                return null;
+            }
+
+            switch (custom.Path.ToLowerInvariant()) {
+                case "install":
+                    return custom.Params.Get(@"url");
+            }
+
+            return null;
+        }
+
         [Obsolete]
         private static async Task<ArgumentHandleResult> ProcessUriRequestObsolete(string request) {
             string key, param;
@@ -121,9 +152,10 @@ namespace AcManager.Tools {
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
 
                     case "install":
-                        return await ContentInstallationManager.Instance.InstallAsync(custom.Params.Get(@"url"), new ContentInstallationParams {
-                            AllowExecutables = true
-                        }) ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                        return (await (custom.Params.GetValues(@"url") ?? new string[0]).Select(
+                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams {
+                                    AllowExecutables = true
+                                })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
@@ -138,7 +170,11 @@ namespace AcManager.Tools {
                         return await ProcessTheSetupMarketSetup(custom.Params.Get(@"id"));
 
                     case "shared":
-                        return await ProcessShared(custom.Params.Get(@"id"));
+                        var result = ArgumentHandleResult.Ignore;
+                        foreach (var id in custom.Params.GetValues(@"id") ?? new string[0]) {
+                            result = await ProcessShared(id);
+                        }
+                        return result;
 
                     default:
                         NonfatalError.Notify(string.Format(AppStrings.Main_NotSupportedRequest, custom.Path), AppStrings.Main_CannotProcessArgument_Commentary);

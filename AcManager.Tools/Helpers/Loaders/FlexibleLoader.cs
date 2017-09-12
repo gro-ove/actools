@@ -25,14 +25,39 @@ namespace AcManager.Tools.Helpers.Loaders {
         public string Version { get; }
     }
 
+    public interface ICmRequestHandler {
+        bool Test([NotNull] string request);
+
+        [CanBeNull]
+        string UnwrapDownloadUrl([NotNull] string request);
+
+        void Handle([NotNull] string request);
+    }
+
     public static class FlexibleLoader {
-        public static ILoader CreateLoader(string uri) {
+        [CanBeNull]
+        public static ICmRequestHandler CmRequestHandler { get; set; }
+
+        [NotNull]
+        public static ILoader CreateLoader([NotNull] string uri) {
+            if (CmRequestHandler?.Test(uri) == true) {
+                var unwrapped = CmRequestHandler.UnwrapDownloadUrl(uri);
+                if (unwrapped != null) {
+                    uri = unwrapped;
+                    Logging.Debug($"Unwrapped URL: {unwrapped}");
+                } else {
+                    throw new OperationCanceledException("Link is handled by CM Requests Handler");
+                }
+            }
+
+            if (AcStuffSharedLoader.Test(uri)) return new AcStuffSharedLoader(uri);
             if (GoogleDriveLoader.Test(uri)) return new GoogleDriveLoader(uri);
             if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
             if (MediaFireLoader.Test(uri)) return new MediaFireLoader(uri);
             if (DropboxLoader.Test(uri)) return new DropboxLoader(uri);
             if (OneDriveLoader.Test(uri)) return new OneDriveLoader(uri);
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
+            if (AcDriftingProLoader.Test(uri)) return new AcDriftingProLoader(uri);
             if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);
             if (AdFlyLoader.Test(uri)) return new AdFlyLoader(uri);
@@ -120,7 +145,6 @@ namespace AcManager.Tools.Helpers.Loaders {
         public static async Task LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
                 Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
-
             try {
                 using (var order = KillerOrder.Create(new CookieAwareWebClient {
                     Headers = {

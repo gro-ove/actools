@@ -330,7 +330,7 @@ namespace AcManager.Pages.ServerPreset {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TextFilter,
                     Title = "Select New Welcome Message",
-                    InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath),
+                    InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath) ?? "",
                     RestoreDirectory = true
                 };
 

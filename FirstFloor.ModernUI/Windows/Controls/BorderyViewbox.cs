@@ -13,16 +13,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(Stretch), typeof(BorderyViewbox), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public Stretch Stretch {
-            get { return (Stretch)GetValue(StretchProperty); }
-            set { SetValue(StretchProperty, value); }
+            get => GetValue(StretchProperty) as Stretch? ?? default(Stretch);
+            set => SetValue(StretchProperty, value);
         }
 
         public static readonly DependencyProperty StretchDirectionProperty = DependencyProperty.Register(nameof(StretchDirection),
                 typeof(StretchDirection), typeof(BorderyViewbox), new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public StretchDirection StretchDirection {
-            get { return (StretchDirection)GetValue(StretchDirectionProperty); }
-            set { SetValue(StretchDirectionProperty, value); }
+            get => GetValue(StretchDirectionProperty) as StretchDirection? ?? default(StretchDirection);
+            set => SetValue(StretchDirectionProperty, value);
         }
 
         public static readonly DependencyPropertyKey ScalePropertyKey = DependencyProperty.RegisterReadOnly(nameof(Scale), typeof(Size),
@@ -30,7 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ScaleProperty = ScalePropertyKey.DependencyProperty;
 
-        public Size Scale => (Size)GetValue(ScaleProperty);
+        public Size Scale => GetValue(ScaleProperty) as Size? ?? default(Size);
 
         private ContainerVisual InternalVisual {
             get {
@@ -55,12 +55,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private Transform InternalTransform {
-            get { return InternalVisual.Transform; }
-            set { InternalVisual.Transform = value; }
+            get => InternalVisual.Transform;
+            set => InternalVisual.Transform = value;
         }
 
         public override UIElement Child {
-            get { return InternalChild; }
+            get => InternalChild;
             set {
                 var old = InternalChild;
                 if (!ReferenceEquals(old, value)) {

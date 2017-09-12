@@ -34,7 +34,7 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
 
             Buttons = new[] {
-                OkButton, 
+                OkButton,
                 CreateExtraDialogButton(ControlsStrings.CarParent_MakeIndependent, () => {
                     Car.ParentId = null;
                     Close();
@@ -102,7 +102,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public int Compare(object x, object y) {
-            return ((CarObject)x).CompareTo((CarObject)y);
+            return ((CarObject)x)?.CompareTo((CarObject)y) ?? 0;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

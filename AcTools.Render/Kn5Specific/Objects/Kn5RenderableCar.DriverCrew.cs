@@ -130,6 +130,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _driverModelFilename = Path.Combine(driversDirectory, driver.Name + ".kn5");
             _driverModelWatcher = DirectoryWatcher.WatchFile(_driverModelFilename, ReloadDriverModel);
             LoadDriverModel();
+
+            ObjectsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private bool _useUp;
