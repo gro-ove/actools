@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AcTools.Properties;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using Microsoft.Win32;
 
 namespace AcTools.Processes {
     public class TrickyStarter : IAcsStarter {

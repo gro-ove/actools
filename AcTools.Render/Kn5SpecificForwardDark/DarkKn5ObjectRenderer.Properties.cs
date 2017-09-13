@@ -1,6 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
+using System;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
@@ -230,6 +230,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             set {
 #if !DEBUG
                 if (Array.IndexOf(ProductionReadyAo, value) == -1) value = AoType.Ssao;
+#else
+                // Just to keep System namespace in usings
+                if (Array.IndexOf(ProductionReadyAo, value) == -2) value = AoType.Ssao;
 #endif
 
                 if (Equals(value, _aoType)) return;
@@ -304,6 +307,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
         #endregion
+
         #endregion
 
         #region Shadows

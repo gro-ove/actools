@@ -470,9 +470,8 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override void ApplyOverride(CarObject obj) {
-                double power, weight;
-                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out power) ||
-                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out weight)) return;
+                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out var power) ||
+                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out var weight)) return;
 
                 var ratio = weight / power;
                 obj.SpecsPwRatio = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
@@ -540,8 +539,6 @@ namespace AcManager.Pages.Lists {
                     try {
                         await Task.Run(() => {
                             var kn5 = Kn5.FromFile(FileUtils.GetMainCarFilename(car.Location, car.AcdData));
-                            if (kn5 == null) return;
-
                             using (var renderer = new AmbientShadowRenderer(kn5, car.AcdData) {
                                 DiffusionLevel = (float)_params.AmbientShadowDiffusion / 100f,
                                 SkyBrightnessLevel = (float)_params.AmbientShadowBrightness / 100f,
@@ -560,7 +557,7 @@ namespace AcManager.Pages.Lists {
                         NonfatalError.Notify(ControlsStrings.CustomShowroom_AmbientShadows_CannotUpdate, e);
                     }
 
-                    subProgress?.Report(1d);
+                    subProgress.Report(1d);
                     if (cancellation.IsCancellationRequested) return;
                 }
 
@@ -726,8 +723,7 @@ namespace AcManager.Pages.Lists {
         #endregion
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var car = obj as CarObject;
-            if (car != null) {
+            if (obj is CarObject car) {
                 QuickDrive.Show(car);
             }
         }

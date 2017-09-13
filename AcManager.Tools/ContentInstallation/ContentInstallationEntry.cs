@@ -25,7 +25,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Microsoft.VisualBasic;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry : NotifyPropertyChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {

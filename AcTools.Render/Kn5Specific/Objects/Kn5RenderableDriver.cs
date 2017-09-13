@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using AcTools.Kn5File;
 using AcTools.KnhFile;
 using AcTools.KsAnimFile;
@@ -11,7 +10,6 @@ using AcTools.Render.Kn5Specific.Animations;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using Newtonsoft.Json.Bson;
 using SlimDX;
 #pragma warning disable 649
 

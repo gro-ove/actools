@@ -25,7 +25,6 @@ using SharpCompress.Common;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Writers;
-using SharpCompress.Writers.GZip;
 
 namespace AcManager.Pages.Dialogs {
     public partial class PackServerDialog {

@@ -92,8 +92,8 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Open(TrackObject track) {
-            var main = Application.Current?.MainWindow as MainWindow;
-            if (main == null || Keyboard.Modifiers == ModifierKeys.Control || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (!(Application.Current?.MainWindow is MainWindow main) || Keyboard.Modifiers == ModifierKeys.Control ||
+                    SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {
                 main.OpenSubGroup("track skins", $"Skins for {track.DisplayNameWithoutCount}",
@@ -165,12 +165,11 @@ namespace AcManager.Pages.Lists {
         #endregion
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var skin = obj as TrackSkinObject;
-            if (skin == null) return;
-
-            var track = TracksManager.Instance.GetById(skin.TrackId);
-            if (track != null) {
-                /*QuickDrive.Show(track, skin.Id);*/
+            if (obj is TrackSkinObject skin) {
+                var track = TracksManager.Instance.GetById(skin.TrackId);
+                if (track != null) {
+                    /*QuickDrive.Show(track, skin.Id);*/
+                }
             }
         }
     }

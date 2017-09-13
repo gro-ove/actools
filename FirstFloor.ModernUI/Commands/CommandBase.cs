@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;

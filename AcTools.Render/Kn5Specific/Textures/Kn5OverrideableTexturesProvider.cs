@@ -10,7 +10,6 @@ using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5SkinnableTexturesProvider : Kn5OverrideableTexturesProvider {

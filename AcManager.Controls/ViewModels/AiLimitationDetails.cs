@@ -1,17 +1,12 @@
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

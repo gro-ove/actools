@@ -43,32 +43,33 @@ namespace AcManager.Pages.Miscellaneous {
 
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            _filter = filter == null ? null : Filter.Create(RaceResultsTester.Instance, filter);
+            _filter = filter == null ? Filter<RaceResultsObject>.Any : Filter.Create(RaceResultsTester.Instance, filter);
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
-            _entries = await Task.Run(() => GetEntries().If(_filter != null, v => v.Where(_filter.Test)).ToList());
+            _entries = await Task.Run(() => GetEntries(_filter).ToList());
         }
 
         public void Load() {
-            _entries = GetEntries().If(_filter != null, v => v.Where(_filter.Test)).ToList();
+            _entries = GetEntries(_filter).ToList();
         }
 
         public void Initialize() {
-            DataContext = new ViewModel(_entries);
+            DataContext = new ViewModel(_filter, _entries);
             InitializeComponent();
             this.OnActualUnload(Model);
         }
 
-        private static IEnumerable<RaceResultsObject> GetEntries() {
+        private static IEnumerable<RaceResultsObject> GetEntries(IFilter<RaceResultsObject> filter) {
             var d = new DirectoryInfo(RaceResultsStorage.Instance.SessionsDirectory);
             if (!d.Exists) return new RaceResultsObject[0];
             return d.GetFiles("*.json", SearchOption.TopDirectoryOnly)
                     .OrderByDescending(x => x.LastWriteTime)
-                    .Select(x => new RaceResultsObject(x));
+                    .Select(x => new RaceResultsObject(x))
+                    .Where(filter.Test);
         }
 
-        private static IEnumerable<RaceResultsObject> GetUpdateEntries(IList<RaceResultsObject> existing) {
+        private static IEnumerable<RaceResultsObject> GetUpdateEntries(IFilter<RaceResultsObject> filter, IList<RaceResultsObject> existing) {
             var d = new DirectoryInfo(RaceResultsStorage.Instance.SessionsDirectory);
             if (!d.Exists) return new RaceResultsObject[0];
             return d.GetFiles("*.json", SearchOption.TopDirectoryOnly)
@@ -77,7 +78,8 @@ namespace AcManager.Pages.Miscellaneous {
                         var e = existing.FirstOrDefault(y => string.Equals(y.DisplayName, x.Name, StringComparison.Ordinal));
                         if (e != null && e.Date == x.LastWriteTime) return e;
                         return new RaceResultsObject(x);
-                    });
+                    })
+                    .Where(filter.Test);
         }
 
         public class WrappedCarObject : NotifyPropertyChanged {
@@ -504,10 +506,12 @@ namespace AcManager.Pages.Miscellaneous {
         public class ViewModel : NotifyPropertyChanged, IDisposable {
             public ChangeableObservableCollection<RaceResultsObject> Entries { get; }
 
+            private readonly IFilter<RaceResultsObject> _filter;
             private readonly DirectoryWatcher _watcher;
             private readonly Busy _busy = new Busy(true);
 
-            public ViewModel(List<RaceResultsObject> entries) {
+            public ViewModel(IFilter<RaceResultsObject> filter, List<RaceResultsObject> entries) {
+                _filter = filter;
                 Entries = new ChangeableObservableCollection<RaceResultsObject>(entries);
                 Entries.ItemPropertyChanged += OnPropertyChanged;
                 _watcher = new DirectoryWatcher(RaceResultsStorage.Instance.SessionsDirectory);
@@ -515,7 +519,7 @@ namespace AcManager.Pages.Miscellaneous {
             }
 
             private void OnUpdate(object sender, FileSystemEventArgs fileSystemEventArgs) {
-                _busy.DoDelay(() => Entries.ReplaceEverythingBy(GetUpdateEntries(Entries)), 300);
+                _busy.DoDelay(() => Entries.ReplaceEverythingBy(GetUpdateEntries(_filter, Entries)), 300);
             }
 
             private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -540,17 +544,14 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         private void OnTryAgainClick(object sender, RoutedEventArgs e) {
-            var item = ((FrameworkElement)sender).DataContext as RaceResultsObject;
-            if (item == null) return;
-
-            e.Handled = true;
-            new ContextMenu()
-                    .If(item.JoinOnlineServerCommand.CanExecute, c => {
-                        c.AddItem("Join Online", item.JoinOnlineServerCommand).AddSeparator();
-                    })
-                    .AddItem("Setup Race", item.SetupRaceCommand)
-                    .AddItem("Start Race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
-                    .IsOpen = true;
+            if (((FrameworkElement)sender).DataContext is RaceResultsObject item) {
+                e.Handled = true;
+                new ContextMenu()
+                        .If(item.JoinOnlineServerCommand.CanExecute, c => { c.AddItem("Join Online", item.JoinOnlineServerCommand).AddSeparator(); })
+                        .AddItem("Setup Race", item.SetupRaceCommand)
+                        .AddItem("Start Race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
+                        .IsOpen = true;
+            }
         }
     }
 }

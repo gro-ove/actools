@@ -15,16 +15,16 @@
           <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
-        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+        <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="4" HorizontalAlignment="Left">
           <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackData}">
             <Label Content="Encrypt data" />
           </CheckBox>
           <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding IncludeTemplates}">
             <Label Content="Include “templates” directory" ToolTip="Simply put all templates to “templates” directory" />
           </CheckBox>
-          <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
-            <Label Content="Sort tags" />
-          </CheckBox>-->
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+            <Label Content="Pack separately" />
+          </CheckBox>
         </mui:SpacingUniformGrid>
       </mui:SpacingStackPanel>
     </DataTemplate>

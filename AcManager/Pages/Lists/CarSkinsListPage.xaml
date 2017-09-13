@@ -35,12 +35,15 @@
           <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
-        <mui:SpacingUniformGrid Columns="1" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
+        <mui:SpacingUniformGrid Columns="2" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
           <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CmForFlag}">
             <Label Content="Add “cm_skin_for.json” to make sure CM will know where to install this skin" />
           </CheckBox>
           <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CmPaintShopValues}">
             <Label Content="Keep “cm_skin.json” with Paint Shop values if found" />
+          </CheckBox>
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+            <Label Content="Pack separately" />
           </CheckBox>
           <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
             <Label Content="Sort tags" />

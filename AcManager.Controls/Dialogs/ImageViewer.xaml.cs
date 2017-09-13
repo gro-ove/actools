@@ -14,7 +14,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Dialogs {

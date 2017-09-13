@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Kn5File;
-using AcTools.KnhFile;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -20,12 +19,10 @@ using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Animations;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
-using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Objects {

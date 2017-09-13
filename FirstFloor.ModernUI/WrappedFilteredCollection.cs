@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {

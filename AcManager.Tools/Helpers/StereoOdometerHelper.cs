@@ -4,7 +4,6 @@ using System.IO;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;

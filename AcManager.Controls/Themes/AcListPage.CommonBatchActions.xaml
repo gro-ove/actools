@@ -40,4 +40,22 @@
     </mui:SpacingStackPanel>
   </DataTemplate>
 
+  <DataTemplate x:Key="Batch.Pack">
+    <DataTemplate.Resources>
+      <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+    </DataTemplate.Resources>
+    <mui:SpacingStackPanel Spacing="4">
+      <!--<DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
+        </DockPanel>-->
+      <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="8" HorizontalAlignment="Left">
+        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}"
+            d:DataContext="{d:DesignInstance ac:CommonBatchActions+BatchAction_Pack}">
+          <Label Content="Pack separately" />
+        </CheckBox>
+      </mui:SpacingUniformGrid>
+    </mui:SpacingStackPanel>
+  </DataTemplate>
+
 </ResourceDictionary>

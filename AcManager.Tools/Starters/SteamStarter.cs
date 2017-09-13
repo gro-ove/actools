@@ -8,16 +8,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Threading;
-using AcManager.Tools.Helpers;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Steamworks;
-using Application = System.Windows.Application;
 
 namespace AcManager.Tools.Starters {
     public class SteamStarter : StarterBase {

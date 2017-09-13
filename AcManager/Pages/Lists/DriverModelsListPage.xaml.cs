@@ -46,7 +46,6 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_PackDriverModels : CommonBatchActions.BatchAction_Pack<DriverModelObject> {
             public static readonly BatchAction_PackDriverModels Instance = new BatchAction_PackDriverModels();
-            public BatchAction_PackDriverModels() : base(null) {}
 
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return null;

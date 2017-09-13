@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Helpers;

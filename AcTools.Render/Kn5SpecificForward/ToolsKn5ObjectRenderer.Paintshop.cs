@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
@@ -20,8 +18,6 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DirectWrite;
 using SlimDX.DXGI;
-using FontStyle = SlimDX.DirectWrite.FontStyle;
-using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 using Factory = SlimDX.DirectWrite.Factory;
 
 namespace AcTools.Render.Kn5SpecificForward {

@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;

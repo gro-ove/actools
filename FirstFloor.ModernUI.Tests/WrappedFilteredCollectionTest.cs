@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {

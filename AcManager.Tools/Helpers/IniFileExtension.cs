@@ -5,7 +5,6 @@ using System.Windows.Media;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Effects;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {

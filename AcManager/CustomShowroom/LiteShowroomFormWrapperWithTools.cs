@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Forms;
 using AcManager.Tools.Objects;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {

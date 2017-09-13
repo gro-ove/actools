@@ -1,10 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
-using Microsoft.Win32;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace AcManager.Tools {

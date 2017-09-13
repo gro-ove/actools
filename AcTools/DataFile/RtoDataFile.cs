@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using AcTools.AcdFile;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.DataFile {

@@ -14,6 +14,9 @@
           <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding JsgmeCompatible}">
             <Label Content="JSGME compatible" ToolTip="Allows to install track skins for users without CM" />
           </CheckBox>
+          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+            <Label Content="Pack separately" />
+          </CheckBox>
         </mui:SpacingUniformGrid>
 
         <DockPanel>

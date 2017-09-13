@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AcTools.Render.Base.Utils;
+﻿using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using SlimDX;
 

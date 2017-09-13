@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text;
 
 namespace AcTools.Kn5File {
     internal sealed class Kn5Writer : ExtendedBinaryWriter {

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 
 namespace AcManager.Controls {
     public static class CommonBatchActions {
@@ -295,6 +295,24 @@ namespace AcManager.Controls {
                 Priority = 1;
             }
 
+            protected BatchAction_Pack() : base("Pack", "Pack only important files", null, "Batch.Pack") {
+                InternalWaitingDialog = true;
+                DisplayApply = "Pack";
+                Priority = 1;
+            }
+
+            private bool _packSeparately = ValuesStorage.GetBool("_ba.pack.separately");
+
+            public bool PackSeparately {
+                get => _packSeparately;
+                set {
+                    if (Equals(value, _packSeparately)) return;
+                    _packSeparately = value;
+                    ValuesStorage.Set("_ba.pack.separately", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public override bool IsAvailable(T obj) {
                 return true;
             }
@@ -307,20 +325,47 @@ namespace AcManager.Controls {
                     var objs = OfType(list).ToList();
                     if (objs.Count == 0) return;
 
-                    var filename = GetPackedFilename(objs, ".zip");
-                    if (filename == null) return;
+                    if (PackSeparately) {
+                        var filename = GetPackedFilename(new[]{ objs[0] }, ".zip", true);
+                        if (filename == null) return;
 
-                    using (var waiting = WaitingDialog.Create("Packing…")) {
-                        await Task.Run(() => {
-                            using (var output = File.Create(filename)) {
-                                AcCommonObject.Pack(objs, output, GetParams(),
-                                        new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
-                                        waiting.CancellationToken);
-                            }
+                        var toView = new List<string>();
+                        using (var waiting = WaitingDialog.Create("Packing…")) {
+                            await Task.Run(() => {
+                                for (var i = 0; i < objs.Count; i++) {
+                                    var obj = objs[i];
+                                    var thisFilename = objs[0] == obj ? filename :
+                                            filename.Replace(objs[0].Id, obj.Id);
+                                    using (var output = File.Create(FileUtils.EnsureUnique(thisFilename))) {
+                                        var index = i;
+                                        AcCommonObject.Pack(new[] { obj }, output, GetParams(),
+                                                new Progress<string>(x => waiting.Report(new AsyncProgressEntry($"Packing: {x}…", index, objs.Count))),
+                                                waiting.CancellationToken);
+                                    }
 
-                            if (waiting.CancellationToken.IsCancellationRequested) return;
-                            WindowsHelper.ViewFile(filename);
-                        });
+                                    toView.Add(thisFilename);
+                                }
+
+                                if (waiting.CancellationToken.IsCancellationRequested) return;
+                                ShowSelectedInExplorer.FilesOrFolders(toView);
+                            });
+                        }
+                    } else {
+                        var filename = GetPackedFilename(objs, ".zip");
+                        if (filename == null) return;
+
+                        using (var waiting = WaitingDialog.Create("Packing…")) {
+                            await Task.Run(() => {
+                                using (var output = File.Create(filename)) {
+                                    AcCommonObject.Pack(objs, output, GetParams(),
+                                            new Progress<string>(x => waiting.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
+                                            waiting.CancellationToken);
+                                }
+
+                                if (waiting.CancellationToken.IsCancellationRequested) return;
+                                WindowsHelper.ViewFile(filename);
+                            });
+                        }
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t pack", e);
@@ -331,12 +376,12 @@ namespace AcManager.Controls {
 
         #region Utils
         [CanBeNull]
-        private static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension) {
+        private static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension, bool forceSeveralName = false) {
             var objs = o.ToIReadOnlyListIfItIsNot();
             if (objs.Count == 0) return null;
 
             var last = $"-{DateTime.Now:yyyyMMdd-HHmmss}{extension}";
-            var name = objs.Count == 1 ? $"{objs[0]}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
+            var name = !forceSeveralName && objs.Count == 1 ? $"{objs[0].Id}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
                     $"{objs.Select(x => x.Id).OrderBy(x => x).JoinToString('-')}{last}";
             if (name.Length > 160) {
                 name = name.Substring(0, 160 - last.Length) + last;

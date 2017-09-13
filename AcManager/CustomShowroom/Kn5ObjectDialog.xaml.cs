@@ -1,18 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -22,8 +18,6 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using Microsoft.Win32;
-using SlimDX.DXGI;
 
 namespace AcManager.CustomShowroom {
     public partial class Kn5ObjectDialog {

@@ -28,7 +28,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using OxyPlot;
 using SharpCompress.Common;
 using SharpCompress.Writers;
 using StringBasedFilter;

@@ -1,7 +1,6 @@
 using System;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;

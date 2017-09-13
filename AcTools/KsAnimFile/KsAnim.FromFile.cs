@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using AcTools.Utils;
 
 namespace AcTools.KsAnimFile {
     public partial class KsAnim {

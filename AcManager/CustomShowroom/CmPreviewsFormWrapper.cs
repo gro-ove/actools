@@ -7,7 +7,6 @@ using AcTools;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
-using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Windows;

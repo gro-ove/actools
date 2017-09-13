@@ -1,26 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.LargeFilesSharing;
-using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using JetBrains.Annotations;
-using BooleanSwitch = FirstFloor.ModernUI.Windows.Controls.BooleanSwitch;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsSharing {

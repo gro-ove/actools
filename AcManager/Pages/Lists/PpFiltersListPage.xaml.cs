@@ -45,7 +45,6 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_PackPpFilters : CommonBatchActions.BatchAction_Pack<PpFilterObject> {
             public static readonly BatchAction_PackPpFilters Instance = new BatchAction_PackPpFilters();
-            public BatchAction_PackPpFilters() : base(null) {}
 
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return null;

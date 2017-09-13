@@ -43,8 +43,6 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_PackWeather : CommonBatchActions.BatchAction_Pack<WeatherObject> {
             public static readonly BatchAction_PackWeather Instance = new BatchAction_PackWeather();
 
-            public BatchAction_PackWeather() : base(null) {}
-
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return new AcCommonObject.AcCommonObjectPackerParams();
             }
@@ -58,9 +56,9 @@ namespace AcManager.Pages.Lists {
         #endregion
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var weather = obj as WeatherObject;
-            if (weather == null) return;
-            QuickDrive.Show(weatherId: weather.Id);
+            if (obj is WeatherObject weather) {
+                QuickDrive.Show(weatherId: weather.Id);
+            }
         }
     }
 }

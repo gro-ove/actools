@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using AcTools.AcdFile;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using AcTools.Render.Base;
-using AcTools.Render.Temporary;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX.Direct3D11;

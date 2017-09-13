@@ -1,6 +1,5 @@
 using System;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;

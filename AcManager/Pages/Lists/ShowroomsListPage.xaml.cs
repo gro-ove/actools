@@ -48,8 +48,6 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_PackShowrooms : CommonBatchActions.BatchAction_Pack<ShowroomObject> {
             public static readonly BatchAction_PackShowrooms Instance = new BatchAction_PackShowrooms();
 
-            public BatchAction_PackShowrooms() : base(null) {}
-
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return null;
             }

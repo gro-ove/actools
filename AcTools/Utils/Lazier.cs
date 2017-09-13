@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Management;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {

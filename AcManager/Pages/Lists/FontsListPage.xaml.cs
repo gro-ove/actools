@@ -45,7 +45,6 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_PackFonts : CommonBatchActions.BatchAction_Pack<FontObject> {
             public static readonly BatchAction_PackFonts Instance = new BatchAction_PackFonts();
-            public BatchAction_PackFonts() : base(null) {}
 
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return null;
