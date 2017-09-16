@@ -386,6 +386,32 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _searchForMissingContent;
+
+            public bool SearchForMissingContent {
+                get => _searchForMissingContent ??
+                        (_searchForMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.SearchForMissingContent", false)).Value;
+                set {
+                    if (Equals(value, _searchForMissingContent)) return;
+                    _searchForMissingContent = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.SearchForMissingContent", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _pingAttempts;
+
+            public int PingAttempts {
+                get => _pingAttempts ?? (_pingAttempts = ValuesStorage.GetInt("Settings.OnlineSettings.PingAttempts", 10)).Value;
+                set {
+                    value = value.Clamp(1, 1000);
+                    if (Equals(value, _pingAttempts)) return;
+                    _pingAttempts = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingAttempts", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _serverPresetsManaging;
 
             public bool ServerPresetsManaging {

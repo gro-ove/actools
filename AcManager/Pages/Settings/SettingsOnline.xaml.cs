@@ -7,6 +7,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsOnline {
@@ -15,6 +16,7 @@ namespace AcManager.Pages.Settings {
         public SettingsOnline() {
             DataContext = new ViewModel();
             InitializeComponent();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
 
             var list = Model.Online.IgnoredInterfaces;
             foreach (var item in Model.NetworkInterfaces.Where(x => !list.Contains(x.Id)).ToList()) {

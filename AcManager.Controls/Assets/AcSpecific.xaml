@@ -95,7 +95,7 @@
   </DataTemplate>
 
   <DataTemplate x:Key="DataGridCell.Car" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">
-    <StackPanel Orientation="Horizontal" controls:ToolTips.CarObject="{Binding Car}">
+    <StackPanel Orientation="Horizontal" controls:ToolTips.Car="{Binding Car}">
       <mui:BetterImage Width="16" Height="16" Margin="0 2 6 2" Filename="{Binding CarSkin.LiveryImage}" ClearOnChange="True" />
       <TextBlock Text="{Binding Car.DisplayName}" VerticalAlignment="Center" />
     </StackPanel>

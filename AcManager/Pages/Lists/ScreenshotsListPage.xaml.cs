@@ -186,27 +186,21 @@ namespace AcManager.Pages.Lists {
         }
 
         private void OnItemClick(object sender, MouseButtonEventArgs e) {
-            if (Keyboard.Modifiers != ModifierKeys.None || e.Handled) return;
-
-            var screenshot = (sender as FrameworkElement)?.DataContext as Screenshot;
-            if (screenshot == null) return;
-
-            e.Handled = true;
-            new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot),
-                    4000, details: x => Path.GetFileName(x as string)).ShowDialog();
+            if (Keyboard.Modifiers == ModifierKeys.None && !e.Handled && (sender as FrameworkElement)?.DataContext is Screenshot screenshot) {
+                e.Handled = true;
+                new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot),
+                        4000, details: x => Path.GetFileName(x as string)).ShowDialog();
+            }
         }
 
         private void OnContextMenu(object sender, MouseButtonEventArgs e) {
-            if (e.Handled) return;
-
-            var image = ((FrameworkElement)sender).DataContext as Screenshot;
-            if (image == null) return;
-
-            e.Handled = true;
-            new ContextMenu()
-                    .AddItem("View In Explorer", image.ViewInExplorerCommand)
-                    .AddItem("Remove To Recycle Bin", image.DeleteCommand)
-                    .IsOpen = true;
+            if (!e.Handled && ((FrameworkElement)sender).DataContext is Screenshot image) {
+                e.Handled = true;
+                new ContextMenu()
+                        .AddItem("View In Explorer", image.ViewInExplorerCommand)
+                        .AddItem("Remove To Recycle Bin", image.DeleteCommand)
+                        .IsOpen = true;
+            }
         }
 
         private void OnRightButtonDown(object sender, MouseButtonEventArgs e) {

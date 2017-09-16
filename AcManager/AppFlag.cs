@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Detailed logging for pinging a specific by IP-address server online.
+        /// Example: --debug-ping=103.62.50.22
+        /// </summary>
+        DebugPing,
+
+        /// <summary>
         /// For testing.
         /// Example: --sidekick-optimal-range-threshold=0.01
         /// </summary>

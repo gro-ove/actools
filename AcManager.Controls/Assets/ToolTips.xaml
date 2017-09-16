@@ -27,4 +27,11 @@
       </mui:Switch>
     </c:PropertiesGrid>
   </ToolTip>
+
+  <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:TrackObjectBase}">
+    <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
+      <TextBlock Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
+      <u:TrackBlock ShowPreview="False" Track="{Binding}" Width="480" MaxHeight="320" />
+    </StackPanel>
+  </ToolTip>
 </ResourceDictionary>

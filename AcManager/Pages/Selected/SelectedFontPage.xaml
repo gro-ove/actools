@@ -5,7 +5,7 @@
     mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="OnLoaded">
   <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}" IconBackground="Black"
-      IconMouseDown="OnIconMouseDown">
+      IconMouseUp="OnIconClick">
     <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_FontTooltip}"

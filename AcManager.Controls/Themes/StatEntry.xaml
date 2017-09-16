@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:userControls="clr-namespace:AcManager.Controls.UserControls">
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -13,59 +13,76 @@
         <ControlTemplate TargetType="{x:Type ac:StatEntry}">
           <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="8" Width="181"
               Height="181" Margin="0 0 0 10">
-            <DockPanel>
-              <mui:ReferenceSwitch Value="{TemplateBinding CarId}" DockPanel.Dock="Top" Height="80">
+            <mui:Cell>
+
+              <!--<mui:ReferenceSwitch Value="{TemplateBinding TrackId}">
                 <mui:ReferenceSwitch.NonNull>
-                  <mui:Cell DataContext="{TemplateBinding CarId, Converter={StaticResource CarIdToCarWrapperConverter}}">
-                    <mui:BetterImage Filename="{Binding Value.SelectedSkin.PreviewImage}" Margin="0 8 0 0" />
-                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
-                        Text="{Binding Value.DisplayName}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
-                        TextTrimming="CharacterEllipsis" />
-                    <mui:Cell.ToolTip>
-                      <userControls:CarBlock Car="{Binding Value}" SelectSkin="False" ShowSkinsAndPreview="False" Width="512" MaxHeight="320" />
-                    </mui:Cell.ToolTip>
+                  <mui:Cell DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}">
+                    <Border Opacity="0.2" ClipToBounds="True" Background="{DynamicResource WindowBackground}" Margin="-8">
+                      <Border.Effect>
+                        <BlurEffect Radius="20" RenderingBias="Performance" KernelType="Gaussian" />
+                      </Border.Effect>
+                      <mui:BetterImage Margin="-20" Stretch="UniformToFill" Filename="{Binding Value.PreviewImage}" ClearOnChange="True" />
+                    </Border>
                   </mui:Cell>
                 </mui:ReferenceSwitch.NonNull>
-                <mui:ReferenceSwitch.Null>
-                  <mui:ReferenceSwitch Value="{TemplateBinding TrackId}">
-                    <mui:ReferenceSwitch.NonNull>
-                      <mui:Cell DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}">
-                        <mui:BetterImage Filename="{Binding Value.OutlineImage}" Margin="0 8 0 0" />
-                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
-                            Text="{Binding Value.Name}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
-                            TextTrimming="CharacterEllipsis" />
-                        <mui:Cell.ToolTip>
-                          <userControls:TrackBlock Track="{Binding Value}" ShowPreview="True" />
-                        </mui:Cell.ToolTip>
-                      </mui:Cell>
-                    </mui:ReferenceSwitch.NonNull>
-                    <mui:ReferenceSwitch.Null>
-                      <Path Data="{TemplateBinding Icon}" Fill="{DynamicResource WindowText}" Height="64" Width="64" HorizontalAlignment="Center"
-                          VerticalAlignment="Center" Margin="0 8 0 0" />
-                    </mui:ReferenceSwitch.Null>
-                  </mui:ReferenceSwitch>
-                </mui:ReferenceSwitch.Null>
-              </mui:ReferenceSwitch>
+              </mui:ReferenceSwitch>-->
 
-              <Viewbox Margin="0 8 0 0" DockPanel.Dock="Top" Height="40" StretchDirection="DownOnly">
-                <mui:ReferenceSwitch Value="{TemplateBinding ValueUnits}" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <DockPanel>
+                <mui:ReferenceSwitch Value="{TemplateBinding CarId}" DockPanel.Dock="Top" Height="80">
                   <mui:ReferenceSwitch.NonNull>
-                    <DockPanel HorizontalAlignment="Center">
-                      <TextBlock Text="{TemplateBinding Value}" Style="{StaticResource Heading1}" DockPanel.Dock="Left" VerticalAlignment="Center" />
-                      <TextBlock Text="{TemplateBinding ValueUnits}" Style="{StaticResource Heading1}" FontSize="18" Margin="6 0 0 4"
-                          VerticalAlignment="Bottom" />
-                    </DockPanel>
+                    <Border DataContext="{TemplateBinding CarId, Converter={StaticResource CarIdToCarWrapperConverter}}">
+                      <mui:Cell DataContext="{Binding Value}" Background="Transparent" d:DataContext="{d:DesignInstance t:CarObject}"
+                          ac:ToolTips.Car="{Binding}" ac:ContextMenus.Car="{Binding}" mui:Draggable.Data="{Binding}">
+                        <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" Margin="0 8 0 0" />
+                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
+                            Text="{Binding DisplayName}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
+                            TextTrimming="CharacterEllipsis" />
+                      </mui:Cell>
+                    </Border>
                   </mui:ReferenceSwitch.NonNull>
                   <mui:ReferenceSwitch.Null>
-                    <TextBlock Text="{TemplateBinding Value}" Style="{StaticResource Heading1}" TextAlignment="Center" VerticalAlignment="Center"
-                        TextWrapping="Wrap" MaxWidth="200" />
+                    <mui:ReferenceSwitch Value="{TemplateBinding TrackId}">
+                      <mui:ReferenceSwitch.NonNull>
+                        <Border DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}">
+                          <mui:Cell DataContext="{Binding Value}" Background="Transparent" d:DataContext="{d:DesignInstance t:TrackObjectBase}"
+                              ac:ToolTips.Track="{Binding}" ac:ContextMenus.Track="{Binding}" mui:Draggable.Data="{Binding}">
+                            <mui:BetterImage Filename="{Binding OutlineImage}" Margin="0 20 0 0" Effect="{DynamicResource TrackOutlineAloneEffect}" />
+                            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
+                                Text="{Binding Name}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
+                                TextTrimming="CharacterEllipsis" />
+                          </mui:Cell>
+                        </Border>
+                      </mui:ReferenceSwitch.NonNull>
+                      <mui:ReferenceSwitch.Null>
+                        <Path Data="{TemplateBinding Icon}" Fill="{DynamicResource WindowText}" Height="64" Width="64" HorizontalAlignment="Center"
+                            VerticalAlignment="Center" Margin="0 8 0 0" />
+                      </mui:ReferenceSwitch.Null>
+                    </mui:ReferenceSwitch>
                   </mui:ReferenceSwitch.Null>
                 </mui:ReferenceSwitch>
-              </Viewbox>
 
-              <TextBlock Text="{TemplateBinding Title, Converter={StaticResource ToTitleConverter}}" Style="{StaticResource Heading2}"
-                  Foreground="{DynamicResource Accent}" Margin="0 8 0 0" TextAlignment="Center" DockPanel.Dock="Top" />
-            </DockPanel>
+                <Viewbox Margin="0 8 0 0" DockPanel.Dock="Top" Height="40" StretchDirection="DownOnly">
+                  <mui:ReferenceSwitch Value="{TemplateBinding ValueUnits}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <mui:ReferenceSwitch.NonNull>
+                      <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{TemplateBinding Value}" Style="{StaticResource Heading1}" DockPanel.Dock="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="{TemplateBinding ValueUnits}" Style="{StaticResource Heading1}" FontSize="18" Margin="6 0 0 4"
+                            VerticalAlignment="Bottom" />
+                      </DockPanel>
+                    </mui:ReferenceSwitch.NonNull>
+                    <mui:ReferenceSwitch.Null>
+                      <TextBlock Text="{TemplateBinding Value}" Style="{StaticResource Heading1}" TextAlignment="Center" VerticalAlignment="Center"
+                          TextWrapping="Wrap" MaxWidth="200" />
+                    </mui:ReferenceSwitch.Null>
+                  </mui:ReferenceSwitch>
+                </Viewbox>
+
+                <TextBlock Text="{TemplateBinding Title, Converter={StaticResource ToTitleConverter}}" Style="{StaticResource Heading2}"
+                    Foreground="{DynamicResource Accent}" Margin="0 8 0 0" TextAlignment="Center" DockPanel.Dock="Top" />
+              </DockPanel>
+
+            </mui:Cell>
           </Border>
         </ControlTemplate>
       </Setter.Value>

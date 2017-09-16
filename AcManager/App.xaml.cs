@@ -68,7 +68,7 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable, IGameSessionNameProvider, ICmRequestHandler {
+    public partial class App : IDisposable {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -153,6 +153,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.GenericModsLogging, ref GenericModsEnabler.OptionLoggingEnabled);
             AppArguments.Set(AppFlag.SidekickOptimalRangeThreshold, ref SidekickHelper.OptionRangeThreshold);
             AppArguments.Set(AppFlag.RdAllowed, ref RaceDepartmentLoader.OptionAllowed);
+            AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();
@@ -270,11 +271,12 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
-            FlexibleLoader.CmRequestHandler = this;
+            FlexibleLoader.CmRequestHandler = new CmRequestHandler();
+            ContextMenus.ContextMenusProvider = new ContextMenusProvider();
             PrepareUi();
 
             AppShortcut.Initialize("AcClub.ContentManager", "Content Manager");
-            AppIconService.Initialize(this);
+            AppIconService.Initialize(new AppIconProvider());
 
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
@@ -320,7 +322,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
-            GameResultExtension.RegisterNameProvider(this);
+            GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
             CarBlock.CarSetupsView = new CarSetupsView();
 
@@ -341,7 +343,7 @@ namespace AcManager {
             InitializeUpdatableStuff();
             BackgroundInitialization();
 
-            FatalErrorMessage.Register(this);
+            FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {
                 try {
                     return fn();
@@ -577,42 +579,8 @@ namespace AcManager {
             Dispose();
         }
 
-        void FatalErrorMessage.IAppRestartHelper.Restart() {
-            WindowsHelper.RestartCurrentApplication();
-        }
-
-        Uri IAppIconProvider.GetTrayIcon() {
-            return WindowsVersionHelper.IsWindows10OrGreater ?
-                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIcon.ico", UriKind.Absolute) :
-                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIconWin8.ico", UriKind.Absolute);
-        }
-
-        Uri IAppIconProvider.GetAppIcon() {
-            return new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute);
-        }
-
         public void Dispose() {
             DisposeHelper.Dispose(ref _hibernator);
-        }
-
-        string IGameSessionNameProvider.GetSessionName(Game.ResultSession parsedData) {
-            if (parsedData.Name == "RSR Hotlap" || parsedData.Name == AppStrings.Rsr_SessionName) {
-                return AppStrings.Rsr_SessionName;
-            }
-
-            return null;
-        }
-
-        public bool Test(string request) {
-            return ArgumentsHandler.IsCustomUriScheme(request);
-        }
-
-        public string UnwrapDownloadUrl(string request) {
-            return ArgumentsHandler.UnwrapDownloadRequest(request);
-        }
-
-        public void Handle(string request) {
-            ArgumentsHandler.ProcessArguments(new[] { request }).Forget();
         }
     }
 }

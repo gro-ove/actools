@@ -31,8 +31,9 @@ namespace AcManager.Controls.Dialogs {
             Buttons = new Button[] { };
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
                 Close();
             }
         }
@@ -44,7 +45,7 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        private void CloseButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnCloseButtonClick(object sender, RoutedEventArgs routedEventArgs) {
             Close();
         }
     }

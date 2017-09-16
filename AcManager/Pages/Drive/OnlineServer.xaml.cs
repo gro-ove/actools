@@ -517,14 +517,11 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private void CarsComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void OnCarsComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (Model.Entry.FixedCar) {
                 ((Selector)sender).SelectedItem = Model.Entry.SelectedCarEntry;
-            } else {
-                var carEntry = ((Selector)sender).SelectedItem as CarEntry;
-                if (carEntry != null) {
-                    Model.Entry.SelectedCarEntry = carEntry;
-                }
+            } else if (((Selector)sender).SelectedItem is CarEntry carEntry) {
+                Model.Entry.SelectedCarEntry = carEntry;
             }
         }
 
@@ -567,9 +564,8 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private void Driver_OnContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
-            var driver = ((FrameworkElement)sender).DataContext as ServerEntry.CurrentDriver;
-            if (driver == null) return;
+        private void OnDriverContextMenu(object sender, ContextMenuButtonEventArgs e) {
+            if (!(((FrameworkElement)sender).DataContext is ServerEntry.CurrentDriver driver)) return;
 
             var menu = new ContextMenu();
             foreach (var tag in ServerEntry.DriverTag.GetTags().OrderBy(x => x.DisplayName)) {

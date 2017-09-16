@@ -27,15 +27,15 @@ namespace AcManager.Controls {
             base.OnApplyTemplate();
 
             if (_main != null) {
-                _main.MouseRightButtonUp -= Main_OnMouseUp;
+                _main.MouseRightButtonUp -= OnMainMouseUp;
             }
 
             if (_toolBar != null) {
-                _toolBar.PreviewMouseUp -= ToolBar_OnMouseUp;
+                _toolBar.PreviewMouseUp -= OnToolBarMouseUp;
             }
 
             if (_iconImage != null) {
-                _iconImage.IconMouseDown -= Header_IconMouseDown;
+                _iconImage.IconMouseUp -= OnHeaderIconMouseUp;
             }
 
             _main = GetTemplateChild(@"PART_Main") as Grid;
@@ -43,19 +43,19 @@ namespace AcManager.Controls {
             _iconImage = GetTemplateChild(@"PART_Header") as AcObjectHeaderSection;
 
             if (_main != null) {
-                _main.MouseRightButtonUp += Main_OnMouseUp;
+                _main.MouseRightButtonUp += OnMainMouseUp;
             }
 
             if (_toolBar != null) {
-                _toolBar.PreviewMouseUp += ToolBar_OnMouseUp;
+                _toolBar.PreviewMouseUp += OnToolBarMouseUp;
             }
 
             if (_iconImage != null) {
-                _iconImage.IconMouseDown += Header_IconMouseDown;
+                _iconImage.IconMouseUp += OnHeaderIconMouseUp;
             }
         }
 
-        protected async void Main_OnMouseUp(object sender, MouseButtonEventArgs e) {
+        protected async void OnMainMouseUp(object sender, MouseButtonEventArgs e) {
             if (_toolBar == null || !AppAppearanceManager.Instance.PopupToolBars) return;
 
             await Task.Delay(1);
@@ -65,17 +65,17 @@ namespace AcManager.Controls {
             _toolBar.IsActive = !_toolBar.IsActive;
         }
 
-        protected void ToolBar_OnMouseUp(object sender, MouseButtonEventArgs e) {
+        protected void OnToolBarMouseUp(object sender, MouseButtonEventArgs e) {
             /*if (e.ChangedButton != MouseButton.Left) return;
             if (_toolBar == null) return;
             _toolBar.IsActive = false;*/
         }
 
-        private void Header_IconMouseDown(object sender, MouseButtonEventArgs e) {
-            IconMouseDown?.Invoke(sender, e);
+        private void OnHeaderIconMouseUp(object sender, MouseButtonEventArgs e) {
+            IconMouseUp?.Invoke(sender, e);
         }
 
-        public event MouseButtonEventHandler IconMouseDown;
+        public event MouseButtonEventHandler IconMouseUp;
 
         public static readonly DependencyProperty AcObjectProperty = DependencyProperty.Register(nameof(AcObject), typeof(AcObjectNew),
                 typeof(AcObjectBase));

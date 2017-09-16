@@ -213,6 +213,15 @@
     <Compile Include="AppUi.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
     <Compile Include="CustomShowroom\BakedShadowsRendererViewModel.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsSettings.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
+      <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
+    <Compile Include="CustomShowroom\DarkRendererCars.cs" />
+    <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
+    <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\Kn5Extension.cs" />
     <Compile Include="CustomShowroom\Kn5MaterialDialog.xaml.cs">
       <DependentUpon>Kn5MaterialDialog.xaml</DependentUpon>
@@ -223,24 +232,12 @@
     <Compile Include="CustomShowroom\Kn5TextureDialog.xaml.cs">
       <DependentUpon>Kn5TextureDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
-    <Compile Include="CustomShowroom\CmPreviewsSettings.cs" />
-    <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
-      <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
-    <Compile Include="CustomShowroom\DarkRendererCars.cs" />
-    <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
-    <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
     <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithUiShots.cs" />
     <Compile Include="CustomShowroom\LiteShowroomTools.PaintShop.cs" />
     <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
       <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomShowroom\PaintShop.cs" />
-    <Compile Include="CustomShowroom\PaintShop.Items.cs" />
-    <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
     <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
       <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
     </Compile>
@@ -363,7 +360,6 @@
       <DependentUpon>PackServerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
-    <Compile Include="Pages\Drive\OnlineServer.Menus.cs" />
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -568,6 +564,27 @@
     <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
       <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PaintShop\CarPaint.cs" />
+    <Compile Include="PaintShop\CarPaintColor.cs" />
+    <Compile Include="PaintShop\CarPaintColors.cs" />
+    <Compile Include="PaintShop\CarPaintPattern.cs" />
+    <Compile Include="PaintShop\CarPaintReplacementSource.cs" />
+    <Compile Include="PaintShop\ColoredItem.cs" />
+    <Compile Include="PaintShop\ComplexCarPaint.cs" />
+    <Compile Include="PaintShop\IPaintableNumberItem.cs" />
+    <Compile Include="PaintShop\LicensePlate.cs" />
+    <Compile Include="PaintShop\MultiReplacement.cs" />
+    <Compile Include="PaintShop\PaintableItem.cs" />
+    <Compile Include="PaintShop\PaintShop.cs" />
+    <Compile Include="PaintShop\PaintShop.Guess.cs" />
+    <Compile Include="PaintShop\PaintShop.References.cs" />
+    <Compile Include="PaintShop\ReplacedIfFlagged.cs" />
+    <Compile Include="PaintShop\Replacement.cs" />
+    <Compile Include="PaintShop\SolidColorIfFlagged.cs" />
+    <Compile Include="PaintShop\TextureFileName.cs" />
+    <Compile Include="PaintShop\TexturePattern.cs" />
+    <Compile Include="PaintShop\TintedWindows.cs" />
+    <Compile Include="PaintShop\TransparentIfFlagged.cs" />
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
@@ -577,19 +594,24 @@
     </Compile>
     <Compile Include="SomeCommonCommandsHelper.cs" />
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
+    <Compile Include="Tools\AppIconProvider.cs" />
+    <Compile Include="Tools\AppRestartHelper.cs" />
     <Compile Include="Tools\ArgumentsHandler.SharedUserChampionship.cs" />
     <Compile Include="Tools\ArgumentsHandler.Online.cs" />
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
+    <Compile Include="Tools\CmRequestHandler.cs" />
     <Compile Include="Tools\CommonPreviewsTools.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteSoundRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteTyresRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
+    <Compile Include="Tools\ContextMenusProvider.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
+    <Compile Include="Tools\GameSessionNameProvider.cs" />
     <Compile Include="Tools\LargeFileUploaderParams.cs" />
     <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
@@ -693,6 +715,10 @@
     <Compile Include="UserControls\SelectCar.xaml.cs">
       <DependentUpon>SelectCar.xaml</DependentUpon>
     </Compile>
+    <Page Include="CustomShowroom\CmPreviewsTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomShowroom\Kn5MaterialDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -702,10 +728,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomShowroom\Kn5TextureDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomShowroom\CmPreviewsTools.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1521,6 +1543,7 @@
     <None Include="About\Licenses\CachedImage\LICENSE" />
     <None Include="About\Licenses\EmojiOne\LICENSE.md" />
     <None Include="About\Licenses\FirstFloor.ModernUI\LICENSE.md" />
+    <None Include="About\Licenses\Flaticon\LICENSE" />
     <None Include="About\Licenses\FXAA\LICENSE" />
     <None Include="About\Licenses\Json.NET\LICENSE.md" />
     <None Include="About\Licenses\LevelDB.net\LICENSE" />
@@ -1795,6 +1818,7 @@
     <Content Include="About\Licenses\CachedImage\CachedImage.txt" />
     <Content Include="About\Licenses\EmojiOne\EmojiOne.txt" />
     <Content Include="About\Licenses\FirstFloor.ModernUI\FirstFloor.ModernUI.txt" />
+    <Content Include="About\Licenses\Flaticon\Flaticon.txt" />
     <Content Include="About\Licenses\FMOD\FMOD.txt" />
     <Content Include="About\Licenses\FMOD\LICENSE.TXT" />
     <Content Include="About\Licenses\FXAA\FXAA.txt" />

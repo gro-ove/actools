@@ -102,7 +102,7 @@ namespace AcManager.Pages.Drive {
         private ListMode? _simpleListMode;
 
         public ListMode SimpleListMode {
-            get { return _simpleListMode ?? ListMode.Simple; }
+            get => _simpleListMode ?? ListMode.Simple;
             set {
                 if (Equals(value, _simpleListMode)) return;
 
@@ -135,7 +135,7 @@ namespace AcManager.Pages.Drive {
         private bool? _wideInformationMode;
 
         public bool WideInformationMode {
-            get { return _wideInformationMode ?? false; }
+            get => _wideInformationMode ?? false;
             set {
                 if (Equals(value, _wideInformationMode)) return;
                 _wideInformationMode = value;
@@ -146,7 +146,7 @@ namespace AcManager.Pages.Drive {
         private bool? _showFilteringComboBox;
 
         public bool ShowFilteringComboBox {
-            get { return _showFilteringComboBox ?? false; }
+            get => _showFilteringComboBox ?? false;
             set {
                 if (Equals(value, _showFilteringComboBox)) return;
                 _showFilteringComboBox = value;
@@ -157,7 +157,7 @@ namespace AcManager.Pages.Drive {
         private bool? _showFriendsFilteringButton;
 
         public bool ShowFriendsFilteringButton {
-            get { return _showFriendsFilteringButton ?? false; }
+            get => _showFriendsFilteringButton ?? false;
             set {
                 if (Equals(value, _showFriendsFilteringButton)) return;
                 _showFriendsFilteringButton = value;
@@ -330,7 +330,7 @@ namespace AcManager.Pages.Drive {
             private bool _serverSelected;
 
             public bool ServerSelected {
-                get { return _serverSelected; }
+                get => _serverSelected;
                 set {
                     if (Equals(value, _serverSelected)) return;
                     _serverSelected = value;
@@ -637,7 +637,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public ServerEntrySorter Sorting {
-                get { return _sorting; }
+                get => _sorting;
                 set {
                     if (Equals(value, _sorting)) return;
                     _sorting = value;
@@ -652,7 +652,7 @@ namespace AcManager.Pages.Drive {
             private SettingEntry _sortingMode;
 
             public SettingEntry SortingMode {
-                get { return _sortingMode; }
+                get => _sortingMode;
                 set {
                     if (!SortingModes.Contains(value)) value = SortingModes[0];
                     if (Equals(value, _sortingMode)) return;
@@ -714,7 +714,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterBooking;
 
             public bool FilterBooking {
-                get { return _filterBooking; }
+                get => _filterBooking;
                 set {
                     if (Equals(value, _filterBooking)) return;
                     _filterBooking = value;
@@ -726,7 +726,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterEmpty;
 
             public bool FilterEmpty {
-                get { return _filterEmpty; }
+                get => _filterEmpty;
                 set {
                     if (Equals(value, _filterEmpty)) return;
                     _filterEmpty = value;
@@ -738,7 +738,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterFull;
 
             public bool FilterFull {
-                get { return _filterFull; }
+                get => _filterFull;
                 set {
                     if (Equals(value, _filterFull)) return;
                     _filterFull = value;
@@ -750,7 +750,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterPassword;
 
             public bool FilterPassword {
-                get { return _filterPassword; }
+                get => _filterPassword;
                 set {
                     if (Equals(value, _filterPassword)) return;
                     _filterPassword = value;
@@ -762,7 +762,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterMissing = true;
 
             public bool FilterMissing {
-                get { return _filterMissing; }
+                get => _filterMissing;
                 set {
                     if (Equals(value, _filterMissing)) return;
                     _filterMissing = value;
@@ -774,7 +774,7 @@ namespace AcManager.Pages.Drive {
             private bool _filterFriendsOnly;
 
             public bool FilterFriendsOnly {
-                get { return _filterFriendsOnly; }
+                get => _filterFriendsOnly;
                 set {
                     if (Equals(value, _filterFriendsOnly)) return;
                     _filterFriendsOnly = value;

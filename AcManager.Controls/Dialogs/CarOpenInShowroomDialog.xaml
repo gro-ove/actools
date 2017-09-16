@@ -1,80 +1,78 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.CarOpenInShowroomDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls" 
-        xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{x:Static c:ControlsStrings.Showroom_DialogHeader}" Closing="CarOpenInShowroomDialog_OnClosing"
-        d:DataContext="{d:DesignInstance di:CarOpenInShowroomDialog+ViewModel}" x:Name="This">
-    <mui:ModernDialog.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </mui:ModernDialog.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="clr-namespace:AcManager.Controls"
+    xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" Title="{x:Static c:ControlsStrings.Showroom_DialogHeader}"
+    Closing="OnClosing" d:DataContext="{d:DesignInstance di:CarOpenInShowroomDialog+ViewModel}" x:Name="This">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="3*" />
+      <ColumnDefinition Width="2*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
 
-        <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
-            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
-            <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
-                <ComboBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                        <Setter Property="ToolTip" Value="{StaticResource ShowroomPreviewToolTip}" />
-                    </Style>
-                </ComboBox.ItemContainerStyle>
-            </ComboBox>
-        </StackPanel>
+    <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
+      <TextBlock Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
+      <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
+        <ComboBox.ItemContainerStyle>
+          <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+            <Setter Property="ToolTip" Value="{StaticResource ShowroomPreviewToolTip}" />
+          </Style>
+        </ComboBox.ItemContainerStyle>
+      </ComboBox>
+    </StackPanel>
 
-        <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
-            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
-            <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
-        </StackPanel>
+    <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
+      <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
+      <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
+    </StackPanel>
 
-        <StackPanel Margin="0 0 8 8" Grid.Row="2" Grid.Column="0">
-            <TextBlock Text="Video settings:" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
-            <mui:HierarchicalComboBox ItemsSource="{Binding VideoPresets}" SelectedItem="{Binding SelectedVideoPreset}" FixedMode="False">
-                <mui:HierarchicalComboBox.SelectedContent>
-                    <DataTemplate>
-                        <TextBlock x:Name="TextBlock" Text="{Binding DataContext.DisplayVideoPreset, ElementName=This}" />
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding DataContext.VideoPresetFilename, ElementName=This}" Value="{x:Null}">
-                                <Setter TargetName="TextBlock" Property="Text" Value="Default" />
-                                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </mui:HierarchicalComboBox.SelectedContent>
-            </mui:HierarchicalComboBox>
-        </StackPanel>
+    <StackPanel Margin="0 0 8 8" Grid.Row="2" Grid.Column="0">
+      <TextBlock Text="Video settings:" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
+      <mui:HierarchicalComboBox ItemsSource="{Binding VideoPresets}" SelectedItem="{Binding SelectedVideoPreset}" FixedMode="False">
+        <mui:HierarchicalComboBox.SelectedContent>
+          <DataTemplate>
+            <TextBlock x:Name="TextBlock" Text="{Binding DataContext.DisplayVideoPreset, ElementName=This}" />
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding DataContext.VideoPresetFilename, ElementName=This}" Value="{x:Null}">
+                <Setter TargetName="TextBlock" Property="Text" Value="Default" />
+                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </mui:HierarchicalComboBox.SelectedContent>
+      </mui:HierarchicalComboBox>
+    </StackPanel>
 
-        <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
-            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
-            <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraFov}" Mode="Number" />
-        </StackPanel>
+    <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
+      <TextBlock Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
+      <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraFov}" Mode="Number" />
+    </StackPanel>
 
-        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0"
-                ToolTip="{x:Static c:ControlsStrings.Showroom_HideWatermark_Tooltip}">
-            <Label Content="{x:Static c:ControlsStrings.Showroom_HideWatermark}" />
-        </CheckBox>
+    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0"
+        ToolTip="{x:Static c:ControlsStrings.Showroom_HideWatermark_Tooltip}">
+      <Label Content="{x:Static c:ControlsStrings.Showroom_HideWatermark}" />
+    </CheckBox>
 
-        <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
-                ToolTip="{x:Static c:ControlsStrings.Showroom_DisableSweetFx_Tooltip}">
-            <Label Content="{x:Static c:ControlsStrings.Showroom_DisableSweetFx}" />
-        </CheckBox>
-    </Grid>
+    <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
+        ToolTip="{x:Static c:ControlsStrings.Showroom_DisableSweetFx_Tooltip}">
+      <Label Content="{x:Static c:ControlsStrings.Showroom_DisableSweetFx}" />
+    </CheckBox>
+  </Grid>
 
-    <mui:ModernDialog.ButtonsRowContent>
-        <c:UserPresetsControl UserPresetable="{Binding}" />
-    </mui:ModernDialog.ButtonsRowContent>
+  <mui:ModernDialog.ButtonsRowContent>
+    <c:UserPresetsControl UserPresetable="{Binding}" />
+  </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>

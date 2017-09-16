@@ -16,7 +16,6 @@ using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -27,7 +26,7 @@ using SlimDX.DirectWrite;
 using Color = System.Windows.Media.Color;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
 
-namespace AcManager.CustomShowroom {
+namespace AcManager.PaintShop {
     public static partial class PaintShop {
         public static string NameToId(string name, bool upperFirst) {
             var s = Regex.Split(name.ToLowerInvariant(), @"\W+");
@@ -48,63 +47,6 @@ namespace AcManager.CustomShowroom {
             }
 
             return b.ToString();
-        }
-
-        private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
-            if (kn5 == null) yield break;
-
-            var carPaint = new[] { "car_paint.dds", "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "carpaint.dds" }
-                    .FirstOrDefault(x => kn5.Textures.ContainsKey(x));
-            var mapsMap = kn5.Materials.Values.Where(x => x.ShaderName == "ksPerPixelMultiMap_damage_dirt")
-                             .Select(x => x.GetMappingByName(@"txMaps")?.Texture)
-                             .NonNull()
-                             .FirstOrDefault();
-
-            if (kn5.Textures.ContainsKey("Plate_D.dds") && kn5.Textures.ContainsKey("Plate_NM.dds")) {
-                yield return new LicensePlate(LicensePlate.LicenseFormat.Europe);
-            }
-
-            if (carPaint != null) {
-                yield return mapsMap == null ?
-                        new CarPaint { LiveryStyle = "Flat" }
-                                .SetDetailsParams(new TextureFileName(carPaint, PreferredDdsFormat.NoCompressionTransparency)) :
-                        new ComplexCarPaint(
-                                new TextureFileName(mapsMap, PreferredDdsFormat.Auto), new PaintShopSource {
-                                    NormalizeMax = true
-                                }, null) { LiveryStyle = "Flat" }
-                                .SetDetailsParams(new TextureFileName(carPaint, PreferredDdsFormat.NoCompressionTransparency));
-            }
-
-            var rims = new[] { "car_paint_rims.dds", "metal_detail_rim.dds", "Metal_detail_rim.dds" }
-                    .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
-                    .FirstOrDefault();
-            if (rims != null) yield return rims;
-
-            var calipers = new[] { "caliper_colour.dds", "metal_detail_caliper.dds", "Metal_detail_caliper.dds" }
-                    .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.DarkRed) { DisplayName = "Calipers", Enabled = false })
-                    .FirstOrDefault();
-            if (calipers != null) yield return calipers;
-
-            var rollCage = new[] { "car_paint_roll_cage.dds" }
-                    .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.AliceBlue) { DisplayName = "Roll cage", Enabled = false })
-                    .FirstOrDefault();
-            if (rollCage != null) yield return rollCage;
-
-            var glass = new[] { "ext_glass.dds" }
-                    .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new TintedWindows(new TextureFileName(x)) { Enabled = false })
-                    .FirstOrDefault();
-            if (glass != null) yield return glass;
-        }
-
-        private static IEnumerable<PaintableItem> GuessPaintableItems([CanBeNull] Kn5 kn5) {
-            foreach (var item in GuessPaintableItemsInner(kn5)) {
-                item.Guessed = true;
-                yield return item;
-            }
         }
 
         [CanBeNull, ContractAnnotation(@"defaultValue: notnull => notnull")]
@@ -194,16 +136,16 @@ namespace AcManager.CustomShowroom {
         }
 
         [NotNull]
-        private static PaintShopFontSource GetFont(JToken j, Func<string, byte[]> extraData) {
+        private static PaintShopFontSource GetFont(JToken j, [NotNull] ReferenceSolver refSolver) {
             var s = j?.ToString() ?? "Arial";
             if (s.StartsWith("./") || s.StartsWith(".\\")) {
-                return PaintShopFontSource.FromMemory(extraData(s.Substring(2)));
+                var data = refSolver.GetData(s.Substring(2));
+                return data == null ? PaintShopFontSource.CreateDefault() : PaintShopFontSource.FromMemory(data);
             }
 
             return PaintShopFontSource.FromFamilyName(s);
         }
 
-        [NotNull]
         private static PaintShopAlignment GetAlignment(JToken j) {
             var s = j?.ToString() ?? "center";
 
@@ -227,15 +169,14 @@ namespace AcManager.CustomShowroom {
         }
 
         [CanBeNull]
-        private static PaintShopPatternNumbers GetNumbers(JToken j, Func<string, byte[]> extraData) {
-            var o = j as JObject;
-            return o != null ? new PaintShopPatternNumbers(
+        private static PaintShopPatternNumbers GetNumbers(JToken j, [NotNull] ReferenceSolver refSolver) {
+            return j is JObject o ? new PaintShopPatternNumbers(
                     o.GetDoubleValueOnly(KeySize, 200d),
                     o.GetDoubleValueOnly(KeyLeft, 200d),
                     o.GetDoubleValueOnly(KeyTop, 200d),
                     GetAlignment(o[KeyHorizontalAlignment]),
                     GetAlignment(o[KeyVerticalAlignment]),
-                    GetFont(o[KeyFont], extraData),
+                    GetFont(o[KeyFont], refSolver),
                     o.GetDoubleValueOnly(KeyAngle, 200d),
                     GetPatternColorReference(o[KeyColor]),
                     GetFontWeight(o[KeyWeight]),
@@ -244,7 +185,7 @@ namespace AcManager.CustomShowroom {
         }
 
         [CanBeNull]
-        private static PaintShopSource GetSource([CanBeNull] JToken j, Func<string, byte[]> extraData, [CanBeNull] PaintShopSourceParams baseParams) {
+        private static PaintShopSource GetSource([CanBeNull] JToken j, [NotNull] ReferenceSolver refSolver, [CanBeNull] PaintShopSourceParams baseParams) {
             if (j == null) return null;
 
             if (j.Type == JTokenType.Object) {
@@ -253,13 +194,13 @@ namespace AcManager.CustomShowroom {
 
                 if (o[KeyRed] != null) {
                     return new PaintShopSource(
-                            GetSource(o[KeyRed], extraData, baseParams),
-                            GetSource(o[KeyGreen], extraData, baseParams),
-                            GetSource(o[KeyBlue], extraData, baseParams),
-                            GetSource(o[KeyAlpha], extraData, baseParams)).SetFrom(baseParams);
+                            GetSource(o[KeyRed], refSolver, baseParams),
+                            GetSource(o[KeyGreen], refSolver, baseParams),
+                            GetSource(o[KeyBlue], refSolver, baseParams),
+                            GetSource(o[KeyAlpha], refSolver, baseParams)).SetFrom(baseParams);
                 }
 
-                return GetSource(o["path"], extraData, baseParams);
+                return GetSource(o["path"], refSolver, baseParams);
             }
 
             if (j.Type == JTokenType.Boolean) {
@@ -284,14 +225,19 @@ namespace AcManager.CustomShowroom {
                 return PaintShopSource.InputSource.SetFrom(baseParams).MapChannels(c);
             }
 
+            if (s.StartsWith("@ref:") || s.StartsWith("#ref:")) {
+                var r = s.Substring(5);
+                return new PaintShopSource(refSolver.GetColorReference(r));
+            }
+
             if (s.StartsWith("#")) {
                 return new PaintShopSource(s.ToColor()?.ToColor() ?? System.Drawing.Color.White)
                         .SetFrom(baseParams).MapChannels(c);
             }
 
             if (s.StartsWith("./") || s.StartsWith(".\\")) {
-                return new PaintShopSource(extraData(s.Substring(2)))
-                        .SetFrom(baseParams).MapChannels(c);
+                var data = refSolver.GetData(s.Substring(2));
+                return data == null ? PaintShopSource.Transparent : new PaintShopSource(data).SetFrom(baseParams).MapChannels(c);
             }
 
             return new PaintShopSource(s)
@@ -308,6 +254,7 @@ namespace AcManager.CustomShowroom {
         private const string TypeReplacedIfFlagged = "replacedifflagged";
         private const string TypeReplacement = "replacement";
 
+        private const string KeyId = "id";
         private const string KeyName = "name";
         private const string KeyEnabled = "enabled";
         private const string KeyInverse = "inverse";
@@ -369,21 +316,21 @@ namespace AcManager.CustomShowroom {
         private const string KeyLiveryColors = "liveryColors";
 
         [NotNull]
-        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JToken t, Func<string, byte[]> extraData, PaintShopSourceParams sourceParams) {
+        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver, PaintShopSourceParams sourceParams) {
             return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
-                Source = GetSource(x.Value, extraData, sourceParams)
+                Source = GetSource(x.Value, refSolver, sourceParams)
             }).Where(x => x.Source != null).ToDictionary(
                     x => x.Key,
                     x => x.Source) ?? new Dictionary<string, PaintShopSource>();
         }
 
         [NotNull]
-        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JToken t, Func<string, byte[]> extraData,
+        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver,
                 PaintShopSourceParams sourceParams) {
             return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
-                Source = GetSource(x.Value, extraData, sourceParams)
+                Source = GetSource(x.Value, refSolver, sourceParams)
             }).Where(x => x.Source != null).ToDictionary(
                     x => new TextureFileName(x.Key),
                     x => x.Source) ?? new Dictionary<TextureFileName, PaintShopSource>();
@@ -393,8 +340,8 @@ namespace AcManager.CustomShowroom {
         /// Load entries from pairs table: name (or KN5’s texture) → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
-            return GetNameSourcePairs(e[key], extraData, GetSourceParams(e));
+        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JObject e, string key, [NotNull] ReferenceSolver refSolver) {
+            return GetNameSourcePairs(e[key], refSolver, GetSourceParams(e));
         }
 
         /// <summary>
@@ -402,10 +349,10 @@ namespace AcManager.CustomShowroom {
         /// </summary>
         /// <returns></returns>
         [NotNull]
-        private static Dictionary<string, CarPaintReplacementSource> GetNameSourcePairs(JToken t, Func<string, byte[]> extraData) {
+        private static Dictionary<string, CarPaintReplacementSource> GetNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver) {
             return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
-                Replacement = new CarPaintReplacementSource(GetSource(x.Value, extraData, null), (x.Value as JObject)?.GetBoolValueOnly(KeyColored) ?? false)
+                Replacement = new CarPaintReplacementSource(GetSource(x.Value, refSolver, null), (x.Value as JObject)?.GetBoolValueOnly(KeyColored) ?? false)
             }).Where(x => x.Replacement.Source != null).ToDictionary(
                     x => x.Key,
                     x => x.Replacement) ?? new Dictionary<string, CarPaintReplacementSource>();
@@ -415,17 +362,18 @@ namespace AcManager.CustomShowroom {
         /// Load entries from pairs table: result texture name → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
-            return GetTextureFileNameSourcePairs(e[key], extraData, GetSourceParams(e));
+        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key, [NotNull] ReferenceSolver refSolver) {
+            return GetTextureFileNameSourcePairs(e[key], refSolver, GetSourceParams(e));
         }
 
         /// <summary>
         /// Load entries from pairs table: name (or KN5’s texture) → KN5’s texture → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<string, Dictionary<TextureFileName, PaintShopSource>> GetNameNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
+        private static Dictionary<string, Dictionary<TextureFileName, PaintShopSource>> GetNameNameSourcePairs(JObject e, string key,
+                [NotNull] ReferenceSolver refSolver) {
             var sourceParams = GetSourceParams(e);
-            return e[key]?.ToObject<Dictionary<string, JToken>>().ToDictionary(x => x.Key, x => GetTextureFileNameSourcePairs(x.Value, extraData, sourceParams))
+            return e[key]?.ToObject<Dictionary<string, JToken>>().ToDictionary(x => x.Key, x => GetTextureFileNameSourcePairs(x.Value, refSolver, sourceParams))
                     ?? new Dictionary<string, Dictionary<TextureFileName, PaintShopSource>>();
         }
 
@@ -450,13 +398,13 @@ namespace AcManager.CustomShowroom {
         /// Similar to GetTextureSourcePairs, but also loads masks and have a fallback.
         /// </summary>
         [CanBeNull]
-        private static Dictionary<TextureFileName, TintedEntry> GetTintedPairs(JObject e, Func<string, byte[]> extraData) {
+        private static Dictionary<TextureFileName, TintedEntry> GetTintedPairs(JObject e, [NotNull] ReferenceSolver refSolver) {
             var sourceParams = GetSourceParams(e);
             return e[KeyPairs]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
-                Source = GetSource((x.Value as JObject)?[KeySource] ?? x.Value, extraData, sourceParams),
-                Mask = GetSource((x.Value as JObject)?[KeyMask], extraData, null),
-                Overlay = GetSource((x.Value as JObject)?[KeyOverlay], extraData, null),
+                Source = GetSource((x.Value as JObject)?[KeySource] ?? x.Value, refSolver, sourceParams),
+                Mask = GetSource((x.Value as JObject)?[KeyMask], refSolver, null),
+                Overlay = GetSource((x.Value as JObject)?[KeyOverlay], refSolver, null),
             }).Where(x => x.Source != null).ToDictionary(
                     x => new TextureFileName(x.Key),
                     x => new TintedEntry(x.Source, x.Mask, x.Overlay)) ??
@@ -495,8 +443,7 @@ namespace AcManager.CustomShowroom {
             var allowedColors = GetAllowedColors(parent, KeyAllowedColors);
 
             var actualDefaultColor = parent[KeyDefaultColor]?.ToString().ToColor() ?? defaultColor ?? Colors.White;
-            var colors = parent[KeyDefaultColors] as JArray;
-            if (colors != null) {
+            if (parent[KeyDefaultColors] is JArray colors) {
                 var list = new List<CarPaintColor>(colors.Count);
                 for (var i = 0; i < colors.Count; i++) {
                     var defaultName = $"Color #{i + 1}";
@@ -543,15 +490,15 @@ namespace AcManager.CustomShowroom {
         }
 
         [CanBeNull]
-        private static CarPaintPattern GetPattern(JObject obj, Func<string, byte[]> extractData, Size? size) {
+        private static CarPaintPattern GetPattern(JObject obj, [NotNull] ReferenceSolver refSolver, Size? size) {
             var sourceParams = GetSourceParams(obj);
             var name = obj.GetStringValueOnly(KeyName);
-            var pattern = GetSource(obj[KeyPattern], extractData, sourceParams);
-            var overlay = GetSource(obj[KeyOverlay], extractData, sourceParams);
+            var pattern = GetSource(obj[KeyPattern], refSolver, sourceParams);
+            var overlay = GetSource(obj[KeyOverlay], refSolver, sourceParams);
 
             var numbersToken = obj[KeyNumbers];
             var numbersArray = numbersToken as JArray;
-            var numbers = numbersArray?.OfType<JObject>().Select(x => GetNumbers(x, extractData)) ?? new[]{ GetNumbers(numbersToken, extractData) };
+            var numbers = numbersArray?.OfType<JObject>().Select(x => GetNumbers(x, refSolver)) ?? new[]{ GetNumbers(numbersToken, refSolver) };
             return pattern == null ? null : new CarPaintPattern(name, pattern, overlay, GetSize(obj[KeySize]) ?? size, GetColors(obj), numbers) {
                 LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
                 LiveryColorIds = GetLiveryColorIds(obj)
@@ -559,7 +506,7 @@ namespace AcManager.CustomShowroom {
         }
 
         [CanBeNull]
-        private static PaintableItem GetPaintableItem([NotNull] JObject e, [NotNull] Func<string, byte[]> extractData) {
+        private static PaintableItem GetPaintableItem([NotNull] JObject e, [NotNull] ReferenceSolver refSolver) {
             PaintableItem result;
             var type = GetString(e, KeyType, TypeColor).ToLowerInvariant();
             switch (type) {
@@ -568,10 +515,10 @@ namespace AcManager.CustomShowroom {
                     var size = GetSize(e[KeyPatternSize]) ?? GetSize(e[KeySize]);
                     result = new TexturePattern(
                             new TextureFileName(e.GetStringValueOnly(KeyPatternTexture) ?? RequireString(e, KeyTexture)),
-                            GetSource(e[KeyPatternBase], extractData, sourceParams) ?? GetSource(e[KeyPatternTexture], extractData, sourceParams) ??
-                                    GetSource(e[KeyBase], extractData, sourceParams) ?? GetSource(e[KeyTexture], extractData, sourceParams),
-                            GetSource(e[KeyPatternOverlay], extractData, null),
-                            e[KeyPatterns].OfType<JObject>().Select(x => GetPattern(x, extractData, size)).NonNull()) {
+                            GetSource(e[KeyPatternBase], refSolver, sourceParams) ?? GetSource(e[KeyPatternTexture], refSolver, sourceParams) ??
+                                    GetSource(e[KeyBase], refSolver, sourceParams) ?? GetSource(e[KeyTexture], refSolver, sourceParams),
+                            GetSource(e[KeyPatternOverlay], refSolver, null),
+                            e[KeyPatterns].OfType<JObject>().Select(x => GetPattern(x, refSolver, size)).NonNull()) {
                                 LiveryColorIds = GetLiveryColorIds(e)
                             };
                     break;
@@ -580,9 +527,9 @@ namespace AcManager.CustomShowroom {
                     CarPaint carPaint;
                     if (maps != null) {
                         var mapsSourceParams = GetMapsSourceParams(e);
-                        var mapsSource = GetSource(e[KeyMapsDefaultTexture], extractData, mapsSourceParams) ??
+                        var mapsSource = GetSource(e[KeyMapsDefaultTexture], refSolver, mapsSourceParams) ??
                                 PaintShopSource.InputSource.SetFrom(mapsSourceParams);
-                        var mapsMask = GetSource(e[KeyMapsMaskTexture], extractData, null);
+                        var mapsMask = GetSource(e[KeyMapsMaskTexture], refSolver, null);
                         carPaint = new ComplexCarPaint(new TextureFileName(maps), mapsSource, mapsMask);
                     } else {
                         carPaint = new CarPaint();
@@ -594,15 +541,15 @@ namespace AcManager.CustomShowroom {
                             e.GetIntValueOnly(KeyFlakesSize) ?? 512,
                             e.GetBoolValueOnly(KeyColorAvailable) ?? true,
                             GetColor(e, KeyDefaultColor),
-                            GetNameSourcePairs(e[KeyCandidates], extractData));
+                            GetNameSourcePairs(e[KeyCandidates], refSolver));
 
                     var paintPatternTexture = e.GetStringValueOnly(KeyPatternTexture);
                     if (paintPatternTexture != null) {
                         var patternSize = GetSize(e[KeyPatternSize]);
-                        var patternBase = GetSource(e[KeyPatternBase], extractData, GetSourceParams(e)) ??
-                                GetSource(e[KeyPatternTexture], extractData, GetSourceParams(e));
-                        var patternOverlay = GetSource(e[KeyPatternOverlay], extractData, null);
-                        var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, extractData, patternSize)).NonNull();
+                        var patternBase = GetSource(e[KeyPatternBase], refSolver, GetSourceParams(e)) ??
+                                GetSource(e[KeyPatternTexture], refSolver, GetSourceParams(e));
+                        var patternOverlay = GetSource(e[KeyPatternOverlay], refSolver, null);
+                        var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, refSolver, patternSize)).NonNull();
                         if (patternBase != null && patterns != null) {
                             carPaint.SetPatterns(new TextureFileName(paintPatternTexture), patternBase, patternOverlay, patterns);
                         }
@@ -613,12 +560,12 @@ namespace AcManager.CustomShowroom {
                     result = carPaint;
                     break;
                 case TypeColor:
-                    result = new ColoredItem(GetTintedPairs(e, extractData), GetColors(e)) {
+                    result = new ColoredItem(GetTintedPairs(e, refSolver), GetColors(e)) {
                         LiveryColorIds = GetLiveryColorIds(e)
                     };
                     break;
                 case TypeTintedWindow:
-                    result = new TintedWindows(GetTintedPairs(e, extractData),
+                    result = new TintedWindows(GetTintedPairs(e, refSolver),
                             GetColors(e, Color.FromRgb(41, 52, 55)),
                             GetDouble(e, KeyDefaultOpacity, 0.23),
                             e.GetBoolValueOnly(KeyFixedColor) ?? false) {
@@ -637,13 +584,13 @@ namespace AcManager.CustomShowroom {
                     result = new TransparentIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false);
                     break;
                 case TypeReplacedIfFlagged:
-                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetTextureFileNameSourcePairs(e, KeyPairs, extractData));
+                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetTextureFileNameSourcePairs(e, KeyPairs, refSolver));
                     break;
                 case TypeReplacement:
                     try {
-                        result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, extractData));
+                        result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, refSolver));
                     } catch (MissingValueException ex) when (ex.Key == KeyTexture) {
-                        result = new MultiReplacement(GetNameNameSourcePairs(e, KeyCandidates, extractData));
+                        result = new MultiReplacement(GetNameNameSourcePairs(e, KeyCandidates, refSolver));
                     }
                     break;
                 default:
@@ -668,8 +615,8 @@ namespace AcManager.CustomShowroom {
             return result;
         }
 
-        private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
-                [NotNull] Func<string, byte[]> extractData) {
+        private static List<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
+                [NotNull] ReferenceSolver refSolver) {
             var result = new List<PaintableItem>();
             foreach (var item in array) {
                 if (item.Type == JTokenType.String) {
@@ -683,18 +630,17 @@ namespace AcManager.CustomShowroom {
                         result.AddRange(GuessPaintableItems(kn5));
                     }
                 } else {
-                    var o = item as JObject;
-                    if (o == null) {
-                        Logging.Warning("Unknown entry: " + item);
-                    } else {
+                    if (item is JObject o) {
                         try {
-                            var i = GetPaintableItem(o, extractData);
+                            var i = GetPaintableItem(o, refSolver);
                             if (i != null) {
                                 result.Add(i);
                             }
                         } catch (Exception e) {
                             Logging.Error(e);
                         }
+                    } else {
+                        Logging.Warning("Unknown entry: " + item);
                     }
                 }
             }
@@ -702,48 +648,28 @@ namespace AcManager.CustomShowroom {
         }
 
         private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, string filename) {
-            ZipArchive[] data = { null };
-
-            try {
-                return GetJArrayPaintableItems(array, kn5, previousIds, s => {
-                    var unpackedFilename = Path.Combine(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase), s);
-                    if (File.Exists(unpackedFilename)) {
-                        return File.ReadAllBytes(unpackedFilename);
-                    }
-
-                    if (data[0] == null) {
-                        try {
-                            data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
-                        } catch (Exception e) {
-                            Logging.Warning(e.Message);
-                        }
-
-                        if (data[0] == null) return null;
-                    }
-
-                    return data[0].Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
-                                  .Open()
-                                  .ReadAsBytesAndDispose();
-                });
-            } finally {
-                DisposeHelper.Dispose(ref data[0]);
+            var refSolver = new ReferenceSolver();
+            using (refSolver.SetDataProvider(filename)) {
+                var list = GetJArrayPaintableItems(array, kn5, previousIds, refSolver);
+                refSolver.SetRefList(list);
+                return list;
             }
         }
 
         private static IEnumerable<PaintableItem> GetDownloadedPaintableItems(string downloadedData, string carId, [CanBeNull] Kn5 kn5,
                 [NotNull] List<string> previousIds) {
-            using (var zip = ZipFile.OpenRead(downloadedData)) {
+            var refSolver = new ReferenceSolver();
+            using (var zip = ZipFile.OpenRead(downloadedData))
+            using (refSolver.SetDataProvider(zip)) {
                 var manifest = zip.GetEntry("Manifest.json").Open().ReadAsStringAndDispose();
                 var jObj = JObject.Parse(manifest);
                 if (jObj.GetStringValueOnly("id") != carId) {
                     throw new Exception($"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");
                 }
 
-                var entries = (JArray)jObj["entries"];
-                return GetJArrayPaintableItems(entries, kn5, previousIds, s => {
-                    return zip.Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
-                              .Open().ReadAsBytesAndDispose();
-                });
+                var list = GetJArrayPaintableItems((JArray)jObj["entries"], kn5, previousIds, refSolver);
+                refSolver.SetRefList(list);
+                return list;
             }
         }
 
@@ -769,8 +695,7 @@ namespace AcManager.CustomShowroom {
                 foreach (var filename in FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PaintShop).Select(x => x.Filename)) {
                     try {
                         var j = JObject.Parse(File.ReadAllText(filename));
-                        var d = j.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray;
-                        if (d != null) {
+                        if (j.GetValue(carId, StringComparison.OrdinalIgnoreCase) is JArray d) {
                             return GetJArrayPaintableItems(d, kn5, previousIds, filename);
                         }
                     } catch (Exception e) {

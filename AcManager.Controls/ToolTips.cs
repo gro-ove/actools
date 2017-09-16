@@ -14,34 +14,63 @@ namespace AcManager.Controls {
             Source = new Uri("/AcManager.Controls;component/Assets/ToolTips.xaml", UriKind.Relative)
         });
 
-        public static CarObject GetCarObject(DependencyObject obj) {
-            return (CarObject)obj.GetValue(CarObjectProperty);
+        public static CarObject GetCar(DependencyObject obj) {
+            return (CarObject)obj.GetValue(CarProperty);
         }
 
-        public static void SetCarObject(DependencyObject obj, CarObject value) {
-            obj.SetValue(CarObjectProperty, value);
+        public static void SetCar(DependencyObject obj, CarObject value) {
+            obj.SetValue(CarProperty, value);
         }
 
-        public static readonly DependencyProperty CarObjectProperty = DependencyProperty.RegisterAttached("CarObject", typeof(CarObject),
+        public static readonly DependencyProperty CarProperty = DependencyProperty.RegisterAttached("Car", typeof(CarObject),
                 typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
 
-        public static CarSkinObject GetCarSkinObject(DependencyObject obj) {
-            return (CarSkinObject)obj.GetValue(CarSkinObjectProperty);
+        public static CarSkinObject GetCarSkin(DependencyObject obj) {
+            return (CarSkinObject)obj.GetValue(CarSkinProperty);
         }
 
-        public static void SetCarSkinObject(DependencyObject obj, CarSkinObject value) {
-            obj.SetValue(CarSkinObjectProperty, value);
+        public static void SetCarSkin(DependencyObject obj, CarSkinObject value) {
+            obj.SetValue(CarSkinProperty, value);
         }
 
-        public static readonly DependencyProperty CarSkinObjectProperty = DependencyProperty.RegisterAttached("CarSkinObject", typeof(CarSkinObject),
+        public static readonly DependencyProperty CarSkinProperty = DependencyProperty.RegisterAttached("CarSkin", typeof(CarSkinObject),
+                typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
+
+        public static TrackObjectBase GetTrack(DependencyObject obj) {
+            return (TrackObjectBase)obj.GetValue(TrackProperty);
+        }
+
+        public static void SetTrack(DependencyObject obj, TrackObjectBase value) {
+            obj.SetValue(TrackProperty, value);
+        }
+
+        public static readonly DependencyProperty TrackProperty = DependencyProperty.RegisterAttached("Track", typeof(TrackObjectBase),
                 typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
 
         private static void OnToolTipChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var element = d as FrameworkElement;
-            if (element == null || e.NewValue == null) return;
+            if (!(d is FrameworkElement element) || e.NewValue == null) return;
+
+            SetIsDirty(element, true);
             element.MouseEnter -= OnElementMouseEnter;
             element.MouseEnter += OnElementMouseEnter;
+            element.PreviewGotKeyboardFocus -= OnElementMouseEnter;
+            element.PreviewGotKeyboardFocus += OnElementMouseEnter;
+
+            if (element.IsMouseOver) {
+                UpdateContextMenu(element);
+            }
         }
+
+        private static bool GetIsDirty(DependencyObject obj) {
+            return obj.GetValue(IsDirtyProperty) as bool? == true;
+        }
+
+        private static void SetIsDirty(DependencyObject obj, bool value) {
+            obj.SetValue(IsDirtyProperty, value);
+        }
+
+        public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.RegisterAttached("IsDirty", typeof(bool),
+                typeof(ToolTips), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
         [CanBeNull]
         private static ToolTip GetToolTip(string key, FrameworkElement obj = null) {
@@ -58,6 +87,11 @@ namespace AcManager.Controls {
             return GetToolTip(@"CarSkinPreviewTooltip", obj);
         }
 
+        [CanBeNull]
+        public static ToolTip GetTrackToolTip(FrameworkElement obj = null) {
+            return GetToolTip(@"TrackPreviewTooltip", obj);
+        }
+
         private static void SetToolTip(FrameworkElement obj, [CanBeNull] ToolTip t, object dataContext) {
             if (t == null) {
                 obj.ToolTip = null;
@@ -68,19 +102,31 @@ namespace AcManager.Controls {
             obj.ToolTip = t;
         }
 
-        private static void OnElementMouseEnter(object sender, MouseEventArgs mouseEventArgs) {
-            var element = (FrameworkElement)sender;
-            var car = GetCarObject(element);
+        private static void UpdateContextMenu(FrameworkElement element) {
+            if (!GetIsDirty(element)) return;
+            SetIsDirty(element, false);
+
+            var car = GetCar(element);
             if (car != null) {
                 SetToolTip(element, GetCarToolTip(element), car);
                 return;
             }
 
-            var skin = GetCarSkinObject(element);
+            var skin = GetCarSkin(element);
             if (skin != null) {
                 SetToolTip(element, GetCarSkinToolTip(element), skin);
                 return;
             }
+
+            var track = GetTrack(element);
+            if (track != null) {
+                SetToolTip(element, GetTrackToolTip(element), track);
+                return;
+            }
+        }
+
+        private static void OnElementMouseEnter(object sender, EventArgs mouseEventArgs) {
+            UpdateContextMenu((FrameworkElement)sender);
         }
     }
 }

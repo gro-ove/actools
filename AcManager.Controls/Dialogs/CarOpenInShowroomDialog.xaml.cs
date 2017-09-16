@@ -297,7 +297,7 @@ namespace AcManager.Controls.Dialogs {
             Buttons = new[] { GoButton, CloseButton };
         }
 
-        private void CarOpenInShowroomDialog_OnClosing(object sender, CancelEventArgs e) {
+        private void OnClosing(object sender, CancelEventArgs e) {
             if (!IsResultOk) return;
             Model.Run();
             Model.Dispose();

@@ -25,7 +25,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}"
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseUp="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}"
       mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.ChangeBrandBadge}, Mode=OneTime}" mui:FancyHintsService.TriggerOnLoad="True"
       mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top" mui:FancyHintsService.HorizontalContentAlignment="Left"
       mui:FancyHintsService.VerticalContentAlignment="Top" mui:FancyHintsService.OffsetX="12" mui:FancyHintsService.OffsetY="12">
@@ -131,7 +131,7 @@
 
         <mui:Cell MaxWidth="800">
           <mui:BetterImage x:Name="SelectedSkinPreviewImage" Filename="{Binding SelectedObject.SelectedSkin.PreviewImage}"
-              PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="OnSkinRightClick"
+              PreviewMouseLeftButtonUp="OnPreviewClick" PreviewMouseRightButtonUp="OnPreviewRightClick"
               Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
               MaxWidth="800" />
           <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
@@ -150,7 +150,7 @@
                 <DataTemplate DataType="{x:Type t:AcItemWrapper}">
                   <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                   <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32" ClearOnChange="True"
-                      PreviewMouseRightButtonUp="OnSkinRightClick" />
+                      PreviewMouseRightButtonUp="OnPreviewRightClick" />
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>

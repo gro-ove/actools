@@ -2,8 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-    xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300"
-    d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:drive="clr-namespace:AcManager.Pages.Drive" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -74,33 +75,42 @@
           <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Grid Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355" Background="Black"
-            Margin="0 0 10 0" services:ImageViewerService.Image="{Binding CarSkin.PreviewImage}"
-            Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}">
-          <Grid.ContextMenu>
-            <ContextMenu>
+        <mui:Cell Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
+            Background="Black" Margin="0 0 10 0"
+            Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
+            c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" c:ContextMenus.CarSkin="{Binding CarSkin}"
+            mui:Draggable.Data="{Binding Car}" MouseLeftButtonUp="OnCarPreviewClick">
+          <c:ContextMenus.AdditionalItems>
+            <c:ContextMenusItems>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByCar}" Command="{Binding FilterCommand}" CommandParameter="car" />
-            </ContextMenu>
-          </Grid.ContextMenu>
+            </c:ContextMenusItems>
+          </c:ContextMenus.AdditionalItems>
+
           <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" MaxWidth="355" Stretch="UniformToFill" />
-          <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding Car.DisplayName}"
-              Foreground="{DynamicResource DarkStripeText}" />
-        </Grid>
+          <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+            <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="16" Height="16" Margin="4 4 0 4"
+                Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+            <TextBlock Text="{Binding Car.DisplayName}" Padding="4" />
+          </DockPanel>
+        </mui:Cell>
 
         <mui:Cell Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
             Background="Black" services:ImageViewerService.Image="{Binding Track.PreviewImage}"
             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
-            Margin="10 0 0 0">
-          <mui:Cell.ContextMenu>
-            <ContextMenu>
+            Margin="10 0 0 0" c:ToolTips.Track="{Binding Track}" c:ContextMenus.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}">
+          <c:ContextMenus.AdditionalItems>
+            <c:ContextMenusItems>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByTrack}" Command="{Binding FilterCommand}" CommandParameter="track" />
-              <MenuItem Header="Open In Quick Drive" Command="{Binding FilterCommand}" />
-            </ContextMenu>
-          </mui:Cell.ContextMenu>
+            </c:ContextMenusItems>
+          </c:ContextMenus.AdditionalItems>
+
           <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.PreviewImage}" Width="355" Height="200" Stretch="UniformToFill" />
           <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.OutlineImage}" Width="365" Height="192" Stretch="Uniform" Margin="-5 0 -5 8" />
-          <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding Track.Name}"
-              Foreground="{DynamicResource DarkStripeText}" />
+          <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+            <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+            <TextBlock Text="{Binding Track.Name}" Padding="4" />
+          </DockPanel>
         </mui:Cell>
       </Grid>
 

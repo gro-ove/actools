@@ -392,13 +392,12 @@ namespace AcManager.Pages.Selected {
         }
 
         #region Skins
-        private void SelectedSkinPreview_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
                 CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
             } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-
                 var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
                 new ImageViewer(
                         from skin in skins select skin.PreviewImage,
@@ -408,9 +407,8 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void SelectedSkinPreview_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewContextMenu(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
-
             var context = ((FrameworkElement)sender).DataContext;
             var wrapper = context as AcItemWrapper;
             OpenSkinContextMenu((wrapper?.Value ?? context) as CarSkinObject);

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AcManager.PaintShop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -33,13 +34,13 @@ namespace AcManager.CustomShowroom {
             }
 
             [ItemCanBeNull]
-            private async Task<List<PaintShop.PaintableItem>> GetSkinItems(CancellationToken cancellation) {
+            private async Task<List<PaintableItem>> GetSkinItems(CancellationToken cancellation) {
                 // PaintShopRulesLoader = new PaintShopRulesLoader();
 
                 await Task.Delay(50);
                 if (cancellation.IsCancellationRequested) return null;
 
-                var skinItems = (await PaintShop.GetPaintableItemsAsync(Car.Id, Renderer?.MainSlot.Kn5, cancellation))?.ToList();
+                var skinItems = (await PaintShop.PaintShop.GetPaintableItemsAsync(Car.Id, Renderer?.MainSlot.Kn5, cancellation))?.ToList();
                 if (skinItems == null || cancellation.IsCancellationRequested) return null;
 
                 try {
@@ -49,7 +50,7 @@ namespace AcManager.CustomShowroom {
                             var jObj = JObject.Parse(File.ReadAllText(skin));
                             foreach (var pair in jObj) {
                                 if (pair.Value.Type != JTokenType.Object) continue;
-                                skinItems.FirstOrDefault(x => PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
+                                skinItems.FirstOrDefault(x => PaintShop.PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
                                          .Deserialize((JObject)pair.Value);
                             }
                         }
@@ -118,10 +119,10 @@ namespace AcManager.CustomShowroom {
                         SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
 
-            private IList<PaintShop.PaintableItem> _skinItems;
+            private IList<PaintableItem> _skinItems;
 
             [CanBeNull]
-            public IList<PaintShop.PaintableItem> SkinItems {
+            public IList<PaintableItem> SkinItems {
                 get => _skinItems;
                 set {
                     if (Equals(value, _skinItems)) return;
@@ -151,11 +152,11 @@ namespace AcManager.CustomShowroom {
 
             private void OnSkinItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
-                    case nameof(PaintShop.IPaintableNumberItem.IsNumberActive):
+                    case nameof(IPaintableNumberItem.IsNumberActive):
                         SetSkinNumber();
                         break;
-                    case nameof(PaintShop.PaintableItem.Enabled):
-                        var item = (PaintShop.PaintableItem)sender;
+                    case nameof(PaintableItem.Enabled):
+                        var item = (PaintableItem)sender;
                         if (!item.Enabled) break;
 
                         foreach (var next in _skinItems) {
@@ -228,7 +229,7 @@ namespace AcManager.CustomShowroom {
                         for (var i = 0; i < list.Count; i++) {
                             var item = list[i];
                             try {
-                                jObj[PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
+                                jObj[PaintShop.PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
                                 progress.Report(item.DisplayName, i, list.Count);
                                 await item.SaveAsync(skin.Location, cancellation);
                                 if (cancellation.IsCancellationRequested) break;
@@ -241,7 +242,7 @@ namespace AcManager.CustomShowroom {
                         }
 
                         if (!cancellation.IsCancellationRequested) {
-                            var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.Enabled);
+                            var carPaint = skinsItems.OfType<CarPaint>().FirstOrDefault(x => x.Enabled);
                             if (carPaint != null && LiveryGenerator != null) {
                                 var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
                                 if (liveryStyle != null) {
@@ -314,7 +315,7 @@ namespace AcManager.CustomShowroom {
 
                 try {
                     if (SkinItems == null) return;
-                    foreach (var item in SkinItems.OfType<PaintShop.IPaintableNumberItem>()) {
+                    foreach (var item in SkinItems.OfType<IPaintableNumberItem>()) {
                         item.Number = number;
                         any = item.IsNumberActive;
                     }
@@ -338,7 +339,7 @@ namespace AcManager.CustomShowroom {
                 if (Renderer == null || skinItems == null) return;
 
                 _styles = FilesStorage.Instance.GetContentDirectories(ContentCategory.LicensePlates).ToList();
-                foreach (var item in skinItems.OfType<PaintShop.LicensePlate>()) {
+                foreach (var item in skinItems.OfType<LicensePlate>()) {
                     item.SetStyles(_styles);
                 }
             }
@@ -355,7 +356,7 @@ namespace AcManager.CustomShowroom {
                     if (skinItems == null || SkinItems == null) return;
 
                     if (_styles != null) {
-                        foreach (var item in skinItems.OfType<PaintShop.LicensePlate>()) {
+                        foreach (var item in skinItems.OfType<LicensePlate>()) {
                             item.SetStyles(_styles);
                         }
                     }

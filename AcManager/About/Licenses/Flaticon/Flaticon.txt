@@ -1,0 +1,4 @@
+name: Icons made by Freepik
+url: https://www.flaticon.com/
+content: LICENSE
+sid: t5ntya67

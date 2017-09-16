@@ -2,6 +2,7 @@
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:paintShop="clr-namespace:AcManager.PaintShop"
     mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="LiteShowroomSettings.xaml" />
@@ -52,7 +53,7 @@
   <DataTemplate x:Key="PaintShopItemTemplate">
     <ContentControl Content="{Binding}" Margin="0 8 0 0">
       <ContentControl.Resources>
-        <DataTemplate DataType="{x:Type cs:PaintShop+LicensePlate}">
+        <DataTemplate DataType="{x:Type paintShop:LicensePlate}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -73,7 +74,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+ColoredItem}">
+        <DataTemplate DataType="{x:Type paintShop:ColoredItem}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -104,7 +105,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+Replacement}">
+        <DataTemplate DataType="{x:Type paintShop:Replacement}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -116,7 +117,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+MultiReplacement}">
+        <DataTemplate DataType="{x:Type paintShop:MultiReplacement}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -128,7 +129,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+TintedWindows}">
+        <DataTemplate DataType="{x:Type paintShop:TintedWindows}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -167,7 +168,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+TexturePattern}">
+        <DataTemplate DataType="{x:Type paintShop:TexturePattern}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -192,7 +193,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+CarPaint}">
+        <DataTemplate DataType="{x:Type paintShop:CarPaint}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -238,7 +239,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+ComplexCarPaint}">
+        <DataTemplate DataType="{x:Type paintShop:ComplexCarPaint}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -309,7 +310,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+TransparentIfFlagged}">
+        <DataTemplate DataType="{x:Type paintShop:TransparentIfFlagged}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName}" />
@@ -317,7 +318,7 @@
           </StackPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type cs:PaintShop+PaintableItem}">
+        <DataTemplate DataType="{x:Type paintShop:PaintableItem}">
           <StackPanel>
             <CheckBox IsChecked="{Binding Enabled}">
               <Label Content="{Binding DisplayName, StringFormat='{}{0} (not supported yet)'}" />

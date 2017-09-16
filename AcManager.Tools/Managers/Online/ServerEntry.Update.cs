@@ -14,6 +14,8 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
+        public static string OptionDebugPing = null;
+
         private static string GetFailedReason(WebException e) {
             switch (e.Status) {
                 case WebExceptionStatus.RequestCanceled:
@@ -51,7 +53,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (_updateWebException != null) {
-                errors.Add($"Can’t load any information: {GetFailedReason(_updateWebException)}.");
+                errors.Add($"Can’t load any information: {GetFailedReason(_updateWebException).ToSentenceMember()}.");
             }
 
             if (_updatePingFailed) {
@@ -215,18 +217,43 @@ namespace AcManager.Tools.Managers.Online {
 
                 // Ping server
                 if (Ping == null || mode == UpdateMode.Full || !SettingsHolder.Online.PingOnlyOnce) {
-                    UpdateProgress = new AsyncProgressEntry("Pinging server…", 0.3);
-                    var pair = SettingsHolder.Online.ThreadsPing
-                            ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
-                            : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout);
-                    if (pair != null) {
-                        Ping = (long)pair.Item2.TotalMilliseconds;
-                        _updatePingFailed = false;
-                    } else {
-                        Ping = null;
-                        _updatePingFailed = true;
-                        resultStatus = ServerStatus.Error;
-                        return;
+                    for (var attemptsLeft = Math.Max(SettingsHolder.Online.PingAttempts, 1); attemptsLeft > 0; attemptsLeft--) {
+                        var lastAttempt = attemptsLeft == 1;
+
+                        var debugPinging = Ip == OptionDebugPing;
+                        if (debugPinging) {
+                            Logging.Debug("Pinging THAT server, attempts left: " + (attemptsLeft - 1));
+                            Logging.Debug("Timeout: " + SettingsHolder.Online.PingTimeout);
+                            Logging.Debug("Threads pinging: " + SettingsHolder.Online.ThreadsPing);
+                        }
+
+                        UpdateProgress = new AsyncProgressEntry("Pinging server…", 0.3);
+                        var pair = SettingsHolder.Online.ThreadsPing
+                                ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging))
+                                : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging);
+
+                        if (debugPinging) {
+                            if (pair == null) {
+                                Logging.Warning("Result: FAILED");
+                            } else {
+                                Logging.Debug($"Result: {pair.Item2.TotalMilliseconds:F1} ms");
+                            }
+                        }
+
+                        if (pair != null) {
+                            Ping = (long)pair.Item2.TotalMilliseconds;
+                            _updatePingFailed = false;
+                            break;
+                        }
+
+                        if (lastAttempt) {
+                            Ping = null;
+                            _updatePingFailed = true;
+                            resultStatus = ServerStatus.Error;
+                            return;
+                        } else {
+                            await Task.Delay(150);
+                        }
                     }
                 }
 

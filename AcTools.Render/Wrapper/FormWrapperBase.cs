@@ -155,7 +155,7 @@ namespace AcTools.Render.Wrapper {
             if (_closed) return;
 
             try {
-                // Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+                Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
 
                 if (SleepMode) {
                     Thread.Sleep(20);

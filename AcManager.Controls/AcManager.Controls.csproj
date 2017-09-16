@@ -144,6 +144,7 @@
     <Compile Include="AppModernWindow.cs" />
     <Compile Include="BatchAction.cs" />
     <Compile Include="CommonBatchActions.cs" />
+    <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
     <Compile Include="Graphs\CarGraphViewer.cs" />

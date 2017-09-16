@@ -47,7 +47,8 @@
               <Setter TargetName="PART_List" Property="ItemTemplate">
                 <Setter.Value>
                   <DataTemplate DataType="t:LapTimeWrapped">
-                    <DockPanel Height="20" ContextMenu="{StaticResource BestLapWrappedContextMenu}">
+                    <DockPanel Height="20" ContextMenu="{StaticResource BestLapWrappedContextMenu}" Background="Transparent" ac:ToolTips.Car="{Binding Car}"
+                        ac:ContextMenus.Car="{Binding Car}" mui:Draggable.Data="{Binding Car}">
                       <TextBlock DockPanel.Dock="Right" Width="80" Margin="4 0 0 0" TextAlignment="Right"
                           Text="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" />
                       <mui:BetterImage DockPanel.Dock="Left" Filename="{Binding Car.BrandBadge}" Width="16" Height="16" Margin="0 0 8 0" ClearOnChange="True" />

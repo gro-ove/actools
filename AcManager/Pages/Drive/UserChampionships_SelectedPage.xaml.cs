@@ -62,7 +62,8 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(() => Model.GoCommand.Execute(AssistsViewModel.Instance)), new KeyGesture(Key.G, ModifierKeys.Control))
+                new InputBinding(new DelegateCommand(() => Model.GoCommand.Execute(AssistsViewModel.Instance)), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => UserChampionships.NavigateToChampionshipPage(null)), new KeyGesture(Key.W, ModifierKeys.Control)),
             });
 
             var acObject = Model.AcObject;
@@ -142,7 +143,7 @@ namespace AcManager.Pages.Drive {
             private UserChampionshipObject _acObject;
 
             public UserChampionshipObject AcObject {
-                get { return _acObject; }
+                get => _acObject;
                 set {
                     if (Equals(value, _acObject)) return;
                     _acObject = value;
@@ -354,7 +355,7 @@ namespace AcManager.Pages.Drive {
             private bool _conditionsLoading;
 
             public bool ConditionsLoading {
-                get { return _conditionsLoading; }
+                get => _conditionsLoading;
                 set {
                     if (Equals(value, _conditionsLoading)) return;
                     _conditionsLoading = value;
@@ -365,7 +366,7 @@ namespace AcManager.Pages.Drive {
             private int _currentRoundTime;
 
             public int CurrentRoundTime {
-                get { return _currentRoundTime; }
+                get => _currentRoundTime;
                 set {
                     if (Equals(value, _currentRoundTime)) return;
                     _currentRoundTime = value;
@@ -377,7 +378,7 @@ namespace AcManager.Pages.Drive {
             private double _currentRoundTemperature;
 
             public double CurrentRoundTemperature {
-                get { return _currentRoundTemperature; }
+                get => _currentRoundTemperature;
                 set {
                     if (Equals(value, _currentRoundTemperature)) return;
                     _currentRoundTemperature = value;
@@ -389,7 +390,7 @@ namespace AcManager.Pages.Drive {
             private WeatherObject _currentRoundWeather;
 
             public WeatherObject CurrentRoundWeather {
-                get { return _currentRoundWeather; }
+                get => _currentRoundWeather;
                 set {
                     if (Equals(value, _currentRoundWeather)) return;
                     _currentRoundWeather = value;
@@ -464,7 +465,7 @@ namespace AcManager.Pages.Drive {
             Model.ResetCommand.ExecuteAsync().Forget();
         }
 
-        private void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
             var carObject = Model.AcObject.PlayerCar;
             var carSkin = Model.AcObject.PlayerCarSkin;
 
@@ -493,7 +494,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private async void ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+        private async void OnChangeSkinMenuItemClick(object sender, MouseButtonEventArgs e) {
             var carObject = Model.AcObject.PlayerCar;
             var carSkin = Model.AcObject.PlayerCarSkin;
 

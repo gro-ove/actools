@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.UserControls;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
@@ -13,6 +15,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -48,6 +51,10 @@ namespace AcManager.Pages.Drive {
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
+            });
+
+            this.AddSizeCondition(c => c.ActualHeight > 640).Add(v => {
+                BestLapBlock.Margin = v ? new Thickness(0, 16, 0, 0) : new Thickness();
             });
 
             /*Dispatcher.InvokeAsync(async () => {
@@ -246,6 +253,15 @@ namespace AcManager.Pages.Drive {
         public static void Show(SpecialEventObject select) {
             _selectNext = select;
             NavigateToPage();
+        }
+
+        private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
+            if (e.Handled || Model.Selected == null) return;
+            e.Handled = true;
+            new ImageViewer(
+                    Model.Selected.CarSkin.PreviewImage,
+                    CommonAcConsts.PreviewWidth,
+                    details: CarBlock.GetSkinImageViewerDetailsCallback(Model.Selected.CarObject)).ShowDialog();
         }
     }
 }

@@ -60,7 +60,7 @@ namespace AcManager.Pages.Drive {
             private bool _showExtensionMessage;
 
             public bool ShowExtensionMessage {
-                get { return _showExtensionMessage; }
+                get => _showExtensionMessage;
                 set {
                     if (Equals(value, _showExtensionMessage)) return;
                     _showExtensionMessage = value;
@@ -80,7 +80,7 @@ namespace AcManager.Pages.Drive {
             private string _eventId;
 
             public string EventId {
-                get { return _eventId; }
+                get => _eventId;
                 set {
                     if (Equals(value, _eventId)) return;
                     _eventId = value;
@@ -100,7 +100,7 @@ namespace AcManager.Pages.Drive {
             private bool _ghostCar;
 
             public bool GhostCar {
-                get { return _ghostCar; }
+                get => _ghostCar;
                 set {
                     if (Equals(value, _ghostCar)) return;
                     _ghostCar = value;
@@ -112,7 +112,7 @@ namespace AcManager.Pages.Drive {
             private CarObject _car;
 
             public CarObject Car {
-                get { return _car; }
+                get => _car;
                 set {
                     if (Equals(value, _car)) return;
                     _car = value;
@@ -123,7 +123,7 @@ namespace AcManager.Pages.Drive {
             private CarSkinObject _carSkin;
 
             public CarSkinObject CarSkin {
-                get { return _carSkin; }
+                get => _carSkin;
                 set {
                     if (Equals(value, _carSkin)) return;
                     _carSkin = value;
@@ -134,7 +134,7 @@ namespace AcManager.Pages.Drive {
             private TrackObjectBase _track;
 
             public TrackObjectBase Track {
-                get { return _track; }
+                get => _track;
                 set {
                     if (Equals(value, _track)) return;
                     _track = value;
@@ -285,7 +285,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
+        private void OnPageLoaded(object sender, PageLoadedEventArgs e) {
             var uri = e.Url;
             var match = Regex.Match(uri, @"\beventId=(\d+)");
             if (match.Success) {
@@ -311,12 +311,14 @@ window.addEventListener('load', function(){
             }
         }
 
-        private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+        private void OnAssistsClick(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
             e.Handled = true;
             new AssistsDialog(Assists).ShowDialog();
         }
 
-        private void SkinLivery_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnSkinLiveryClick(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
             e.Handled = true;
 
             var control = new CarBlock {

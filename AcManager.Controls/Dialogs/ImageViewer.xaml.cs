@@ -57,8 +57,9 @@ namespace AcManager.Controls.Dialogs {
             // if (e.PropertyName == )
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
                 Close();
             }
         }
@@ -98,12 +99,12 @@ namespace AcManager.Controls.Dialogs {
             return IsSelected ? Model.CurrentOriginalImage as string : null;
         }
 
-        private void OnApplyButtonClick(object sender, MouseButtonEventArgs e) {
+        private void OnApplyButtonClick(object sender, RoutedEventArgs routedEventArgs) {
             IsSelected = true;
             Close();
         }
 
-        private void OnCloseButtonClick(object sender, MouseButtonEventArgs e) {
+        private void OnCloseButtonClick(object sender, RoutedEventArgs routedEventArgs) {
             Close();
         }
 
@@ -126,7 +127,6 @@ namespace AcManager.Controls.Dialogs {
             [NotNull]
             private readonly object[] _images;
 
-            [NotNull]
             private int _imagesLength;
 
             [NotNull]
@@ -179,8 +179,7 @@ namespace AcManager.Controls.Dialogs {
 
                 CurrentDetails = _details?.Invoke(_originalImages[position]);
 
-                var path = current as string;
-                if (path != null) {
+                if (current is string path) {
                     var loaded = BetterImage.LoadBitmapSource(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
                     lock (_images) {
                         _images[position] = loaded;

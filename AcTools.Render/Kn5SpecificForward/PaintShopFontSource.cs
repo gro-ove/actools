@@ -26,6 +26,11 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         [NotNull]
+        public static PaintShopFontSource CreateDefault() {
+            return new PaintShopFontSource("Arial", null, null);
+        }
+
+        [NotNull]
         public static PaintShopFontSource FromFamilyName([NotNull] string familyName) {
             return new PaintShopFontSource(familyName, null, null);
         }

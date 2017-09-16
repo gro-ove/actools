@@ -149,7 +149,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void OnIconMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnIconClick(object sender, MouseButtonEventArgs e) {
             new ImageViewer(Model.SelectedObject.FontBitmap).ShowDialog();
         }
 

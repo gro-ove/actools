@@ -56,20 +56,20 @@ namespace AcManager.Controls {
             base.OnApplyTemplate();
 
             if (_iconImage != null) {
-                _iconImage.MouseDown -= IconImage_MouseDown;
+                _iconImage.MouseUp -= OnIconMouseUp;
             }
 
             _iconImage = GetTemplateChild(@"PART_IconImage") as UIElement;
 
             if (_iconImage != null) {
-                _iconImage.MouseDown += IconImage_MouseDown;
+                _iconImage.MouseUp += OnIconMouseUp;
             }
         }
 
-        private void IconImage_MouseDown(object sender, MouseButtonEventArgs e) {
-            IconMouseDown?.Invoke(sender, e);
+        private void OnIconMouseUp(object sender, MouseButtonEventArgs e) {
+            IconMouseUp?.Invoke(sender, e);
         }
 
-        public event MouseButtonEventHandler IconMouseDown;
+        public event MouseButtonEventHandler IconMouseUp;
     }
 }

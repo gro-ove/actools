@@ -11,6 +11,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AcManager.CustomShowroom;
+using AcManager.PaintShop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -489,12 +490,12 @@ namespace AcManager.Tools {
                 Kn5MaterialsCache.Add(Tuple.Create(car.Id, materialsKn5));
             }
 
-            var paintable = (await PaintShop.GetPaintableItemsAsync(skin.CarId, materialsKn5, default(CancellationToken)))?.ToList();
+            var paintable = (await PaintShop.PaintShop.GetPaintableItemsAsync(skin.CarId, materialsKn5, default(CancellationToken)))?.ToList();
             if (paintable == null) {
                 return null;
             }
 
-            var carPaint = paintable.OfType<PaintShop.CarPaint>().FirstOrDefault();
+            var carPaint = paintable.OfType<CarPaint>().FirstOrDefault();
             if (carPaint?.GuessColorsFromPreviews != false) {
                 return null;
             }
@@ -550,7 +551,7 @@ namespace AcManager.Tools {
 
                     Logging.Debug($"Main color: {texture} ({result[0].ToHexString()})");
 
-                    foreach (var item in paintable.OfType<PaintShop.ColoredItem>().Where(x => x.LiveryColorIds?.Length > 0).OrderBy(x => x.LiveryPriority)) {
+                    foreach (var item in paintable.OfType<ColoredItem>().Where(x => x.LiveryColorIds?.Length > 0).OrderBy(x => x.LiveryPriority)) {
                         if (item.LiveryColorIds == null) continue;
                         for (var i = 0; i < item.LiveryColorIds.Length; i++) {
                             var slotId = i;

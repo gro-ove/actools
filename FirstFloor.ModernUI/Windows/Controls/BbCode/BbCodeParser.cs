@@ -31,10 +31,10 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         private class ParseContext {
             public ParseContext(Span parent) {
-                Parent = parent;
+                // Parent = parent;
             }
 
-            public Span Parent;
+            // public Span Parent;
             public double? FontSize;
             public FontWeight? FontWeight;
             public FontStyle? FontStyle;
@@ -179,35 +179,29 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                     case BbCodeLexer.TokenText:
                         var parent = span;
 
-                        {
-                            Uri uri;
-                            string parameter;
-                            string targetName;
+                        // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
+                        if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out var parsedUri, out var parsedParameter,
+                                out var parsedTargetName)) {
+                            var link = new Hyperlink();
 
-                            // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
-                            if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out uri, out parameter, out targetName)) {
-                                var link = new Hyperlink();
-
-                                if (context.IconGeometry != null) {
-                                    link.TextDecorations.Clear();
-                                }
-
-                                // assign ICommand instance if available, otherwise set NavigateUri
-                                ICommand command;
-                                if (Commands != null && Commands.TryGetValue(uri, out command)) {
-                                    link.Command = command;
-                                    link.CommandParameter = parameter;
-                                    if (targetName != null) {
-                                        link.CommandTarget = _source?.FindName(targetName) as IInputElement;
-                                    }
-                                } else {
-                                    link.NavigateUri = uri;
-                                    link.TargetName = parameter;
-                                }
-
-                                parent = link;
-                                span.Inlines.Add(parent);
+                            if (context.IconGeometry != null) {
+                                link.TextDecorations.Clear();
                             }
+
+                            // assign ICommand instance if available, otherwise set NavigateUri
+                            if (Commands != null && Commands.TryGetValue(parsedUri, out var command)) {
+                                link.Command = command;
+                                link.CommandParameter = parsedParameter;
+                                if (parsedTargetName != null) {
+                                    link.CommandTarget = _source?.FindName(parsedTargetName) as IInputElement;
+                                }
+                            } else {
+                                link.NavigateUri = parsedUri;
+                                link.TargetName = parsedParameter;
+                            }
+
+                            parent = link;
+                            span.Inlines.Add(parent);
                         }
 
                         if (context.IconGeometry != null) {
@@ -220,8 +214,6 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 Path = new PropertyPath("(TextBlock.Foreground)"),
                                 RelativeSource = new RelativeSource(RelativeSourceMode.Self),
                             });
-
-                            Logging.Debug(token.Value);
 
                             var border = new Border {
                                 Background = new SolidColorBrush(Colors.Transparent),
@@ -245,98 +237,92 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                             parent.Inlines.Add(new InlineUIContainer { Child = border });
                             continue;
-                        }
+                        } {
+                        string url;
+                        double maxSize;
+                        bool expand, toolTip;
+                        FileCache cache;
 
-                        {
-                            string uri;
-                            double maxSize;
-                            bool expand, toolTip;
-                            FileCache cache;
+                        if (context.ImageUri?.StartsWith(@"emoji://") == true) {
+                            maxSize = 0;
+                            expand = false;
+                            toolTip = false;
 
-                            if (context.ImageUri?.StartsWith(@"emoji://") == true) {
-                                maxSize = 0;
-                                expand = false;
-                                toolTip = false;
-
-                                var provider = BbCodeBlock.OptionEmojiProvider;
-                                if (provider == null) {
-                                    uri = null;
-                                    cache = null;
-                                } else {
-                                    var emoji = context.ImageUri.Substring(8);
-                                    uri = string.Format(provider, emoji);
-                                    cache = BbCodeBlock.OptionEmojiCacheDirectory == null ? null :
-                                            _emojiCache ?? (_emojiCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
-                                }
+                            var provider = BbCodeBlock.OptionEmojiProvider;
+                            if (provider == null) {
+                                url = null;
+                                cache = null;
                             } else {
-                                toolTip = true;
+                                var emoji = context.ImageUri.Substring(8);
+                                url = string.Format(provider, emoji);
+                                cache = BbCodeBlock.OptionEmojiCacheDirectory == null ? null :
+                                        _emojiCache ?? (_emojiCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
+                            }
+                        } else {
+                            toolTip = true;
 
-                                Uri temporary;
-                                string parameter;
-                                string targetName;
-                                if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out temporary, out parameter, out targetName)) {
-                                    uri = temporary.OriginalString;
-
-                                    if (double.TryParse(parameter, out maxSize)) {
-                                        expand = true;
-                                    } else {
-                                        maxSize = double.NaN;
-                                        expand = false;
-                                    }
-
-                                    cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
-                                            _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionImageCacheDirectory));
+                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _)) {
+                                url = temporary.OriginalString;
+                                if (double.TryParse(parameter, out maxSize)) {
+                                    expand = true;
                                 } else {
-                                    uri = null;
                                     maxSize = double.NaN;
                                     expand = false;
-                                    cache = null;
-                                }
-                            }
-
-                            if (uri != null) {
-                                FrameworkElement image = new Image (cache) { ImageUrl = uri };
-                                // FrameworkElement image = new BetterImage { Filename = uri, AsyncDecode = false };
-
-                                if (toolTip) {
-                                    image.ToolTip = new ToolTip {
-                                        Content = new TextBlock { Text = token.Value }
-                                    };
                                 }
 
-                                if (double.IsNaN(maxSize)) {
-                                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
-                                } else {
-                                    if (Equals(maxSize, 0d)) {
-                                        image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
-                                            Path = new PropertyPath(nameof(TextBlock.FontSize)),
-                                            FallbackValue = 16d,
-                                            RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
-                                            Converter = new MultiplyConverter(),
-                                        });
-                                        image.Margin = new Thickness(1, -1, 1, -1);
-                                    } else {
-                                        image.MaxWidth = maxSize;
-                                        image.MaxHeight = maxSize;
-                                    }
-
-                                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-                                }
-
-                                if (expand) {
-                                    _imageUrls.Add(Tuple.Create(uri, toolTip ? token.Value : null));
-                                    image.Cursor = Cursors.Hand;
-                                    image.MouseDown += (sender, args) => {
-                                        args.Handled = true;
-                                        BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(uri, _imageUrls));
-                                    };
-                                }
-
-                                var container = new InlineUIContainer { Child = image, Tag = token.Value };
-                                parent.Inlines.Add(container);
-                                continue;
+                                cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
+                                        _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionImageCacheDirectory));
+                            } else {
+                                url = null;
+                                maxSize = double.NaN;
+                                expand = false;
+                                cache = null;
                             }
                         }
+
+                        if (url != null) {
+                            FrameworkElement image = new Image(cache) { ImageUrl = url };
+                            // FrameworkElement image = new BetterImage { Filename = uri, AsyncDecode = false };
+
+                            if (toolTip) {
+                                image.ToolTip = new ToolTip {
+                                    Content = new TextBlock { Text = token.Value }
+                                };
+                            }
+
+                            if (double.IsNaN(maxSize)) {
+                                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
+                            } else {
+                                if (Equals(maxSize, 0d)) {
+                                    image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
+                                        Path = new PropertyPath(nameof(TextBlock.FontSize)),
+                                        FallbackValue = 16d,
+                                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
+                                        Converter = new MultiplyConverter(),
+                                    });
+                                    image.Margin = new Thickness(1, -1, 1, -1);
+                                } else {
+                                    image.MaxWidth = maxSize;
+                                    image.MaxHeight = maxSize;
+                                }
+
+                                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+                            }
+
+                            if (expand) {
+                                _imageUrls.Add(Tuple.Create(url, toolTip ? token.Value : null));
+                                image.Cursor = Cursors.Hand;
+                                image.MouseDown += (sender, args) => {
+                                    args.Handled = true;
+                                    BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(url, _imageUrls));
+                                };
+                            }
+
+                            var container = new InlineUIContainer { Child = image, Tag = token.Value };
+                            parent.Inlines.Add(container);
+                            continue;
+                        }
+                    }
 
                         var run = context.CreateRun(token.Value);
                         parent.Inlines.Add(run);

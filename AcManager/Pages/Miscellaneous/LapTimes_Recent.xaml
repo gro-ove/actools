@@ -1,61 +1,64 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Recent" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/LapTimesSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    
-    <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource VirtualizingItemsControl}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
-                <Grid Height="60" x:Name="Grid" ContextMenu="{StaticResource BestLapWrappedContextMenu}" Background="Transparent">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="250" />
-                    </Grid.ColumnDefinitions>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/LapTimesSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-                    <mui:ReferenceSwitch Grid.Column="0" Grid.Row="0" Value="{Binding Car}" Margin="12 4 8 2">
-                        <mui:ReferenceSwitch.Null>
-                            <TextBlock Text="{Binding Entry.CarId, StringFormat='{}Car {0} is missing'}" Opacity="0.5" />
-                        </mui:ReferenceSwitch.Null>
-                        <mui:ReferenceSwitch.NonNull>
-                            <StackPanel Orientation="Horizontal">
-                                <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True" />
-                                <TextBlock Text="{Binding Car.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </mui:ReferenceSwitch.NonNull>
-                    </mui:ReferenceSwitch>
+  <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource VirtualizingItemsControl}">
+    <ItemsControl.ItemTemplate>
+      <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
+        <Grid Height="60" x:Name="Grid" ContextMenu="{StaticResource BestLapWrappedContextMenu}" Background="Transparent">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="250" />
+          </Grid.ColumnDefinitions>
 
-                    <mui:ReferenceSwitch Grid.Column="0" Grid.Row="1" Value="{Binding Track}" Margin="12 2 8 4">
-                        <mui:ReferenceSwitch.Null>
-                            <TextBlock Text="{Binding Entry.TrackId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" />
-                        </mui:ReferenceSwitch.Null>
-                        <mui:ReferenceSwitch.NonNull>
-                            <StackPanel Orientation="Horizontal">
-                                <mui:BetterImage Filename="{Binding Track.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True" />
-                                <TextBlock Text="{Binding Track.Name}" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </mui:ReferenceSwitch.NonNull>
-                    </mui:ReferenceSwitch>
+          <mui:ReferenceSwitch Grid.Column="0" Grid.Row="0" Value="{Binding Car}" Margin="12 4 8 2">
+            <mui:ReferenceSwitch.Null>
+              <TextBlock Text="{Binding Entry.CarId, StringFormat='{}Car {0} is missing'}" Opacity="0.5" />
+            </mui:ReferenceSwitch.Null>
+            <mui:ReferenceSwitch.NonNull>
+              <DockPanel c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" mui:Draggable.Data="{Binding Car}"
+                  Background="Transparent" c:ContextMenus.AdditionalItems="{StaticResource BestLapWrappedContextMenuItems}">
+                <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True" />
+                <TextBlock Text="{Binding Car.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
+              </DockPanel>
+            </mui:ReferenceSwitch.NonNull>
+          </mui:ReferenceSwitch>
 
-                    <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}"
-                            Style="{StaticResource Heading1}" VerticalAlignment="Center" Margin="0 0 0 8" />
-                    <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.EntryDate}" Style="{StaticResource Small}"
-                            VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="4" />
-                    <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.Source}" Style="{StaticResource Small}"
-                            VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" />
-                </Grid>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+          <mui:ReferenceSwitch Grid.Column="0" Grid.Row="1" Value="{Binding Track}" Margin="12 2 8 4">
+            <mui:ReferenceSwitch.Null>
+              <TextBlock Text="{Binding Entry.TrackId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" />
+            </mui:ReferenceSwitch.Null>
+            <mui:ReferenceSwitch.NonNull>
+              <DockPanel c:ToolTips.Track="{Binding Track}" c:ContextMenus.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}"
+                  Background="Transparent" c:ContextMenus.AdditionalItems="{StaticResource BestLapWrappedContextMenuItems}">
+                <mui:BetterImage Filename="{Binding Track.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True"
+                    CropTransparentAreas="True" Effect="{DynamicResource TrackOutlineAloneEffect}" />
+                <TextBlock Text="{Binding Track.Name}" VerticalAlignment="Center" />
+              </DockPanel>
+            </mui:ReferenceSwitch.NonNull>
+          </mui:ReferenceSwitch>
+
+          <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}"
+              Style="{StaticResource Heading1}" VerticalAlignment="Center" Margin="0 0 0 8" />
+          <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.EntryDate}" Style="{StaticResource Small}" VerticalAlignment="Bottom"
+              HorizontalAlignment="Right" Margin="4" />
+          <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.Source}" Style="{StaticResource Small}" VerticalAlignment="Top"
+              HorizontalAlignment="Right" Margin="4" />
+        </Grid>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
 </UserControl>

@@ -39,15 +39,16 @@ namespace AcManager.Controls.Services {
 
         private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (!(d is UIElement control)) return;
-            if (e.OldValue == null) {
-                control.MouseLeftButtonDown += Control_MouseDown;
-            } else if (e.NewValue == null) {
-                control.MouseLeftButtonDown -= Control_MouseDown;
+            control.MouseLeftButtonUp -= OnMouseUp;
+            if (e.NewValue != null) {
+                control.MouseLeftButtonUp += OnMouseUp;
             }
         }
 
-        private static void Control_MouseDown(object sender, MouseEventArgs e) {
+        private static void OnMouseUp(object sender, MouseEventArgs e) {
+            if (e.Handled) return;
             var d = (DependencyObject)sender;
+            e.Handled = true;
             new ImageViewer(GetImage(d), GetMaxWidth(d), GetMaxHeight(d)).ShowDialog();
         }
     }

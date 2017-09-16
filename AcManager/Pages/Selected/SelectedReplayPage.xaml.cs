@@ -8,7 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.UserControls;
 using AcManager.LargeFilesSharing;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
@@ -19,6 +21,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -437,6 +440,15 @@ namespace AcManager.Pages.Selected {
 
         private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeQuickDrivePresets();
+        }
+
+        private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
+            e.Handled = true;
+            new ImageViewer(
+                    _model.CarSkin.PreviewImage,
+                    CommonAcConsts.PreviewWidth,
+                    details: CarBlock.GetSkinImageViewerDetailsCallback(_model.Car)).ShowDialog();
         }
     }
 }

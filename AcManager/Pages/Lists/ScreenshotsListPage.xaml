@@ -28,7 +28,7 @@
       </ListBox.ItemsPanel>
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <mui:Cell Width="192" Height="108" PreviewMouseLeftButtonDown="OnItemClick" PreviewMouseRightButtonDown="OnRightButtonDown"
+          <mui:Cell Width="192" Height="108" PreviewMouseLeftButtonUp="OnItemClick" PreviewMouseRightButtonDown="OnRightButtonDown"
               PreviewMouseRightButtonUp="OnContextMenu">
             <mui:Cell.ToolTip>
               <c:PropertiesGrid LabelWidth="60" Columns="1">

@@ -59,7 +59,8 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(() => Model.AcObject.SelectedEvent?.GoCommand.Execute()), new KeyGesture(Key.G, ModifierKeys.Control))
+                new InputBinding(new DelegateCommand(() => Model.AcObject.SelectedEvent?.GoCommand.Execute()), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => KunosCareer.NavigateToCareerPage(null)), new KeyGesture(Key.W, ModifierKeys.Control)),
             });
 
             var acObject = Model.AcObject;
@@ -132,7 +133,7 @@ namespace AcManager.Pages.Drive {
             private KunosCareerObject _acObject;
 
             public KunosCareerObject AcObject {
-                get { return _acObject; }
+                get => _acObject;
                 set {
                     if (Equals(value, _acObject)) return;
                     _acObject = value;
@@ -175,7 +176,7 @@ namespace AcManager.Pages.Drive {
             Model.AcObject.ChampionshipResetCommand.Execute();
         }
 
-        private void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
             var ev = Model.AcObject.SelectedEvent;
             if (ev == null) return;
 
@@ -204,7 +205,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private async void ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+        private async void OnChangeSkinMenuItemClick(object sender, MouseButtonEventArgs e) {
             var ev = Model.AcObject.SelectedEvent;
             if (ev == null) return;
 
@@ -226,8 +227,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var ev = ListBox.SelectedItem as KunosCareerEventObject;
-            if (ev == null) return;
+            if (!(ListBox.SelectedItem is KunosCareerEventObject ev)) return;
             FancyBackgroundManager.Instance.ChangeBackground(ev.TrackObject?.PreviewImage ?? ev.PreviewImage);
         }
     }

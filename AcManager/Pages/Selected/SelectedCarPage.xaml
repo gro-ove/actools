@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
+    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseUp="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
@@ -115,7 +115,7 @@
                 <!-- preview of selected skin -->
                 <mui:Cell>
                     <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
-                            PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
+                            PreviewMouseLeftButtonUp="OnPreviewClick" PreviewMouseRightButtonUp="OnPreviewContextMenu" MinHeight="160"
                             MaxHeight="575" MaxWidth="1022"
                             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
                     <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Width="64" Height="64" MouseDown="UpgradeIcon_MouseDown"
@@ -138,7 +138,7 @@
                         <DataTemplate DataType="{x:Type t:AcItemWrapper}">
                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
-                                    ClearOnChange="True" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" />
+                                    ClearOnChange="True" PreviewMouseRightButtonUp="OnPreviewContextMenu" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

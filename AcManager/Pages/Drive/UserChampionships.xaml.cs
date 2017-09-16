@@ -18,6 +18,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Drive {
@@ -72,7 +73,7 @@ namespace AcManager.Pages.Drive {
             ValuesStorage.Set(KeyScrollValue, _scroll.HorizontalOffset);
         }
 
-        public static void NavigateToChampionshipPage(UserChampionshipObject championship) {
+        public static void NavigateToChampionshipPage([CanBeNull] UserChampionshipObject championship) {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
@@ -144,7 +145,7 @@ namespace AcManager.Pages.Drive {
                 if (CurrentItem == null) return;
                 CurrentItem.Loaded();
                 _selectSeriesCommand?.RaiseCanExecuteChanged();
-                
+
                 FancyBackgroundManager.Instance.ChangeBackground((CurrentItem.Value as UserChampionshipObject)?.PreviewImage);
             }
 

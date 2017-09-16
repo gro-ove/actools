@@ -672,7 +672,7 @@ namespace AcManager.Controls {
 
         private void SetTrackTooltip() {
             if (_trackTooltipSet) return;
-            _trackNameText.ToolTip = FindResource(@"TrackPreviewTooltip");
+            _trackNameText.ToolTip = FindResource(@"TrackPreviewTooltip.Online");
             _trackTooltipSet = true;
         }
 
@@ -702,7 +702,7 @@ namespace AcManager.Controls {
         private void SetCarsTooltips() {
             if (_carsTooltipsSet) return;
 
-            var toolTip = FindResource(@"CarPreviewTooltip");
+            var toolTip = FindResource(@"CarPreviewTooltip.Online");
             foreach (var item in _carsPanel.Children.Cast<TextBlock>()) {
                 item.ToolTip = toolTip;
             }

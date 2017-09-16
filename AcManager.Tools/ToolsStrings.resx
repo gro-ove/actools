@@ -519,7 +519,7 @@
     <value>Sorry, but {0} encryption isn’t supported</value>
   </data>
   <data name="Installator_UpdateEverything" xml:space="preserve">
-    <value>Update Everytything</value>
+    <value>Update Everything</value>
   </data>
   <data name="Installator_RemoveExistingFirst" xml:space="preserve">
     <value>Remove Existing First</value>

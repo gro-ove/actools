@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Linq;
 using AcTools.Utils.Helpers;
@@ -12,6 +13,9 @@ namespace AcTools.Render.Kn5SpecificForward {
         public readonly bool UseInput;
 
         public readonly Color? Color;
+
+        [CanBeNull]
+        public readonly Func<Color?> ColorRef;
 
         [CanBeNull]
         public readonly string Name;
@@ -54,6 +58,10 @@ namespace AcTools.Render.Kn5SpecificForward {
             Color = baseColor;
         }
 
+        public PaintShopSource([NotNull] Func<Color?> colorRef) {
+            ColorRef = colorRef;
+        }
+
         public PaintShopSource([NotNull] string name) {
             Name = name;
         }
@@ -82,7 +90,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public override int GetHashCode() {
             unchecked {
-                var hashCode = UseInput ? -1 : Color?.GetHashCode() ?? Name?.GetHashCode() ?? Data?.GetHashCode() ?? 0;
+                var hashCode = UseInput ? -1 : Color?.GetHashCode() ?? ColorRef?.GetHashCode() ?? Name?.GetHashCode() ?? Data?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ Desaturate.GetHashCode();
                 hashCode = (hashCode * 397) ^ NormalizeMax.GetHashCode();
                 hashCode = (hashCode * 397) ^ (RedChannelSource?.GetHashCode() ?? 0);
@@ -100,6 +108,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public override string ToString() {
             if (UseInput) return "( PaintShopSource: use input )";
             if (Color != null) return $"( PaintShopSource: color={Color.Value} )";
+            if (ColorRef != null) return $"( PaintShopSource: color ref={ColorRef.Invoke()} )";
             if (Name != null) return $"( PaintShopSource: name={Name} )";
             if (Data != null) return $"( PaintShopSource: {Data} bytes )";
 

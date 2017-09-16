@@ -3,7 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance dr:UserChampionships_SelectedPage+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    d:DataContext="{d:DesignInstance dr:UserChampionships_SelectedPage+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -351,26 +352,23 @@
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
         <mui:SpacingStackPanel Spacing="8">
-          <mui:Cell>
-            <mui:BetterImage Filename="{Binding UserPlayerCarSkin.PreviewImage}" Width="240"
-                PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
-              <mui:BetterImage.ContextMenu>
-                <ContextMenu>
-                  <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
-                      IsEnabled="{Binding Source={x:Static t:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
-                      PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
-                </ContextMenu>
-              </mui:BetterImage.ContextMenu>
-              <mui:BetterImage.ToolTip>
-                <StackPanel Margin="4 8">
-                  <TextBlock Style="{StaticResource Heading2}" Text="{Binding PlayerCar.DisplayName}" Margin="0 0 0 4" />
-                  <c:CarBlock Car="{Binding PlayerCar}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding UserPlayerCarSkin}" Width="512"
-                      MaxHeight="320" />
-                </StackPanel>
-              </mui:BetterImage.ToolTip>
-            </mui:BetterImage>
-            <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding PlayerCar.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+          <mui:Cell c:ContextMenus.Car="{Binding PlayerCar}" c:ContextMenus.CarSkin="{Binding PlayerCarSkin}" c:ToolTips.Car="{Binding PlayerCar}"
+              mui:Draggable.Data="{Binding PlayerCar}" MouseLeftButtonUp="OnCarPreviewClick">
+            <c:ContextMenus.AdditionalItems>
+              <c:ContextMenusItems>
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
+                    IsEnabled="{Binding Source={x:Static t:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
+                    PreviewMouseLeftButtonUp="OnChangeSkinMenuItemClick" />
+              </c:ContextMenusItems>
+            </c:ContextMenus.AdditionalItems>
+
+            <mui:BetterImage Filename="{Binding UserPlayerCarSkin.PreviewImage}" Width="240" />
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+              <mui:BetterImage Filename="{Binding PlayerCar.BrandBadge}" Width="16" Height="16" Margin="4 4 0 4"
+                  Visibility="{Binding PlayerCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+              <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+              <TextBlock Text="{Binding PlayerCar.DisplayName}" Padding="4" />
+            </DockPanel>
           </mui:Cell>
 
           <ListBox ItemsSource="{Binding PlayerCar.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
@@ -390,18 +388,15 @@
             </ListBox.ItemsPanel>
           </ListBox>
 
-          <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding CurrentRound}">
+          <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding CurrentRound}"
+              c:ContextMenus.Track="{Binding Track}" c:ToolTips.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}">
             <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
             <mui:BetterImage Filename="{Binding Track.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
                 HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
-            <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding Track.LayoutName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
-            <mui:Cell.ToolTip>
-              <StackPanel Margin="4 8">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
-                <c:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
-              </StackPanel>
-            </mui:Cell.ToolTip>
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+              <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+              <TextBlock Text="{Binding Track.Name}" Padding="4" />
+            </DockPanel>
           </mui:Cell>
         </mui:SpacingStackPanel>
       </ScrollViewer>

@@ -21,13 +21,17 @@ using SlimDX.DXGI;
 using Factory = SlimDX.DirectWrite.Factory;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    internal class SourceReady {
+    internal class SourceReady : IDisposable {
         public readonly ShaderResourceView View;
         public readonly Vector4 ChannelsAssignments;
 
         public SourceReady(ShaderResourceView view, Vector4 channels) {
             View = view;
             ChannelsAssignments = channels;
+        }
+
+        public void Dispose() {
+            View?.Dispose();
         }
     }
 
@@ -83,9 +87,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _paintShopTextures = new Dictionary<string, TargetResourceTexture>(10);
             }
 
-            TargetResourceTexture tex;
             if (textureName == null) textureName = "";
-            if (!_paintShopTextures.TryGetValue(textureName, out tex)) {
+            if (!_paintShopTextures.TryGetValue(textureName, out var tex)) {
                 tex = _paintShopTextures[textureName] = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             }
 
@@ -136,6 +139,14 @@ namespace AcTools.Render.Kn5SpecificForward {
                         return stream.ToArray();
                     }
                 }
+
+                if (source.ColorRef != null) {
+                    using (var texture = DeviceContextHolder.CreateTexture(1, 1, (x, y) => source.ColorRef() ?? Color.Black))
+                    using (var stream = new MemoryStream()) {
+                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Dds, stream);
+                        return stream.ToArray();
+                    }
+                }
             }
 
             AcToolsLogging.Write("Can’t get bytes: " + source);
@@ -146,8 +157,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private Dictionary<int, Size> _sizes;
 
         private Size? GetSize([NotNull] PaintShopSource source) {
-            Size result;
-            return _sizes.TryGetValue(source.GetHashCode(), out result) ? (Size?)result : null;
+            return _sizes.TryGetValue(source.GetHashCode(), out var result) ? (Size?)result : null;
         }
 
         private ShaderResourceView Prepare(ShaderResourceView original, Func<ShaderResourceView, ShaderResourceView> preparation = null) {
@@ -187,6 +197,10 @@ namespace AcTools.Render.Kn5SpecificForward {
                     baseSize.Value.Width * baseSize.Value.Height ? additionalSize.Value : baseSize;
         }
 
+        /*public string GetPaintShopCacheSizes() {
+            return _
+        }*/
+
         [CanBeNull]
         private SourceReady GetOriginal(ref Dictionary<int, ShaderResourceView> storage, [NotNull] PaintShopSource source, int maxSize,
                 Func<ShaderResourceView, ShaderResourceView> preparation = null) {
@@ -200,10 +214,9 @@ namespace AcTools.Render.Kn5SpecificForward {
                     }
                 }
 
-                ShaderResourceView original;
                 var sourceHashCode = source.GetHashCode();
                 var hashCode = (sourceHashCode * 397) ^ maxSize.GetHashCode();
-                if (!storage.TryGetValue(hashCode, out original)) {
+                if (!storage.TryGetValue(hashCode, out var original)) {
                     Size size;
 
                     if (source.ByChannels) {

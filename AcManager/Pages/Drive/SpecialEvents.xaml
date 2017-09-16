@@ -246,32 +246,26 @@
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
         <mui:SpacingStackPanel Spacing="8" Width="240">
-          <mui:Cell>
-            <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="240">
-              <FrameworkElement.ToolTip>
-                <StackPanel Margin="4 8">
-                  <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
-                  <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
-                      MaxHeight="320" />
-                </StackPanel>
-              </FrameworkElement.ToolTip>
-            </mui:BetterImage>
-            <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding CarObject.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+          <mui:Cell c:ContextMenus.Car="{Binding CarObject}" c:ContextMenus.CarSkin="{Binding CarSkin}" c:ToolTips.Car="{Binding CarObject}"
+              mui:Draggable.Data="{Binding CarObject}" MouseLeftButtonUp="OnCarPreviewClick">
+            <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="240" />
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+              <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" Margin="4 4 0 4"
+                  Visibility="{Binding CarObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+              <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+              <TextBlock Text="{Binding CarObject.DisplayName}" Padding="4" />
+            </DockPanel>
           </mui:Cell>
 
-          <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
+          <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top" c:ContextMenus.Track="{Binding TrackObject}"
+              c:ToolTips.Track="{Binding TrackObject}" mui:Draggable.Data="{Binding TrackObject}">
             <mui:BetterImage Filename="{Binding TrackObject.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
             <mui:BetterImage Filename="{Binding TrackObject.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
                 HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
-            <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding TrackObject.LayoutName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
-            <FrameworkElement.ToolTip>
-              <StackPanel Margin="4 8">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding TrackObject.DisplayName}" Margin="0 0 0 4" />
-                <c:TrackBlock Track="{Binding TrackObject}" Width="512" MaxHeight="320" />
-              </StackPanel>
-            </FrameworkElement.ToolTip>
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
+              <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
+              <TextBlock Text="{Binding TrackObject.Name}" Padding="4" />
+            </DockPanel>
           </mui:Cell>
         </mui:SpacingStackPanel>
       </ScrollViewer>
@@ -307,7 +301,10 @@
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
           <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" />
-            <c:BestLapsList CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}" VerticalAlignment="Top" />
+            <c:BestLapsList x:Name="BestLapBlock" CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}" VerticalAlignment="Top"
+                Margin="0 16 0 0" />
+            <TextBlock Text="Best lap on this track:" Style="{StaticResource Label}" />
+            <c:BestLapsList TrackId="{Binding Selected.TrackObject.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
           </mui:SpacingStackPanel>
         </ScrollViewer>
 

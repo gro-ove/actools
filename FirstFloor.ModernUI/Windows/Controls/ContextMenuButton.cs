@@ -26,6 +26,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(ContextMenuButton);
         }
 
+        public static readonly DependencyProperty LookForParentMenuProperty = DependencyProperty.Register(nameof(LookForParentMenu), typeof(bool),
+                typeof(ContextMenuButton), new PropertyMetadata(false, (o, e) => {
+                    ((ContextMenuButton)o)._lookForParentMenu = (bool)e.NewValue;
+                }));
+
+        private bool _lookForParentMenu;
+
+        public bool LookForParentMenu {
+            get => _lookForParentMenu;
+            set => SetValue(LookForParentMenuProperty, value);
+        }
+
         public event EventHandler<ContextMenuButtonEventArgs> Click;
 
         private bool Open(bool near) {
@@ -33,10 +45,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Click?.Invoke(this, args);
             if (args.Handled) return true;
 
-            var menu = args.Menu ?? Menu;
+            var menu = args.Menu ?? Menu ?? (LookForParentMenu ?
+                    this.GetParents().OfType<FrameworkElement>().Select(x => x.ContextMenu).FirstOrDefault(x => x != null) : null);
 
-            if (args.Menu != null && (menu as FrameworkElement)?.DataContext == null) {
-                ((FrameworkElement)menu).SetBinding(DataContextProperty, new Binding {
+            if (args.Menu != null && (args.Menu as FrameworkElement)?.DataContext == null) {
+                ((FrameworkElement)args.Menu).SetBinding(DataContextProperty, new Binding {
                     Source = this,
                     Path = new PropertyPath(nameof(DataContext))
                 });
@@ -46,8 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 near = ForceNear.Value;
             }
 
-            var popup = menu as Popup;
-            if (popup != null) {
+            if (menu is Popup popup) {
                 if (popup.IsOpen) {
                     popup.IsOpen = false;
                 } else {
@@ -59,8 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return true;
             }
 
-            var contextMenu = menu as ContextMenu;
-            if (contextMenu != null) {
+            if (menu is ContextMenu contextMenu) {
                 contextMenu.Placement = near ? PlacementMode.Bottom : PlacementMode.MousePoint;
                 contextMenu.PlacementTarget = near ? this : null;
                 contextMenu.IsOpen = true;
@@ -105,6 +116,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public override void OnApplyTemplate() {
             if (_button != null) {
+                _button.PreviewMouseLeftButtonDown -= OnMouseDown;
                 _button.PreviewMouseLeftButtonUp -= OnButtonClick;
                 _button.MouseRightButtonUp -= OnButtonDown;
             }
@@ -113,9 +125,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             _button = GetTemplateChild(@"PART_Button") as FrameworkElement;
             if (_button != null) {
+                _button.PreviewMouseLeftButtonDown += OnMouseDown;
                 _button.PreviewMouseLeftButtonUp += OnButtonClick;
                 _button.MouseRightButtonUp += OnButtonDown;
             }
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
         }
 
         private void OnButtonDown(object sender, MouseButtonEventArgs e) {
@@ -145,8 +162,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
-            var fe = oldParent as FrameworkElement;
-            if (fe != null) {
+            if (oldParent is FrameworkElement fe) {
                 fe.PreviewMouseRightButtonUp -= OnContextMenuPreviewClick;
                 fe.MouseRightButtonUp -= OnContextMenuClick;
             }
@@ -165,8 +181,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnContextMenuPreviewClick(object sender, MouseButtonEventArgs e) {
-            var menu = Menu as ContextMenu;
-            if (menu != null) {
+            if (Menu is ContextMenu menu) {
                 ContextMenuAdvancement.Add(this, menu);
             }
         }

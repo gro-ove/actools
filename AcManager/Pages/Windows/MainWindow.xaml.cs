@@ -192,11 +192,6 @@ namespace AcManager.Pages.Windows {
             UpdateOnlineSourcesLinks();
         }
 
-        private static async void HandleMessagesAsync(IEnumerable<string> data) {
-            await Task.Delay(1);
-            await ArgumentsHandler.ProcessArguments(data, TimeSpan.FromMilliseconds(1));
-        }
-
         private void OnOnlineSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging):
@@ -396,8 +391,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateThemeDynamicBackground() {
-            var value = AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackground"] as string;
-            if (value != null) {
+            if (AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackground"] is string value) {
                 value = FileUtils.GetFullPath(value, () => FilesStorage.Instance.GetDirectory());
                 ApplyDynamicBackground(value, AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackgroundOpacity"] as double? ?? 0.5);
             } else {
@@ -409,7 +403,7 @@ namespace AcManager.Pages.Windows {
             UpdateThemeDynamicBackground();
             AppearanceManager.Current.PropertyChanged += (sender, args) => {
                 if (args.PropertyName == nameof(AppearanceManager.CurrentThemeDictionary)) {
-                    ActionExtension.InvokeInMainThreadAsync((Action)UpdateThemeDynamicBackground);
+                    ((Action)UpdateThemeDynamicBackground).InvokeInMainThreadAsync();
                 }
             };
         }
@@ -530,13 +524,11 @@ namespace AcManager.Pages.Windows {
         }
 
         private void ToggleQuickSwitches(bool force = true) {
-            Logging.Debug(QuickSwitchesBlock.GetIsActive(Popup));
             if (QuickSwitchesBlock.GetIsActive(Popup)) {
                 QuickSwitchesBlock.SetIsActive(Popup, false);
             } else if (force || _openOnNext) {
                 InitializePopup();
                 QuickSwitchesBlock.SetIsActive(Popup, true);
-                Logging.Debug(QuickSwitchesBlock.GetIsActive(Popup));
                 Popup.Focus();
             }
         }
@@ -588,22 +580,19 @@ namespace AcManager.Pages.Windows {
 
                     QuickSwitchesNotification.SetValue(TextBlock.ForegroundProperty, child.GetValue(TextBlock.ForegroundProperty));
 
-                    var toggle = child as ModernToggleButton;
-                    if (toggle != null) {
+                    if (child is ModernToggleButton toggle) {
                         toggle.IsChecked = !toggle.IsChecked;
                         ShowQuickSwitchesPopup(toggle.IconData, $@"{toggle.Content}: {toggle.IsChecked.ToReadableBoolean()}", child.ToolTip);
                         break;
                     }
 
-                    var button = child as ModernButton;
-                    if (button != null) {
+                    if (child is ModernButton button) {
                         button.Command?.Execute(null);
                         ShowQuickSwitchesPopup(button.IconData, button.Content?.ToString(), child.ToolTip);
                         break;
                     }
 
-                    var presets = child as QuickSwitchPresetsControl;
-                    if (presets != null) {
+                    if (child is QuickSwitchPresetsControl presets) {
                         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
                             presets.SwitchToPrevious();
                         } else {
@@ -613,8 +602,7 @@ namespace AcManager.Pages.Windows {
                         break;
                     }
 
-                    var combo = child as QuickSwitchComboBox;
-                    if (combo != null && combo.Items.Count > 1) {
+                    if (child is QuickSwitchComboBox combo && combo.Items.Count > 1) {
                         var index = combo.SelectedIndex;
                         combo.SelectedItem = combo.Items[(index + (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1) +
                                 combo.Items.Count) % combo.Items.Count];
@@ -622,8 +610,7 @@ namespace AcManager.Pages.Windows {
                         break;
                     }
 
-                    var slider = child as QuickSwitchSlider;
-                    if (slider != null) {
+                    if (child is QuickSwitchSlider slider) {
                         var step = (slider.Maximum - slider.Minimum) / 6d;
                         var position = (((slider.Value - slider.Minimum) / step - 1).Clamp(0, 4).Round(1d) +
                                 (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1) + 5) % 5;
@@ -632,8 +619,7 @@ namespace AcManager.Pages.Windows {
                     }
 
                     // special case for controls presets
-                    var dock = child as DockPanel;
-                    if (dock != null) {
+                    if (child is DockPanel dock) {
                         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
                             ControlsPresets.Instance.SwitchToPrevious();
                         } else {
@@ -684,16 +670,13 @@ namespace AcManager.Pages.Windows {
         public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
 
         private void OnContentTitleLinkDrop(object sender, DragEventArgs e) {
-            var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
-            if (trackObject != null) {
+            if (e.Data.GetData(TrackObjectBase.DraggableFormat) is TrackObjectBase trackObject) {
                 TracksListPage.Show(trackObject);
             } else {
-                var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
-                if (raceGridEntry != null) {
+                if (e.Data.GetData(RaceGridEntry.DraggableFormat) is RaceGridEntry raceGridEntry) {
                     CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
                 } else {
-                    var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
-                    if (carObject != null) {
+                    if (e.Data.GetData(CarObject.DraggableFormat) is CarObject carObject) {
                         CarsListPage.Show(carObject);
                     } else {
                         e.Effects = DragDropEffects.None;

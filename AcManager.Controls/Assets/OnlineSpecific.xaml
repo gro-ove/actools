@@ -85,7 +85,7 @@
   </InlineUIContainer>
 
   <!-- Car & track previews -->
-  <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
+  <ToolTip x:Key="CarPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
     <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
       <mui:BooleanSwitch.True>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
@@ -106,7 +106,7 @@
     </mui:BooleanSwitch>
   </ToolTip>
 
-  <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}">
+  <ToolTip x:Key="TrackPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry}">
     <mui:ReferenceSwitch Value="{Binding Track}" Margin="4">
       <mui:ReferenceSwitch.NonNull>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
@@ -169,8 +169,9 @@
 
   <!-- Car block -->
   <DataTemplate x:Key="CarItem" DataType="{x:Type t:ServerEntry+CarEntry}">
-    <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center" ToolTip="{StaticResource CarPreviewTooltip}"
-        Style="{StaticResource Small}" Margin="4 0" Height="20" Padding="2" Background="{DynamicResource ButtonBackground}" />
+    <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center"
+        ToolTip="{StaticResource CarPreviewTooltip.Online}" Style="{StaticResource Small}" Margin="4 0" Height="20" Padding="2"
+        Background="{DynamicResource ButtonBackground}" />
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding CarExists}" Value="False">
         <Setter TargetName="TextBlock" Property="Text" Value="{Binding Id}" />

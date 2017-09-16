@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Presentation;
@@ -9,7 +10,7 @@ namespace AcManager.Controls.Dialogs {
     public partial class VideoViewer {
         public VideoViewer([NotNull] string filename, string title = null) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            
+
             Title = title ?? Path.GetFileName(filename);
             DataContext = new ViewModel(filename);
             InitializeComponent();
@@ -24,28 +25,29 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        private void VideoViewer_OnClosed(object sender, EventArgs e) {
+        private void OnClosed(object sender, EventArgs e) {
             Player.Dispose();
         }
 
-        private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
                 Close();
             }
         }
 
-        private void ImageViewer_OnKeyUp(object sender, KeyEventArgs e) {
+        private void OnKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack ||
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 Close();
             }
         }
 
-        private void CloseButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnCloseButtonClick(object sender, RoutedEventArgs routedEventArgs) {
             Close();
         }
 
-        private void Player_OnEnded(object sender, EventArgs e) {
+        private void OnEnded(object sender, EventArgs e) {
             Close();
         }
     }

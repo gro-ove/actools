@@ -689,7 +689,6 @@ namespace AcManager.Pages.Selected {
         private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2) {
                 e.Handled = true;
-
                 if (SettingsHolder.CustomShowroom.CustomShowroomInstead) {
                     CustomShowroomWrapper.StartAsync(_model.SelectedObject, _model.SelectedObject.SelectedSkin);
                 } else {
@@ -697,7 +696,6 @@ namespace AcManager.Pages.Selected {
                 }
             } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-
                 var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
                 new ImageViewer(
                         from skin in skins select skin.PreviewImage,
@@ -707,9 +705,8 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void OnSkinRightClick(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewRightClick(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
-
             var context = ((FrameworkElement)sender).DataContext;
             var wrapper = context as AcItemWrapper;
             OpenSkinContextMenu((wrapper?.Value ?? context) as CarSkinObject);

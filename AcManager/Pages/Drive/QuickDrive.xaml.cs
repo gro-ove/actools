@@ -180,8 +180,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnModeTabNavigated(object sender, NavigationEventArgs e) {
-            var c = ModeTab.Frame.Content as IQuickDriveModeControl;
-            if (c != null) {
+            if (ModeTab.Frame.Content is IQuickDriveModeControl c) {
                 c.Model = Model.SelectedModeViewModel;
             }
 
@@ -862,8 +861,15 @@ namespace AcManager.Pages.Drive {
             NavigateToPage();
         }
 
+        private static readonly Uri QuickDriveUri = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative);
+
         public static void NavigateToPage() {
-            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
+            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(QuickDriveUri);
+        }
+
+        public static bool IsActive() {
+            Logging.Debug((Application.Current?.MainWindow as MainWindow)?.CurrentSource);
+            return (Application.Current?.MainWindow as MainWindow)?.CurrentSource == QuickDriveUri;
         }
 
         private static string _selectNextSerializedPreset;
@@ -883,8 +889,7 @@ namespace AcManager.Pages.Drive {
                 Uri mode = null, string serializedRaceGrid = null) {
             var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);
 
-            QuickDrive current;
-            if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
+            if (_current != null && _current.TryGetTarget(out var current) && current.IsLoaded) {
                 var vm = current.Model;
                 vm.SelectedCar = car ?? vm.SelectedCar;
                 if (vm.SelectedCar != null && carSkinId != null) {
@@ -898,21 +903,20 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            var mainWindow = Application.Current?.MainWindow as MainWindow;
-            if (mainWindow == null) return;
+            if (Application.Current?.MainWindow is MainWindow) {
+                _selectNextSerializedPreset = serializedPreset ?? (presetFilename != null ? File.ReadAllText(presetFilename) : null);
+                _selectNextCar = car;
+                _selectNextCarSkinId = carSkinId;
+                // TODO: carSetupId?
 
-            _selectNextSerializedPreset = serializedPreset ?? (presetFilename != null ? File.ReadAllText(presetFilename) : null);
-            _selectNextCar = car;
-            _selectNextCarSkinId = carSkinId;
-            // TODO: carSetupId?
+                _selectNextTrack = track;
+                _selectNextTrackSkin = trackSkin;
+                _selectNextWeather = weather;
+                _selectNextMode = mode;
+                _selectNextSerializedRaceGrid = serializedRaceGrid;
 
-            _selectNextTrack = track;
-            _selectNextTrackSkin = trackSkin;
-            _selectNextWeather = weather;
-            _selectNextMode = mode;
-            _selectNextSerializedRaceGrid = serializedRaceGrid;
-
-            NavigateToPage();
+                NavigateToPage();
+            }
         }
 
         public static async Task<bool> RunAsync(
@@ -949,16 +953,13 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnTrackBlockDrop(object sender, DragEventArgs e) {
-            var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
-
-            if (trackObject == null) {
+            if (e.Data.GetData(TrackObjectBase.DraggableFormat) is TrackObjectBase trackObject) {
+                Model.SelectedTrack = trackObject;
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+            } else {
                 e.Effects = DragDropEffects.None;
-                return;
             }
-
-            Model.SelectedTrack = trackObject;
-            e.Effects = DragDropEffects.Copy;
-            e.Handled = true;
         }
 
         private void OnCarContextMenu(object sender, ContextMenuButtonEventArgs e) {
@@ -970,22 +971,8 @@ namespace AcManager.Pages.Drive {
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
                     .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
-                    .AddSeparator()
-                    .AddItem("Manage setups", () => {
-                        CarSetupsListPage.Open(selectedCar);
-                    })
-                    .AddItem("Manage skins", () => {
-                        CarSkinsListPage.Open(selectedCar);
-                    })
                     .AddSeparator();
-            CarBlock.OnShowroomContextMenu(menu, selectedCar, selectedCar.SelectedSkin);
-            menu.AddSeparator()
-                .AddItem("Open car in Content tab", () => {
-                    CarsListPage.Show(selectedCar, selectedCar.SelectedSkin?.Id);
-                })
-                .AddItem(AppStrings.Toolbar_Folder, () => {
-                    selectedCar.ViewInExplorer();
-                });
+            ContextMenus.ContextMenusProvider.SetCarObjectMenu(menu, selectedCar, null);
             e.Menu = menu;
         }
 
@@ -993,37 +980,9 @@ namespace AcManager.Pages.Drive {
             var menu = new ContextMenu()
                     .AddItem("Change track", Model.ChangeTrackCommand)
                     .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
-                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
-
-            var track = Model.SelectedTrack.MainTrackObject;
-            track.SkinsManager.EnsureLoaded();
-            if (track.EnabledOnlySkins.Count > 0) {
-                menu.AddSeparator();
-                foreach (var skinObject in track.EnabledOnlySkins) {
-                    var item = new MenuItem {
-                        Header = skinObject.DisplayName.ToTitle(),
-                        IsCheckable = true,
-                        StaysOpenOnClick = true,
-                        ToolTip = skinObject.Description
-                    };
-
-                    item.SetBinding(MenuItem.IsCheckedProperty, new Binding {
-                        Path = new PropertyPath(nameof(skinObject.IsActive)),
-                        Source = skinObject
-                    });
-
-                    menu.Items.Add(item);
-                }
-            }
-
-            menu.AddSeparator()
-                    .AddItem("Open track in Content tab", () => {
-                        TracksListPage.Show(Model.SelectedTrack);
-                    }, isEnabled: AppKeyHolder.IsAllRight)
-                    .AddItem(AppStrings.Toolbar_Folder, () => {
-                        Model.SelectedTrack.ViewInExplorer();
-                    });
-
+                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddSeparator();
+            ContextMenus.ContextMenusProvider.SetTrackObjectMenu(menu, Model.SelectedTrack);
             e.Menu = menu;
         }
 
@@ -1070,6 +1029,30 @@ namespace AcManager.Pages.Drive {
             var selectedCar = Model.SelectedCar;
             if (selectedCar == null) return;
             CarBlock.OnShowroomContextMenu(Model.SelectedCar, selectedCar.SelectedSkin);
+        }
+
+        public static DelegateCommand<AcObjectNew> OpenInQuickDrive { get; }
+
+        static QuickDrive() {
+            OpenInQuickDrive = new DelegateCommand<AcObjectNew>(o => {
+                switch (o) {
+                    case CarObject car:
+                        Show(car);
+                        break;
+                    case CarSkinObject skin:
+                        Show(CarsManager.Instance.GetById(skin.CarId), skin.Id);
+                        break;
+                    case TrackObjectBase track:
+                        Show(track: track);
+                        break;
+                    case TrackSkinObject skin:
+                        Show(track: TracksManager.Instance.GetById(skin.TrackId), trackSkin: skin);
+                        break;
+                    case WeatherObject weather:
+                        Show(weatherId: weather.Id);
+                        break;
+                }
+            });
         }
     }
 }

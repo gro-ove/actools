@@ -38,8 +38,11 @@ namespace AcManager.Tools.Managers.Online {
             TracksManager.Instance.WrappersList.CollectionReady += OnTracksListCollectionReady;
             TracksManager.Instance.WrappersList.ItemPropertyChanged += OnTrackPropertyChanged;
             WeatherManager.Instance.WrappersList.CollectionReady += OnWeatherListCollectionReady;
-            IndexDirectDownloader.AvailableIdsLoaded += OnAvailableIdsLoaded;
-            IndexDirectDownloader.LoadAvailableIdsAsync();
+
+            if (SettingsHolder.Online.SearchForMissingContent) {
+                IndexDirectDownloader.AvailableIdsLoaded += OnAvailableIdsLoaded;
+                IndexDirectDownloader.LoadAvailableIdsAsync();
+            }
         }
 
         private void OnAvailableIdsLoaded(object sender, EventArgs eventArgs) {

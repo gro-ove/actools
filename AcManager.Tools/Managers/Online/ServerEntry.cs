@@ -45,7 +45,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public string ActualName {
-            get { return _actualName; }
+            get => _actualName;
             set {
                 if (Equals(value, _actualName)) return;
                 _actualName = value;
@@ -215,7 +215,7 @@ namespace AcManager.Tools.Managers.Online {
         private DateTime _previousUpdateTime;
 
         public DateTime PreviousUpdateTime {
-            get { return _previousUpdateTime; }
+            get => _previousUpdateTime;
             private set {
                 if (Equals(value, _previousUpdateTime)) return;
                 _previousUpdateTime = value;
@@ -237,7 +237,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _fixedCar;
 
         public bool FixedCar {
-            get { return _fixedCar; }
+            get => _fixedCar;
             set {
                 if (Equals(value, _fixedCar)) return;
                 _fixedCar = value;
@@ -249,7 +249,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public CarEntry SelectedCarEntry {
-            get { return _selectedCarEntry; }
+            get => _selectedCarEntry;
             set {
                 if (FixedCar) return;
                 if (SetSelectedCarEntry(value)) {
