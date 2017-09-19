@@ -83,7 +83,7 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
  - I recommend to switch to x86 (or, if you need, x64) platform. As far as I can see, most libraries (such as SlimDX, Magick.NET or Awesomium) won’t work with AnyCPU.
 
- - Take AcTools.Internal from [the unpacked version](https://trello.com/c/w5xT6ssZ/49-contacts) (or make your own compatible version, it mostly contains different API codes, addresses and salts for testing checksums).
+ - Take AcTools.Internal from [the unpacked version](https://trello.com/c/JoXMYzwx/47-about-avs) (or make your own compatible version, it mostly contains different API codes, addresses and salts for testing checksums).
 
  - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included.
 
