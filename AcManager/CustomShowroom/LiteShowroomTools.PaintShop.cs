@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.PaintShop;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -147,20 +148,24 @@ namespace AcManager.CustomShowroom {
                     }
 
                     SetSkinNumber();
+                    SetSkinFlag();
                 }
             }
 
             private void OnSkinItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
-                    case nameof(IPaintableNumberItem.IsNumberActive):
+                    case nameof(IPaintablePersonalItem.IsNumberActive):
                         SetSkinNumber();
+                        break;
+                    case nameof(IPaintablePersonalItem.IsFlagActive):
+                        SetSkinFlag();
                         break;
                     case nameof(PaintableItem.Enabled):
                         var item = (PaintableItem)sender;
                         if (!item.Enabled) break;
 
                         foreach (var next in _skinItems) {
-                            if (!ReferenceEquals(next, item) && next.Enabled && item.AffectedTextures.Any(next.AffectedTextures.Contains)) {
+                            if (!ReferenceEquals(next, item) && next.Enabled && item.GetAffectedTextures().Any(next.GetAffectedTextures().Contains)) {
                                 next.Enabled = false;
                             }
                         }
@@ -286,6 +291,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            #region Skin numbers
             private bool _hasNumbers;
 
             public bool HasNumbers {
@@ -315,7 +321,7 @@ namespace AcManager.CustomShowroom {
 
                 try {
                     if (SkinItems == null) return;
-                    foreach (var item in SkinItems.OfType<IPaintableNumberItem>()) {
+                    foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
                         item.Number = number;
                         any = item.IsNumberActive;
                     }
@@ -323,6 +329,59 @@ namespace AcManager.CustomShowroom {
                     HasNumbers = any;
                 }
             }
+            #endregion
+
+            #region Skin flags
+            private string _skinFlagCountry = SettingsHolder.Drive.PlayerNationality;
+
+            public string SkinFlagCountry {
+                get => _skinFlagCountry;
+                set {
+                    if (Equals(value, _skinFlagCountry)) return;
+                    _skinFlagCountry = value;
+                    OnPropertyChanged();
+                    SkinFlag = DataProvider.Instance.CountryToIds.GetValueOrDefault(AcStringValues.CountryFromTag(value) ?? "");
+                }
+            }
+
+            private bool _hasFlags;
+
+            public bool HasFlags {
+                get => _hasFlags;
+                set {
+                    if (Equals(value, _hasFlags)) return;
+                    _hasFlags = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _skinFlag;
+
+            public string SkinFlag {
+                get => _skinFlag;
+                set {
+                    if (Equals(value, _skinFlag)) return;
+                    _skinFlag = value;
+                    OnPropertyChanged();
+                    SetSkinFlag();
+                }
+            }
+
+            private void SetSkinFlag() {
+                var flagId = SkinFlag;
+                var any = false;
+
+                try {
+                    if (SkinItems == null) return;
+                    foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
+                        item.FlagTexture = flagId;
+                        any = item.IsFlagActive;
+                    }
+                } finally {
+                    HasFlags = any;
+                }
+            }
+            #endregion
 
             private AsyncCommand _skinSaveCommand;
 

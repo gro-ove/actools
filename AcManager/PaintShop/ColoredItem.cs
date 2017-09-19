@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
@@ -10,22 +10,37 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
-    public class ColoredItem : PaintableItem {
+    public class ColoredItem : AspectsPaintableItem {
+        [NotNull]
         protected readonly Dictionary<TextureFileName, PaintShop.TintedEntry> Replacements;
 
-        public ColoredItem([Localizable(false)] TextureFileName diffuseTexture, Color defaultColor)
+        public ColoredItem([NotNull, Localizable(false)] TextureFileName diffuseTexture, Color defaultColor)
                 : this(diffuseTexture, new CarPaintColors(defaultColor)) {}
 
-        public ColoredItem([Localizable(false)] TextureFileName diffuseTexture, CarPaintColors colors)
+        public ColoredItem([NotNull, Localizable(false)] TextureFileName diffuseTexture, [NotNull] CarPaintColors colors)
                 : this(new Dictionary<TextureFileName, PaintShop.TintedEntry> {
                     [diffuseTexture] = new PaintShop.TintedEntry(PaintShopSource.White, null, null)
                 }, colors) {}
 
-        public ColoredItem(Dictionary<TextureFileName, PaintShop.TintedEntry> replacements, CarPaintColors colors) : base(false) {
+        public ColoredItem([NotNull] Dictionary<TextureFileName, PaintShop.TintedEntry> replacements, [NotNull] CarPaintColors colors) : base(false) {
             Replacements = replacements;
             Colors = colors;
             Colors.PropertyChanged += OnColorsChanged;
-            AffectedTextures.AddRange(Replacements.Keys.Select(x => x.FileName));
+        }
+
+        protected override void Initialize() {
+            foreach (var replacement in Replacements) {
+                RegisterAspect(replacement.Key, GetApply(replacement.Value), GetSave(replacement.Value));
+            }
+        }
+
+        private Action<TextureFileName, IPaintShopRenderer> GetApply(PaintShop.TintedEntry v) {
+            return (name, renderer) => renderer.OverrideTextureTint(name.FileName, Colors.DrawingColors, 0d, v.Source, v.Mask, v.Overlay);
+        }
+
+        private Func<string, TextureFileName, IPaintShopRenderer, Task> GetSave(PaintShop.TintedEntry v) {
+            return (location, name, renderer) => renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat,
+                    Colors.DrawingColors, 0d, v.Source, v.Mask, v.Overlay);
         }
 
         // which color is in which slot, −1 if there is no color in given slot
@@ -44,28 +59,9 @@ namespace AcManager.PaintShop {
         public Color[] ActualColors => Colors.ActualColors;
 
         private void OnColorsChanged(object sender, PropertyChangedEventArgs e) {
+            SetAllDirty();
             OnPropertyChanged(nameof(ActualColors));
-        }
-
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            foreach (var replacement in Replacements) {
-                renderer.OverrideTextureTint(replacement.Key.FileName, Colors.DrawingColors, 0d,
-                        replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
-            }
-        }
-
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            foreach (var replacement in Replacements) {
-                renderer.OverrideTexture(replacement.Key.FileName, null);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            foreach (var replacement in Replacements) {
-                await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key.FileName), replacement.Key.PreferredFormat,
-                        Colors.DrawingColors, 0d, replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
-                if (cancellation.IsCancellationRequested) return;
-            }
+            RaiseColorChanged(null);
         }
 
         public override JObject Serialize() {
@@ -82,6 +78,10 @@ namespace AcManager.PaintShop {
             if (data != null) {
                 DeserializeColors(Colors, data, "colors");
             }
+        }
+
+        public override Color? GetColor(int colorIndex) {
+            return Colors.ActualColors.ElementAtOrDefault(colorIndex);
         }
     }
 }

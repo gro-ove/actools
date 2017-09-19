@@ -12,8 +12,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         [NotNull]
         public IRenderableTexture GetTexture(IDeviceContextHolder contextHolder, string key) {
-            IRenderableTexture texture;
-            if (Textures.TryGetValue(key, out texture)) return texture;
+            if (Textures.TryGetValue(key, out var texture)) return texture;
             return Textures[key] = CreateTexture(contextHolder, key);
         }
 

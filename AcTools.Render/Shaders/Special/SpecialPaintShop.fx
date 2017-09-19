@@ -30,12 +30,14 @@
 	Texture2D gAoMap;
 	Texture2D gMaskMap;
 	Texture2D gOverlayMap;
+	Texture2D gUnderlayMap;
 
 	cbuffer cbInputSources : register(b1) {
 		float4 gInputMapChannels;
 		float4 gAoMapChannels;
 		float4 gMaskMapChannels;
 		float4 gOverlayMapChannels;
+		float4 gUnderlayMapChannels;
 	}
 
 	float4 GetSource(SamplerState sam, Texture2D tex, float4 channels, float2 uv) {
@@ -56,6 +58,7 @@
 	float4 GetAoMap(float2 uv) { return GetSource(samLinear, gAoMap, gAoMapChannels, uv); }
 	float4 GetMaskMap(float2 uv) { return GetSource(samLinear, gMaskMap, gMaskMapChannels, uv); }
 	float4 GetOverlayMap(float2 uv) { return GetSource(samLinear, gOverlayMap, gOverlayMapChannels, uv); }
+	float4 GetUnderlayMap(float2 uv) { return GetSource(samLinear, gUnderlayMap, gUnderlayMapChannels, uv); }
 
 // common functions
 	float Luminance(float3 color) {
@@ -82,6 +85,7 @@
 		float gFlakes;
 		float4 gColors[3];
 		bool gUseMask;
+	    matrix gTransform;
 	}
 
 // fn structs
@@ -95,6 +99,34 @@
 		float2 Tex     : TEXCOORD;
 	};
 
+// draw piece in position
+	SamplerState samPiece {
+		Filter = MIN_MAG_MIP_LINEAR;
+	    AddressU = BORDER;
+        AddressV = BORDER;
+        AddressW = BORDER;
+        BorderColor = float4(1.0f, 1.0f, 1.0f, 0.0f);
+	};
+
+	PS_IN vs_Piece(VS_IN vin) {
+		PS_IN vout;
+		vout.PosH = float4(vin.PosL, 1.0);
+		vout.Tex = vin.Tex;
+		return vout;
+	}
+
+	float4 ps_Piece(PS_IN pin) : SV_Target {
+		return gInputMap.SampleLevel(samPiece, pin.Tex, 0);
+	}
+
+	technique10 Piece {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_Piece()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Piece()));
+		}
+	}
+
 // one vertex shader for everything
 	PS_IN vs_main(VS_IN vin) {
 		PS_IN vout;
@@ -103,6 +135,7 @@
 		return vout;
 	}
 
+// solid color
 	float4 ps_Fill(PS_IN pin) : SV_Target {
 		return gColor;
 	}
@@ -115,6 +148,7 @@
 		}
 	}
 
+// pattern
 	float4 ps_Pattern(PS_IN pin) : SV_Target {
 		float4 pattern = GetInputMap(pin.Tex);
 		float4 ao = GetAoMap(pin.Tex);
@@ -127,6 +161,10 @@
 		float4 result = float4(resultColor, pattern.a);
 		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
 		result.a = saturate(result.a + overlay.a);
+
+        float4 underlay = GetUnderlayMap(pin.Tex);
+        result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
+		result.a = saturate(underlay.a + result.a);
 		return result;
 	}
 
@@ -155,6 +193,9 @@
 		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
 		result.a = saturate(result.a + overlay.a);
 
+        float4 underlay = GetUnderlayMap(pin.Tex);
+        result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
+		result.a = saturate(underlay.a + result.a);
 		return result;
 	}
 
@@ -166,6 +207,7 @@
 		}
 	}
 
+// flakes
 	#define _FLAKES_SPLIT 0.57
 	#define _FLAKES_SPLIT_LEFT (1 - _FLAKES_SPLIT)
 

@@ -1656,16 +1656,18 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechReplacement, TechMaps, TechMapsFillGreen, TechTint, TechTintMask, TechCombineChannels, TechMaximum, TechMaximumApply, TechDesaturate;
+		public EffectReadyTechnique TechPiece, TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechReplacement, TechMaps, TechMapsFillGreen, TechTint, TechTintMask, TechCombineChannels, TechMaximum, TechMaximumApply, TechDesaturate;
 
 		[NotNull]
-		public EffectOnlyResourceVariable FxNoiseMap, FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap;
+		public EffectOnlyMatrixVariable FxTransform;
+		[NotNull]
+		public EffectOnlyResourceVariable FxNoiseMap, FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap, FxUnderlayMap;
 		[NotNull]
 		public EffectOnlyFloatVariable FxNoiseMultipler, FxFlakes;
 		[NotNull]
 		public EffectOnlyBoolVariable FxUseMask;
 		[NotNull]
-		public EffectOnlyVector4Variable FxInputMapChannels, FxAoMapChannels, FxMaskMapChannels, FxOverlayMapChannels, FxColor, FxSize;
+		public EffectOnlyVector4Variable FxInputMapChannels, FxAoMapChannels, FxMaskMapChannels, FxOverlayMapChannels, FxUnderlayMapChannels, FxColor, FxSize;
 		[NotNull]
 		public EffectOnlyVectorArrayVariable FxColors;
 
@@ -1673,6 +1675,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
 			E = new Effect(device, _b);
 
+			TechPiece = new EffectReadyTechnique(E.GetTechniqueByName("Piece"));
 			TechFill = new EffectReadyTechnique(E.GetTechniqueByName("Fill"));
 			TechPattern = new EffectReadyTechnique(E.GetTechniqueByName("Pattern"));
 			TechColorfulPattern = new EffectReadyTechnique(E.GetTechniqueByName("ColorfulPattern"));
@@ -1687,17 +1690,19 @@ namespace AcTools.Render.Shaders {
 			TechMaximumApply = new EffectReadyTechnique(E.GetTechniqueByName("MaximumApply"));
 			TechDesaturate = new EffectReadyTechnique(E.GetTechniqueByName("Desaturate"));
 
-			for (var i = 0; i < TechFill.Description.PassCount && InputSignaturePT == null; i++) {
-				InputSignaturePT = TechFill.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechPiece.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechPiece.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialPaintShop, PT, Fill) == null");
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialPaintShop, PT, Piece) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
+			FxTransform = new EffectOnlyMatrixVariable(E.GetVariableByName("gTransform"));
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
 			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap"));
 			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap"));
 			FxMaskMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMaskMap"));
 			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap"));
+			FxUnderlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gUnderlayMap"));
 			FxNoiseMultipler = new EffectOnlyFloatVariable(E.GetVariableByName("gNoiseMultipler"));
 			FxFlakes = new EffectOnlyFloatVariable(E.GetVariableByName("gFlakes"));
 			FxUseMask = new EffectOnlyBoolVariable(E.GetVariableByName("gUseMask"));
@@ -1705,6 +1710,7 @@ namespace AcTools.Render.Shaders {
 			FxAoMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gAoMapChannels"));
 			FxMaskMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gMaskMapChannels"));
 			FxOverlayMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gOverlayMapChannels"));
+			FxUnderlayMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gUnderlayMapChannels"));
 			FxColor = new EffectOnlyVector4Variable(E.GetVariableByName("gColor"));
 			FxSize = new EffectOnlyVector4Variable(E.GetVariableByName("gSize"));
 			FxColors = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gColors"));

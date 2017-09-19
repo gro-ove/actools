@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
-    public class MultiReplacement : PaintableItem {
+    public class MultiReplacement : AspectsPaintableItem {
         public Dictionary<string, Dictionary<TextureFileName, PaintShopSource>> Replacements { get; }
 
         public MultiReplacement(Dictionary<string, Dictionary<TextureFileName, PaintShopSource>> replacements) : base(false) {
             Replacements = replacements;
             Value = Replacements.FirstOrDefault();
-            AffectedTextures.AddRange(Replacements.Values.SelectMany(x => x.Keys.Select(y => y.FileName)));
         }
 
         private KeyValuePair<string, Dictionary<TextureFileName, PaintShopSource>> _value;
@@ -27,26 +27,16 @@ namespace AcManager.PaintShop {
             }
         }
 
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            var value = Value.Value;
-            if (value == null) return;
-            foreach (var pair in value) {
-                renderer.OverrideTexture(pair.Key.FileName, pair.Value);
-            }
-        }
+        protected override void Initialize() {
+            base.Initialize();
 
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            foreach (var tex in AffectedTextures) {
-                renderer.OverrideTexture(tex, null);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            var value = Value.Value;
-            if (value == null) return;
-            foreach (var pair in value) {
-                await renderer.SaveTextureAsync(Path.Combine(location, pair.Key.FileName), pair.Key.PreferredFormat, pair.Value);
-                if (cancellation.IsCancellationRequested) return;
+            foreach (var texture in Replacements.Values.SelectMany(x => x.Keys).Distinct()) {
+                RegisterAspect(texture, (name, renderer) => {
+                    renderer.OverrideTexture(name.FileName, Value.Value.GetValueOrDefault(name));
+                }, (location, name, renderer) => {
+                    var value = Value.Value.GetValueOrDefault(name);
+                    return value == null ? Task.Delay(0) : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, value);
+                }).Subscribe(Replacements.SelectMany(x => x.Value.Values).Distinct(), c => Value.Value.Values.Contains(c));
             }
         }
 
@@ -68,6 +58,10 @@ namespace AcManager.PaintShop {
                     Value = value;
                 }
             }
+        }
+
+        public override Color? GetColor(int colorIndex) {
+            return null;
         }
     }
 }

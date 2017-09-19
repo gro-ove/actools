@@ -1,18 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {
-    public class ReplacedIfFlagged : PaintableItem {
+    public class ReplacedIfFlagged : AspectsPaintableItem {
         public ReplacedIfFlagged(bool inverse, [NotNull] Dictionary<TextureFileName, PaintShopSource> replacements) : base(false) {
             _inverse = inverse;
             _replacements = replacements;
-            AffectedTextures.AddRange(_replacements.Keys.Select(x => x.FileName));
+        }
+
+        protected override void Initialize() {
+            base.Initialize();
+            foreach (var replacement in _replacements) {
+                RegisterAspect(replacement.Key, Apply, Save).Subscribe(replacement.Value);
+            }
+        }
+
+        private void Apply(TextureFileName name, IPaintShopRenderer renderer) {
+            renderer.OverrideTexture(name.FileName, _replacements.GetValueOrDefault(name));
+        }
+
+        private Task Save(string location, TextureFileName name, IPaintShopRenderer renderer) {
+            var value = _replacements.GetValueOrDefault(name);
+            return value == null ? Task.Delay(0) : renderer.SaveTextureAsync(name.FileName, name.PreferredFormat, value);
         }
 
         public override string DisplayName { get; set; } = "Replaced If Enabled";
@@ -24,28 +37,8 @@ namespace AcManager.PaintShop {
             return Enabled ^ _inverse;
         }
 
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            foreach (var replacement in _replacements) {
-                renderer.OverrideTexture(replacement.Key.FileName, replacement.Value);
-            }
-        }
-
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            foreach (var replacement in _replacements) {
-                renderer.OverrideTexture(replacement.Key.FileName, null);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            foreach (var replacement in _replacements) {
-                if (replacement.Value.Data != null) {
-                    await FileUtils.WriteAllBytesAsync(Path.Combine(location, replacement.Key.FileName), replacement.Value.Data);
-                } else if (replacement.Value.Name != null) {
-                    await renderer.SaveTextureAsync(replacement.Key.FileName, replacement.Key.PreferredFormat, replacement.Value);
-                }
-
-                if (cancellation.IsCancellationRequested) return;
-            }
+        public override Color? GetColor(int colorIndex) {
+            return null;
         }
     }
 }

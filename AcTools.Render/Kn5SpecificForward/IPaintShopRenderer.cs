@@ -18,9 +18,10 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         bool OverrideTextureFlakes(string textureName, Color color, int size, double flakes);
 
-        bool OverrideTexturePattern(string textureName, [NotNull] PaintShopSource ao, [NotNull] PaintShopSource pattern,
-                [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors,
-                int? number, [NotNull] IReadOnlyList<PaintShopPatternNumbers> numbers,
+        bool OverrideTexturePattern(string textureName, [CanBeNull] PaintShopSource ao, [NotNull] PaintShopSource pattern,
+                [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay, [NotNull] Color[] colors,
+                int? number, [NotNull] IReadOnlyList<PaintShopPatternNumber> numbers,
+                [CanBeNull] string flagTexture, [NotNull] IReadOnlyList<PaintShopPatternFlag> flags,
                 [CanBeNull] Size? forceSize);
 
         bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool fixGloss,
@@ -38,9 +39,10 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         Task SaveTextureFlakesAsync(string filename, PreferredDdsFormat format, Color color, int size, double flakes);
 
-        Task SaveTexturePatternAsync(string filename, PreferredDdsFormat format, [NotNull] PaintShopSource ao, [NotNull] PaintShopSource pattern,
-                [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors,
-                int? number, [NotNull] IReadOnlyList<PaintShopPatternNumbers> numbers,
+        Task SaveTexturePatternAsync(string filename, PreferredDdsFormat format, [CanBeNull] PaintShopSource ao, [NotNull] PaintShopSource pattern,
+                [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay, [NotNull] Color[] colors,
+                int? number, [NotNull] IReadOnlyList<PaintShopPatternNumber> numbers,
+                [CanBeNull] string flagTexture, [NotNull] IReadOnlyList<PaintShopPatternFlag> flags,
                 [CanBeNull] Size? forceSize);
 
         Task SaveTextureMapsAsync(string filename, PreferredDdsFormat format, double reflection, double gloss, double specular, bool fixloss,

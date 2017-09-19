@@ -7,28 +7,33 @@ namespace AcTools.Render.Kn5SpecificForward {
         Start, Center, End
     }
 
-    public sealed class PaintShopPatternNumbers {
-
-        public PaintShopPatternNumbers(double size, double left, double top, PaintShopAlignment horizontalAlignment, PaintShopAlignment verticalAlignment,
-                [NotNull] PaintShopFontSource font, double angle, PaintShopPatternColorReference colorRef, FontWeight weight, FontStyle style,
-                FontStretch stretch) {
+    public class PaintShopPatternFlag {
+        public PaintShopPatternFlag(double size, double left, double top, double angle) {
             Size = size;
             Left = left;
             Top = top;
-            HorizontalAlignment = horizontalAlignment;
-            VerticalAlignment = verticalAlignment;
-            Font = font;
             Angle = angle;
-            ColorRef = colorRef;
-            Weight = weight;
-            Style = style;
-            Stretch = stretch;
         }
 
         public readonly double Size;
         public readonly double Left;
         public readonly double Top;
         public readonly double Angle;
+    }
+
+    public class PaintShopPatternNumber : PaintShopPatternFlag {
+        public PaintShopPatternNumber(double size, double left, double top, PaintShopAlignment horizontalAlignment, PaintShopAlignment verticalAlignment,
+                [NotNull] PaintShopFontSource font, double angle, PaintShopPatternColorReference colorRef, FontWeight weight, FontStyle style,
+                FontStretch stretch) : base(size, left, top, angle) {
+            HorizontalAlignment = horizontalAlignment;
+            VerticalAlignment = verticalAlignment;
+            Font = font;
+            ColorRef = colorRef;
+            Weight = weight;
+            Style = style;
+            Stretch = stretch;
+        }
+
         public readonly PaintShopAlignment HorizontalAlignment;
         public readonly PaintShopAlignment VerticalAlignment;
 
@@ -40,7 +45,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public readonly FontStretch Stretch;
         public readonly PaintShopPatternColorReference ColorRef;
 
-        public int GetFontHashCode() {
+        public virtual int GetFontHashCode() {
             unchecked {
                 var hashCode = Size.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Font.Filename?.GetHashCode() ?? Font.FamilyName.GetHashCode());

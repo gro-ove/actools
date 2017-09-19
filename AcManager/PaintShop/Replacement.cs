@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
-    public class Replacement : PaintableItem {
+    public class Replacement : AspectsPaintableItem {
         [NotNull]
         private readonly TextureFileName[] _textures;
 
@@ -18,7 +18,6 @@ namespace AcManager.PaintShop {
             _textures = textures;
             Replacements = replacements;
             Value = Replacements.FirstOrDefault();
-            AffectedTextures.AddRange(_textures.Select(x => x.FileName));
         }
 
         private KeyValuePair<string, PaintShopSource> _value;
@@ -29,30 +28,31 @@ namespace AcManager.PaintShop {
                 if (Equals(value, _value)) return;
                 _value = value;
                 OnPropertyChanged();
+
+                foreach (var a in Aspects) {
+                    a.IsEnabled = value.Value != null;
+                    a.SetDirty();
+                }
             }
         }
 
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
+        protected override void Initialize() {
+            base.Initialize();
+            foreach (var texture in _textures) {
+                RegisterAspect(texture, Apply, Save, Value.Value != null)
+                        .Subscribe(Replacements.Select(x => x.Value), c => Value.Value == c);
+            }
+        }
+
+        private void Apply(TextureFileName name, IPaintShopRenderer renderer) {
             var value = Value.Value;
             if (value == null) return;
-            foreach (var tex in _textures) {
-                renderer.OverrideTexture(tex.FileName, value);
-            }
+            renderer.OverrideTexture(name.FileName, value);
         }
 
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            foreach (var tex in _textures) {
-                renderer.OverrideTexture(tex.FileName, null);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
+        private Task Save(string location, TextureFileName name, IPaintShopRenderer renderer) {
             var value = Value.Value;
-            if (value == null) return;
-            foreach (var tex in _textures) {
-                await renderer.SaveTextureAsync(Path.Combine(location, tex.FileName), tex.PreferredFormat, value);
-                if (cancellation.IsCancellationRequested) return;
-            }
+            return value == null ? Task.Delay(0) : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, value);
         }
 
         public override JObject Serialize() {
@@ -73,6 +73,10 @@ namespace AcManager.PaintShop {
                     Value = value;
                 }
             }
+        }
+
+        public override Color? GetColor(int colorIndex) {
+            return null;
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
@@ -8,13 +6,26 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {
-    public class SolidColorIfFlagged : PaintableItem {
+    public class SolidColorIfFlagged : AspectsPaintableItem {
         public SolidColorIfFlagged([NotNull] TextureFileName[] textures, bool inverse, Color color, double opacity = 1d) : base(false) {
             _textures = textures;
             _inverse = inverse;
             _color = color;
             _opacity = opacity;
-            AffectedTextures.AddRange(textures.Select(x => x.FileName));
+        }
+
+        protected override void Initialize() {
+            foreach (var texture in _textures) {
+                RegisterAspect(texture, Apply, Save);
+            }
+        }
+
+        private void Apply(TextureFileName name, IPaintShopRenderer renderer) {
+            renderer.OverrideTexture(name.FileName, _color.ToColor(), _opacity);
+        }
+
+        private Task Save(string location, TextureFileName name, IPaintShopRenderer renderer) {
+            return renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, _color.ToColor(), _opacity);
         }
 
         private readonly TextureFileName[] _textures;
@@ -28,23 +39,8 @@ namespace AcManager.PaintShop {
             return Enabled ^ _inverse;
         }
 
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            foreach (var texture in _textures) {
-                renderer.OverrideTexture(texture.FileName, _color.ToColor(), _opacity);
-            }
-        }
-
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            foreach (var texture in _textures) {
-                renderer.OverrideTexture(texture.FileName, null);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            foreach (var texture in _textures) {
-                await renderer.SaveTextureAsync(Path.Combine(location, texture.FileName), texture.PreferredFormat, _color.ToColor(), _opacity);
-                if (cancellation.IsCancellationRequested) return;
-            }
+        public override Color? GetColor(int colorIndex) {
+            return _color;
         }
     }
 }

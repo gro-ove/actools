@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
@@ -24,13 +25,19 @@ namespace AcTools.Render.Kn5SpecificForward {
     internal class SourceReady : IDisposable {
         public readonly ShaderResourceView View;
         public readonly Vector4 ChannelsAssignments;
+        public readonly Size Size;
 
-        public SourceReady(ShaderResourceView view, Vector4 channels) {
+        private readonly bool _cached;
+
+        public SourceReady(ShaderResourceView view, Vector4 channels, Size size, bool cached) {
             View = view;
             ChannelsAssignments = channels;
+            Size = size;
+            _cached = cached;
         }
 
         public void Dispose() {
+            if (_cached) return;
             View?.Dispose();
         }
     }
@@ -120,6 +127,18 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         // get things from PaintShopSource
         [CanBeNull, ContractAnnotation("source: null => null")]
+        private static string GetCacheKey([CanBeNull] PaintShopSource source, int maxSize) {
+            if (source == null || source.DoNotCache) return null;
+
+            if (!source.UseInput) {
+                if (source.Data != null) return "data:" + source.Data.GetHashCode() + ":" + maxSize;
+                if (source.Name != null) return "kn5:" + source.Name + ":" + maxSize;
+            }
+
+            return null;
+        }
+
+        [CanBeNull, ContractAnnotation("source: null => null")]
         private byte[] GetBytes([CanBeNull] PaintShopSource source) {
             if (source == null) return null;
 
@@ -141,7 +160,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
 
                 if (source.ColorRef != null) {
-                    using (var texture = DeviceContextHolder.CreateTexture(1, 1, (x, y) => source.ColorRef() ?? Color.Black))
+                    using (var texture = DeviceContextHolder.CreateTexture(1, 1, (x, y) => source.ColorRef.GetValue() ?? Color.Black))
                     using (var stream = new MemoryStream()) {
                         Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Dds, stream);
                         return stream.ToArray();
@@ -153,12 +172,97 @@ namespace AcTools.Render.Kn5SpecificForward {
             return null;
         }
 
+        private Dictionary<string, Tuple<ShaderResourceView, Size>> _paintShopCache;
+
+        private static Size? GetSize(ResourceView view) {
+            var d = (view.Resource as Texture2D)?.Description;
+            if (d == null) return null;
+            return new Size(d.Value.Width, d.Value.Height);
+        }
+
+        [CanBeNull]
+        private ShaderResourceView GetShaderResourceView([CanBeNull] PaintShopSource source, int maxSize, out Size size, out bool cached) {
+            if (source == null) {
+                size = default(Size);
+                cached = false;
+                return null;
+            }
+
+            if (source.TextureRef != null) {
+                var view = source.TextureRef.GetValue(DeviceContextHolder, CarNode);
+                if (view == null) {
+                    AcToolsLogging.Write("Failed to find: " + source.TextureRef);
+                    size = default(Size);
+                    cached = false;
+                    return null;
+                }
+
+                // Set cached to true to avoid view being disposed afterwards
+                cached = true;
+
+                size = GetSize(view) ?? new Size(32, 32);
+                return view;
+            }
+
+            var key = GetCacheKey(source, maxSize);
+            if (key != null) {
+                if (_paintShopCache == null) {
+                    _paintShopCache = new Dictionary<string, Tuple<ShaderResourceView, Size>>();
+                }
+
+                if (_paintShopCache.TryGetValue(key, out var value)) {
+                    size = value.Item2;
+                    cached = true;
+                    return value.Item1;
+                }
+            }
+
+            var decoded = GetBytes(source);
+            if (decoded == null) {
+                if (key != null) {
+                    _paintShopCache[key] = Tuple.Create((ShaderResourceView)null, default(Size));
+                }
+
+                size = default(Size);
+                cached = key != null;
+                return null;
+            }
+
+            ShaderResourceView original;
+            using (var texture = Texture2D.FromMemory(Device, decoded)) {
+                original = new ShaderResourceView(Device, texture);
+                size = new Size(texture.Description.Width, texture.Description.Height);
+
+                if (size.Width > maxSize || size.Height > maxSize) {
+                    size = new Size(maxSize, maxSize);
+
+                    using (var resized = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                        resized.Resize(DeviceContextHolder, maxSize, maxSize, null);
+                        DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder,
+                                original, new Vector2(texture.Description.Width, texture.Description.Height),
+                                resized.TargetView, new Vector2(maxSize, maxSize));
+                        original.Dispose();
+
+                        resized.KeepView = true;
+                        original = resized.View;
+                    }
+                }
+            }
+
+            if (key != null) {
+                _paintShopCache[key] = Tuple.Create(original, size);
+            }
+
+            cached = key != null;
+            return original;
+        }
+
         // prepare texture using DirectX
-        private Dictionary<int, Size> _sizes;
+        /*private Dictionary<int, Size> _sizes;
 
         private Size? GetSize([NotNull] PaintShopSource source) {
             return _sizes.TryGetValue(source.GetHashCode(), out var result) ? (Size?)result : null;
-        }
+        }*/
 
         private ShaderResourceView Prepare(ShaderResourceView original, Func<ShaderResourceView, ShaderResourceView> preparation = null) {
             var prepared = preparation?.Invoke(original);
@@ -197,41 +301,22 @@ namespace AcTools.Render.Kn5SpecificForward {
                     baseSize.Value.Width * baseSize.Value.Height ? additionalSize.Value : baseSize;
         }
 
-        /*public string GetPaintShopCacheSizes() {
-            return _
-        }*/
-
         [CanBeNull]
-        private SourceReady GetOriginal(ref Dictionary<int, ShaderResourceView> storage, [NotNull] PaintShopSource source, int maxSize,
+        private SourceReady GetOriginal([NotNull] PaintShopSource source, int maxSize,
                 Func<ShaderResourceView, ShaderResourceView> preparation = null) {
             if (MainSlot.Kn5 == null) return null;
 
             try {
-                if (storage == null) {
-                    storage = new Dictionary<int, ShaderResourceView>(2);
-                    if (_sizes == null) {
-                        _sizes = new Dictionary<int, Size>();
-                    }
-                }
+                ShaderResourceView original;
+                Size size;
+                bool cached;
 
-                var sourceHashCode = source.GetHashCode();
-                var hashCode = (sourceHashCode * 397) ^ maxSize.GetHashCode();
-                if (!storage.TryGetValue(hashCode, out var original)) {
-                    Size size;
-
-                    if (source.ByChannels) {
-                        var red = source.RedChannelSource == null ? null : GetOriginal(ref storage, source.RedChannelSource, maxSize);
-                        var green = source.GreenChannelSource == null ? null : GetOriginal(ref storage, source.GreenChannelSource, maxSize);
-                        var blue = source.BlueChannelSource == null ? null : GetOriginal(ref storage, source.BlueChannelSource, maxSize);
-                        var alpha = source.AlphaChannelSource == null ? null : GetOriginal(ref storage, source.AlphaChannelSource, maxSize);
-
-                        var redSize = source.RedChannelSource == null ? null : GetSize(source.RedChannelSource);
-                        var greenSize = source.GreenChannelSource == null ? null : GetSize(source.GreenChannelSource);
-                        var blueSize = source.BlueChannelSource == null ? null : GetSize(source.BlueChannelSource);
-                        var alphaSize = source.AlphaChannelSource == null ? null : GetSize(source.AlphaChannelSource);
-
-                        size = Max(redSize, Max(greenSize, Max(blueSize, alphaSize))) ?? new Size(16, 16);
-                        _sizes[sourceHashCode] = size;
+                if (source.ByChannels) {
+                    using (var red = source.RedChannelSource == null ? null : GetOriginal(source.RedChannelSource, maxSize))
+                    using (var green = source.GreenChannelSource == null ? null : GetOriginal(source.GreenChannelSource, maxSize))
+                    using (var blue = source.BlueChannelSource == null ? null : GetOriginal(source.BlueChannelSource, maxSize))
+                    using (var alpha = source.AlphaChannelSource == null ? null : GetOriginal(source.AlphaChannelSource, maxSize)) {
+                        size = Max(red?.Size, Max(green?.Size, Max(blue?.Size, alpha?.Size))) ?? new Size(16, 16);
 
                         if (size.Width > maxSize || size.Height > maxSize) {
                             size = new Size(maxSize, maxSize);
@@ -250,45 +335,23 @@ namespace AcTools.Render.Kn5SpecificForward {
                             combined.KeepView = true;
                             original = combined.View;
                         }
-                    } else {
-                        var decoded = GetBytes(source);
-                        if (decoded == null) return null;
-
-                        using (var texture = Texture2D.FromMemory(Device, decoded)) {
-                            original = new ShaderResourceView(Device, texture);
-
-                            size = new Size(texture.Description.Width, texture.Description.Height);
-                            _sizes[sourceHashCode] = size;
-
-                            if (size.Width > maxSize || size.Height > maxSize) {
-                                size = new Size(maxSize, maxSize);
-
-                                using (var resized = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                                    resized.Resize(DeviceContextHolder, maxSize, maxSize, null);
-                                    DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder,
-                                            original, new Vector2(texture.Description.Width, texture.Description.Height),
-                                            resized.TargetView, new Vector2(maxSize, maxSize));
-                                    original.Dispose();
-
-                                    resized.KeepView = true;
-                                    original = resized.View;
-                                }
-                            }
-                        }
                     }
 
-                    if (source.Desaturate) {
-                        original = Prepare(original, view => Desaturate(view, size));
-                    }
-
-                    if (source.NormalizeMax) {
-                        original = Prepare(original, view => NormalizeMax(view, size));
-                    }
-
-                    storage[hashCode] = Prepare(original, preparation);
+                    cached = false;
+                } else {
+                    original = GetShaderResourceView(source, maxSize, out size, out cached);
                 }
 
-                return new SourceReady(original, GetChannelAssignments(source));
+                if (source.Desaturate) {
+                    original = Prepare(original, view => Desaturate(view, size));
+                }
+
+                if (source.NormalizeMax) {
+                    original = Prepare(original, view => NormalizeMax(view, size));
+                }
+
+                original = Prepare(original, preparation);
+                return new SourceReady(original, GetChannelAssignments(source), size, cached);
             } catch (Exception e) {
                 AcToolsLogging.NonFatalErrorNotify("Can’t load texture", null, e);
                 return null;
@@ -301,17 +364,15 @@ namespace AcTools.Render.Kn5SpecificForward {
             e.TechReplacement.DrawAllPasses(DeviceContext, 6);
         };
 
-        [CanBeNull]
-        private Dictionary<int, ShaderResourceView> _override;
-
         public bool OverrideTexture(string textureName, PaintShopSource source) {
             if (source?.Custom != true) {
                 return CarNode == null || CarNode.OverrideTexture(DeviceContextHolder, textureName, GetBytes(source));
             }
 
             if (source.UseInput) source = new PaintShopSource(textureName).SetFrom(source);
-            var original = GetOriginal(ref _override, source, OptionMaxMapSize);
-            return original != null && OverrideTexture(textureName, OverrideAction(original), OptionMaxMapSize);
+            using (var original = GetOriginal(source, OptionMaxMapSize)) {
+                return original != null && OverrideTexture(textureName, OverrideAction(original), OptionMaxMapSize);
+            }
         }
 
         public Task SaveTextureAsync(string filename, PreferredDdsFormat format, PaintShopSource source) {
@@ -327,9 +388,9 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             if (source.UseInput) source = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(source);
-            var original = GetOriginal(ref _override, source, int.MaxValue);
-            return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format, OverrideAction(original),
-                    GetSize(source) ?? new Size(OptionMaxMapSize, OptionMaxMapSize));
+            using (var original = GetOriginal(source, int.MaxValue)) {
+                return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format, OverrideAction(original), original.Size);
+            }
         }
 
         // solid color with alpha
@@ -408,7 +469,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return result;
         }
 
-        private TextBlockRenderer GetPatternTextRenderer([NotNull] PaintShopPatternNumbers description) {
+        private TextBlockRenderer GetPatternTextRenderer([NotNull] PaintShopPatternNumber description) {
             InitializePatternTextRenderer();
 
             var hashCode = description.GetFontHashCode();
@@ -422,17 +483,50 @@ namespace AcTools.Render.Kn5SpecificForward {
             return result;
         }
 
-        private void PatternDrawNumber([NotNull] Color[] c, [NotNull] PaintShopPatternNumbers p, int n, double multiplier) {
+        private void PatternDrawNumber([NotNull] Color[] c, [NotNull] PaintShopPatternNumber p, int n, double multiplier) {
             GetPatternTextRenderer(p).DrawString(n.ToInvariantString(),
                     new Vector2((float)(p.Left * multiplier), (float)(p.Top * multiplier)), ((float)p.Angle).ToRadians(),
                     p.GetTextAlignment(), (float)(p.Size * multiplier), p.ColorRef.GetValue(c));
         }
 
+        private Dictionary<string, ShaderResourceView> _paintShopFlags = new Dictionary<string, ShaderResourceView>();
+
+        private ShaderResourceView GetFlagTexture([NotNull] string filename) {
+            if (!_paintShopFlags.TryGetValue(filename, out var view)) {
+                view = ShaderResourceView.FromFile(Device, filename);
+                _paintShopFlags[filename] = view;
+            }
+
+            return view;
+        }
+
+        private void PatternDrawFlag(PaintShopPatternFlag p, [NotNull] string f, double multiplier, Size size, EffectSpecialPaintShop e) {
+            var texture = GetFlagTexture(f);
+            var textureSize = GetSize(texture);
+
+            var pos = new Vector2((float)(p.Left * multiplier), (float)(p.Top * multiplier));
+            var width = (float)(p.Size * multiplier);
+            var height = ((float?)(textureSize?.Height / textureSize?.Width) ?? 170f / 256f) * width;
+            var angle = ((float)p.Angle).ToRadians();
+
+            e.FxInputMap.SetResource(texture);
+            e.FxTransform.SetMatrix(Matrix.Transformation2D(
+                    new Vector2(0.5f), 0f, new Vector2(width / size.Width, height / size.Height),
+                    new Vector2(0.5f), angle,
+                    new Vector2(pos.X / size.Width, pos.Y / size.Width)));
+
+            // TODO!
+        }
+
         private Action<EffectSpecialPaintShop> PatternAction(SourceReady patternView, SourceReady aoView, SourceReady overlayView,
-                Color[] colors, int? number, IReadOnlyList<PaintShopPatternNumbers> numbers, double multiplier) => e => {
+                SourceReady underlayView, Color[] colors,
+                int? number, IReadOnlyList<PaintShopPatternNumber> numbers,
+                string flagTexture, IReadOnlyList<PaintShopPatternFlag> flags,
+                Size size, double multiplier) => e => {
                     patternView.Set(e.FxInputMap, e.FxInputMapChannels);
                     aoView.Set(e.FxAoMap, e.FxAoMapChannels);
                     overlayView.Set(e.FxOverlayMap, e.FxOverlayMapChannels);
+                    underlayView.Set(e.FxUnderlayMap, e.FxUnderlayMapChannels);
 
                     if (colors.Length > 0) {
                         var vColors = new Vector4[3];
@@ -456,21 +550,29 @@ namespace AcTools.Render.Kn5SpecificForward {
                         }
                         _patternSprite.Flush();
                     }
+
+                    if (flags.Count > 0 && flagTexture != null) {
+                        for (var i = 0; i < numbers.Count; i++) {
+                            if (numbers[i] != null) {
+                                PatternDrawFlag(flags[i], flagTexture, multiplier, size, e);
+                            }
+                        }
+                    }
                 };
 
-        [CanBeNull]
-        private Dictionary<int, ShaderResourceView> _aoBase, _patternBase, _overlayBase;
+        /*[CanBeNull]
+        private Dictionary<int, ShaderResourceView> _aoBase, _patternBase, _overlayBase;*/
 
+        [ContractAnnotation("a:null, b:null => null; a:notnull => notnull; b:notnull => notnull")]
         private Size? MaxSize(Size? a, Size? b) {
             return a.HasValue ? b.HasValue ? a.Value.Width * a.Value.Height > b.Value.Width * b.Value.Height ? a : b : a : b;
         }
 
-        private Size GetTexturePatternSize([NotNull] PaintShopSource ao, [NotNull] PaintShopSource pattern, [CanBeNull] PaintShopSource overlay) {
-            var patternSize = GetSize(pattern);
-            var aoSize = GetSize(ao);
-            var overlaySize = overlay == null ? null : GetSize(overlay);
-            return MaxSize(MaxSize(patternSize, aoSize), overlaySize) ??
-                    new Size(OptionMaxPatternSize, OptionMaxPatternSize);
+        private Size GetTexturePatternSize([CanBeNull] SourceReady ao, [NotNull] SourceReady pattern, [CanBeNull] SourceReady overlay) {
+            var patternSize = pattern.Size;
+            var aoSize = ao?.Size;
+            var overlaySize = overlay?.Size;
+            return MaxSize(MaxSize(patternSize, aoSize), overlaySize).Value;
         }
 
         private Size GetTexturePatternSizeLimited(Size size, out double multiplier) {
@@ -485,36 +587,45 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool OverrideTexturePattern(string textureName, PaintShopSource ao, PaintShopSource pattern, PaintShopSource overlay,
-                Color[] colors, int? number, IReadOnlyList<PaintShopPatternNumbers> numbers, Size? forceSize) {
-            if (ao.UseInput) ao = new PaintShopSource(textureName).SetFrom(ao);
-
-            var aoView = GetOriginal(ref _aoBase, ao, OptionMaxPatternSize);
-            if (aoView == null) return false;
-
-            var patternView = GetOriginal(ref _patternBase, pattern, OptionMaxPatternSize);
-            if (patternView == null) return false;
-
-            var overlayView = overlay == null ? null : GetOriginal(ref _overlayBase, overlay, OptionMaxPatternSize);
-            var size = GetTexturePatternSizeLimited(forceSize ?? GetTexturePatternSize(ao, pattern, overlay), out var multiplier);
-            return OverrideTexture(textureName,
-                    PatternAction(patternView, aoView, overlayView, colors, number, numbers, multiplier),
-                    size);
+                PaintShopSource underlay, Color[] colors,
+                int? number, IReadOnlyList<PaintShopPatternNumber> numbers,
+                string flagTexture, IReadOnlyList<PaintShopPatternFlag> flags,
+                Size? forceSize) {
+            if (ao?.UseInput == true) ao = new PaintShopSource(textureName).SetFrom(ao);
+            using (var aoView = ao == null ? null : GetOriginal(ao, OptionMaxPatternSize))
+            using (var patternView = GetOriginal(pattern, OptionMaxPatternSize))
+            using (var overlayView = overlay == null ? null : GetOriginal(overlay, OptionMaxPatternSize))
+            using (var underlayView = underlay == null ? null : GetOriginal(underlay, OptionMaxPatternSize)) {
+                if (patternView == null) return false;
+                var size = GetTexturePatternSizeLimited(forceSize ?? GetTexturePatternSize(aoView, patternView, overlayView), out var multiplier);
+                return OverrideTexture(textureName,
+                        PatternAction(patternView, aoView, overlayView, underlayView, colors,
+                                number, numbers,
+                                flagTexture, flags,
+                                size, multiplier),
+                        size);
+            }
         }
 
         public Task SaveTexturePatternAsync(string filename, PreferredDdsFormat format, PaintShopSource ao, PaintShopSource pattern, PaintShopSource overlay,
-                Color[] colors, int? number, IReadOnlyList<PaintShopPatternNumbers> numbers, Size? forceSize) {
-            if (ao.UseInput) ao = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(ao);
-
-            var aoView = GetOriginal(ref _aoBase, ao, int.MaxValue);
-            if (aoView == null) return Task.Delay(0);
-
-            var patternView = GetOriginal(ref _patternBase, pattern, int.MaxValue);
-            if (patternView == null) return Task.Delay(0);
-
-            var overlayView = overlay == null ? null : GetOriginal(ref _overlayBase, overlay, OptionMaxPatternSize);
-            return SaveTextureAsync(filename, format,
-                    PatternAction(patternView, aoView, overlayView, colors, number, numbers, 1d),
-                    forceSize ?? GetTexturePatternSize(ao, pattern, overlay));
+                PaintShopSource underlay, Color[] colors,
+                int? number, IReadOnlyList<PaintShopPatternNumber> numbers,
+                string flagTexture, IReadOnlyList<PaintShopPatternFlag> flags,
+                Size? forceSize) {
+            if (ao?.UseInput == true) ao = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(ao);
+            using (var aoView = ao == null ? null : GetOriginal(ao, OptionMaxPatternSize))
+            using (var patternView = GetOriginal(pattern, OptionMaxPatternSize))
+            using (var overlayView = overlay == null ? null : GetOriginal(overlay, OptionMaxPatternSize))
+            using (var underlayView = underlay == null ? null : GetOriginal(underlay, OptionMaxPatternSize)) {
+                if (patternView == null) return Task.Delay(0);
+                var size = forceSize ?? GetTexturePatternSize(aoView, patternView, overlayView);
+                return SaveTextureAsync(filename, format,
+                        PatternAction(patternView, aoView, overlayView, underlayView, colors,
+                                number, numbers,
+                                flagTexture, flags,
+                                size, 1d),
+                        size);
+            }
         }
 
         // txMaps
@@ -528,33 +639,35 @@ namespace AcTools.Render.Kn5SpecificForward {
                     (fixGloss ? e.TechMapsFillGreen : e.TechMaps).DrawAllPasses(DeviceContext, 6);
                 };
 
-        [CanBeNull]
-        private Dictionary<int, ShaderResourceView> _mapsBase, _mapsMasks;
+        /*[CanBeNull]
+        private Dictionary<int, ShaderResourceView> _mapsBase, _mapsMasks;*/
 
         public bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool fixGloss,
                 PaintShopSource source, PaintShopSource maskSource) {
             if (source.UseInput) source = new PaintShopSource(textureName).SetFrom(source);
-            var original = GetOriginal(ref _mapsBase, source, OptionMaxMapSize);
-            var mask = maskSource == null ? null : GetOriginal(ref _mapsMasks, maskSource, int.MaxValue);
-            return original != null && OverrideTexture(textureName,
-                    MapsAction(original, mask, reflection, gloss, specular, fixGloss),
-                    OptionMaxMapSize);
+            using (var original = GetOriginal(source, OptionMaxMapSize))
+            using (var mask = maskSource == null ? null : GetOriginal(maskSource, int.MaxValue)) {
+                return original != null && OverrideTexture(textureName,
+                        MapsAction(original, mask, reflection, gloss, specular, fixGloss),
+                        OptionMaxMapSize);
+            }
         }
 
         public Task SaveTextureMapsAsync(string filename, PreferredDdsFormat format, double reflection, double gloss, double specular, bool fixGloss,
                 PaintShopSource source, PaintShopSource maskSource) {
             if (source.UseInput) source = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(source);
-            var original = GetOriginal(ref _mapsBase, source, int.MaxValue);
-            var mask = maskSource == null ? null : GetOriginal(ref _mapsMasks, maskSource, int.MaxValue);
-            var size = GetSize(source) ?? new Size(OptionMaxMapSize, OptionMaxMapSize);
 
-            if (format.IsAuto()) {
-                format = Math.Max(size.Width, size.Height) >= 1024 || reflection >= 0.7 && gloss >= 0.7 && specular >= 0.7 ?
-                        PreferredDdsFormat.DXT1 : PreferredDdsFormat.NoCompression;
+            using (var original = GetOriginal(source, OptionMaxMapSize))
+            using (var mask = maskSource == null ? null : GetOriginal(maskSource, int.MaxValue)) {
+                var size = original?.Size ?? new Size(OptionMaxMapSize, OptionMaxMapSize);
+                if (format.IsAuto()) {
+                    format = Math.Max(size.Width, size.Height) >= 1024 || reflection >= 0.7 && gloss >= 0.7 && specular >= 0.7 ?
+                            PreferredDdsFormat.DXT1 : PreferredDdsFormat.NoCompression;
+                }
+
+                return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format,
+                        MapsAction(original, mask, reflection, gloss, specular, fixGloss), size);
             }
-
-            return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format,
-                    MapsAction(original, mask, reflection, gloss, specular, fixGloss), size);
         }
 
         // tint texture
@@ -585,29 +698,31 @@ namespace AcTools.Render.Kn5SpecificForward {
                     }
                 };
 
-        [CanBeNull]
-        private Dictionary<int, ShaderResourceView> _tintBase, _tintMask, _tintOverlay;
+        /*[CanBeNull]
+        private Dictionary<int, ShaderResourceView> _tintBase, _tintMask, _tintOverlay;*/
 
         public bool OverrideTextureTint(string textureName, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource,
                 PaintShopSource overlaySource) {
             if (source.UseInput) source = new PaintShopSource(textureName).SetFrom(source);
-            var original = GetOriginal(ref _tintBase, source, OptionMaxTintSize);
-            var mask = maskSource == null ? null : GetOriginal(ref _tintMask, maskSource, OptionMaxTintSize);
-            var overlay = overlaySource == null ? null : GetOriginal(ref _tintOverlay, overlaySource, OptionMaxTintSize);
-            return original != null && OverrideTexture(textureName,
-                    TintAction(original, mask, overlay, colors, alphaAdd),
-                    OptionMaxTintSize);
+            using (var original = GetOriginal(source, OptionMaxTintSize))
+            using (var mask = maskSource == null ? null : GetOriginal(maskSource, OptionMaxTintSize))
+            using (var overlay = overlaySource == null ? null : GetOriginal(overlaySource, OptionMaxTintSize)) {
+                return original != null && OverrideTexture(textureName,
+                        TintAction(original, mask, overlay, colors, alphaAdd),
+                        OptionMaxTintSize);
+            }
         }
 
-        public Task SaveTextureTintAsync(string filename, PreferredDdsFormat format, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource,
-                PaintShopSource overlaySource) {
+        public Task SaveTextureTintAsync(string filename, PreferredDdsFormat format, Color[] colors, double alphaAdd, PaintShopSource source,
+                PaintShopSource maskSource, PaintShopSource overlaySource) {
             if (source.UseInput) source = new PaintShopSource(Path.GetFileName(filename) ?? "").SetFrom(source);
-            var original = GetOriginal(ref _tintBase, source, int.MaxValue);
-            var mask = maskSource == null ? null : GetOriginal(ref _tintMask, maskSource, int.MaxValue);
-            var overlay = overlaySource == null ? null : GetOriginal(ref _tintOverlay, overlaySource, int.MaxValue);
-            return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format,
-                    TintAction(original, mask, overlay, colors, alphaAdd),
-                    GetSize(source) ?? new Size(OptionMaxTintSize, OptionMaxTintSize));
+            using (var original = GetOriginal(source, OptionMaxTintSize))
+            using (var mask = maskSource == null ? null : GetOriginal(maskSource, OptionMaxTintSize))
+            using (var overlay = overlaySource == null ? null : GetOriginal(overlaySource, OptionMaxTintSize)) {
+                return original == null ? Task.Delay(0) : SaveTextureAsync(filename, format,
+                        TintAction(original, mask, overlay, colors, alphaAdd),
+                        original.Size);
+            }
         }
 
         public void SetCurrentSkinActive(bool active) {
@@ -621,15 +736,20 @@ namespace AcTools.Render.Kn5SpecificForward {
             DisposeHelper.Dispose(ref _patternSprite);
 
             _paintShopTextures?.DisposeEverything();
-            _override?.DisposeEverything();
-            _patternBase?.DisposeEverything();
+            _paintShopFlags?.DisposeEverything();
+            _patternFontsCollections?.DisposeEverything();
+            _paintShopCache?.Select(x => x.Value.Item1).DisposeEverything();
+            _paintShopCache = null;
+
+            // _override?.DisposeEverything();
+            /*_patternBase?.DisposeEverything();
             _patternBase?.DisposeEverything();
             _overlayBase?.DisposeEverything();
             _mapsBase?.DisposeEverything();
-            _mapsMasks?.DisposeEverything();
-            _tintBase?.DisposeEverything();
+            _mapsMasks?.DisposeEverything();*/
+            /*_tintBase?.DisposeEverything();
             _tintMask?.DisposeEverything();
-            _tintOverlay?.DisposeEverything();
+            _tintOverlay?.DisposeEverything();*/
         }
     }
 }

@@ -344,6 +344,14 @@
       <Slider Minimum="0" Maximum="99" Value="{Binding SkinNumber}" />
     </DockPanel>
 
+    <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
+        Visibility="{Binding HasFlags, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <mui:ValueLabel Value="{Binding SkinFlag}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0" mui:BetterTextBox.Maximum="9999"
+          DockPanel.Dock="Top" Content="Country" />
+      <mui:BetterComboBox Text="{Binding SkinFlagCountry}" Placeholder="?" IsEditable="False"
+          ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
+    </DockPanel>
+
     <Button DockPanel.Dock="Bottom" Command="{Binding SkinSaveCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
         Padding="0 3 0 5" />
     <DockPanel DockPanel.Dock="Bottom" Style="{StaticResource DockPanel}" Margin="0 4 0 4">

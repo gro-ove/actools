@@ -6,18 +6,34 @@ namespace AcTools.Render.Kn5SpecificForward {
         private readonly Color? _value;
         private readonly int? _id;
 
+        [CanBeNull]
+        private readonly ColorReference _colorRef;
+
         public PaintShopPatternColorReference(Color? value) {
             _value = value;
             _id = null;
+            _colorRef = null;
         }
 
         public PaintShopPatternColorReference(int? id) {
             _value = null;
             _id = id;
+            _colorRef = null;
+        }
+
+        public PaintShopPatternColorReference(ColorReference colorRef) {
+            _value = null;
+            _id = null;
+            _colorRef = colorRef;
         }
 
         [Pure]
         public Color GetValue([NotNull] Color[] colors) {
+            var r = _colorRef;
+            if (r != null) {
+                return r.GetValue() ?? Color.Black;
+            }
+
             var val = _value;
             if (val.HasValue) return val.Value;
 

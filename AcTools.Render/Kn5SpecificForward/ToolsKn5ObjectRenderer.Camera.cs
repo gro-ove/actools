@@ -44,20 +44,19 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void AlignCar() {
-            var camera = Camera as FpsCamera;
-            if (camera == null) return;
+            if (Camera is FpsCamera camera) {
+                var offset = MainSlot.CarCenter;
+                camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
+                camera.SetLens(AspectRatio);
 
-            var offset = MainSlot.CarCenter;
-            camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
-            camera.SetLens(AspectRatio);
+                offset.Y = 0;
+                _showroomOffset = offset;
+                if (ShowroomNode != null) {
+                    ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+                }
 
-            offset.Y = 0;
-            _showroomOffset = offset;
-            if (ShowroomNode != null) {
-                ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+                IsDirty = true;
             }
-
-            IsDirty = true;
         }
 
         private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(Kn5RenderableObject obj, Matrix matrix, ref Vector3 min, ref Vector3 max) {
@@ -96,14 +95,13 @@ namespace AcTools.Render.Kn5SpecificForward {
         private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(RenderableList list, Matrix matrix, ref Vector3 min, ref Vector3 max) {
             for (var i = 0; i < list.Count; i++) {
                 var child = list[i];
-                var li = child as RenderableList;
-                if (li != null) {
-                    GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(li, matrix, ref min, ref max);
-                } else {
-                    var ro = child as Kn5RenderableObject;
-                    if (ro != null) {
+                switch (child) {
+                    case RenderableList li:
+                        GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(li, matrix, ref min, ref max);
+                        break;
+                    case Kn5RenderableObject ro:
                         GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(ro, matrix, ref min, ref max);
-                    }
+                        break;
                 }
             }
         }

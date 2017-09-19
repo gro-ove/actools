@@ -12,7 +12,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Objects {
-    public class Kn5RenderableSkinnable : Kn5RenderableFile, INotifyPropertyChanged {
+    public class Kn5RenderableSkinnable : Kn5RenderableFile, INotifyPropertyChanged, IPaintShopObject {
         private readonly bool _asyncOverrideTexturesLoading;
         private Kn5OverrideableTexturesProvider _texturesProvider;
         private string _overridesDirectory;
@@ -34,7 +34,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return texture.Exists;
         }
 
-        public bool OverrideTexture(DeviceContextHolder device, string textureName, [CanBeNull] ShaderResourceView textureView, bool disposeLater) {
+        public IRenderableTexture GetTexture(DeviceContextHolder device, string textureName) {
+            if (_texturesProvider == null) {
+                InitializeTextures(device);
+                if (_texturesProvider == null) return null;
+            }
+
+            return _texturesProvider?.GetTexture(device, textureName);
+        }
+
+        public bool OverrideTexture(DeviceContextHolder device, string textureName, ShaderResourceView textureView, bool disposeLater) {
             if (_texturesProvider == null) {
                 InitializeTextures(device);
                 if (_texturesProvider == null) return false;

@@ -10,16 +10,23 @@ using Color = System.Windows.Media.Color;
 
 namespace AcManager.PaintShop {
     public sealed class CarPaintPattern : Displayable {
-        public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, null, new CarPaintColors(), null);
+        public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, null, null,
+                new CarPaintColors(), null, null, null);
 
-        public CarPaintPattern(string name, [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] Size? size,
-                CarPaintColors colors, [CanBeNull] IEnumerable<PaintShopPatternNumbers> numbers) {
+        public CarPaintPattern(string name, [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
+                [CanBeNull] Size? size, CarPaintColors colors,
+                [CanBeNull] IEnumerable<PaintShopPatternNumber> numbers,
+                [CanBeNull] IEnumerable<PaintShopPatternFlag> flags,
+                [CanBeNull] IEnumerable<PaintShopPatternLabel> labels) {
             DisplayName = name;
             Source = source;
             Overlay = overlay;
+            Underlay = underlay;
             Colors = colors;
             Size = size;
-            Numbers = numbers?.ToList() ?? new List<PaintShopPatternNumbers>(0);
+            Numbers = numbers?.ToList() ?? new List<PaintShopPatternNumber>(0);
+            Flags = flags?.ToList() ?? new List<PaintShopPatternFlag>(0);
+            Labels = labels?.ToList() ?? new List<PaintShopPatternLabel>(0);
             colors.PropertyChanged += OnColorsChanged;
         }
 
@@ -37,6 +44,9 @@ namespace AcManager.PaintShop {
         [CanBeNull]
         public PaintShopSource Overlay { get; }
 
+        [CanBeNull]
+        public PaintShopSource Underlay { get; }
+
         [NotNull]
         public CarPaintColors Colors { get; }
 
@@ -44,9 +54,19 @@ namespace AcManager.PaintShop {
         public Size? Size { get; }
 
         [NotNull]
-        public List<PaintShopPatternNumbers> Numbers { get; }
+        public List<PaintShopPatternNumber> Numbers { get; }
+
+        [NotNull]
+        public List<PaintShopPatternFlag> Flags { get; }
+
+        [NotNull]
+        public List<PaintShopPatternLabel> Labels { get; }
 
         public bool HasNumbers => Numbers.Count > 0;
+        public bool HasFlags => Flags.Count > 0;
+
+        private List<string> _labels;
+        public IReadOnlyList<string> LabelRoles => _labels ?? (_labels = Labels.Select(x => x.Role).Distinct().ToList());
 
         // which color is in which slot, −1 if there is no color in given slot
         [CanBeNull]

@@ -16,12 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public static int AsInt([CanBeNull] this string value, int defaultValue) {
-            int result;
-            if (value == null || !int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return defaultValue;
-            }
-
-            return result;
+            return value == null || !int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? defaultValue : result;
         }
 
         public static long AsLong([CanBeNull] this object value) {
@@ -37,12 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public static long AsLong([CanBeNull] this string value, long defaultValue) {
-            long result;
-            if (value == null || !long.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return defaultValue;
-            }
-
-            return result;
+            return value == null || !long.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? defaultValue : result;
         }
 
         public static double AsDouble([CanBeNull] this object value) {
@@ -58,12 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public static double AsDouble([CanBeNull] this string value, double defaultValue) {
-            double result;
-            if (value == null || !double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return defaultValue;
-            }
-
-            return result;
+            return value == null || !double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? defaultValue : result;
         }
 
         public static float AsFloat([CanBeNull] this object value) {
@@ -79,12 +64,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public static float AsFloat([CanBeNull] this string value, float defaultValue) {
-            float result;
-            if (value == null || !float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return defaultValue;
-            }
-
-            return result;
+            return value == null || !float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? defaultValue : result;
         }
 
         public static bool AsBoolean([CanBeNull] this object value) {
@@ -100,32 +80,22 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public static bool AsBoolean([CanBeNull] this string value, bool defaultValue) {
-            bool result;
-            if (value == null || !bool.TryParse(value, out result)) {
-                return defaultValue;
-            }
-
-            return result;
+            return value == null || !bool.TryParse(value, out var result) ? defaultValue : result;
         }
 
         public static bool XamlEquals([CanBeNull] this object properValue, [CanBeNull] object xamlValue) {
             if (properValue == null) return xamlValue == null;
             if (xamlValue == null) return false;
 
-            if (properValue is double) {
-                return Equals((double)properValue, xamlValue.AsDouble());
-            }
-
-            if (properValue is int) {
-                return Equals((int)properValue, xamlValue.AsInt());
-            }
-
-            if (properValue is bool) {
-                return Equals((bool)properValue, xamlValue.AsBoolean());
-            }
-
-            if (properValue is string) {
-                return Equals((string)properValue, xamlValue.ToString());
+            switch (properValue) {
+                case double d:
+                    return Equals(d, xamlValue.AsDouble());
+                case int i:
+                    return Equals(i, xamlValue.AsInt());
+                case bool b:
+                    return Equals(b, xamlValue.AsBoolean());
+                case string s:
+                    return Equals(s, xamlValue.ToString());
             }
 
             return Equals(properValue, xamlValue);

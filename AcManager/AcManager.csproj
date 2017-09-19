@@ -571,7 +571,7 @@
     <Compile Include="PaintShop\CarPaintReplacementSource.cs" />
     <Compile Include="PaintShop\ColoredItem.cs" />
     <Compile Include="PaintShop\ComplexCarPaint.cs" />
-    <Compile Include="PaintShop\IPaintableNumberItem.cs" />
+    <Compile Include="PaintShop\IPaintablePersonalItem.cs" />
     <Compile Include="PaintShop\LicensePlate.cs" />
     <Compile Include="PaintShop\MultiReplacement.cs" />
     <Compile Include="PaintShop\PaintableItem.cs" />

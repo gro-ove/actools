@@ -1,10 +1,72 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using AcTools.Render.Base;
+using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForward {
+    public interface IPaintShopSourceReference {
+        event EventHandler Updated;
+    }
+
+    public class ColorReference : IPaintShopSourceReference {
+        private Lazier<Color?> _value;
+
+        public ColorReference(Func<Color?> callback) {
+            _value = Lazier.Create(callback);
+        }
+
+        public Color? GetValue() {
+            return _value.Value;
+        }
+
+        public void RaiseUpdated() {
+            _value.Reset();
+            Updated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler Updated;
+    }
+
+    public class TextureReference : IPaintShopSourceReference {
+        public string TextureName { get; }
+
+        [CanBeNull]
+        private IPaintShopObject _object;
+
+        [CanBeNull]
+        private IRenderableTexture _texture;
+
+        public TextureReference(string textureName) {
+            TextureName = textureName;
+        }
+
+        [CanBeNull]
+        public ShaderResourceView GetValue([NotNull] DeviceContextHolder device, [CanBeNull] IPaintShopObject obj) {
+            if (obj != _object) {
+                _object = obj;
+                _texture = _object?.GetTexture(device, TextureName);
+            }
+
+            return _texture?.Resource;
+        }
+
+        public void RaiseUpdated() {
+            Updated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler Updated;
+
+        public override string ToString() {
+            return $"(ref:{TextureName})";
+        }
+    }
+
     public class PaintShopSource : PaintShopSourceParams {
         public static PaintShopSource InputSource => new PaintShopSource();
         public static PaintShopSource White => new PaintShopSource(System.Drawing.Color.White);
@@ -15,7 +77,10 @@ namespace AcTools.Render.Kn5SpecificForward {
         public readonly Color? Color;
 
         [CanBeNull]
-        public readonly Func<Color?> ColorRef;
+        public readonly ColorReference ColorRef;
+
+        [CanBeNull]
+        public readonly TextureReference TextureRef;
 
         [CanBeNull]
         public readonly string Name;
@@ -34,7 +99,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public bool Custom => Desaturate || NormalizeMax ||
                 RedFrom != PaintShopSourceChannel.Red || GreenFrom != PaintShopSourceChannel.Green ||
                 BlueFrom != PaintShopSourceChannel.Blue || AlphaFrom != PaintShopSourceChannel.Alpha ||
-                ByChannels;
+                ByChannels || TextureRef != null;
 
         public PaintShopSource() {
             UseInput = true;
@@ -58,8 +123,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             Color = baseColor;
         }
 
-        public PaintShopSource([NotNull] Func<Color?> colorRef) {
+        public PaintShopSource([NotNull] ColorReference colorRef) {
             ColorRef = colorRef;
+        }
+
+        public PaintShopSource([NotNull] TextureReference textureRef) {
+            TextureRef = textureRef;
         }
 
         public PaintShopSource([NotNull] string name) {
@@ -69,6 +138,11 @@ namespace AcTools.Render.Kn5SpecificForward {
         public PaintShopSource([NotNull] byte[] data) {
             Data = data;
         }
+
+        [CanBeNull]
+        public IPaintShopSourceReference Reference => (IPaintShopSourceReference)ColorRef ?? TextureRef;
+
+        public bool DoNotCache { get; set; }
 
         [CanBeNull]
         public readonly PaintShopSource RedChannelSource, GreenChannelSource, BlueChannelSource, AlphaChannelSource;
@@ -108,7 +182,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         public override string ToString() {
             if (UseInput) return "( PaintShopSource: use input )";
             if (Color != null) return $"( PaintShopSource: color={Color.Value} )";
-            if (ColorRef != null) return $"( PaintShopSource: color ref={ColorRef.Invoke()} )";
+            if (ColorRef != null) return $"( PaintShopSource: color ref={ColorRef.GetValue()} )";
+            if (TextureRef != null) return $"( PaintShopSource: texture ref={TextureRef} )";
             if (Name != null) return $"( PaintShopSource: name={Name} )";
             if (Data != null) return $"( PaintShopSource: {Data} bytes )";
 

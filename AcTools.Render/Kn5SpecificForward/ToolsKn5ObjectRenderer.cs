@@ -14,7 +14,7 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public partial class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer {
-        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) {}
+        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) { }
 
         protected override void ClearBeforeChangingCar() {
             SelectedObject = null;
@@ -22,7 +22,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool LiveReload {
-            get { return CarNode?.LiveReload ?? false; }
+            get => CarNode?.LiveReload ?? false;
             set {
                 if (CarNode == null || Equals(value, CarNode.LiveReload)) return;
                 CarNode.LiveReload = value;
@@ -33,7 +33,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool? _magickOverideLater;
 
         public bool MagickOverride {
-            get { return _magickOverideLater ?? CarNode?.MagickOverride ?? false; }
+            get => _magickOverideLater ?? CarNode?.MagickOverride ?? false;
             set {
                 if (CarNode == null) {
                     OnPropertyChanged();
@@ -57,7 +57,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _ambientShadowHighlight;
 
         public bool AmbientShadowHighlight {
-            get { return _ambientShadowHighlight; }
+            get => _ambientShadowHighlight;
             set {
                 if (Equals(value, _ambientShadowHighlight)) return;
                 _ambientShadowHighlight = value;
@@ -72,7 +72,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _ambientShadowSizeChanged;
 
         public bool AmbientShadowSizeChanged {
-            get { return _ambientShadowSizeChanged; }
+            get => _ambientShadowSizeChanged;
             set {
                 if (Equals(value, _ambientShadowSizeChanged)) return;
                 _ambientShadowSizeChanged = value;
@@ -81,7 +81,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public float AmbientShadowWidth {
-            get { return CarNode?.AmbientShadowSize.X ?? 0f; }
+            get => CarNode?.AmbientShadowSize.X ?? 0f;
             set {
                 if (CarNode == null) return;
                 if (Equals(value, CarNode.AmbientShadowSize.X)) return;
@@ -92,7 +92,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public float AmbientShadowLength {
-            get { return CarNode?.AmbientShadowSize.Z ?? 0f; }
+            get => CarNode?.AmbientShadowSize.Z ?? 0f;
             set {
                 if (CarNode == null) return;
                 if (Equals(value, CarNode.AmbientShadowSize.Z)) return;
@@ -172,7 +172,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private string _selectedName;
 
         public string SelectedName {
-            get { return _selectedName; }
+            get => _selectedName;
             set {
                 if (Equals(value, _selectedName)) return;
                 _selectedName = value;
@@ -183,7 +183,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private TextureInformation[] _selectedTextures;
 
         public TextureInformation[] SelectedTextures {
-            get { return _selectedTextures; }
+            get => _selectedTextures;
             set {
                 if (Equals(value, _selectedTextures)) return;
                 _selectedTextures = value;
@@ -231,7 +231,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public IKn5RenderableObject SelectedObject {
-            get { return _selectedObject; }
+            get => _selectedObject;
             set {
                 if (Equals(value, _selectedObject)) return;
                 _selectedObject = value;
@@ -290,7 +290,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private Kn5Material _selectedMaterial;
 
         public Kn5Material SelectedMaterial {
-            get { return _selectedMaterial; }
+            get => _selectedMaterial;
             set {
                 if (Equals(value, _selectedMaterial)) return;
                 _selectedMaterial = value;

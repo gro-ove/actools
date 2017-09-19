@@ -1,31 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
-    public class CarPaint : PaintableItem, IPaintableNumberItem {
+    public class CarPaint : TexturePattern {
         public CarPaint() : base(true) {
             LiveryPriority = 1;
-            Patterns = new ChangeableObservableCollection<CarPaintPattern>();
-            Patterns.ItemPropertyChanged += OnPatternChanged;
         }
 
         public CarPaint SetDetailsParams(TextureFileName detailsTexture, bool supportFlakes = true, int flakesSize = 512,
-                bool colorAvailable = true, Color? defaultColor = null,
-                Dictionary<string, CarPaintReplacementSource> replacements = null) {
+                bool colorAvailable = true, Color? defaultColor = null, Dictionary<string, CarPaintReplacementSource> replacements = null) {
             FlakesSize = flakesSize;
             SupportsFlakes = supportFlakes && flakesSize > 0;
             ColorAvailable = colorAvailable;
@@ -41,7 +33,6 @@ namespace AcManager.PaintShop {
                 UpdateColorAllowed();
             }
 
-            AffectedTextures.Add(detailsTexture.FileName);
             return this;
         }
 
@@ -98,6 +89,7 @@ namespace AcManager.PaintShop {
                 OnPropertyChanged();
                 UpdateFlakesAllowed();
                 UpdateColorAllowed();
+                DetailsAspect?.SetDirty();
             }
         }
 
@@ -118,6 +110,8 @@ namespace AcManager.PaintShop {
                 if (Equals(value, _color)) return;
                 _color = value;
                 OnPropertyChanged();
+                RaiseColorChanged(0);
+                DetailsAspect?.SetDirty();
             }
         }
 
@@ -130,69 +124,7 @@ namespace AcManager.PaintShop {
                 if (Equals(value, _flakes)) return;
                 _flakes = value;
                 OnPropertyChanged();
-            }
-        }
-
-        private int _patternNumber;
-
-        [JsonProperty("patternNumber")]
-        public int PatternNumber {
-            get => _patternNumber;
-            set {
-                value = value.Clamp(0, 9999);
-                if (Equals(value, _patternNumber)) return;
-                _patternNumber = value;
-                OnPropertyChanged();
-                _patternChanged = true;
-            }
-        }
-
-        public TextureFileName PatternTexture { get; private set; }
-        public PaintShopSource PatternBase { get; private set; }
-        public PaintShopSource PatternOverlay { get; private set; }
-
-        private CarPaintPattern _currentPattern;
-
-        [CanBeNull]
-        public CarPaintPattern CurrentPattern {
-            get => _currentPattern;
-            set {
-                if (Equals(value, _currentPattern)) return;
-                _currentPattern = value;
-                OnPropertyChanged();
-                UpdateIsNumberActive();
-                _patternChanged = true;
-            }
-        }
-
-        public ChangeableObservableCollection<CarPaintPattern> Patterns { get; }
-
-        public CarPaint SetPatterns(TextureFileName patternTexture, PaintShopSource patternBase, [CanBeNull] PaintShopSource patternOverlay,
-                IEnumerable<CarPaintPattern> patterns) {
-            PatternTexture = patternTexture;
-            PatternBase = patternBase;
-            PatternOverlay = patternOverlay;
-            Patterns.ReplaceEverythingBy(patterns.Prepend(CarPaintPattern.Nothing));
-            CurrentPattern = Patterns[0];
-            _patternChanged = true;
-            AffectedTextures.Add(patternTexture.FileName);
-            return this;
-        }
-
-        private void OnPatternChanged(object sender, PropertyChangedEventArgs e) {
-            Update();
-            _patternChanged = true;
-        }
-
-        private bool _patternEnabled = true;
-
-        public bool PatternEnabled {
-            get => _patternEnabled;
-            set {
-                if (Equals(value, _patternEnabled)) return;
-                _patternEnabled = value;
-                OnPropertyChanged();
-                _patternChanged = true;
+                DetailsAspect?.SetDirty();
             }
         }
 
@@ -200,102 +132,59 @@ namespace AcManager.PaintShop {
 
         public bool GuessColorsFromPreviews { get; internal set; }
 
-        private Color? _previousColor;
-        private double? _previousFlakes;
-        private string _previousColorReplacement;
-        private bool _patternChanged;
+        #region Aspects
+        [CanBeNull]
+        protected PaintableItemAspect DetailsAspect { get; private set; }
 
-        protected override void OnEnabledChanged() {
-            _previousColor = null;
-            _patternChanged = true;
+        protected override void OnPatternEnabledChanged() {
+            base.OnPatternEnabledChanged();
+            if (Equals(DetailsTexture, PatternTexture)) {
+                DetailsAspect?.SetDirty();
+            }
         }
 
-        protected void ApplyColor(IPaintShopRenderer renderer) {
-            var details = DetailsTexture;
-            if (details == null) return;
+        protected override void Initialize() {
+            if (DetailsTexture != null && ColorAvailable) {
+                DetailsAspect = RegisterAspect(DetailsTexture, ApplyColor, SaveColor)
+                        .Subscribe(ColorReplacements?.Values.Select(x => x?.Source));
+            }
 
-            if (_previousColor != Color || _previousFlakes != Flakes || _previousColorReplacement != ColorReplacementValue.Key) {
-                _previousColor = Color;
-                _previousFlakes = Flakes;
-                _previousColorReplacement = ColorReplacementValue.Key;
+            // Set it below so txDiffuse will be processed after txDetails
+            base.Initialize();
+        }
 
-                var value = ColorReplacementValue.Value;
-                if (value != null) {
-                    if (value.Colored) {
-                        renderer.OverrideTextureTint(details.FileName, new[] { Color.ToColor() }, 0d, value.Source, null, null);
-                    } else {
-                        renderer.OverrideTexture(details.FileName, value.Source);
-                    }
+        private void ApplyColor(TextureFileName name, IPaintShopRenderer renderer) {
+            var value = ColorReplacementValue.Value;
+            if (value != null) {
+                if (value.Colored) {
+                    renderer.OverrideTextureTint(name.FileName, new[] { Color.ToColor() }, 0d, value.Source, null, null);
                 } else {
-                    var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
-                    if (SupportsFlakes && Flakes > 0d) {
-                        renderer.OverrideTextureFlakes(details.FileName, color, FlakesSize, Flakes);
-                    } else {
-                        renderer.OverrideTexture(details.FileName, color, 1d);
-                    }
+                    renderer.OverrideTexture(name.FileName, value.Source);
+                }
+            } else {
+                var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
+                if (SupportsFlakes && Flakes > 0d) {
+                    renderer.OverrideTextureFlakes(name.FileName, color, FlakesSize, Flakes);
+                } else {
+                    renderer.OverrideTexture(name.FileName, color, 1d);
                 }
             }
         }
 
-        protected void ApplyPattern(IPaintShopRenderer renderer) {
-            if (!_patternChanged || PatternTexture == null) return;
-            _patternChanged = false;
-
-            if (PatternEnabled && CurrentPattern != null) {
-                renderer.OverrideTexturePattern(PatternTexture.FileName, PatternBase ?? PaintShopSource.InputSource, CurrentPattern.Source,
-                        CurrentPattern.Overlay ?? PatternOverlay, CurrentPattern.Colors.DrawingColors, PatternNumber, CurrentPattern.Numbers,
-                        CurrentPattern.Size);
-            } else {
-                renderer.OverrideTexture(PatternTexture.FileName, null);
-            }
-        }
-
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            ApplyColor(renderer);
-            ApplyPattern(renderer);
-        }
-
-        protected Task SaveColorAsync(IPaintShopRenderer renderer, string location) {
-            var details = DetailsTexture;
-            if (details == null) return Task.Delay(0);
-
+        private Task SaveColor(string location, TextureFileName name, IPaintShopRenderer renderer) {
             var value = ColorReplacementValue.Value;
             if (value != null) {
                 return value.Colored
-                        ? renderer.SaveTextureTintAsync(Path.Combine(location, details.FileName), details.PreferredFormat, new[] { Color.ToColor() }, 0d,
-                                value.Source, null, null)
-                        : renderer.SaveTextureAsync(Path.Combine(location, details.FileName), details.PreferredFormat, value.Source);
+                        ? renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat, new[] { Color.ToColor() }, 0d, value.Source,
+                                null, null) : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, value.Source);
             }
 
             var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
             return SupportsFlakes && Flakes > 0d
-                    ? renderer.SaveTextureFlakesAsync(Path.Combine(location, details.FileName), details.PreferredFormat, color,
-                            FlakesSize, Flakes)
-                    : renderer.SaveTextureAsync(Path.Combine(location, details.FileName), details.PreferredFormat, color, 1d);
+                    ? renderer.SaveTextureFlakesAsync(Path.Combine(location, name.FileName), name.PreferredFormat, color, FlakesSize, Flakes)
+                    : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, color, 1d);
         }
-
-        protected Task SavePatternAsync(IPaintShopRenderer renderer, string location) {
-            return PatternEnabled && PatternTexture != null && CurrentPattern != null
-                    ? renderer.SaveTexturePatternAsync(Path.Combine(location, PatternTexture.FileName), PatternTexture.PreferredFormat,
-                            PatternBase ?? PaintShopSource.InputSource, CurrentPattern.Source, CurrentPattern.Overlay ?? PatternOverlay,
-                            CurrentPattern.Colors.DrawingColors, PatternNumber, CurrentPattern.Numbers, CurrentPattern.Size)
-                    : Task.Delay(0);
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            await SaveColorAsync(renderer, location);
-            if (cancellation.IsCancellationRequested) return;
-            await SavePatternAsync(renderer, location);
-        }
-
-        protected override void ResetOverride(IPaintShopRenderer renderer) {
-            if (DetailsTexture != null) {
-                renderer.OverrideTexture(DetailsTexture.FileName, null);
-            }
-            if (PatternTexture != null) {
-                renderer.OverrideTexture(PatternTexture.FileName, null);
-            }
-        }
+        #endregion
 
         public override JObject Serialize() {
             var result = base.Serialize();
@@ -303,12 +192,6 @@ namespace AcManager.PaintShop {
 
             if (ColorReplacementValue.Value != null) {
                 result["colorReplacementValue"] = PaintShop.NameToId(ColorReplacementValue.Key, false);
-            }
-
-            if (PatternTexture != null) {
-                result["patternEnabled"] = PatternEnabled;
-                result["patternSelected"] = CurrentPattern?.DisplayName;
-                result["patternColors"] = SerializeColors(CurrentPattern?.Colors);
             }
 
             return result;
@@ -325,25 +208,19 @@ namespace AcManager.PaintShop {
                     ColorReplacementValue = value.Value;
                 }
             }
-
-            if (PatternTexture != null) {
-                PatternEnabled = data.GetBoolValueOnly("patternEnabled") != false;
-                var current = data.GetStringValueOnly("patternSelected");
-                CurrentPattern = Patterns.FirstOrDefault(x => String.Equals(x.DisplayName, current, StringComparison.OrdinalIgnoreCase)) ?? CurrentPattern;
-                if (CurrentPattern != null) {
-                    DeserializeColors(CurrentPattern.Colors, data, "patternColors");
-                }
-            }
         }
-
-        int IPaintableNumberItem.Number {
-            set => PatternNumber = value;
-        }
-
-        public bool IsNumberActive { get; set; }
 
         private void UpdateIsNumberActive() {
             IsNumberActive = CurrentPattern?.HasNumbers == true;
+        }
+
+        public override Color? GetColor(int colorIndex) {
+            if (ColorAllowed) {
+                if (colorIndex == 0) return Color;
+                colorIndex--;
+            }
+
+            return CurrentPattern?.Colors.ActualColors.ElementAtOrDefault(colorIndex);
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {
@@ -70,13 +72,71 @@ namespace AcManager.PaintShop {
                 });
             }
 
+            [CanBeNull]
+            private List<PaintableItem> _list;
+
+            [CanBeNull]
+            private PaintableItem GetSource(string key) {
+                return _list?.FirstOrDefault(x => string.Equals(x.RefId, key, StringComparison.OrdinalIgnoreCase));
+            }
+
             [NotNull]
-            public Func<Color?> GetColorReference([NotNull] string key) {
-                return () => Color.DarkOrange;
+            public ColorReference GetColorReference([NotNull] string ruleId, int colorIndex) {
+                ColorReference result = null;
+                var source = new Lazier<AspectsPaintableItem>(() => {
+                    var sourceFound = GetSource(ruleId) as AspectsPaintableItem;
+                    if (sourceFound != null) {
+                        sourceFound.ColorChanged += (sender, args) => {
+                            if (args.ColorIndex == null || args.ColorIndex == colorIndex) {
+                                result?.RaiseUpdated();
+                            }
+                        };
+                    }
+
+                    return sourceFound;
+                });
+
+                result = new ColorReference(() => source.Value?.GetColor(colorIndex)?.ToColor(255));
+                return result;
+            }
+
+            [CanBeNull]
+            private List<TextureReference> _references;
+
+            [NotNull]
+            public TextureReference GetTextureReference([NotNull] string textureName) {
+                if (_references == null) _references = new List<TextureReference>();
+
+                var result = new TextureReference(textureName);
+                _references.Add(result);
+                return result;
             }
 
             public void SetRefList(List<PaintableItem> list) {
+                if (_list != null) {
+                    foreach (var item in _list.OfType<AspectsPaintableItem>()) {
+                        item.TextureChanged -= OnTextureChanged;
+                    }
+                }
 
+                _list = list;
+
+                if (_list != null) {
+                    foreach (var item in _list.OfType<AspectsPaintableItem>()) {
+                        item.TextureChanged += OnTextureChanged;
+                    }
+                }
+            }
+
+            private void OnTextureChanged(object o, TextureChangedEventArgs e) {
+                if (_references == null) return;
+
+                for (var i = _references.Count - 1; i >= 0; i--) {
+                    var reference = _references[i];
+                    if (reference.TextureName == e.TextureName) {
+                        reference.RaiseUpdated();
+                    }
+                }
             }
         }
     }

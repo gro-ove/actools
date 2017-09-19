@@ -691,7 +691,7 @@ namespace AcManager.Tools.Helpers {
             public StarterType SelectedStarterType {
                 get => _selectedStarterType ??
                         (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.GetString("Settings.DriveSettings.SelectedStarterType")) ??
-                                StarterTypes.First());
+                                AppIdStarterType);
                 set {
                     if (Equals(value, _selectedStarterType)) return;
                     _selectedStarterType = value;

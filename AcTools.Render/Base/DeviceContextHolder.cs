@@ -221,9 +221,8 @@ namespace AcTools.Render.Base {
         /// <returns></returns>
         [NotNull]
         public T GetEffect<T>([CanBeNull] Action<T> customPreInitialization) where T : IEffectWrapper, new() {
-            IEffectWrapper result;
             var type = typeof(T);
-            if (_effects.TryGetValue(type, out result)) return (T)result;
+            if (_effects.TryGetValue(type, out var result)) return (T)result;
 
             var created = (T)(_effects[type] = new T());
             customPreInitialization?.Invoke(created);
@@ -239,8 +238,7 @@ namespace AcTools.Render.Base {
         /// <returns></returns>
         [CanBeNull]
         public T GetExistingEffect<T>() where T : class, IEffectWrapper {
-            IEffectWrapper result;
-            return _effects.TryGetValue(typeof(T), out result) ? (T)result : null;
+            return _effects.TryGetValue(typeof(T), out var result) ? (T)result : null;
         }
 
         private readonly Dictionary<Type, object> _something = new Dictionary<Type, object>();
@@ -262,9 +260,7 @@ namespace AcTools.Render.Base {
 
         public T TryToGet<T>() where T : class {
             var key = typeof(T);
-            object result;
-
-            if (_something.TryGetValue(key, out result)) {
+            if (_something.TryGetValue(key, out var result)) {
                 return (T)result;
             }
 
@@ -308,9 +304,8 @@ namespace AcTools.Render.Base {
         /// <returns></returns>
         [NotNull]
         public T GetHelper<T>() where T : IRenderHelper, new() {
-            IRenderHelper result;
             var type = typeof(T);
-            if (_helpers.TryGetValue(type, out result)) return (T)result;
+            if (_helpers.TryGetValue(type, out var result)) return (T)result;
 
             var created = (T)(_helpers[type] = new T());
             created.OnInitialize(this);
@@ -327,6 +322,9 @@ namespace AcTools.Render.Base {
             return new ActionAsDisposable(() => {
                 DeviceContext.Rasterizer.SetViewports(viewports);
                 DeviceContext.OutputMerger.SetTargets(targets);
+
+                // TODO: WHAT IS GOING ON HERE?
+                // targets.DisposeEverything();
             });
         }
 
@@ -357,9 +355,7 @@ namespace AcTools.Render.Base {
 
         public ShaderResourceView GetRandomTexture(int width, int height) {
             var size = Tuple.Create(width, height);
-            ShaderResourceView texture;
-
-            if (!_randomTextures.TryGetValue(size, out texture)) {
+            if (!_randomTextures.TryGetValue(size, out var texture)) {
                 var r = new Random((width * 397) ^ height);
                 texture = CreateTextureView(width, height, (x, y) => Color.FromArgb((int)(r.NextDouble() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
                 _randomTextures[size] = texture;

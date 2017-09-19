@@ -285,5 +285,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public void SetInvertedRasterizerState(RasterizerState state) {
             _rasterizerState = state;
         }
+
+        public override void Dispose() {
+            base.Dispose();
+            _object.Dispose();
+        }
     }
 }

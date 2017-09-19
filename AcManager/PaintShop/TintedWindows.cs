@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using Newtonsoft.Json;
 
 namespace AcManager.PaintShop {
+    // TODO: Unite with ColoredItem?
     public class TintedWindows : ColoredItem {
         public double DefaultAlpha { get; set; }
 
@@ -31,6 +32,21 @@ namespace AcManager.PaintShop {
             FixedColor = fixedColor;
         }
 
+        protected override void Initialize() {
+            foreach (var replacement in Replacements) {
+                RegisterAspect(replacement.Key, GetApply(replacement.Value), GetSave(replacement.Value));
+            }
+        }
+
+        private Action<TextureFileName, IPaintShopRenderer> GetApply(PaintShop.TintedEntry v) {
+            return (name, renderer) => renderer.OverrideTextureTint(name.FileName, Colors.DrawingColors, Alpha, v.Source, v.Mask, v.Overlay);
+        }
+
+        private Func<string, TextureFileName, IPaintShopRenderer, Task> GetSave(PaintShop.TintedEntry v) {
+            return (location, name, renderer) => renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat,
+                    Colors.DrawingColors, Alpha, v.Source, v.Mask, v.Overlay);
+        }
+
         public override string DisplayName { get; set; } = "Windows";
 
         private double? _alpha;
@@ -49,21 +65,6 @@ namespace AcManager.PaintShop {
         public double Transparency {
             get => 1d - Alpha;
             set => Alpha = 1d - value;
-        }
-
-        protected override void ApplyOverride(IPaintShopRenderer renderer) {
-            foreach (var replacement in Replacements) {
-                renderer.OverrideTextureTint(replacement.Key.FileName, Colors.DrawingColors, Alpha,
-                        replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
-            }
-        }
-
-        protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location, CancellationToken cancellation) {
-            foreach (var replacement in Replacements) {
-                await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key.FileName), replacement.Key.PreferredFormat, Colors.DrawingColors,
-                        Alpha, replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
-                if (cancellation.IsCancellationRequested) return;
-            }
         }
     }
 }

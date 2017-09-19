@@ -555,7 +555,7 @@ namespace AcManager.Tools {
                         if (item.LiveryColorIds == null) continue;
                         for (var i = 0; i < item.LiveryColorIds.Length; i++) {
                             var slotId = i;
-                            var slotTexture = item.AffectedTextures.ElementAtOrDefault(item.LiveryColorIds[i]);
+                            var slotTexture = item.GetAffectedTextures().ElementAtOrDefault(item.LiveryColorIds[i]);
                             Logging.Debug($"Extra: {slotId} = {slotTexture} (priority: {item.LiveryPriority})");
 
                             if (slotId < 0 || slotId > 2 || slotTexture == null) continue;

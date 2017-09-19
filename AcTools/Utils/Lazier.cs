@@ -7,12 +7,12 @@ using JetBrains.Annotations;
 namespace AcTools.Utils {
     public static class Lazier {
         [NotNull]
-        public static Lazier<T> Create<T>(Func<T> fn) {
+        public static Lazier<T> Create<T>([CanBeNull] Func<T> fn) {
             return new Lazier<T>(fn);
         }
 
         [NotNull]
-        public static Lazier<T> CreateAsync<T>(Func<Task<T>> fn, T loadingValue = default(T)) {
+        public static Lazier<T> CreateAsync<T>([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
             return new Lazier<T>(fn, loadingValue);
         }
 
@@ -136,16 +136,16 @@ namespace AcTools.Utils {
             }
         }
 
-        public Lazier(Func<Task<T>> fn, T loadingValue = default(T)) {
+        public Lazier([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
             _fnTask = fn;
             _loadingValue = loadingValue;
         }
 
-        public Lazier(Func<T> fn) {
+        public Lazier([CanBeNull] Func<T> fn) {
             _fn = fn;
         }
 
-        public Lazier(T obj) {
+        public Lazier([CanBeNull] T obj) {
             _value = obj;
         }
 

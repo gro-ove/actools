@@ -34,8 +34,8 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public override bool IsEnabled {
-            get { return !IsEmpty && base.IsEnabled; }
-            set { base.IsEnabled = value; }
+            get => !IsEmpty && base.IsEnabled;
+            set => base.IsEnabled = value;
         }
 
         public override int GetTrianglesCount() {
@@ -192,8 +192,7 @@ namespace AcTools.Render.Base.Objects {
                 var v1 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 1]].Position, matrix);
                 var v2 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 2]].Position, matrix);
 
-                float distance;
-                if (!Ray.Intersects(ray, v0, v1, v2, out distance) || distance >= min) continue;
+                if (!Ray.Intersects(ray, v0, v1, v2, out var distance) || distance >= min) continue;
                 min = distance;
                 found = true;
             }
