@@ -21,7 +21,7 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     
     Apart from simple rendering, has a bunch of special modes, allowing to update ambient shadows, AO maps, recalculate tracks’ maps and outlines.
     
-    [![Dark Showroom](https://trello-attachments.s3.amazonaws.com/5717b937f2d3e46d53187719/58a61e2fd6f33aff36eaf9c6/660a9bbe933e4e5c0784411943a80955/__custom_showroom_1488803900.jpg)](https://trello-attachments.s3.amazonaws.com/5717b937f2d3e46d53187719/58a61e2fd6f33aff36eaf9c6/660a9bbe933e4e5c0784411943a80955/__custom_showroom_1488803900.jpg)
+    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1506887799.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1506887799.jpg)
         
     [![Dark Showroom](http://i.imgur.com/uWV4zTw.jpg)](http://i.imgur.com/uWV4zTw.jpg)
     
