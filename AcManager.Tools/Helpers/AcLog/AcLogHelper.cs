@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -73,6 +76,20 @@ namespace AcManager.Tools.Helpers.AcLog {
                     crash = log.Substring(i);
                     if (crash.Contains(@" evaluateTimeFromTrackSpline")) {
                         return new WhatsGoingOn(WhatsGoingOnType.TimeAttackNotSupported);
+                    }
+
+                    if (crash.Contains(@"PyTraceBack_Print")) {
+                        var inits = Regex.Matches(log, @"\bInit PyPlugin:([^\n\r]+)").OfType<Match>().LastOrDefault();
+                        if (inits?.Success == true) {
+                            var appId = inits.Groups[1].Value.Trim();
+                            return new WhatsGoingOn(WhatsGoingOnType.AppMightBeBroken, appId){
+                                Fix = AcSettingsHolder.Python.IsActivated(appId) ? token => {
+                                    AcSettingsHolder.Python.SetActivated(appId, false);
+                                    return Task.Delay(0);
+                                } : (Func<CancellationToken, Task>)null,
+                                FixDisplayName = "Disable App"
+                            };
+                        }
                     }
 
                     if (crash.Contains(@"SkyBox::updateCloudsGeneration")) {

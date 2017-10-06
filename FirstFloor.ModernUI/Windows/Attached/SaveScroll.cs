@@ -46,41 +46,41 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void OnKeyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var scrollViewer = d as ScrollViewer;
-            if (scrollViewer != null) {
+            if (d is ScrollViewer scrollViewer) {
                 ApplyKeyChanged(scrollViewer, e);
                 return;
             }
 
-            var listBox = d as ListBox;
-            if (listBox == null) return;
-            if (listBox.IsLoaded) {
-                scrollViewer = listBox.FindVisualChild<ScrollViewer>();
-                ApplyKeyChanged(scrollViewer, e);
-            }
+            if (d is ListBox listBox) {
+                if (listBox.IsLoaded) {
+                    scrollViewer = listBox.FindVisualChild<ScrollViewer>();
+                    ApplyKeyChanged(scrollViewer, e);
+                }
 
-            RoutedEventHandler handler = null;
-            handler = (sender, args) => {
-                listBox.Loaded -= handler;
-                scrollViewer = listBox.FindVisualChild<ScrollViewer>();
-                ApplyKeyChanged(scrollViewer, e);
-            };
-            listBox.Loaded += handler;
+                void Handler(object sender, RoutedEventArgs args) {
+                    listBox.Loaded -= Handler;
+                    scrollViewer = listBox.FindVisualChild<ScrollViewer>();
+                    ApplyKeyChanged(scrollViewer, e);
+                }
+
+                listBox.Loaded += Handler;
+            }
         }
 
         [CanBeNull]
         private static string GetProperKey(object v) {
-            var viewer = v as ScrollViewer;
-            if (viewer == null) return null;
+            if (v is ScrollViewer viewer) {
+                var r = GetKey(viewer);
+                if (r == null) {
+                    var p = viewer.GetParent<ListBox>();
+                    if (p == null) return null;
+                    r = GetKey(p);
+                }
 
-            var r = GetKey(viewer);
-            if (r == null) {
-                var p = viewer.GetParent<ListBox>();
-                if (p == null) return null;
-                r = GetKey(p);
+                return r == null ? null : @".scroll:" + r;
             }
 
-            return r == null ? null : @".scroll:" + r;
+            return null;
         }
 
         private static DateTime _lastScrolled;

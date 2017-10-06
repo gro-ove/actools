@@ -14,8 +14,9 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState, _shadowsDepthState;
         private BlendState _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
-        private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState,
-                _ambientShadowState, _shadowsState, _shadowsPointState;
+
+        private RasterizerState _doubleSidedState, _doubleSidedClockwiseState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState,
+                _wireframeInvertedState, _ambientShadowState, _shadowsState, _shadowsPointState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -162,6 +163,14 @@ namespace AcTools.Render.Base {
                     IsDepthClipEnabled = false
                 }));
 
+        public RasterizerState DoubleSidedClockwiseState => _doubleSidedClockwiseState ?? (_doubleSidedClockwiseState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Solid,
+                    CullMode = CullMode.None,
+                    IsFrontCounterclockwise = false,
+                    IsDepthClipEnabled = false
+                }));
+
         public RasterizerState InvertedState => _invertedState ?? (_invertedState =
                 RasterizerState.FromDescription(_device, new RasterizerStateDescription {
                     FillMode = FillMode.Solid,
@@ -237,6 +246,7 @@ namespace AcTools.Render.Base {
                 DisposeHelper.Dispose(ref _minState);
                 DisposeHelper.Dispose(ref _multiplyState);
                 DisposeHelper.Dispose(ref _doubleSidedState);
+                DisposeHelper.Dispose(ref _doubleSidedClockwiseState);
                 DisposeHelper.Dispose(ref _doubleSidedSmoothLinesState);
                 DisposeHelper.Dispose(ref _invertedState);
                 DisposeHelper.Dispose(ref _wireframeState);

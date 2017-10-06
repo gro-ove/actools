@@ -129,7 +129,7 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Integrated.RsrLimitTemperature && properties.ConditionProperties != null &&
                     (properties.ConditionProperties.AmbientTemperature < 10d || properties.ConditionProperties.RoadTemperature < 10d) &&
                     AcSettingsHolder.Python.IsActivated("RsrLiveTime")) {
-                Toast.Show("Temperature Set To 10 °C", "RSR is active, and there is rumour it’s gonna ban all users which use temperatures lower than 10 °C");
+                Toast.Show("Temperature Set To 10 °C", "RSR is active, and according to its rules, you are not allowed to use temperatures lower than 10 °C");
                 properties.ConditionProperties.AmbientTemperature = 10d;
                 properties.ConditionProperties.RoadTemperature = 10d;
             }

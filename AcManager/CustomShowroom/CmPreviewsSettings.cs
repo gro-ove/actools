@@ -18,6 +18,7 @@ using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -101,6 +102,9 @@ namespace AcManager.CustomShowroom {
                 LeftDoorOpen = LeftDoorOpen,
                 RightDoorOpen = RightDoorOpen,
                 ShowDriver = ShowDriver,
+                TryToGuessCarLights = Renderer.TryToGuessCarLights,
+                LoadCarLights = Renderer.LoadCarLights,
+                LoadShowroomLights = Renderer.LoadShowroomLights
             };
 
             Save(obj);
@@ -157,6 +161,10 @@ namespace AcManager.CustomShowroom {
         }
 
         protected void Load(SaveableData o) {
+            Renderer.TryToGuessCarLights = o.TryToGuessCarLights;
+            Renderer.LoadCarLights = o.LoadCarLights;
+            Renderer.LoadShowroomLights = o.LoadShowroomLights;
+
             LoadSize(o);
             LoadCar(o);
             base.Load(o);
@@ -186,23 +194,23 @@ namespace AcManager.CustomShowroom {
         }
 
         protected new class SaveableData : DarkRendererSettings.SaveableData {
-            public override Color AmbientDownColor { get; set; } = Color.FromRgb(0xc0, 0xcc, 0xcc);
-            public override Color AmbientUpColor { get; set; } = Color.FromRgb(0xcc, 0xcc, 0xc0);
-            public override Color BackgroundColor { get; set; } = Color.FromRgb(0, 0, 0);
-            public override Color LightColor { get; set; } = Color.FromRgb(255, 255, 255);
+            public override Color AmbientDownColor { get; set; } = Color.FromRgb(0x51, 0x5E, 0x6D);
+            public override Color AmbientUpColor { get; set; } = Color.FromRgb(0xC6, 0xE6, 0xFF);
+            public override Color BackgroundColor { get; set; } = Colors.White;
+            public override Color LightColor { get; set; } = Color.FromRgb(0xFF, 0xEA, 0xCC);
 
             public override int MsaaMode { get; set; }
-            public override int SsaaMode { get; set; } = 16;
-            public override int ShadowMapSize { get; set; } = 4096;
+            public override int SsaaMode { get; set; } = 4;
+            public override int ShadowMapSize { get; set; } = 1024;
 
-            public override string ShowroomId { get; set; }
+            public override string ShowroomId { get; set; } = "at_previews";
             public override string ColorGrading { get; set; }
 
-            public override ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Reinhard;
+            public override ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
             public override AoType AoType { get; set; } = AoType.Ssao;
 
             [JsonProperty("CubemapAmbientValue")]
-            public override float CubemapAmbient { get; set; } = 0.5f;
+            public override float CubemapAmbient { get; set; }
             public override bool CubemapAmbientWhite { get; set; } = true;
             public override bool EnableShadows { get; set; } = true;
             public override bool FlatMirror { get; set; }
@@ -210,7 +218,7 @@ namespace AcManager.CustomShowroom {
             public override bool UseBloom { get; set; } = true;
             public override bool UseColorGrading { get; set; }
             public override bool UseFxaa { get; set; } = true;
-            public override bool UsePcss { get; set; } = true;
+            public override bool UsePcss { get; set; }
             public override bool UseSmaa { get; set; }
             public override bool UseAo { get; set; }
             public override bool UseSslr { get; set; } = true;
@@ -218,30 +226,42 @@ namespace AcManager.CustomShowroom {
             public override bool ReflectionsWithShadows { get; set; } = false;
 
             public override float AmbientBrightness { get; set; } = 3f;
-            public override float BackgroundBrightness { get; set; } = 1f;
+            public override float BackgroundBrightness { get; set; } = 3f;
             public override float FlatMirrorReflectiveness { get; set; } = 0.6f;
-            public override float LightBrightness { get; set; } = 0.5f;
-            public override float Lightθ { get; set; } = 50f;
-            public override float Lightφ { get; set; } = 104f;
-            public override float MaterialsReflectiveness { get; set; } = 1.2f;
-            public override float ToneExposure { get; set; } = 1.2f;
-            public override float ToneGamma { get; set; } = 1f;
-            public override float ToneWhitePoint { get; set; } = 1.2f;
+            public override float LightBrightness { get; set; } = 12f;
+            public override float Lightθ { get; set; } = 45f;
+            public override float Lightφ { get; set; } = 0f;
+            public override float MaterialsReflectiveness { get; set; } = 0.66f;
+            public override float ToneExposure { get; set; } = 1.634f;
+            public override float ToneGamma { get; set; } = 0.85f;
+            public override float ToneWhitePoint { get; set; } = 2.0f;
             public override float PcssSceneScale { get; set; } = 0.06f;
             public override float PcssLightScale { get; set; } = 2f;
-            public override float BloomRadiusMultiplier { get; set; } = 0.8f;
-            public override float SsaoOpacity { get; set; } = 0.3f;
+            public override float BloomRadiusMultiplier { get; set; } = 1f;
+
+            [JsonProperty("SsaoOpacity")]
+            public override float AoOpacity { get; set; } = 0.3f;
 
             public int Width = CommonAcConsts.PreviewWidth, Height = CommonAcConsts.PreviewHeight;
-            public bool SoftwareDownsize, AlignCar = true, AlignCameraHorizontally = true, AlignCameraVertically, AlignCameraHorizontallyOffsetRelative = true,
-                    AlignCameraVerticallyOffsetRelative = true, HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver;
+            public bool SoftwareDownsize, AlignCar = true,
+                    AlignCameraHorizontally, AlignCameraVertically, AlignCameraHorizontallyOffsetRelative, AlignCameraVerticallyOffsetRelative,
+                    HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver,
+                    TryToGuessCarLights = true, LoadCarLights, LoadShowroomLights;
             public string FileName { get; set; } = "preview.jpg";
 
-            public override double[] CameraPosition { get; set; } = { 3.194, 0.342, 13.049 };
-            public override double[] CameraLookAt { get; set; } = { 2.945, 0.384, 12.082 };
-            public override float CameraFov { get; set; } = 9f;
+            public override bool UseDof { get; set; } = true;
+            public override float DofFocusPlane { get; set; } = 1.6f;
+            public override float DofScale { get; set; } = 1f;
+            public override bool UseAccumulationDof { get; set; } = true;
+            public override bool AccumulationDofBokeh { get; set; }
+            public override int AccumulationDofIterations { get; set; } = 40;
+            public override float AccumulationDofApertureSize { get; set; } = 0f;
 
-            public float AlignCameraHorizontallyOffset = 0.3f, AlignCameraVerticallyOffset, SteerDeg;
+            public override double[] CameraPosition { get; set; } = { -3.8676, 1.4236, 4.7038 };
+            public override double[] CameraLookAt { get; set; } = { 0, 0.7, 0.5 };
+            public override float CameraFov { get; set; } = 30f;
+
+            public float AlignCameraHorizontallyOffset, AlignCameraVerticallyOffset, SteerDeg;
             public string Checksum { get; set; }
 
             /// <summary>
@@ -298,7 +318,7 @@ namespace AcManager.CustomShowroom {
                     PcssSceneScale = PcssSceneScale,
                     PcssLightScale = PcssLightScale,
                     BloomRadiusMultiplier = BloomRadiusMultiplier,
-                    SsaoOpacity = SsaoOpacity,
+                    AoOpacity = AoOpacity,
 
                     UseDof = UseDof,
                     DofFocusPlane = DofFocusPlane,
@@ -331,6 +351,10 @@ namespace AcManager.CustomShowroom {
                     AlignCameraVerticallyOffset = AlignCameraVerticallyOffset,
                     SteerDeg = SteerDeg,
 
+                    TryToGuessCarLights = TryToGuessCarLights,
+                    LoadCarLights = LoadCarLights,
+                    LoadShowroomLights= LoadShowroomLights,
+
                     DelayedConvertation = false,
                     MeshDebugMode = false,
                     SuspensionDebugMode = false,
@@ -361,6 +385,12 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.ActualWidth):
                 case nameof(Renderer.ActualHeight):
                     SyncSize();
+                    return;
+
+                case nameof(Renderer.LoadCarLights):
+                case nameof(Renderer.LoadShowroomLights):
+                case nameof(Renderer.TryToGuessCarLights):
+                    ActionExtension.InvokeInMainThread(SaveLater);
                     return;
             }
 
@@ -708,6 +738,10 @@ namespace AcManager.CustomShowroom {
             ResetCamera();
             ResetCar();
             base.Reset(saveLater);
+
+            Renderer.LoadCarLights = false;
+            Renderer.LoadShowroomLights = false;
+            Renderer.TryToGuessCarLights = true;
         }
 
         protected override async Task Share() {
@@ -732,6 +766,9 @@ namespace AcManager.CustomShowroom {
             data.AlignCar = false;
             data.AlignCameraHorizontally = false;
             data.AlignCameraVertically = false;
+            data.LoadCarLights = renderer.LoadCarLights;
+            data.LoadShowroomLights = renderer.LoadShowroomLights;
+            data.TryToGuessCarLights = renderer.TryToGuessCarLights;
 
             var car = renderer.CarNode;
             if (car != null) {

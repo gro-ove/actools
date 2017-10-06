@@ -82,8 +82,10 @@
               <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
             </DockPanel>
 
-            <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
+            <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
               <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource Label.Padding}" Width="80" DockPanel.Dock="Left" />
+              <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" HorizontalAlignment="Right"
+                  Width="24" Height="16" DockPanel.Dock="Right" RenderOptions.BitmapScalingMode="LowQuality" Margin="4 -6 0 0" VerticalAlignment="Bottom" />
               <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
             </DockPanel>
 

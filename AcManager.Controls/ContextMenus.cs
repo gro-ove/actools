@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -74,8 +72,12 @@ namespace AcManager.Controls {
                 typeof(ContextMenus), new UIPropertyMetadata(OnContextMenuChanged));
 
         private static void OnContextMenuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            if (!(d is FrameworkElement element) || e.NewValue == null) return;
+            if (d is FrameworkElement element && e.NewValue != null) {
+                ResetContextMenu(element);
+            }
+        }
 
+        private static void ResetContextMenu(FrameworkElement element) {
             SetIsDirty(element, true);
             element.MouseEnter -= OnElementMouseEnter;
             element.MouseEnter += OnElementMouseEnter;
@@ -84,6 +86,28 @@ namespace AcManager.Controls {
 
             if (element.IsMouseOver) {
                 UpdateContextMenu(element);
+            }
+        }
+
+        public static AcObjectNew GetGenericObject(DependencyObject obj) {
+            return (AcObjectNew)obj.GetValue(GenericObjectProperty);
+        }
+
+        public static void SetGenericObject(DependencyObject obj, AcObjectNew value) {
+            obj.SetValue(GenericObjectProperty, value);
+        }
+
+        public static readonly DependencyProperty GenericObjectProperty = DependencyProperty.RegisterAttached("GenericObject", typeof(AcObjectNew),
+                typeof(ContextMenus), new UIPropertyMetadata(OnGenericObjectChanged));
+
+        private static void OnGenericObjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            switch (e.NewValue) {
+                case CarObject o:
+                    SetCar(d, o);
+                    break;
+                case TrackObjectBase o:
+                    SetTrack(d, o);
+                    break;
             }
         }
 

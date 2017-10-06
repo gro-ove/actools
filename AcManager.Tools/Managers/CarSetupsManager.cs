@@ -81,12 +81,13 @@ namespace AcManager.Tools.Managers {
             }
         }
 
+        [CanBeNull]
         private readonly List<RemoteSetupInformation> _data;
 
         public CarSetupsRemoteSource Source { get; }
         public string CarId { get; }
 
-        protected RemoteSetupsManager(CarSetupsRemoteSource source, string carId, List<RemoteSetupInformation> data) {
+        protected RemoteSetupsManager(CarSetupsRemoteSource source, string carId, [CanBeNull] List<RemoteSetupInformation> data) {
             _data = data;
             Source = source;
             CarId = carId;
@@ -103,6 +104,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (_data == null) yield break;
             foreach (var d in _data) {
                 var o = new RemoteCarSetupObject(this, d);
                 o.Load();
@@ -115,10 +117,9 @@ namespace AcManager.Tools.Managers {
     public class TheSetupMarketAsManager : RemoteSetupsManager {
         private TheSetupMarketAsManager(string carId, List<RemoteSetupInformation> data) : base(CarSetupsRemoteSource.TheSetupMarket, carId, data) { }
 
-        [ItemCanBeNull]
+        [ItemNotNull]
         public static async Task<TheSetupMarketAsManager> CreateAsync(CarObject car) {
-            var data = await TheSetupMarketApiProvider.GetAvailableSetups(car.Id);
-            return data == null ? null : new TheSetupMarketAsManager(car.Id, data);
+            return new TheSetupMarketAsManager(car.Id, await TheSetupMarketApiProvider.GetAvailableSetups(car.Id).ConfigureAwait(false));
         }
     }
 }

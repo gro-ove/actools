@@ -68,6 +68,12 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         private static List<RemoteSetupInformation> _parsed;
         private static DateTime _parsedLifeSpan;
 
+        private static string[] ListUrls = {
+            "http://46.173.219.83:12012/setups",
+            // "http://thesetupmarketcache-x4fab.rhcloud.com/setups",
+            "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa"
+        };
+
         [ItemCanBeNull]
         public static async Task<List<RemoteSetupInformation>> GetAvailableSetups(string carId, CancellationToken cancellation = default(CancellationToken)) {
             if (_parsed != null && DateTime.Now < _parsedLifeSpan) {
@@ -77,13 +83,27 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
             }
 
             try {
-                var data = await Cache.GetStringAsync(SettingsHolder.Integrated.TheSetupMarketCacheServer ?
-                        "http://thesetupmarketcache-x4fab.rhcloud.com/setups" :
-                        "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa", "List.json",
-                        SettingsHolder.Integrated.TheSetupMarketCacheListPeriod.TimeSpan).ConfigureAwait(false);
-                if (cancellation.IsCancellationRequested || data == null) return null;
+                foreach (var url in SettingsHolder.Integrated.TheSetupMarketCacheServer ? ListUrls : new[]{ ListUrls.Last() }) {
+                    Logging.Debug(url);
 
-                _parsed = await Task.Run(() => JArray.Parse(data).Select(x => RemoteSetupInformation.FromTheSetupMarketJToken(x)).NonNull().ToList());
+                    try {
+                        var data = await Cache.GetStringAsync(url, "List.json",
+                                SettingsHolder.Integrated.TheSetupMarketCacheListPeriod.TimeSpan).ConfigureAwait(false);
+                        _parsed = await Task.Run(() => JArray.Parse(data).Select(x =>
+                                RemoteSetupInformation.FromTheSetupMarketJToken(x)).NonNull().ToList());
+                        if (cancellation.IsCancellationRequested || data == null) return null;
+                    } catch (Exception e) {
+                        Logging.Warning($"Error while loading {url}: {e}");
+                        if (url == ListUrls.Last()) {
+                            throw;
+                        }
+                    }
+                }
+
+                if (_parsed == null) {
+                    throw new Exception("Failed to load any data");
+                }
+
                 _parsedLifeSpan = DateTime.Now + TimeSpan.FromHours(3);
                 return _parsed.Where(x => x.CarId == carId).ToList();
             } catch (Exception e) {

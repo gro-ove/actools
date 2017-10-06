@@ -5,14 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public class TaskbarHolder : IDisposable {
         internal TaskbarHolder(double priority, Func<Tuple<TaskbarState, double>> periodicCallback) {
             _priority = priority;
@@ -87,25 +83,29 @@ namespace AcManager.Tools.Helpers {
         private static readonly List<TaskbarHolder> Holders = new List<TaskbarHolder>();
 
         [CanBeNull]
-        private static TaskbarProgress Progress => LazyProgress.Value;
+        private static TaskbarProgress Progress => _lazyProgress.Value;
 
-        private static Lazier<TaskbarProgress> LazyProgress = new Lazier<TaskbarProgress>(() => {
+        private static Lazy<TaskbarProgress> _lazyProgress = new Lazy<TaskbarProgress>(ValueFactory);
+
+        private static TaskbarProgress ValueFactory() {
             var window = Application.Current?.MainWindow;
             return window == null ? null : new TaskbarProgress(window);
-        }) {
-            AutoDispose = true
-        };
+        }
 
         static TaskbarService() {
             DpiAwareWindow.NewWindowOpened += (sender, args) => {
-                LazyProgress.Reset();
+                if (_lazyProgress.IsValueCreated) {
+                    _lazyProgress.Value?.Dispose();
+                }
+
+                _lazyProgress = new Lazy<TaskbarProgress>(ValueFactory);
                 Update();
             };
         }
 
         public static TaskbarHolder Create(double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {
             var holder = new TaskbarHolder(priority, periodicCallback);
-            Holders.AddSorted(holder, TaskbarHolder.PriorityComparer);
+            AddSorted(Holders, holder, TaskbarHolder.PriorityComparer);
             Task.Delay(600).ContinueWith(t => Update());
             return holder;
         }
@@ -122,6 +122,20 @@ namespace AcManager.Tools.Helpers {
         internal static void Delete(TaskbarHolder holder) {
             Holders.Remove(holder);
             Update();
+        }
+
+        // Simple version, more optimized one is in AcTools library if needed.
+        // I don’t know yet how to handle that stuff properly… Should I create a new library just for
+        // this method? Seems a strange thing to do.
+        private static void AddSorted<T>([NotNull] IList<T> list, T value, IComparer<T> comparer = null) {
+            if (comparer == null) comparer = Comparer<T>.Default;
+            for (var end = list.Count - 2; end >= 0; end--) {
+                if (comparer.Compare(value, list[end]) >= 0) {
+                    list.Insert(end + 1, value);
+                    return;
+                }
+            }
+            list.Insert(0, value);
         }
     }
 }

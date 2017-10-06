@@ -6,16 +6,16 @@ using AcTools.Utils.Helpers;
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum AoType {
         [Description("SSAO")]
-        Ssao,
+        Ssao = 0,
 
         [Description("SSAO (Alt.)")]
-        SsaoAlt,
+        SsaoAlt = 1,
 
         [Description("HBAO")]
-        Hbao,
+        Hbao = 2,
 
         [Description("ASSAO")]
-        Assao
+        Assao = 3
     }
 
     public partial class DarkKn5ObjectRenderer {

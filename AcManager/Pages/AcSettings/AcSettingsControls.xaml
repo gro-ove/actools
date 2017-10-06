@@ -78,8 +78,8 @@
 
                         <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
 
-                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" />
-                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonText}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
+                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}" StrokeThickness="1" />
+                        <Rectangle Grid.Column="1" Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
                           <Rectangle.RenderTransform>
                             <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=132}" Y="0" />
                           </Rectangle.RenderTransform>
@@ -98,11 +98,18 @@
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type t:DirectInputButton}">
                       <mui:Cell Height="24" Margin="0 0 4 4">
-                        <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" />
-                        <Ellipse Width="24" Height="24" Fill="{DynamicResource ButtonBorderPressed}"
-                            Visibility="{Binding Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBlock Text="{Binding ShortName}" Style="{StaticResource Small}" TextAlignment="Center" VerticalAlignment="Center" />
+                        <Ellipse x:Name="Bg" Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}"
+                            StrokeThickness="1" />
+                        <TextBlock x:Name="Fg" Text="{Binding ShortName}" Style="{StaticResource Small}" TextAlignment="Center" VerticalAlignment="Center"
+                            Foreground="{DynamicResource ButtonText}" />
                       </mui:Cell>
+                      <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Value}" Value="True">
+                          <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource ButtonBackgroundPressed}" />
+                          <Setter TargetName="Bg" Property="Stroke" Value="{DynamicResource ButtonBorderPressed}" />
+                          <Setter TargetName="Fg" Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+                        </DataTrigger>
+                      </DataTemplate.Triggers>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>

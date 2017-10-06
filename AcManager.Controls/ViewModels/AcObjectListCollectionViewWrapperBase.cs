@@ -102,7 +102,7 @@ namespace AcManager.Controls.ViewModels {
         private void SetGrouping() {
             if (_groupByPropertyName == null || _grouped) return;
             _grouped = true;
-            MainList.GroupDescriptions?.Add(_groupDescription ?? new PropertyGroupDescription(
+            MainList.GroupDescriptions.Add(_groupDescription ?? new PropertyGroupDescription(
                     $@"Value.{_groupByPropertyName}",
                     _groupByConverter == null ? null : new ToGroupNameConverter(_groupByConverter)));
         }
@@ -115,7 +115,7 @@ namespace AcManager.Controls.ViewModels {
             }
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value == null ? null : _groupByConverter(value?.ToString());
+                return value == null ? null : _groupByConverter(value.ToString());
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -236,13 +236,11 @@ namespace AcManager.Controls.ViewModels {
         }
 
         protected bool FilterTest(AcPlaceholderNew o) {
-            var t = o as T;
-            return t != null && ListFilter.Test(t);
+            return o is T t && ListFilter.Test(t);
         }
 
         protected bool FilterTest(object o) {
-            var t = o as AcItemWrapper;
-            return t != null && t.IsLoaded && ListFilter.Test((T)t.Value);
+            return o is AcItemWrapper t && t.IsLoaded && ListFilter.Test((T)t.Value);
         }
 
         private int _oldNumber;

@@ -77,6 +77,7 @@ namespace AcManager.CustomShowroom {
         };
 
         public static SettingEntry[] ShadowResolutions { get; } = {
+            new SettingEntry(512, "512×512"),
             new SettingEntry(1024, "1024×1024"),
             new SettingEntry(2048, "2048×2048"),
             new SettingEntry(4096, "4096×4096"),
@@ -123,12 +124,12 @@ namespace AcManager.CustomShowroom {
         }
 
         protected class SaveableData {
-            public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(150, 180, 180);
-            public virtual Color AmbientUpColor { get; set; } = Color.FromRgb(180, 180, 150);
-            public virtual Color BackgroundColor { get; set; } = Color.FromRgb(220, 220, 220);
-            public virtual Color LightColor { get; set; } = Color.FromRgb(200, 200, 180);
+            public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(0xBA, 0xBA, 0xBA);
+            public virtual Color AmbientUpColor { get; set; } = Color.FromRgb(0xE2, 0xE2, 0xE2);
+            public virtual Color BackgroundColor { get; set; } = Color.FromRgb(0xFF, 0xFF, 0xFF);
+            public virtual Color LightColor { get; set; } = Color.FromRgb(0xFF, 0xFF, 0xFF);
 
-            public virtual int MsaaMode { get; set; } = 0;
+            public virtual int MsaaMode { get; set; }
             public virtual int SsaaMode { get; set; } = 1;
             public virtual int ShadowMapSize { get; set; } = 2048;
             public int CubemapReflectionMapSize { get; set; } = 1024;
@@ -137,7 +138,7 @@ namespace AcManager.CustomShowroom {
             public virtual string ShowroomId { get; set; }
             public virtual string ColorGrading { get; set; }
 
-            public virtual AoType AoType { get; set; } = AoType.Ssao;
+            public virtual AoType AoType { get; set; } = AoType.SsaoAlt;
             public CarAmbientShadowsMode CarAmbientShadowsMode { get; set; } = CarAmbientShadowsMode.Attached;
 
             [JsonProperty("CubemapAmbientValue")]
@@ -149,40 +150,42 @@ namespace AcManager.CustomShowroom {
             public virtual bool FlatMirrorBlurred { get; set; } = true;
             public virtual bool UseBloom { get; set; } = true;
             public virtual bool UseColorGrading { get; set; }
-            public virtual bool UseFxaa { get; set; } = true;
+            public virtual bool UseFxaa { get; set; }
             public virtual bool UsePcss { get; set; }
             public virtual bool UseSmaa { get; set; }
             public virtual bool UseAo { get; set; }
             public virtual bool UseSslr { get; set; }
-            public virtual bool ReflectionCubemapAtCamera { get; set; } = true;
+            public virtual bool ReflectionCubemapAtCamera { get; set; }
             public virtual bool ReflectionsWithShadows { get; set; }
 
-            public virtual float AmbientBrightness { get; set; } = 2f;
-            public virtual float BackgroundBrightness { get; set; } = 1f;
+            public virtual float AmbientBrightness { get; set; } = 3.0f;
+            public virtual float BackgroundBrightness { get; set; } = 0.2f;
             public virtual float FlatMirrorReflectiveness { get; set; } = 0.6f;
-            public virtual float LightBrightness { get; set; } = 1.5f;
+            public virtual float LightBrightness { get; set; }
             public virtual float Lightθ { get; set; } = 50f;
             public virtual float Lightφ { get; set; } = 104f;
             public virtual float MaterialsReflectiveness { get; set; } = 1f;
 
-            public int ToneVersion = 0;
+            public int ToneVersion;
             public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
-            public virtual float ToneExposure { get; set; } = 1.0f;
+            public virtual float ToneExposure { get; set; } = 1.2f;
             public virtual float ToneGamma { get; set; } = 1f;
             public virtual float ToneWhitePoint { get; set; } = 1.66f;
 
             public virtual float PcssSceneScale { get; set; } = 0.06f;
             public virtual float PcssLightScale { get; set; } = 2f;
             public virtual float BloomRadiusMultiplier { get; set; } = 1f;
-            public virtual float SsaoOpacity { get; set; } = 0.3f;
 
-            public virtual bool UseDof { get; set; }
+            [JsonProperty("SsaoOpacity")]
+            public virtual float AoOpacity { get; set; } = 0.3f;
+
+            public virtual bool UseDof { get; set; } = true;
             public virtual float DofFocusPlane { get; set; } = 1.6f;
             public virtual float DofScale { get; set; } = 1f;
-            public virtual bool UseAccumulationDof { get; set; }
+            public virtual bool UseAccumulationDof { get; set; } = true;
             public virtual bool AccumulationDofBokeh { get; set; }
-            public virtual int AccumulationDofIterations { get; set; } = 100;
-            public virtual float AccumulationDofApertureSize { get; set; } = 0.01f;
+            public virtual int AccumulationDofIterations { get; set; } = 40;
+            public virtual float AccumulationDofApertureSize { get; set; } = 0f;
 
             [CanBeNull]
             public virtual JObject[] ExtraLights { get; set; }
@@ -263,7 +266,9 @@ namespace AcManager.CustomShowroom {
         }
 
         protected virtual SaveableData CreateSaveableData() {
-            return new SaveableData();
+            return new SaveableData {
+                ToneVersion = 1
+            };
         }
 
         protected virtual void Reset(bool saveLater) {
@@ -353,7 +358,7 @@ namespace AcManager.CustomShowroom {
 
             obj.PcssSceneScale = Renderer.PcssSceneScale;
             obj.PcssLightScale = Renderer.PcssLightScale;
-            obj.SsaoOpacity = Renderer.AoOpacity;
+            obj.AoOpacity = Renderer.AoOpacity;
 
             obj.UseDof = Renderer.UseDof;
             obj.DofFocusPlane = Renderer.DofFocusPlane;
@@ -623,7 +628,7 @@ namespace AcManager.CustomShowroom {
             Renderer.BloomRadiusMultiplier = o.BloomRadiusMultiplier;
             Renderer.PcssSceneScale = o.PcssSceneScale;
             Renderer.PcssLightScale = o.PcssLightScale;
-            Renderer.AoOpacity = o.SsaoOpacity;
+            Renderer.AoOpacity = o.AoOpacity;
 
             Renderer.UseDof = o.UseDof;
             Renderer.DofFocusPlane = o.DofFocusPlane;
@@ -1086,7 +1091,7 @@ namespace AcManager.CustomShowroom {
                 _tryToGuessCarLights = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyTryToGuessCarLights, value);
-                Renderer.TryToGuessCarLightsIfMissing = value;
+                Renderer.TryToGuessCarLights = value;
             }
         }
 
@@ -1243,16 +1248,6 @@ namespace AcManager.CustomShowroom {
         }
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null, bool save = true) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (save) {
-                SaveLater();
-            }
-        }
-
         #region Link navigator for inline commands
         public CommandDictionary Commands {
             get => BbCodeBlock.DefaultLinkNavigator.Commands;
@@ -1280,5 +1275,15 @@ namespace AcManager.CustomShowroom {
             BbCodeBlock.DefaultLinkNavigator.Navigate(uri, source, parameter);
         }
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null, bool save = true) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (save) {
+                SaveLater();
+            }
+        }
     }
 }

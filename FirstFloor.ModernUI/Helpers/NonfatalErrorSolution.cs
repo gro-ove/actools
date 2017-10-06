@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private bool _solved;
 
         public bool Solved {
-            get { return _solved; }
+            get => _solved;
             set {
                 if (value == _solved) return;
                 _solved = value;
@@ -39,13 +39,13 @@ namespace FirstFloor.ModernUI.Helpers {
         protected override async Task ExecuteInner() {
             try {
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Solving the issue�");
+                    waiting.Report("Solving the issue…");
                     await _execute(waiting.CancellationToken);
                 }
             } catch (Exception e) when (e.IsCanceled()) {
                 return;
             } catch (Exception e) {
-                NonfatalError.Notify("Can�t solve the issue", e);
+                NonfatalError.Notify("Can’t solve the issue", e);
                 return;
             }
 

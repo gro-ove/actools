@@ -43,7 +43,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         internal ControlsSettings() : base("controls", false) {
             try {
-                KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
                 KeyboardSpecificButtonEntries = new[] {
                     new KeyboardSpecificButtonEntry("GAS", ToolsStrings.Controls_Throttle),
                     new KeyboardSpecificButtonEntry("BRAKE", ToolsStrings.Controls_Brakes),
@@ -300,23 +299,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         private void DeviceAxleEventHandler(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(DirectInputAxle.RoundedValue)) return;
-
-            var axle = sender as DirectInputAxle;
-            if (axle == null) return;
-            AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
-
-            AssignInput(axle).Forget();
+            if (e.PropertyName == nameof(DirectInputAxle.RoundedValue) && sender is DirectInputAxle axle) {
+                AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
+                AssignInput(axle).Forget();
+            }
         }
 
         private void DeviceButtonEventHandler(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(DirectInputButton.Value)) return;
-
-            var button = sender as DirectInputButton;
-            if (button == null || !button.Value) return;
-            ButtonEventHandler?.Invoke(this, new DirectInputButtonEventArgs(button));
-
-            AssignInput(button).Forget();
+            if (e.PropertyName == nameof(DirectInputButton.Value) && sender is DirectInputButton button && button.Value) {
+                ButtonEventHandler?.Invoke(this, new DirectInputButtonEventArgs(button));
+                AssignInput(button).Forget();
+            }
         }
 
         public BetterObservableCollection<DirectInputDevice> Devices { get; } = new BetterObservableCollection<DirectInputDevice>();
@@ -325,8 +318,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public KeyboardInputButton GetKeyboardInputButton(int keyCode) {
             if (keyCode == -1) return null;
 
-            KeyboardInputButton result;
-            if (_keyboardInput.TryGetValue(keyCode, out result)) return result;
+            if (_keyboardInput.TryGetValue(keyCode, out var result)) return result;
             if (!Enum.IsDefined(typeof(Keys), keyCode)) {
                 Logging.Warning("Invalid key: " + keyCode);
                 return null;
@@ -469,9 +461,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public WheelButtonEntry WheelButton { get; }
-
             public KeyboardButtonEntry KeyboardButton { get; }
-
             public bool IsNew { get; }
         }
 
@@ -637,12 +627,36 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private double _wheelFfbWheelCenterBoostGain;
+
+        public double WheelFfbWheelCenterBoostGain {
+            get => _wheelFfbWheelCenterBoostGain;
+            set {
+                value = value.Clamp(0, 2000).Round(0.1);
+                if (Equals(value, _wheelFfbWheelCenterBoostGain)) return;
+                _wheelFfbWheelCenterBoostGain = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _wheelFfbWheelCenterBoostRange;
+
+        public double WheelFfbWheelCenterBoostRange {
+            get => _wheelFfbWheelCenterBoostRange;
+            set {
+                value = value.Clamp(0, 2000).Round(0.1);
+                if (Equals(value, _wheelFfbWheelCenterBoostRange)) return;
+                _wheelFfbWheelCenterBoostRange = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _wheelFfbKerbEffect;
 
         public int WheelFfbKerbEffect {
             get => _wheelFfbKerbEffect;
             set {
-                value = value.Clamp(0, 200);
+                value = value.Clamp(0, 2000);
                 if (Equals(value, _wheelFfbKerbEffect)) return;
                 _wheelFfbKerbEffect = value;
                 OnPropertyChanged();
@@ -654,7 +668,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int WheelFfbRoadEffect {
             get => _wheelFfbRoadEffect;
             set {
-                value = value.Clamp(0, 200);
+                value = value.Clamp(0, 2000);
                 if (Equals(value, _wheelFfbRoadEffect)) return;
                 _wheelFfbRoadEffect = value;
                 OnPropertyChanged();
@@ -666,9 +680,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int WheelFfbSlipEffect {
             get => _wheelFfbSlipEffect;
             set {
-                value = value.Clamp(0, 200);
+                value = value.Clamp(0, 2000);
                 if (Equals(value, _wheelFfbSlipEffect)) return;
                 _wheelFfbSlipEffect = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _wheelFfbAbsEffect;
+
+        public int WheelFfbAbsEffect {
+            get => _wheelFfbAbsEffect;
+            set {
+                value = value.Clamp(0, 2000);
+                if (Equals(value, _wheelFfbAbsEffect)) return;
+                _wheelFfbAbsEffect = value;
                 OnPropertyChanged();
             }
         }
@@ -768,8 +794,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        public KeyboardButtonEntry[] KeyboardButtonEntries { get; }
-
         public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }
         #endregion
 
@@ -852,11 +876,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public bool AssignKey(Key key) {
             if (!key.IsInputAssignable()) return false;
 
-            var waiting = GetWaiting() as KeyboardButtonEntry;
-            if (waiting == null) return false;
+            if (GetWaiting() is KeyboardButtonEntry) {
+                AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key))).Forget();
+                return true;
+            }
 
-            AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key))).Forget();
-            return true;
+            return false;
         }
         #endregion
 
@@ -870,11 +895,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             section = ini["FF_TWEAKS"];
             WheelFfbMinForce = section.GetDouble("MIN_FF", 0.05) * 100d;
+            WheelFfbWheelCenterBoostGain = section.GetDouble("CENTER_BOOST_GAIN", 0.0) * 100d;
+            WheelFfbWheelCenterBoostRange = section.GetDouble("CENTER_BOOST_RANGE", 0.1) * 100d;
 
             section = ini["FF_ENHANCEMENT"];
             WheelFfbKerbEffect = section.GetDouble("CURBS", 0.4).ToIntPercentage();
             WheelFfbRoadEffect = section.GetDouble("ROAD", 0.5).ToIntPercentage();
             WheelFfbSlipEffect = section.GetDouble("SLIPS", 0.0).ToIntPercentage();
+            WheelFfbAbsEffect = section.GetDouble("ABS", 0.25).ToIntPercentage();
 
             section = ini["FF_ENHANCEMENT_2"];
             WheelFfbEnhancedUndersteer = section.GetBool("UNDERSTEER", false);
@@ -890,11 +918,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             section = ini["FF_TWEAKS"];
             section.Set("MIN_FF", WheelFfbMinForce / 100d);
+            section.Set("CENTER_BOOST_GAIN", WheelFfbWheelCenterBoostGain / 100d);
+            section.Set("CENTER_BOOST_RANGE", WheelFfbWheelCenterBoostRange / 100d);
 
             section = ini["FF_ENHANCEMENT"];
             section.Set("CURBS", WheelFfbKerbEffect.ToDoublePercentage());
             section.Set("ROAD", WheelFfbRoadEffect.ToDoublePercentage());
             section.Set("SLIPS", WheelFfbSlipEffect.ToDoublePercentage());
+            section.Set("ABS", WheelFfbAbsEffect.ToDoublePercentage());
 
             section = ini["FF_ENHANCEMENT_2"];
             section.Set("UNDERSTEER", WheelFfbEnhancedUndersteer);

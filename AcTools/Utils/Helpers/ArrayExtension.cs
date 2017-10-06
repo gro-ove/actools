@@ -13,6 +13,12 @@ namespace AcTools.Utils.Helpers {
             return subset;
         }
 
+        public static T[] Copy<T>(this T[] array) where T : struct {
+            var copy = new T[array.Length];
+            Array.Copy(array, 0, copy, 0, array.Length);
+            return copy;
+        }
+
         public static T[] Subset<T>(this T[] array, params int[] indices) {
             var subset = new T[indices.Length];
             for (var i = 0; i < indices.Length; i++) {

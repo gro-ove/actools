@@ -24,7 +24,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             try {
                 var query = HttpUtility.ParseQueryString(Url);
                 FileName = query["filename"];
-                if (FlexibleParser.TryParseLong(query["fsize"], out long size)) {
+                if (FlexibleParser.TryParseLong(query["fsize"], out var size)) {
                     TotalSize = size;
                 }
             } catch (Exception) {

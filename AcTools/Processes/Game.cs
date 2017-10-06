@@ -224,6 +224,20 @@ namespace AcTools.Processes {
                 return AdditionalPropertieses.OfType<T>().FirstOrDefault();
             }
 
+            [CanBeNull]
+            public T PullAdditional<T>() {
+                var existing = GetAdditional<T>();
+                if (existing != null) {
+                    AdditionalPropertieses.Remove(existing);
+                }
+
+                return existing;
+            }
+
+            public bool RemoveAdditional<T>() {
+                return AdditionalPropertieses.Remove(GetAdditional<T>());
+            }
+
             public bool HasAdditional<T>() {
                 return AdditionalPropertieses.OfType<T>().Any();
             }

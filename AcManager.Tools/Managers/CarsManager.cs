@@ -6,6 +6,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Tools.Managers {
     public class CarsManager : AcManagerNew<CarObject> {

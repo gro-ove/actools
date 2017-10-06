@@ -21,12 +21,19 @@ namespace AcTools.Render.Utils {
         NoCompression, NoCompressionTransparency,
 
         // Less bits per color
-        RGB565, RGBA4444
+        RGB565, RGBA4444,
+
+        // High dynamic range, the most heavy format
+        HDR, AutoHDR
     }
 
-    public static class PreferredDdsFormatExtension {
+    public static class PreferredDDSFormatExtension {
         public static bool IsAuto(this PreferredDdsFormat v) {
             return v == PreferredDdsFormat.Auto || v == PreferredDdsFormat.AutoTransparency;
+        }
+
+        public static bool IsHdr(this PreferredDdsFormat v) {
+            return v == PreferredDdsFormat.HDR || v == PreferredDdsFormat.AutoHDR;
         }
     }
 
@@ -171,7 +178,6 @@ namespace AcTools.Render.Utils {
         }
 
         public static void SaveAsDds(string filename, byte[] imageData, PreferredDdsFormat format, IProgress<double> progress) {
-            AcToolsLogging.Write(filename);
             using (var temporary = FileUtils.RecycleOriginal(filename)) {
                 try {
                     using (var stream = File.Create(temporary.Filename)) {

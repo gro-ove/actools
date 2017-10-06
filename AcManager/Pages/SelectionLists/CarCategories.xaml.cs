@@ -96,7 +96,7 @@ namespace AcManager.Pages.SelectionLists {
                 _filter = filter;
             }
 
-            public bool Test(TObject obj) {
+            public bool Test([NotNull] TObject obj) {
                 return _filter.Test(obj);
             }
         }
@@ -122,7 +122,7 @@ namespace AcManager.Pages.SelectionLists {
                 }
             }
         }
-    } 
+    }
 
     public partial class CarCategories {
         public CarCategories() : base(CarsManager.Instance) {

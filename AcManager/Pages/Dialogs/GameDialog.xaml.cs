@@ -585,8 +585,17 @@ namespace AcManager.Pages.Dialogs {
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
 
-                var whatsGoingOn = _properties?.GetAdditional<WhatsGoingOn>();
-                fixButton = this.CreateFixItButton(whatsGoingOn?.Solution);
+                var whatsGoingOn = _properties?.PullAdditional<WhatsGoingOn>();
+                var solution = whatsGoingOn?.Solution;
+                if (solution != null) {
+                    fixButton = this.CreateFixItButton(solution);
+                    tryAgainButton = CreateExtraDialogButton($"{solution.DisplayName} And Try Again", new AsyncCommand(async () => {
+                        await solution.ExecuteAsync();
+                        CloseWithResult(MessageBoxResult.None);
+                        GameWrapper.StartAsync(_properties).Forget();
+                    }));
+                }
+
                 Model.ErrorMessage = whatsGoingOn?.GetDescription();
             } else {
                 try {
@@ -605,7 +614,7 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new ContentControl[] {
                 fixButton,
                 fixButton == null ? saveReplayButton : null,
-                fixButton == null && _properties != null ? tryAgainButton : null,
+                _properties != null ? tryAgainButton : null,
                 CloseButton
             };
         }
@@ -615,8 +624,7 @@ namespace AcManager.Pages.Dialogs {
             Model.ErrorMessage = exception?.Message ?? ToolsStrings.Common_UndefinedError;
             Buttons = new[] { CloseButton };
 
-            var ie = exception as InformativeException;
-            if (ie != null) {
+            if (exception is InformativeException ie) {
                 Model.ErrorDescription = ie.SolutionCommentary;
             }
         }

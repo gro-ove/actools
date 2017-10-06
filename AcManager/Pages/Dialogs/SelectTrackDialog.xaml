@@ -52,9 +52,11 @@
   </mui:ModernDialog.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition />
-      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition MinWidth="360" />
+      <ColumnDefinition Width="29" />
+      <ColumnDefinition Width="320" MinWidth="180" />
     </Grid.ColumnDefinitions>
+
     <uc:TrackBlock Track="{Binding SelectedTrackConfiguration}" Margin="0 0 0 -42">
       <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
           Visibility="{Binding SelectedTrack.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -70,8 +72,13 @@
 
     <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
 
-    <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
-      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="Tabs_OnNavigated"
+    <!-- Seperator -->
+    <mui:ModernTabSplitter Grid.Column="1" SaveKey="TrackSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent" />
+    <Border Grid.Column="1" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.TrackDialogThumbinalMode}, Mode=OneTime}"
+        VerticalAlignment="Center" />
+
+    <AdornerDecorator Grid.Column="2" Margin="0 -44 0 0">
+      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated"
           mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack"
           SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
         <mui:ModernTab.LinksListBoxTemplate>

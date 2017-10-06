@@ -69,7 +69,7 @@
           <mui:DirectContentLoaderEntry Key="Car" Content="{StaticResource VisualSettings.Previews.Car}" />
           <mui:DirectContentLoaderEntry Key="Quality" Content="{StaticResource VisualSettings.Previews.Quality}" />
           <mui:DirectContentLoaderEntry Key="Scene" Content="{StaticResource VisualSettings.Scene}" />
-          <mui:DirectContentLoaderEntry Key="Lights" Content="{StaticResource VisualSettings.Lights}" />
+          <mui:DirectContentLoaderEntry Key="Lights" Content="{StaticResource VisualSettings.Previews.Lights}" />
           <mui:DirectContentLoaderEntry Key="Hdr" Content="{StaticResource VisualSettings.Hdr}" />
           <mui:DirectContentLoaderEntry Key="Extra" Content="{StaticResource VisualSettings.Extra}" />
         </mui:DirectContentLoader>

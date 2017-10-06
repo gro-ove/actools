@@ -102,5 +102,17 @@ namespace AcManager.Controls.Helpers {
                 "Prepare car setups using context menu",
                 "Before the race, prepare car setups and more using context menu from here.",
                 startupsDelay: 1, probability: 0.5);
+
+        public static readonly FancyHint CarDialogThumbinalMode = new FancyHint(
+                "car-dialog-thumbinal-mode",
+                "Want to switch to thumbnail mode?",
+                "Just make the list wider.",
+                startupsDelay: 0);
+
+        public static readonly FancyHint TrackDialogThumbinalMode = new FancyHint(
+                "track-dialog-thumbinal-mode",
+                "Want to switch to thumbnail mode?",
+                "Just make the list wider.",
+                startupsDelay: 2, probability: 0.25);
     }
 }

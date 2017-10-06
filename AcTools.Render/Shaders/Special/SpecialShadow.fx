@@ -12,7 +12,7 @@ cbuffer cbPerFrame {
 	float gPadding;
 	float2 gShadowSize;
 	float gFade;
-	
+
 	matrix gShadowViewProj;
 };
 
@@ -57,7 +57,7 @@ float4 ps_ShadowBlur(PS_IN pin, uniform bool gHorizontalBlur) : SV_Target {
 		float val = gInputMap.SampleLevel(samInputImageTest, pin.Tex + i * texOffset, 0.0).r;
 		color += val * gWeights[i + 5];
 	}
-	
+
     return color;
 }
 
@@ -120,7 +120,7 @@ float4 ps_Result(PS_IN pin) : SV_Target {
 	float c = 1 - saturate(tex(uv).x / gCount);
 	float v = gMultipler * c * d;
 	return float4(v, v, v, 1.0);
-} 
+}
 
 technique10 Result {
 	pass P0 {
@@ -184,6 +184,10 @@ cbuffer cbPerObjectAo : register(b1) {
 	float3 gLightDir;
 }
 
+cbuffer cbPerFrameAo {
+	float2 gOffset;
+};
+
 Texture2D gNormalMap;
 
 struct ao_VS_IN {
@@ -203,6 +207,12 @@ struct ao_PS_IN {
 	float3 BitangentW : BITANGENT;
 };
 
+#define fix(v) (v)
+
+/*float fix(float v){
+    return v;//((v % 1) + 1) % 1;
+}*/
+
 ao_PS_IN vs_Ao(ao_VS_IN vin) {
 	ao_PS_IN vout;
 
@@ -212,7 +222,9 @@ ao_PS_IN vs_Ao(ao_VS_IN vin) {
 	vout.BitangentW = mul(cross(vin.NormalL, vin.TangentL), (float3x3)gWorldInvTranspose);
 
 	vout.Tex = vin.Tex;
-	vout.PosH = float4(vin.Tex.x * 2 - 1, -vin.Tex.y * 2 - 1, 1, 1);
+
+	float2 tex = vin.Tex + gOffset;
+	vout.PosH = float4(fix(tex.x) * 2 - 1, fix(-tex.y) * 2 - 1, 1, 1);
 
 	float4 posShadow = mul(float4(vout.PosW, 1.0), gShadowViewProj);
 	vout.PosShadow = posShadow.xyz / posShadow.w;
@@ -255,7 +267,7 @@ float4 ps_AoResult(PS_IN pin) : SV_Target {
 	float4 input = tex(uv);
 	float v = saturate(pow(max(input.x / gCount, 0.0), gGamma));
 	return float4(v, v, v, input.a);
-} 
+}
 
 technique10 AoResult {
 	pass P0 {
@@ -265,26 +277,61 @@ technique10 AoResult {
 	}
 }
 
+#define _STEPS 5
+#define _CUTOUT 1
+#define _STEP_SIZE 0.5
+#define _THRESHOLD 0.95
+
 float4 ps_AoGrow(PS_IN pin) : SV_Target {
 	float2 uv = pin.Tex;
 	float4 base = tex(uv);
 
-	if (base.a > 0.9) return base;
+	if (base.a > _THRESHOLD &&
+        tex(uv + float2(gSize.z, 0)).a > _THRESHOLD &&
+        tex(uv + float2(-gSize.z, 0)).a > _THRESHOLD &&
+        tex(uv + float2(0, gSize.w)).a > _THRESHOLD &&
+        tex(uv + float2(0, -gSize.w)).a > _THRESHOLD &&
+        tex(uv + float2(gSize.z, gSize.w)).a > _THRESHOLD &&
+        tex(uv + float2(-gSize.z, -gSize.w)).a > _THRESHOLD &&
+        tex(uv + float2(-gSize.z, gSize.w)).a > _THRESHOLD &&
+        tex(uv + float2(gSize.z, -gSize.w)).a > _THRESHOLD) return base;
 
 	base = (float4)0;
+	int x, y;
 
 	[unroll]
-	for (int x = -3; x <= 3; x++)
+	for (x = -_STEPS; x <= _STEPS; x++)
 		[unroll]
-		for (int y = -3; y <= 3; y++) {
-			if (x >= -1 && x <= 1 || y >= -1 && y <= 1) continue;
-			float4 n = tex(uv + gSize.zw * float2(x, y));
-			base += float4(n.rgb, 1.0) * n.a;
+		for (y = -_STEPS; y <= _STEPS; y++) {
+			// if (y > -_UP_TO && y < _UP_TO) continue;
+			float4 n = tex(uv + gSize.zw * float2(x, y) * _STEP_SIZE);
+			if (n.a > _THRESHOLD){
+			    base.r = max(base.r, n.r);
+			    base.g = max(base.g, n.g);
+			    base.b = max(base.b, n.b);
+			    base.a = max(base.a, n.a);
+			}
+			// base += float4(n.rgb * n.a, n.a);
 		}
 
-	if (base.a > 0.9) return float4(base.rgb / base.a, 1.0);
+	/*[unroll]
+	for (x = _UP_TO; x <= _STEPS; x++)
+		[unroll]
+		for (y = -_STEPS; y <= _STEPS; y++) {
+			if (y > -_UP_TO && y < _UP_TO) continue;
+			float4 n = tex(uv + gSize.zw * float2(x, y) * _STEP_SIZE);
+			if (n.a > 0.9){
+			    base.r = max(base.r, n.r);
+			    base.g = max(base.g, n.g);
+			    base.b = max(base.b, n.b);
+			    base.a = max(base.a, n.a);
+			}
+			// base += float4(n.rgb * n.a, n.a);
+		}*/
+
+	if (base.a > 0.9) return base;// float4(base.rgb / base.a, base.a);
 	return (float4)0;
-} 
+}
 
 technique10 AoGrow {
 	pass P0 {

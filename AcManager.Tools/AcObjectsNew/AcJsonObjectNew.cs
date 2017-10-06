@@ -254,11 +254,15 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(Country));
+                    OnPropertyChanged(nameof(CountryId));
                     Changed = true;
                     SuggestionLists.RebuildCountriesList();
                 }
             }
         }
+
+        [CanBeNull]
+        public string CountryId => AcStringValues.GetCountryId(Country ?? "");
 
         private string _description;
 

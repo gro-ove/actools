@@ -28,8 +28,9 @@ namespace AcManager.CustomShowroom {
         public static readonly PresetsCategory PresetableKeyCategory = new PresetsCategory(PresetableKey);
 
         private class SaveableData {
-            public double From, To = 60d, Brightness = 220d, Gamma = 60d, Ambient, ShadowBias;
-            public int Iterations = 5000;
+            public double From, To = 60d, Brightness = 220d, Gamma = 60d, PixelDensity = 4d, Ambient, ShadowBias, ShadowBiasCullBack = 70d;
+            public int Iterations = 5000, Padding = 4, ShadowMapSize = 2048;
+            public bool UseFxaa = true;
         }
 
         [CanBeNull]
@@ -100,7 +101,12 @@ namespace AcManager.CustomShowroom {
                 Gamma = Gamma,
                 Ambient = Ambient,
                 Iterations = Iterations,
-                ShadowBias = ShadowBias,
+                ShadowBias = ShadowBiasCullFront,
+                ShadowBiasCullBack = ShadowBiasCullBack,
+                PixelDensity = PixelDensity,
+                Padding = Padding,
+                ShadowMapSize = ShadowMapSize,
+                UseFxaa = UseFxaa,
             }, o => {
                 From = o.From;
                 To = o.To;
@@ -108,7 +114,12 @@ namespace AcManager.CustomShowroom {
                 Gamma = o.Gamma;
                 Ambient = o.Ambient;
                 Iterations = o.Iterations;
-                ShadowBias = o.ShadowBias;
+                ShadowBiasCullFront = o.ShadowBias;
+                ShadowBiasCullBack = o.ShadowBiasCullBack;
+                PixelDensity = o.PixelDensity;
+                Padding = o.Padding;
+                ShadowMapSize = o.ShadowMapSize;
+                UseFxaa = o.UseFxaa;
             });
 
             _saveable.Initialize();
@@ -170,13 +181,24 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private double _shadowBias;
+        private double _shadowBiasCullFront;
 
-        public double ShadowBias {
-            get => _shadowBias;
+        public double ShadowBiasCullFront {
+            get => _shadowBiasCullFront;
             set {
-                if (Equals(value, _shadowBias)) return;
-                _shadowBias = value;
+                if (Equals(value, _shadowBiasCullFront)) return;
+                _shadowBiasCullFront = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _shadowBiasCullBack;
+
+        public double ShadowBiasCullBack {
+            get => _shadowBiasCullBack;
+            set {
+                if (Equals(value, _shadowBiasCullBack)) return;
+                _shadowBiasCullBack = value;
                 OnPropertyChanged();
             }
         }
@@ -186,10 +208,64 @@ namespace AcManager.CustomShowroom {
         public int Iterations {
             get => _iterations;
             set {
+                value = value.Clamp(10, 1000000);
                 if (Equals(value, _iterations)) return;
                 _iterations = value;
                 OnPropertyChanged();
             }
+        }
+
+        private double _pixelDensity = 4d;
+
+        public double PixelDensity {
+            get => _pixelDensity;
+            set {
+                value = value.Clamp(0.1, 16d);
+                if (Equals(value, _pixelDensity)) return;
+                _pixelDensity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _padding;
+
+        public int Padding {
+            get => _padding;
+            set {
+                value = value.Clamp(0, 1000);
+                if (Equals(value, _padding)) return;
+                _padding = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _useFxaa;
+
+        public bool UseFxaa {
+            get => _useFxaa;
+            set {
+                if (Equals(value, _useFxaa)) return;
+                _useFxaa = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _shadowMapSize;
+
+        public int ShadowMapSize {
+            get => _shadowMapSize;
+            set {
+                if (Equals(value, _shadowMapSize)) return;
+                _shadowMapSize = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShadowMapSizeSetting));
+            }
+        }
+
+        public SettingEntry ShadowMapSizeSetting {
+            get => DarkRendererSettings.ShadowResolutions.GetByIdOrDefault<SettingEntry, int?>(ShadowMapSize) ??
+                    new SettingEntry(ShadowMapSize, $"{ShadowMapSize}×{ShadowMapSize}");
+            set => ShadowMapSize = value.IntValue ?? 2048;
         }
         #endregion
 
@@ -211,8 +287,7 @@ namespace AcManager.CustomShowroom {
                         width = FlexibleParser.ParseInt(match.Groups[1].Value);
                         height = FlexibleParser.ParseInt(match.Groups[2].Value);
                     } else {
-                        int value;
-                        if (FlexibleParser.TryParseInt(result, out value)) {
+                        if (FlexibleParser.TryParseInt(result, out var value)) {
                             width = height = value;
                         } else {
                             NonfatalError.Notify(ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed,
@@ -228,11 +303,13 @@ namespace AcManager.CustomShowroom {
                     break;
 
                 default:
-                    width = height = size ?? 1024;
+                    width = height = size.Value;
                     break;
             }
 
-            using (var waiting = WaitingDialog.Create("Rendering…")) {
+            using (var waiting = new WaitingDialog(reportValue: "Rendering…") {
+                Topmost = false
+            }) {
                 var cancellation = waiting.CancellationToken;
                 var progress = (IProgress<double>)waiting;
 
@@ -244,7 +321,12 @@ namespace AcManager.CustomShowroom {
                         SkyBrightnessLevel = (float)Brightness / 100f,
                         Gamma = (float)Gamma / 100f,
                         Ambient = (float)Ambient / 100f,
-                        ShadowBias = (float)ShadowBias / 100f
+                        ShadowBiasCullFront = (float)ShadowBiasCullFront / 100f,
+                        ShadowBiasCullBack = (float)ShadowBiasCullBack / 100f,
+                        UseFxaa = UseFxaa,
+                        Padding = Padding,
+                        MapSize = ShadowMapSize,
+                        ResolutionMultiplier = Math.Sqrt(PixelDensity)
                     }) {
                         renderer.CopyStateFrom(_renderer as ToolsKn5ObjectRenderer);
                         renderer.Width = width;
@@ -289,13 +371,13 @@ namespace AcManager.CustomShowroom {
                         SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
                         MaxImageWidth = resultSize.Width,
                         MaxImageHeight = resultSize.Height,
-                    }
+                    },
+                    ShowInTaskbar = true
                 }.ShowDialog();
                 return;
             }
 
-            byte[] data;
-            if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out data)) {
+            if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
                 var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
                 if (image != null) {
                     image.Image.SaveAsPng(originalTexture);
@@ -306,7 +388,8 @@ namespace AcManager.CustomShowroom {
                             SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
                             MaxImageWidth = resultSize.Width,
                             MaxImageHeight = resultSize.Height,
-                        }
+                        },
+                        ShowInTaskbar = true
                     }.ShowDialog();
                     return;
                 }
@@ -318,6 +401,7 @@ namespace AcManager.CustomShowroom {
                     SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                     SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
                 },
+                ShowInTaskbar = true,
                 ImageMargin = new Thickness()
             }.ShowDialog();
         }));

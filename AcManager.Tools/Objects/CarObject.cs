@@ -57,6 +57,7 @@ namespace AcManager.Tools.Objects {
                 base.Year = value;
                 if (SettingsHolder.Content.CarsYearPostfix && Loaded) {
                     OnPropertyChanged(nameof(DisplayName));
+                    OnPropertyChanged(nameof(ShortName));
                 }
             }
         }
@@ -173,15 +174,16 @@ namespace AcManager.Tools.Objects {
         }
 
         public override int CompareTo(AcPlaceholderNew o) {
-            var r = o as CarObject;
-            if (r == null) return base.CompareTo(o);
+            if (o is CarObject r) {
+                var tp = Parent;
+                var rp = r.Parent;
+                if (rp == this) return -1;
+                if (tp == r) return 1;
+                if (tp == rp) return Compare(this, r);
+                return Compare(tp ?? this, rp ?? r);
+            }
 
-            var tp = Parent;
-            var rp = r.Parent;
-            if (rp == this) return -1;
-            if (tp == r) return 1;
-            if (tp == rp) return Compare(this, r);
-            return Compare(tp ?? this, rp ?? r);
+            return base.CompareTo(o);
         }
 
         private bool _skipRelativesToggling;
@@ -233,6 +235,7 @@ namespace AcManager.Tools.Objects {
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(Brand));
+                    OnPropertyChanged(nameof(ShortName));
                     Changed = true;
                 }
             }
@@ -255,6 +258,9 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+
+        [NotNull]
+        public string ShortName => DisplayName.ApartFromFirst(Brand).TrimStart();
         #endregion
 
         #region Specifications

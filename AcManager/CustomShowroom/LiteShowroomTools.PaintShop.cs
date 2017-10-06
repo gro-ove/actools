@@ -18,6 +18,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -29,6 +30,7 @@ namespace AcManager.CustomShowroom {
             #region Skin
             private void DisposeSkinItems() {
                 Renderer?.SetCurrentSkinActive(true);
+                Renderer?.DisposePaintShop();
                 FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update -= OnPaintShopDataChanged;
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
                 SkinItems = null;
@@ -113,6 +115,7 @@ namespace AcManager.CustomShowroom {
                             UpdateLicensePlatesStyles();
                             FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update += OnPaintShopDataChanged;
                             FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
+                            SkinFlagCountry = SettingsHolder.Drive.PlayerNationality;
                         }
 
                         Mode = Mode.Skin;
@@ -149,6 +152,7 @@ namespace AcManager.CustomShowroom {
 
                     SetSkinNumber();
                     SetSkinFlag();
+                    SetSkinLabels();
                 }
             }
 
@@ -160,7 +164,16 @@ namespace AcManager.CustomShowroom {
                     case nameof(IPaintablePersonalItem.IsFlagActive):
                         SetSkinFlag();
                         break;
+                    case nameof(IPaintablePersonalItem.ActiveLabels):
+                        SetSkinLabels();
+                        break;
                     case nameof(PaintableItem.Enabled):
+                        if (sender is IPaintablePersonalItem) {
+                            SetSkinNumber();
+                            SetSkinFlag();
+                            SetSkinLabels();
+                        }
+
                         var item = (PaintableItem)sender;
                         if (!item.Enabled) break;
 
@@ -321,9 +334,9 @@ namespace AcManager.CustomShowroom {
 
                 try {
                     if (SkinItems == null) return;
-                    foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
+                    foreach (var item in SkinItems.Where(x => x.Enabled).OfType<IPaintablePersonalItem>()) {
                         item.Number = number;
-                        any = item.IsNumberActive;
+                        any |= item.IsNumberActive;
                     }
                 } finally {
                     HasNumbers = any;
@@ -332,7 +345,7 @@ namespace AcManager.CustomShowroom {
             #endregion
 
             #region Skin flags
-            private string _skinFlagCountry = SettingsHolder.Drive.PlayerNationality;
+            private string _skinFlagCountry;
 
             public string SkinFlagCountry {
                 get => _skinFlagCountry;
@@ -340,7 +353,7 @@ namespace AcManager.CustomShowroom {
                     if (Equals(value, _skinFlagCountry)) return;
                     _skinFlagCountry = value;
                     OnPropertyChanged();
-                    SkinFlag = DataProvider.Instance.CountryToIds.GetValueOrDefault(AcStringValues.CountryFromTag(value) ?? "");
+                    SkinFlag = AcStringValues.GetCountryId(value);
                 }
             }
 
@@ -373,12 +386,104 @@ namespace AcManager.CustomShowroom {
 
                 try {
                     if (SkinItems == null) return;
-                    foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
-                        item.FlagTexture = flagId;
-                        any = item.IsFlagActive;
+
+                    var file = flagId == null ? null : FilesStorage.Instance.GetContentFile("Country Flags (Large)", $"{flagId}.png");
+                    var filename = file?.Exists == true ? file.Filename : null;
+                    foreach (var item in SkinItems.Where(x => x.Enabled).OfType<IPaintablePersonalItem>()) {
+                        item.FlagTexture = filename;
+                        any |= item.IsFlagActive;
                     }
                 } finally {
                     HasFlags = any;
+                }
+            }
+            #endregion
+
+            #region Skin labels
+            public sealed class SkinLabelWrapper : Displayable {
+                private static string DriverNameToLabel(string name) {
+                    var p = name.Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    return p.Length == 2 ? $"{p[0][0]}. {p[1]}".ToUpper() : name.ToUpper();
+                }
+
+                public SkinLabelWrapper(string key) {
+                    Key = key;
+                    DisplayName = AcStringValues.NameFromId(key);
+
+                    if (key == "pilot") {
+                        Value = DriverNameToLabel(SettingsHolder.Drive.PlayerName);
+                    }
+                }
+
+                public string Key { get; }
+
+                private string _value;
+
+                public string Value {
+                    get => _value;
+                    set {
+                        if (Equals(value, _value)) return;
+                        _value = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+
+            private List<SkinLabelWrapper> _skinLabels;
+
+            [CanBeNull]
+            private Dictionary<string, string> _skinLabelsValues;
+
+            public List<SkinLabelWrapper> SkinLabels {
+                get => _skinLabels;
+                set {
+                    if (Equals(value, _skinLabels)) return;
+                    _skinLabels = value;
+                    OnPropertyChanged();
+
+                    if (value != null) {
+                        _skinLabelsValues = value.ToDictionary(x => x.Key, x => x.Value);
+                        foreach (var skinLabelWrapper in value) {
+                            skinLabelWrapper.PropertyChanged += OnSkinLabelWrapperPropertyChanged;
+                        }
+                    } else {
+                        _skinLabelsValues = null;
+                    }
+                }
+            }
+
+            private void OnSkinLabelWrapperPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+                if (_skinLabelsValues == null) return;
+                var v = (SkinLabelWrapper)sender;
+                _skinLabelsValues[v.Key] = v.Value;
+
+                if (SkinItems == null) return;
+                foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
+                    item.Labels = _skinLabelsValues;
+                }
+            }
+
+            private void SetSkinLabels() {
+                var list = new List<SkinLabelWrapper>();
+
+                try {
+                    if (SkinItems == null) return;
+                    foreach (var item in SkinItems.Where(x => x.Enabled).OfType<IPaintablePersonalItem>()) {
+                        var v = item.ActiveLabels;
+                        if (v != null && v.Count > 0) {
+                            foreach (var u in v) {
+                                if (list.Any(x => x.Key == u)) continue;
+                                list.Add(new SkinLabelWrapper(u));
+                            }
+                        }
+                    }
+                } finally {
+                    SkinLabels = list;
+                    if (SkinItems != null) {
+                        foreach (var item in SkinItems.OfType<IPaintablePersonalItem>()) {
+                            item.Labels = _skinLabelsValues;
+                        }
+                    }
                 }
             }
             #endregion

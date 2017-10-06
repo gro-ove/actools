@@ -56,20 +56,20 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         #region Guessing car lights
         private readonly Dictionary<int, bool> _lightsGuessed = new Dictionary<int, bool>();
-        private bool _tryToGuessCarLightsIfMissing;
+        private bool _tryToGuessCarLights;
 
-        public bool TryToGuessCarLightsIfMissing {
-            get => _tryToGuessCarLightsIfMissing;
+        public bool TryToGuessCarLights {
+            get => _tryToGuessCarLights;
             set {
-                if (Equals(value, _tryToGuessCarLightsIfMissing)) return;
-                _tryToGuessCarLightsIfMissing = value;
+                if (Equals(value, _tryToGuessCarLights)) return;
+                _tryToGuessCarLights = value;
                 OnPropertyChanged();
 
                 if (value) {
                     foreach (var slot in CarSlots) {
                         var tag = DarkLightTag.GetCarTag(slot.Id);
                         if (Lights.All(x => x.Tag != tag) && slot.CarNode != null) {
-                            TryToGuessCarLights(tag, slot.CarNode);
+                            GuessCarLights(tag, slot.CarNode);
                         }
                     }
                 } else {
@@ -228,7 +228,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return result;
         }
 
-        private bool TryToGuessCarLights(DarkLightTag tag, [NotNull] Kn5RenderableCar car) {
+        private bool GuessCarLights(DarkLightTag tag, [NotNull] Kn5RenderableCar car) {
             // unline with deferred renderer, here we only try to guess four lights, two headlights and two rearlights,
             // which should be symmetrical with proper colors and all that
 
@@ -509,8 +509,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         (elapsed * _b + _d).Sin() * _c, _a,
                         (elapsed * _e + _f).Sin() * _g);
 
-                var spot = Light as DarkSpotLight;
-                if (spot != null) {
+                if (Light is DarkSpotLight spot) {
                     spot.Direction = -spot.Position;
                 }
 
@@ -540,25 +539,29 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         #endregion
 
         #region Car and showroom lights (auto-loading)
-        private bool _autoloadCarLights = true;
+        private bool _loadCarLights = true;
 
-        public bool AutoloadCarLights {
-            get => _autoloadCarLights;
+        public bool LoadCarLights {
+            get => _loadCarLights;
             set {
-                if (Equals(value, _autoloadCarLights)) return;
-                _autoloadCarLights = value;
+                if (Equals(value, _loadCarLights)) return;
+                _loadCarLights = value;
                 OnPropertyChanged();
+                foreach (var slot in CarSlots.NonNull()) {
+                    OnCarChangedLights(slot, slot.CarNode);
+                }
             }
         }
 
-        private bool _autoloadShowroomLights = true;
+        private bool _loadShowroomLights = true;
 
-        public bool AutoloadShowroomLights {
-            get => _autoloadShowroomLights;
+        public bool LoadShowroomLights {
+            get => _loadShowroomLights;
             set {
-                if (Equals(value, _autoloadShowroomLights)) return;
-                _autoloadShowroomLights = value;
+                if (Equals(value, _loadShowroomLights)) return;
+                _loadShowroomLights = value;
                 OnPropertyChanged();
+                OnShowroomChangedLights();
             }
         }
 
@@ -566,9 +569,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var lightTag = DarkLightTag.GetCarTag(slot.Id);
             RemoveLights(lightTag);
 
-            if (AutoloadCarLights && car != null && !LoadObjLights(lightTag, car.RootDirectory) &&
-                    TryToGuessCarLightsIfMissing) {
-                TryToGuessCarLights(lightTag, car);
+            if (LoadCarLights && car != null && !LoadObjLights(lightTag, car.RootDirectory) && TryToGuessCarLights) {
+                GuessCarLights(lightTag, car);
                 _lightsGuessed[slot.Id] = true;
             } else {
                 _lightsGuessed.Remove(slot.Id);
@@ -576,7 +578,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void OnShowroomChangedLights() {
-            if (AutoloadShowroomLights && ShowroomNode != null) {
+            if (LoadShowroomLights && ShowroomNode != null) {
                 LoadObjLights(DarkLightTag.Showroom, ShowroomNode.RootDirectory);
             } else {
                 RemoveLights(DarkLightTag.Showroom);
@@ -671,12 +673,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             if (l.AttachedToObject == null) continue;
                         }
 
-                        var a = l.AttachedToObject as Kn5RenderableList;
-                        if (a == null) {
-                            l.ParentMatrix = l.AttachedToRelativeMatrix * l.AttachedToObject.ParentMatrix;
-                        } else {
-                            l.ParentMatrix = l.AttachedToRelativeMatrix * a.Matrix;
-                        }
+                        l.ParentMatrix = l.AttachedToObject is Kn5RenderableList a
+                                ? l.AttachedToRelativeMatrix * a.Matrix
+                                : l.AttachedToRelativeMatrix * l.AttachedToObject.ParentMatrix;
                     }
                 }
             }
@@ -779,7 +778,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             if (_darkMode == EffectDarkMaterial.Mode.Main) {
-                AcToolsLogging.Write($"Area lights textures set");
+                AcToolsLogging.Write("Area lights textures set");
                 InitializeAreaLightsTextures();
             }
         }

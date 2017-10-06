@@ -82,7 +82,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer){
             if (reader.Value is bool) return (bool)reader.Value ? -1 : 0;
-            return int.TryParse(reader.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out int r) ? r : 0;
+            return int.TryParse(reader.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var r) ? r : 0;
         }
 
         public override bool CanConvert(Type objectType){

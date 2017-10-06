@@ -104,7 +104,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
-        public WaitingDialog(string title = null) {
+        public WaitingDialog(string title = null, string reportValue = null) {
             Title = title;
 
             if (title == null) {
@@ -116,9 +116,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             InitializeComponent();
             Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 0);
             Buttons = new Button[] { };
+
+            if (reportValue != null) {
+                Report(reportValue);
+            }
         }
 
-        private TaskbarProgress _taskbarProgress;
+        private TaskbarHolder _taskbarProgress;
 
         public new string Title {
             get => base.Title;
@@ -244,14 +248,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             ProgressIndetermitate = Equals(value, 0d);
 
             if (_taskbarProgress == null) {
-                _taskbarProgress = new TaskbarProgress(this);
+                _taskbarProgress = TaskbarService.Create(1000d);
             }
 
             if (ProgressIndetermitate) {
-                _taskbarProgress.Set(TaskbarState.Indeterminate);
+                _taskbarProgress.Set(TaskbarState.Indeterminate, 0.5);
             } else {
-                _taskbarProgress.Set(TaskbarState.Normal);
-                _taskbarProgress.Set(value);
+                _taskbarProgress.Set(TaskbarState.Normal, value);
             }
         }
 

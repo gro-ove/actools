@@ -67,7 +67,7 @@ namespace AcManager.Pages.Lists {
                     await _car.SetupsManager.EnsureLoadedAsync();
                     break;
                 case CarSetupsRemoteSource.TheSetupMarket:
-                    _acManager = await TheSetupMarketAsManager.CreateAsync(_car); // TODO: NULL?!
+                    _acManager = await TheSetupMarketAsManager.CreateAsync(_car);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -86,6 +86,7 @@ namespace AcManager.Pages.Lists {
                     _car.SetupsManager.EnsureLoaded();
                     break;
                 case CarSetupsRemoteSource.TheSetupMarket:
+                    _acManager = TheSetupMarketAsManager.CreateAsync(_car).Result;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -131,9 +132,9 @@ namespace AcManager.Pages.Lists {
         }
 
         public class RemoteViewModel : AcListPageViewModel<RemoteCarSetupObject> {
-            public CarObject SelectedCar { get; private set; }
+            public CarObject SelectedCar { get; }
 
-            public RemoteViewModel([NotNull] CarObject car, IAcManagerNew manager, IFilter<RemoteCarSetupObject> listFilter)
+            public RemoteViewModel([NotNull] CarObject car, [NotNull] IAcManagerNew manager, IFilter<RemoteCarSetupObject> listFilter)
                     : base(manager, listFilter) {
                 GroupBy(nameof(RemoteCarSetupObject.TrackId), new TrackGroupDescription());
                 SelectedCar = car;
@@ -166,8 +167,8 @@ namespace AcManager.Pages.Lists {
         private static int _remoteLinksStatus;
 
         public static void Open([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
-            var main = Application.Current?.MainWindow as MainWindow;
-            if (forceNewWindow || Keyboard.Modifiers == ModifierKeys.Control || main == null || !main.IsActive || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (forceNewWindow || Keyboard.Modifiers == ModifierKeys.Control || !(Application.Current?.MainWindow is MainWindow main) || !main.IsActive ||
+                    SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car, forceRemoteSource);
                 return;
             }

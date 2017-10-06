@@ -34,7 +34,7 @@
 
   <!-- For example, on dark stripe car’s and track’s names are written on quick drive page -->
   <SolidColorBrush x:Key="DarkStripeText" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="DarkStripeBackground" Color="#99333333" />
+  <SolidColorBrush x:Key="DarkStripeBackground" Color="#66222222" />
 
   <!-- For quick drive page, for those overlaying buttons -->
   <SolidColorBrush x:Key="OverlayForeground" Color="#FFFFFF" />

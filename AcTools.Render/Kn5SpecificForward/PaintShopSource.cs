@@ -4,6 +4,8 @@ using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Render.Temporary;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -67,6 +69,134 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
     }
 
+    public class PaintShopDestination {
+        [NotNull]
+        public readonly string TextureName;
+
+        [CanBeNull]
+        public readonly PaintShopSource OutputMask;
+
+        public readonly PreferredDdsFormat PreferredFormat;
+        public readonly Size? ForceSize;
+
+        public PaintShopDestination([NotNull] string textureName, PreferredDdsFormat preferredFormat,
+                [CanBeNull] PaintShopSource outputMask = null, Size? forceSize = null) {
+            TextureName = textureName;
+            PreferredFormat = preferredFormat;
+            OutputMask = outputMask;
+            ForceSize = forceSize;
+        }
+
+        public PaintShopDestination([NotNull] string name) {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            TextureName = ParseTextureName(name, out PreferredFormat);
+        }
+
+        public static string ParseTextureName(string name, out PreferredDdsFormat format) {
+            var index = name.IndexOf(':');
+            if (index == -1) {
+                format = PreferredDdsFormat.AutoTransparency;
+                return name;
+            }
+
+            format = ParseFormat(name.Substring(index + 1));
+            return name.Substring(0, index);
+        }
+
+        public static PreferredDdsFormat ParseFormat(string format) {
+            switch (format.Trim().ToLowerInvariant()) {
+                case "dxt1":
+                    return PreferredDdsFormat.DXT1;
+
+                case "dxt":
+                case "dxt5":
+                    return PreferredDdsFormat.DXT5;
+
+                case "l":
+                case "lum":
+                case "luminance":
+                    return PreferredDdsFormat.Luminance;
+
+                case "la":
+                case "lumalpha":
+                case "luminancealpha":
+                    return PreferredDdsFormat.LuminanceTransparency;
+
+                case "rgb565":
+                case "rgb5650":
+                case "565":
+                case "5650":
+                    return PreferredDdsFormat.RGB565;
+
+                case "rgba4444":
+                case "4444":
+                    return PreferredDdsFormat.RGBA4444;
+
+                case "rgba":
+                case "rgba8888":
+                case "8888":
+                    return PreferredDdsFormat.NoCompressionTransparency;
+
+                case "rgb":
+                case "rgb888":
+                case "rgba8880":
+                case "888":
+                case "8880":
+                    return PreferredDdsFormat.NoCompression;
+
+                case "h":
+                case "hdr":
+                    return PreferredDdsFormat.HDR;
+
+                case "hdra":
+                case "hdrauto":
+                case "hauto":
+                case "ha":
+                case "autohdr":
+                    return PreferredDdsFormat.AutoHDR;
+            }
+
+            return Enum.TryParse(format, true, out PreferredDdsFormat result) ?
+                    result : PreferredDdsFormat.AutoTransparency;
+        }
+
+        public ValueAdjustment RedAdjustment = ValueAdjustment.Same,
+                GreenAdjustment = ValueAdjustment.Same,
+                BlueAdjustment = ValueAdjustment.Same,
+                AlphaAdjustment = ValueAdjustment.Same;
+
+        public bool AnyChannelAdjusted => RedAdjustment != ValueAdjustment.Same || GreenAdjustment != ValueAdjustment.Same ||
+                BlueAdjustment != ValueAdjustment.Same || AlphaAdjustment != ValueAdjustment.Same;
+
+        public PaintShopSourceChannel RedFrom = PaintShopSourceChannel.Red,
+                GreenFrom = PaintShopSourceChannel.Green,
+                BlueFrom = PaintShopSourceChannel.Blue,
+                AlphaFrom = PaintShopSourceChannel.Alpha;
+
+        public bool AnyChannelMapped => RedFrom != PaintShopSourceChannel.Red || GreenFrom != PaintShopSourceChannel.Green ||
+                BlueFrom != PaintShopSourceChannel.Blue || AlphaFrom != PaintShopSourceChannel.Alpha;
+
+        public PaintShopDestination InheritExtendedPropertiesFrom(PaintShopDestination baseDestination) {
+            RedAdjustment = baseDestination.RedAdjustment;
+            GreenAdjustment = baseDestination.GreenAdjustment;
+            BlueAdjustment = baseDestination.BlueAdjustment;
+            AlphaAdjustment = baseDestination.AlphaAdjustment;
+            RedFrom = baseDestination.RedFrom;
+            GreenFrom = baseDestination.GreenFrom;
+            BlueFrom = baseDestination.BlueFrom;
+            AlphaFrom = baseDestination.AlphaFrom;
+            return this;
+        }
+
+        public override int GetHashCode() {
+            return TextureName.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            return TextureName.Equals((obj as PaintShopDestination)?.TextureName);
+        }
+    }
+
     public class PaintShopSource : PaintShopSourceParams {
         public static PaintShopSource InputSource => new PaintShopSource();
         public static PaintShopSource White => new PaintShopSource(System.Drawing.Color.White);
@@ -88,35 +218,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         public readonly byte[] Data;
 
-        public PaintShopSourceChannel RedFrom { get; private set; } = PaintShopSourceChannel.Red;
-        public PaintShopSourceChannel GreenFrom { get; private set; } = PaintShopSourceChannel.Green;
-        public PaintShopSourceChannel BlueFrom { get; private set; } = PaintShopSourceChannel.Blue;
-        public PaintShopSourceChannel AlphaFrom { get; private set; } = PaintShopSourceChannel.Alpha;
-
-        public bool ByChannels => RedChannelSource != null || BlueChannelSource != null ||
-                GreenChannelSource != null || AlphaChannelSource != null;
-
-        public bool Custom => Desaturate || NormalizeMax ||
-                RedFrom != PaintShopSourceChannel.Red || GreenFrom != PaintShopSourceChannel.Green ||
-                BlueFrom != PaintShopSourceChannel.Blue || AlphaFrom != PaintShopSourceChannel.Alpha ||
-                ByChannels || TextureRef != null;
-
         public PaintShopSource() {
             UseInput = true;
-        }
-
-        [NotNull]
-        public PaintShopSource MapChannels([CanBeNull] string postfix) {
-            if (!string.IsNullOrWhiteSpace(postfix)) {
-                postfix = postfix.ToLowerInvariant();
-                var last = postfix[postfix.Length - 1];
-                RedFrom = (PaintShopSourceChannel)postfix.ElementAtOr(0, last);
-                GreenFrom = (PaintShopSourceChannel)postfix.ElementAtOr(1, last);
-                BlueFrom = (PaintShopSourceChannel)postfix.ElementAtOr(2, last);
-                AlphaFrom = (PaintShopSourceChannel)postfix.ElementAtOr(3, (char)PaintShopSourceChannel.Alpha);
-            }
-
-            return this;
         }
 
         public PaintShopSource(Color baseColor) {
@@ -144,9 +247,6 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool DoNotCache { get; set; }
 
-        [CanBeNull]
-        public readonly PaintShopSource RedChannelSource, GreenChannelSource, BlueChannelSource, AlphaChannelSource;
-
         public PaintShopSource(PaintShopSource red, PaintShopSource green, PaintShopSource blue, PaintShopSource alpha) {
             RedChannelSource = red;
             GreenChannelSource = green;
@@ -154,11 +254,50 @@ namespace AcTools.Render.Kn5SpecificForward {
             AlphaChannelSource = alpha;
         }
 
+        public PaintShopSourceChannel RedFrom = PaintShopSourceChannel.Red,
+                GreenFrom = PaintShopSourceChannel.Green,
+                BlueFrom = PaintShopSourceChannel.Blue,
+                AlphaFrom = PaintShopSourceChannel.Alpha;
+
+        public bool AnyChannelMapped => RedFrom != PaintShopSourceChannel.Red || GreenFrom != PaintShopSourceChannel.Green ||
+                BlueFrom != PaintShopSourceChannel.Blue || AlphaFrom != PaintShopSourceChannel.Alpha;
+
+        [CanBeNull]
+        public readonly PaintShopSource RedChannelSource,
+                GreenChannelSource,
+                BlueChannelSource,
+                AlphaChannelSource;
+
+        public bool DefinedByChannels => RedChannelSource != null || BlueChannelSource != null ||
+                GreenChannelSource != null || AlphaChannelSource != null;
+
+        [NotNull]
+        public PaintShopSource MapChannels([CanBeNull] string postfix) {
+            if (!string.IsNullOrWhiteSpace(postfix)) {
+                postfix = postfix.ToLowerInvariant();
+                var last = postfix[postfix.Length - 1];
+                RedFrom = (PaintShopSourceChannel)postfix.ElementAtOr(0, last);
+                GreenFrom = (PaintShopSourceChannel)postfix.ElementAtOr(1, last);
+                BlueFrom = (PaintShopSourceChannel)postfix.ElementAtOr(2, last);
+                AlphaFrom = (PaintShopSourceChannel)postfix.ElementAtOr(3, (char)PaintShopSourceChannel.Alpha);
+            }
+
+            return this;
+        }
+
+        public bool Custom => RequiresPreparation || AnyChannelMapped || AnyChannelAdjusted || DefinedByChannels || TextureRef != null;
+
         public PaintShopSource SetFrom([CanBeNull] PaintShopSourceParams baseParams) {
-            if (baseParams == null || !baseParams.RequiresPreparation) return this;
+            if (baseParams == null) return this;
+
             foreach (var p in typeof(PaintShopSourceParams).GetProperties().Where(p => p.CanWrite)) {
                 p.SetValue(this, p.GetValue(baseParams, null), null);
             }
+
+            foreach (var p in typeof(PaintShopSourceParams).GetFields()) {
+                p.SetValue(this, p.GetValue(baseParams));
+            }
+
             return this;
         }
 

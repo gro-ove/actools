@@ -868,7 +868,6 @@ namespace AcManager.Pages.Drive {
         }
 
         public static bool IsActive() {
-            Logging.Debug((Application.Current?.MainWindow as MainWindow)?.CurrentSource);
             return (Application.Current?.MainWindow as MainWindow)?.CurrentSource == QuickDriveUri;
         }
 

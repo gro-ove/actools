@@ -136,8 +136,9 @@
 
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition />
-      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition MinWidth="360" />
+      <ColumnDefinition Width="29" />
+      <ColumnDefinition Width="320" MinWidth="180" />
     </Grid.ColumnDefinitions>
 
     <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True"
@@ -148,9 +149,9 @@
             Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" SelectedItem="{Binding SelectedTunableVersion}"
             ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
         <!--<Button Margin="8 0 0 0" Command="{Binding ManageSetupsCommand}" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
-                        Style="{StaticResource CarBlockButton}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}">
-                    <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" Source="/Assets/Img/CarSetups.png" />
-                </Button>-->
+                Style="{StaticResource CarBlockButton}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}">
+            <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" Source="/Assets/Img/CarSetups.png" />
+        </Button>-->
         <mui:ModernButton IconData="{StaticResource CarSetupIconData}" EllipseDiameter="52" EllipseStrokeThickness="2" IconWidth="28" IconHeight="28"
             Command="{Binding ManageSetupsCommand}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}" />
       </mui:SpacingStackPanel>
@@ -158,10 +159,15 @@
 
     <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 -42 20 0" />
 
-    <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
-      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
-          FrameNavigated="OnTabsNavigated" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible"
-          LinksHorizontalAlignment="Stretch">
+    <!-- Seperator -->
+    <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent"
+        DragDelta="OnSeparatorDrag" />
+    <Border Grid.Column="1" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.CarDialogThumbinalMode}, Mode=OneTime}"
+        VerticalAlignment="Center" />
+
+    <AdornerDecorator Grid.Column="2" Margin="0 -44 0 0">
+      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml" FrameNavigated="OnTabsNavigated"
+          mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>
             <DockPanel>

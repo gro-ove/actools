@@ -526,10 +526,10 @@ namespace AcManager.Pages.Lists {
                 return true;
             }
 
-            private LiteShowroomTools.AmbientShadowParams _params;
+            private AmbientShadowParams _params;
 
             public override async Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                _params = LiteShowroomTools.LoadAmbientShadowParams();
+                _params = new AmbientShadowParams();
 
                 var l = OfType(list).ToList();
                 for (var i = 0; i < l.Count; i++) {
@@ -540,14 +540,14 @@ namespace AcManager.Pages.Lists {
                         await Task.Run(() => {
                             var kn5 = Kn5.FromFile(FileUtils.GetMainCarFilename(car.Location, car.AcdData));
                             using (var renderer = new AmbientShadowRenderer(kn5, car.AcdData) {
-                                DiffusionLevel = (float)_params.AmbientShadowDiffusion / 100f,
-                                SkyBrightnessLevel = (float)_params.AmbientShadowBrightness / 100f,
-                                Iterations = _params.AmbientShadowIterations,
-                                HideWheels = _params.AmbientShadowHideWheels,
-                                Fade = _params.AmbientShadowFade,
-                                CorrectLighting = _params.AmbientShadowAccurate,
-                                BodyMultipler = _params.AmbientShadowBodyMultiplier,
-                                WheelMultipler = _params.AmbientShadowWheelMultiplier,
+                                DiffusionLevel = (float)_params.Diffusion / 100f,
+                                SkyBrightnessLevel = (float)_params.Brightness / 100f,
+                                Iterations = _params.Iterations,
+                                HideWheels = _params.HideWheels,
+                                Fade = _params.Fade,
+                                CorrectLighting = _params.Accurate,
+                                BodyMultipler = _params.BodyMultiplier,
+                                WheelMultipler = _params.WheelMultiplier,
                             }) {
                                 renderer.Initialize();
                                 renderer.Shot(subProgress, cancellation);

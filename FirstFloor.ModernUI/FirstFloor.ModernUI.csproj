@@ -385,6 +385,7 @@
     <Compile Include="Windows\SizeRelatedCondition.cs" />
     <Compile Include="Windows\Stored.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
+    <Compile Include="Windows\TaskbarService.cs" />
     <Compile Include="Windows\Toast.cs" />
     <Compile Include="Windows\ToastWin8Helper.cs" />
     <Compile Include="Windows\WindowPlacementStruct.cs" />

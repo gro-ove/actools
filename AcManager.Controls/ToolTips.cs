@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -48,8 +48,12 @@ namespace AcManager.Controls {
                 typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
 
         private static void OnToolTipChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            if (!(d is FrameworkElement element) || e.NewValue == null) return;
+            if (d is FrameworkElement element && e.NewValue != null) {
+                ResetToolTip(element);
+            }
+        }
 
+        private static void ResetToolTip(FrameworkElement element) {
             SetIsDirty(element, true);
             element.MouseEnter -= OnElementMouseEnter;
             element.MouseEnter += OnElementMouseEnter;
@@ -57,7 +61,29 @@ namespace AcManager.Controls {
             element.PreviewGotKeyboardFocus += OnElementMouseEnter;
 
             if (element.IsMouseOver) {
-                UpdateContextMenu(element);
+                UpdateToolTip(element);
+            }
+        }
+
+        public static AcObjectNew GetGenericObject(DependencyObject obj) {
+            return (AcObjectNew)obj.GetValue(GenericObjectProperty);
+        }
+
+        public static void SetGenericObject(DependencyObject obj, AcObjectNew value) {
+            obj.SetValue(GenericObjectProperty, value);
+        }
+
+        public static readonly DependencyProperty GenericObjectProperty = DependencyProperty.RegisterAttached("GenericObject", typeof(AcObjectNew),
+                typeof(ToolTips), new UIPropertyMetadata(OnGenericObjectChanged));
+
+        private static void OnGenericObjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            switch (e.NewValue) {
+                case CarObject o:
+                    SetCar(d, o);
+                    break;
+                case TrackObjectBase o:
+                    SetTrack(d, o);
+                    break;
             }
         }
 
@@ -102,7 +128,7 @@ namespace AcManager.Controls {
             obj.ToolTip = t;
         }
 
-        private static void UpdateContextMenu(FrameworkElement element) {
+        private static void UpdateToolTip(FrameworkElement element) {
             if (!GetIsDirty(element)) return;
             SetIsDirty(element, false);
 
@@ -126,7 +152,7 @@ namespace AcManager.Controls {
         }
 
         private static void OnElementMouseEnter(object sender, EventArgs mouseEventArgs) {
-            UpdateContextMenu((FrameworkElement)sender);
+            UpdateToolTip((FrameworkElement)sender);
         }
     }
 }

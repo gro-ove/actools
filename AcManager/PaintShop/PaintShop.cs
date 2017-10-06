@@ -75,27 +75,85 @@ namespace AcManager.PaintShop {
             return (j?.ToString().ToColor() ?? defaultColor) ?? Colors.White;
         }
 
-        private static Color GetColor([CanBeNull] JObject j, string key, Color? defaultColor = null) {
+        private static Color GetColor([CanBeNull] JObject j, [NotNull] string key, Color? defaultColor = null) {
             return GetColor(j?[key], defaultColor);
         }
 
-        private static double GetDouble(JObject j, string key, double defaultValue = 0d) {
+        private static double GetDouble([NotNull] JObject j, [NotNull] string key, double defaultValue = 0d) {
             var s = j.GetStringValueOnly(key);
             return s == null ? defaultValue : FlexibleParser.TryParseDouble(s) ?? defaultValue;
         }
 
-        private static PaintShopSourceParams GetSourceParams(JObject jObj) {
-            return new PaintShopSourceParams {
+        private static ValueAdjustment GetAdjustment([CanBeNull] JToken token) {
+            if (token != null) {
+                if (token is JObject jObj) {
+                    return new ValueAdjustment(jObj.GetDoubleValueOnly("add") ?? 0d, jObj.GetDoubleValueOnly("multiply") ?? 1d);
+                }
+
+                if (token.Type == JTokenType.Float || token.Type == JTokenType.Integer) {
+                    return new ValueAdjustment(0d, (double)token);
+                }
+
+                double add = 0d, multiply = 1d;
+                foreach (var m in Regex.Split(token.ToString(), @"(^|\b)(?![\d.])")) {
+                    if (string.IsNullOrWhiteSpace(m)) continue;
+                    if (m[0] == '+' || m[0] == '-') {
+                        add = FlexibleParser.TryParseDouble(m[0] == '-' ? m : m.Substring(1)) ?? add;
+                    } else {
+                        multiply = FlexibleParser.TryParseDouble(m.Substring(1)) ?? multiply;
+                    }
+                }
+
+                return new ValueAdjustment(add, multiply);
+            }
+
+            return ValueAdjustment.Same;
+        }
+
+        private static PaintShopSourceParams GetAdjustments(PaintShopSourceParams baseParams, [CanBeNull] JToken token) {
+            if (token != null) {
+                if (token is JObject jObj) {
+                    baseParams.RedAdjustment = GetAdjustment(jObj[KeyRed]);
+                    baseParams.GreenAdjustment = GetAdjustment(jObj[KeyGreen]);
+                    baseParams.BlueAdjustment = GetAdjustment(jObj[KeyBlue]);
+                    baseParams.AlphaAdjustment = GetAdjustment(jObj[KeyAlpha]);
+                } else {
+                    baseParams.RedAdjustment = baseParams.GreenAdjustment = baseParams.BlueAdjustment = baseParams.AlphaAdjustment =
+                            GetAdjustment(token);
+                }
+            }
+
+            return baseParams;
+        }
+
+        private static PaintShopDestination GetAdjustments(PaintShopDestination baseParams, [CanBeNull] JToken token) {
+            if (token != null) {
+                if (token is JObject jObj) {
+                    baseParams.RedAdjustment = GetAdjustment(jObj[KeyRed]);
+                    baseParams.GreenAdjustment = GetAdjustment(jObj[KeyGreen]);
+                    baseParams.BlueAdjustment = GetAdjustment(jObj[KeyBlue]);
+                    baseParams.AlphaAdjustment = GetAdjustment(jObj[KeyAlpha]);
+                } else {
+                    baseParams.RedAdjustment = baseParams.GreenAdjustment = baseParams.BlueAdjustment = baseParams.AlphaAdjustment =
+                            GetAdjustment(token);
+                }
+            }
+
+            return baseParams;
+        }
+
+        private static PaintShopSourceParams GetSourceParams([NotNull] JObject jObj) {
+            return GetAdjustments(new PaintShopSourceParams {
                 NormalizeMax = jObj.GetBoolValueOnly(KeyAutoLevel) ?? false,
                 Desaturate = jObj.GetBoolValueOnly(KeyDesaturate) ?? false
-            };
+            }, jObj["adjust"] ?? jObj["adjustment"]);
         }
 
         private static PaintShopSourceParams GetMapsSourceParams(JObject jObj) {
-            return new PaintShopSourceParams {
+            return GetAdjustments(new PaintShopSourceParams {
                 NormalizeMax = jObj.GetBoolValueOnly(KeyMapsAutoLevel) ?? false,
                 Desaturate = jObj.GetBoolValueOnly(KeyMapsDesaturate) ?? false
-            };
+            }, jObj["mapsAdjust"] ?? jObj["mapsAdjustment"]);
         }
 
         private static Size? GetSize(JToken token) {
@@ -201,7 +259,8 @@ namespace AcManager.PaintShop {
                     o.GetDoubleValueOnly(KeySize, 200d),
                     o.GetDoubleValueOnly(KeyLeft, 200d),
                     o.GetDoubleValueOnly(KeyTop, 200d),
-                    o.GetDoubleValueOnly(KeyAngle, 200d)) : null;
+                    o.GetDoubleValueOnly(KeyAngle, 200d),
+                    o.GetDoubleValueOnly(KeyAspectMultiplier, 1d)) : null;
         }
 
         [CanBeNull]
@@ -237,7 +296,7 @@ namespace AcManager.PaintShop {
                             GetSource(o[KeyAlpha], refSolver, baseParams)).SetFrom(baseParams);
                 }
 
-                return GetSource(o["path"], refSolver, baseParams);
+                return GetSource(RequireString(o, KeyPath), refSolver, baseParams);
             }
 
             if (j.Type == JTokenType.Boolean) {
@@ -305,9 +364,10 @@ namespace AcManager.PaintShop {
         private const string KeyType = "type";
         private const string KeyStyle = "style";
         private const string KeyTexture = "texture";
+        private const string KeyFormat = "format";
         private const string KeyTextures = "textures";
         private const string KeyNormalsTexture = "normals";
-        private const string KeyMapsDefault = "mapsTexture";
+        private const string KeyMapsTexture = "mapsTexture";
         private const string KeyMapsMaskTexture = "mapsMask";
         private const string KeyMapsDefaultTexture = "mapsDefaultTexture";
         private const string KeyColor = "color";
@@ -326,6 +386,7 @@ namespace AcManager.PaintShop {
         private const string KeyHorizontalAlignment = "horizontalAlignment";
         private const string KeyVerticalAlignment = "verticalAlignment";
         private const string KeyAngle = "angle";
+        private const string KeyAspectMultiplier = "aspectMultiplier";
         private const string KeyWeight = "weight";
         private const string KeyStretch = "stretch";
         private const string KeyRole = "role";
@@ -335,6 +396,8 @@ namespace AcManager.PaintShop {
         private const string KeyBlue = "blue";
         private const string KeyAlpha = "alpha";
         private const string KeyBase = "base";
+        private const string KeyForcePattern = "forcePattern";
+        private const string KeyForce = "force";
         private const string KeyPatternBase = "patternBase";
         private const string KeyPatternOverlay = "patternOverlay";
         private const string KeyPatternUnderlay = "patternUnderlay";
@@ -344,8 +407,11 @@ namespace AcManager.PaintShop {
         private const string KeyUnderlay = "underlay";
         private const string KeyPatterns = "patterns";
         private const string KeyNumbers = "numbers";
+        private const string KeyFlags = "flags";
+        private const string KeyLabels = "labels";
         private const string KeySource = "source";
         private const string KeyMask = "mask";
+        private const string KeyPath = "path";
         private const string KeyAutoLevel = "autoLevel";
         private const string KeyDesaturate = "desaturate";
         private const string KeyMapsAutoLevel = "mapsAutoLevel";
@@ -373,14 +439,27 @@ namespace AcManager.PaintShop {
         }
 
         [NotNull]
-        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver,
+        private static Dictionary<PaintShopDestination, PaintShopSource> GetTextureFileNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver,
                 PaintShopSourceParams sourceParams) {
-            return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+            if (t == null) {
+                return new Dictionary<PaintShopDestination, PaintShopSource>();
+            }
+
+            if (t.Type == JTokenType.Array) {
+                return t.NonNull().Select(x => new {
+                    Texture = GetDestination(x[KeyTexture], refSolver),
+                    Source = GetSource(x, refSolver, sourceParams),
+                }).Where(x => x.Source != null).ToDictionary(
+                        x => x.Texture,
+                        x => x.Source);
+            }
+
+            return t.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
                 Source = GetSource(x.Value, refSolver, sourceParams)
             }).Where(x => x.Source != null).ToDictionary(
-                    x => new TextureFileName(x.Key),
-                    x => x.Source) ?? new Dictionary<TextureFileName, PaintShopSource>();
+                    x => GetDestination(x.Key),
+                    x => x.Source);
         }
 
         /// <summary>
@@ -409,7 +488,7 @@ namespace AcManager.PaintShop {
         /// Load entries from pairs table: result texture name → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<TextureFileName, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key, [NotNull] ReferenceSolver refSolver) {
+        private static Dictionary<PaintShopDestination, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key, [NotNull] ReferenceSolver refSolver) {
             return GetTextureFileNameSourcePairs(e[key], refSolver, GetSourceParams(e));
         }
 
@@ -417,11 +496,11 @@ namespace AcManager.PaintShop {
         /// Load entries from pairs table: name (or KN5’s texture) → KN5’s texture → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<string, Dictionary<TextureFileName, PaintShopSource>> GetNameNameSourcePairs(JObject e, string key,
+        private static Dictionary<string, Dictionary<PaintShopDestination, PaintShopSource>> GetNameNameSourcePairs(JObject e, string key,
                 [NotNull] ReferenceSolver refSolver) {
             var sourceParams = GetSourceParams(e);
             return e[key]?.ToObject<Dictionary<string, JToken>>().ToDictionary(x => x.Key, x => GetTextureFileNameSourcePairs(x.Value, refSolver, sourceParams))
-                    ?? new Dictionary<string, Dictionary<TextureFileName, PaintShopSource>>();
+                    ?? new Dictionary<string, Dictionary<PaintShopDestination, PaintShopSource>>();
         }
 
         public class TintedEntry {
@@ -441,34 +520,77 @@ namespace AcManager.PaintShop {
             public PaintShopSource Overlay { get; }
         }
 
+        private static PaintShopDestination GetDestination(string key) {
+            return new PaintShopDestination(key);
+        }
+
+        private static PaintShopDestination GetDestination(JToken token, [NotNull] ReferenceSolver refSolver) {
+            if (token == null) throw new Exception("Texture name is missing");
+
+            if (token.Type == JTokenType.Object) {
+                var j = (JObject)token;
+                var name = PaintShopDestination.ParseTextureName(
+                        j.GetStringValueOnly(KeyTexture) ?? RequireString(j, KeyName),
+                        out var format);
+
+                var formatString = j.GetStringValueOnly(KeyFormat);
+                if (!string.IsNullOrWhiteSpace(formatString)) {
+                    format = PaintShopDestination.ParseFormat(formatString);
+                }
+
+                var mask = GetSource(j[KeyMask], refSolver, null);
+                var size = GetSize(j[KeySize]);
+                return GetAdjustments(new PaintShopDestination(name, format, mask, size), j["adjust"] ?? j["adjustment"]);
+            }
+
+            return new PaintShopDestination((string)token);
+        }
+
         /// <summary>
         /// Similar to GetTextureSourcePairs, but also loads masks and have a fallback.
         /// </summary>
         [CanBeNull]
-        private static Dictionary<TextureFileName, TintedEntry> GetTintedPairs(JObject e, [NotNull] ReferenceSolver refSolver) {
+        private static Dictionary<PaintShopDestination, TintedEntry> GetTintedPairs([NotNull] JObject e, [NotNull] ReferenceSolver refSolver) {
             var sourceParams = GetSourceParams(e);
-            return e[KeyPairs]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+            var pairs = e[KeyPairs];
+
+            if (pairs == null) {
+                return new Dictionary<PaintShopDestination, TintedEntry> {
+                    [GetDestination(e[KeyTexture], refSolver)] = new TintedEntry(
+                            e.GetBoolValueOnly(KeyTintBase) == true || sourceParams.RequiresPreparation ?
+                                    PaintShopSource.InputSource.SetFrom(sourceParams) :
+                                    PaintShopSource.Transparent.SetFrom(sourceParams), null, null)
+                };
+            }
+
+            if (pairs.Type == JTokenType.Array) {
+                return pairs.NonNull().Select(x => new {
+                    Texture = GetDestination(x[KeyTexture], refSolver),
+                    Source = GetSource(x[KeySource], refSolver, sourceParams),
+                    Mask = GetSource(x[KeyMask], refSolver, null),
+                    Overlay = GetSource(x[KeyOverlay], refSolver, null),
+                }).Where(x => x.Source != null).ToDictionary(
+                        x => x.Texture,
+                        x => new TintedEntry(x.Source, x.Mask, x.Overlay));
+            }
+
+            return e[KeyPairs].ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
                 Source = GetSource((x.Value as JObject)?[KeySource] ?? x.Value, refSolver, sourceParams),
                 Mask = GetSource((x.Value as JObject)?[KeyMask], refSolver, null),
                 Overlay = GetSource((x.Value as JObject)?[KeyOverlay], refSolver, null),
             }).Where(x => x.Source != null).ToDictionary(
-                    x => new TextureFileName(x.Key),
-                    x => new TintedEntry(x.Source, x.Mask, x.Overlay)) ??
-                    (e.GetBoolValueOnly(KeyTintBase) == true || sourceParams.RequiresPreparation ? new Dictionary<TextureFileName, TintedEntry> {
-                        [new TextureFileName(RequireString(e, KeyTexture))] = new TintedEntry(PaintShopSource.InputSource.SetFrom(sourceParams), null, null)
-                    } : new Dictionary<TextureFileName, TintedEntry> {
-                        [new TextureFileName(RequireString(e, KeyTexture))] = new TintedEntry(PaintShopSource.Transparent.SetFrom(sourceParams), null, null)
-                    });
+                    x => GetDestination(x.Key),
+                    x => new TintedEntry(x.Source, x.Mask, x.Overlay));
         }
 
         /// <summary>
         /// Returns either texture or textures.
         /// </summary>
         [NotNull]
-        private static TextureFileName[] GetTextures(JObject e) {
-            return e[KeyTextures]?.ToObject<string[]>().Select(x => new TextureFileName(x)).ToArray() ??
-                    new[] { new TextureFileName(RequireString(e, KeyTexture)) };
+        private static PaintShopDestination[] GetTextures([NotNull] JObject e, [NotNull] ReferenceSolver refSolver) {
+            return e[KeyTextures]?.Select(x => GetDestination(x, refSolver)).ToArray() ??
+                    new[] { GetDestination(e[KeyTexture], refSolver) };
         }
 
         private static Dictionary<string, Color> GetAllowedColors(JObject e, string key) {
@@ -486,10 +608,10 @@ namespace AcManager.PaintShop {
             return dictionary;
         }
 
-        private static CarPaintColors GetColors([NotNull] JObject parent, Color? defaultColor = null) {
+        private static CarPaintColors GetColors([NotNull] JObject parent, Color? defaultColor) {
             var allowedColors = GetAllowedColors(parent, KeyAllowedColors);
 
-            var actualDefaultColor = parent[KeyDefaultColor]?.ToString().ToColor() ?? defaultColor ?? Colors.White;
+            var actualDefaultColor = parent[KeyDefaultColor]?.ToString().ToColor() ?? defaultColor;
             if (parent[KeyDefaultColors] is JArray colors) {
                 var list = new List<CarPaintColor>(colors.Count);
                 for (var i = 0; i < colors.Count; i++) {
@@ -510,8 +632,9 @@ namespace AcManager.PaintShop {
 
             var colorsCount = parent.GetIntValueOnly(KeyColors);
             return new CarPaintColors(colorsCount.HasValue ?
-                    Enumerable.Range(1, colorsCount.Value).Select(x => new CarPaintColor($"Color #{x}", actualDefaultColor, allowedColors)).ToArray() :
-                    new[] { new CarPaintColor("Color", actualDefaultColor, allowedColors) });
+                    Enumerable.Range(1, colorsCount.Value).Select(x => new CarPaintColor($"Color #{x}", actualDefaultColor ?? Colors.White, allowedColors))
+                              .ToArray() :
+                    actualDefaultColor.HasValue ? new[] { new CarPaintColor("Color", actualDefaultColor.Value, allowedColors) } : new CarPaintColor[0]);
         }
 
         [CanBeNull]
@@ -546,12 +669,12 @@ namespace AcManager.PaintShop {
 
             var numbers = (obj[KeyNumbers] as JArray)?.OfType<JObject>().Select(x => GetNumber(x, refSolver)) ??
                     new[] { GetNumber(obj[KeyNumbers], refSolver) };
-            var flags = (obj[KeyNumbers] as JArray)?.OfType<JObject>().Select(GetFlag) ??
-                    new[] { GetFlag(obj[KeyNumbers]) };
-            var labels = (obj[KeyNumbers] as JArray)?.OfType<JObject>().Select(x => GetLabel(x, refSolver)) ??
-                    new[] { GetLabel(obj[KeyNumbers], refSolver) };
+            var flags = (obj[KeyFlags] as JArray)?.OfType<JObject>().Select(GetFlag) ??
+                    new[] { GetFlag(obj[KeyFlags]) };
+            var labels = (obj[KeyLabels] as JArray)?.OfType<JObject>().Select(x => GetLabel(x, refSolver)) ??
+                    new[] { GetLabel(obj[KeyLabels], refSolver) };
 
-            return pattern == null ? null : new CarPaintPattern(name, pattern, overlay, underlay, GetSize(obj[KeySize]) ?? size, GetColors(obj),
+            return new CarPaintPattern(name, pattern, overlay, underlay, GetSize(obj[KeySize]) ?? size, GetColors(obj, null),
                     numbers, flags, labels) {
                 LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
                 LiveryColorIds = GetLiveryColorIds(obj)
@@ -568,34 +691,35 @@ namespace AcManager.PaintShop {
                     var size = GetSize(e[KeyPatternSize]) ?? GetSize(e[KeySize]);
                     result = new TexturePattern {
                         LiveryColorIds = GetLiveryColorIds(e)
-                    }.SetPatterns(new TextureFileName(e.GetStringValueOnly(KeyPatternTexture) ?? RequireString(e, KeyTexture)),
+                    }.SetPatterns(GetDestination(e[KeyPatternTexture] ?? e[KeyTexture], refSolver),
                             GetSource(e[KeyPatternBase], refSolver, sourceParams) ?? GetSource(e[KeyPatternTexture], refSolver, sourceParams) ??
                                     GetSource(e[KeyBase], refSolver, sourceParams) ?? GetSource(e[KeyTexture], refSolver, sourceParams),
                             GetSource(e[KeyPatternOverlay], refSolver, null), GetSource(e[KeyPatternUnderlay], refSolver, null),
-                            e[KeyPatterns].OfType<JObject>().Select(x => GetPattern(x, refSolver, size)).NonNull());
+                            e[KeyPatterns].OfType<JObject>().Select(x => GetPattern(x, refSolver, size)).NonNull(),
+                            e.GetBoolValueOnly(KeyForce) ?? true);
                     break;
                 case TypeCarPaint:
-                    var maps = GetString(e, KeyMapsDefault);
+                    var maps = e[KeyMapsTexture];
                     CarPaint carPaint;
                     if (maps != null) {
                         var mapsSourceParams = GetMapsSourceParams(e);
                         var mapsSource = GetSource(e[KeyMapsDefaultTexture], refSolver, mapsSourceParams) ??
                                 PaintShopSource.InputSource.SetFrom(mapsSourceParams);
                         var mapsMask = GetSource(e[KeyMapsMaskTexture], refSolver, null);
-                        carPaint = new ComplexCarPaint(new TextureFileName(maps), mapsSource, mapsMask);
+                        carPaint = new ComplexCarPaint(GetDestination(maps, refSolver), mapsSource, mapsMask);
                     } else {
                         carPaint = new CarPaint();
                     }
 
                     carPaint.SetDetailsParams(
-                            new TextureFileName(RequireString(e, KeyTexture)),
+                            GetDestination(e[KeyTexture], refSolver),
                             e.GetBoolValueOnly(KeyFlakesAvailable) ?? true,
                             e.GetIntValueOnly(KeyFlakesSize) ?? 512,
                             e.GetBoolValueOnly(KeyColorAvailable) ?? true,
                             GetColor(e, KeyDefaultColor),
                             GetNameSourcePairs(e[KeyCandidates], refSolver));
 
-                    var paintPatternTexture = e.GetStringValueOnly(KeyPatternTexture);
+                    var paintPatternTexture = e[KeyPatternTexture];
                     if (paintPatternTexture != null) {
                         var patternSize = GetSize(e[KeyPatternSize]);
                         var patternBase = GetSource(e[KeyPatternBase], refSolver, GetSourceParams(e)) ??
@@ -604,7 +728,8 @@ namespace AcManager.PaintShop {
                         var patternUnderlay = GetSource(e[KeyPatternUnderlay], refSolver, null);
                         var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, refSolver, patternSize)).NonNull();
                         if (patternBase != null && patterns != null) {
-                            carPaint.SetPatterns(new TextureFileName(paintPatternTexture), patternBase, patternOverlay, patternUnderlay, patterns);
+                            carPaint.SetPatterns(GetDestination(paintPatternTexture, refSolver), patternBase, patternOverlay, patternUnderlay, patterns,
+                                    e.GetBoolValueOnly(KeyForcePattern) ?? false);
                         }
                     }
 
@@ -618,7 +743,7 @@ namespace AcManager.PaintShop {
                         throw new Exception("Values requred");
                     }
 
-                    result = new ColoredItem(pairs, GetColors(e)) {
+                    result = new ColoredItem(pairs, GetColors(e, Colors.White)) {
                         LiveryColorIds = GetLiveryColorIds(e)
                     };
                     break;
@@ -635,18 +760,18 @@ namespace AcManager.PaintShop {
                             GetString(e, KeyNormalsTexture, "Plate_NM.dds"));
                     break;
                 case TypeSolidColorIfFlagged:
-                    result = new SolidColorIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false,
+                    result = new SolidColorIfFlagged(GetTextures(e, refSolver), e.GetBoolValueOnly(KeyInverse) ?? false,
                             GetColor(e, KeyColor), GetDouble(e, KeyOpacity, 0.23));
                     break;
                 case TypeTransparentIfFlagged:
-                    result = new TransparentIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false);
+                    result = new TransparentIfFlagged(GetTextures(e, refSolver), e.GetBoolValueOnly(KeyInverse) ?? false);
                     break;
                 case TypeReplacedIfFlagged:
                     result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetTextureFileNameSourcePairs(e, KeyPairs, refSolver));
                     break;
                 case TypeReplacement:
                     try {
-                        result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, refSolver));
+                        result = new Replacement(GetTextures(e, refSolver), GetNameSourcePairs(e, KeyCandidates, refSolver));
                     } catch (MissingValueException ex) when (ex.Key == KeyTexture) {
                         result = new MultiReplacement(GetNameNameSourcePairs(e, KeyCandidates, refSolver));
                     }

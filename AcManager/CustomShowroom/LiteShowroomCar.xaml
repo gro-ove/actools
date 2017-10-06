@@ -263,6 +263,9 @@
         </DockPanel>
       </mui:SpacingStackPanel>
 
+      <Button Margin="0 4 0 0" Command="{Binding UpdateKn5Command}" Content="Update Model"
+          ToolTip="Save model state, such as wheels position or blurred rims on/off (experimental; current version will be moved to the Recycle Bin)" />
+
       <TextBlock Text="Sound" Style="{StaticResource Heading2}" Margin="0 8 0 0"
           Visibility="{Binding Renderer.CarNode.IsSoundAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
       <CheckBox IsChecked="{Binding Renderer.CarNode.IsSoundActive}"
@@ -298,9 +301,6 @@
           <Label Content="Horn" />
         </CheckBox>
       </mui:SpacingStackPanel>
-
-      <Button Margin="0 8 0 0" Command="{Binding UpdateKn5Command}" Content="Update Model"
-          ToolTip="Save model state, such as wheels position or blurred rims on/off (experimental; current version will be moved to the Recycle Bin)" />
     </mui:SpacingStackPanel>
   </ScrollViewer>
 </ResourceDictionary>

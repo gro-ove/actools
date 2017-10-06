@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
     public class ColoredItem : AspectsPaintableItem {
         [NotNull]
-        protected readonly Dictionary<TextureFileName, PaintShop.TintedEntry> Replacements;
+        protected readonly Dictionary<PaintShopDestination, PaintShop.TintedEntry> Replacements;
 
-        public ColoredItem([NotNull, Localizable(false)] TextureFileName diffuseTexture, Color defaultColor)
+        public ColoredItem([NotNull, Localizable(false)] PaintShopDestination diffuseTexture, Color defaultColor)
                 : this(diffuseTexture, new CarPaintColors(defaultColor)) {}
 
-        public ColoredItem([NotNull, Localizable(false)] TextureFileName diffuseTexture, [NotNull] CarPaintColors colors)
-                : this(new Dictionary<TextureFileName, PaintShop.TintedEntry> {
+        public ColoredItem([NotNull, Localizable(false)] PaintShopDestination diffuseTexture, [NotNull] CarPaintColors colors)
+                : this(new Dictionary<PaintShopDestination, PaintShop.TintedEntry> {
                     [diffuseTexture] = new PaintShop.TintedEntry(PaintShopSource.White, null, null)
                 }, colors) {}
 
-        public ColoredItem([NotNull] Dictionary<TextureFileName, PaintShop.TintedEntry> replacements, [NotNull] CarPaintColors colors) : base(false) {
+        public ColoredItem([NotNull] Dictionary<PaintShopDestination, PaintShop.TintedEntry> replacements, [NotNull] CarPaintColors colors) : base(false) {
             Replacements = replacements;
             Colors = colors;
             Colors.PropertyChanged += OnColorsChanged;
@@ -30,17 +28,19 @@ namespace AcManager.PaintShop {
 
         protected override void Initialize() {
             foreach (var replacement in Replacements) {
-                RegisterAspect(replacement.Key, GetApply(replacement.Value), GetSave(replacement.Value));
+                RegisterAspect(replacement.Key, GetOverride);
             }
         }
 
-        private Action<TextureFileName, IPaintShopRenderer> GetApply(PaintShop.TintedEntry v) {
-            return (name, renderer) => renderer.OverrideTextureTint(name.FileName, Colors.DrawingColors, 0d, v.Source, v.Mask, v.Overlay);
-        }
-
-        private Func<string, TextureFileName, IPaintShopRenderer, Task> GetSave(PaintShop.TintedEntry v) {
-            return (location, name, renderer) => renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat,
-                    Colors.DrawingColors, 0d, v.Source, v.Mask, v.Overlay);
+        private PaintShopOverrideBase GetOverride(PaintShopDestination name) {
+            var replacement = Replacements.GetValueOrDefault(name);
+            return new PaintShopOverrideTint {
+                Colors = Colors.DrawingColors,
+                Alpha = ValueAdjustment.Same,
+                Source = replacement?.Source,
+                Mask = replacement?.Mask,
+                Overlay = replacement?.Overlay
+            };
         }
 
         // which color is in which slot, −1 if there is no color in given slot

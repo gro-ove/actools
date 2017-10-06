@@ -32,33 +32,38 @@
 	Texture2D gOverlayMap;
 	Texture2D gUnderlayMap;
 
+	struct ChannelsParams {
+	    float4 Map;
+	    float4 Add;
+	    float4 Multiply;
+	};
+
 	cbuffer cbInputSources : register(b1) {
-		float4 gInputMapChannels;
-		float4 gAoMapChannels;
-		float4 gMaskMapChannels;
-		float4 gOverlayMapChannels;
-		float4 gUnderlayMapChannels;
+		ChannelsParams gInputParams;
+		ChannelsParams gAoParams;
+		ChannelsParams gMaskParams;
+		ChannelsParams gOverlayParams;
+		ChannelsParams gUnderlayParams;
 	}
 
-	float4 GetSource(SamplerState sam, Texture2D tex, float4 channels, float2 uv) {
+	float4 GetSource(SamplerState sam, Texture2D tex, ChannelsParams p, float2 uv) {
 		float4 value = tex.SampleLevel(sam, uv, 0);
 		return float4(
-			channels[0] < 0 ? channels[0] + 2.0 : value[channels[0]],
-			channels[1] < 0 ? channels[1] + 2.0 : value[channels[1]],
-			channels[2] < 0 ? channels[2] + 2.0 : value[channels[2]],
-			channels[3] < 0 ? channels[3] + 2.0 : value[channels[3]]
-		);
+			p.Add[0] + (p.Map[0] < 0 ? p.Map[0] + 2.0 : value[p.Map[0]]) * p.Multiply[0],
+			p.Add[1] + (p.Map[1] < 0 ? p.Map[1] + 2.0 : value[p.Map[1]]) * p.Multiply[1],
+			p.Add[2] + (p.Map[2] < 0 ? p.Map[2] + 2.0 : value[p.Map[2]]) * p.Multiply[2],
+			p.Add[3] + (p.Map[3] < 0 ? p.Map[3] + 2.0 : value[p.Map[3]]) * p.Multiply[3]);
 	}
 
-	float4 GetSource(Texture2D tex, float4 channels, float2 uv) {
-		return GetSource(samLinear, tex, channels, uv);
+	float4 GetSource(Texture2D tex, ChannelsParams p, float2 uv) {
+		return GetSource(samLinear, tex, p, uv);
 	}
 
-	float4 GetInputMap(float2 uv) { return GetSource(samLinear, gInputMap, gInputMapChannels, uv); }
-	float4 GetAoMap(float2 uv) { return GetSource(samLinear, gAoMap, gAoMapChannels, uv); }
-	float4 GetMaskMap(float2 uv) { return GetSource(samLinear, gMaskMap, gMaskMapChannels, uv); }
-	float4 GetOverlayMap(float2 uv) { return GetSource(samLinear, gOverlayMap, gOverlayMapChannels, uv); }
-	float4 GetUnderlayMap(float2 uv) { return GetSource(samLinear, gUnderlayMap, gUnderlayMapChannels, uv); }
+	float4 GetInputMap(float2 uv) { return GetSource(gInputMap, gInputParams, uv); }
+	float4 GetAoMap(float2 uv) { return GetSource(gAoMap, gAoParams, uv); }
+	float4 GetMaskMap(float2 uv) { return GetSource(gMaskMap, gMaskParams, uv); }
+	float4 GetOverlayMap(float2 uv) { return GetSource(gOverlayMap, gOverlayParams, uv); }
+	float4 GetUnderlayMap(float2 uv) { return GetSource(gUnderlayMap, gUnderlayParams, uv); }
 
 // common functions
 	float Luminance(float3 color) {
@@ -80,6 +85,7 @@
 // input resources
 	cbuffer cbPerObject : register(b0) {
 		float4 gColor;
+		float2 gAlphaAdjustments;
 		float4 gSize;
 		float gNoiseMultipler;
 		float gFlakes;
@@ -105,13 +111,13 @@
 	    AddressU = BORDER;
         AddressV = BORDER;
         AddressW = BORDER;
-        BorderColor = float4(1.0f, 1.0f, 1.0f, 0.0f);
+        BorderColor = float4(1.0, 1.0, 1.0, 0.0);
 	};
 
 	PS_IN vs_Piece(VS_IN vin) {
 		PS_IN vout;
 		vout.PosH = float4(vin.PosL, 1.0);
-		vout.Tex = vin.Tex;
+	    vout.Tex = mul(float4(vin.Tex, 1.0, 1.0), gTransform).xy;
 		return vout;
 	}
 
@@ -145,6 +151,26 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_Fill()));
+		}
+	}
+
+// flakes
+	#define _FLAKES_SPLIT 0.57
+	#define _FLAKES_SPLIT_LEFT (1 - _FLAKES_SPLIT)
+
+	float4 ps_Flakes(PS_IN pin) : SV_Target {
+		float4 random4 = gNoiseMap.SampleLevel(samPointWrap, pin.Tex * gNoiseMultipler, 0);
+		float random = Luminance(random4.rgb);
+		random = 1.0 - saturate(random * 3);
+		random = random < _FLAKES_SPLIT ? pow(random / _FLAKES_SPLIT, 1.2) : 1.0;
+		return float4(gColor.rgb, saturate(gColor.a - gFlakes + saturate(random + (random4.a - 0.5) * 0.02) * gFlakes));
+	}
+
+	technique10 Flakes {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Flakes()));
 		}
 	}
 
@@ -207,23 +233,30 @@
 		}
 	}
 
-// flakes
-	#define _FLAKES_SPLIT 0.57
-	#define _FLAKES_SPLIT_LEFT (1 - _FLAKES_SPLIT)
+// mask
+	float4 ps_Mask(PS_IN pin) : SV_Target {
+	    // return gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
 
-	float4 ps_Flakes(PS_IN pin) : SV_Target {
-		float4 random4 = gNoiseMap.SampleLevel(samPointWrap, pin.Tex * gNoiseMultipler, 0);
-		float random = Luminance(random4.rgb);
-		random = 1.0 - saturate(random * 3);
-		random = random < _FLAKES_SPLIT ? pow(random / _FLAKES_SPLIT, 1.2) : 1.0;
-		return float4(gColor.rgb, saturate(1.0 - gFlakes + saturate(random + (random4.a - 0.5) * 0.02) * gFlakes));
+	    float4 overlay = GetInputMap(pin.Tex);
+	    if (!gUseMask) return overlay;
+
+	    float mask = GetMaskMap(pin.Tex).r;
+	    if (mask >= 1.0) return overlay;
+
+	    float4 underlay = gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
+	    if (mask <= 0.0) return underlay;
+
+	    return lerp(
+	        gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0),
+	        GetInputMap(pin.Tex),
+	        GetMaskMap(pin.Tex).r);
 	}
 
-	technique10 Flakes {
+	technique10 Mask {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_Flakes()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Mask()));
 		}
 	}
 
@@ -243,12 +276,12 @@
 // maps
 	float4 ps_Maps(PS_IN pin) : SV_Target {
 		float4 base = GetInputMap(pin.Tex);
-		float4 modified = saturate(float4(base.r * gColor.r, base.g * gColor.g, base.b * gColor.b, 1.0));
-		if (gUseMask) {
-			float mask = GetMaskMap(pin.Tex).r;
-			return base * (1.0 - mask) + modified * mask;
-		}
-		return modified;
+		float4 modified = saturate(float4(
+		    gColors[0].r + base.r * gColors[1].r,
+		    gColors[0].g + base.g * gColors[1].g,
+		    gColors[0].b + base.b * gColors[1].b,
+		    1.0));
+		return gUseMask ? lerp(base, modified, GetMaskMap(pin.Tex).r) : modified;
 	}
 
 	technique10 Maps {
@@ -259,23 +292,11 @@
 		}
 	}
 
-	float4 ps_MapsFillGreen(PS_IN pin) : SV_Target {
-		float4 base = GetInputMap(pin.Tex);
-		return saturate(float4(base.r * gColor.r, gColor.g, base.b * gColor.b, 1.0));
-	}
-
-	technique10 MapsFillGreen {
-		pass P0 {
-			SetVertexShader(CompileShader(vs_4_0, vs_main()));
-			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_MapsFillGreen()));
-		}
-	}
-
 // tinting
 	float4 ps_Tint(PS_IN pin) : SV_Target {
 		float4 base = GetInputMap(pin.Tex);
-		float4 result = float4(base.rgb * gColor.rgb, saturate(base.a + gColor.a));
+        float alpha = saturate(gAlphaAdjustments.x + base.a * gAlphaAdjustments.y);
+		float4 result = float4(base.rgb * gColor.rgb, alpha);
 		return SimpleBlending(result, GetOverlayMap(pin.Tex));
 	}
 
@@ -291,11 +312,12 @@
 		float4 base = GetInputMap(pin.Tex);
 		float4 mask = GetMaskMap(pin.Tex);
 
+        float alpha = saturate(gAlphaAdjustments.x + base.a * gAlphaAdjustments.y);
 		float4 result = base * ((float4)(1.0 - mask.r) + gColor * mask.r)
 			* ((float4)(1.0 - mask.g) + gColors[0] * mask.g)
 			* ((float4)(1.0 - mask.b) + gColors[1] * mask.b)
 			* ((float4)(1.0 - mask.a) + gColors[2] * mask.a);
-		return SimpleBlending(float4(result.rgb, base.a + gColor.a), GetOverlayMap(pin.Tex));
+		return SimpleBlending(float4(result.rgb, alpha), GetOverlayMap(pin.Tex));
 	}
 
 	technique10 TintMask {
@@ -325,38 +347,69 @@
 	}
 
 // preparation
-	float4 ps_Maximum(PS_IN pin) : SV_Target {
-		float4 result = 0;
+    #define _FLOAT_MAX 3.402823466e+38f
+
+	float4 ps_FindLimitsFirstStep(PS_IN pin) : SV_Target {
+		float4 result = float4(0, _FLOAT_MAX, 0, 0);
+
 		[unroll]
 		for (float x = -0.375; x <= 0.376; x += 0.25) {
 			[unroll]
 			for (float y = -0.375; y <= 0.376; y += 0.25) {
-				result = max(result, gInputMap.SampleLevel(samPoint, pin.Tex + gSize.zw * float2(x, y), 0));
+			    float4 value = gInputMap.SampleLevel(samPoint, pin.Tex + gSize.zw * float2(x, y), 0);
+				result.x = max(result.x, max(value.r, max(value.g, value.b)));
+				result.y = min(result.y, min(value.r, min(value.g, value.b)));
 			}
 		}
 
 		return result;
 	}
 
-	technique10 Maximum {
+	technique10 FindLimitsFirstStep {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_Maximum()));
+			SetPixelShader(CompileShader(ps_4_0, ps_FindLimitsFirstStep()));
 		}
 	}
 
-	float4 ps_MaximumApply(PS_IN pin) : SV_Target {
-		float4 maxValue = gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
-		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return saturate(float4(input.rgb / max(max(maxValue.r, max(maxValue.b, maxValue.g)), 0.0001), input.a));
+	float4 ps_FindLimits(PS_IN pin) : SV_Target {
+		float4 result = float4(0, _FLOAT_MAX, 0, 0);
+
+		[unroll]
+		for (float x = -0.375; x <= 0.376; x += 0.25) {
+			[unroll]
+			for (float y = -0.375; y <= 0.376; y += 0.25) {
+			    float4 value = gInputMap.SampleLevel(samPoint, pin.Tex + gSize.zw * float2(x, y), 0);
+				result.x = max(result.x, value.x);
+				result.y = min(result.y, value.y);
+			}
+		}
+
+		return result;
 	}
 
-	technique10 MaximumApply {
+	technique10 FindLimits {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_MaximumApply()));
+			SetPixelShader(CompileShader(ps_4_0, ps_FindLimits()));
+		}
+	}
+
+	float4 ps_NormalizeLimits(PS_IN pin) : SV_Target {
+		float4 limits = gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
+		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+
+		float3 color = (input.rgb - (float3)limits.y) / max(limits.x - limits.y, 0.0001);
+		return saturate(float4(color, input.a));
+	}
+
+	technique10 NormalizeLimits {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_NormalizeLimits()));
 		}
 	}
 

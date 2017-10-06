@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
@@ -20,19 +22,8 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectTrackDialog {
-
-        private static WeakReference<SelectTrackDialog> _instance;
-
-        public static SelectTrackDialog Instance {
-            get {
-                if (_instance == null) {
-                    return null;
-                }
-
-                SelectTrackDialog result;
-                return _instance.TryGetTarget(out result) ? result : null;
-            }
-        }
+        /*private static WeakReference<SelectTrackDialog> _instance;
+        public static SelectTrackDialog Instance => _instance == null ? null : _instance.TryGetTarget(out var result) ? result : null;*/
 
         public static Uri FavouritesUri() {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter=fav+&Title={0}",
@@ -56,7 +47,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public SelectTrackDialog([NotNull] TrackObjectBase selectedTrackConfiguration) {
-            _instance = new WeakReference<SelectTrackDialog>(this);
+            // _instance = new WeakReference<SelectTrackDialog>(this);
 
             DataContext = new ViewModel(selectedTrackConfiguration);
             InputBindings.AddRange(new[] {
@@ -64,7 +55,7 @@ namespace AcManager.Pages.Dialogs {
             });
             InitializeComponent();
 
-            Model.PropertyChanged += Model_PropertyChanged;
+            Model.PropertyChanged += OnModelPropertyChanged;
             BackgroundImage0.Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
 
             Buttons = new[] { OkButton, CancelButton };
@@ -109,7 +100,7 @@ namespace AcManager.Pages.Dialogs {
 
         private int _state;
 
-        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(Model.CurrentPreviewImage)) return;
             (_state == 0 ? BackgroundImage1 : BackgroundImage0).Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
             VisualStateManager.GoToElementState(BackgroundImage1, @"State" + _state, true);
@@ -119,13 +110,13 @@ namespace AcManager.Pages.Dialogs {
         private ISelectedItemPage<AcObjectNew> _list;
         private IChoosingItemControl<AcObjectNew> _choosing;
 
-        private void Tabs_OnNavigated(object sender, NavigationEventArgs e) {
+        private void OnTabsNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
-                _list.PropertyChanged -= List_PropertyChanged;
+                _list.PropertyChanged -= OnListPropertyChanged;
             }
 
             if (_choosing != null) {
-                _choosing.ItemChosen -= Choosing_ItemChosen;
+                _choosing.ItemChosen -= OnItemChosen;
             }
 
             var content = ((ModernTab)sender).Frame.Content;
@@ -134,23 +125,33 @@ namespace AcManager.Pages.Dialogs {
 
             if (_list != null) {
                 _list.SelectedItem = Model.SelectedTrackConfiguration?.MainTrackObject;
-                _list.PropertyChanged += List_PropertyChanged;
+                _list.PropertyChanged += OnListPropertyChanged;
             }
 
             if (_choosing != null) {
-                _choosing.ItemChosen += Choosing_ItemChosen;
+                _choosing.ItemChosen += OnItemChosen;
+            }
+
+            if (content is AcObjectSelectList) {
+                UpdateHint();
             }
         }
 
-        private void Choosing_ItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
-            var c = e.ChosenItem as TrackObjectBase;
-            if (c != null) {
+        private async void UpdateHint() {
+            await Task.Delay(1);
+            if (Tabs.ActualWidth <= AcObjectListBox.AutoThumbnailModeThresholdValue) {
+                FancyHints.TrackDialogThumbinalMode.Trigger();
+            }
+        }
+
+        private void OnItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
+            if (e.ChosenItem is TrackObjectBase c) {
                 Model.SelectedTrackConfiguration = c.MainTrackObject.SelectedLayout;
                 CloseWithResult(MessageBoxResult.OK);
             }
         }
 
-        private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnListPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(_list.SelectedItem)) {
                 Model.SelectedTrackConfiguration = (_list.SelectedItem as TrackObject)?.SelectedLayout ?? _list.SelectedItem as TrackObjectBase;
             }
@@ -163,7 +164,7 @@ namespace AcManager.Pages.Dialogs {
 
             [CanBeNull]
             public TrackObjectBase SelectedTrackConfiguration {
-                get { return _selectedTrackConfiguration.Value; }
+                get => _selectedTrackConfiguration.Value;
                 set {
                     if (value != null) {
                         _selectedTrackConfiguration.Value = value;
@@ -176,7 +177,7 @@ namespace AcManager.Pages.Dialogs {
             private string _currentPreviewImage;
 
             public string CurrentPreviewImage {
-                get { return _currentPreviewImage; }
+                get => _currentPreviewImage;
                 set {
                     if (Equals(value, _currentPreviewImage)) return;
                     _currentPreviewImage = value;

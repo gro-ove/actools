@@ -500,7 +500,7 @@ namespace AcManager.Tools {
                 return null;
             }
 
-            var texture = carPaint.DetailsTexture?.FileName;
+            var texture = carPaint.DetailsTexture?.TextureName;
             if (texture == null) {
                 Logging.Debug("Details texture not found");
                 return null;

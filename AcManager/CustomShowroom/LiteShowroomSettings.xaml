@@ -3,7 +3,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
     xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render"
-    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d">
+    xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
@@ -45,7 +45,7 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance customShowroom:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <Grid>
@@ -85,7 +85,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance customShowroom:CmPreviewsSettings}"
+  <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}"
       mui:FancyScrollHelper.Outside="False" Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 0" Text="Parameters:" />
@@ -179,7 +179,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance customShowroom:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <DockPanel>
@@ -222,7 +222,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance customShowroom:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Background:" Style="{StaticResource Heading2}" />
@@ -345,7 +345,7 @@
         <DockPanel Style="{StaticResource DockPanel}">
           <Label Content="Car shadows:" />
           <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CarAmbientShadowsMode}"
-              ItemsSource="{x:Static customShowroom:DarkRendererSettings.CarAmbientShadowsModes}">
+              ItemsSource="{x:Static cs:DarkRendererSettings.CarAmbientShadowsModes}">
             <mui:BetterComboBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -359,7 +359,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <DataTemplate x:Key="CarSlotWrappedTemplate" DataType="customShowroom:CarSlotWrapped">
+  <DataTemplate x:Key="CarSlotWrappedTemplate" DataType="cs:CarSlotWrapped">
     <DockPanel Background="Transparent" Margin="0 0 0 12">
       <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
           Command="{Binding DeleteCommand}" ToolTip="Remove this car"
@@ -426,7 +426,7 @@
 
           <DockPanel Style="{StaticResource DockPanel}">
             <Label Content="Type:" />
-            <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Type}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.LightTypes}">
+            <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Type}" ItemsSource="{x:Static cs:DarkRendererSettings.LightTypes}">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -491,7 +491,7 @@
           <DockPanel IsEnabled="{Binding UseShadows}" Style="{StaticResource DockPanel}">
             <Label Content="Resolution:" />
             <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowsResolution}"
-                ItemsSource="{x:Static customShowroom:DarkRendererSettings.ExtraShadowResolutionsValues}">
+                ItemsSource="{x:Static cs:DarkRendererSettings.ExtraShadowResolutionsValues}">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding StringFormat='{}{0}×{0}'}" />
@@ -653,7 +653,7 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance customShowroom:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
@@ -678,7 +678,7 @@
       <DockPanel IsEnabled="{Binding Renderer.EnableShadows}" Style="{StaticResource DockPanel}">
         <Label Content="Resolution:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+            ItemsSource="{x:Static cs:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <TextBlock Text="Extra lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
@@ -747,19 +747,123 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance customShowroom:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}"
+      mui:FancyScrollHelper.Outside="False" Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+    <mui:SpacingStackPanel Spacing="4">
+      <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
+
+      <mui:ColorPicker Color="{Binding LightColor}" />
+      <DockPanel DataContext="{Binding Renderer}">
+        <mui:ValueLabel Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" mui:BetterTextBox.Mode="Number"
+            DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+        <Slider Minimum="0" Maximum="300" Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+            TickFrequency="30" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
+        <CheckBox IsChecked="{Binding Renderer.EnableShadows}">
+          <Label Content="Shadows" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Renderer.UsePcss}" IsEnabled="{Binding Renderer.EnableShadows}">
+          <Label Content="PCSS" />
+        </CheckBox>
+      </mui:SpacingUniformGrid>
+
+      <DockPanel IsEnabled="{Binding Renderer.EnableShadows}" Style="{StaticResource DockPanel}">
+        <Label Content="Resolution:" />
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
+            ItemsSource="{x:Static cs:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+      </DockPanel>
+
+      <TextBlock Text="Extra lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding ExtraLights}"
+          ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
+
+      <c:MessageBlock CloseKey="t-for-movement">
+        <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">
+          <TextBlock.Text>Press “T” in showroom window to toggle movement mode.</TextBlock.Text>
+        </TextBlock>
+      </c:MessageBlock>
+
+      <Button Content="Add New Light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
+
+      <CheckBox IsChecked="{Binding Renderer.LoadCarLights}" Margin="0 20 0 0">
+        <TextBlock Style="{StaticResource Heading2}">
+          <TextBlock.Text>Car’s lights:</TextBlock.Text>
+        </TextBlock>
+      </CheckBox>
+
+      <mui:SpacingStackPanel Spacing="4" Visibility="{Binding Renderer.LoadCarLights, Converter={StaticResource BooleanToVisibilityConverter}}"
+          Margin="0 0 0 16">
+        <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding CarLights}"
+            ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
+
+        <c:MessageBlock CloseKey="move-lights-between-lists">
+          <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">
+            <TextBlock.Text>To assign a light to a car or showroom, simply move it to the specific list.</TextBlock.Text>
+          </TextBlock>
+        </c:MessageBlock>
+
+        <c:MessageBlock CloseKey="dont-forget-to-save-car-lights">
+          <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">
+            Don’t forget to save car’s and showrooms’s lights: each has its own set, so they won’t be
+            saved with a scene preset!
+          </TextBlock>
+        </c:MessageBlock>
+
+        <CheckBox IsChecked="{Binding TryToGuessCarLights}" IsEnabled="{Binding Renderer.EnableShadows}">
+          <CheckBox.ToolTip>Try to guess lights based on entries from lights.ini and their meshes</CheckBox.ToolTip>
+          <Label Content="Guess lights" />
+        </CheckBox>
+
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
+          <Button Command="{Binding SaveCarLightsCommand}">
+            <Button.ToolTip>Save car’s lights to “cm_lights.json” as car-specific</Button.ToolTip>
+            <Button.Content>Save</Button.Content>
+          </Button>
+          <Button Command="{Binding LoadCarLightsCommand}">
+            <Button.ToolTip>Reload car’s lights from “cm_lights.json”</Button.ToolTip>
+            <Button.Content>Reset</Button.Content>
+          </Button>
+        </mui:SpacingUniformGrid>
+      </mui:SpacingStackPanel>
+
+      <CheckBox IsChecked="{Binding Renderer.LoadShowroomLights}" Margin="0 4 0 0">
+        <TextBlock Style="{StaticResource Heading2}">
+          <TextBlock.Text>Showroom’s lights:</TextBlock.Text>
+        </TextBlock>
+      </CheckBox>
+
+      <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding ShowroomLights}"
+          ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12"
+          Visibility="{Binding Renderer.LoadShowroomLights, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
+        <Button Command="{Binding SaveShowroomLightsCommand}">
+          <Button.ToolTip>Save showroom’s lights to “cm_lights.json” as showroom-specific</Button.ToolTip>
+          <Button.Content>Save</Button.Content>
+        </Button>
+        <Button Command="{Binding LoadShowroomLightsCommand}">
+          <Button.ToolTip>Reload showroom’s lights from “cm_lights.json”</Button.ToolTip>
+          <Button.Content>Reset</Button.Content>
+        </Button>
+      </mui:SpacingUniformGrid>
+    </mui:SpacingStackPanel>
+  </ScrollViewer>
+
+  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="MSAA:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.MsaaModes}"
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static cs:DarkRendererSettings.MsaaModes}"
             DisplayMemberPath="DisplayName" />
       </DockPanel>
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="Pixel density:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.SsaaModes}"
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static cs:DarkRendererSettings.SsaaModes}"
             DisplayMemberPath="DisplayName" />
       </DockPanel>
 
@@ -795,7 +899,7 @@
 
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="Type of AO:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.AoTypes}">
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static cs:DarkRendererSettings.AoTypes}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -817,7 +921,7 @@
       <DockPanel IsEnabled="{Binding Renderer.EnableShadows}" Style="{StaticResource DockPanel}">
         <Label Content="Resolution:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+            ItemsSource="{x:Static cs:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <TextBlock Text="Reflections:" Style="{StaticResource Heading2}" Margin="0 20 0 0" ToolTip="Only in showroom" />
@@ -825,7 +929,7 @@
       <DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}" Style="{StaticResource DockPanel}">
         <Label Content="Resolution:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CubemapReflectionMapSize}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.CubemapReflectionResolutions}" DisplayMemberPath="DisplayName" />
+            ItemsSource="{x:Static cs:DarkRendererSettings.CubemapReflectionResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}" Style="{StaticResource DockPanel}">
@@ -839,20 +943,20 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance customShowroom:CmPreviewsSettings}"
+  <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}"
       mui:FancyScrollHelper.Outside="False" Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="MSAA:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.MsaaModes}"
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static cs:DarkRendererSettings.MsaaModes}"
             DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="Pixel density:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static customShowroom:CmPreviewsSettings.SsaaModesExtended}"
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static cs:CmPreviewsSettings.SsaaModesExtended}"
             DisplayMemberPath="DisplayName" />
       </DockPanel>
 
@@ -885,7 +989,7 @@
 
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="Type of AO:" />
-        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static customShowroom:DarkRendererSettings.AoTypes}">
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static cs:DarkRendererSettings.AoTypes}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -907,7 +1011,7 @@
       <DockPanel IsEnabled="{Binding Renderer.EnableShadows}" Style="{StaticResource DockPanel}">
         <Label Content="Resolution:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+            ItemsSource="{x:Static cs:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <TextBlock Text="Reflections:" Style="{StaticResource Heading2}" Margin="0 20 0 0" ToolTip="Only in showroom" />
@@ -915,7 +1019,7 @@
       <DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}" Style="{StaticResource DockPanel}">
         <Label Content="Resolution:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CubemapReflectionMapSize}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.CubemapReflectionResolutions}" DisplayMemberPath="DisplayName" />
+            ItemsSource="{x:Static cs:DarkRendererSettings.CubemapReflectionResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
       <DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}">
@@ -929,7 +1033,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance customShowroom:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Tone mapping:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
@@ -937,7 +1041,7 @@
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="Type:" />
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.ToneMapping}"
-            ItemsSource="{x:Static customShowroom:DarkRendererSettings.ToneMappings}">
+            ItemsSource="{x:Static cs:DarkRendererSettings.ToneMappings}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -989,7 +1093,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance customShowroom:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="PCSS params:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />

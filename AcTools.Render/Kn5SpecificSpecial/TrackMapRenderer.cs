@@ -76,7 +76,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _zoom;
 
         public float Zoom {
-            get { return _zoom; }
+            get => _zoom;
             private set {
                 if (Equals(value, _zoom)) return;
                 _zoom = value;
@@ -166,11 +166,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             IsDirty = true;
 
             var camera = CameraOrtho;
-            if (camera == null) {
-                Zoom = 1f;
-            } else {
-                Zoom = Math.Min(Width / camera.Width, Height / camera.Height);
-            }
+            Zoom = camera == null ? 1f : Math.Min(Width / camera.Width, Height / camera.Height);
         }
 
         public void MoveCameraToStart() {
@@ -191,7 +187,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public override float Scale {
-            get { return base.Scale; }
+            get => base.Scale;
             set {
                 if (Equals(value, base.Scale)) return;
 
@@ -309,7 +305,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private int _trianglesCount;
 
         public int TrianglesCount {
-            get { return _trianglesCount; }
+            get => _trianglesCount;
             private set {
                 if (Equals(value, _trianglesCount)) return;
                 _trianglesCount = value;
@@ -318,10 +314,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private RenderableList Filter(RenderableList source, Func<IRenderableObject, bool> fn) {
-            return new RenderableList(source.Name, source.LocalMatrix, source.Where(fn).Select(x => {
-                var list = x as RenderableList;
-                return list != null ? Filter(list, fn) : x;
-            }));
+            return new RenderableList(source.Name, source.LocalMatrix, source.Where(fn).Select(x => x is RenderableList list ? Filter(list, fn) : x));
         }
 
         public class TrackMapInformation {
@@ -336,6 +329,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             public float DrawingSize = 10.0f;
 
             public void SaveTo(string filename) {
+                FileUtils.EnsureFileDirectoryExists(filename);
                 new IniFile {
                     ["PARAMETERS"] = {
                         ["WIDTH"] = Width,
@@ -365,7 +359,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private bool _aiLaneActualWidth;
 
         public bool AiLaneActualWidth {
-            get { return _aiLaneActualWidth; }
+            get => _aiLaneActualWidth;
             set {
                 if (Equals(value, _aiLaneActualWidth)) return;
                 _aiLaneActualWidth = value;
@@ -378,7 +372,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _aiLaneWidth = 10f;
 
         public float AiLaneWidth {
-            get { return _aiLaneWidth; }
+            get => _aiLaneWidth;
             set {
                 if (Equals(value, _aiLaneWidth)) return;
                 _aiLaneWidth = value;

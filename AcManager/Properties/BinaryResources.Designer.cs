@@ -63,79 +63,9 @@ namespace AcManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] AssistsGamer {
-            get {
-                object obj = ResourceManager.GetObject("AssistsGamer", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] AssistsIntermediate {
-            get {
-                object obj = ResourceManager.GetObject("AssistsIntermediate", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] AssistsPro {
-            get {
-                object obj = ResourceManager.GetObject("AssistsPro", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] PpFilterAtPreviewsSpecial {
             get {
                 object obj = ResourceManager.GetObject("PpFilterAtPreviewsSpecial", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetCmPreviewsGt5Like {
-            get {
-                object obj = ResourceManager.GetObject("PresetCmPreviewsGt5Like", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetCmPreviewsKunos {
-            get {
-                object obj = ResourceManager.GetObject("PresetCmPreviewsKunos", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetCmPreviewsLight {
-            get {
-                object obj = ResourceManager.GetObject("PresetCmPreviewsLight", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetPreviewsKunos {
-            get {
-                object obj = ResourceManager.GetObject("PresetPreviewsKunos", resourceCulture);
                 return ((byte[])(obj));
             }
         }

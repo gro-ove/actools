@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.PaintShop {
-    // TODO: Unite with ColoredItem?
     public class TintedWindows : ColoredItem {
         public double DefaultAlpha { get; set; }
 
         public bool FixedColor { get; set; }
 
-        public TintedWindows([Localizable(false)] TextureFileName diffuseTexture, Color? defaultColor = null, double defaultAlpha = 0.23,
+        public TintedWindows([Localizable(false)] PaintShopDestination diffuseTexture, Color? defaultColor = null, double defaultAlpha = 0.23,
                 bool fixedColor = false) : base(diffuseTexture, defaultColor ?? Color.FromRgb(41, 52, 55)) {
             DefaultAlpha = defaultAlpha;
             FixedColor = fixedColor;
         }
 
-        public TintedWindows([Localizable(false)] TextureFileName diffuseTexture, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false)
+        public TintedWindows([Localizable(false)] PaintShopDestination diffuseTexture, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false)
                 : base(diffuseTexture, colors) {
             DefaultAlpha = defaultAlpha;
             FixedColor = fixedColor;
         }
 
-        public TintedWindows(Dictionary<TextureFileName, PaintShop.TintedEntry> replacements, CarPaintColors colors, double defaultAlpha = 0.23,
+        public TintedWindows(Dictionary<PaintShopDestination, PaintShop.TintedEntry> replacements, CarPaintColors colors, double defaultAlpha = 0.23,
                 bool fixedColor = false) : base(replacements, colors) {
             DefaultAlpha = defaultAlpha;
             FixedColor = fixedColor;
@@ -34,17 +31,17 @@ namespace AcManager.PaintShop {
 
         protected override void Initialize() {
             foreach (var replacement in Replacements) {
-                RegisterAspect(replacement.Key, GetApply(replacement.Value), GetSave(replacement.Value));
+                RegisterAspect(replacement.Key, name => {
+                    var v = Replacements.GetValueOrDefault(name);
+                    return new PaintShopOverrideTint {
+                        Colors = Colors.DrawingColors,
+                        Alpha = new ValueAdjustment((float)Alpha, 1f),
+                        Source = v?.Source,
+                        Mask = v?.Mask,
+                        Overlay = v?.Overlay
+                    };
+                });
             }
-        }
-
-        private Action<TextureFileName, IPaintShopRenderer> GetApply(PaintShop.TintedEntry v) {
-            return (name, renderer) => renderer.OverrideTextureTint(name.FileName, Colors.DrawingColors, Alpha, v.Source, v.Mask, v.Overlay);
-        }
-
-        private Func<string, TextureFileName, IPaintShopRenderer, Task> GetSave(PaintShop.TintedEntry v) {
-            return (location, name, renderer) => renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat,
-                    Colors.DrawingColors, Alpha, v.Source, v.Mask, v.Overlay);
         }
 
         public override string DisplayName { get; set; } = "Windows";

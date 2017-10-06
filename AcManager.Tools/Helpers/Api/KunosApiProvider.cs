@@ -75,7 +75,7 @@ namespace AcManager.Tools.Helpers.Api {
             var headers = responseMessage.Headers;
             foreach (var header in headers) {
                 if (string.Equals(header.Key, "X-Server-Time", StringComparison.OrdinalIgnoreCase)) {
-                    return long.TryParse(header.Value?.FirstOrDefault(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long result) ? result : 0;
+                    return long.TryParse(header.Value?.FirstOrDefault(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
                 }
             }
 
@@ -158,6 +158,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var watch = Stopwatch.StartNew();
                 var parsed = LoadList(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
 
+                var passwordsForEverything = true;
                 for (var i = 0; i < parsed.Length; i++) {
                     var information = parsed[i];
                     var track = information.TrackId;
@@ -167,6 +168,14 @@ namespace AcManager.Tools.Helpers.Api {
                             information.TrackId = index < track.Length - 2
                                     ? track.Substring(0, index) + "-" + track.Substring(index + 1, track.Length - index - 2) : track.Substring(0, index);
                         }
+                    }
+
+                    passwordsForEverything &= information.Password;
+                }
+
+                if (passwordsForEverything) {
+                    for (var i = 0; i < parsed.Length; i++) {
+                        parsed[i].Password = false;
                     }
                 }
 

@@ -12,7 +12,7 @@ namespace FirstFloor.ModernUI.Windows {
         Paused = 0x8
     }
 
-    public class TaskbarProgress : IDisposable {
+    internal class TaskbarProgress : IDisposable {
         private readonly IntPtr _windowHandle;
         private TaskbarState _state;
 

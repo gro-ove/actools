@@ -313,6 +313,11 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 _imageUrls.Add(Tuple.Create(url, toolTip ? token.Value : null));
                                 image.Cursor = Cursors.Hand;
                                 image.MouseDown += (sender, args) => {
+                                    if (args.Handled) return;
+                                    args.Handled = true;
+                                };
+                                image.MouseUp += (sender, args) => {
+                                    if (args.Handled) return;
                                     args.Handled = true;
                                     BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(url, _imageUrls));
                                 };

@@ -38,7 +38,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public void UpdateBusyDoingSomething() {
             BusyDoingSomething = Queue.Aggregate(false,
-                    (current, entry) => current | entry.State == ContentInstallationEntryState.Loading);
+                    (current, entry) => current | (entry.State == ContentInstallationEntryState.Loading));
         }
 
         private readonly Dictionary<string, Task<bool>> _tasks = new Dictionary<string, Task<bool>>();
@@ -54,7 +54,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         public void Cancel() {
-            foreach (var entry in Queue) {
+            foreach (var entry in Queue.ToList()) {
                 entry.CancelCommand.Execute();
             }
         }

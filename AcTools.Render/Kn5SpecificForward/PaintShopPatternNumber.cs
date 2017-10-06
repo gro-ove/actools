@@ -3,25 +3,7 @@ using SlimDX.DirectWrite;
 using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    public enum PaintShopAlignment {
-        Start, Center, End
-    }
-
-    public class PaintShopPatternFlag {
-        public PaintShopPatternFlag(double size, double left, double top, double angle) {
-            Size = size;
-            Left = left;
-            Top = top;
-            Angle = angle;
-        }
-
-        public readonly double Size;
-        public readonly double Left;
-        public readonly double Top;
-        public readonly double Angle;
-    }
-
-    public class PaintShopPatternNumber : PaintShopPatternFlag {
+    public class PaintShopPatternNumber : PaintShopPatternPiece {
         public PaintShopPatternNumber(double size, double left, double top, PaintShopAlignment horizontalAlignment, PaintShopAlignment verticalAlignment,
                 [NotNull] PaintShopFontSource font, double angle, PaintShopPatternColorReference colorRef, FontWeight weight, FontStyle style,
                 FontStretch stretch) : base(size, left, top, angle) {
@@ -45,7 +27,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public readonly FontStretch Stretch;
         public readonly PaintShopPatternColorReference ColorRef;
 
-        public virtual int GetFontHashCode() {
+        public int GetFontHashCode() {
             unchecked {
                 var hashCode = Size.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Font.Filename?.GetHashCode() ?? Font.FamilyName.GetHashCode());

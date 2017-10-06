@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
@@ -46,6 +47,323 @@ namespace AcManager.CustomShowroom {
         Task CreateLiveryAsync(CarSkinObject skinDirectory, Color[] colors, string preferredStyle);
     }
 
+    public class AmbientShadowParams : NotifyPropertyChanged, IUserPresetable {
+        private const string KeyOldSavedData = "__LiteShowroomTools";
+        private const string KeySavedData = "__LiteShowroomTools_AS";
+
+        private readonly ISaveHelper _saveable;
+
+        private void SaveLater() {
+            _saveable.SaveLater();
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public AmbientShadowParams() {
+            if (ValuesStorage.Contains(KeyOldSavedData) && !ValuesStorage.Contains(KeySavedData)) {
+                ValuesStorage.Set(KeySavedData, ValuesStorage.GetString(KeyOldSavedData));
+            }
+
+            _saveable = new SaveHelper<SaveableData>(KeySavedData, () => new SaveableData {
+                AmbientShadowDiffusion = Diffusion,
+                AmbientShadowBrightness = Brightness,
+                AmbientShadowIterations = Iterations,
+                AmbientShadowHideWheels = HideWheels,
+                AmbientShadowFade = Fade,
+                AmbientShadowAccurate = Accurate,
+                AmbientShadowBodyMultiplier = BodyMultiplier,
+                AmbientShadowWheelMultiplier = WheelMultiplier,
+            }, Load);
+
+            _saveable.Initialize();
+        }
+
+        public class SaveableData {
+            public double AmbientShadowDiffusion = 60d;
+
+            [JsonProperty("asb")]
+            public double AmbientShadowBrightness = 200d;
+
+            public int AmbientShadowIterations = 8000;
+            public bool AmbientShadowHideWheels;
+            public bool AmbientShadowFade = true;
+
+            [JsonProperty("asa")]
+            public bool AmbientShadowAccurate = true;
+
+            [JsonProperty("asbm")]
+            public float AmbientShadowBodyMultiplier = 0.75f;
+
+            [JsonProperty("aswm")]
+            public float AmbientShadowWheelMultiplier = 0.35f;
+        }
+
+        /*public static SaveableData LoadAmbientShadowParams() {
+            if (!ValuesStorage.Contains(KeySavedData)) {
+                return new SaveableData();
+            }
+
+            try {
+                return JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.GetString(KeySavedData));
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return new SaveableData();
+            }
+        }*/
+
+        private void Load(SaveableData o) {
+            Diffusion = o.AmbientShadowDiffusion;
+            Brightness = o.AmbientShadowBrightness;
+            Iterations = o.AmbientShadowIterations;
+            HideWheels = o.AmbientShadowHideWheels;
+            Fade = o.AmbientShadowFade;
+            Accurate = o.AmbientShadowAccurate;
+            BodyMultiplier = o.AmbientShadowBodyMultiplier;
+            WheelMultiplier = o.AmbientShadowWheelMultiplier;
+        }
+
+        private double _diffusion;
+
+        public double Diffusion {
+            get => _diffusion;
+            set {
+                value = value.Clamp(0.0, 100.0);
+                if (Equals(value, _diffusion)) return;
+                _diffusion = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private double _brightness;
+
+        public double Brightness {
+            get => _brightness;
+            set {
+                value = value.Clamp(150.0, 800.0);
+                if (Equals(value, _brightness)) return;
+                _brightness = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private int _iterations;
+
+        public int Iterations {
+            get => _iterations;
+            set {
+                value = value.Clamp(400, 40000);
+                if (Equals(value, _iterations)) return;
+                _iterations = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private bool _hideWheels;
+
+        public bool HideWheels {
+            get => _hideWheels;
+            set {
+                if (Equals(value, _hideWheels)) return;
+                _hideWheels = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private bool _fade;
+
+        public bool Fade {
+            get => _fade;
+            set {
+                if (Equals(value, _fade)) return;
+                _fade = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private bool _accurate;
+
+        public bool Accurate {
+            get => _accurate;
+            set {
+                if (Equals(value, _accurate)) return;
+                _accurate = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private float _bodyMultiplier = 0.8f;
+
+        public float BodyMultiplier {
+            get => _bodyMultiplier;
+            set {
+                if (Equals(value, _bodyMultiplier)) return;
+                _bodyMultiplier = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private float _wheelMultiplier = 0.69f;
+
+        public float WheelMultiplier {
+            get => _wheelMultiplier;
+            set {
+                if (Equals(value, _wheelMultiplier)) return;
+                _wheelMultiplier = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        /*private void Reset(bool saveLater) {
+            Load(new SaveableData());
+            if (saveLater) {
+                SaveLater();
+            }
+        }
+
+        private DelegateCommand _resetCommand;
+
+        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
+            Reset(true);
+        }));*/
+
+        #region Presets
+        public bool CanBeSaved => true;
+        public string PresetableKey => KeySavedData;
+        public PresetsCategory PresetableCategory => new PresetsCategory("Ambient Shadows");
+
+        public event EventHandler Changed;
+
+        public void ImportFromPresetData(string data) {
+            _saveable.FromSerializedString(data);
+        }
+
+        public string ExportToPresetData() {
+            return _saveable.ToSerializedString();
+        }
+        #endregion
+
+        /*#region Share
+        private ICommand _shareCommand;
+
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+
+        protected async Task Share() {
+            var data = ExportToPresetData();
+            if (data == null) return;
+            await SharingUiHelper.ShareAsync(SharedEntryType.CustomShowroomPreset,
+                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(KeySavedData)), null,
+                    data);
+        }
+        #endregion*/
+    }
+
+    public class AmbientShadowViewModel : AmbientShadowParams {
+        [NotNull]
+        private readonly CarObject _car;
+
+        [NotNull]
+        private readonly ToolsKn5ObjectRenderer _renderer;
+
+        public AmbientShadowViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject car) {
+            _car = car ?? throw new ArgumentNullException(nameof(car));
+            _renderer = renderer;
+            renderer.SubscribeWeak(OnPropertyChanged);
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(_renderer.AmbientShadowSizeChanged):
+                    ActionExtension.InvokeInMainThread(() => {
+                        _sizeSaveCommand?.RaiseCanExecuteChanged();
+                        _sizeResetCommand?.RaiseCanExecuteChanged();
+                    });
+                    break;
+            }
+        }
+
+        /*private static string ToString(Vector3 vec) {
+            return $"{-vec.X:F3}, {vec.Y:F3}, {vec.Z:F3}";
+        }*/
+
+        private AsyncCommand _updateAmbientShadowCommand;
+
+        public AsyncCommand UpdateCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async () => {
+            if (_renderer.AmbientShadowSizeChanged) {
+                SizeSaveCommand.Execute();
+                if (_renderer.AmbientShadowSizeChanged) return;
+            }
+
+            try {
+                using (var waiting = WaitingDialog.Create(ControlsStrings.CustomShowroom_AmbientShadows_Updating)) {
+                    var cancellation = waiting.CancellationToken;
+                    var progress = (IProgress<double>)waiting;
+
+                    await Task.Run(() => {
+                        var kn5 = _renderer.MainSlot.Kn5;
+                        if (kn5 == null) return;
+
+                        using (var renderer = new AmbientShadowRenderer(kn5, _car.AcdData) {
+                            DiffusionLevel = (float)Diffusion / 100f,
+                            SkyBrightnessLevel = (float)Brightness / 100f,
+                            Iterations = Iterations,
+                            HideWheels = HideWheels,
+                            Fade = Fade,
+                            CorrectLighting = Accurate,
+                            BodyMultipler = BodyMultiplier,
+                            WheelMultipler = WheelMultiplier,
+                        }) {
+                            renderer.CopyStateFrom(_renderer);
+                            renderer.Initialize();
+                            renderer.Shot(progress, cancellation);
+                        }
+                    });
+
+                    waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Reloading);
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify(ControlsStrings.CustomShowroom_AmbientShadows_CannotUpdate, e);
+            }
+        }));
+
+        private DelegateCommand _sizeSaveCommand;
+
+        public DelegateCommand SizeSaveCommand => _sizeSaveCommand ?? (_sizeSaveCommand = new DelegateCommand(() => {
+            if (File.Exists(Path.Combine(_car.Location, "data.acd")) && ModernDialog.ShowMessage(
+                    ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
+                    ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+
+            var data = Path.Combine(_car.Location, "data");
+            Directory.CreateDirectory(data);
+            new IniFile {
+                ["SETTINGS"] = {
+                    ["WIDTH"] = _renderer.AmbientShadowWidth,
+                    ["LENGTH"] = _renderer.AmbientShadowLength,
+                }
+            }.Save(Path.Combine(data, "ambient_shadows.ini"));
+
+            _renderer.AmbientShadowSizeChanged = false;
+        }, () => _renderer.AmbientShadowSizeChanged));
+
+        private DelegateCommand _sizeFitCommand;
+
+        public DelegateCommand SizeFitCommand => _sizeFitCommand ?? (_sizeFitCommand = new DelegateCommand(() => {
+            _renderer.FitAmbientShadowSize();
+        }));
+
+        private DelegateCommand _sizeResetCommand;
+
+        public DelegateCommand SizeResetCommand => _sizeResetCommand ?? (_sizeResetCommand = new DelegateCommand(() => {
+            _renderer.ResetAmbientShadowSize();
+        }, () => _renderer.AmbientShadowSizeChanged));
+    }
+
     public partial class LiteShowroomTools {
         private const string KeySavedData = "__LiteShowroomTools";
 
@@ -68,7 +386,6 @@ namespace AcManager.CustomShowroom {
             Buttons = new Button[0];
 
             this.OnActualUnload(() => {
-                Model.Renderer = null;
                 Model.Dispose();
             });
         }
@@ -130,36 +447,6 @@ namespace AcManager.CustomShowroom {
             Camera,
         }
 
-        public class AmbientShadowParams {
-            public double AmbientShadowDiffusion = 60d;
-            [JsonProperty("asb")]
-            public double AmbientShadowBrightness = 200d;
-            public int AmbientShadowIterations = 3200;
-            public bool AmbientShadowHideWheels;
-            public bool AmbientShadowFade = true;
-            [JsonProperty("asa")]
-            public bool AmbientShadowAccurate = true;
-
-            [JsonProperty("asbm")]
-            public float AmbientShadowBodyMultiplier = 0.75f;
-
-            [JsonProperty("aswm")]
-            public float AmbientShadowWheelMultiplier = 0.35f;
-        }
-
-        public static AmbientShadowParams LoadAmbientShadowParams() {
-            if (!ValuesStorage.Contains(KeySavedData)) {
-                return new AmbientShadowParams();
-            }
-
-            try {
-                return JsonConvert.DeserializeObject<AmbientShadowParams>(ValuesStorage.GetString(KeySavedData));
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return new AmbientShadowParams();
-            }
-        }
-
         public bool CanSelectNodes => Model.CanSelectNodes();
 
         public partial class ViewModel : NotifyPropertyChanged, IDisposable {
@@ -216,22 +503,24 @@ namespace AcManager.CustomShowroom {
             private DelegateCommand _transferToCmPreviewsCommand;
 
             public DelegateCommand TransferToCmPreviewsCommand => _transferToCmPreviewsCommand ?? (_transferToCmPreviewsCommand = new DelegateCommand(() => {
-                var darkRenderer = Renderer as DarkKn5ObjectRenderer;
-                if (Settings != null && darkRenderer != null) {
+                if (Settings != null && Renderer is DarkKn5ObjectRenderer darkRenderer) {
                     CmPreviewsSettings.Transfer(Settings, darkRenderer);
                 }
             }));
 
             private ToolsKn5ObjectRenderer _renderer;
 
+            // Set to NULL when View Model is disposed and control is unloaded.
             [CanBeNull]
             public ToolsKn5ObjectRenderer Renderer {
                 get => _renderer;
-                set {
+                private set {
                     if (Equals(value, _renderer)) return;
                     _renderer = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DarkRenderer));
+
+                    AmbientShadow = value == null ? null : new AmbientShadowViewModel(value, Car);
 
                     var dark = value as DarkKn5ObjectRenderer;
                     Settings = dark != null ? new DarkRendererSettings(dark) : null;
@@ -239,11 +528,26 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            // Set to NULL when View Model is disposed and control is unloaded
+            private AmbientShadowViewModel _ambientShadow;
+
+            [CanBeNull]
+            public AmbientShadowViewModel AmbientShadow {
+                get => _ambientShadow;
+                private set {
+                    if (Equals(value, _ambientShadow)) return;
+                    _ambientShadow = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            // Not always renderer is the Dark one
             [CanBeNull]
             public DarkKn5ObjectRenderer DarkRenderer => _renderer as DarkKn5ObjectRenderer;
 
             private DarkRendererSettings _settings;
 
+            // Set to NULL if renderer is not the Dark one
             [CanBeNull]
             public DarkRendererSettings Settings {
                 get => _settings;
@@ -282,6 +586,7 @@ namespace AcManager.CustomShowroom {
 
             public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId);
 
+            [NotNull]
             public CarObject Car { get; }
 
             private CarSkinObject _skin;
@@ -297,7 +602,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private class SaveableData : AmbientShadowParams {
+            private class SaveableData {
                 public bool LiveReload;
 
                 [JsonProperty("cp")]
@@ -322,13 +627,15 @@ namespace AcManager.CustomShowroom {
                 public bool CameraAutoAdjustTarget = true;
             }
 
-            protected ISaveHelper Saveable { set; get; }
+            protected ISaveHelper Saveable { get; }
 
             protected void SaveLater() {
                 Saveable.SaveLater();
             }
 
-            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, CarObject carObject, string skinId) {
+            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId) {
+                Car = carObject;
+
                 Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
                 renderer.PropertyChanged += OnRendererPropertyChanged;
                 renderer.CameraMoved += OnCameraMoved;
@@ -337,19 +644,10 @@ namespace AcManager.CustomShowroom {
                 CameraLookAt.PropertyChanged += OnCameraCoordinatesChanged;
                 CameraPosition.PropertyChanged += OnCameraCoordinatesChanged;
 
-                Car = carObject;
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
                 Car.SkinsManager.EnsureLoadedAsync().Forget();
 
                 Saveable = new SaveHelper<SaveableData>(KeySavedData, () => new SaveableData {
-                    AmbientShadowDiffusion = AmbientShadowDiffusion,
-                    AmbientShadowBrightness = AmbientShadowBrightness,
-                    AmbientShadowIterations = AmbientShadowIterations,
-                    AmbientShadowHideWheels = AmbientShadowHideWheels,
-                    AmbientShadowFade = AmbientShadowFade,
-                    AmbientShadowAccurate = AmbientShadowAccurate,
-                    AmbientShadowBodyMultiplier = AmbientShadowBodyMultiplier,
-                    AmbientShadowWheelMultiplier = AmbientShadowWheelMultiplier,
                     LiveReload = renderer.MagickOverride,
 
                     CameraPosition = CameraPosition.ToArray(),
@@ -527,15 +825,6 @@ namespace AcManager.CustomShowroom {
             #endregion
 
             private void Load(SaveableData o) {
-                AmbientShadowDiffusion = o.AmbientShadowDiffusion;
-                AmbientShadowBrightness = o.AmbientShadowBrightness;
-                AmbientShadowIterations = o.AmbientShadowIterations;
-                AmbientShadowHideWheels = o.AmbientShadowHideWheels;
-                AmbientShadowFade = o.AmbientShadowFade;
-                AmbientShadowAccurate = o.AmbientShadowAccurate;
-                AmbientShadowBodyMultiplier = o.AmbientShadowBodyMultiplier;
-                AmbientShadowWheelMultiplier = o.AmbientShadowWheelMultiplier;
-
                 if (Renderer != null) {
                     Renderer.MagickOverride = o.LiveReload;
                 }
@@ -624,15 +913,15 @@ namespace AcManager.CustomShowroom {
                             _viewMaterialCommand?.RaiseCanExecuteChanged();
                         });
                         break;
-
-                    case nameof(Renderer.AmbientShadowSizeChanged):
-                        ActionExtension.InvokeInMainThread(() => {
-                            _ambientShadowSizeSaveCommand?.RaiseCanExecuteChanged();
-                            _ambientShadowSizeResetCommand?.RaiseCanExecuteChanged();
-                        });
-                        break;
                 }
             }
+
+            private DelegateCommand _toggleAmbientShadowModeCommand;
+
+            public DelegateCommand ToggleAmbientShadowModeCommand
+                => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
+                    Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
+                }));
 
             private DelegateCommand _mainModeCommand;
 
@@ -652,192 +941,6 @@ namespace AcManager.CustomShowroom {
                     await kn5.UpdateKn5(_renderer, _skin);
                 }
             }));
-
-            #region Ambient Shadows
-            private DelegateCommand _toggleAmbientShadowModeCommand;
-
-            public DelegateCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
-                Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
-            }));
-
-            private static string ToString(Vector3 vec) {
-                return $"{-vec.X:F3}, {vec.Y:F3}, {vec.Z:F3}";
-            }
-
-            private double _ambientShadowDiffusion;
-
-            public double AmbientShadowDiffusion {
-                get => _ambientShadowDiffusion;
-                set {
-                    value = value.Clamp(0.0, 100.0);
-                    if (Equals(value, _ambientShadowDiffusion)) return;
-                    _ambientShadowDiffusion = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private double _ambientShadowBrightness;
-
-            public double AmbientShadowBrightness {
-                get => _ambientShadowBrightness;
-                set {
-                    value = value.Clamp(150.0, 800.0);
-                    if (Equals(value, _ambientShadowBrightness)) return;
-                    _ambientShadowBrightness = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private int _ambientShadowIterations;
-
-            public int AmbientShadowIterations {
-                get => _ambientShadowIterations;
-                set {
-                    value = value.Round(100).Clamp(400, 24000);
-                    if (Equals(value, _ambientShadowIterations)) return;
-                    _ambientShadowIterations = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private bool _ambientShadowHideWheels;
-
-            public bool AmbientShadowHideWheels {
-                get => _ambientShadowHideWheels;
-                set {
-                    if (Equals(value, _ambientShadowHideWheels)) return;
-                    _ambientShadowHideWheels = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private bool _ambientShadowFade;
-
-            public bool AmbientShadowFade {
-                get => _ambientShadowFade;
-                set {
-                    if (Equals(value, _ambientShadowFade)) return;
-                    _ambientShadowFade = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private bool _ambientShadowAccurate;
-
-            public bool AmbientShadowAccurate {
-                get => _ambientShadowAccurate;
-                set {
-                    if (Equals(value, _ambientShadowAccurate)) return;
-                    _ambientShadowAccurate = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            private float _ambientShadowBodyMultiplier = 0.8f;
-
-            public float AmbientShadowBodyMultiplier {
-                get => _ambientShadowBodyMultiplier;
-                set {
-                    if (Equals(value, _ambientShadowBodyMultiplier)) return;
-                    _ambientShadowBodyMultiplier = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private float _ambientShadowWheelMultiplier = 0.69f;
-
-            public float AmbientShadowWheelMultiplier {
-                get => _ambientShadowWheelMultiplier;
-                set {
-                    if (Equals(value, _ambientShadowWheelMultiplier)) return;
-                    _ambientShadowWheelMultiplier = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private AsyncCommand _updateAmbientShadowCommand;
-
-            public AsyncCommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async () => {
-                if (Renderer?.AmbientShadowSizeChanged == true) {
-                    AmbientShadowSizeSaveCommand.Execute();
-                    if (Renderer?.AmbientShadowSizeChanged == true) return;
-                }
-
-                try {
-                    using (var waiting = WaitingDialog.Create(ControlsStrings.CustomShowroom_AmbientShadows_Updating)) {
-                        var cancellation = waiting.CancellationToken;
-                        var progress = (IProgress<double>)waiting;
-
-                        await Task.Run(() => {
-                            var kn5 = Renderer?.MainSlot.Kn5;
-                            if (kn5 == null) return;
-
-                            using (var renderer = new AmbientShadowRenderer(kn5, Car.AcdData) {
-                                DiffusionLevel = (float)AmbientShadowDiffusion / 100f,
-                                SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f,
-                                Iterations = AmbientShadowIterations,
-                                HideWheels = AmbientShadowHideWheels,
-                                Fade = AmbientShadowFade,
-                                CorrectLighting = AmbientShadowAccurate,
-                                BodyMultipler = AmbientShadowBodyMultiplier,
-                                WheelMultipler = AmbientShadowWheelMultiplier,
-                            }) {
-                                renderer.CopyStateFrom(_renderer);
-                                renderer.Initialize();
-                                renderer.Shot(progress, cancellation);
-                            }
-                        });
-
-                        waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Reloading);
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify(ControlsStrings.CustomShowroom_AmbientShadows_CannotUpdate, e);
-                }
-            }));
-
-            private DelegateCommand _ambientShadowSizeSaveCommand;
-
-            public DelegateCommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new DelegateCommand(() => {
-                if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
-                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
-                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-
-                var data = Path.Combine(Car.Location, "data");
-                Directory.CreateDirectory(data);
-                new IniFile {
-                    ["SETTINGS"] = {
-                        ["WIDTH"] = Renderer.AmbientShadowWidth,
-                        ["LENGTH"] = Renderer.AmbientShadowLength,
-                    }
-                }.Save(Path.Combine(data, "ambient_shadows.ini"));
-
-                Renderer.AmbientShadowSizeChanged = false;
-            }, () => Renderer?.AmbientShadowSizeChanged == true));
-
-            private DelegateCommand _ambientShadowResetCommand;
-
-            public DelegateCommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new DelegateCommand(() => {
-                Reset(true);
-            }));
-
-            private DelegateCommand _ambientShadowSizeFitCommand;
-
-            public DelegateCommand AmbientShadowSizeFitCommand => _ambientShadowSizeFitCommand ?? (_ambientShadowSizeFitCommand = new DelegateCommand(() => {
-                Renderer?.FitAmbientShadowSize();
-            }, () => Renderer != null));
-
-            private DelegateCommand _ambientShadowSizeResetCommand;
-
-            public DelegateCommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new DelegateCommand(() => {
-                Renderer?.ResetAmbientShadowSize();
-            }, () => Renderer?.AmbientShadowSizeChanged == true));
-            #endregion
 
             #region Commands
             private DelegateCommand _nextSkinCommand;
@@ -1021,6 +1124,7 @@ namespace AcManager.CustomShowroom {
             #endregion
 
             public void Dispose() {
+                Renderer = null;
                 DisposeSkinItems();
             }
         }

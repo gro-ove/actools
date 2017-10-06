@@ -26,35 +26,35 @@ namespace AcManager.PaintShop {
             if (carPaint != null) {
                 yield return mapsMap == null ?
                         new CarPaint { LiveryStyle = "Flat" }
-                                .SetDetailsParams(new TextureFileName(carPaint, PreferredDdsFormat.NoCompressionTransparency)) :
+                                .SetDetailsParams(new PaintShopDestination(carPaint, PreferredDdsFormat.NoCompressionTransparency)) :
                         new ComplexCarPaint(
-                                new TextureFileName(mapsMap, PreferredDdsFormat.Auto), new PaintShopSource {
+                                new PaintShopDestination(mapsMap), new PaintShopSource {
                                     NormalizeMax = true
                                 }, null) { LiveryStyle = "Flat" }
-                                .SetDetailsParams(new TextureFileName(carPaint, PreferredDdsFormat.NoCompressionTransparency));
+                                .SetDetailsParams(new PaintShopDestination(carPaint, PreferredDdsFormat.NoCompressionTransparency));
             }
 
             var rims = new[] { "car_paint_rims.dds", "metal_detail_rim.dds", "Metal_detail_rim.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
+                    .Select(x => new ColoredItem(new PaintShopDestination(x), Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
                     .FirstOrDefault();
             if (rims != null) yield return rims;
 
             var calipers = new[] { "caliper_colour.dds", "metal_detail_caliper.dds", "Metal_detail_caliper.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.DarkRed) { DisplayName = "Calipers", Enabled = false })
+                    .Select(x => new ColoredItem(new PaintShopDestination(x), Colors.DarkRed) { DisplayName = "Calipers", Enabled = false })
                     .FirstOrDefault();
             if (calipers != null) yield return calipers;
 
             var rollCage = new[] { "car_paint_roll_cage.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new ColoredItem(new TextureFileName(x), Colors.AliceBlue) { DisplayName = "Roll cage", Enabled = false })
+                    .Select(x => new ColoredItem(new PaintShopDestination(x), Colors.AliceBlue) { DisplayName = "Roll cage", Enabled = false })
                     .FirstOrDefault();
             if (rollCage != null) yield return rollCage;
 
             var glass = new[] { "ext_glass.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
-                    .Select(x => new TintedWindows(new TextureFileName(x)) { Enabled = false })
+                    .Select(x => new TintedWindows(new PaintShopDestination(x)) { Enabled = false })
                     .FirstOrDefault();
             if (glass != null) yield return glass;
         }

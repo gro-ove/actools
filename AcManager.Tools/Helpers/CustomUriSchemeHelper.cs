@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class CustomUriSchemeHelper {
+        public static bool OptionRegisterEachTime;
+
         private const string UriSchemeLabel = "acmanager";
         public const string UriScheme = UriSchemeLabel + ":";
 
@@ -16,8 +19,14 @@ namespace AcManager.Tools.Helpers {
         private const string KeyRegisteredLocation = "CustomUriSchemeHelper.RegisteredLocation";
         private const string KeyRegisteredVersion = "CustomUriSchemeHelper.RegisteredVersion";
 
-        private static void RegisterClass(string className, string title, bool urlProtocol, int iconId) {
-            using (var key = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{className}", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+        private static void RegisterClass(string className, string title, bool urlProtocol, int iconId, bool isEnabled) {
+            var path = $@"Software\Classes\{className}";
+            if (!isEnabled) {
+                Registry.CurrentUser.DeleteSubKeyTree(path);
+                return;
+            }
+
+            using (var key = Registry.CurrentUser.CreateSubKey(path, RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (key == null) return;
 
                 if (urlProtocol) {
@@ -36,9 +45,15 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        private static void RegisterExtension(string ext, string description) {
+        private static void RegisterExtension(string ext, string description, bool isEnabled) {
             var className = $@"{ClassName}{ext.ToLowerInvariant()}";
-            RegisterClass(className, description, false, 1);
+            RegisterClass(className, description, false, 0, isEnabled);
+
+            var path = @"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext;
+            if (!isEnabled) {
+                Registry.CurrentUser.DeleteSubKeyTree(path);
+                return;
+            }
 
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext,
                     RegistryKeyPermissionCheck.ReadWriteSubTree)) {
@@ -57,21 +72,37 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static void EnsureRegistered() {
+        private static void EnsureRegistered() {
             if (MainExecutingFile.IsInDevelopment) return;
 
-            // if (ValuesStorage.GetString(KeyRegisteredLocation) == MainExecutingFile.Location &&
-            //     ValuesStorage.GetString(KeyRegisteredVersion) == Version) return;
-
             try {
-                RegisterClass(ClassName, AppTitle, true, 0);
-                RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary);
-                RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay);
+                var isEnabled = SettingsHolder.Common.IsRegistryEnabled;
+                var isFilesIntegrationEnabled = SettingsHolder.Common.IsRegistryFilesIntegrationEnabled;
+
+                if (SettingsHolder.Common.IsRegistryEnabled) {
+                    RegisterClass(ClassName, AppTitle, true, 0, isEnabled);
+                    RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary, isFilesIntegrationEnabled);
+                    RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay, isFilesIntegrationEnabled);
+                }
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
                 ValuesStorage.Set(KeyRegisteredVersion, Version);
             } catch (Exception e) {
                 Logging.Warning("Can’t register: " + e);
+            }
+        }
+
+        public static void Initialize() {
+            SettingsHolder.Common.PropertyChanged += OnSettingsChanged;
+            if (!MainExecutingFile.IsInDevelopment && (OptionRegisterEachTime || ValuesStorage.GetString(KeyRegisteredLocation) != MainExecutingFile.Location
+                    && ValuesStorage.GetString(KeyRegisteredVersion) != Version)) {
+                EnsureRegistered();
+            }
+        }
+
+        private static void OnSettingsChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            if (propertyChangedEventArgs.PropertyName == nameof(SettingsHolder.CommonSettings.RegistryMode)) {
+                EnsureRegistered();
             }
         }
     }

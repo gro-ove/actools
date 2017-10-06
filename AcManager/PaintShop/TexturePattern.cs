@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.PaintShop {
@@ -25,32 +20,13 @@ namespace AcManager.PaintShop {
 
         private int _patternNumber;
 
-        [JsonProperty("patternNumber")]
-        public int PatternNumber {
-            get => _patternNumber;
-            set {
-                value = value.Clamp(0, 9999);
-                if (Equals(value, _patternNumber)) return;
-                _patternNumber = value;
-                OnPropertyChanged();
-                PatternAspect?.SetDirty();
-            }
-        }
-
+        [CanBeNull]
         private string _patternFlagTexture;
 
-        [CanBeNull, JsonProperty("patternFlagId")]
-        public string PatternFlagTexture {
-            get => _patternFlagTexture;
-            set {
-                if (value == _patternFlagTexture) return;
-                _patternFlagTexture = value;
-                OnPropertyChanged();
-                PatternAspect?.SetDirty();
-            }
-        }
+        [CanBeNull]
+        private IReadOnlyDictionary<string, string> _patternLabels;
 
-        public TextureFileName PatternTexture { get; private set; }
+        public PaintShopDestination PatternTexture { get; private set; }
         public PaintShopSource PatternBase { get; private set; }
         public PaintShopSource PatternOverlay { get; private set; }
         public PaintShopSource PatternUnderlay { get; private set; }
@@ -71,14 +47,14 @@ namespace AcManager.PaintShop {
 
         public ChangeableObservableCollection<CarPaintPattern> Patterns { get; }
 
-        public TexturePattern SetPatterns(TextureFileName patternTexture, [CanBeNull] PaintShopSource patternBase,
+        public TexturePattern SetPatterns(PaintShopDestination patternTexture, [CanBeNull] PaintShopSource patternBase,
                 [CanBeNull] PaintShopSource patternOverlay, [CanBeNull] PaintShopSource patternUnderlay,
-                IEnumerable<CarPaintPattern> patterns) {
+                IEnumerable<CarPaintPattern> patterns, bool forcePattern) {
             PatternTexture = patternTexture;
             PatternBase = patternBase;
             PatternOverlay = patternOverlay;
             PatternUnderlay = patternUnderlay;
-            Patterns.ReplaceEverythingBy(patterns.Prepend(CarPaintPattern.Nothing));
+            Patterns.ReplaceEverythingBy(forcePattern ? patterns : patterns.Prepend(CarPaintPattern.Nothing));
             CurrentPattern = Patterns[0];
             return this;
         }
@@ -115,26 +91,21 @@ namespace AcManager.PaintShop {
         protected override void Initialize() {
             if (PatternTexture != null) {
                 var patternAspect = RegisterAspect(PatternTexture,
-                        (name, renderer) => {
-                            if (CurrentPattern != null) {
-                                renderer.OverrideTexturePattern(PatternTexture.FileName, PatternBase ?? PaintShopSource.InputSource, CurrentPattern.Source,
-                                        CurrentPattern.Overlay ?? PatternOverlay, CurrentPattern.Underlay ?? PatternUnderlay,
-                                        CurrentPattern.Colors.DrawingColors,
-                                        PatternNumber, CurrentPattern.Numbers,
-                                        PatternFlagTexture, CurrentPattern.Flags,
-                                        CurrentPattern.Size);
-                            } else {
-                                renderer.OverrideTexture(PatternTexture.FileName, null);
-                            }
-                        },
-                        (location, name, renderer) => CurrentPattern != null
-                                ? renderer.SaveTexturePatternAsync(Path.Combine(location, PatternTexture.FileName), PatternTexture.PreferredFormat,
-                                        PatternBase ?? PaintShopSource.InputSource, CurrentPattern.Source, CurrentPattern.Overlay ?? PatternOverlay,
-                                        CurrentPattern.Underlay ?? PatternUnderlay, CurrentPattern.Colors.DrawingColors,
-                                        PatternNumber, CurrentPattern.Numbers,
-                                        PatternFlagTexture, CurrentPattern.Flags,
-                                        CurrentPattern.Size)
-                                : Task.Delay(0),
+                        name => CurrentPattern != null ? new PaintShopOverridePattern {
+                            Ao = PatternBase ?? PaintShopSource.InputSource,
+                            Pattern = CurrentPattern.Source,
+                            Overlay = CurrentPattern.Overlay ?? PatternOverlay,
+                            Underlay = CurrentPattern.Underlay ?? PatternUnderlay,
+                            Colors = CurrentPattern.Colors.DrawingColors,
+                            Numbers = CurrentPattern.Numbers,
+                            Flags = CurrentPattern.Flags,
+                            Labels = CurrentPattern.Labels,
+                            SkinNumber = _patternNumber,
+                            SkinFlagFilename = _patternFlagTexture,
+                            SkinLabels = _patternLabels,
+                            Destination = new PaintShopDestination(name.TextureName, name.PreferredFormat, name.OutputMask, CurrentPattern.Size)
+                                    .InheritExtendedPropertiesFrom(name)
+                        } : null,
                         PatternEnabled)
                         .Subscribe(PatternBase, PatternOverlay, PatternUnderlay);
                 PatternAspect = patternAspect;
@@ -184,11 +155,24 @@ namespace AcManager.PaintShop {
         }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? base.LiveryColors;
 
         int IPaintablePersonalItem.Number {
-            set => PatternNumber = value;
+            set {
+                _patternNumber = value;
+                PatternAspect?.SetDirty();
+            }
         }
 
         string IPaintablePersonalItem.FlagTexture {
-            set => PatternFlagTexture = value;
+            set {
+                _patternFlagTexture = value;
+                PatternAspect?.SetDirty();
+            }
+        }
+
+        IReadOnlyDictionary<string, string> IPaintablePersonalItem.Labels {
+            set {
+                _patternLabels = value;
+                PatternAspect?.SetDirty();
+            }
         }
 
         private bool _isNumberActive;
@@ -215,7 +199,6 @@ namespace AcManager.PaintShop {
 
         private IReadOnlyList<string> _activeLabels;
 
-        [CanBeNull]
         public IReadOnlyList<string> ActiveLabels {
             get => _activeLabels;
             set {
@@ -223,10 +206,6 @@ namespace AcManager.PaintShop {
                 _activeLabels = value;
                 OnPropertyChanged();
             }
-        }
-
-        public void SetLabel(string role, string value) {
-            // throw new NotImplementedException();
         }
 
         private void UpdateIsNumberActive() {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace AcManager.PaintShop {
         public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, null, null,
                 new CarPaintColors(), null, null, null);
 
-        public CarPaintPattern(string name, [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
+        public CarPaintPattern(string name, [CanBeNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
                 [CanBeNull] Size? size, CarPaintColors colors,
                 [CanBeNull] IEnumerable<PaintShopPatternNumber> numbers,
                 [CanBeNull] IEnumerable<PaintShopPatternFlag> flags,
@@ -24,10 +25,23 @@ namespace AcManager.PaintShop {
             Underlay = underlay;
             Colors = colors;
             Size = size;
-            Numbers = numbers?.ToList() ?? new List<PaintShopPatternNumber>(0);
-            Flags = flags?.ToList() ?? new List<PaintShopPatternFlag>(0);
-            Labels = labels?.ToList() ?? new List<PaintShopPatternLabel>(0);
+            Numbers = numbers?.NonNull().ToList() ?? new List<PaintShopPatternNumber>(0);
+            Flags = flags?.NonNull().ToList() ?? new List<PaintShopPatternFlag>(0);
+            Labels = labels?.NonNull().ToList() ?? new List<PaintShopPatternLabel>(0);
             colors.PropertyChanged += OnColorsChanged;
+
+            foreach (var colorRef in Numbers.Concat(Labels).Select(x => x.ColorRef).Where(x => x.IsReference)) {
+                colorRef.Updated += OnLabelColorRefUpdated;
+            }
+        }
+
+        /// <summary>
+        /// Only for OnPropertyChanged(nameof(LabelColors)) bit.
+        /// </summary>
+        public IEnumerable<System.Drawing.Color> LabelColors => Numbers.Concat(Labels).Select(x => x.ColorRef).Select(x => x.GetValue(null));
+
+        private void OnLabelColorRefUpdated(object sender, EventArgs e) {
+            OnPropertyChanged(nameof(LabelColors));
         }
 
         public string LiveryStyle { get; set; }
@@ -38,7 +52,7 @@ namespace AcManager.PaintShop {
             OnPropertyChanged(nameof(ActualColors));
         }
 
-        [NotNull]
+        [CanBeNull]
         public PaintShopSource Source { get; }
 
         [CanBeNull]
@@ -66,7 +80,7 @@ namespace AcManager.PaintShop {
         public bool HasFlags => Flags.Count > 0;
 
         private List<string> _labels;
-        public IReadOnlyList<string> LabelRoles => _labels ?? (_labels = Labels.Select(x => x.Role).Distinct().ToList());
+        public IReadOnlyList<string> LabelRoles => _labels ?? (_labels = Labels.Select(x => x?.Role).Distinct().ToList());
 
         // which color is in which slot, −1 if there is no color in given slot
         [CanBeNull]

@@ -65,7 +65,7 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- AcObjectnew -->
+        <!-- AcObjectNew -->
         <DataTemplate DataType="{x:Type t:AcObjectNew}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <!--<Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
@@ -109,9 +109,10 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- AccommonObject -->
+        <!-- AcCommonObject -->
         <DataTemplate DataType="{x:Type t:AcCommonObject}">
-          <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
+          <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent"
+              c:ToolTips.GenericObject="{Binding}" c:ContextMenus.GenericObject="{Binding}">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
 
@@ -123,7 +124,7 @@
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
             <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
-                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" ToolTip="{Binding Location}" />
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -163,7 +164,7 @@
           </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- Serverpreset -->
+        <!-- ServerPreset -->
         <DataTemplate DataType="{x:Type t:ServerPresetObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
@@ -179,7 +180,7 @@
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
             <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
-                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" ToolTip="{Binding Location}" />
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -237,7 +238,7 @@
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
             <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
-                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" ToolTip="{Binding Location}" VerticalAlignment="Center" />
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" VerticalAlignment="Center" />
           </DockPanel>
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -292,7 +293,7 @@
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
             <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
-                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" ToolTip="{Binding Location}" VerticalAlignment="Center" />
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" VerticalAlignment="Center" />
           </DockPanel>
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -331,6 +332,242 @@
             </DataTrigger>
           </DataTemplate.Triggers>
         </DataTemplate>
+      </ContentControl.Resources>
+    </ContentControl>
+  </DataTemplate>
+
+  <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate.Thumbnail" DataType="{x:Type t:AcItemWrapper}">
+    <ContentControl DataContext="{Binding Value}" Content="{Binding}" Width="158" Height="88">
+      <ContentControl.Resources>
+        <!-- Placeholder -->
+        <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
+          <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+              HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- AcObjectNew -->
+        <DataTemplate DataType="{x:Type t:AcObjectNew}">
+          <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
+            <!--<Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                Visibility="Collapsed" x:Name="PART_ErrorIcon" />-->
+
+            <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
+            <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
+                Style="{StaticResource CompactRatingBar.ReadOnly}" />
+
+            <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
+          </DockPanel>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Rating}" Value="{x:Null}">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ActualWidth, ElementName=PART_Panel, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=240}"
+                Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsNew}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_NewIcon" />
+            </DataTrigger>
+
+            <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
+              <!--<Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />-->
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
+              <Setter Property="ActiveBrush" Value="{DynamicResource ItemTextSelected}" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- AcCommonObject -->
+        <DataTemplate DataType="{x:Type t:AcCommonObject}">
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True">
+            <Border Background="{DynamicResource CardBackground}" VerticalAlignment="Stretch">
+              <TextBlock Style="{StaticResource Heading1}" Text="No preview" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Margin="0 0 0 20" />
+            </Border>
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
+              <!--<mui:BetterImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Filename="{Binding BrandBadge}" />-->
+              <TextBlock x:Name="PART_DisplayNameText" Padding="0 2 8 2" HorizontalAlignment="Stretch" Text="{Binding DisplayName}"
+                  Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
+            </DockPanel>
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
+              <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Visibility="Collapsed" x:Name="PART_ErrorIcon" />
+              <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
+                  IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
+                  Style="{StaticResource CompactRatingBar.ReadOnly}" />
+            </DockPanel>
+          </mui:Cell>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+              <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <Trigger Value="True" SourceName="PART_Panel" Property="c:AcListPage.NarrowList">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </Trigger>
+            <DataTrigger Binding="{Binding IsNew}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_NewIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Changed}" Value="True">
+              <Setter Property="FontStyle" Value="Italic" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
+              <Setter Property="ActiveBrush" Value="{DynamicResource ItemTextSelected}" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- TrackObject -->
+        <DataTemplate DataType="{x:Type t:TrackObject}">
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
+              c:ContextMenus.GenericObject="{Binding}">
+            <mui:Cell>
+              <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="200" Stretch="UniformToFill" Margin="-8 -10 -8 0" />
+              <mui:BetterImage Filename="{Binding OutlineImage}" Margin="0 0 0 10" />
+            </mui:Cell>
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
+              <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" Width="18" Height="12"
+                  DockPanel.Dock="Left" RenderOptions.BitmapScalingMode="HighQuality" Margin="2 0 4 0" VerticalAlignment="Center" Stretch="Uniform" />
+              <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" HorizontalAlignment="Stretch" Text="{Binding DisplayName}"
+                  Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
+            </DockPanel>
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
+              <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Visibility="Collapsed" x:Name="PART_ErrorIcon" Margin="0 0 4 0" />
+              <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
+                  IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
+                  Style="{StaticResource CompactRatingBar.ReadOnly}" />
+            </DockPanel>
+          </mui:Cell>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+              <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <Trigger Value="True" SourceName="PART_Panel" Property="c:AcListPage.NarrowList">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </Trigger>
+            <DataTrigger Binding="{Binding IsNew}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_NewIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Changed}" Value="True">
+              <Setter Property="FontStyle" Value="Italic" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
+              <Setter Property="ActiveBrush" Value="{DynamicResource ItemTextSelected}" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- CarObject -->
+        <DataTemplate DataType="{x:Type t:CarObject}">
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
+              c:ContextMenus.GenericObject="{Binding}">
+            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MaxWidth="200" Stretch="UniformToFill" Margin="-8 -10 -8 0" />
+            <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
+              <mui:BetterImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Filename="{Binding BrandBadge}" />
+              <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left"
+                  Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
+            </DockPanel>
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
+              <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Visibility="Collapsed" x:Name="PART_ErrorIcon" Margin="0 0 4 0" />
+              <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
+                  IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
+                  Style="{StaticResource CompactRatingBar.ReadOnly}" />
+            </DockPanel>
+          </mui:Cell>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+              <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <Trigger Value="True" SourceName="PART_Panel" Property="c:AcListPage.NarrowList">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </Trigger>
+            <DataTrigger Binding="{Binding IsNew}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_NewIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Changed}" Value="True">
+              <Setter Property="FontStyle" Value="Italic" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
+              <Setter Property="ActiveBrush" Value="{DynamicResource ItemTextSelected}" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
       </ContentControl.Resources>
     </ContentControl>
   </DataTemplate>

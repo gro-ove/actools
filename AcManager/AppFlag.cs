@@ -5,6 +5,18 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// While loading from Google Drive, handle 304 response manually for debug purposes.
+        /// Example: --google-drive-loader-manual-redirect
+        /// </summary>
+        GoogleDriveLoaderManualRedirect,
+
+        /// <summary>
+        /// While loading from Google Drive, log a lot of information.
+        /// Example: --google-drive-loader-debug-mode
+        /// </summary>
+        GoogleDriveLoaderDebugMode,
+
+        /// <summary>
         /// Detailed logging for pinging a specific by IP-address server online.
         /// Example: --debug-ping=103.62.50.22
         /// </summary>
@@ -150,9 +162,9 @@ namespace AcManager {
 
         /// <summary>
         /// For internal use.
-        /// Example: --rd-allowed.
+        /// Example: --rd-loader-allowed.
         /// </summary>
-        RdAllowed,
+        RdLoaderAllowed,
 
         /// <summary>
         /// For internal use.

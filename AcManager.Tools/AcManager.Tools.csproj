@@ -326,7 +326,6 @@
     <Compile Include="Helpers\RaceEssentialsHelper.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\SharpCompressExtension.cs" />
-    <Compile Include="Helpers\TaskbarService.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />

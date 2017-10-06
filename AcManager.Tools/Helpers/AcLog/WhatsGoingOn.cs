@@ -24,6 +24,10 @@ namespace AcManager.Tools.Helpers.AcLog {
         [CanBeNull]
         public Func<CancellationToken, Task> Fix { private get; set; }
 
+        [CanBeNull]
+        public string FixDisplayName { private get; set; }
+
+        [CanBeNull]
         public string FixAffectingDataOriginalLog { private get; set; }
 
         public WhatsGoingOn(WhatsGoingOnType type, params object[] arguments) {
@@ -42,7 +46,7 @@ namespace AcManager.Tools.Helpers.AcLog {
         private LazierThis<NonfatalErrorSolution> _solution;
 
         public NonfatalErrorSolution Solution => _solution.Get(() => Fix == null ? null :
-                new NonfatalErrorSolution(null, null, token => {
+                new NonfatalErrorSolution(FixDisplayName, null, token => {
                     if (FixAffectingDataOriginalLog != null) {
                         var carIds = GetCarsIds(FixAffectingDataOriginalLog).ToList();
                         if (!DataUpdateWarning.Warn(carIds.Select(CarsManager.Instance.GetById))) {

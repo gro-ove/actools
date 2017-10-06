@@ -99,7 +99,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double BloomRadiusMultiplier = 0.8d;
         public double PcssSceneScale = 0.06d;
         public double PcssLightScale = 2d;
-        public double SsaoOpacity = 0.3d;
+        public double AoOpacity = 0.3d;
 
         public bool DelayedConvertation = true;
 
@@ -110,6 +110,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool AccumulationDofBokeh = false;
         public int AccumulationDofIterations = 300;
         public double AccumulationDofApertureSize = 0.01;
+
+        public bool LoadCarLights = false;
+        public bool TryToGuessCarLights = true;
+        public bool LoadShowroomLights = false;
 
         [CanBeNull]
         public string SerializedLights;
@@ -212,7 +216,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ BloomRadiusMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssSceneScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssLightScale.GetHashCode();
-                hashCode = (hashCode * 397) ^ SsaoOpacity.GetHashCode();
+                hashCode = (hashCode * 397) ^ AoOpacity.GetHashCode();
 
                 if (UseDof) {
                     hashCode = (hashCode * 397) ^ "useDof".GetHashCode();
@@ -226,6 +230,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     } else {
                         hashCode = (hashCode * 397) ^ DofScale.GetHashCode();
                     }
+                }
+
+                if (!LoadCarLights) {
+                    hashCode = (hashCode * 397) ^ 49325;
+                }
+
+                if (!TryToGuessCarLights) {
+                    hashCode = (hashCode * 397) ^ 76471;
+                }
+
+                if (!LoadShowroomLights) {
+                    hashCode = (hashCode * 397) ^ 12259;
                 }
 
                 return Convert.ToBase64String(BitConverter.GetBytes(hashCode)).TrimEnd('=');
@@ -253,8 +269,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _renderer = existingRenderer;
                 _carId = existingRenderer.CarNode?.CarId;
 
-                existingRenderer.AutoloadCarLights = true;
-                existingRenderer.AutoloadShowroomLights = true;
+                existingRenderer.LoadCarLights = true;
+                existingRenderer.LoadShowroomLights = true;
                 existingRenderer.Lights = existingRenderer.Lights.Where(x => !x.Tag.IsCarTag && !x.Tag.IsShowroomTag).ToArray();
             }
         }
@@ -303,8 +319,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             var renderer = new DarkKn5ObjectRenderer(initialCar, showroom) {
-                AutoloadCarLights = true,
-                AutoloadShowroomLights = true
+                LoadCarLights = true,
+                LoadShowroomLights = true
             };
 
             SetRendererOptions(renderer, options);
@@ -382,7 +398,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.MaterialsReflectiveness = (float)options.MaterialsReflectiveness;
             renderer.PcssLightScale = (float)options.PcssLightScale;
             renderer.PcssSceneScale = (float)options.PcssSceneScale;
-            renderer.AoOpacity = (float)options.SsaoOpacity;
+            renderer.AoOpacity = (float)options.AoOpacity;
 
             // DOF
             renderer.UseDof = options.UseDof;
@@ -396,6 +412,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // Lights
             AcToolsLogging.Write(options.SerializedLights);
             renderer.DeserializeLights(DarkLightTag.Extra, JArray.Parse(options.SerializedLights ?? @"[]").OfType<JObject>());
+            renderer.TryToGuessCarLights = options.TryToGuessCarLights;
+            renderer.LoadCarLights = options.LoadCarLights;
+            renderer.LoadShowroomLights = options.LoadShowroomLights;
         }
 
         private static void SetRendererCarOptions(DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {

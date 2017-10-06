@@ -1650,13 +1650,34 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectSpecialPaintShop : IEffectWrapper {
+		[StructLayout(LayoutKind.Sequential)]
+        public struct ChannelsParams {
+            public Vector4 Map;
+            public Vector4 Add;
+            public Vector4 Multiply;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(ChannelsParams));
+        }
+
+		public class EffectStructChannelsParamsVariable {
+			private readonly EffectVariable _v;
+
+			public EffectStructChannelsParamsVariable(EffectVariable v) {
+				_v = v;
+			}
+
+			public void Set(ChannelsParams value){
+				 SlimDxExtension.SetObject(_v, value, ChannelsParams.Stride);
+			}
+        }
+
 		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechPiece, TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechReplacement, TechMaps, TechMapsFillGreen, TechTint, TechTintMask, TechCombineChannels, TechMaximum, TechMaximumApply, TechDesaturate;
+		public EffectReadyTechnique TechPiece, TechFill, TechFlakes, TechPattern, TechColorfulPattern, TechMask, TechReplacement, TechMaps, TechTint, TechTintMask, TechCombineChannels, TechFindLimitsFirstStep, TechFindLimits, TechNormalizeLimits, TechDesaturate;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxTransform;
@@ -1667,9 +1688,21 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyBoolVariable FxUseMask;
 		[NotNull]
-		public EffectOnlyVector4Variable FxInputMapChannels, FxAoMapChannels, FxMaskMapChannels, FxOverlayMapChannels, FxUnderlayMapChannels, FxColor, FxSize;
+		public EffectOnlyVector2Variable FxAlphaAdjustments;
+		[NotNull]
+		public EffectOnlyVector4Variable FxColor, FxSize;
 		[NotNull]
 		public EffectOnlyVectorArrayVariable FxColors;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxInputParams;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxAoParams;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxMaskParams;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxOverlayParams;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxUnderlayParams;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
@@ -1677,17 +1710,18 @@ namespace AcTools.Render.Shaders {
 
 			TechPiece = new EffectReadyTechnique(E.GetTechniqueByName("Piece"));
 			TechFill = new EffectReadyTechnique(E.GetTechniqueByName("Fill"));
+			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
 			TechPattern = new EffectReadyTechnique(E.GetTechniqueByName("Pattern"));
 			TechColorfulPattern = new EffectReadyTechnique(E.GetTechniqueByName("ColorfulPattern"));
-			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
+			TechMask = new EffectReadyTechnique(E.GetTechniqueByName("Mask"));
 			TechReplacement = new EffectReadyTechnique(E.GetTechniqueByName("Replacement"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
-			TechMapsFillGreen = new EffectReadyTechnique(E.GetTechniqueByName("MapsFillGreen"));
 			TechTint = new EffectReadyTechnique(E.GetTechniqueByName("Tint"));
 			TechTintMask = new EffectReadyTechnique(E.GetTechniqueByName("TintMask"));
 			TechCombineChannels = new EffectReadyTechnique(E.GetTechniqueByName("CombineChannels"));
-			TechMaximum = new EffectReadyTechnique(E.GetTechniqueByName("Maximum"));
-			TechMaximumApply = new EffectReadyTechnique(E.GetTechniqueByName("MaximumApply"));
+			TechFindLimitsFirstStep = new EffectReadyTechnique(E.GetTechniqueByName("FindLimitsFirstStep"));
+			TechFindLimits = new EffectReadyTechnique(E.GetTechniqueByName("FindLimits"));
+			TechNormalizeLimits = new EffectReadyTechnique(E.GetTechniqueByName("NormalizeLimits"));
 			TechDesaturate = new EffectReadyTechnique(E.GetTechniqueByName("Desaturate"));
 
 			for (var i = 0; i < TechPiece.Description.PassCount && InputSignaturePT == null; i++) {
@@ -1706,14 +1740,15 @@ namespace AcTools.Render.Shaders {
 			FxNoiseMultipler = new EffectOnlyFloatVariable(E.GetVariableByName("gNoiseMultipler"));
 			FxFlakes = new EffectOnlyFloatVariable(E.GetVariableByName("gFlakes"));
 			FxUseMask = new EffectOnlyBoolVariable(E.GetVariableByName("gUseMask"));
-			FxInputMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gInputMapChannels"));
-			FxAoMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gAoMapChannels"));
-			FxMaskMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gMaskMapChannels"));
-			FxOverlayMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gOverlayMapChannels"));
-			FxUnderlayMapChannels = new EffectOnlyVector4Variable(E.GetVariableByName("gUnderlayMapChannels"));
+			FxAlphaAdjustments = new EffectOnlyVector2Variable(E.GetVariableByName("gAlphaAdjustments"));
 			FxColor = new EffectOnlyVector4Variable(E.GetVariableByName("gColor"));
 			FxSize = new EffectOnlyVector4Variable(E.GetVariableByName("gSize"));
 			FxColors = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gColors"));
+			FxInputParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gInputParams"));
+			FxAoParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gAoParams"));
+			FxMaskParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gMaskParams"));
+			FxOverlayParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gOverlayParams"));
+			FxUnderlayParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gUnderlayParams"));
 		}
 
         public void Dispose() {
@@ -1815,7 +1850,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyFloatVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxAlphaRef, FxNormalUvMult;
 		[NotNull]
-		public EffectOnlyVector2Variable FxShadowSize;
+		public EffectOnlyVector2Variable FxShadowSize, FxOffset;
 		[NotNull]
 		public EffectOnlyVector3Variable FxLightDir;
 		[NotNull]
@@ -1866,6 +1901,7 @@ namespace AcTools.Render.Shaders {
 			FxAlphaRef = new EffectOnlyFloatVariable(E.GetVariableByName("gAlphaRef"));
 			FxNormalUvMult = new EffectOnlyFloatVariable(E.GetVariableByName("gNormalUvMult"));
 			FxShadowSize = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowSize"));
+			FxOffset = new EffectOnlyVector2Variable(E.GetVariableByName("gOffset"));
 			FxLightDir = new EffectOnlyVector3Variable(E.GetVariableByName("gLightDir"));
 			FxSize = new EffectOnlyVector4Variable(E.GetVariableByName("gSize"));
 		}

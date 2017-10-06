@@ -104,8 +104,18 @@ namespace AcManager.Tools.Data {
                 #endregion
 
         #region Kunos content
-        [NotNull]
-        public IReadOnlyDictionary<string, string[]> KunosContent => _kunosContent.RequireValue;
+        /*[NotNull]
+        public IReadOnlyDictionary<string, string[]> KunosContent => _kunosContent.RequireValue;*/
+
+        [CanBeNull]
+        public string[] GetKunosContentIds([CanBeNull] string category) {
+            try {
+                return _kunosContent.RequireValue.GetValueOrDefault(category ?? "");
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
+            }
+        }
 
         private readonly Lazier<Dictionary<string, string[]>> _kunosContent = Lazier.Create(
                 Load("KunosContent.json", j => {

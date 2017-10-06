@@ -470,6 +470,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
             new ImageViewer(Model.PreviewImage) { Owner = null, ImageMargin = new Thickness() }.ShowDialog();
         }
     }

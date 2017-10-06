@@ -11,6 +11,82 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <Style x:Key="DesktopsGridColumn.LeftAlignment" TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="Background" Value="{DynamicResource DataGridHeaderBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource DataGridHeaderForeground}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+        <Setter Property="Padding" Value="8 4" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+              <mui:Cell>
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                  <DockPanel x:Name="containerGrid">
+                    <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="2" DockPanel.Dock="Bottom" Margin="0 2 -4 0">
+                      <TextBlock Text="1" Style="{StaticResource Small}" ToolTip="First desktop" />
+                      <TextBlock Text="2" Style="{StaticResource Small}" ToolTip="Second desktop" />
+                      <TextBlock Text="3" Style="{StaticResource Small}" ToolTip="Third desktop" />
+                      <TextBlock Text="4" Style="{StaticResource Small}" ToolTip="Fourth desktop" />
+                    </mui:SpacingUniformGrid>
+                    <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6" Margin="4 0"
+                        Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4" Visibility="Hidden"
+                        Data="M0,0 L1,0 0.5,1 z" />
+                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                  </DockPanel>
+                </Border>
+                <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
+                <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
+              </mui:Cell>
+              <ControlTemplate.Triggers>
+                <Trigger Property="SortDirection" Value="Ascending">
+                  <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                  <Setter TargetName="SortArrow" Property="RenderTransform">
+                    <Setter.Value>
+                      <RotateTransform Angle="180" />
+                    </Setter.Value>
+                  </Setter>
+                </Trigger>
+                <Trigger Property="SortDirection" Value="Descending">
+                  <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                </Trigger>
+                <Trigger Property="CanUserSort" Value="False">
+                  <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
+                </Trigger>
+                <Trigger Property="HorizontalContentAlignment" Value="Right">
+                  <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="IsMouseOver" Value="True" />
+              <Condition Property="CanUserSort" Value="True" />
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource DataGridHeaderBackgroundHover}" />
+            <Setter Property="Foreground" Value="{DynamicResource DataGridHeaderForegroundHover}" />
+          </MultiTrigger>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="IsPressed" Value="True" />
+              <Condition Property="CanUserSort" Value="True" />
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource DataGridHeaderBackgroundPressed}" />
+            <Setter Property="Foreground" Value="{DynamicResource DataGridHeaderForegroundPressed}" />
+          </MultiTrigger>
+        </Style.Triggers>
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -83,15 +159,15 @@
       </mui:SpacingStackPanel>
 
       <DockPanel Margin="0 0 20 8" DockPanel.Dock="Top">
-        <mui:ValueLabel Value="{Binding Forms.SelectedDesktop}" mui:BetterTextBox.Mode="Integer" Content="Selected desktop" DockPanel.Dock="Left"
+        <mui:ValueLabel Value="{Binding Forms.SelectedDesktop}" mui:BetterTextBox.Mode="Integer" Content="Selected desktop in-game" DockPanel.Dock="Left"
             Margin="0 0 20 0" Padding="0" Width="200" />
         <Slider Minimum="1" Maximum="4" Value="{Binding Forms.SelectedDesktop}" TickFrequency="1" TickPlacement="BottomRight" />
       </DockPanel>
 
       <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" ContentStringFormat="{}{0} (per desktop)" DockPanel.Dock="Top" />
       <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.Lite}"
-          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" EnableColumnVirtualization="True"
-          VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"
+          VirtualizingStackPanel.CacheLength="1,1" mui:FancyScrollHelper.InvertLocation="True" Padding="8 0 0 0" Margin="-8 0 0 0">
         <DataGrid.Columns>
           <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
             <DataGridTemplateColumn.CellTemplate>
@@ -100,8 +176,58 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="PositionColumn" Width="540" Header="Position" SortMemberPath="First.Position"
-              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" CellStyle="{StaticResource DataGridCell.RightAlignment}">
+          <DataGridTemplateColumn x:Name="PositionColumn" Width="504" Header="Position" SortMemberPath="First.Position"
+              CellStyle="{StaticResource DataGridCell.RightAlignment}">
+            <DataGridTemplateColumn.HeaderStyle>
+              <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DesktopsGridColumn.LeftAlignment}">
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                      <mui:Cell>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                          <DockPanel x:Name="containerGrid">
+                            <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" DockPanel.Dock="Bottom" Margin="0 2 -4 0">
+                              <TextBlock Text="1" Style="{StaticResource Small}" ToolTip="First desktop" />
+                              <TextBlock Text="2" Style="{StaticResource Small}" ToolTip="Second desktop" />
+                              <TextBlock Text="3" Style="{StaticResource Small}" ToolTip="Third desktop" />
+                              <TextBlock Text="4" Style="{StaticResource Small}" ToolTip="Fourth desktop" />
+                            </mui:SpacingUniformGrid>
+                            <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
+                                Margin="4 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
+                                Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                          </DockPanel>
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
+                      </mui:Cell>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                          <Setter TargetName="SortArrow" Property="RenderTransform">
+                            <Setter.Value>
+                              <RotateTransform Angle="180" />
+                            </Setter.Value>
+                          </Setter>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="CanUserSort" Value="False">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="HorizontalContentAlignment" Value="Right">
+                          <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </DataGridTemplateColumn.HeaderStyle>
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
                 <mui:BooleanSwitch Value="{Binding AnyVisible}" HorizontalAlignment="Right">
@@ -129,8 +255,58 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="ScaleColumn" Width="160" Header="Scale" SortMemberPath="First.Scale"
-              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" CellStyle="{StaticResource DataGridCell.RightAlignment}">
+          <DataGridTemplateColumn x:Name="ScaleColumn" Width="158" Header="Scale" SortMemberPath="First.Scale"
+              CellStyle="{StaticResource DataGridCell.RightAlignment}">
+            <DataGridTemplateColumn.HeaderStyle>
+              <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DesktopsGridColumn.LeftAlignment}">
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                      <mui:Cell>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                          <DockPanel x:Name="containerGrid">
+                            <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="2" DockPanel.Dock="Bottom" Margin="0 2 5 0">
+                              <TextBlock Text="1" Style="{StaticResource Small}" ToolTip="First desktop" />
+                              <TextBlock Text="2" Style="{StaticResource Small}" ToolTip="Second desktop" />
+                              <TextBlock Text="3" Style="{StaticResource Small}" ToolTip="Third desktop" />
+                              <TextBlock Text="4" Style="{StaticResource Small}" ToolTip="Fourth desktop" />
+                            </mui:SpacingUniformGrid>
+                            <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
+                                Margin="4 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
+                                Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                          </DockPanel>
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
+                      </mui:Cell>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                          <Setter TargetName="SortArrow" Property="RenderTransform">
+                            <Setter.Value>
+                              <RotateTransform Angle="180" />
+                            </Setter.Value>
+                          </Setter>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="CanUserSort" Value="False">
+                          <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="HorizontalContentAlignment" Value="Right">
+                          <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </DataGridTemplateColumn.HeaderStyle>
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
                 <mui:BooleanSwitch Value="{Binding AnyVisible}">
@@ -155,7 +331,7 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="108" SortMemberPath="First.IsVisible" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+          <DataGridTemplateColumn Width="94" SortMemberPath="First.IsVisible" HeaderStyle="{StaticResource DesktopsGridColumn.LeftAlignment}"
               Header="{x:Static c:ControlsStrings.TableHeader_Visible}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
@@ -174,8 +350,8 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="BlockedColumn" Width="108" SortMemberPath="First.IsBlocked"
-              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" Header="{x:Static c:ControlsStrings.TableHeader_Locked}">
+          <DataGridTemplateColumn x:Name="BlockedColumn" Width="94" SortMemberPath="First.IsBlocked"
+              HeaderStyle="{StaticResource DesktopsGridColumn.LeftAlignment}" Header="{x:Static c:ControlsStrings.TableHeader_Locked}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type t:AcFormEntry}">
                 <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">

@@ -200,7 +200,7 @@ namespace AcManager.Pages.SelectionLists {
         private AcObjectNew _selectedAcItem;
 
         AcObjectNew ISelectedItemPage<AcObjectNew>.SelectedItem {
-            get { return _selectedAcItem; }
+            get => _selectedAcItem;
             set {
                 if (Equals(value, _selectedAcItem)) return;
                 _selectedAcItem = value;
@@ -221,7 +221,7 @@ namespace AcManager.Pages.SelectionLists {
                     return;
                 }
 
-                var item = GetSelectedItem(_items, _selectedAcItem as TObject);
+                var item = _selectedAcItem is TObject to ? GetSelectedItem(_items, to) : null;
                 if (item == null) {
                     _outOfSync = true;
                 } else {
@@ -234,7 +234,7 @@ namespace AcManager.Pages.SelectionLists {
         protected abstract void AddNewIfMissing([NotNull] IList<TItem> list, [NotNull] TObject obj);
 
         [CanBeNull]
-        protected abstract TItem GetSelectedItem([NotNull] IList<TItem> list, [CanBeNull] TObject obj);
+        protected abstract TItem GetSelectedItem([NotNull] IList<TItem> list, [NotNull] TObject obj);
 
         protected void IncreaseCounter([NotNull] TObject obj, [NotNull] TItem item) {
             item.ItemsCount++;

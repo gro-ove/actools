@@ -8,7 +8,10 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
-    internal class GoogleDriveLoader : DirectLoader {
+    public class GoogleDriveLoader : DirectLoader {
+        public static bool OptionManualRedirect = false;
+        public static bool OptionDebugMode = false;
+
         public static bool Test(string url) => Regex.IsMatch(url, @"^https?://drive\.google\.com/", RegexOptions.IgnoreCase);
 
         private static string PrepareUrl(string url) {
@@ -48,10 +51,17 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
 
             Logging.Debug("Loading page…");
-            var downloadPage = await client.DownloadStringTaskAsync(Url);
+
+            string downloadPage;
+            using (client.SetDebugMode(OptionDebugMode)) {
+                downloadPage = await client.DownloadStringTaskAsync(Url);
+            }
+
             if (cancellation.IsCancellationRequested) return false;
 
+            Logging.Debug("Content-Type: " + client.ResponseHeaders?.Get("Content-Type"));
             if (client.ResponseHeaders?.Get("Content-Type").Contains("text/html", StringComparison.OrdinalIgnoreCase) == false) return true;
+
             var match = Regex.Match(downloadPage, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
             if (!match.Success) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
@@ -94,7 +104,36 @@ namespace AcManager.Tools.Helpers.Loaders {
                 // ignored
             }
 
+            if (OptionManualRedirect) {
+                using (client.SetDebugMode(OptionDebugMode))
+                using (client.SetAutoRedirect(false)) {
+                    var redirect = await client.DownloadStringTaskAsync(Url);
+                    Logging.Debug(redirect);
+
+                    if (!redirect.Contains("<TITLE>Moved Temporarily</TITLE>")) {
+                        NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
+                        return false;
+                    }
+
+                    var redirectMatch = Regex.Match(redirect, @"href=""([^""]+)", RegexOptions.IgnoreCase);
+                    if (!redirectMatch.Success) {
+                        NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
+                        return false;
+                    }
+
+                    Url = HttpUtility.HtmlDecode(redirectMatch.Groups[1].Value);
+                    Logging.Debug(Url);
+                }
+            }
+
             return true;
+        }
+
+        public override async Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {
+            using (client.SetDebugMode(OptionDebugMode))
+            using (client.SetAutoRedirect(!OptionManualRedirect)) {
+                await base.DownloadAsync(client, destination, cancellation);
+            }
         }
     }
 }

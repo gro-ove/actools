@@ -1,13 +1,12 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {
     public class SolidColorIfFlagged : AspectsPaintableItem {
-        public SolidColorIfFlagged([NotNull] TextureFileName[] textures, bool inverse, Color color, double opacity = 1d) : base(false) {
+        public SolidColorIfFlagged([NotNull] PaintShopDestination[] textures, bool inverse, Color color, double opacity = 1d) : base(false) {
             _textures = textures;
             _inverse = inverse;
             _color = color;
@@ -16,19 +15,17 @@ namespace AcManager.PaintShop {
 
         protected override void Initialize() {
             foreach (var texture in _textures) {
-                RegisterAspect(texture, Apply, Save);
+                RegisterAspect(texture, GetOverride);
             }
         }
 
-        private void Apply(TextureFileName name, IPaintShopRenderer renderer) {
-            renderer.OverrideTexture(name.FileName, _color.ToColor(), _opacity);
+        private PaintShopOverrideBase GetOverride(PaintShopDestination name) {
+            return new PaintShopOverrideWithColor {
+                Color = _color.ToColor((_opacity * 255).ClampToByte())
+            };
         }
 
-        private Task Save(string location, TextureFileName name, IPaintShopRenderer renderer) {
-            return renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, _color.ToColor(), _opacity);
-        }
-
-        private readonly TextureFileName[] _textures;
+        private readonly PaintShopDestination[] _textures;
         private readonly bool _inverse;
         private readonly Color _color;
         private readonly double _opacity;

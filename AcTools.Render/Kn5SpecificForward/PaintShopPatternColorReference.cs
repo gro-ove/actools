@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using JetBrains.Annotations;
 
@@ -27,8 +28,23 @@ namespace AcTools.Render.Kn5SpecificForward {
             _colorRef = colorRef;
         }
 
+        public bool IsReference => _colorRef != null;
+
+        public event EventHandler Updated {
+            add {
+                if (_colorRef != null) {
+                    _colorRef.Updated += value;
+                }
+            }
+            remove {
+                if (_colorRef != null) {
+                    _colorRef.Updated += value;
+                }
+            }
+        }
+
         [Pure]
-        public Color GetValue([NotNull] Color[] colors) {
+        public Color GetValue([CanBeNull] Color[] colors) {
             var r = _colorRef;
             if (r != null) {
                 return r.GetValue() ?? Color.Black;
@@ -38,7 +54,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (val.HasValue) return val.Value;
 
             var id = _id;
-            if (id.HasValue) {
+            if (id.HasValue && colors != null) {
                 var i = id.Value;
                 if (i >= 0 && i < colors.Length) {
                     return colors[i];

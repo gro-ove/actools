@@ -2,8 +2,11 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using AcManager.Controls;
 using JetBrains.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
@@ -26,23 +29,13 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectCarDialog : INotifyPropertyChanged {
-        private static WeakReference<SelectCarDialog> _instance;
-
-        public static SelectCarDialog Instance {
-            get {
-                if (_instance == null) {
-                    return null;
-                }
-
-                SelectCarDialog result;
-                return _instance.TryGetTarget(out result) ? result : null;
-            }
-        }
+        /*private static WeakReference<SelectCarDialog> _instance;
+        public static SelectCarDialog Instance => _instance == null ? null : _instance.TryGetTarget(out var result) ? result : null;*/
 
         private CarSkinObject _selectedSkin;
 
         public CarSkinObject SelectedSkin {
-            get { return _selectedSkin; }
+            get => _selectedSkin;
             set {
                 if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
@@ -54,14 +47,14 @@ namespace AcManager.Pages.Dialogs {
         private readonly DelayedPropertyWrapper<CarObject> _selectedCar;
 
         public CarObject SelectedCar {
-            get { return _selectedCar.Value; }
-            set { _selectedCar.Value = value ?? SelectedCar; }
+            get => _selectedCar.Value;
+            set => _selectedCar.Value = value ?? SelectedCar;
         }
 
         private CarObject _selectedTunableVersion;
 
         public CarObject SelectedTunableVersion {
-            get { return _selectedTunableVersion; }
+            get => _selectedTunableVersion;
             set {
                 if (Equals(value, _selectedTunableVersion)) return;
                 _selectedTunableVersion = value;
@@ -134,7 +127,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _hasChildren;
 
         public bool HasChildren {
-            get { return _hasChildren; }
+            get => _hasChildren;
             set {
                 if (Equals(value, _hasChildren)) return;
                 _hasChildren = value;
@@ -191,7 +184,7 @@ namespace AcManager.Pages.Dialogs {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
-            _instance = new WeakReference<SelectCarDialog>(this);
+            // _instance = new WeakReference<SelectCarDialog>(this);
 
             DataContext = this;
             InputBindings.AddRange(new[] {
@@ -276,21 +269,15 @@ namespace AcManager.Pages.Dialogs {
         }
 
         void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(CarObject.ParentId)) return;
-
-            var car = sender as CarObject;
-            if (car == null || SelectedCar == null) return;
-
-            if (car.ParentId == SelectedCar.Id) {
-                UpdateTunableVersions();
+            if (e.PropertyName == nameof(CarObject.ParentId) && sender is CarObject car && SelectedCar != null) {
+                if (car.ParentId == SelectedCar.Id) {
+                    UpdateTunableVersions();
+                }
             }
         }
 
         void OnListWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            var car = e.NewValue as CarObject;
-            if (car == null || SelectedCar == null) return;
-
-            if (car.ParentId == SelectedCar.Id) {
+            if (e.NewValue is CarObject car && SelectedCar != null && car.ParentId == SelectedCar.Id) {
                 _previousTunableParent = null;
                 UpdateTunableVersions();
             }
@@ -301,11 +288,11 @@ namespace AcManager.Pages.Dialogs {
 
         private void OnTabsNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
-                _list.PropertyChanged -= List_PropertyChanged;
+                _list.PropertyChanged -= OnListPropertyChanged;
             }
 
             if (_choosing != null) {
-                _choosing.ItemChosen -= Choosing_ItemChosen;
+                _choosing.ItemChosen -= OnChoosingItemChosen;
             }
 
             var content = ((ModernTab)sender).Frame.Content;
@@ -314,23 +301,33 @@ namespace AcManager.Pages.Dialogs {
 
             if (_list != null) {
                 _list.SelectedItem = SelectedCar;
-                _list.PropertyChanged += List_PropertyChanged;
+                _list.PropertyChanged += OnListPropertyChanged;
             }
 
             if (_choosing != null) {
-                _choosing.ItemChosen += Choosing_ItemChosen;
+                _choosing.ItemChosen += OnChoosingItemChosen;
+            }
+
+            if (content is AcObjectSelectList) {
+                UpdateHint();
             }
         }
 
-        private void Choosing_ItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
-            var c = e.ChosenItem as CarObject;
-            if (c != null) {
+        private async void UpdateHint() {
+            await Task.Delay(1);
+            if (Tabs.ActualWidth <= AcObjectListBox.AutoThumbnailModeThresholdValue) {
+                FancyHints.CarDialogThumbinalMode.Trigger();
+            }
+        }
+
+        private void OnChoosingItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
+            if (e.ChosenItem is CarObject c) {
                 SelectedCar = c;
                 CloseWithResult(MessageBoxResult.OK);
             }
         }
 
-        private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnListPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(_list.SelectedItem)) {
                 SelectedCar = _list.SelectedItem as CarObject;
             }
@@ -363,10 +360,16 @@ namespace AcManager.Pages.Dialogs {
             new CarOpenInShowroomDialog(SelectedCar, SelectedSkin?.Id).ShowDialog();
         }, () => SelectedCar != null && SelectedSkin != null));
 
+        private void OnSeparatorDrag(object sender, DragDeltaEventArgs e) {
+            if (Tabs.ActualWidth > AcObjectListBox.AutoThumbnailModeThresholdValue) {
+                FancyHints.CarDialogThumbinalMode.MaskAsUnnecessary();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

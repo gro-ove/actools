@@ -200,7 +200,7 @@ namespace CustomShowroom {
                     /*renderer.BackgroundBrightness = 0.02f;
                     renderer.FlatMirror = true;*/
                     renderer.FlatMirrorReflectedLight = true;
-                    renderer.TryToGuessCarLightsIfMissing = true;
+                    renderer.TryToGuessCarLights = true;
 
                     renderer.FlatMirrorBlurred = true;
                     renderer.FlatMirror = true;

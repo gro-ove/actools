@@ -9,6 +9,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {

@@ -22,11 +22,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         [NotNull]
         protected static IEnumerable<IKn5RenderableObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
             return root
-                    .SelectManyRecursive(x => {
-                        var list = x as Kn5RenderableList;
-                        if (list == null || !list.IsEnabled) return null;
-                        return filter?.Invoke(list) == false ? null : list;
-                    })
+                    .SelectManyRecursive(x => x is Kn5RenderableList list && list.IsEnabled ? (filter?.Invoke(list) == false ? null : list) : null)
                     .OfType<IKn5RenderableObject>()
                     .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
         }
@@ -44,8 +40,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
 
             return Flatten(root, x => {
-                var k = x as IKn5RenderableObject;
-                if (k == null) return true;
+                if (!(x is IKn5RenderableObject k)) return true;
                 if (!TestObjectPath(k)) return false;
                 if (textureName == null) return true;
                 var material = kn5.GetMaterial(k.OriginalNode.MaterialId);

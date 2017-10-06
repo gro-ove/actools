@@ -59,6 +59,12 @@
           <Label Content="{x:Static g:AppStrings.Settings_General_WindowsShortcut}" />
         </CheckBox>
 
+        <DockPanel>
+          <Label Content="Windows Registry:" />
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.RegistryModes}" SelectedItem="{Binding Common.RegistryMode}"
+              DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
         <!--versions-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 

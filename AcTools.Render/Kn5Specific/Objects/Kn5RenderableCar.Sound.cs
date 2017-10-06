@@ -236,8 +236,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Lazier<SoundEmitter> _hornSoundEmitter;
         private Lazier<SoundEmitter> _engineSoundEmitter;
 
-        private void UpdateSound([NotNull] ICamera camera, IDeviceContextHolder holder) {
-            if (Sound == null || !IsSoundActive) return;
+        // If car is not being re-drawn during a frame, call this method!
+        public void UpdateSound(IDeviceContextHolder holder, [CanBeNull] ICamera camera) {
+            if (camera == null || Sound == null || !IsSoundActive) return;
 
             var dt = (float)holder.LastFrameTime;
             _soundRpm.Update(dt);

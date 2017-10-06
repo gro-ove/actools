@@ -28,6 +28,18 @@
                 ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}"
                 mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}" />
           </DockPanel>
+          <ControlTemplate.Triggers>
+            <Trigger Property="ActualThumbnailMode" Value="True">
+              <Setter TargetName="PART_ListBox" Property="ItemTemplate" Value="{StaticResource AcItemWrapperSpecific.ListItemTemplate.Thumbnail}" />
+              <Setter TargetName="PART_ListBox" Property="ItemsPanel">
+                <Setter.Value>
+                  <ItemsPanelTemplate>
+                    <mui:VirtualizingTilePanel ItemWidth="160" ItemHeight="90" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                  </ItemsPanelTemplate>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

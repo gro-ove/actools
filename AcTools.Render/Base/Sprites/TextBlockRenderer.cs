@@ -431,10 +431,11 @@ namespace AcTools.Render.Base.Sprites {
             var y = align.HasFlag(TextAlignment.Top) ? rect.Top :
                     align.HasFlag(TextAlignment.VerticalCenter) ? rect.Top + rect.Height / 2 - m.Size.Y / 2 :
                             rect.Bottom - m.Size.Y;
-            var p = align.HasFlag(TextAlignment.Left) ? new Vector2(0f, y) :
-                    new Vector2(align.HasFlag(TextAlignment.HorizontalCenter) ?
-                            rect.X + rect.Width / 2 - m.Size.X / 2 :
-                            rect.X + rect.Width - m.Size.X, y);
+            var p = new Vector2(
+                    align.HasFlag(TextAlignment.Left) ? rect.X :
+                            align.HasFlag(TextAlignment.HorizontalCenter) ?
+                                    rect.X + rect.Width / 2 - m.Size.X / 2 : rect.X + rect.Width - m.Size.X,
+                    y);
 
             if (angle != 0f) {
                 var o = m.Size / 2f;
@@ -497,15 +498,17 @@ namespace AcTools.Render.Base.Sprites {
 
                 var delta = new Vector2(charMetrics.Size.X, 0f);
 
-                if (c == '\r') {
-                    delta.X = -x;
-                    x = 0f;
-                } else {
-                    x += delta.X;
-                }
-
-                if (c == '\n') {
-                    delta.Y += y.Value;
+                switch (c) {
+                    case '\n':
+                        delta.Y += y.Value;
+                        goto case '\r';
+                    case '\r':
+                        delta.X = -x;
+                        x = 0f;
+                        break;
+                    default:
+                        x += delta.X;
+                        break;
                 }
 
                 if (angle != 0f) {

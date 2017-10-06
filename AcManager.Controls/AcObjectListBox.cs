@@ -13,9 +13,48 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls {
+    public enum ThumbnailMode {
+        Disabled, Enabled, Auto
+    }
+
     public class AcObjectListBox : Control, IComparer {
+        public const double AutoThumbnailModeThresholdValue = 322d;
+
         static AcObjectListBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcObjectListBox), new FrameworkPropertyMetadata(typeof(AcObjectListBox)));
+        }
+
+        public static readonly DependencyProperty AutoThumbnailModeThresholdProperty = DependencyProperty.Register(nameof(AutoThumbnailModeThreshold), typeof(double),
+                typeof(AcObjectListBox), new PropertyMetadata(AutoThumbnailModeThresholdValue, (o, e) => {
+                    ((AcObjectListBox)o)._autoThumbnailModeThreshold = (double)e.NewValue;
+                }));
+
+        private double _autoThumbnailModeThreshold = AutoThumbnailModeThresholdValue;
+
+        public double AutoThumbnailModeThreshold {
+            get => _autoThumbnailModeThreshold;
+            set => SetValue(AutoThumbnailModeThresholdProperty, value);
+        }
+
+        public static readonly DependencyPropertyKey ActualThumbnailModePropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualThumbnailMode), typeof(bool),
+                typeof(AcObjectListBox), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ActualThumbnailModeProperty = ActualThumbnailModePropertyKey.DependencyProperty;
+
+        public bool ActualThumbnailMode => GetValue(ActualThumbnailModeProperty) as bool? == true;
+
+        public static readonly DependencyProperty ThumbnailModeProperty = DependencyProperty.Register(nameof(ThumbnailMode), typeof(ThumbnailMode),
+                typeof(AcObjectListBox), new PropertyMetadata(ThumbnailMode.Auto, (o, e) => {
+                    var l = (AcObjectListBox)o;
+                    l._thumbnailMode = (ThumbnailMode)e.NewValue;
+                    l.UpdateThumbnailMode();
+                }));
+
+        private ThumbnailMode _thumbnailMode = ThumbnailMode.Auto;
+
+        public ThumbnailMode ThumbnailMode {
+            get => _thumbnailMode;
+            set => SetValue(ThumbnailModeProperty, value);
         }
 
         public static readonly DependencyProperty BasicFilterProperty = DependencyProperty.Register(nameof(BasicFilter), typeof(string),
@@ -112,11 +151,23 @@ namespace AcManager.Controls {
 
         public AcObjectListBox() {
             Loaded += OnLoaded;
+            SizeChanged += OnSizeChanged;
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
+            UpdateThumbnailMode();
+        }
+
+        private void UpdateThumbnailMode() {
+            SetValue(ActualThumbnailModePropertyKey, ThumbnailMode == ThumbnailMode.Auto ?
+                    ActualWidth > AutoThumbnailModeThreshold : ThumbnailMode == ThumbnailMode.Enabled);
         }
 
         private bool _unloaded;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
+            UpdateThumbnailMode();
+
             if (_unloaded) {
                 _unloaded = false;
                 UpdateFilter();

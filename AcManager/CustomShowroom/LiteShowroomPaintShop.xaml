@@ -2,8 +2,7 @@
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:paintShop="clr-namespace:AcManager.PaintShop"
-    mc:Ignorable="d">
+    xmlns:paintShop="clr-namespace:AcManager.PaintShop" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="LiteShowroomSettings.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -175,9 +174,11 @@
             </CheckBox>
 
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 0 0 4"
-                  DisplayMemberPath="DisplayName" />
-              <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}">
+              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 4 0 0"
+                  DisplayMemberPath="DisplayName"
+                  Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}" />
+              <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}"
+                  Visibility="{Binding CurrentPattern.Colors, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 4 0 0">
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
                     <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
@@ -200,7 +201,7 @@
             </CheckBox>
 
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ColorReplacementValue}" ItemsSource="{Binding ColorReplacements}" Margin="0 0 0 4"
+              <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ColorReplacementValue}" ItemsSource="{Binding ColorReplacements}" Margin="0 4 0 0"
                   DisplayMemberPath="Key" Visibility="{Binding HasColorReplacements, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
               <DockPanel Style="{StaticResource DockPanel}" Visibility="{Binding ColorAllowed, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -217,12 +218,14 @@
 
               <StackPanel Margin="0 12 0 0"
                   Visibility="{Binding PatternTexture, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <CheckBox IsChecked="{Binding PatternEnabled}" Margin="0 0 0 4">
+                <CheckBox IsChecked="{Binding PatternEnabled}">
                   <Label Content="Specify pattern (txDiffuse)" />
                 </CheckBox>
-                <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 0 0 4"
-                    DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}" />
-                <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}">
+                <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 4 0 0"
+                    DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}"
+                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}"  />
+                <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
+                    Visibility="{Binding CurrentPattern.Colors.Colors.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
@@ -263,12 +266,14 @@
 
               <StackPanel Margin="0 12 0 0"
                   Visibility="{Binding PatternTexture, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <CheckBox IsChecked="{Binding PatternEnabled}" Margin="0 0 0 4">
+                <CheckBox IsChecked="{Binding PatternEnabled}">
                   <Label Content="Specify pattern (txDiffuse)" />
                 </CheckBox>
-                <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 0 0 4"
-                    DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}" />
-                <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}">
+                <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 4 0 0"
+                    DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}"
+                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}"  />
+                <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
+                    Visibility="{Binding CurrentPattern.Colors.Colors.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
@@ -346,11 +351,22 @@
 
     <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
         Visibility="{Binding HasFlags, Converter={StaticResource BooleanToVisibilityConverter}}">
-      <mui:ValueLabel Value="{Binding SkinFlag}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0" mui:BetterTextBox.Maximum="9999"
-          DockPanel.Dock="Top" Content="Country" />
+      <Label Content="Country:" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0 0 0 4" />
       <mui:BetterComboBox Text="{Binding SkinFlagCountry}" Placeholder="?" IsEditable="False"
           ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
     </DockPanel>
+
+    <ItemsControl ItemsSource="{Binding SkinLabels}" DockPanel.Dock="Top">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8">
+            <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:UiStrings.ValueLabel_Format}" DockPanel.Dock="Top"
+                HorizontalAlignment="Left" Margin="0 0 0 4" />
+            <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" />
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
 
     <Button DockPanel.Dock="Bottom" Command="{Binding SkinSaveCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
         Padding="0 3 0 5" />

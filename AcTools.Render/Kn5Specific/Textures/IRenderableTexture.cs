@@ -15,7 +15,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         bool IsOverrideDisabled { get; set; }
         bool Exists { get; }
 
-        void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] ShaderResourceView textureBytes, bool disposeLater);
+        void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] ShaderResourceView textureView, bool disposeLater);
         void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] byte[] textureBytes);
     }
 }

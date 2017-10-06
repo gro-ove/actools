@@ -111,7 +111,7 @@ namespace AcManager.Tools.Helpers.Api {
             return new RemoteSetupInformation(id,
                     (string)o["file_name"], ((string)o["downloads"]).AsInt(),
                     DateTime.TryParse((string)o["added_date"]?["timestamp"] ?? "", CultureInfo.InvariantCulture,
-                            DateTimeStyles.None, out DateTime v) ? v : (DateTime?)null,
+                            DateTimeStyles.None, out var v) ? v : (DateTime?)null,
                     carId, trackId,
                     (string)o["author"]?["display_name"],
                     (string)o["version"],

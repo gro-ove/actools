@@ -292,11 +292,11 @@
           <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows" mui:SaveScroll.Key="__csAmbientShadows">
             <StackPanel>
               <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                <StackPanel.ContextMenu>
+                <!--<StackPanel.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}" Command="{Binding AmbientShadowResetCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}" Command="{Binding AmbientShadow.ResetCommand}" />
                   </ContextMenu>
-                </StackPanel.ContextMenu>
+                </StackPanel.ContextMenu>-->
 
                 <DockPanel Margin="0 0 0 8">
                   <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
@@ -305,89 +305,89 @@
                   <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
                 </DockPanel>
 
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                      DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
-                  <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.Diffusion}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                      Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
+                  <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding AmbientShadow.Diffusion, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
                 </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                      DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                  <Slider Minimum="150" Maximum="400" Value="{Binding AmbientShadowBrightness}" TickFrequency="50" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.Brightness}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                      Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                  <Slider Minimum="150" Maximum="400" TickPlacement="None" IsSnapToTickEnabled="False" TickFrequency="50"
+                      Value="{Binding AmbientShadow.Brightness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
                 </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowBodyMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.BodyMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                       Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Body darkness" />
-                  <Slider Minimum="0" Maximum="1" Value="{Binding AmbientShadowBodyMultiplier}" TickFrequency="0.1" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                  <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding AmbientShadow.BodyMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                 </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowWheelMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.WheelMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                       Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Wheels darkness" />
-                  <Slider Minimum="0" Maximum="1" Value="{Binding AmbientShadowWheelMultiplier}" TickFrequency="0.1" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                  <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding AmbientShadow.WheelMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                 </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                      DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                  <Slider Minimum="150" Maximum="400" Value="{Binding AmbientShadowBrightness}" TickFrequency="50" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
+                <!--<DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.Brightness}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                      Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                  <Slider Minimum="150" Maximum="400" TickFrequency="50" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding AmbientShadow.Brightness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                </DockPanel>-->
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding AmbientShadow.Iterations}" DockPanel.Dock="Top"
                       Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
-                  <Slider Minimum="400" Maximum="8000" Value="{Binding AmbientShadowIterations}" TickFrequency="760" TickPlacement="None"
-                      IsSnapToTickEnabled="False" SmallChange="400" LargeChange="1200" />
+                  <Slider Minimum="400" Maximum="8000" TickFrequency="760" TickPlacement="None" IsSnapToTickEnabled="False" SmallChange="400"
+                      LargeChange="1200" Value="{Binding AmbientShadow.Iterations, Converter={StaticResource SliderRoundConverter}, ConverterParameter=100}" />
                 </DockPanel>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
+                <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.HideWheels}">
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
                 </CheckBox>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
+                <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Fade}" ToolTip="Enable to avoid clipping">
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
                 </CheckBox>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowAccurate}">
+                <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Accurate}">
                   <CheckBox.ToolTip>Enable to improve accuracy (doesn’t affect performance)</CheckBox.ToolTip>
                   <Label Content="Accurate lighting" />
                 </CheckBox>
-                <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
+                <Button Command="{Binding AmbientShadow.UpdateCommand}"
                     Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                <c:UserPresetsControl UserPresetable="{Binding AmbientShadow}" Style="{StaticResource UserPresetsControl.Compact}" Margin="0 4 0 0"
+                    Width="208" />
               </StackPanel>
 
               <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
                 <StackPanel.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" Command="{Binding AmbientShadowSizeResetCommand}" />
-                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" Command="{Binding AmbientShadowSizeFitCommand}" />
-                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" Command="{Binding AmbientShadowSizeSaveCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" Command="{Binding AmbientShadow.SizeResetCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" Command="{Binding AmbientShadow.SizeFitCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" Command="{Binding AmbientShadow.SizeSaveCommand}" />
                   </ContextMenu>
                 </StackPanel.ContextMenu>
 
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
-                      Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                      Content="{x:Static t:ToolsStrings.Common_Width}" />
-                  <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+                      mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="{x:Static t:ToolsStrings.Common_Width}" />
+                  <Slider Minimum="0" Maximum="4" TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding Renderer.AmbientShadowWidth, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                 </DockPanel>
-                <DockPanel>
-                  <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
-                      Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                      Content="{x:Static t:ToolsStrings.Common_Length}" />
-                  <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="None"
-                      IsSnapToTickEnabled="False" />
+                <DockPanel Margin="0 0 0 4">
+                  <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
+                      mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="{x:Static t:ToolsStrings.Common_Length}" />
+                  <Slider Minimum="0" Maximum="6" TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False"
+                      Value="{Binding Renderer.AmbientShadowLength, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                 </DockPanel>
 
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
+                <CheckBox Margin="0 0 0 4" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Highlight}" />
                 </CheckBox>
 
                 <DockPanel>
-                  <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
+                  <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadow.SizeFitCommand}"
                       Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" />
-                  <Button Command="{Binding AmbientShadowSizeSaveCommand}"
+                  <Button Command="{Binding AmbientShadow.SizeSaveCommand}"
                       FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
                       Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
                 </DockPanel>

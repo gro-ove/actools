@@ -9,13 +9,13 @@ namespace AcManager.Pages.SelectionLists {
         public string CountryId { get; }
 
         public SelectCountry([NotNull] string name) : base(name) {
-            CountryId = DataProvider.Instance.CountryToIds.GetValueOrDefault(AcStringValues.CountryFromTag(name) ?? "");
+            CountryId = AcStringValues.GetCountryId(name);
         }
 
         public override bool IsSameAs(SelectCategoryBase category) {
             return (category as SelectCountry)?.CountryId == CountryId;
         }
-        
+
         internal override string Serialize() {
             return CountryId + @"|" + DisplayName;
         }

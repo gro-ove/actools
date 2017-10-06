@@ -7,7 +7,6 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {

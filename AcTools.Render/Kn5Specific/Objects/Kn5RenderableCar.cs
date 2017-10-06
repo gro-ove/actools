@@ -135,8 +135,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
-            if (camera != null && Sound != null && mode == SpecialRenderMode.Simple && IsSoundActive) {
-                UpdateSound(camera, holder);
+            if (mode == SpecialRenderMode.Simple) {
+                UpdateSound(holder, camera);
             }
 
             DrawInitialize(holder);

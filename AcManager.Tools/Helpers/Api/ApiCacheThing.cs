@@ -133,14 +133,14 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemCanBeNull]
         public Task<byte[]> GetBytesAsync([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            if (_tasks.TryGetValue(url, out Task<byte[]> s)) return s;
+            if (_tasks.TryGetValue(url, out var s)) return s;
             return _tasks[url] = GetBytesAsyncInner(url, cacheKey, aliveTime, cancellation);
         }
 
         [ItemCanBeNull]
         public Task<string> GetStringAsync([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            if (_stringTasks.TryGetValue(url, out Task<string> s)) return s;
+            if (_stringTasks.TryGetValue(url, out var s)) return s;
             return _stringTasks[url] = GetStringAsyncInner(url, cacheKey, aliveTime, cancellation);
         }
     }

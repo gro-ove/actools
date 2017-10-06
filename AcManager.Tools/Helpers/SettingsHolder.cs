@@ -516,6 +516,36 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private SettingEntry[] _registryModes;
+
+            public SettingEntry[] RegistryModes => _registryModes ?? (_registryModes = new[] {
+                new SettingEntry("off", "Disabled (Not Recommended, Shared Links Won’t Work)"),
+                new SettingEntry("protocolOnly", "Content Manager Protocol Only (For Shared Links)"),
+                new SettingEntry("protocolAndFiles", "Full Integration (Protocol And Files)")
+            });
+
+            private SettingEntry _registryMode;
+
+            [NotNull]
+            public SettingEntry RegistryMode {
+                get {
+                    var saved = ValuesStorage.GetString("Settings.CommonSettings.RegistryMode");
+                    return _registryMode ?? (_registryMode = RegistryModes.FirstOrDefault(x => x.Value == saved) ??
+                            RegistryModes.ElementAt(2));
+                }
+                set {
+                    if (Equals(value, _registryMode)) return;
+                    _registryMode = value;
+                    ValuesStorage.Set("Settings.CommonSettings.RegistryMode", value.Value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsRegistryEnabled));
+                    OnPropertyChanged(nameof(IsRegistryFilesIntegrationEnabled));
+                }
+            }
+
+            public bool IsRegistryEnabled => RegistryMode.Value != "off";
+            public bool IsRegistryFilesIntegrationEnabled => RegistryMode.Value == "protocolAndFiles";
+
             private bool? _updateToNontestedVersions;
 
             public bool UpdateToNontestedVersions {
@@ -631,6 +661,8 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public static StarterType DefaultStarterType => OfficialStarterType;
+
             public static readonly StarterType OfficialStarterType = new StarterType(
                     "Official",
                     string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
@@ -691,7 +723,7 @@ namespace AcManager.Tools.Helpers {
             public StarterType SelectedStarterType {
                 get => _selectedStarterType ??
                         (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.GetString("Settings.DriveSettings.SelectedStarterType")) ??
-                                AppIdStarterType);
+                                DefaultStarterType);
                 set {
                     if (Equals(value, _selectedStarterType)) return;
                     _selectedStarterType = value;

@@ -76,7 +76,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static double GetMultiplier() {
-            return Keyboard.Modifiers == ModifierKeys.Shift ? 0.2 : 1d;
+            return Keyboard.Modifiers == ModifierKeys.Shift ? 0.1 : 1d;
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
@@ -91,7 +91,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 ReleaseMouseCapture();
                 var screen = PointToScreen(e.MouseDevice.GetPosition(this));
 
-                var multiplier = Keyboard.Modifiers == ModifierKeys.Shift ? 0.2 : 1d;
+                var multiplier = GetMultiplier();
                 RaiseEvent(new DragCompletedEventArgs(
                         (screen.X - _originScreenCoordPosition.X) * multiplier,
                         (screen.Y - _originScreenCoordPosition.Y) * multiplier, false));

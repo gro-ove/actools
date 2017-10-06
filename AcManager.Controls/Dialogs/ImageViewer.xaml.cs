@@ -58,7 +58,7 @@ namespace AcManager.Controls.Dialogs {
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1 && !Model.Saveable) {
                 e.Handled = true;
                 Close();
             }

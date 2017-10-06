@@ -31,9 +31,9 @@
           <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}">
+        <!--<CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}">
           <Label Content="Disable teleporting at the end of race" />
-        </CheckBox>
+        </CheckBox>-->
 
         <CheckBox IsChecked="{Binding System.VrCameraShake}">
           <Label Content="VR camera shake" />

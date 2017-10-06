@@ -8,7 +8,7 @@ namespace AcTools.Utils.Helpers {
             return condition ? c(input) : input;
         }
 
-        public static T If<T>(this T input, bool condition, Action<T> c) {
+        public static T DoIf<T>(this T input, bool condition, Action<T> c) {
             if (condition) c(input);
             return input;
         }

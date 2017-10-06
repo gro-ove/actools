@@ -46,7 +46,7 @@ namespace AcManager.Tools.SharedMemory {
         private AcSharedMemoryStatus? _statusValue;
 
         internal AcSharedMemoryStatus Status {
-            get { return _statusValue ?? AcSharedMemoryStatus.Disconnected; }
+            get => _statusValue ?? AcSharedMemoryStatus.Disconnected;
             private set {
                 if (Equals(value, _statusValue)) return;
 
@@ -80,7 +80,7 @@ namespace AcManager.Tools.SharedMemory {
                     case AcSharedMemoryStatus.Disconnected:
                         _timer.Interval = OptionDisconnectedReadingInterval;
                         _timer.Enabled = true;
-                        _previousPacketId = 0;
+                        _previousPacketId = null;
                         break;
                 }
             }
@@ -91,7 +91,7 @@ namespace AcManager.Tools.SharedMemory {
         private bool _isPaused;
 
         public bool IsPaused {
-            get { return _isPaused; }
+            get => _isPaused;
             set {
                 if (Equals(value, _isPaused)) return;
                 _isPaused = value;
@@ -104,7 +104,7 @@ namespace AcManager.Tools.SharedMemory {
         private DateTime _pauseTime;
 
         public DateTime PauseTime {
-            get { return _pauseTime; }
+            get => _pauseTime;
             private set {
                 if (Equals(value, _pauseTime)) return;
                 _pauseTime = value;
@@ -117,7 +117,7 @@ namespace AcManager.Tools.SharedMemory {
 
         [CanBeNull]
         public AcShared Shared {
-            get { return _shared; }
+            get => _shared;
             set {
                 if (Equals(value, _shared)) return;
                 var prev = _shared;
@@ -131,7 +131,7 @@ namespace AcManager.Tools.SharedMemory {
 
         public bool KnownProcess { get; private set; }
 
-        private int _previousPacketId;
+        private int? _previousPacketId;
         private DateTime _previousPacketTime;
         private MemoryMappedFile _physicsFile;
         private MemoryMappedFile _graphicsFile;
@@ -160,11 +160,16 @@ namespace AcManager.Tools.SharedMemory {
             try {
                 var physics = _physicsFile.ToStruct<AcSharedPhysics>(AcSharedPhysics.Buffer);
                 if (physics.PacketId != _previousPacketId) {
-                    IsPaused = false;
-
+                    var firstPacket = !_previousPacketId.HasValue;
                     _previousPacketId = physics.PacketId;
                     _previousPacketTime = DateTime.Now;
 
+                    if (firstPacket) {
+                        IsPaused = true;
+                        return;
+                    }
+
+                    IsPaused = false;
                     if (Status != AcSharedMemoryStatus.Live) {
                         Status = AcSharedMemoryStatus.Live;
                         _gameProcess = TryToFindGameProcess();

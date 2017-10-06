@@ -231,8 +231,7 @@ namespace AcManager.Tools.Objects {
         private double? GetSpecsLengthValue([CanBeNull] string original, bool dotFix) {
             if (original == null) return null;
 
-            double value;
-            if (!double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
+            if (!double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) {
                 var m = SpecsLengthFix.Match(original);
 
                 if (m.Success) {
@@ -305,8 +304,7 @@ namespace AcManager.Tools.Objects {
                 return result;
             }
 
-            double value;
-            if (double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
+            if (double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) {
                 return value + " m";
             }
 
@@ -339,8 +337,7 @@ namespace AcManager.Tools.Objects {
             base.LoadData(json);
 
             if (Version == null && Description != null) {
-                string description;
-                Version = AcStringValues.GetVersionFromName(Description, out description);
+                Version = AcStringValues.GetVersionFromName(Description, out var description);
                 if (Version != null) {
                     Description = description;
                 }
@@ -365,8 +362,7 @@ namespace AcManager.Tools.Objects {
             Year = json.GetIntValueOnly("year");
             if (Year.HasValue) return;
 
-            int year;
-            if (DataProvider.Instance.TrackYears.TryGetValue(Id, out year)) {
+            if (DataProvider.Instance.TrackYears.TryGetValue(Id, out var year)) {
                 Year = year;
             } else if (Name != null) {
                 Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
@@ -375,9 +371,8 @@ namespace AcManager.Tools.Objects {
 
         protected override bool TestIfKunos() {
             return LayoutId != null ?
-                    (DataProvider.Instance.KunosContent[@"layouts"]?.Contains(IdWithLayout) ?? false) :
-                    (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
-            // return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
+                    (DataProvider.Instance.GetKunosContentIds(@"layouts")?.Contains(IdWithLayout) ?? false) :
+                    (DataProvider.Instance.GetKunosContentIds(@"tracks")?.Contains(Id) ?? false);
         }
 
         public override void SaveData(JObject json) {
@@ -397,13 +392,11 @@ namespace AcManager.Tools.Objects {
         }
 
         public string PreviewImage { get; protected set; }
-
         public string OutlineImage { get; protected set; }
 
         public abstract string LayoutDataDirectory { get; }
 
         public string DataDirectory => Path.Combine(LayoutDataDirectory, @"data");
-
         public string MapImage => Path.Combine(LayoutDataDirectory, @"map.png");
 
         private string _aiLaneFastFilename;

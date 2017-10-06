@@ -2119,7 +2119,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Got It</value>
   </data>
   <data name="Rsr_Commentary" xml:space="preserve">
-    <value>If you’re using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</value>
+    <value>If you want to start RSR sessions directly from your browser, [url="https://github.com/gro-ove/actools-cm-download-extension"]here[/url] is an extension to do so!</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
     <value>Start Race (Ctrl+G)</value>

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -8,16 +11,63 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public class CookieAwareWebClient : WebClient {
+        private class CookieContainer {
+            private class CookieHolder {
+                private readonly Dictionary<string, string> _values = new Dictionary<string, string>();
+
+                public string this[string key] {
+                    get => _values.TryGetValue(key, out var cookie) ? cookie : null;
+                    set {
+                        _values[key] = value;
+                        _value.Reset();
+                    }
+                }
+
+                public CookieHolder() {
+                    _value = Lazier.Create(() => _values.Select(x => $"{x.Key}={x.Value}").JoinToString(';'));
+                }
+
+                private Lazier<string> _value;
+                public string Value => _value.Value;
+
+            }
+
+            private readonly Dictionary<string, CookieHolder> _cookies;
+
+            public string this[Uri url] {
+                get => _cookies.TryGetValue(url.Host, out var cookie) ? cookie.Value : null;
+                set {
+                    var s = value.Split(new[] { '=' }, 2);
+                    if (s.Length != 2) return;
+
+                    var v = s[1].Split(new[] { ';' }, 2)[0];
+                    if (!_cookies.TryGetValue(url.Host, out var cookie)) {
+                        cookie = _cookies[url.Host] = new CookieHolder();
+                    }
+
+                    cookie[s[0]] = v;
+                }
+            }
+
+            public CookieContainer() {
+                _cookies = new Dictionary<string, CookieHolder>();
+            }
+        }
+
         private readonly CookieContainer _container = new CookieContainer();
+
+        /*[CanBeNull]
+        private string _cookiesHost;
+
+        [CanBeNull]
+        private CookieCollection _cookies;*/
 
         private string _method;
 
         public IDisposable SetMethod(string method) {
             var oldValue = _method;
             _method = method;
-            return new ActionAsDisposable(() => {
-                _method = oldValue;
-            });
+            return new ActionAsDisposable(() => _method = oldValue);
         }
 
         private string _contentType;
@@ -25,9 +75,7 @@ namespace AcManager.Tools.Helpers {
         public IDisposable SetContentType(string contentType) {
             var oldValue = _contentType;
             _contentType = contentType;
-            return new ActionAsDisposable(() => {
-                _contentType = oldValue;
-            });
+            return new ActionAsDisposable(() => _contentType = oldValue);
         }
 
         private string _accept;
@@ -35,9 +83,7 @@ namespace AcManager.Tools.Helpers {
         public IDisposable SetAccept(string accept) {
             var oldValue = _accept;
             _accept = accept;
-            return new ActionAsDisposable(() => {
-                _accept = oldValue;
-            });
+            return new ActionAsDisposable(() => _accept = oldValue);
         }
 
         private bool? _autoRedirect;
@@ -45,9 +91,15 @@ namespace AcManager.Tools.Helpers {
         public IDisposable SetAutoRedirect(bool value) {
             var oldValue = _autoRedirect;
             _autoRedirect = value;
-            return new ActionAsDisposable(() => {
-                _autoRedirect = oldValue;
-            });
+            return new ActionAsDisposable(() => _autoRedirect = oldValue);
+        }
+
+        private bool _debugMode;
+
+        public IDisposable SetDebugMode(bool value) {
+            var oldValue = _debugMode;
+            _debugMode = value;
+            return new ActionAsDisposable(() => _debugMode = oldValue);
         }
 
         public IDisposable SetProxy([CanBeNull] string proxy) {
@@ -60,25 +112,42 @@ namespace AcManager.Tools.Helpers {
                 NonfatalError.NotifyBackground("Can’t set proxy", e);
             }
 
-            return new ActionAsDisposable(() => {
-                Proxy = oldValue;
-            });
+            return new ActionAsDisposable(() => Proxy = oldValue);
         }
 
         public IDisposable SetUserAgent(string newUserAgent) {
             var oldValue = Headers[HttpRequestHeader.UserAgent];
             Headers[HttpRequestHeader.UserAgent] = newUserAgent;
-            return new ActionAsDisposable(() => {
-                Headers[HttpRequestHeader.UserAgent] = oldValue;
-            });
+            return new ActionAsDisposable(() => Headers[HttpRequestHeader.UserAgent] = oldValue);
         }
 
         protected override WebRequest GetWebRequest(Uri address) {
-            var request = base.GetWebRequest(address);
-            var webRequest = request as HttpWebRequest;
+            if (_debugMode) Logging.Debug(address);
 
-            if (webRequest != null) {
-                webRequest.CookieContainer = _container;
+            var request = base.GetWebRequest(address);
+            if (request is HttpWebRequest webRequest) {
+                /*webRequest.CookieContainer = _container;
+
+                if (_cookies != null && string.Equals(address.Host, _cookiesHost, StringComparison.OrdinalIgnoreCase)) {
+                    // This isn’t exactly safe or even compatible, but it looks like there is something wrong
+                    // with CookieContainer. Anyway, until I check host, nothing really bad could happen, right? Right?
+                    webRequest.CookieContainer.Add(address, _cookies);
+                }
+
+                if (_debugMode) {
+                    Logging.Debug("Previous cookies host; current host: " + _cookiesHost + "; " + address.Host);
+                    Logging.Debug("Restore cookies:\n" + _cookies?.OfType<object>().JoinToString('\n'));
+                    Logging.Debug("Cookies:\n" + webRequest.CookieContainer.GetCookies(address).OfType<object>().JoinToString('\n'));
+                }*/
+
+                var cookie = _container[address];
+                if (cookie != null) {
+                    ((HttpWebRequest)request).Headers.Set("Cookie", cookie);
+                }
+
+                if (_debugMode) {
+                    Logging.Debug("Cookies:\n" + cookie);
+                }
 
                 if (_autoRedirect.HasValue) {
                     webRequest.AllowAutoRedirect = _autoRedirect.Value;
@@ -95,9 +164,58 @@ namespace AcManager.Tools.Helpers {
                 if (!string.IsNullOrEmpty(_method)) {
                     webRequest.Method = _method;
                 }
+
+                if (_debugMode) {
+                    Logging.Debug("AllowAutoRedirect: " + webRequest.AllowAutoRedirect + "; ContentType: " + webRequest.ContentType + "; Accept: " +
+                            webRequest.Accept + "; Method: " + webRequest.Method);
+                }
             }
 
             return request;
+        }
+
+        protected override WebResponse GetWebResponse(WebRequest request, IAsyncResult result) {
+            var response = base.GetWebResponse(request, result);
+
+            if (_debugMode) {
+                try {
+                    Logging.Debug("Response: " + (int?)(response as HttpWebResponse)?.StatusCode);
+                    Logging.Debug("Headers:\n" + response?.Headers?.OfType<string>().Select(x => $"{x}: {response.Headers.Get(x)}").JoinToString('\n'));
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
+            var cookies = response?.Headers?.GetValues("Set-Cookie");
+            if (cookies != null) {
+                foreach (var c in cookies) {
+                    _container[response.ResponseUri] = c;
+                }
+            }
+
+            return response;
+        }
+
+        protected override WebResponse GetWebResponse(WebRequest request) {
+            var response = base.GetWebResponse(request);
+
+            if (_debugMode) {
+                try {
+                    Logging.Debug("Response: " + (int?)(response as HttpWebResponse)?.StatusCode);
+                    Logging.Debug("Headers:\n" + response?.Headers?.OfType<string>().Select(x => $"{x}: {response.Headers.Get(x)}").JoinToString('\n'));
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
+            var cookies = response?.Headers?.GetValues("Set-Cookie");
+            if (cookies != null) {
+                foreach (var c in cookies) {
+                    _container[response.ResponseUri] = c;
+                }
+            }
+
+            return response;
         }
 
         public IDisposable SetDownloadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null) {
@@ -118,9 +236,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             DownloadProgressChanged += Handler;
-            return new ActionAsDisposable(() => {
-                DownloadProgressChanged -= Handler;
-            });
+            return new ActionAsDisposable(() => DownloadProgressChanged -= Handler);
         }
 
         public IDisposable SetUploadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null) {
@@ -141,9 +257,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             UploadProgressChanged += Handler;
-            return new ActionAsDisposable(() => {
-                UploadProgressChanged -= Handler;
-            });
+            return new ActionAsDisposable(() => UploadProgressChanged -= Handler);
         }
     }
 }

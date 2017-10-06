@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using JetBrains.Annotations;
@@ -10,11 +8,11 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.PaintShop {
     public class Replacement : AspectsPaintableItem {
         [NotNull]
-        private readonly TextureFileName[] _textures;
+        private readonly PaintShopDestination[] _textures;
 
         public Dictionary<string, PaintShopSource> Replacements { get; }
 
-        public Replacement([NotNull] TextureFileName[] textures, [NotNull] Dictionary<string, PaintShopSource> replacements) : base(false) {
+        public Replacement([NotNull] PaintShopDestination[] textures, [NotNull] Dictionary<string, PaintShopSource> replacements) : base(false) {
             _textures = textures;
             Replacements = replacements;
             Value = Replacements.FirstOrDefault();
@@ -39,20 +37,10 @@ namespace AcManager.PaintShop {
         protected override void Initialize() {
             base.Initialize();
             foreach (var texture in _textures) {
-                RegisterAspect(texture, Apply, Save, Value.Value != null)
-                        .Subscribe(Replacements.Select(x => x.Value), c => Value.Value == c);
+                RegisterAspect(texture, name => new PaintShopOverrideWithTexture {
+                    Source = Value.Value
+                }, Value.Value != null).Subscribe(Replacements.Select(x => x.Value), c => Value.Value == c);
             }
-        }
-
-        private void Apply(TextureFileName name, IPaintShopRenderer renderer) {
-            var value = Value.Value;
-            if (value == null) return;
-            renderer.OverrideTexture(name.FileName, value);
-        }
-
-        private Task Save(string location, TextureFileName name, IPaintShopRenderer renderer) {
-            var value = Value.Value;
-            return value == null ? Task.Delay(0) : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, value);
         }
 
         public override JObject Serialize() {

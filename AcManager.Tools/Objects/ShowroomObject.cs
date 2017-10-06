@@ -111,8 +111,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private async void DownloadPreview() {
-            string url;
-            if (!DataProvider.Instance.ShowroomsPreviews.TryGetValue(Id.ToLowerInvariant(), out url)) return;
+            if (!DataProvider.Instance.ShowroomsPreviews.TryGetValue(Id.ToLowerInvariant(), out var url)) return;
 
             try {
                 using (var client = new WebClient()) {
@@ -148,8 +147,7 @@ namespace AcManager.Tools.Objects {
             Year = json.GetIntValueOnly("year");
             if (Year.HasValue) return;
 
-            int year;
-            if (DataProvider.Instance.ShowroomYears.TryGetValue(Id, out year)) {
+            if (DataProvider.Instance.ShowroomYears.TryGetValue(Id, out var year)) {
                 Year = year;
             } else if (Name != null) {
                 Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
@@ -157,7 +155,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return /*base.TestIfKunos() ||*/ (DataProvider.Instance.KunosContent[@"showrooms"]?.Contains(Id) ?? false);
+            return /*base.TestIfKunos() ||*/ (DataProvider.Instance.GetKunosContentIds(@"showrooms")?.Contains(Id) ?? false);
         }
 
         public void ToggleSound() {

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using AcTools.Utils;
 using AcTools.Windows.Input;
 
 namespace AcTools.Processes {
@@ -11,6 +12,7 @@ namespace AcTools.Processes {
         }
 
         private const string Screen1920X1080 = "1920:1080";
+        private const string Screen1280X720 = "1280:720";
 
         private static void Click(Func<Point, Point> coordinatesProvider) {
             var originalPosition = Cursor.Position;
@@ -34,9 +36,10 @@ namespace AcTools.Processes {
                 switch (screen.ToSwitch()) {
                     case Screen1920X1080:
                         return new Point(50, 150);
-
+                    case Screen1280X720:
+                        return new Point(50, 170);
                     default:
-                        return new Point(50, 150);
+                        return new Point(40, (150d / 1000d * screen.Y).RoundToInt());
                 }
             });
         }
@@ -45,10 +48,11 @@ namespace AcTools.Processes {
             Click(screen => {
                 switch (screen.ToSwitch()) {
                     case Screen1920X1080:
-                        return new Point(962, 468);
-
+                        return new Point(960, 468);
+                    case Screen1280X720:
+                        return new Point(640, 290);
                     default:
-                        return new Point(962, 468);
+                        return new Point(screen.X / 2, ((290d / 720d + 468d / 1080d) / 2d * screen.Y).RoundToInt());
                 }
             });
         }

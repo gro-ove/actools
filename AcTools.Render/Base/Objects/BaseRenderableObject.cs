@@ -12,13 +12,9 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public bool IsInitialized { get; private set; }
-
         public virtual Matrix ParentMatrix { get; set; }
-
         public virtual bool IsReflectable { get; set; } = true;
-
         public virtual bool IsEnabled { get; set; } = true;
-
         public abstract int GetTrianglesCount();
 
         public int GetObjectsCount() {

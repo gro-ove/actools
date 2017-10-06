@@ -164,9 +164,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
 
             var t = Iterations;
+            var iter = 0f;
 
             // draw
-            var iter = 0f;
             var progressReport = 0;
             for (var k = 0; k < t; k++) {
                 if (++progressReport > 10) {
@@ -175,21 +175,25 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     if (cancellation.IsCancellationRequested) return;
                 }
 
-                /* random distribution */
+                // random distribution
                 Vector3 v3;
-                while (true) {
-                    var x = MathF.Random(-1f, 1f);
-                    var y = MathF.Random(0.1f, 1f);
-                    var z = MathF.Random(-1f, 1f);
-                    if (x.Abs() < 0.005 && z.Abs() < 0.005) continue;
+                if (DiffusionLevel == 0) {
+                    v3 = new Vector3(0.0001f, 1f, 0f);
+                } else {
+                    while (true) {
+                        var x = MathF.Random(-1f, 1f);
+                        var y = MathF.Random(0.1f, 1f);
+                        var z = MathF.Random(-1f, 1f);
+                        if (x.Abs() < 0.005 && z.Abs() < 0.005) continue;
 
-                    v3 = new Vector3(x, y, z);
-                    if (v3.LengthSquared() > 1f) continue;
+                        v3 = new Vector3(x, y, z);
+                        if (v3.LengthSquared() > 1f) continue;
 
-                    v3.Normalize();
-                    if (v3.Y < 0.9f - DiffusionLevel * 0.9) continue;
+                        v3.Normalize();
+                        if (v3.Y < 0.95f - DiffusionLevel * 0.95) continue;
 
-                    break;
+                        break;
+                    }
                 }
 
                 DrawShadow(v3);
@@ -307,6 +311,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
             var list = nodes.Select(x => CarNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
                 Node = x,
+                GlobalMatrix = x.Matrix,
                 Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
                         new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
                 FileName = $"tyre_{i}_shadow.png",
@@ -315,12 +320,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             foreach (var entry in list) {
                 using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
-                    Scene.Clear();
-                    _flattenNodes = null;
-
-                    Scene.AddRange(list.Select(x => x.Node));
-                    Scene.LocalMatrix = entry.Matrix;
-                    Scene.UpdateBoundingBox();
+                    var m = Matrix.Invert(entry.GlobalMatrix);
+                    _flattenNodes = list.SelectMany(x => {
+                        x.Node.ParentMatrix = Matrix.Identity;
+                        x.Node.LocalMatrix = entry.Matrix * x.GlobalMatrix * m;
+                        return Flatten(x.Node).OfType<Kn5RenderableDepthOnlyObject>();
+                    }).ToArray();
 
                     Draw(WheelMultipler, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);
                     if (cancellation.IsCancellationRequested) return;

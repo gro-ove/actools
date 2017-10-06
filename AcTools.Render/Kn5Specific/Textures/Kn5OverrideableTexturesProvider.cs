@@ -276,8 +276,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 } catch (FileNotFoundException) {
                     return null;
                 }catch (Exception e) {
-                    AcToolsLogging.Write(e);
-                    Logging.Warning("TryLoadBytes(): " + e.Message);
+                    AcToolsLogging.Write(e.Message);
                 }
             }
 
@@ -285,8 +284,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         protected async Task UpdateTextureInner(string localName, bool initialDelay) {
-            IRenderableTexture texture;
-            TryGetTexture(localName, out texture);
+            TryGetTexture(localName, out var texture);
 
             var magickMode = texture == null;
             if (MagickOverride && magickMode) {
@@ -354,8 +352,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
             var result = new RenderableTexture(key) { Resource = null };
 
-            byte[] data;
-            if (Kn5.TexturesData.TryGetValue(key, out data)) {
+            if (Kn5.TexturesData.TryGetValue(key, out var data)) {
                 result.Exists = true;
                 if (AsyncLoading && data.Length > 100000) {
                     result.LoadAsync(contextHolder, data).Forget();
@@ -439,7 +436,13 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         [CanBeNull]
         protected virtual string GetOverridedFilename(string name) {
-            return CurrentDirectory == null ? null : Path.Combine(CurrentDirectory, name);
+            try {
+                return CurrentDirectory == null ? null : Path.Combine(CurrentDirectory, name);
+            } catch (ArgumentException) {
+                AcToolsLogging.Write("Error with:-p[ " + name);
+                AcToolsLogging.Write("CurrentDirectory=" + CurrentDirectory);
+                return null;
+            }
         }
 
         [CanBeNull]

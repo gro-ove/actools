@@ -33,6 +33,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         CloudsMightBeMissing,
 
         // TRANSLATE ME
+        [Description("App “{0}” might be broken")]
+        AppMightBeBroken,
+
         [Description("Analog instruments of {0} might be broken")]
         AnalogInstrumentsAreDamaged,
 

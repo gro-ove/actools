@@ -28,7 +28,7 @@ namespace AcManager.Pages.Settings {
             private object _selectedShowroom;
 
             public object SelectedShowroom {
-                get { return _selectedShowroom; }
+                get => _selectedShowroom;
                 set {
                     if (Equals(value, _selectedShowroom)) return;
                     _selectedShowroom = value;

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
@@ -16,14 +14,14 @@ namespace AcManager.PaintShop {
             LiveryPriority = 1;
         }
 
-        public CarPaint SetDetailsParams(TextureFileName detailsTexture, bool supportFlakes = true, int flakesSize = 512,
+        public CarPaint SetDetailsParams(PaintShopDestination detailsTexture, bool supportFlakes = true, int flakesSize = 512,
                 bool colorAvailable = true, Color? defaultColor = null, Dictionary<string, CarPaintReplacementSource> replacements = null) {
             FlakesSize = flakesSize;
             SupportsFlakes = supportFlakes && flakesSize > 0;
             ColorAvailable = colorAvailable;
             DetailsTexture = detailsTexture;
             DefaultColor = defaultColor ?? Color.FromRgb(255, 255, 255);
-            ColorReplacements = replacements?.Prepend(new KeyValuePair<string, CarPaintReplacementSource>("Solid Color", null))
+            ColorReplacements = replacements?.If(colorAvailable, x => x.Prepend(new KeyValuePair<string, CarPaintReplacementSource>("Solid Color", null)))
                                              .ToDictionary(x => x.Key, x => x.Value);
 
             if (ColorReplacements != null) {
@@ -68,16 +66,16 @@ namespace AcManager.PaintShop {
         }
 
         private void UpdateColorAllowed() {
-            ColorAllowed = ColorAvailable && (ColorReplacementValue.Value == null || ColorReplacementValue.Value.Colored);
+            ColorAllowed = ColorAvailable && ColorReplacementValue.Value == null || ColorReplacementValue.Value.Colored;
         }
 
         [CanBeNull]
-        public TextureFileName DetailsTexture { get; private set; }
+        public PaintShopDestination DetailsTexture { get; private set; }
 
         [CanBeNull]
         public Dictionary<string, CarPaintReplacementSource> ColorReplacements { get; private set; }
 
-        public bool HasColorReplacements => ColorReplacements != null;
+        public bool HasColorReplacements => ColorReplacements?.Any(x => x.Value != null) == true;
 
         private KeyValuePair<string, CarPaintReplacementSource> _colorReplacementValue;
 
@@ -144,8 +142,8 @@ namespace AcManager.PaintShop {
         }
 
         protected override void Initialize() {
-            if (DetailsTexture != null && ColorAvailable) {
-                DetailsAspect = RegisterAspect(DetailsTexture, ApplyColor, SaveColor)
+            if (DetailsTexture != null) {
+                DetailsAspect = RegisterAspect(DetailsTexture, GetDetailsOverride)
                         .Subscribe(ColorReplacements?.Values.Select(x => x?.Source));
             }
 
@@ -153,36 +151,34 @@ namespace AcManager.PaintShop {
             base.Initialize();
         }
 
-        private void ApplyColor(TextureFileName name, IPaintShopRenderer renderer) {
+        private PaintShopOverrideBase GetDetailsOverride(PaintShopDestination name) {
             var value = ColorReplacementValue.Value;
             if (value != null) {
                 if (value.Colored) {
-                    renderer.OverrideTextureTint(name.FileName, new[] { Color.ToColor() }, 0d, value.Source, null, null);
-                } else {
-                    renderer.OverrideTexture(name.FileName, value.Source);
+                    return new PaintShopOverrideTint {
+                        Colors = new[] { Color.ToColor() },
+                        Alpha = ValueAdjustment.Same,
+                        Source = value.Source
+                    };
                 }
-            } else {
-                var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
-                if (SupportsFlakes && Flakes > 0d) {
-                    renderer.OverrideTextureFlakes(name.FileName, color, FlakesSize, Flakes);
-                } else {
-                    renderer.OverrideTexture(name.FileName, color, 1d);
-                }
-            }
-        }
 
-        private Task SaveColor(string location, TextureFileName name, IPaintShopRenderer renderer) {
-            var value = ColorReplacementValue.Value;
-            if (value != null) {
-                return value.Colored
-                        ? renderer.SaveTextureTintAsync(Path.Combine(location, name.FileName), name.PreferredFormat, new[] { Color.ToColor() }, 0d, value.Source,
-                                null, null) : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, value.Source);
+                return new PaintShopOverrideWithTexture {
+                    Source = value.Source
+                };
             }
 
             var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
-            return SupportsFlakes && Flakes > 0d
-                    ? renderer.SaveTextureFlakesAsync(Path.Combine(location, name.FileName), name.PreferredFormat, color, FlakesSize, Flakes)
-                    : renderer.SaveTextureAsync(Path.Combine(location, name.FileName), name.PreferredFormat, color, 1d);
+            if (SupportsFlakes && Flakes > 0d) {
+                return new PaintShopOverrideWithColor {
+                    Color = color,
+                    Flakes = Flakes,
+                    Size = FlakesSize
+                };
+            }
+
+            return new PaintShopOverrideWithColor {
+                Color = color
+            };
         }
         #endregion
 

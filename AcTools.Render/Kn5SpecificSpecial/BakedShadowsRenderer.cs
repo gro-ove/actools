@@ -10,11 +10,14 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -29,15 +32,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public float SkyBrightnessLevel = 2.5f;
-        public float ΘFrom = -10.0f;
-        public float ΘTo = 50.0f;
+        public float ΘFrom = -10f;
+        public float ΘTo = 50f;
         public float Gamma = 0.5f;
         public float Ambient = 0.3f;
-        public float ShadowBias = 0.0f;
+        public float ShadowBiasCullFront = 0f;
+        public float ShadowBiasCullBack = 0.8f;
         public int Iterations = 500;
+        public int Padding = 4;
+        public int MapSize = 2048;
         public bool DebugMode = false;
 
-        private RasterizerState _rasterizerState;
+        private RasterizerState _rasterizerStateFrontCull, _rasterizerStateBackCull;
 
         private void InitializeBuffers() {
             _shadowBuffer = TargetResourceDepthTexture.Create();
@@ -70,14 +76,24 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             _effect = DeviceContextHolder.GetEffect<EffectSpecialShadow>();
 
-            _rasterizerState = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
+            _rasterizerStateFrontCull = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
                 CullMode = CullMode.Front,
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
-                DepthBias = (int)(100 * ShadowBias),
+                DepthBias = (int)(100 * ShadowBiasCullFront),
                 DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = ShadowBias
+                SlopeScaledDepthBias = ShadowBiasCullFront
+            });
+
+            _rasterizerStateBackCull = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
+                CullMode = CullMode.Back,
+                FillMode = FillMode.Solid,
+                IsAntialiasedLineEnabled = false,
+                IsDepthClipEnabled = true,
+                DepthBias = (int)(100 * ShadowBiasCullBack),
+                DepthBiasClamp = 0.0f,
+                SlopeScaledDepthBias = ShadowBiasCullBack
             });
         }
 
@@ -108,13 +124,63 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private EffectSpecialShadow _effect;
 
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
-        private Kn5RenderableDepthOnlyObject[] _filteredNodes;
+        private UvProjectedObject[] _filteredNodes;
+
+        private class UvProjectedObject {
+            public static int OptionUvProjectMaximumArea = 10;
+
+            private readonly TrianglesRenderableObject<InputLayouts.VerticePT> _mesh;
+            private readonly Vector2[] _offsets;
+
+            public UvProjectedObject(TrianglesRenderableObject<InputLayouts.VerticePT> mesh) {
+                _mesh = mesh;
+                _offsets = GetOffsets(mesh).ToArray();
+            }
+
+            private static bool IsVerticeWithin(Vector2 offset, Vector2 a) {
+                return a.X >= offset.X && a.X <= offset.X + 1f &&
+                        -a.Y >= offset.Y && -a.Y <= offset.Y + 1f;
+            }
+
+            private static bool IsOverlap(Vector2 offset, Vector2 a, Vector2 b, Vector2 c) {
+                // TODO? Test if one of square vertices is within triangle?
+                // TODO? Test if some edges do intersect?
+                // Or is it only gonna be a waste of time since it’s unlikely UV is gonna be this tricky?
+                return IsVerticeWithin(offset, a) || IsVerticeWithin(offset, b) || IsVerticeWithin(offset, c);
+            }
+
+            private static bool IsOverlap(Vector2 offset, TrianglesRenderableObject<InputLayouts.VerticePT> obj) {
+                for (var i = 2; i < obj.IndicesCount; i += 3) {
+                    if (IsOverlap(offset, obj.Vertices[obj.Indices[i - 2]].Tex, obj.Vertices[obj.Indices[i - 1]].Tex, obj.Vertices[obj.Indices[i]].Tex)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            private static IEnumerable<Vector2> GetOffsets(TrianglesRenderableObject<InputLayouts.VerticePT> obj) {
+                for (var o = new Vector2(-OptionUvProjectMaximumArea); o.X <= OptionUvProjectMaximumArea; o.X++) {
+                    for (o.Y = -OptionUvProjectMaximumArea; o.Y <= OptionUvProjectMaximumArea; o.Y++) {
+                        if (IsOverlap(o, obj)) {
+                            yield return o;
+                        }
+                    }
+                }
+            }
+
+            public void Draw(IDeviceContextHolder holder, EffectOnlyVector2Variable offset, SpecialRenderMode renderMode) {
+                for (var i = 0; i < _offsets.Length; i++) {
+                    offset.Set(_offsets[i]);
+                    _mesh.Draw(holder, null, renderMode);
+                }
+            }
+        }
 
         private void DrawShadow(Vector3 from, Vector3? up = null) {
             from.Normalize();
             _effect.FxLightDir.Set(from);
 
-            DeviceContext.Rasterizer.State = _rasterizerState;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.Rasterizer.SetViewports(_shadowViewport);
@@ -128,6 +194,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (_flattenNodes == null) {
                 _flattenNodes = Flatten(Scene, x => (x as Kn5RenderableDepthOnlyObject)?.OriginalNode.CastShadows != false &&
                         IsVisible(x)).OfType<Kn5RenderableDepthOnlyObject>().ToArray();
+                var states = new[] { _rasterizerStateFrontCull, _rasterizerStateBackCull };
+                _flattenNodes.ForEach(x => x.SeveralRasterizerStates = states);
             }
 
             for (var i = 0; i < _flattenNodes.Length; i++) {
@@ -135,10 +203,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
+        private void RenderPieces() {
+            for (var i = 0; i < _filteredNodes.Length; i++) {
+                _filteredNodes[i].Draw(DeviceContextHolder, _effect.FxOffset, SpecialRenderMode.Shadow);
+            }
+        }
+
         private void AddShadow() {
-            DeviceContext.Rasterizer.State = null;
             DeviceContext.OutputMerger.BlendState = _bakedBlendState;
             DeviceContext.OutputMerger.DepthStencilState = null;
+            DeviceContext.Rasterizer.State = null;
             DeviceContext.Rasterizer.SetViewports(Viewport);
 
             DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
@@ -153,9 +227,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 M44 = 1.0f
             });
 
-            for (var i = 0; i < _filteredNodes.Length; i++) {
-                _filteredNodes[i].Draw(DeviceContextHolder, _shadowCamera, SpecialRenderMode.Shadow);
-            }
+            RenderPieces();
+            // DeviceContext.Rasterizer.State = null;
 
             // copy to summary buffer
             DeviceContext.OutputMerger.BlendState = _summBlendState;
@@ -226,7 +299,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxGamma.Set(Gamma);
             _effect.TechAoResult.DrawAllPasses(DeviceContext, 6);
 
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < Padding; i++) {
                 DeviceContext.ClearRenderTargetView(_bufferF2.TargetView, Color.Transparent);
                 DeviceContext.OutputMerger.SetTargets(_bufferF2.TargetView);
                 _effect.FxInputMap.SetResource(_bufferF1.View);
@@ -249,10 +322,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
 
             DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferA.View, RenderTargetView);
-
-            /*DeviceContext.OutputMerger.SetTargets(RenderTargetView);
-            _effect.FxInputMap.SetResource(_bufferA.View);
-            _effect.TechAoFinalCopy.DrawAllPasses(DeviceContext, 6);*/
         }
 
         private void SetBodyShadowCamera() {
@@ -267,7 +336,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowCamera.SetLens(1f);
         }
 
-        public bool UseFxaa = false;
+        public bool UseFxaa = true;
 
         public void Shot(string outputFile, string textureName, [CanBeNull] string objectPath, [CanBeNull] IProgress<double> progress,
                 CancellationToken cancellation) {
@@ -276,8 +345,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (cancellation.IsCancellationRequested) return;
             }
 
-            _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath).OfType<Kn5RenderableDepthOnlyObject>().ToArray();
-            PrepareBuffers(2048);
+            _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath).OfType<TrianglesRenderableObject<InputLayouts.VerticePT>>()
+                                                                         .Select(x => new UvProjectedObject(x)).ToArray();
+            PrepareBuffers(MapSize);
             SetBodyShadowCamera();
             if (cancellation.IsCancellationRequested) return;
 
@@ -300,8 +370,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             private readonly Dictionary<uint, Tuple<IRenderableTexture, float>[]> _cache = new Dictionary<uint, Tuple<IRenderableTexture, float>[]>();
 
             Tuple<IRenderableTexture, float> INormalsNormalTexturesProvider.GetTexture(IDeviceContextHolder contextHolder, uint materialId) {
-                Tuple<IRenderableTexture, float>[] result;
-                if (!_cache.TryGetValue(materialId, out result)) {
+                if (!_cache.TryGetValue(materialId, out var result)) {
                     if (_texturesProvider == null) {
                         _texturesProvider = new Kn5TexturesProvider(_kn5, false);
                     }
@@ -335,7 +404,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _bufferF2);
             DisposeHelper.Dispose(ref _bufferA);
             DisposeHelper.Dispose(ref _shadowBuffer);
-            DisposeHelper.Dispose(ref _rasterizerState);
+            DisposeHelper.Dispose(ref _rasterizerStateFrontCull);
+            DisposeHelper.Dispose(ref _rasterizerStateBackCull);
             CarNode.Dispose();
             Scene.Dispose();
             base.DisposeOverride();

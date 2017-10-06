@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using AcManager.AcSound;
+using AcManager.Assets;
 using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Converters;
@@ -152,7 +153,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
             AppArguments.Set(AppFlag.GenericModsLogging, ref GenericModsEnabler.OptionLoggingEnabled);
             AppArguments.Set(AppFlag.SidekickOptimalRangeThreshold, ref SidekickHelper.OptionRangeThreshold);
-            AppArguments.Set(AppFlag.RdAllowed, ref RaceDepartmentLoader.OptionAllowed);
+            AppArguments.Set(AppFlag.GoogleDriveLoaderDebugMode, ref GoogleDriveLoader.OptionDebugMode);
+            AppArguments.Set(AppFlag.GoogleDriveLoaderManualRedirect, ref GoogleDriveLoader.OptionManualRedirect);
+            AppArguments.Set(AppFlag.RdLoaderAllowed, ref RaceDepartmentLoader.OptionAllowed);
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
 
             LimitedSpace.Initialize();
@@ -333,8 +336,8 @@ namespace AcManager {
                     Toast.Show("Starter Changed to Replacement", "Enjoy Steam being included into CM");
                 }
             } else if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType) {
-                SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
-                Toast.Show("Starter Changed to Official", "Steam Starter is unavailable", () => {
+                SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.DefaultStarterType;
+                Toast.Show($"Starter Changed to {SettingsHolder.Drive.SelectedStarterType.DisplayName}", "Steam Starter is unavailable", () => {
                     ModernDialog.ShowMessage("To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
                             "Steam Starter is unavailable", MessageBoxButton.OK);
                 });
@@ -496,7 +499,7 @@ namespace AcManager {
                 RevertFileChanges();
 
                 await Task.Delay(1500);
-                CustomUriSchemeHelper.EnsureRegistered();
+                CustomUriSchemeHelper.Initialize();
 
                 await Task.Delay(5000);
                 await Task.Run(() => {
@@ -538,7 +541,7 @@ namespace AcManager {
             }
 
             LocaleUpdater.Initialize(LocaleHelper.LoadedVersion);
-            LocaleUpdater.Instance.Updated += LocaleUpdater_Updated;
+            LocaleUpdater.Instance.Updated += OnLocaleUpdated;
         }
 
         private void OnDataUpdated(object sender, EventArgs e) {
@@ -552,7 +555,7 @@ namespace AcManager {
                     });
         }
 
-        private void LocaleUpdater_Updated(object sender, EventArgs e) {
+        private void OnLocaleUpdated(object sender, EventArgs e) {
             if (string.Equals(CultureInfo.CurrentUICulture.Name, SettingsHolder.Locale.LocaleName, StringComparison.OrdinalIgnoreCase)) {
                 Toast.Show(AppStrings.App_LocaleUpdated, AppStrings.App_LocaleUpdated_Details, WindowsHelper.RestartCurrentApplication);
             }
@@ -560,13 +563,7 @@ namespace AcManager {
 
         private static void InitializePresets() {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsKunos, @"Custom Previews", @"Kunos");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsLight, @"Custom Previews", @"Light (for Light CM theme)");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsGt5Like, @"Custom Previews", @"GT5-like");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", ControlsStrings.AssistsPreset_Gamer);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", ControlsStrings.AssistsPreset_Intermediate);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", ControlsStrings.AssistsPreset_Pro);
+            DefaultPresets.Initialize();
             TrackStatesHelper.Initialize();
         }
 

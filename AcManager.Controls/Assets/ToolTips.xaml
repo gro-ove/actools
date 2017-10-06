@@ -10,15 +10,17 @@
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:CarObject}">
+  <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:CarObject}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <u:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>
   </ToolTip>
 
-  <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}">
+  <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}" x:Shared="False">
     <c:PropertiesGrid Columns="1" Width="240" LabelWidth="80">
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="None" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding Name}" Placeholder="None" />
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="None" />
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="None" />
       <mui:Switch Value="{Binding SkinNumber}" c:PropertiesGrid.Label="Number:">
@@ -28,7 +30,7 @@
     </c:PropertiesGrid>
   </ToolTip>
 
-  <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:TrackObjectBase}">
+  <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:TrackObjectBase}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <TextBlock Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
       <u:TrackBlock ShowPreview="False" Track="{Binding}" Width="480" MaxHeight="320" />

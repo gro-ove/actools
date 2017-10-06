@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel;
-using System.IO;
-using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.PaintShop {
     public class ComplexCarPaint : CarPaint {
-        public TextureFileName MapsTexture { get; }
+        public PaintShopDestination MapsTexture { get; }
 
         [CanBeNull]
         public PaintShopSource MapsMask { get; }
@@ -17,7 +15,7 @@ namespace AcManager.PaintShop {
 
         public bool FixGloss { get; internal set; }
 
-        public ComplexCarPaint([Localizable(false)] TextureFileName mapsTexture, [NotNull] PaintShopSource mapsSource, [CanBeNull] PaintShopSource mapsMask) {
+        public ComplexCarPaint([Localizable(false)] PaintShopDestination mapsTexture, [NotNull] PaintShopSource mapsSource, [CanBeNull] PaintShopSource mapsMask) {
             MapsTexture = mapsTexture;
             MapsMask = mapsMask;
             MapsDefaultTexture = mapsSource;
@@ -84,10 +82,13 @@ namespace AcManager.PaintShop {
         protected override void Initialize() {
             base.Initialize();
             MapAspect = RegisterAspect(MapsTexture,
-                    (name, renderer) => renderer.OverrideTextureMaps(name.FileName,
-                            Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture, MapsMask),
-                    (location, name, renderer) => renderer.SaveTextureMapsAsync(Path.Combine(location, name.FileName), name.PreferredFormat,
-                            Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture, MapsMask),
+                    name => new PaintShopOverrideMaps {
+                        Reflection = new ValueAdjustment(0f, Reflection),
+                        Gloss = FixGloss ? ValueAdjustment.One : new ValueAdjustment(0f, Gloss),
+                        Specular = new ValueAdjustment(0f, Specular),
+                        Source = MapsDefaultTexture,
+                        Mask = MapsMask
+                    },
                     _complexMode)
                     .Subscribe(MapsDefaultTexture, MapsMask);
         }

@@ -30,7 +30,6 @@ namespace AcManager.PaintShop {
 
         public void SetRenderer(IPaintShopRenderer renderer) {
             Initialize();
-
             Renderer = renderer;
             Update();
         }
@@ -112,8 +111,10 @@ namespace AcManager.PaintShop {
 
         private readonly List<string> _affectedTextures = new List<string>(5);
 
-        protected void AddAffectedTexture(string textureName) {
-            _affectedTextures.Add(textureName);
+        protected void AddAffectedTexture(PaintShopDestination destination) {
+            if (destination.OutputMask == null) {
+                _affectedTextures.Add(destination.TextureName);
+            }
         }
 
         [Pure]
@@ -231,15 +232,43 @@ namespace AcManager.PaintShop {
             }
         }
 
-        protected PaintableItemAspect RegisterAspect([NotNull] TextureFileName textureName,
-                [NotNull] Action<TextureFileName, IPaintShopRenderer> apply, [NotNull] Func<string, TextureFileName, IPaintShopRenderer, Task> save,
+        protected PaintableItemAspect RegisterAspect([NotNull] PaintShopDestination destination,
+                [NotNull] Action<PaintShopDestination, IPaintShopRenderer> apply, [NotNull] Func<string, PaintShopDestination, IPaintShopRenderer, Task> save,
                 bool isEnabled = true) {
-            AddAffectedTexture(textureName.FileName);
+            AddAffectedTexture(destination);
+            var created = new PaintableItemAspect(destination, apply, save, this) { IsEnabled = isEnabled };
+            _aspects.Add(created);
+            return created;
+        }
 
-            var created = new PaintableItemAspect(textureName, apply, save, this) {
-                IsEnabled = isEnabled
-            };
+        protected PaintableItemAspect RegisterAspect([NotNull] PaintShopDestination destination,
+                [NotNull] Func<PaintShopDestination, PaintShopOverrideBase> getOverride,
+                bool isEnabled = true) {
+            AddAffectedTexture(destination);
+            var created = new PaintableItemAspect(destination,
+                    (d, r) => {
+                        var o = getOverride(d);
+                        if (o == null) {
+                            r.Reset(d.TextureName);
+                        } else {
+                            if (o.Destination == null) {
+                                o.Destination = d;
+                            }
 
+                            r.Override(o);
+                        }
+                    },
+                    (l, d, r) => {
+                        var o = getOverride(d);
+                        if (o == null) return Task.Delay(0);
+
+                        if (o.Destination == null) {
+                            o.Destination = d;
+                        }
+
+                        return r.SaveAsync(l, o);
+                    },
+                    this) { IsEnabled = isEnabled };
             _aspects.Add(created);
             return created;
         }
@@ -282,21 +311,20 @@ namespace AcManager.PaintShop {
         #endregion
 
         public class PaintableItemAspect : NotifyPropertyChanged {
-            public string TextureName => _textureName.FileName;
+            public string TextureName => _destination.TextureName;
 
-            private readonly TextureFileName _textureName;
-            private readonly Action<TextureFileName, IPaintShopRenderer> _apply;
-            private readonly Func<string, TextureFileName, IPaintShopRenderer, Task> _save;
+            private readonly PaintShopDestination _destination;
+            private readonly Action<PaintShopDestination, IPaintShopRenderer> _apply;
+            private readonly Func<string, PaintShopDestination, IPaintShopRenderer, Task> _save;
             private readonly AspectsPaintableItem _parent;
 
             public override string ToString() {
-                return $"(PaintableItemAspect: {_textureName.FileName}, parent: {_parent.DisplayName})";
+                return $"(PaintableItemAspect: {_destination.TextureName}, parent: {_parent.DisplayName})";
             }
 
-            internal PaintableItemAspect(TextureFileName textureName,
-                    Action<TextureFileName, IPaintShopRenderer> apply, Func<string, TextureFileName, IPaintShopRenderer, Task> save,
-                    AspectsPaintableItem parent) {
-                _textureName = textureName;
+            internal PaintableItemAspect(PaintShopDestination destination, Action<PaintShopDestination, IPaintShopRenderer> apply,
+                    Func<string, PaintShopDestination, IPaintShopRenderer, Task> save, AspectsPaintableItem parent) {
+                _destination = destination;
                 _apply = apply;
                 _save = save;
                 _parent = parent;
@@ -357,9 +385,9 @@ namespace AcManager.PaintShop {
                 IsDirty = false;
 
                 if (IsEnabled) {
-                    _apply.Invoke(_textureName, renderer);
+                    _apply.Invoke(_destination, renderer);
                 } else {
-                    renderer.OverrideTexture(_textureName.FileName, null);
+                    renderer.Reset(_destination.TextureName);
                 }
 
                 return true;
@@ -373,12 +401,12 @@ namespace AcManager.PaintShop {
                     IsDirty = true;
                 }
 
-                renderer.OverrideTexture(_textureName.FileName, null);
+                renderer.Reset(_destination.TextureName);
                 return true;
             }
 
             internal Task SaveAsync(string location, IPaintShopRenderer renderer) {
-                return IsEnabled ? _save.Invoke(location, _textureName, renderer) : Task.Delay(0);
+                return IsEnabled ? _save.Invoke(location, _destination, renderer) : Task.Delay(0);
             }
         }
     }

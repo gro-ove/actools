@@ -87,11 +87,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
     public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticePT>, IKn5RenderableObject {
         public Kn5Node OriginalNode { get; }
-
         public Matrix ModelMatrixInverted { get; set; }
 
         public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) { }
-
         public void SetDebugMode(IDeviceContextHolder holder, bool enabled) { }
 
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
@@ -130,11 +128,33 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private ShaderResourceView _txNormalView, _txAlphaView;
         private bool _txAlphaSet;
 
+        private static bool IsClockwise(Vector2 a, Vector2 b, Vector2 c){
+            return (b.X - a.X) * (b.Y + a.Y) +
+                    (c.X - b.X) * (c.Y + b.Y) +
+                    (a.X - c.X) * (a.Y + c.Y) > 0f;
+        }
+
+        private static void FixClockwiseness(InputLayouts.VerticePNTG[] v, ref ushort a, ref ushort b, ref ushort c) {
+            if (IsClockwise(v[a].Tex, v[b].Tex, v[c].Tex)) {
+                var s = c;
+                c = b;
+                b = s;
+            }
+        }
+
+        private static void FixClockwiseness(TrianglesRenderableObject<InputLayouts.VerticePNTG> obj) {
+            for (var i = 2; i < obj.IndicesCount; i += 3) {
+                FixClockwiseness(obj.Vertices, ref obj.Indices[i - 2], ref obj.Indices[i - 1], ref obj.Indices[i]);
+            }
+        }
+
+        // TODO: Split to separate objects? Or not?
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 if (_pntgObject == null) {
                     _pntgObject = new TrianglesRenderableObject<InputLayouts.VerticePNTG>("",
-                            InputLayouts.VerticePNTG.Convert(OriginalNode.Vertices), Indices);
+                            InputLayouts.VerticePNTG.Convert(OriginalNode.Vertices), OriginalNode.Indices.Copy());
+                    FixClockwiseness(_pntgObject);
                     _pntgObject.Draw(contextHolder, camera, SpecialRenderMode.InitializeOnly);
 
                     _txNormal = contextHolder.Get<INormalsNormalTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
@@ -167,9 +187,19 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 base.DrawOverride(contextHolder, camera, mode);
 
                 _material.SetMatrices(ParentMatrix, camera);
-                _material.Draw(contextHolder, Indices.Length, mode);
+
+                if (SeveralRasterizerStates != null) {
+                    for (var i = 0; i < SeveralRasterizerStates.Length; i++) {
+                        contextHolder.DeviceContext.Rasterizer.State = SeveralRasterizerStates[i];
+                        _material.Draw(contextHolder, Indices.Length, mode);
+                    }
+                } else {
+                    _material.Draw(contextHolder, Indices.Length, mode);
+                }
             }
         }
+
+        public RasterizerState[] SeveralRasterizerStates;
 
         public override BaseRenderableObject Clone() {
             throw new NotSupportedException();
