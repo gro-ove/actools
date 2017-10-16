@@ -74,10 +74,6 @@ float3 LinearToGamma(float3 input) {
 	return pow(max(input, 0.0f), 1.0f / 2.2f);
 }
 
-float rand(float2 co) {
-	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * (43758.5453));
-}
-
 float4 ps_DownsampleColorCoC(PS_IN pin) : SV_Target {
 	float3 textureSample = InputTexture.SampleLevel(samLinear, pin.Tex, 0).rgb;
 	float4 depth = InputTextureDepth.GatherRed(samPoint, pin.Tex);
@@ -173,7 +169,7 @@ float4 ps_ResolveBokeh(PS_IN pin) : SV_Target {
     float4 downsampledColor = InputTextureDownscaledColor.SampleLevel(samLinear, pin.Tex, 0);
 
     float coc = downsampledColor.a;
-    
+
     float3 farColor = farPlaneColor.rgb / max(farPlaneColor.a, 0.0001f);
     float3 nearColor = nearPlaneColor.rgb / max(nearPlaneColor.a, 0.0001f);
 
@@ -183,18 +179,18 @@ float4 ps_ResolveBokeh(PS_IN pin) : SV_Target {
     downsampledColor.rgb = float3(0.0f, 1.0f, 0.0f);
     origColor.rgb = float3(1.0f, 1.0f, 1.0f);
 #endif
-    
+
     // we must take into account the fact that we avoided drawing sprites of size 1 (optimization), only bigger - both for near and far
     float3 blendedFarFocus = lerp(downsampledColor.rgb, farColor, saturate(coc - 2.0f));
-    
+
     // this one is hack to smoothen the transition - we blend between low res and high res in < 1 half res pixel transition zone
     blendedFarFocus = lerp(origColor.rgb, blendedFarFocus, saturate(0.5f * coc-1.0f));
-    
-    // we have 2 factors: 
+
+    // we have 2 factors:
     // 1. one is scene CoC - if it is supposed to be totally blurry, but feature was thin,
     // we will have an artifact and cannot do anything about it :( as we do not know fragments behind contributing to it
-    // 2. second one is accumulated, scattered bokeh intensity. Note "magic" number of 8.0f - to have it proper, I would have to 
-    // calculate true coverage per mip of bokeh texture - "normalization factor" - or the texture itself should be float/HDR normalized to impulse response. 
+    // 2. second one is accumulated, scattered bokeh intensity. Note "magic" number of 8.0f - to have it proper, I would have to
+    // calculate true coverage per mip of bokeh texture - "normalization factor" - or the texture itself should be float/HDR normalized to impulse response.
     // For the demo purpose I hardcoded some value.
     float3 finalColor = lerp(blendedFarFocus, nearColor, saturate(saturate(-coc - 1.0f) + nearPlaneColor.aaa * 8.0f));
 

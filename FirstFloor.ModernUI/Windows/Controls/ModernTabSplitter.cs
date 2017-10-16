@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 

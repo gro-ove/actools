@@ -43,8 +43,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(new Kn5AmbientShadowMaterialDescription(_filename));
-            _material.Initialize(contextHolder);
-
+            _material.EnsureInitialized(contextHolder);
             base.Initialize(contextHolder);
         }
 

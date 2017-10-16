@@ -91,7 +91,7 @@ float4 ps_AddShadow(PS_IN pin) : SV_Target {
 	return (float4)(1.0 - opacity * gShadowMap.SampleLevel(samLinear, uv.xz, 0.0).x);
 }
 
-technique11 AddShadow {
+technique10 AddShadow {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
@@ -148,7 +148,7 @@ float4 ps_AddShadowBlur(PS_IN pin) : SV_Target {
 	return (float4)saturate(1.0 - opacity * shadowAvg);
 }
 
-technique11 AddShadowBlur {
+technique10 AddShadowBlur {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);

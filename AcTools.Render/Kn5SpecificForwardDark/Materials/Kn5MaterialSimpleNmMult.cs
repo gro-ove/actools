@@ -11,7 +11,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public Kn5MaterialSimpleNmMult([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectDarkMaterial.NmUvMultMaterial {
                 DiffuseMultiplier = Kn5Material.GetPropertyValueAByName("diffuseMult"),
                 NormalMultiplier = Kn5Material.GetPropertyValueAByName("normalMult")

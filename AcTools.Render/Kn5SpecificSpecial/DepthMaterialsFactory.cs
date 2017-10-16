@@ -31,7 +31,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public class Kn5MaterialDepth : IRenderableMaterial {
         private EffectSpecialShadow _effect;
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSpecialShadow>();
         }
 
@@ -119,8 +120,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             base.Initialize(contextHolder);
 
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
-            _material.Initialize(contextHolder);
-
+            _material.EnsureInitialized(contextHolder);
             _materialDepth = _material as Kn5MaterialDepth;
         }
 

@@ -25,7 +25,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             base.Initialize(contextHolder);
 
             _material = contextHolder.GetMaterial(BasicMaterials.SkyKey);
-            _material.Initialize(contextHolder);
+            _material.EnsureInitialized(contextHolder);
         }
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {

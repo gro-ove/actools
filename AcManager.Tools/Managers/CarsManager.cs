@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;

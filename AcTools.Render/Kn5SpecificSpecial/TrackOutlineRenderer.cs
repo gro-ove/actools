@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private string _currentMapFilename;
 
         public string CurrentMapFilename {
-            get { return _currentMapFilename; }
+            get => _currentMapFilename;
             set {
                 if (Equals(value, _currentMapFilename)) return;
                 _currentMapFilename = value;
@@ -61,7 +61,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private bool _useAiLanes = true;
 
         public bool UseAiLanes {
-            get { return _useAiLanes && IsAiLanesModeAvailable; }
+            get => _useAiLanes && IsAiLanesModeAvailable;
             set {
                 if (Equals(value, UseAiLanes)) return;
                 _useAiLanes = value;
@@ -77,7 +77,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private bool _useFxaa = true;
 
         public bool UseFxaa {
-            get { return _useFxaa; }
+            get => _useFxaa;
             set {
                 if (Equals(value, _useFxaa)) return;
                 _useFxaa = value;
@@ -89,7 +89,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _rotation;
 
         public float Rotation {
-            get { return _rotation; }
+            get => _rotation;
             set {
                 if (Equals(value, _rotation)) return;
                 _rotation = value;
@@ -101,7 +101,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _extraWidth = 0.5f;
 
         public float ExtraWidth {
-            get { return _extraWidth; }
+            get => _extraWidth;
             set {
                 if (Equals(value, _extraWidth)) return;
                 _extraWidth = value;
@@ -113,7 +113,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _offsetX;
 
         public float OffsetX {
-            get { return _offsetX; }
+            get => _offsetX;
             set {
                 if (Equals(value, _offsetX)) return;
                 _offsetX = value;
@@ -125,7 +125,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _offsetY;
 
         public float OffsetY {
-            get { return _offsetY; }
+            get => _offsetY;
             set {
                 if (Equals(value, _offsetY)) return;
                 _offsetY = value;
@@ -137,7 +137,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _scale = 0.82f;
 
         public float Scale {
-            get { return _scale; }
+            get => _scale;
             set {
                 if (Equals(value, _scale)) return;
 
@@ -153,7 +153,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _shadowDistance = 1f;
 
         public float ShadowDistance {
-            get { return _shadowDistance; }
+            get => _shadowDistance;
             set {
                 if (Equals(value, _shadowDistance)) return;
                 _shadowDistance = value;
@@ -165,7 +165,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _shadowOpacity = 0.75f;
 
         public float ShadowOpacity {
-            get { return _shadowOpacity; }
+            get => _shadowOpacity;
             set {
                 if (Equals(value, _shadowOpacity)) return;
                 _shadowOpacity = value;
@@ -177,7 +177,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _dimmedOpacity = 0.64f;
 
         public float DimmedOpacity {
-            get { return _dimmedOpacity; }
+            get => _dimmedOpacity;
             set {
                 if (Equals(value, _dimmedOpacity)) return;
                 _dimmedOpacity = value;
@@ -189,7 +189,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private float _dimmedWidthMultipler = 1f;
 
         public float DimmedWidthMultipler {
-            get { return _dimmedWidthMultipler; }
+            get => _dimmedWidthMultipler;
             set {
                 if (Equals(value, _dimmedWidthMultipler)) return;
                 _dimmedWidthMultipler = value;
@@ -230,7 +230,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             private bool _aiLaneMode;
 
             public bool AiLaneMode {
-                get { return _aiLaneMode; }
+                get => _aiLaneMode;
                 set {
                     if (Equals(_aiLaneMode, value)) return;
                     _aiLaneMode = value;
@@ -292,7 +292,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 private EffectSpecialTrackOutline _effect;
                 internal static Matrix Matrix;
 
-                public void Initialize(IDeviceContextHolder contextHolder) {
+                public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+                    if (_effect != null) return;
                     _effect = contextHolder.GetEffect<EffectSpecialTrackOutline>();
                 }
 
@@ -391,7 +392,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             private float _aiLaneWidth = 15f;
 
             public float AiLaneWidth {
-                get { return _aiLaneWidth; }
+                get => _aiLaneWidth;
                 set {
                     if (Equals(value, _aiLaneWidth)) return;
                     _aiLaneWidth = value;

@@ -92,11 +92,8 @@ namespace AcManager.CustomShowroom {
         };
 
         public static ToneMappingFn[] ToneMappings { get; } = EnumExtension.GetValues<ToneMappingFn>();
-
-        public static AoType[] AoTypes { get; } = DarkKn5ObjectRenderer.ProductionReadyAo;
-
+        public static AoType[] AoTypes { get; } = EnumExtension.GetValues<AoType>().Where(AoTypeExtension.IsProductionReady).ToArray();
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
-
         public static DarkLightType[] LightTypes { get; } = EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
                 ? EnumExtension.GetValues<DarkLightType>()
                 : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.Sphere, DarkLightType.Tube, DarkLightType.LtcTube).ToArray();
@@ -178,6 +175,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("SsaoOpacity")]
             public virtual float AoOpacity { get; set; } = 0.3f;
+            public virtual float AoRadius { get; set; } = 1f;
 
             public virtual bool UseDof { get; set; } = true;
             public virtual float DofFocusPlane { get; set; } = 1.6f;
@@ -359,6 +357,7 @@ namespace AcManager.CustomShowroom {
             obj.PcssSceneScale = Renderer.PcssSceneScale;
             obj.PcssLightScale = Renderer.PcssLightScale;
             obj.AoOpacity = Renderer.AoOpacity;
+            obj.AoRadius = Renderer.AoRadius;
 
             obj.UseDof = Renderer.UseDof;
             obj.DofFocusPlane = Renderer.DofFocusPlane;
@@ -629,6 +628,7 @@ namespace AcManager.CustomShowroom {
             Renderer.PcssSceneScale = o.PcssSceneScale;
             Renderer.PcssLightScale = o.PcssLightScale;
             Renderer.AoOpacity = o.AoOpacity;
+            Renderer.AoRadius = o.AoRadius;
 
             Renderer.UseDof = o.UseDof;
             Renderer.DofFocusPlane = o.DofFocusPlane;
@@ -827,6 +827,7 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.PcssLightScale):
                 case nameof(Renderer.PcssSceneScale):
                 case nameof(Renderer.AoOpacity):
+                case nameof(Renderer.AoRadius):
                 case nameof(Renderer.UseDof):
                 case nameof(Renderer.DofFocusPlane):
                 case nameof(Renderer.DofScale):

@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AcManager.CustomShowroom;
 using AcManager.PaintShop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;

@@ -149,13 +149,13 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 		1.0 - 2.0 * normalMapSample.y,
 		2.0 * normalMapSample.z - 1.0);
 	float3x3 m;
-
     if (HAS_FLAG(NM_OBJECT_SPACE)){
         n = float3(n.x, n.z, n.y);
         m = (float3x3)gWorldInvTranspose;
     } else {
-        float3 N = unitNormalW;
-        float3 T = normalize(tangentW - dot(tangentW, N)*N);
+	    float3 t = normalize(tangentW);
+        float3 N = normalize(unitNormalW);
+        float3 T = normalize(t - dot(t, N)*N);
         float3 B = normalize(cross(N, T));
         m = float3x3(T, B, N);
 	}

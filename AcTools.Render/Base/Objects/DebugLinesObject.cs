@@ -35,7 +35,7 @@ namespace AcTools.Render.Base.Objects {
             base.Initialize(contextHolder);
 
             _material = contextHolder.GetMaterial(BasicMaterials.DebugLinesKey);
-            _material.Initialize(contextHolder);
+            _material.EnsureInitialized(contextHolder);
         }
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
@@ -57,8 +57,7 @@ namespace AcTools.Render.Base.Objects {
             var planeN = Vector3.Normalize(Vector3.Cross(segmentN, planeD));
             var plane = new Plane(a, planeN);
 
-            float distance;
-            if (!Ray.Intersects(ray, plane, out distance)) return false;
+            if (!Ray.Intersects(ray, plane, out var distance)) return false;
 
             var point = ray.Position + ray.Direction * distance;
             if (Vector3.Dot(Vector3.Normalize(point - b), -segmentN) < 0) return false;
@@ -86,10 +85,8 @@ namespace AcTools.Render.Base.Objects {
 
         public bool DrawHighlighted(Ray pickingRay, IDeviceContextHolder contextHolder, ICamera camera) {
             var bb = BoundingBox;
-
-            float distance;
             var intersects = bb.HasValue &&
-                    Ray.Intersects(pickingRay, bb.Value, out distance) &&
+                    Ray.Intersects(pickingRay, bb.Value, out _) &&
                     DoesIntersect(pickingRay, 0.01f / bb.Value.GetCenter().GetOnScreenSize(camera));
 
             Draw(contextHolder, camera, intersects ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);

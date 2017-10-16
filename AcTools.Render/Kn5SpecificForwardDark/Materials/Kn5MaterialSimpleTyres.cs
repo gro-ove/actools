@@ -21,8 +21,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechGPass_Tyres;
         }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = GetTexture("txNormal", contextHolder);
+            AcToolsLogging.Write($"{Description.Material?.Name} [{Description.SpecialKey}]: {_txNormal} ({_txNormal.Exists}, {GetHashCode()})");
+
             _txDiffuseBlur = GetTexture("txBlur", contextHolder);
             _txNormalBlur = GetTexture("txNormalBlur", contextHolder);
 

@@ -117,11 +117,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         internal Kn5MaterialUv() {}
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSpecialUv>();
         }
 
-        public void Refresh(IDeviceContextHolder contextHolder) { }
+        public void Refresh(IDeviceContextHolder contextHolder) {}
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;

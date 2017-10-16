@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
@@ -42,14 +43,17 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Save() {
-            if (HasData || string.IsNullOrEmpty(Name)) {
-                base.Save();
-            } else {
-                var json = new JObject();
-                SaveData(json);
+            var json = new JObject();
+            SaveData(json);
 
-                Changed = false;
-                File.WriteAllText(JsonFilename, json.ToString());
+            Changed = false;
+            using (CarsManager.Instance.IgnoreChanges()) {
+                File.WriteAllText(JsonFilename, JsonConvert.SerializeObject(json, Formatting.Indented, new JsonSerializerSettings {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    Culture = CultureInfo.InvariantCulture
+                }));
             }
         }
 

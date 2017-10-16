@@ -21,7 +21,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return !Equals(value, 0.0f) && !Equals(value, 2.0f);
         }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
             _txMaps = GetTexture("txMaps", contextHolder);
             _txDetails = GetTexture("txDetail", contextHolder);

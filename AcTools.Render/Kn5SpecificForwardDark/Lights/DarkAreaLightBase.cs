@@ -112,7 +112,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         internal VisibleLightMaterial() { }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSpecialAreaLights>();
         }
 
@@ -157,7 +158,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
-            _material.Initialize(contextHolder);
+            _material.EnsureInitialized(contextHolder);
         }
 
         public void SetColor(Vector4 color) {

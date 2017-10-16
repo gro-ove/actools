@@ -13,7 +13,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         internal Kn5MaterialSimpleMirror() : base(new Kn5MaterialDescription(new Kn5Material())) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectDarkMaterial.StandartMaterial {
                 Ambient = 0,
                 Diffuse = 0,

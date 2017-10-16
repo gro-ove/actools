@@ -11,7 +11,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public Kn5MaterialSimpleReflective([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 1.0f)) {
                 Flags |= EffectSimpleMaterial.IsAdditive;
             }

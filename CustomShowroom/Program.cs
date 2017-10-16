@@ -186,26 +186,36 @@ namespace CustomShowroom {
                     renderer.UseSprite = true;
                     renderer.VisibleUi = true;
 
-                    // renderer.FlatMirror = true;
-                    renderer.UseMsaa = options.UseMsaa;
-                    renderer.UseFxaa = options.UseFxaa;
-                    renderer.UseSsaa = options.UseSsaa;
+                    /*renderer.UseDof = true;
+                    renderer.UseAccumulationDof = true;
+                    renderer.AccumulationDofApertureSize = 0f;
+                    renderer.AccumulationDofBokeh = false;
+                    renderer.AccumulationDofIterations = 100;*/
 
 #if DEBUG
-                    renderer.AoOpacity = 0.5f;
+                    renderer.AoOpacity = 0.9f;
+                    renderer.AoDebug = true;
+                    renderer.UseAo = true;
+                    renderer.AoType = AoType.Hbao;
 
                     /*renderer.BackgroundColor = Color.Black;
                     renderer.LightBrightness = 0.2f;
                     renderer.AmbientBrightness = 0.2f;
                     /*renderer.BackgroundBrightness = 0.02f;
                     renderer.FlatMirror = true;*/
-                    renderer.FlatMirrorReflectedLight = true;
+                    /*renderer.FlatMirrorReflectedLight = true;
                     renderer.TryToGuessCarLights = true;
 
                     renderer.FlatMirrorBlurred = true;
-                    renderer.FlatMirror = true;
+                    renderer.FlatMirror = true;*/
 
                     //renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
+#else
+
+        // renderer.FlatMirror = true;
+                    renderer.UseMsaa = options.UseMsaa;
+                    renderer.UseFxaa = options.UseFxaa;
+                    renderer.UseSsaa = options.UseSsaa;
 #endif
 
                     renderer.MagickOverride = options.MagickOverride;

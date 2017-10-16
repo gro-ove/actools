@@ -36,13 +36,18 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);
         }
 
-        public virtual void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (Effect != null) return;
             Effect = contextHolder.GetEffect<EffectSimpleMaterial>();
+            Initialize(contextHolder);
         }
+
+        protected virtual void Initialize(IDeviceContextHolder contextHolder) {}
 
         public void Refresh(IDeviceContextHolder contextHolder) {
             // Because Dispose() is empty, we can just re-initialize shader
-            Initialize(contextHolder);
+            Effect = null;
+            EnsureInitialized(contextHolder);
         }
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {

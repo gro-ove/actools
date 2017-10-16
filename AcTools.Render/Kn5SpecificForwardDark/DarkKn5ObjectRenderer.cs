@@ -109,17 +109,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 return;
             }
 
-            Format format;
-            switch (AoType) {
-                case AoType.Ssao:
-                case AoType.SsaoAlt:
-                    format = Format.R8_UNorm;
-                    break;
-                default:
-                    format = Format.R8G8B8A8_UNorm;
-                    break;
-            }
-
+            var format = AoType.GetFormat();
             _aoHelper = null;
             if (_aoBuffer == null || _aoBuffer.Format != format) {
                 DisposeHelper.Dispose(ref _aoBuffer);
@@ -131,22 +121,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        [NotNull]
-        private AoHelperBase GetAoHelper() {
-            switch (AoType) {
-                case AoType.Ssao:
-                    return DeviceContextHolder.GetHelper<SsaoHelper>();
-                case AoType.SsaoAlt:
-                    return DeviceContextHolder.GetHelper<SsaoAltHelper>();
-                case AoType.Hbao:
-                    return DeviceContextHolder.GetHelper<HbaoHelper>();
-                case AoType.Assao:
-                    return DeviceContextHolder.GetHelper<AssaoHelper>();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         private void ResizeAoBuffer() {
             if (DeviceContextHolder == null) return;
             _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
@@ -155,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private TargetResourceTexture _gBufferNormals, _gBufferDepthAlt;
         private TargetResourceDepthTexture _gBufferDepthD;
 
-        protected virtual bool GMode() {
+        protected bool GMode() {
             return UseSslr || UseAo || UseDof || UseCorrectAmbientShadows;
         }
 
@@ -965,19 +939,16 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
 
             if (UseAo || UseCorrectAmbientShadows) {
-                var aoHelper = _aoHelper ?? (_aoHelper = GetAoHelper());
-
-                /*if (AoType == AoType.Hbao) {
-                    UseSslr = true;
-                    SetInnerBuffer(_sslrBufferScene);
-                    DrawPreparedSceneToBuffer();
-                    (aoHelper as HbaoHelper)?.Prepare(DeviceContextHolder, _sslrBufferScene.View);
-                    SetInnerBuffer(null);
-                }*/
+                var aoHelper = _aoHelper ?? (_aoHelper = AoType.GetHelper(DeviceContextHolder));
 
                 if (UseAo) {
+                    var aoRadius = AoRadius;
+                    if (AoType.IsScreenSpace()) {
+                        aoRadius *= (float)(ShotInProcess ? ShotResolutionMultiplier : ResolutionMultiplier);
+                    }
+
                     aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView,
-                            AoOpacity);
+                            AoOpacity, aoRadius, UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep);
                     aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
                 } else {
                     DeviceContext.ClearRenderTargetView(_aoBuffer.TargetView, new Color4(1f, 1f, 1f, 1f));
@@ -1011,11 +982,15 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
                 var effect = Effect;
                 effect.FxAoMap.SetResource(_aoBuffer.View);
-                Effect.FxUseAo.Set(true);
+                effect.FxUseAo.Set(true);
                 effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
                 if (AoDebug) {
-                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
+                    if (_aoBuffer?.Format == Format.R8_UNorm) {
+                        DeviceContextHolder.GetHelper<CopyHelper>().DrawFromRed(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
+                    } else {
+                        DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
+                    }
                     return;
                 }
             }
@@ -1033,6 +1008,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         }
 
         private bool _realTimeAccumulationMode;
+        private bool _realTimeAccumulationFirstStep;
         private int _realTimeAccumulationSize;
 
         public override int AccumulatedFrame => _realTimeAccumulationSize;
@@ -1080,10 +1056,10 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
 
             var accumulationDofBokeh = AccumulationDofBokeh;
-            var firstStep = _realTimeAccumulationSize == 0;
+            _realTimeAccumulationFirstStep = _realTimeAccumulationSize == 0;
             _realTimeAccumulationSize++;
 
-            if (firstStep) {
+            if (_realTimeAccumulationFirstStep) {
                 DeviceContext.ClearRenderTargetView(_accumulationTexture.TargetView, default(Color4));
                 DrawSceneToBuffer();
             } else {
@@ -1096,7 +1072,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             if (bufferF == null) return;
 
             bool? originalFxaa = null;
-            if (firstStep) {
+            if (_realTimeAccumulationFirstStep) {
                 originalFxaa = UseFxaa;
                 UseFxaa = true;
                 IsDirty = false;
@@ -1106,7 +1082,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 var result = AaPass(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
                 var copy = DeviceContextHolder.GetHelper<CopyHelper>();
 
-                if (firstStep) {
+                if (_realTimeAccumulationFirstStep) {
                     UseFxaa = originalFxaa ?? true;
                     IsDirty = false;
                     copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);
@@ -1134,7 +1110,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 var result = AaThenBloom(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
                 var copy = DeviceContextHolder.GetHelper<CopyHelper>();
 
-                if (firstStep) {
+                if (_realTimeAccumulationFirstStep) {
                     UseFxaa = originalFxaa ?? true;
                     IsDirty = false;
                     copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);

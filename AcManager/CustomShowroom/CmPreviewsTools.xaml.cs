@@ -435,6 +435,7 @@ namespace AcManager.CustomShowroom {
 
             private async Task<IReadOnlyList<UpdatePreviewError>> RunReady() {
                 _checksum = _options.GetChecksum();
+                Logging.Debug(_checksum);
 
                 _finished = false;
                 _i = _j = 0;

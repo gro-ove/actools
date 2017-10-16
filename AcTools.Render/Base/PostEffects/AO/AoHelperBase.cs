@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
@@ -17,11 +18,32 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _blurEffect = holder.GetEffect<EffectPpAoBlur>();
         }
 
-        public virtual void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
-                float aoPower) {
+        public void SetBlurEffectTextures(ShaderResourceView depth, ShaderResourceView normals) {
             _blurEffect.FxDepthMap.SetResource(depth);
             _blurEffect.FxNormalMap.SetResource(normals);
         }
+
+        private bool? _accumulationMode;
+        private float _randomSize;
+
+        public void SetRandomValues(DeviceContextHolder holder, EffectOnlyResourceVariable texture, EffectOnlyVector4Variable size, bool accumulationMode) {
+            if (_accumulationMode != accumulationMode) {
+                _accumulationMode = accumulationMode;
+
+                var randomSize = accumulationMode ? 16 : 4;
+                texture.SetResource(holder.GetRandomTexture(randomSize, randomSize));
+                _randomSize = randomSize;
+
+                if (!accumulationMode) {
+                    size.Set(new Vector4(holder.Width / _randomSize, holder.Height / _randomSize, 0f, 0f));
+                }
+            } else if (accumulationMode) {
+                size.Set(new Vector4(holder.Width / _randomSize, holder.Height / _randomSize, MathUtils.Random(0f, 1f), MathUtils.Random(0f, 1f)));
+            }
+        }
+
+        public abstract void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
+                float aoPower, float aoRadiusMultiplier, bool accumulationMode);
 
         public virtual void OnResize(DeviceContextHolder holder) {}
 

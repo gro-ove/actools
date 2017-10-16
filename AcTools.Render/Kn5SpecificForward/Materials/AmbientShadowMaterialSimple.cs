@@ -18,11 +18,11 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         private IRenderableTexture _txDiffuse;
 
         internal AmbientShadowMaterialSimple([NotNull] Kn5AmbientShadowMaterialDescription description) {
-            if (description == null) throw new ArgumentNullException(nameof(description));
-            _description = description;
+            _description = description ?? throw new ArgumentNullException(nameof(description));
         }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
             _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _description.Filename);
         }

@@ -10,7 +10,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public Kn5MaterialSimpleNm([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = GetTexture("txNormal", contextHolder);
             base.Initialize(contextHolder);
         }

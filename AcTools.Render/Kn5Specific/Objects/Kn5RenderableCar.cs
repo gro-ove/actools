@@ -283,8 +283,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _originalLocalMatrices = new Dictionary<string, Matrix>(3);
                 }
 
-                Matrix original;
-                if (!_originalLocalMatrices.TryGetValue(name, out original)) {
+                if (!_originalLocalMatrices.TryGetValue(name, out var original)) {
                     original = _originalLocalMatrices[name] = node.LocalMatrix;
                 }
 
@@ -300,8 +299,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _originalRelativeToModelMatrices = new Dictionary<string, Matrix>(3);
                 }
 
-                Matrix original;
-                if (!_originalRelativeToModelMatrices.TryGetValue(name, out original)) {
+                if (!_originalRelativeToModelMatrices.TryGetValue(name, out var original)) {
                     original = _originalRelativeToModelMatrices[name] = node.RelativeToModel;
                 }
 

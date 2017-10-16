@@ -1,28 +1,8 @@
-﻿using System.ComponentModel;
-using System.Drawing;
-using System;
+﻿using System.Drawing;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
-    public enum AoType {
-        [Description("SSAO")]
-        Ssao = 0,
-
-        [Description("SSAO (Alt.)")]
-        SsaoAlt = 1,
-
-        [Description("HBAO")]
-        Hbao = 2,
-
-        [Description("ASSAO")]
-        Assao = 3
-    }
-
     public partial class DarkKn5ObjectRenderer {
-        public static readonly AoType[] ProductionReadyAo = {
-            AoType.Ssao, AoType.SsaoAlt
-        };
-
         #region Colors, brightness
         private Color _lightColor = Color.FromArgb(200, 180, 180);
 
@@ -208,6 +188,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
+        private float _aoRadius = 1f;
+
+        public float AoRadius {
+            get => _aoRadius;
+            set {
+                if (Equals(value, _aoRadius)) return;
+                _aoRadius = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _useAo;
 
         public bool UseAo {
@@ -229,10 +221,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             get { return _aoType; }
             set {
 #if !DEBUG
-                if (Array.IndexOf(ProductionReadyAo, value) == -1) value = AoType.Ssao;
-#else
-                // Just to keep System namespace in usings
-                if (Array.IndexOf(ProductionReadyAo, value) == -2) value = AoType.Ssao;
+                if (!value.IsProductionReady()) value = AoType.Ssao;
 #endif
 
                 if (Equals(value, _aoType)) return;

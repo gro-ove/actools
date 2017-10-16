@@ -17,14 +17,14 @@
 	#define _DepthAnalysis true
 	#define _NormalAnalysis true
 	#define _DepthAnalysisFactor 1.0
-    
+
 // input resources
     cbuffer cbPerFrame : register(b0) {
 		float gWeights[WEIGHTS_SIZE];
 
 		float2 gSourcePixel;
 		float2 gNearFarValue;
-    }	
+    }
 
 // fn structs
     struct VS_IN {
@@ -62,11 +62,8 @@
 
 	float4 Blur(const float2 UV, const float2 dir){
 		float4 finalColor = gFirstStepMap.Sample(samLinear, UV) * gWeights[BLUR_RADIUS];
-
 		float lDepthC = _DepthAnalysis ? LinearizeDepth(GetDepth(UV)) : 0;
-
 		float3 normalC = GetNormal(UV);
-
 		float totalAdditionalWeight = gWeights[BLUR_RADIUS];
 
 		for (int i = 1; i <= BLUR_RADIUS; i++){
@@ -118,18 +115,18 @@
 		return Blur(pin.Tex, float2(0, 1));
     }
 
-	technique11 BlurH {
+	technique10 BlurH {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_BlurH()));
+			SetPixelShader(CompileShader(ps_4_0, ps_BlurH()));
 		}
 	}
 
-	technique11 BlurV {
+	technique10 BlurV {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_BlurV()));
+			SetPixelShader(CompileShader(ps_4_0, ps_BlurV()));
 		}
 	}

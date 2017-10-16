@@ -4,7 +4,6 @@ using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
-using AcTools.Render.Temporary;
 using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

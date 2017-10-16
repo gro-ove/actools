@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -284,7 +285,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             using (var stream = new MemoryStream()) {
                 progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
                 _renderer.Shot(size.Width, size.Height, downscale ? 0.5 : 1d, 1d, stream, true,
-                        progress.ToDouble("Rendering…").Subrange(0.2, 0.6), cancellation);
+                        progress.ToDouble("Rendering…").SubrangeDouble(0.2, 0.6), cancellation);
                 stream.Position = 0;
                 if (cancellation.IsCancellationRequested) return;
 
@@ -405,7 +406,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             dark.AoDebug = !dark.AoDebug;
                         }
                         if (args.Control && !args.Alt && args.Shift) {
-                            dark.AoType = dark.AoType.NextValue();
+                            dark.AoType = EnumExtension.GetValues<AoType>().Where(AoTypeExtension.IsProductionReady)
+                                                               .SkipWhile(x => !Equals(x, dark.AoType)).Skip(1).FirstOrDefault();
                         }
                         if (args.Control && args.Alt && !args.Shift) {
                             dark.AddMovingLight();

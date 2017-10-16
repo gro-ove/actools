@@ -12,7 +12,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public Kn5MaterialSimpleMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
             _txMaps = GetTexture("txMaps", contextHolder);
             _txDetails = GetTexture("txDetail", contextHolder);

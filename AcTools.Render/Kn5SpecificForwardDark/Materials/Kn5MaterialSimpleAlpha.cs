@@ -11,7 +11,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public Kn5MaterialSimpleAlpha([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectDarkMaterial.AlphaMaterial {
                 Alpha = Kn5Material.GetPropertyValueAByName("alpha")
             };

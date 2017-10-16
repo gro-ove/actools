@@ -127,8 +127,8 @@
     <Compile Include="Base\Utils\ColorGradingConverter.cs" />
     <Compile Include="Data\CarSuspensionModifiers.cs" />
     <Compile Include="Forward\ToneMappingFn.cs" />
-    <Compile Include="Base\PostEffects\AO\AssaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
+    <Compile Include="Kn5SpecificForwardDark\AoType.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkDof.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Lights.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.DebugMode.cs" />
@@ -344,11 +344,13 @@
     <Content Include="Shaders\Dark\DarkMaterial.WithoutLighting.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.GPass.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Kunos.2.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Kunos.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Area.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Placeholder.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.None.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Tesselation.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Unpack.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Reflection.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Simple.fx" />
@@ -363,7 +365,6 @@
     <Content Include="Shaders\Pp\PpDof.fx" />
     <Content Include="Shaders\Pp\PpDarkSslr.fx" />
     <Content Include="Shaders\Pp\PpDownsample.fx" />
-    <Content Include="Shaders\PpAo\PpAssao.fx" />
     <Content Include="Shaders\Pp\PpLensFlares.fx" />
     <Content Include="Shaders\Pp\PpOutline.fx" />
     <None Include="Shaders\Pp\PpSmaa.fx.off" />

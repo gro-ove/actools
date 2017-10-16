@@ -6,9 +6,7 @@ using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
-using AcManager.Pages.Windows;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools {

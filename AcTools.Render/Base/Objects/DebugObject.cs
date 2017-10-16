@@ -51,7 +51,7 @@ namespace AcTools.Render.Base.Objects {
             base.Initialize(contextHolder);
 
             _material = new Kn5MaterialSimpleGl();
-            _material.Initialize(contextHolder);
+            _material.EnsureInitialized(contextHolder);
         }
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {

@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.PaintShop;
-using AcManager.Tools.Data;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -244,11 +244,12 @@ namespace AcManager.CustomShowroom {
                         var jObj = new JObject();
                         var list = skinsItems.ToList();
 
+                        var listProgress = progress.Subrange(0.001, 0.8);
                         for (var i = 0; i < list.Count; i++) {
                             var item = list[i];
                             try {
                                 jObj[PaintShop.PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
-                                progress.Report(item.DisplayName, i, list.Count);
+                                listProgress.Report(item.DisplayName, i, list.Count);
                                 await item.SaveAsync(skin.Location, cancellation);
                                 if (cancellation.IsCancellationRequested) break;
                             } catch (NotImplementedException) { }
@@ -264,7 +265,7 @@ namespace AcManager.CustomShowroom {
                             if (carPaint != null && LiveryGenerator != null) {
                                 var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
                                 if (liveryStyle != null) {
-                                    progress.Report("Generating livery…", 0.99999);
+                                    progress.Report("Generating livery…", 0.9);
 
                                     var colors = new Dictionary<int, Color>(3);
                                     foreach (var item in skinsItems.Where(x => x.Enabled).OrderBy(x => x.LiveryPriority)) {
@@ -293,6 +294,11 @@ namespace AcManager.CustomShowroom {
                         }
 
                         File.WriteAllText(Path.Combine(skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
+
+                        if (!cancellation.IsCancellationRequested) {
+                            progress.Report("Generating preview…", 0.99999);
+                            await new ToUpdatePreview(Car, skin).Run();
+                        }
                     }
 
                     if (saveAsNew) {

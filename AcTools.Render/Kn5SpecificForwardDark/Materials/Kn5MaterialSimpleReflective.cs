@@ -27,7 +27,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return !Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 0.0f);
         }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
 #if REFLECTION_DEBUG && DEBUG
             if (_debugReflectionsMode) {
                 _debugReflections = contextHolder.GetEffect<EffectSpecialDebugReflections>();

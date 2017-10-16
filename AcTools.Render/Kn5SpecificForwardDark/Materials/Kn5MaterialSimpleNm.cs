@@ -12,7 +12,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public Kn5MaterialSimpleNm([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = GetTexture("txNormal", contextHolder);
             if (Kn5Material.GetPropertyValueAByName("nmObjectSpace") != 0) {
                 Flags |= EffectDarkMaterial.NmObjectSpace;

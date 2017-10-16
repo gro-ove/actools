@@ -11,6 +11,7 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {
@@ -38,12 +39,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);
         }
 
-        public virtual void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (Effect != null) return;
             Effect = contextHolder.GetEffect<EffectDarkMaterial>();
+            Initialize(contextHolder);
         }
 
+        protected virtual void Initialize(IDeviceContextHolder contextHolder) {}
+
         protected virtual void RefreshOverride(IDeviceContextHolder contextHolder) {
-            Initialize(contextHolder);
+            Effect = null;
+            EnsureInitialized(contextHolder);
         }
 
         public void Refresh(IDeviceContextHolder contextHolder) {

@@ -113,7 +113,7 @@ namespace AcManager.CustomShowroom {
 
         protected SaveableData Save() {
             var obj = ToSaveableData();
-            obj.Checksum = obj.ToPreviewsOptions(false).GetChecksum();
+            // obj.Checksum = obj.ToPreviewsOptions(false).GetChecksum();
             return obj;
         }
 
@@ -193,7 +193,7 @@ namespace AcManager.CustomShowroom {
             return new SaveableData().ToPreviewsOptions(true);
         }
 
-        protected new class SaveableData : DarkRendererSettings.SaveableData {
+        protected new sealed class SaveableData : DarkRendererSettings.SaveableData {
             public override Color AmbientDownColor { get; set; } = Color.FromRgb(0x51, 0x5E, 0x6D);
             public override Color AmbientUpColor { get; set; } = Color.FromRgb(0xC6, 0xE6, 0xFF);
             public override Color BackgroundColor { get; set; } = Colors.White;
@@ -203,8 +203,17 @@ namespace AcManager.CustomShowroom {
             public override int SsaaMode { get; set; } = 4;
             public override int ShadowMapSize { get; set; } = 1024;
 
-            public override string ShowroomId { get; set; } = "at_previews";
+            public override string ShowroomId { get; set; }
             public override string ColorGrading { get; set; }
+
+            [JsonConstructor]
+            public SaveableData(string showroomId) {
+                ShowroomId = showroomId;
+            }
+
+            public SaveableData() {
+                ShowroomId = "at_previews";
+            }
 
             public override ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
             public override AoType AoType { get; set; } = AoType.Ssao;
@@ -262,7 +271,7 @@ namespace AcManager.CustomShowroom {
             public override float CameraFov { get; set; } = 30f;
 
             public float AlignCameraHorizontallyOffset, AlignCameraVerticallyOffset, SteerDeg;
-            public string Checksum { get; set; }
+            // public string Checksum { get; set; }
 
             /// <summary>
             /// Convert to DarkPreviewsOptions.
@@ -319,6 +328,7 @@ namespace AcManager.CustomShowroom {
                     PcssLightScale = PcssLightScale,
                     BloomRadiusMultiplier = BloomRadiusMultiplier,
                     AoOpacity = AoOpacity,
+                    AoRadius = AoRadius,
 
                     UseDof = UseDof,
                     DofFocusPlane = DofFocusPlane,
@@ -362,7 +372,7 @@ namespace AcManager.CustomShowroom {
                     WireframeMode = false,
                     SerializedLights = ExtraLights != null ? new JArray(ExtraLights.OfType<object>()).ToString() : null,
 
-                    FixedChecksum = keepChecksum ? Checksum : null
+                    // FixedChecksum = keepChecksum ? Checksum : null
                 };
             }
         }

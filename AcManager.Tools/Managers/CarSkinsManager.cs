@@ -118,7 +118,10 @@ namespace AcManager.Tools.Managers {
             using (IgnoreChanges()) {
                 Directory.CreateDirectory(directory);
                 File.WriteAllText(Path.Combine(directory, "ui_skin.json"), new JObject {
-                    ["skinname"] = AcStringValues.NameFromId(id)
+                    ["skinname"] = AcStringValues.NameFromId(id),
+                    ["drivername"] = "",
+                    ["team"] = "",
+                    ["number"] = ""
                 }.ToString(Formatting.Indented));
 
                 var obj = CreateAndLoadAcObject(id, true);

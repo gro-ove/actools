@@ -14,13 +14,15 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         internal Kn5MaterialSimpleMirror() {}
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
 
         public void Refresh(IDeviceContextHolder contextHolder) {
             // Because Dispose() is empty, we can just re-initialize shader
-            Initialize(contextHolder);
+            _effect = null;
+            EnsureInitialized(contextHolder);
         }
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {

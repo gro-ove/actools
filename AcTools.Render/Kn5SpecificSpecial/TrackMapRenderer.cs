@@ -695,7 +695,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         internal Kn5MaterialTrackMap() { }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSpecialTrackMap>();
         }
 

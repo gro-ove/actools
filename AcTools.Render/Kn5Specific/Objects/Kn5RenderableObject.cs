@@ -93,7 +93,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [CanBeNull]
         private IRenderableMaterial _mirrorMaterial;
-        private bool _mirrorMaterialInitialized;
 
         public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {
             if (enabled == (_mirrorMaterial != null)) return;
@@ -101,18 +100,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (enabled) {
                 _mirrorMaterial = holder.GetMaterial(BasicMaterials.MirrorKey);
                 if (IsInitialized) {
-                    _mirrorMaterial.Initialize(holder);
-                    _mirrorMaterialInitialized = true;
+                    _mirrorMaterial.EnsureInitialized(holder);
                 }
             } else {
-                _mirrorMaterialInitialized = false;
                 DisposeHelper.Dispose(ref _mirrorMaterial);
             }
         }
 
         [CanBeNull]
         private IRenderableMaterial _debugMaterial;
-        private bool _debugMaterialInitialized;
 
         public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {
             if (enabled == (_debugMaterial != null)) return;
@@ -120,13 +116,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (enabled) {
                 _debugMaterial = holder.Get<SharedMaterials>().GetMaterial(new Tuple<object, uint>(BasicMaterials.DebugKey, OriginalNode.MaterialId));
                 if (_debugMaterial == null) return;
-
                 if (IsInitialized) {
-                    _debugMaterial.Initialize(holder);
-                    _debugMaterialInitialized = true;
+                    _debugMaterial.EnsureInitialized(holder);
                 }
             } else {
-                _debugMaterialInitialized = false;
                 DisposeHelper.Dispose(ref _debugMaterial);
             }
         }
@@ -143,17 +136,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             base.Initialize(contextHolder);
 
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
-            _material.Initialize(contextHolder);
-
-            if (_mirrorMaterial != null && !_mirrorMaterialInitialized) {
-                _mirrorMaterialInitialized = true;
-                _mirrorMaterial.Initialize(contextHolder);
-            }
-
-            if (_debugMaterial != null && !_debugMaterialInitialized) {
-                _debugMaterialInitialized = true;
-                _debugMaterial.Initialize(contextHolder);
-            }
+            _material.EnsureInitialized(contextHolder);
+            _mirrorMaterial?.EnsureInitialized(contextHolder);
+            _debugMaterial?.EnsureInitialized(contextHolder);
 
             var node = OriginalNode;
             if (node.Name.EndsWith(" Light") && !node.IsTransparent && !node.CastShadows && Material.IsBlending) {

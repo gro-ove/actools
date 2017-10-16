@@ -41,15 +41,14 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Save() {
-            if (HasData || string.IsNullOrEmpty(Name)) {
-                base.Save();
-            } else {
-                var json = new JObject();
-                SaveData(json);
+            var json = JsonObject ?? new JObject();
+            SaveData(json);
 
-                Changed = false;
+            using (CarsManager.Instance.IgnoreChanges()) {
                 File.WriteAllText(JsonFilename, json.ToString());
             }
+
+            Changed = false;
         }
 
         protected override void ClearData() {

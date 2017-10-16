@@ -632,6 +632,7 @@ namespace AcTools.Render.Base {
 
         protected int ShotInProcessValue { get; set; }
         public bool ShotInProcess => ShotInProcessValue > 0;
+        public double ShotResolutionMultiplier { get; private set; }
         public bool ShotDrawInProcess { get; private set; }
 
         protected virtual void DrawShot([CanBeNull] RenderTargetView target, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
@@ -660,6 +661,7 @@ namespace AcTools.Render.Base {
                 Width = baseWidth;
                 Height = baseHeight;
                 ResolutionMultiplier = 1d;
+                ShotResolutionMultiplier = (double)Width / original.Width;
 
                 if (Equals(downscale, 1d) && Equals(crop, 1d) && CanShotWithoutExtraTextures) {
                     // Simplest case: existing buffer will do just great, so let’s use it
@@ -668,7 +670,7 @@ namespace AcTools.Render.Base {
                         _resized = false;
                     }
 
-                    DrawShot(null, progress.Subrange(0.05, 0.9), cancellation);
+                    DrawShot(null, progress.SubrangeDouble(0.05, 0.9), cancellation);
                     Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Png, outputStream);
 
                     var desc = _renderBuffer.Description;
@@ -704,7 +706,7 @@ namespace AcTools.Render.Base {
                     var outputHeight = (Height * downscale).RoundToInt();
 
                     // Ready to draw!
-                    DrawShot(_shotRenderBuffer.TargetView, progress.Subrange(0.05, 0.9), cancellation);
+                    DrawShot(_shotRenderBuffer.TargetView, progress.SubrangeDouble(0.05, 0.9), cancellation);
 
                     // For MSAA, we need to copy the result into a texture without MSAA enabled to save it later
                     TargetResourceTexture result;

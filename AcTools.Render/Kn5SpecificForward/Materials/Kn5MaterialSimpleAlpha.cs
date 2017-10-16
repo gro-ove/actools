@@ -10,7 +10,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public Kn5MaterialSimpleAlpha([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectSimpleMaterial.AlphaMaterial {
                 Alpha = Kn5Material.GetPropertyValueAByName("alpha")
             };

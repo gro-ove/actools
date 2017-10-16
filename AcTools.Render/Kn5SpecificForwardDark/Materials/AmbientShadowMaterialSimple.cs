@@ -13,7 +13,7 @@ using SlimDX.Direct3D11;
 using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class AmbientShadowMaterialSimple : IRenderableMaterial, IAmbientShadowMaterial {
+    public class AmbientShadowMaterialSimple : IAmbientShadowMaterial {
         private readonly Kn5AmbientShadowMaterialDescription _description;
         private EffectDarkMaterial _effect;
 
@@ -23,7 +23,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _description = description ?? throw new ArgumentNullException(nameof(description));
         }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectDarkMaterial>();
             _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _description.Filename);
         }
@@ -72,7 +73,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public ShaderResourceView GetView(IDeviceContextHolder contextHolder) {
             if (_txDiffuse == null) {
-                Initialize(contextHolder);
+                EnsureInitialized(contextHolder);
             }
 
             return _txDiffuse?.Resource;

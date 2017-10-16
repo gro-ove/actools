@@ -19,7 +19,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         internal Kn5MaterialSimple([NotNull] Kn5MaterialDescription description) : base(description) {}
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
             if (Kn5Material.AlphaTested) {

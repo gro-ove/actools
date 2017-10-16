@@ -20,6 +20,13 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        public void DrawFromRed(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.TechCopyFromRed.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
         public void DrawSqr(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
@@ -59,7 +66,7 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechAccumulateDivide.DrawAllPasses(holder.DeviceContext, 6);
         }
 
-        public void AccumulateBokehDivide(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView maxView, RenderTargetView target, int amount,
+        /*public void AccumulateBokehDivide(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView maxView, RenderTargetView target, int amount,
                 float bokehMultiplier) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
@@ -69,7 +76,7 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.FxScreenSize.Set(new Vector4(holder.Width, holder.Height, 1f / holder.Width, 1f / holder.Height));
             _effect.FxBokenMultipler.Set(new Vector2(bokehMultiplier, 1f - bokehMultiplier));
             _effect.TechAccumulateBokehDivide.DrawAllPasses(holder.DeviceContext, 6);
-        }
+        }*/
 
         public void Cut(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, float cut) {
             holder.DeviceContext.OutputMerger.SetTargets(target);

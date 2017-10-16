@@ -297,7 +297,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 // body shadow
                 PrepareBuffers(BodySize + BodyPadding * 2, 1024);
                 SetBodyShadowCamera();
-                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.Subrange(0.01, 0.59), cancellation);
+                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.SubrangeDouble(0.01, 0.59), cancellation);
                 if (cancellation.IsCancellationRequested) return;
 
                 SaveResultAs(replacement.Filename, BodySize, BodyPadding);
@@ -315,7 +315,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
                         new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
                 FileName = $"tyre_{i}_shadow.png",
-                Progress = progress.Subrange(0.6 + i * 0.1, 0.099)
+                Progress = progress.SubrangeDouble(0.6 + i * 0.1, 0.099)
             }).ToList();
 
             foreach (var entry in list) {

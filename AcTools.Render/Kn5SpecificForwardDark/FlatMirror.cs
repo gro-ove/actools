@@ -19,7 +19,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private abstract class FlatMirrorMaterialBase : IRenderableMaterial {
             protected EffectDarkMaterial Effect;
 
-            public void Initialize(IDeviceContextHolder contextHolder) {
+            public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+                if (Effect != null) return;
                 Effect = contextHolder.GetEffect<EffectDarkMaterial>();
             }
 
@@ -205,7 +206,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
 
-                _material.Initialize(contextHolder);
+                _material.EnsureInitialized(contextHolder);
             }
 
             protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {

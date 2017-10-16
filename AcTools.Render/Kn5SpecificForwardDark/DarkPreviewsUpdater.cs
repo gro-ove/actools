@@ -100,6 +100,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double PcssSceneScale = 0.06d;
         public double PcssLightScale = 2d;
         public double AoOpacity = 0.3d;
+        public double AoRadius = 1d;
 
         public bool DelayedConvertation = true;
 
@@ -141,10 +142,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        public string FixedChecksum { get; set; }
+        // public string FixedChecksum { get; set; }
 
         public string GetChecksum() {
-            if (FixedChecksum != null) return FixedChecksum;
+            // if (FixedChecksum != null) return FixedChecksum;
 
             unchecked {
                 long hashCode = Showroom?.GetHashCode() ?? 0;
@@ -168,10 +169,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ GetHashCode(CameraPosition);
                 hashCode = (hashCode * 397) ^ GetHashCode(CameraLookAt);
                 hashCode = (hashCode * 397) ^ CameraFov.GetHashCode();
-
-                if (CameraTilt != 0d) {
-                    hashCode = (hashCode * 397) ^ CameraTilt.GetHashCode();
-                }
+                hashCode = (hashCode * 397) ^ CameraTilt.GetHashCode();
 
                 hashCode = (hashCode * 397) ^ AlignCar.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraHorizontally.GetHashCode();
@@ -182,7 +180,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffset.GetHashCode();
 
                 if (!AnyGround) {
-                    hashCode = (hashCode * 397) ^ "hideGround".GetHashCode();
+                    hashCode = (hashCode * 397) ^ 91001923;
                 }
 
                 hashCode = (hashCode * 397) ^ FlatMirror.GetHashCode();
@@ -217,13 +215,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ PcssSceneScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssLightScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ AoOpacity.GetHashCode();
+                hashCode = (hashCode * 397) ^ AoRadius.GetHashCode();
 
                 if (UseDof) {
-                    hashCode = (hashCode * 397) ^ "useDof".GetHashCode();
+                    hashCode = (hashCode * 397) ^ 70094303;
                     hashCode = (hashCode * 397) ^ DofFocusPlane.GetHashCode();
 
                     if (UseAccumulationDof) {
-                        hashCode = (hashCode * 397) ^ "accumulationDof".GetHashCode();
+                        hashCode = (hashCode * 397) ^ 68657796;
                         hashCode = (hashCode * 397) ^ AccumulationDofApertureSize.GetHashCode();
                         hashCode = (hashCode * 397) ^ AccumulationDofIterations.GetHashCode();
                         hashCode = (hashCode * 397) ^ AccumulationDofBokeh.GetHashCode();
@@ -233,15 +232,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 if (!LoadCarLights) {
-                    hashCode = (hashCode * 397) ^ 49325;
+                    hashCode = (hashCode * 397) ^ 96745201;
                 }
 
                 if (!TryToGuessCarLights) {
-                    hashCode = (hashCode * 397) ^ 76471;
+                    hashCode = (hashCode * 397) ^ 64351024;
                 }
 
                 if (!LoadShowroomLights) {
-                    hashCode = (hashCode * 397) ^ 12259;
+                    hashCode = (hashCode * 397) ^ 93872189;
                 }
 
                 return Convert.ToBase64String(BitConverter.GetBytes(hashCode)).TrimEnd('=');
@@ -399,6 +398,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.PcssLightScale = (float)options.PcssLightScale;
             renderer.PcssSceneScale = (float)options.PcssSceneScale;
             renderer.AoOpacity = (float)options.AoOpacity;
+            renderer.AoRadius = (float)options.AoRadius;
 
             // DOF
             renderer.UseDof = options.UseDof;

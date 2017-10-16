@@ -13,7 +13,6 @@ namespace AcTools.Render.Base.PostEffects.AO {
             base.OnInitialize(holder);
 
             _effect = holder.GetEffect<EffectPpSsaoAlt>();
-            _effect.FxNoiseMap.SetResource(holder.GetRandomTexture(4, 4));
 
             var samplesKernel = new Vector4[EffectPpSsao.SampleCount];
             var random = new Random(0);
@@ -32,16 +31,17 @@ namespace AcTools.Render.Base.PostEffects.AO {
         }
 
         public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
-                float aoPower) {
-            base.Draw(holder, depth, normals, camera, target, aoPower);
-            _effect.FxNoiseSize.Set(new Vector2(holder.Width / 4f, holder.Height / 4f));
+                float aoPower, float aoRadiusMultiplier, bool accumulationMode) {
+            SetBlurEffectTextures(depth, normals);
+            SetRandomValues(holder, _effect.FxNoiseMap, _effect.FxNoiseSize, accumulationMode);
 
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxDepthMap.SetResource(depth);
             _effect.FxNormalMap.SetResource(normals);
 
-            _effect.FxAoPower.Set(aoPower);
+            _effect.FxAoPower.Set(aoPower * 1.2f);
+            _effect.FxAoRadius.Set(aoRadiusMultiplier * 0.8f);
             _effect.FxViewProj.SetMatrix(camera.ViewProj);
             _effect.FxViewProjInv.SetMatrix(camera.ViewProjInvert);
 

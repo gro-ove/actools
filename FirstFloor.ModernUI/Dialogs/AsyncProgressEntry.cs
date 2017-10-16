@@ -124,6 +124,14 @@ namespace FirstFloor.ModernUI.Dialogs {
             progress?.Report(new AsyncProgressEntry(message, i, total));
         }
 
+        /*public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, double? value) {
+            progress?.Report(new Tuple<string, double?>(message, value));
+        }
+
+        public static void Report([CanBeNull] this IProgress<Tuple<string, double?>> progress, string message, int i, int total) {
+            progress?.Report(new Tuple<string, double?>(message, (double)i / total));
+        }*/
+
         private class SubrangeTupleProgress : IProgress<Tuple<string, double?>> {
             private readonly IProgress<Tuple<string, double?>> _baseProgress;
             private readonly double _from;

@@ -12,7 +12,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
-using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
@@ -39,7 +38,6 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.CustomShowroom {

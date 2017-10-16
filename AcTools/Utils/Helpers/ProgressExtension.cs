@@ -20,7 +20,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
-        public static IProgress<double> Subrange([CanBeNull] this IProgress<double> baseProgress, double from, double range) {
+        public static IProgress<double> SubrangeDouble([CanBeNull] this IProgress<double> baseProgress, double from, double range) {
             return new SubrangeProgress(baseProgress, from, range);
         }
 

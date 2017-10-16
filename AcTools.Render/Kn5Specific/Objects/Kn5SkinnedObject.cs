@@ -68,7 +68,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [CanBeNull]
         private ISkinnedMaterial _debugMaterial;
-        private bool _debugMaterialInitialized;
 
         public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {
             if (enabled == (_debugMaterial != null)) return;
@@ -84,11 +83,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 }
 
                 if (IsInitialized) {
-                    _debugMaterial.Initialize(holder);
-                    _debugMaterialInitialized = true;
+                    _debugMaterial.EnsureInitialized(holder);
                 }
             } else {
-                _debugMaterialInitialized = false;
                 DisposeHelper.Dispose(ref _debugMaterial);
             }
         }
@@ -114,15 +111,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _material = new InvisibleMaterial();
             }
 
-            _material.Initialize(contextHolder);
+            _material.EnsureInitialized(contextHolder);
 
             var model = contextHolder.Get<IKn5Model>();
             _bonesNodes = OriginalNode.Bones.Select(x => model.GetDummyByName(x.Name)).ToArray();
-
-            if (_debugMaterial != null && !_debugMaterialInitialized) {
-                _debugMaterialInitialized = true;
-                _debugMaterial.Initialize(contextHolder);
-            }
+            _debugMaterial?.EnsureInitialized(contextHolder);
         }
 
         public AcDynamicMaterialParams DynamicMaterialParams { get; } = new AcDynamicMaterialParams();

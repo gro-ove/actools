@@ -29,7 +29,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             IsBlending = Kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
         }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
+
             _effect = contextHolder.GetEffect<EffectDarkMaterial>();
             _txDiffuse = GetTexture("txDiffuse", contextHolder);
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
@@ -63,7 +65,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public void Refresh(IDeviceContextHolder contextHolder) {
             // Because Dispose() is empty, we can just re-initialize shader
-            Initialize(contextHolder);
+            _effect = null;
+            EnsureInitialized(contextHolder);
         }
 
         protected IRenderableTexture GetTexture(string mappingName, IDeviceContextHolder contextHolder) {

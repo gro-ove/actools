@@ -15,23 +15,21 @@
 		AddressU = WRAP;
 		AddressV = WRAP;
 	};
-    
+
 // input resources
 	#define SAMPLE_COUNT 16
 
     cbuffer cbPerFrame : register(b0) {
 		float3 gSamplesKernel[SAMPLE_COUNT];
 
-		matrix gCameraProjInv;
-		matrix gCameraProj;
-
         matrix gWorldViewProjInv;
         matrix gWorldViewProj;
         float3 gEyePosW;
 
-		float2 gNoiseSize;
+		float4 gNoiseSize;
 		float gAoPower;
-    }	
+		float gAoRadius;
+    }
 
 // fn structs
     struct VS_IN {
@@ -72,8 +70,8 @@
         return vout;
     }
 
-// hard-coded consts
-	#define RADIUS 0.15
+// params
+	#define RADIUS gAoRadius
 	#define NORMAL_BIAS 0.01
 
 // new
@@ -117,7 +115,7 @@
 		float3 texelNormal = GetNormal(UV);
 		float3 texelPosition = GetPosition(UV, depth) + texelNormal * NORMAL_BIAS;
 
-		float3 random = normalize(gNoiseMap.Sample(samNoise, UV * gNoiseSize).xyz);
+		float3 random = normalize(gNoiseMap.Sample(samNoise, UV * gNoiseSize.xy + gNoiseSize.zw).xyz);
 		float assessOriginal = depthAssessment_invsqrt(depth);
 
 		float ssao = 0;
@@ -142,11 +140,11 @@
 		return SsaoFn(pin.Tex);
     }
 
-    technique11 Ssao {
+    technique10 Ssao {
         pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_Ssao() ) );
+            SetVertexShader(CompileShader(vs_4_0, vs_main()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_Ssao()));
         }
     }
 
@@ -233,18 +231,18 @@
 		return Blur(pin.Tex, float2(0, 1));
     }
 
-	technique11 BlurH {
+	technique10 BlurH {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_BlurH()));
+			SetPixelShader(CompileShader(ps_4_0, ps_BlurH()));
 		}
 	}
 
-	technique11 BlurV {
+	technique10 BlurV {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_BlurV()));
+			SetPixelShader(CompileShader(ps_4_0, ps_BlurV()));
 		}
 	}

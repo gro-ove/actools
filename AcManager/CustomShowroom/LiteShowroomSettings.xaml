@@ -1123,8 +1123,15 @@
 
       <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UseAo}">
         <mui:ValueLabel Value="{Binding AoOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" mui:BetterTextBox.Mode="Number"
-            DockPanel.Dock="Top" Content="SSAO" Postfix="%" />
+            DockPanel.Dock="Top" Content="AO opacity" Postfix="%" />
         <Slider Minimum="0" Maximum="200" Value="{Binding AoOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="20"
+            TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UseAo}">
+        <mui:ValueLabel Value="{Binding AoRadius, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" mui:BetterTextBox.Mode="Number"
+            DockPanel.Dock="Top" Content="AO radius" Postfix="%" />
+        <Slider Minimum="70" Maximum="130" Value="{Binding AoRadius, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="6"
             TickPlacement="BottomRight" />
       </DockPanel>
 

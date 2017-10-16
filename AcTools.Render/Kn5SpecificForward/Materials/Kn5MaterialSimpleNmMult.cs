@@ -10,7 +10,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public Kn5MaterialSimpleNmMult([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(IDeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectSimpleMaterial.NmUvMultMaterial {
                 DiffuseMultipler = Kn5Material.GetPropertyValueAByName("diffuseMult"),
                 NormalMultipler = Kn5Material.GetPropertyValueAByName("normalMult")

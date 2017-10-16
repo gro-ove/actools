@@ -21,7 +21,7 @@
 		AddressU = WRAP;
 		AddressV = WRAP;
 	};
-    
+
 // input resources
 	#define SAMPLE_COUNT 24
 	#define SAMPLE_THRESHOLD 14
@@ -30,9 +30,10 @@
 		float3 gSamplesKernel[SAMPLE_COUNT];
         matrix gViewProjInv;
         matrix gViewProj;
-		float2 gNoiseSize;
+		float4 gNoiseSize;
 		float gAoPower;
-    }	
+		float gAoRadius;
+    }
 
 // fn structs
     struct VS_IN {
@@ -73,9 +74,9 @@
         return vout;
     }
 
-// hard-coded consts
-	#define uSampleRadius 0.8
-	#define uVerticalMultipler 2.7
+// params
+	#define RADIUS gAoRadius
+	#define VERT_MULTIPLIER 2.7
 
 // new
 	float4 SsaoFn(float2 UV) {
@@ -84,22 +85,21 @@
 
 		float3 normal = GetNormal(UV);
 
-		float3 random = normalize(gNoiseMap.Sample(samNoise, UV * gNoiseSize).xyz);
+		float3 random = normalize(gNoiseMap.Sample(samNoise, UV * gNoiseSize.xy + gNoiseSize.zw).xyz);
 		float occlusion = 0.0;
 		for (int i = 0; i < SAMPLE_COUNT; ++i) {
 			float3 hemisphereRandomNormal = reflect(gSamplesKernel[i], random);
-			float3 hemisphereNormalOrientated = hemisphereRandomNormal * sign(
-				dot(hemisphereRandomNormal, normal));
+			float3 hemisphereNormalOrientated = hemisphereRandomNormal * sign(dot(hemisphereRandomNormal, normal));
 
-			float2 samUv = GetUv(origin + hemisphereNormalOrientated * uSampleRadius).xy;
+			float2 samUv = GetUv(origin + hemisphereNormalOrientated * RADIUS).xy;
 			float samDepth = GetDepth(samUv);
 			float3 samW = GetPosition(samUv, samDepth);
 
 			float3 samDirW = samW - origin;
-			samDirW.xz *= uVerticalMultipler;
+			samDirW.xz *= VERT_MULTIPLIER;
 
-			float rangeDelta = length(samDirW);	
-			occlusion += saturate((uSampleRadius / rangeDelta) * step(samDepth + 0.00005, depth));
+			float rangeDelta = length(samDirW);
+			occlusion += saturate((RADIUS / rangeDelta) * step(samDepth + 0.0002, depth));
 		}
 
 		return 1.0 - saturate(pow(occlusion / SAMPLE_THRESHOLD, 1.8)) * gAoPower;
@@ -109,10 +109,10 @@
 		return SsaoFn(pin.Tex);
     }
 
-    technique11 SsaoVs {
+    technique10 SsaoVs {
         pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_Ssao() ) );
+            SetVertexShader(CompileShader(vs_4_0, vs_main()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_Ssao()));
         }
     }

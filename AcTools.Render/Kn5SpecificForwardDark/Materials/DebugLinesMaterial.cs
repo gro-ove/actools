@@ -12,7 +12,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         internal DebugLinesMaterial() { }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
+        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
+            if (_effect != null) return;
             _effect = contextHolder.GetEffect<EffectSpecialDebugLines>();
         }
 

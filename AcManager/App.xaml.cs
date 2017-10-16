@@ -26,7 +26,6 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
 using AcManager.Plugins;
-using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;

@@ -194,11 +194,11 @@
 		return SslrFn(pin.Tex, samLinear);
     }
 
-    technique11 Sslr {
+    technique10 Sslr {
         pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_Sslr() ) );
+            SetVertexShader(CompileShader(vs_4_0, vs_main()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_Sslr()));
         }
     }
 
@@ -281,10 +281,10 @@
 		return FinalStepFn(pin.Tex, samLinear);
 	}
 
-    technique11 FinalStep {
+    technique10 FinalStep {
         pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_FinalStep() ) );
+            SetVertexShader(CompileShader(vs_4_0, vs_main()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_FinalStep()));
         }
     }
