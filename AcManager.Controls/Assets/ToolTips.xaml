@@ -19,8 +19,8 @@
 
   <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}" x:Shared="False">
     <c:PropertiesGrid Columns="1" Width="240" LabelWidth="80">
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="None" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding Name}" Placeholder="None" />
+      <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="None" />-->
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding DisplayName}" Placeholder="None" />
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="None" />
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="None" />
       <mui:Switch Value="{Binding SkinNumber}" c:PropertiesGrid.Label="Number:">
