@@ -159,6 +159,7 @@ namespace <#= resultNamespace #> {
 			FileName = fxc,
 			Arguments = "/nologo /T fx_5_0 /O3 /I../Includes /E Render /Fo\"" + Path.GetFileName(c) + "\" \"" + n + "\"",
 			WorkingDirectory = Path.GetDirectoryName(f),
+			WindowStyle = ProcessWindowStyle.Hidden,
 			RedirectStandardError = true,
 			RedirectStandardOutput = true,
 			UseShellExecute = false
@@ -383,7 +384,7 @@ namespace <#= resultNamespace #> {
 
 	/* CONSTS FROM DEFINES (ROOT FILE ONLY) */
 		foreach (var x in Regex.Matches(data, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
-			var v = x.Groups[2].Value;
+			var v = x.Groups[2].Value.Split(new[]{ "//" }, StringSplitOptions.None)[0];
 			var constName = ConvertConstName(x.Groups[1].Value);
 			var constValue = ConvertConstValue(v).Trim();
 			var typeName = v.Contains("float4") ? "Vector4" :

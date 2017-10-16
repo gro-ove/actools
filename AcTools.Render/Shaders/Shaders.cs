@@ -203,6 +203,8 @@ namespace AcTools.Render.Shaders {
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
 		public const bool DebugMode = false;
+		public const float Tessellationfactor = 5.0f;
+		public const bool EnableTesselation = true;
 		public const float Pi = 3.141592653f;
 		public const int ComplexLighting = 1;
 		public const float CubemapPadding = 0.95f;
@@ -223,10 +225,10 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
+		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
-		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
+		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj, FxViewProj;
 		[NotNull]
 		public EffectOnlyMatrixArrayVariable FxExtraShadowViewProj, FxShadowViewProj, FxBoneTransforms;
 		[NotNull]
@@ -298,6 +300,8 @@ namespace AcTools.Render.Shaders {
 			TechNmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("NmUvMult"));
 			TechAtNm = new EffectReadyTechnique(E.GetTechniqueByName("AtNm"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechMaps_TesselatePhong = new EffectReadyTechnique(E.GetTechniqueByName("Maps_TesselatePhong"));
+			TechMaps_TesselatePn = new EffectReadyTechnique(E.GetTechniqueByName("Maps_TesselatePn"));
 			TechSkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedMaps"));
 			TechDiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("DiffMaps"));
 			TechTyres = new EffectReadyTechnique(E.GetTechniqueByName("Tyres"));
@@ -351,6 +355,7 @@ namespace AcTools.Render.Shaders {
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld"));
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose"));
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj"));
+			FxViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gViewProj"));
 			FxExtraShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gExtraShadowViewProj"));
 			FxShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gShadowViewProj"));
 			FxBoneTransforms = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gBoneTransforms"));

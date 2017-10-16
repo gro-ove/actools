@@ -11,6 +11,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
+using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -394,6 +395,15 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         _renderer.ToneMapping = _renderer.ToneMapping.NextValue();
                     } else if (!args.Control && !args.Alt && !args.Shift) {
                         _renderer.ShowMovementArrows = !_renderer.ShowMovementArrows;
+                    } else if (args.Control && !args.Alt && !args.Shift) {
+                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Phong;
+                        Renderer.IsDirty = true;
+                    } else if (!args.Control && args.Alt && !args.Shift) {
+                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Pn;
+                        Renderer.IsDirty = true;
+                    } else if (!args.Control && !args.Alt && args.Shift) {
+                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Disabled;
+                        Renderer.IsDirty = true;
                     }
                     break;
 

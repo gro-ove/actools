@@ -122,7 +122,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechGPass_Standard;
         }
 
-        private EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
+        protected EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 return GetShadowTechnique();
             }

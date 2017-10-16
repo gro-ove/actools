@@ -1,3 +1,7 @@
+// Options
+
+#define ENABLE_TESSELATION 1  // Optionally, car paint meshes can be smoothed
+
 // Kunos-compatible shaders and more
 
 //// Standart
@@ -180,6 +184,30 @@ technique10 Maps {
 		SetPixelShader(CompileShader(ps_5_0, ps_Maps()));
 	}
 }
+
+#if ENABLE_TESSELATION == 1
+#include "DarkMaterial.Tesselation.fx"
+
+technique10 Maps_TesselatePhong {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, VS()));
+        SetHullShader(CompileShader(hs_5_0, HS()));
+        SetDomainShader(CompileShader(ds_5_0, DS_phong()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+	}
+}
+
+technique10 Maps_TesselatePn {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, VS()));
+        SetHullShader(CompileShader(hs_5_0, HS_pn()));
+        SetDomainShader(CompileShader(ds_5_0, DS_pn()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+	}
+}
+#endif
 
 //// Skinned maps
 

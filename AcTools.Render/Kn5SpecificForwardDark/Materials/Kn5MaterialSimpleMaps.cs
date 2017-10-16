@@ -1,4 +1,5 @@
 using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
@@ -7,9 +8,17 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
+    public enum TesselationMode {
+        Disabled, Phong, Pn
+    }
+
     public class Kn5MaterialSimpleMaps : Kn5MaterialSimpleReflective {
+        // Temporary
+        public static TesselationMode TesselationMode;
+
         private EffectDarkMaterial.MapsMaterial _material;
         private IRenderableTexture _txNormal, _txMaps, _txDetails, _txDetailsNormal;
         private bool _hasNormalMap;
@@ -66,6 +75,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             base.RefreshOverride(contextHolder);
         }
 
+        public override void SetMatrices(Matrix objectTransform, ICamera camera) {
+            base.SetMatrices(objectTransform, camera);
+            Effect.FxViewProj.SetMatrix(camera.ViewProj);
+        }
+
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!base.Prepare(contextHolder, mode)) return false;
 
@@ -79,6 +93,31 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             Effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
             Effect.FxMapsMap.SetResource(_txMaps);
             return true;
+        }
+
+        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            var tech = GetTechnique(mode);
+
+            if (tech == Effect.TechMaps && TesselationMode != TesselationMode.Disabled && EffectDarkMaterial.EnableTesselation) {
+                contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
+
+                switch (TesselationMode) {
+                    case TesselationMode.Phong:
+                        tech = Effect.TechMaps_TesselatePhong;
+                        break;
+                    case TesselationMode.Pn:
+                        tech = Effect.TechMaps_TesselatePn;
+                        break;
+                }
+
+                tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+                // contextHolder.DeviceContext.Rasterizer.State = null;
+                contextHolder.DeviceContext.HullShader.Set(null);
+                contextHolder.DeviceContext.DomainShader.Set(null);
+            } else {
+                tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+            }
         }
 
         protected override EffectReadyTechnique GetTechnique() {

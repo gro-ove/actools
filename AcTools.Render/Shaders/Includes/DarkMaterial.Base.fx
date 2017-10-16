@@ -71,6 +71,7 @@ cbuffer cbPerObject : register(b0) {
 	matrix gWorld;
 	matrix gWorldInvTranspose;
 	matrix gWorldViewProj;
+	matrix gViewProj;
 
 	StandartMaterial gMaterial;
 	ReflectiveMaterial gReflectiveMaterial;

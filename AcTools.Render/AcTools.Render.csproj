@@ -344,7 +344,6 @@
     <Content Include="Shaders\Dark\DarkMaterial.WithoutLighting.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.GPass.fx" />
-    <Content Include="Shaders\Includes\DarkMaterial.Kunos.2.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Kunos.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Area.fx" />
