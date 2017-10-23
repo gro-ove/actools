@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
     xmlns:c="http://acstuff.ru/app/controls"
-    mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+    mc:Ignorable="d"
     d:DataContext="{d:DesignInstance mi:MostUsed+ViewModel}" HorizontalSpacing="20" Rows="1" Margin="{StaticResource ContentMarginWithPadding}">
   <ItemsControl ItemsSource="{Binding CarEntries}" Style="{StaticResource VirtualizingItemsControl}">
     <ItemsControl.ItemTemplate>

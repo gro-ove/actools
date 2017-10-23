@@ -23,8 +23,7 @@ namespace FirstFloor.ModernUI.Presentation {
             set {
                 _sourceUri = value;
 
-                ResourceDictionary result;
-                if (SharedDictionaries.TryGetValue(value, out result)) {
+                if (SharedDictionaries.TryGetValue(value, out var result)) {
                     // If the dictionary is already loaded, get it from the cache
                     MergedDictionaries.Add(result);
                 } else {
@@ -36,6 +35,10 @@ namespace FirstFloor.ModernUI.Presentation {
                     SharedDictionaries.Add(value, this);
                 }
             }
+        }
+
+        public static void ClearCache() {
+            SharedDictionaries.Clear();
         }
     }
 }

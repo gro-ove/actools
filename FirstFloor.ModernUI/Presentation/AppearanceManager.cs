@@ -8,24 +8,23 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {
+        public static Uri BaseValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative);
         public static Uri DefaultValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
         public static readonly Uri DarkThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml", UriKind.Relative);
 
-        // TODO: rearrange
-        public static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml", UriKind.Relative);
-        public static readonly Uri PopupToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Popup.xaml", UriKind.Relative);
-
-        public const string KeyAccentColor = "AccentColor";
-        public const string KeyAccent = "Accent";
-        public const string KeyDefaultFontSize = "DefaultFontSize";
         public const string KeyFormattingMode = "FormattingMode";
-        public const string KeyFixedFontSize = "FixedFontSize";
-        public const string KeySubMenuFontSize = "ModernSubMenuFontSize";
-        public const string KeySubMenuDraggablePoints = "ModernSubMenuDraggablePoints";
 
-        public const string KeyTitleLinksTemplate = "TitleLinksTemplate";
-        public const string KeyTitleLinksDefaultTemplate = "DefaultTitleLinksTemplate";
-        public const string KeyTitleLinksLargerTemplate = "LargerTitleLinksTemplate";
+        private const string KeyAccentColor = "AccentColor";
+        private const string KeyAccent = "Accent";
+        private const string KeyDefaultFontSize = "DefaultFontSize";
+        private const string KeyFixedFontSize = "FixedFontSize";
+        private const string KeySubMenuFontSize = "ModernSubMenuFontSize";
+        private const string KeySubMenuDraggablePoints = "ModernSubMenuDraggablePoints";
+
+        private const string KeyTitleLinksTemplate = "TitleLinksTemplate";
+        private const string KeyTitleLinksDefaultTemplate = "DefaultTitleLinksTemplate";
+        private const string KeyTitleLinksLargerTemplate = "LargerTitleLinksTemplate";
+        private const string KeyTitleLinksWeightTemplate = "TitleLinksWeight";
 
         public event EventHandler ThemeChange;
         public event EventHandler ThemeObsolete;
@@ -48,9 +47,7 @@ namespace FirstFloor.ModernUI.Presentation {
                     new FrameworkPropertyMetadata(
                             new FontFamily("Comic Sans MS")));*/
 
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
-                Source = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative)
-            });
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = BaseValuesSource });
         }
 
         public static AppearanceManager Current { get; } = new AppearanceManager();
@@ -67,9 +64,19 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
-        public void SetTheme(ResourceDictionary dictionary) {
-            var dictionaries = Application.Current.Resources.MergedDictionaries;
+        public void SetTheme([CanBeNull] ResourceDictionary dictionary) {
+            SharedResourceDictionary.ClearCache();
 
+            if (dictionary != null) {
+                var defaultDictionary = new ResourceDictionary { Source = DefaultValuesSource };
+                foreach (var key in defaultDictionary.Keys) {
+                    if (!dictionary.Contains(key)) {
+                        dictionary[key] = defaultDictionary[key];
+                    }
+                }
+            }
+
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
             if (dictionary != null) {
                 dictionaries.Add(dictionary);
             }
@@ -130,6 +137,17 @@ namespace FirstFloor.ModernUI.Presentation {
                         Application.Current.TryFindResource(KeyTitleLinksLargerTemplate) :
                         Application.Current.TryFindResource(KeyTitleLinksDefaultTemplate);
                 OnPropertyChanged(nameof(LargerTitleLinks));
+            }
+        }
+
+        private bool? _boldTitleLinks;
+        public bool BoldTitleLinks {
+            get => _boldTitleLinks ?? false;
+            set {
+                if (_boldTitleLinks == value) return;
+                _boldTitleLinks = value;
+                Application.Current.Resources[KeyTitleLinksWeightTemplate] = value ? FontWeights.Bold : FontWeights.Normal;
+                OnPropertyChanged(nameof(BoldTitleLinks));
             }
         }
 
@@ -197,25 +215,6 @@ namespace FirstFloor.ModernUI.Presentation {
                 } finally {
                     _settingInProgress = false;
                 }
-            }
-        }
-
-        private ResourceDictionary _toolBarModeDictionary;
-
-        public bool? PopupToolBars {
-            get => _toolBarModeDictionary == null ? (bool?)null : _toolBarModeDictionary.Source == PopupToolBarsSource;
-            set {
-                if (Equals(value, PopupToolBars)) return;
-                OnPropertyChanged();
-
-                if (_toolBarModeDictionary != null) {
-                    Application.Current.Resources.MergedDictionaries.Remove(_toolBarModeDictionary);
-                    _toolBarModeDictionary = null;
-                }
-
-                if (!value.HasValue) return;
-                _toolBarModeDictionary = new ResourceDictionary { Source = value.Value ? PopupToolBarsSource : FixedToolBarsSource };
-                Application.Current.Resources.MergedDictionaries.Add(_toolBarModeDictionary);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace AcTools.Utils.Helpers {
 
         public override int GetHashCode() {
             unchecked {
-                return IsEmptyOrInvalid ? 0 :(LatitudeValue.GetHashCode() * 397) ^ LongitudeValue.GetHashCode();
+                return IsEmptyOrInvalid ? 0 : (LatitudeValue.GetHashCode() * 397) ^ LongitudeValue.GetHashCode();
             }
         }
 

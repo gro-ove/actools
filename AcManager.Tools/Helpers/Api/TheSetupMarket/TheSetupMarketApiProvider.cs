@@ -69,13 +69,20 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         private static DateTime _parsedLifeSpan;
 
         private static string[] ListUrls = {
+            "http://194.67.219.50:12012/setups",
             "http://46.173.219.83:12012/setups",
             // "http://thesetupmarketcache-x4fab.rhcloud.com/setups",
             "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa"
         };
 
+        private static readonly TaskCache TaskCache = new TaskCache();
+
         [ItemCanBeNull]
-        public static async Task<List<RemoteSetupInformation>> GetAvailableSetups(string carId, CancellationToken cancellation = default(CancellationToken)) {
+        public static Task<List<RemoteSetupInformation>> GetAvailableSetups(string carId, CancellationToken cancellation = default(CancellationToken)) {
+            return TaskCache.Get(() => GetAvailableSetupsInner(carId, cancellation), nameof(GetAvailableSetupsInner), carId);
+        }
+
+        public static async Task<List<RemoteSetupInformation>> GetAvailableSetupsInner(string carId, CancellationToken cancellation = default(CancellationToken)) {
             if (_parsed != null && DateTime.Now < _parsedLifeSpan) {
                 // A little bit of extra caching to avoid going to a different thread to reparse already loaded data
                 // for each new car.
@@ -92,6 +99,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
                         _parsed = await Task.Run(() => JArray.Parse(data).Select(x =>
                                 RemoteSetupInformation.FromTheSetupMarketJToken(x)).NonNull().ToList());
                         if (cancellation.IsCancellationRequested || data == null) return null;
+                        break;
                     } catch (Exception e) {
                         Logging.Warning($"Error while loading {url}: {e}");
                         if (url == ListUrls.Last()) {

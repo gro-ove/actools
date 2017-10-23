@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsIntegrated" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsIntegrated+ViewModel}">
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsIntegrated+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -12,170 +12,181 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsIntegrated">
-    <StackPanel Style="{StaticResource SettingsPanel}">
-      <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
-      <c:MessageBlock Margin="0 0 0 8">
-        <mui:BbCodeBlock>
-          <mui:BbCodeBlock.BbCode>Get access to hundreds of various setups with [url="http://thesetupmarket.com/"]The Setup Market[/url]. And if you want to quickly install setups from browser, use [url="/Pages/About/ImportantTipsPage.xaml?Key=extension|_top"]the extension[/url].</mui:BbCodeBlock.BbCode>
-        </mui:BbCodeBlock>
-      </c:MessageBlock>
+      <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
+        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
-      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketTab}">
-        <Label Content="Add The Setup Market tab in Setups Manager" />
-      </CheckBox>
+        <c:MessageBlock Margin="0 0 0 8">
+          <mui:BbCodeBlock>
+            <mui:BbCodeBlock.BbCode>Get access to hundreds of various setups with [url="http://thesetupmarket.com/"]The Setup Market[/url]. And if you want to quickly install setups from browser, use [url="/Pages/About/ImportantTipsPage.xaml?Key=extension|_top"]the extension[/url].</mui:BbCodeBlock.BbCode>
+          </mui:BbCodeBlock>
+        </c:MessageBlock>
 
-      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCounter}" IsEnabled="{Binding Integrated.TheSetupMarketTab}"
-          ToolTip="Add available setups counter to Content/Cars section or to cars selection dialog (make it wider to see it)">
-        <Label Content="Add available setups counter" />
-      </CheckBox>
-
-      <c:MessageBlock Margin="0 0 0 8">
-        <mui:BbCodeBlock>
-          <mui:BbCodeBlock.BbCode>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.BbCode>
-        </mui:BbCodeBlock>
-      </c:MessageBlock>
-
-      <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
-        <Label Content="Cache list of setups for:" />
-        <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheListPeriod}" DisplayMemberPath="DisplayName" />
-      </DockPanel>
-
-      <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
-        <Label Content="Cache data per setup for:" />
-        <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheDataPeriod}" DisplayMemberPath="DisplayName" />
-      </DockPanel>
-
-      <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
-        <Label Content="Use caching proxy for setups list to avoid overloading The Setup Market server" />
-      </CheckBox>
-
-      <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
-
-      <CheckBox IsChecked="{Binding Integrated.RsrLimitTemperature}" ToolTip="There is a rumour you might get banned on RSR for setting the temperature lower than 10 °C; with this option enabled, if you have RSR app enabled, CM will automatically raise temperature if needed up to 10 °C to avoid getting banned">
-        <Label Content="Limit lower temperature by 10 °C to avoid being banned on RSR" />
-      </CheckBox>
-
-      <CheckBox IsChecked="{Binding Live.RsrEnabled}">
-        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
-      </CheckBox>
-
-      <StackPanel IsEnabled="{Binding Live.RsrEnabled}">
-        <CheckBox IsChecked="{Binding Live.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        <CheckBox IsChecked="{Binding Integrated.TheSetupMarketTab}">
+          <Label Content="Add The Setup Market tab in Setups Manager" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCounter}" IsEnabled="{Binding Integrated.TheSetupMarketTab}"
+            ToolTip="Add available setups counter to Content/Cars section or to cars selection dialog (make it wider to see it)">
+          <Label Content="Add available setups counter" />
+        </CheckBox>
+
+        <c:MessageBlock Margin="0 0 0 8">
+          <mui:BbCodeBlock>
+            <mui:BbCodeBlock.BbCode>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.BbCode>
+          </mui:BbCodeBlock>
+        </c:MessageBlock>
+
+        <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+          <Label Content="Cache list of setups for:" />
+          <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheListPeriod}"
+              DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+          <Label Content="Cache data per setup for:" />
+          <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheDataPeriod}"
+              DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+          <Label Content="Use caching proxy for setups list to avoid overloading The Setup Market server" />
+        </CheckBox>
+
+        <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+        <CheckBox IsChecked="{Binding Integrated.RsrLimitTemperature}"
+            ToolTip="There is a rumour you might get banned on RSR for setting the temperature lower than 10 °C; with this option enabled, if you have RSR app enabled, CM will automatically raise temperature if needed up to 10 °C to avoid getting banned">
+          <Label Content="Limit lower temperature by 10 °C to avoid being banned on RSR" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Live.RsrEnabled}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
+        </CheckBox>
+
+        <StackPanel IsEnabled="{Binding Live.RsrEnabled}">
+          <CheckBox IsChecked="{Binding Live.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+          </CheckBox>
+
+          <DockPanel>
+            <Label Content="{x:Static g:AppStrings.Settings_Live_RsrNameLabel}" />
+            <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Live.RsrDifferentPlayerName}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrName_Tooltip}"
+                VerticalAlignment="Center" />
+            <mui:BetterTextBox Text="{Binding Live.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding Live.RsrDifferentPlayerName}" />
+          </DockPanel>
+
+          <CheckBox IsChecked="{Binding Live.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp}" />
+          </CheckBox>
+        </StackPanel>
+
+        <TextBlock Text="SRS:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+        <CheckBox IsChecked="{Binding Live.SrsEnabled}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
+        </CheckBox>
+
+        <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
+          <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+          </CheckBox>
+
+          <CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
+          </CheckBox>
+
+          <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
+            <mui:BetterTextBox Text="{Binding Live.SrsAutoMask}" Placeholder="?" />
+          </DockPanel>
+        </StackPanel>
+
+      </StackPanel>
+      <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
+
+        <!-- Sidekick -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Sidekick:" />
+        <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
+          <Label Content="Extend Sidekick’s tyres information if needed" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingKunos}">
+          <Label Content="Update entries for Kunos cars if different" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
+          <Label Content="Update entries for mods if different" />
+        </CheckBox>
         <DockPanel>
-          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrNameLabel}" />
-          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Live.RsrDifferentPlayerName}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrName_Tooltip}"
-              VerticalAlignment="Center" />
-          <mui:BetterTextBox Text="{Binding Live.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding Live.RsrDifferentPlayerName}" />
+          <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+              Command="{Binding ImportSidekickOdometerCommand}" />
+          <CheckBox IsChecked="{Binding Drive.SidekickOdometerImportValues}">
+            <Label Content="Import driven distance from Sidekick app if bigger" />
+          </CheckBox>
         </DockPanel>
-
-        <CheckBox IsChecked="{Binding Live.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp}" />
-        </CheckBox>
-      </StackPanel>
-
-      <TextBlock Text="SRS:" Style="{StaticResource SettingsPanel.Heading2}" />
-
-      <CheckBox IsChecked="{Binding Live.SrsEnabled}">
-        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
-      </CheckBox>
-
-      <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
-        <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        <CheckBox IsChecked="{Binding Drive.SidekickOdometerExportValues}">
+          <Label Content="Export driven distance to Sidekick app if bigger" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
+        <!-- Race Essentials -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Race Essentials:" />
+        <CheckBox IsChecked="{Binding Drive.RaceEssentialsIntegration}">
+          <Label Content="Extend RaceEssentials’s tyres information if needed" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingKunos}">
+          <Label Content="Update entries for Kunos cars if different" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingMods}">
+          <Label Content="Update entries for mods if different" />
         </CheckBox>
 
-        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
-          <mui:BetterTextBox Text="{Binding Live.SrsAutoMask}" Placeholder="?" />
+        <!-- Odometer by Stereo -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Odometer by Stereo:" />
+        <DockPanel>
+          <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+              Command="{Binding ImportStereoOdometerCommand}" />
+          <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
+            <Label Content="Import driven distance from Odometer app if bigger" />
+          </CheckBox>
         </DockPanel>
-      </StackPanel>
-
-      <!-- Sidekick -->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
-      <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
-        <Label Content="Extend Sidekick’s tyres information if needed" />
-      </CheckBox>
-      <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingKunos}">
-        <Label Content="Update entries for Kunos cars if different" />
-      </CheckBox>
-      <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
-        <Label Content="Update entries for mods if different" />
-      </CheckBox>
-      <DockPanel>
-        <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
-            Command="{Binding ImportSidekickOdometerCommand}" />
-        <CheckBox IsChecked="{Binding Drive.SidekickOdometerImportValues}">
-          <Label Content="Import driven distance from Sidekick app if bigger" />
+        <CheckBox IsChecked="{Binding Drive.StereoOdometerExportValues}">
+          <Label Content="Export driven distance to Odometer app if bigger" />
         </CheckBox>
-      </DockPanel>
-      <CheckBox IsChecked="{Binding Drive.SidekickOdometerExportValues}">
-        <Label Content="Export driven distance to Sidekick app if bigger" />
-      </CheckBox>
+        <c:MessageBlock>
+          <mui:BbCodeBlock
+              Text="Please, keep in mind that Odometer calculates distance made by wheels, while CM stores the distance car moved in space. If you want to remove imported values, simply uncheck “Import driven distance …” checkbox and use “Recalculate” button in stats section." />
+        </c:MessageBlock>
 
-      <!-- Race Essentials -->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Race Essentials:" />
-      <CheckBox IsChecked="{Binding Drive.RaceEssentialsIntegration}">
-        <Label Content="Extend RaceEssentials’s tyres information if needed" />
-      </CheckBox>
-      <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingKunos}">
-        <Label Content="Update entries for Kunos cars if different" />
-      </CheckBox>
-      <CheckBox IsChecked="{Binding Drive.RaceEssentialsUpdateExistingMods}">
-        <Label Content="Update entries for mods if different" />
-      </CheckBox>
-
-      <!-- Odometer by Stereo -->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Odometer by Stereo:" />
-      <DockPanel>
-        <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
-            Command="{Binding ImportStereoOdometerCommand}" />
-        <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
-          <Label Content="Import driven distance from Odometer app if bigger" />
-        </CheckBox>
-      </DockPanel>
-      <CheckBox IsChecked="{Binding Drive.StereoOdometerExportValues}">
-        <Label Content="Export driven distance to Odometer app if bigger" />
-      </CheckBox>
-      <c:MessageBlock>
-        <mui:BbCodeBlock Text="Please, keep in mind that Odometer calculates distance made by wheels, while CM stores the distance car moved in space. If you want to remove imported values, simply uncheck “Import driven distance …” checkbox and use “Recalculate” button in stats section." />
-      </c:MessageBlock>
-
-      <!-- Real Head Motion -->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
-        <Run Text="Real Head Motion:" />
-        <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+        <!-- Real Head Motion -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+          <Run Text="Real Head Motion:" />
+          <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
                         CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->
-      </TextBlock>
+        </TextBlock>
 
-      <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
-        <Label Content="RHM integration" />
-      </CheckBox>
+        <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
+          <Label Content="RHM integration" />
+        </CheckBox>
 
-      <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
-        <Label Content="RHM location:" />
-        <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
-        <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
+        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+          <Label Content="RHM location:" />
+          <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
+          <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
 
-      <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
-        <Label Content="RHM settings location:" />
-        <Button Content="Browse" Command="{Binding Drive.SelectRhmSettingsLocationCommand}" />
-        <mui:BetterTextBox Text="{Binding Drive.RhmSettingsLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
+        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+          <Label Content="RHM settings location:" />
+          <Button Content="Browse" Command="{Binding Drive.SelectRhmSettingsLocationCommand}" />
+          <mui:BetterTextBox Text="{Binding Drive.RhmSettingsLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
 
-      <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
-        <Label Content="Keep alive for:" />
-        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
-            DisplayMemberPath="DisplayName" />
-      </DockPanel>
-    </StackPanel>
+        <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
+          <Label Content="Keep alive for:" />
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
+              DisplayMemberPath="DisplayName" />
+        </DockPanel>
+      </StackPanel>
+
+    </mui:SpacingUniformGrid>
   </ScrollViewer>
 </UserControl>

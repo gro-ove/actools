@@ -1,13 +1,13 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsGeneral" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsGeneral+ViewModel}">
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:set="clr-namespace:AcManager.Pages.Settings"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsGeneral+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="AcSettingsGeneral">
-    <StackPanel Style="{StaticResource SettingsPanel}">
+    <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Style="{StaticResource SettingsPanel}">
       <!--exposure-->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8" Text="{x:Static c:ControlsStrings.Common_ExposureLabel}" />
 

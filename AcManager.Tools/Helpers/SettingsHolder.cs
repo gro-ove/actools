@@ -2497,11 +2497,11 @@ namespace AcManager.Tools.Helpers {
 
             public bool TheSetupMarketCacheServer {
                 get => _theSetupMarketCacheServer ?? (_theSetupMarketCacheServer =
-                        ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCacheServer", true)).Value;
+                        ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCacheServer2", true)).Value;
                 set {
                     if (Equals(value, _theSetupMarketCacheServer)) return;
                     _theSetupMarketCacheServer = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheServer", value);
+                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheServer2", value);
                     OnPropertyChanged();
                 }
             }

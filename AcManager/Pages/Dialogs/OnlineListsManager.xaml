@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
         xmlns:t="http://acstuff.ru/app/tools" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
                   xmlns:c="http://acstuff.ru/app/controls"
-                  mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                  mc:Ignorable="d"
         Title="Online Servers Lists" d:DataContext="{d:DesignInstance di:OnlineListsManager+ViewModel}" SizeToContent="Manual" ResizeMode="CanResize"
         Width="800" Height="480" MinWidth="600" MinHeight="320" LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="99999" MaxHeight="99999">
     <mui:ModernDialog.Resources>

@@ -10,7 +10,7 @@
   <ScrollViewer mui:SaveScroll.Key="SettingsDrive">
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
-      <StackPanel Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label>
             <TextBlock>
@@ -161,7 +161,7 @@
         </CheckBox>
 
       </StackPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
 
         <!-- Kunos career -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Drive_KunosCareerHeader}" />

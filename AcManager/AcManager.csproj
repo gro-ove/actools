@@ -539,6 +539,9 @@
     <Compile Include="Pages\ServerPreset\ServerPresetWrapped.xaml.cs">
       <DependentUpon>ServerPresetWrapped.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\Search.xaml.cs">
+      <DependentUpon>Search.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
       <DependentUpon>SettingsDev.xaml</DependentUpon>
     </Compile>
@@ -1261,6 +1264,10 @@
     <Page Include="Pages\ServerPreset\ServerPresetWrapped.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings\Search.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings\SettingsDev.xaml">
       <SubType>Designer</SubType>

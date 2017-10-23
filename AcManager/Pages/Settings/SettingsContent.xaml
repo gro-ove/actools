@@ -3,14 +3,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:loaders="clr-namespace:AcManager.Tools.Helpers.Loaders;assembly=AcManager.Tools" mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsContent">
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
-      <StackPanel Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Content_MarkAsNewLabel}" />
           <ComboBox ItemsSource="{Binding Holder.NewContentPeriods}" SelectedItem="{Binding Holder.NewContentPeriod}" DisplayMemberPath="DisplayName" />
@@ -98,7 +98,7 @@
         </c:MessageBlock>
 
       </StackPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" Style="{StaticResource SettingsPanel}">
 
         <!-- Cars specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Content_CarsHeader}" />

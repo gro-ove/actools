@@ -49,7 +49,7 @@
     <ResourceDictionary Source="Watermark.xaml" />
 
     <ResourceDictionary Source="BetterTextBox.xaml" />
-    <ResourceDictionary Source="{x:Static presentation:AppearanceManager.DefaultValuesSource}" />
+    <!--<ResourceDictionary Source="{x:Static presentation:AppearanceManager.DefaultValuesSource}" />-->
   </ResourceDictionary.MergedDictionaries>
 
   <!-- ToolTips fix -->

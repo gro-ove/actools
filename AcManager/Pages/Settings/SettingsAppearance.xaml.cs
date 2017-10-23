@@ -11,6 +11,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 using Microsoft.Win32;
@@ -20,6 +21,7 @@ namespace AcManager.Pages.Settings {
         public SettingsAppearance() {
             InitializeComponent();
             DataContext = new ViewModel();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -33,9 +35,7 @@ namespace AcManager.Pages.Settings {
             private static BitmapScalingMode? _originalScalingMode;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
-
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
-
             public SettingsHolder.InterfaceSettings Interface => SettingsHolder.Interface;
 
             internal ViewModel() {
@@ -65,9 +65,7 @@ namespace AcManager.Pages.Settings {
 
             private CommandBase _restartCommand;
 
-            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
-                WindowsHelper.RestartCurrentApplication();
-            }));
+            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(WindowsHelper.RestartCurrentApplication));
 
             private BitmapScalingEntry _bitmapScaling;
 

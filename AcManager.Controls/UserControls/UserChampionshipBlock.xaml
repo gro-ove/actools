@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Controls.UserControls.UserChampionshipBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
         DataContextChanged="OnDataContextChanged">
     <UserControl.Resources>
         <ResourceDictionary>

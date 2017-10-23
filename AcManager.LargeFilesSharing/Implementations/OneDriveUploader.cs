@@ -51,8 +51,6 @@ namespace AcManager.LargeFilesSharing.Implementations {
             Request.AuthorizationTokenType = "bearer";
         }
 
-        private const string RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
-
         protected string[] Scopes;
         private const string KeyAuthToken = "token";
         private const string KeyAuthExpiration = "expiration";
@@ -60,7 +58,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
         private Task<OAuthCode> GetAuthenticationCode(string clientId, CancellationToken cancellation) {
             return OAuth.GetCode("OneDrive", $"https://login.microsoftonline.com/common/oauth2/v2.0/authorize?" +
                     $"scope={Uri.EscapeDataString(Scopes.JoinToString(' '))}&" +
-                    $"response_type=code&client_id={Uri.EscapeDataString(clientId)}", RedirectUrl, cancellation: cancellation);
+                    $"response_type=code&client_id={Uri.EscapeDataString(clientId)}", null, cancellation: cancellation,
+                    successCodeRegex: null);
         }
 
 #pragma warning disable 649

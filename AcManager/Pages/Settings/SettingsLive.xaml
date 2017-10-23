@@ -1,60 +1,57 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsLive" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-             xmlns:AcManager="clr-namespace:AcManager"
-             mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsLive+ViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsLive+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <ScrollViewer mui:SaveScroll.Key="SettingsLive">
-        <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-            <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
-                <Label Content="{x:Static AcManager:AppStrings.Settings_Live_EnableRsr}" />
-            </CheckBox>
+  <ScrollViewer mui:SaveScroll.Key="SettingsLive">
+    <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Live}" x:Name="Panel" Style="{StaticResource SettingsPanel}">
+      <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
+        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
+      </CheckBox>
 
-            <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
-                <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_CustomStyle}" />
-                </CheckBox>
+      <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
+        <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        </CheckBox>
 
-                <DockPanel>
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_RsrNameLabel}" />
-                    <CheckBox DockPanel.Dock="Left" IsChecked="{Binding LiveSettings.RsrDifferentPlayerName}"
-                            ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrName_Tooltip}" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding LiveSettings.RsrPlayerName}" attached:WatermarkService.Watermark="?"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" IsEnabled="{Binding LiveSettings.RsrDifferentPlayerName}" />
-                </DockPanel>
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrNameLabel}" />
+          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding LiveSettings.RsrDifferentPlayerName}"
+              ToolTip="{x:Static g:AppStrings.Settings_Live_RsrName_Tooltip}" VerticalAlignment="Center" />
+          <mui:BetterTextBox Text="{Binding LiveSettings.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding LiveSettings.RsrDifferentPlayerName}" />
+        </DockPanel>
 
-                <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_RsrAutoToggleApp}" />
-                </CheckBox>
-            </StackPanel>
+        <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp}" />
+        </CheckBox>
+      </StackPanel>
 
-            <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
-                <Label Content="{x:Static AcManager:AppStrings.Settings_Live_EnableSrs}" />
-            </CheckBox>
+      <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
+        <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
+      </CheckBox>
 
-            <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
-                <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_CustomStyle}" />
-                </CheckBox>
+      <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
+        <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+        </CheckBox>
 
-                <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_SrsJoinFromOnline}" />
-                </CheckBox>
+        <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
+        </CheckBox>
 
-                <DockPanel ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
-                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
-                    <TextBox Text="{Binding LiveSettings.SrsAutoMask}" attached:WatermarkService.Watermark="?"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" />
-                </DockPanel>
-            </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
+          <mui:BetterTextBox Text="{Binding LiveSettings.SrsAutoMask}" Placeholder="?" />
+        </DockPanel>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

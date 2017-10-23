@@ -31,7 +31,6 @@ namespace AcManager.Pages.Settings {
 
         public class ViewModel : NotifyPropertyChanged {
             public SettingsHolder.OnlineSettings Online => SettingsHolder.Online;
-
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
             private DelegateCommand _manageListsCommand;

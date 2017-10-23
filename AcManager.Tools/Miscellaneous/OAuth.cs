@@ -40,10 +40,14 @@ namespace AcManager.Tools.Miscellaneous {
         [ItemNotNull]
         public static Task<OAuthCode> GetCode(
                 string name, string requestUrl, [CanBeNull] string noRedirectUrl,
-                string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
+                [CanBeNull] string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
                 string responseError = "error", string responseCode = "code",
                 string description = null, string title = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            Logging.Debug("Name: " + name);
+            Logging.Debug("Request URL: " + requestUrl);
+            Logging.Debug("Manual mode supported: " + (successCodeRegex != null));
+
             var tcs = new TaskCompletionSource<OAuthCode>();
 
             // Try to use web server and localhost to redirect
@@ -59,14 +63,17 @@ namespace AcManager.Tools.Miscellaneous {
                 server = null;
             }
 
+            Logging.Debug("Prepating web-server, URL prefix: http://+:80/" + SubUrl);
             server = new WebServer("http://+:80/" + SubUrl, new Log(e => {
                 tcs.TrySetException(e);
                 DisposeLater();
             }), Unosquare.Labs.EmbedIO.RoutingStrategy.Wildcard);
 
             if (server != null) {
+                Logging.Debug("Registering module…");
                 server.RegisterModule(new WebApiModule());
                 server.Module<WebApiModule>().RegisterController(() => new IndexPageController(responseError, responseCode, (e, s) => {
+                    Logging.Debug($"Result: error={e}, code={s}");
                     if (e != null || s == null) {
                         tcs.TrySetException(new Exception(e == null ? "Code is missing" : "Authentication went wrong: " + e));
                     } else {
@@ -76,12 +83,13 @@ namespace AcManager.Tools.Miscellaneous {
                 }));
 
                 cancellation.Register(() => {
+                    Logging.Debug("Cancellation token");
                     tcs.TrySetCanceled();
                     DisposeLater();
                 });
 
                 try {
-                    Logging.Debug($"Launching web-server on {SubUrl}…");
+                    Logging.Debug($"Launching web-server…");
                     server.RunAsync();
 
                     var url = requestUrl + $"&{redirectUrlKey}={Uri.EscapeDataString(redirectUri)}";
@@ -100,6 +108,11 @@ namespace AcManager.Tools.Miscellaneous {
             description = description ?? ToolsStrings.Uploader_EnterGoogleDriveAuthenticationCode.Replace("Google Drive", name);
             title = title ?? ToolsStrings.Uploader_GoogleDrive.Replace("Google Drive", name);
 
+            if (successCodeRegex == null) {
+                throw new Exception("Failed to start a temporary web-server to get a key back");
+            }
+
+            Logging.Debug("Failed to start a temporary web-server, switching to manual way");
             return PromptCodeFromBrowser.Show(noRedirectUrl != null ?
                     requestUrl + $"&{redirectUrlKey}={Uri.EscapeDataString(noRedirectUrl)}" :
                     requestUrl, new Regex(successCodeRegex, RegexOptions.Compiled),
@@ -198,8 +211,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             public void Error(object message) {
-                var exception = message as Exception;
-                if (exception != null) {
+                if (message is Exception exception) {
                     _errorCallback(exception);
                 }
             }
@@ -256,9 +268,8 @@ namespace AcManager.Tools.Miscellaneous {
             private bool HandleError(HttpListenerContext context, Exception ex, int statusCode = 500) {
                 context.Response.StatusCode = statusCode;
                 context.Response.ContentType = "text/html; charset=utf-8";
-                var buffer =
-                        Encoding.UTF8.GetBytes(string.Format("<html><head><title>{0}</title></head><body><h1>{0}</h1><hr><pre>{1}</pre></body></html>",
-                                "Unexpected Error", ex));
+                var buffer = Encoding.UTF8.GetBytes(string.Format("<html><head><title>{0}</title></head><body><h1>{0}</h1><hr><pre>{1}</pre></body></html>",
+                        "Unexpected Error", ex));
                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                 return true;
             }

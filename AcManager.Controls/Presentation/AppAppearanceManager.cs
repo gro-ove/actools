@@ -26,6 +26,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyLargerTitleLinks = "appearance_biggerTitleLinks";
+        public const string KeyBoldTitleLinks = "appearance_boldTitleLinks";
         public const string KeyForceMenuAtTopInFullscreenMode = "appearance_forceMenuAtTopInFullscreenMode";
         public const string KeyBackgroundImage = "appearance_backgroundImage";
         public const string KeyBackgroundOpacity = "appearance_backgroundImageOpacity";
@@ -158,6 +159,7 @@ namespace AcManager.Controls.Presentation {
             try {
                 _loading = true;
                 AccentColor = ValuesStorage.GetColor(KeyAccentColor, AccentColors.First());
+                Logging.Debug(AccentColor);
                 if (AccentColor.A == 0) AccentColor = AccentColors.First();
 
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
@@ -168,6 +170,7 @@ namespace AcManager.Controls.Presentation {
                 ForceMenuAtTopInFullscreenMode = ValuesStorage.GetBool(KeyForceMenuAtTopInFullscreenMode);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
                 LargerTitleLinks = ValuesStorage.GetBool(KeyLargerTitleLinks);
+                BoldTitleLinks = ValuesStorage.GetBool(KeyBoldTitleLinks);
                 BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
@@ -387,6 +390,25 @@ namespace AcManager.Controls.Presentation {
             }
         }
 
+        private bool? _boldTitleLinks;
+
+        public bool BoldTitleLinks {
+            get => _boldTitleLinks ?? false;
+            set {
+                if (_loading) {
+                    _boldTitleLinks = value;
+                    AppearanceManager.Current.BoldTitleLinks = value;
+                    return;
+                }
+
+                if (Equals(value, _boldTitleLinks)) return;
+                _boldTitleLinks = value;
+                OnPropertyChanged();
+                AppearanceManager.Current.BoldTitleLinks = value;
+                ValuesStorage.Set(KeyBoldTitleLinks, value);
+            }
+        }
+
         private bool? _largeSubMenuFont;
 
         public bool LargeSubMenuFont {
@@ -528,7 +550,7 @@ namespace AcManager.Controls.Presentation {
             get => _popupToolBars ?? false;
             set {
                 if (_loading) {
-                    AppearanceManager.Current.PopupToolBars = value;
+                    ToolbarsApparanceManager.PopupToolBars = value;
                     _popupToolBars = value;
                     return;
                 }
@@ -536,8 +558,33 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _popupToolBars)) return;
                 _popupToolBars = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.PopupToolBars = value;
+                ToolbarsApparanceManager.PopupToolBars = value;
                 ValuesStorage.Set(KeyPopupToolBars, value);
+            }
+        }
+
+        private static class ToolbarsApparanceManager {
+            private static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml",
+                    UriKind.Relative);
+            private static readonly Uri PopupToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Popup.xaml",
+                    UriKind.Relative);
+
+            private static ResourceDictionary _toolBarModeDictionary;
+
+            public static bool? PopupToolBars {
+                get => _toolBarModeDictionary == null ? (bool?)null : _toolBarModeDictionary.Source == PopupToolBarsSource;
+                set {
+                    if (Equals(value, PopupToolBars)) return;
+
+                    if (_toolBarModeDictionary != null) {
+                        Application.Current.Resources.MergedDictionaries.Remove(_toolBarModeDictionary);
+                        _toolBarModeDictionary = null;
+                    }
+
+                    if (!value.HasValue) return;
+                    _toolBarModeDictionary = new ResourceDictionary { Source = value.Value ? PopupToolBarsSource : FixedToolBarsSource };
+                    Application.Current.Resources.MergedDictionaries.Add(_toolBarModeDictionary);
+                }
             }
         }
         #endregion

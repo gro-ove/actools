@@ -68,7 +68,7 @@ namespace AcManager.Tools.Helpers {
             if (!File.Exists(filename)) return;
 
             var ini = new IniFile(filename);
-            ImportIfNeeded(carId, ini["Cars"].GetDouble(carId, 0d) * ini["Adjustments"].GetDouble("ks_mclaren_570s", 1d));
+            ImportIfNeeded(carId, ini["Cars"].GetDouble(carId, 0d) * ini["Adjustments"].GetDouble(carId, 1d));
         }
 
         public static void Export([NotNull] string carId) {
@@ -82,7 +82,7 @@ namespace AcManager.Tools.Helpers {
 
             var ini = new IniFile(filename);
             var cars = ini["Cars"];
-            var multiplier = ini["Adjustments"].GetDouble("ks_mclaren_570s", 1d);
+            var multiplier = ini["Adjustments"].GetDouble(carId, 1d);
             var appDistance = cars.GetDouble(carId, 0d) * multiplier;
             if (cmDistance <= appDistance + 100) return;
 

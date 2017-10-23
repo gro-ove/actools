@@ -96,6 +96,7 @@
               Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="-17 -1 -4 0">
             <TreeView.Resources>
               <Style TargetType="TreeViewItem">
+                <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
                 <Setter Property="Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -120,7 +121,7 @@
                 </Style.Triggers>
               </Style>
               <HierarchicalDataTemplate DataType="{x:Type h:DirectoryEntry}" ItemsSource="{Binding Children}">
-                <Border x:Name="Panel" Padding="4 3">
+                <Border x:Name="Panel" Padding="4 3" Background="Transparent">
                   <DockPanel>
                     <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" Style="{StaticResource Small}" VerticalAlignment="Center"
                         Visibility="{Binding Size, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" DockPanel.Dock="Right" />
@@ -132,6 +133,10 @@
                   </DockPanel>
                 </Border>
                 <HierarchicalDataTemplate.Triggers>
+                  <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Panel" Property="Control.Foreground" Value="{DynamicResource ItemTextHover}" />
+                    <Setter TargetName="Panel" Property="Control.Background" Value="{DynamicResource ItemBackgroundHover}" />
+                  </Trigger>
                   <DataTrigger Value="True">
                     <DataTrigger.Binding>
                       <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
@@ -139,9 +144,9 @@
                         <Binding Path="Id" />
                       </MultiBinding>
                     </DataTrigger.Binding>
-                    <Setter TargetName="Panel" Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
-                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
                     <Setter TargetName="Panel" Property="TextBlock.FontWeight" Value="Bold" />
+                    <Setter TargetName="Panel" Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+                    <Setter TargetName="Panel" Property="Control.Background" Value="{DynamicResource ItemBackgroundSelected}" />
                   </DataTrigger>
                 </HierarchicalDataTemplate.Triggers>
               </HierarchicalDataTemplate>

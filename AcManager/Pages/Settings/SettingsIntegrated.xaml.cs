@@ -5,12 +5,14 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsIntegrated {
         public SettingsIntegrated() {
             DataContext = new ViewModel();
             InitializeComponent();
+            this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         private ViewModel Model => (ViewModel)DataContext;

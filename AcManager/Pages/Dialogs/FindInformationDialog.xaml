@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.FindInformationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
         Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
         d:DataContext="{d:DesignInstance di:FindInformationDialog+ViewModel}" PreviewKeyDown="OnPreviewKeyDown">
     <mui:ModernDialog.ButtonsRowContent>
