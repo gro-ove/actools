@@ -10,7 +10,7 @@
   <ScrollViewer mui:SaveScroll.Key="SettingsContent">
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" set:Search.Keywords="content" Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Content_MarkAsNewLabel}" />
           <ComboBox ItemsSource="{Binding Holder.NewContentPeriods}" SelectedItem="{Binding Holder.NewContentPeriod}" DisplayMemberPath="DisplayName" />
@@ -53,7 +53,7 @@
         <!-- Find information specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_InformationSearchHeader}" />
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="missing;missing content">
           <Label Content="{x:Static g:AppStrings.Settings_Content_SearchEngine}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.SearchEngines}" SelectedItem="{Binding Holder.SearchEngine}"
               DisplayMemberPath="DisplayName" />
@@ -66,7 +66,7 @@
         <!-- Missing content -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading content:" />
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="missing;missing content;installation;download;install">
           <Label Content="Temporary files location:" />
           <Button Command="{Binding ChangeTemporaryFilesLocationCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
           <mui:BetterTextBox Text="{Binding Holder.TemporaryFilesLocation}" Placeholder="{Binding DefaultTemporaryFilesLocation}" />
@@ -78,7 +78,8 @@
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <DockPanel Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
+        <DockPanel set:Search.Include="False"
+            Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
           <Label Content="RaceDepartment credentials:" ToolTip="Optional, default will be used if not set" Background="Transparent" />
           <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
             <mui:BetterTextBox Text="{Binding Holder.RdLogin}" ToolTip="Login (nickname or e-mail)" Placeholder="Login" />
@@ -86,65 +87,66 @@
           </mui:SpacingUniformGrid>
         </DockPanel>
 
-        <DockPanel Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
+        <DockPanel set:Search.Include="False"
+            Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
           <Label Content="RaceDepartment proxy:" Background="Transparent" />
           <mui:BetterTextBox Text="{Binding Holder.RdProxy}" Placeholder="None" />
         </DockPanel>
 
-        <c:MessageBlock>
+        <c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
             <mui:BbCodeBlock.BbCode>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.BbCode>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 
       </StackPanel>
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" set:Search.Keywords="content" Style="{StaticResource SettingsPanel}">
 
         <!-- Cars specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Content_CarsHeader}" />
 
-        <CheckBox IsChecked="{Binding Holder.ChangeBrandIconAutomatically}">
+        <CheckBox set:Search.Keywords="cars" IsChecked="{Binding Holder.ChangeBrandIconAutomatically}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_ChangeBrandIcon}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.CarsYearPostfix}">
+        <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsYearPostfix}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_AddYearPostfix}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.CarsFixSpecs}">
+        <CheckBox set:Search.Keywords="cars" IsChecked="{Binding Holder.CarsFixSpecs}">
           <Label Content="Fix missing spaces in specs in Drive section" />
         </CheckBox>
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="cars">
           <Label Content="Tyres replacement filter" />
           <mui:HistoricalTextBox Text="{Binding Holder.CarReplaceTyresDonorFilter}" ToolTip="Keep it empty or use “*” to allow any cars" Placeholder="*"
               SaveKey="__CarReplaceTyresDonorFilters" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Holder.CarsProperPwRatio}">
+        <CheckBox set:Search.Keywords="cars;specs" IsChecked="{Binding Holder.CarsProperPwRatio}">
           <CheckBox.ToolTip>This way, the more ratio is is better! As it should</CheckBox.ToolTip>
           <Label Content="Inverse P/W ratio to horsepowers per kilogram" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}">
+        <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.SkinsSkipPriority}">
           <CheckBox.ToolTip>I hope AC won’t break because of it with some future update</CheckBox.ToolTip>
           <Label>
             <Label.Content>Remove skin’s priority field on saving</Label.Content>
           </Label>
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.DisplaySteerLock}">
+        <CheckBox set:Search.Keywords="cars;specs;display;ui" IsChecked="{Binding Holder.DisplaySteerLock}">
           <Label Content="Display steer lock" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.OldLayout}" ToolTip="Old layout for Content/Cars page, with vertical list of skins">
+        <CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}" ToolTip="Old layout for Content/Cars page, with vertical list of skins">
           <Label Content="Old layout" />
         </CheckBox>
 
         <!-- Car skins specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Car skins:" />
 
-        <CheckBox IsChecked="{Binding Holder.CarSkinsDisplayId}">
+        <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.CarSkinsDisplayId}">
           <Label Content="Display skin IDs instead of names" />
         </CheckBox>
 

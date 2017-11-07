@@ -182,14 +182,18 @@ namespace FirstFloor.ModernUI.Helpers {
                 return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
             }
 
-            double val;
-            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) {
+            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out var val)) {
                 bytes = 0;
                 return false;
             }
 
             var postfix = size.Substring(split).Trim().ToLower();
-            if (defaultPostfix != null && string.IsNullOrWhiteSpace(postfix)) {
+            if (string.IsNullOrWhiteSpace(postfix)) {
+                if (defaultPostfix == null) {
+                    bytes = 0;
+                    return false;
+                }
+
                 postfix = defaultPostfix;
             }
 
@@ -208,7 +212,6 @@ namespace FirstFloor.ModernUI.Helpers {
             } else if (postfix == "eb" || postfix == UiStrings.LocalizationHelper_ReadableSize_EB.ToLower()) {
                 bytes = (long)(1099511627776 * val);
             } else {
-                MessageBox.Show($"Unknown postfix: {postfix}");
                 bytes = (long)val;
                 return false;
             }
@@ -223,7 +226,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public static string ToSentenceMember(this string s) {
             if (s.Length == 0) return string.Empty;
 
-            s = s.Length < 2 || char.IsLower(s[0]) || char.IsUpper(s[1]) ? s :
+            s = s.Length < 2 || char.IsLower(s[0]) || char.IsUpper(s[1]) || s.Length > 2 && char.IsPunctuation(s[1]) && char.IsUpper(s[2]) ? s :
                     char.ToLower(s[0], CultureInfo.CurrentUICulture) + s.Substring(1);
             return s[s.Length - 1] == '.' || s[s.Length - 1] == '…' ? s.Substring(0, s.Length - 1) : s;
         }

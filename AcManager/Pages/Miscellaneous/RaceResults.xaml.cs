@@ -15,6 +15,7 @@ using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.InnerHelpers;
@@ -104,7 +105,7 @@ namespace AcManager.Pages.Miscellaneous {
                     case "date":
                         return value.Test(obj.Date);
                     case "age":
-                        return value.Test((DateTime.Now - obj.Date).TotalDays);
+                        return value.Test(DateTime.Now - obj.Date);
                     case "mode":
                         return value.Test(obj.ModeSummary);
                     case "track":

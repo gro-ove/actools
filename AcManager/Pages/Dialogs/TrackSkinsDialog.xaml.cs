@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -24,11 +25,11 @@ namespace AcManager.Pages.Dialogs {
             if (track == null) throw new ArgumentNullException(nameof(track));
 
             DataContext = new ViewModel(track);
-
             DefaultContentSource = Model.ListUri;
             MenuLinkGroups.Add(new LinkGroupFilterable {
                 DisplayName = AppStrings.Main_Skins,
-                Source = Model.ListUri
+                Source = Model.ListUri,
+                FilterHint = FilterHints.TrackSkins
             });
 
             InitializeComponent();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Lists;
 using AcManager.Tools.Managers;
 using JetBrains.Annotations;
@@ -31,7 +32,8 @@ namespace AcManager.Pages.Dialogs {
             var linkGroup = new LinkGroupFilterable {
                 DisplayName = AppStrings.Main_Setups,
                 Source = Model.ListUri,
-                AddAllLink = true
+                AddAllLink = true,
+                FilterHint = FilterHints.CarSetups
             };
 
             foreach (var link in CarSetupsListPage.GetRemoteLinks(car.Id)) {

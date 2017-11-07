@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using AcManager.Internal;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Settings {
@@ -73,6 +76,17 @@ namespace AcManager.Pages.Settings {
 
         public static readonly DependencyProperty LinkedToProperty = DependencyProperty.RegisterAttached("LinkedTo", typeof(object),
                 typeof(Search), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None));
+
+        public static string GetSubCategory(DependencyObject obj) {
+            return (string)obj.GetValue(SubCategoryProperty);
+        }
+
+        public static void SetSubCategory(DependencyObject obj, string value) {
+            obj.SetValue(SubCategoryProperty, value);
+        }
+
+        public static readonly DependencyProperty SubCategoryProperty = DependencyProperty.RegisterAttached("SubCategory", typeof(string),
+                typeof(Search), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
         #endregion
 
         private static readonly Dictionary<string, string> Namespaces = new Dictionary<string, string> {
@@ -110,10 +124,40 @@ namespace AcManager.Pages.Settings {
             _filter = Filter.Create(StringTester.Instance, uri.GetQueryParam("Filter") ?? "*");
         }
 
-        private bool TestElement(FrameworkElement y) {
-            return y.FindLogicalChildren<TextBlock>().Any(z => _filter.Test(z.Text)) ||
-                    y.FindLogicalChildren<Label>().Any(z => _filter.Test(z.Content?.ToString() ?? "")) ||
-                    GetKeywords(y)?.Split(';').Any(z => _filter.Test(z.Trim())) == true;
+        private bool TestKeywords([CanBeNull] string keywords) {
+            return keywords?.Split(';').Select(x => x.Trim()).Where(x => x.Length > 0).Any(z => _filter.Test(z.Trim())) == true;
+        }
+
+        private bool PreTestElement([CanBeNull] FrameworkElement element) {
+            if (element == null || !GetInclude(element)) return false;
+            if (element is TextBlock || element is Button) return false;
+            return true;
+        }
+
+        private bool TestElement([CanBeNull] FrameworkElement element) {
+            if (element == null) return false;
+
+            while (GetLinkedTo(element) is FrameworkElement refElement) {
+                element = refElement;
+            }
+
+            if (LimitedService.GetLimited(element) && !AppKeyHolder.IsAllRight) {
+                return false;
+            }
+
+            return element.FindLogicalChildren<TextBlock>().Any(z => _filter.Test(z.Text)) ||
+                    element.FindLogicalChildren<Label>().Any(z => _filter.Test(z.Content?.ToString() ?? "")) ||
+                    TestKeywords(GetKeywords(element)) ||
+                    TestKeywords(GetKeywords(element.Parent));
+        }
+
+        private string GetSubCategoryFromHeader([CanBeNull] FrameworkElement element) {
+            if (element == null) return null;
+
+            var textBlock = (element.Parent as Panel)?.Children.OfType<FrameworkElement>().TakeWhile(x => !ReferenceEquals(x, element))
+                                                      .OfType<TextBlock>().LastOrDefault();
+            if (textBlock == null) return null;
+            return GetSubCategory(textBlock) ?? textBlock?.Text;
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
@@ -141,24 +185,23 @@ namespace AcManager.Pages.Settings {
                 NamespaceType = Namespaces.GetValueOrDefault(x.GetType().Namespace ?? "")
             })).Select(x => new {
                 Category = GetCategory(x.Panel),
+                Limited = GetLimited(x.Panel),
                 x.NamespaceType,
                 x.Panel
-            }).Where(x => x.Category != null).ToList();
+            }).Where(x => x.Category != null && (!x.Limited || AppKeyHolder.IsAllRight)).ToList();
             Logging.Debug($"Finding panels: {s.Elapsed.TotalMilliseconds:F1} ms ({panels.Count} panels)");
 
             s.Restart();
             var blocks = panels.GroupBy(x => string.IsNullOrWhiteSpace(x.NamespaceType) ? x.Category : $"{x.NamespaceType}/{x.Category}").Select(x => new {
                 Category = x.Key,
-                Blocks = x.SelectMany(y => y.Panel.Children.OfType<FrameworkElement>().Where(GetInclude)).ToList()
+                Blocks = x.SelectMany(y => y.Panel.Children.OfType<FrameworkElement>().Where(PreTestElement)).ToList()
             }).ToList();
             Logging.Debug($"Finding blocks: {s.Elapsed.TotalMilliseconds:F1} ms ({blocks.Count} blocks)");
 
             s.Restart();
             var filtered = blocks.Select(x => new {
                 x.Category,
-                Blocks = x.Blocks.Where(y => y.FindLogicalChildren<TextBlock>().Any(z => _filter.Test(z.Text)) ||
-                        y.FindLogicalChildren<Label>().Any(z => _filter.Test(z.Content?.ToString() ?? "")) ||
-                        GetKeywords(y)?.Split(';').Any(z => _filter.Test(z.Trim())) == true).ToList()
+                Blocks = x.Blocks.Where(TestElement).ToList()
             }).ToList();
             Logging.Debug($"Filtering: {s.Elapsed.TotalMilliseconds:F1} ms ({filtered.Count} filtered)");
 
@@ -180,7 +223,7 @@ namespace AcManager.Pages.Settings {
                 void SetSubCategory(string value) {
                     if (value == currentSubCategory || value == null) return;
 
-                    var first = panelItems.Children.Count == 0;
+                    var first = panelItems.Children.Count <= 1;
                     currentSubCategory = value;
 
                     panelItems.Children.Add(new TextBlock {
@@ -190,13 +233,11 @@ namespace AcManager.Pages.Settings {
                 }
 
                 foreach (var item in category.Blocks) {
+                    SetSubCategory(GetSubCategoryFromHeader(item));
                     var panel = (Panel)item.Parent;
-                    SetSubCategory(panel.Children.OfType<FrameworkElement>().TakeWhile(x => !ReferenceEquals(x, item))
-                                        .OfType<TextBlock>().LastOrDefault()?.Text);
-
                     panel.Children.Remove(item);
                     item.DataContext = item.DataContext ?? panel.DataContext;
-                    item.Margin = new Thickness(0, 0, 0, 8);
+                    item.Margin = new Thickness(item.Margin.Left, 0, 0, 8);
                     panelItems.Children.Add(item);
                 }
 

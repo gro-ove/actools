@@ -17,6 +17,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
 using StringBasedFilter.Parsing;
+using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Objects {
     public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation {
@@ -549,9 +550,9 @@ namespace AcManager.Tools.Objects {
                     .Replace(" not ", " ! ");
 
             var filter = Filter.Create(new TesterInner(), query, new FilterParams {
-                StrictMode = true,
+                StringMatchMode = StringMatchMode.StartsWith,
                 BooleanTestFactory = b => new CustomBooleanTestEntry(b),
-                ValueSplitFunc = ValueSplitFunc.Custom,
+                ValueSplitter = new ValueSplitter(ValueSplitFunc.Custom, ValueSplitFunc.Separators),
                 ValueConversion = null
             });
 
@@ -561,6 +562,7 @@ namespace AcManager.Tools.Objects {
 
         internal static class ValueSplitFunc {
             private static readonly Regex ParsingRegex = new Regex(@"^(.+?)([:<>≥≤=+-])\s*", RegexOptions.Compiled);
+            public static readonly char[] Separators = { ':', '<', '>', '≥', '≤', '=', '+', '-' };
 
             private static string ClearKey(string key) {
                 return key?.Trim().Trim('"', '\'', '`', '“', '”');

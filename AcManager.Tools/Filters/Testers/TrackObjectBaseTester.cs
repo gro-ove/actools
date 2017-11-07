@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class TrackObjectBaseTester : ITester<TrackObjectBase> {
+namespace AcManager.Tools.Filters.Testers {
+    public class TrackObjectBaseTester : ITester<TrackObjectBase>, ITesterDescription {
         public static readonly TrackObjectBaseTester Instance = new TrackObjectBaseTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -60,6 +62,16 @@ namespace AcManager.Tools.Filters {
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("city", "City", KeywordType.String, KeywordPriority.Normal),
+                new KeywordDescription("geotags", "Geo tags", KeywordType.String, KeywordPriority.Normal),
+                new KeywordDescription("len", "Length", KeywordType.Distance, KeywordPriority.Important, "length"),
+                new KeywordDescription("width", "Width", KeywordType.Distance, KeywordPriority.Normal),
+                new KeywordDescription("pits", "Pit boxes", KeywordType.Number, KeywordPriority.Important, "pitboxes"),
+            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }
 }

@@ -70,13 +70,12 @@ namespace CustomPreviewUpdater {
             }
         }
 
-        private readonly Dictionary<string, string[]> _skinsPerCar = new Dictionary<string, string[]>(); 
+        private readonly Dictionary<string, string[]> _skinsPerCar = new Dictionary<string, string[]>();
 
         public bool TestChild(string carId, string key, IFilter filter) {
             if (key != "s" && key != "skin") return false;
 
-            string[] skins;
-            if (!_skinsPerCar.TryGetValue(carId, out skins)) {
+            if (!_skinsPerCar.TryGetValue(carId, out var skins)) {
                 skins = Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(_acRoot, carId)).Select(Path.GetFileName).ToArray();
                 _skinsPerCar[carId] = skins;
             }

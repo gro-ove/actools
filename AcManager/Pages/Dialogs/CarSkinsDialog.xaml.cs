@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -28,7 +29,8 @@ namespace AcManager.Pages.Dialogs {
             DefaultContentSource = Model.ListUri;
             MenuLinkGroups.Add(new LinkGroupFilterable {
                 DisplayName = AppStrings.Main_Skins,
-                Source = Model.ListUri
+                Source = Model.ListUri,
+                FilterHint = FilterHints.CarSkins
             });
 
             InitializeComponent();

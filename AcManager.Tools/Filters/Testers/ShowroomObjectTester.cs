@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class ShowroomObjectTester : ITester<ShowroomObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class ShowroomObjectTester : ITester<ShowroomObject>, ITesterDescription {
         public static ShowroomObjectTester Instance = new ShowroomObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -35,6 +37,13 @@ namespace AcManager.Tools.Filters {
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("hassound", "With sound", KeywordType.Flag, KeywordPriority.Normal),
+                new KeywordDescription("sound", "With sound enabled", KeywordType.Flag, KeywordPriority.Normal),
+            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }
 }

@@ -1,13 +1,13 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using StringBasedFilter.TestEntries;
 
 namespace StringBasedFilter.Tests {
-    [TestClass]
+    [TestFixture]
     public class EntiesTest {
-        [TestMethod]
+        [Test]
         public void StringEntryTest() {
-            var a = new StringTestEntry("aBc", false, false);
-            var b = new StringTestEntry("aBc", true, false);
+            var a = new StringTestEntry("aBc", StringMatchMode.IncludedWithin);
+            var b = new StringTestEntry("aBc", StringMatchMode.CompleteMatch);
 
             Assert.IsTrue(a.Test("abc"));
             Assert.IsTrue(a.Test("qw abc"));

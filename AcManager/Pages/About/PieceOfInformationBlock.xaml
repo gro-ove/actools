@@ -12,7 +12,7 @@
       <TextBlock Style="{StaticResource Label}" Margin="0 0 0 16"
           Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
           Text="{Binding Version, StringFormat={x:Static g:AppStrings.About_VersionFormat}}" />
-      <mui:SelectableBbCodeBlock BbCode="{Binding Content}" LineHeight="22" />
+      <mui:SelectableBbCodeBlock BbCode="{Binding Content}" LineHeight="20" />
     </StackPanel>
   </ScrollViewer>
 </UserControl>

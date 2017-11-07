@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using AcManager.AcSound;
 using AcManager.Assets;
 using AcManager.ContentRepair;
@@ -32,6 +33,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -322,6 +324,7 @@ namespace AcManager {
             BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
+            ExtraTestEntries.Initialize();
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
@@ -422,6 +425,7 @@ namespace AcManager {
                 ToolTipService.BetweenShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(500));
                 ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
+                Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(60));
             } catch (Exception e) {
                 Logging.Error(e);
             }

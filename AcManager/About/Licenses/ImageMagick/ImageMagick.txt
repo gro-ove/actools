@@ -1,0 +1,4 @@
+name: ImageMagick
+url: http://www.imagemagick.org/
+content: LICENSE
+sid: ln394cgn

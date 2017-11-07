@@ -1,0 +1,23 @@
+﻿sid: zb6r3e63
+id: filteringQuotes
+
+This part is not only about quotes, but I failed to find a better name for it. But first, let’s start with quotes.
+
+If you already saw [url="/Pages/About/FiltersPage.xaml?Key=filteringExpressions"]More About Expressions[/url] post, you know that space usually is used as AND operator. This way, you can search with convinient [mono][b]bmw e30[/mono][/b] rather than [mono][b]bmw m3 e30[/mono][/b] or [mono][b]bmw & e30[/mono][/b]. And that’s why you might want to use double quotes — within them, any space will work as a symbol to look for rather than a separator between keywords. Same goes for property filters as well.
+
+ • [mono][b]lotus 2[/mono][/b] (finds [b]Lotus 2-Eleven[/b], [b]Lotus 2-Eleven GT4[/b] and [b]Lotus Exige 240R[/b]);
+ • [mono][b]"lotus 2"[/mono][/b] (finds both [b]Lotus 2-Eleven[/b] and [b]Lotus 2-Eleven GT4[/b]);
+ • [mono][b]'lotus 2-eleven'[/mono][/b] (finds only [b]Lotus 2-Eleven[/b]).
+
+And if you want to look for quotes, spaces or operator symbols, simply put “\” before them, like so:
+
+ • [mono][b]\'[/mono][/b] (for me, this filter found [b]Kia Cee'd[/b] and [b]Porsche 935/78 'Moby Dick'[/b]).
+
+Also, in case you familiar with a thing called [url="https://en.wikipedia.org/wiki/Regular_expression"]regular expressions[/url], you can use them with “`”:
+
+ • [mono][b]bmw `m\d+`[/mono][/b] (finds all M-series BMWs);
+ • [mono][b]#`^#?A\d+$`[/mono][/b] (finds all cars with obsolete tags like “#A1”…“#A5” which were used in earlier versions of AC).
+
+Last not related to quotes thing: as in Windows Explorer, you can use “*” and “?” as a substitute for any symbols and any symbol accordingly. Of course, it only works if you don’t wrap word in any quotes:
+
+ • [mono][b]year:198?[/mono][/b] (finds all cars from 1980s).

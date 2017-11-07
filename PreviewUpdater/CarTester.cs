@@ -55,7 +55,7 @@ namespace PreviewUpdater {
                 case "age": {
                     var directory = FileUtils.GetCarDirectory(_acRoot, carId);
                     var age = File.GetCreationTime(directory);
-                    return value.Test((DateTime.Now - age).TotalDays);
+                    return value.Test(DateTime.Now - age);
                 }
 
                 case "n":
@@ -70,7 +70,7 @@ namespace PreviewUpdater {
             }
         }
 
-        private readonly Dictionary<string, string[]> _skinsPerCar = new Dictionary<string, string[]>(); 
+        private readonly Dictionary<string, string[]> _skinsPerCar = new Dictionary<string, string[]>();
 
         public bool TestChild(string carId, string key, IFilter filter) {
             if (key != "s" && key != "skin") return false;

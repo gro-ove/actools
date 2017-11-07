@@ -16,6 +16,7 @@ using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -180,7 +181,7 @@ namespace AcManager.Pages.Lists {
             }
 
             var existing = main.OpenSubGroup("setups", $"Setups for {car.DisplayName}",
-                    UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id));
+                    UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id), FilterHints.CarSetups);
             foreach (var link in GetRemoteLinks(car.Id)) {
                 existing.FixedLinks.Add(link);
             }

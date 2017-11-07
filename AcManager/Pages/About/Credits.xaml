@@ -21,6 +21,6 @@
         </Style>
     </UserControl.Style>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-        <TreeView x:Name="TreeView" Margin="20" PreviewMouseWheel="TreeView_OnPreviewMouseWheel" />
+        <TreeView x:Name="TreeView" Margin="20" PreviewMouseWheel="OnTreeViewMouseWheel" />
     </ScrollViewer>
 </UserControl>

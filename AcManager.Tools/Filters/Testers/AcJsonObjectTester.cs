@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.AcObjectsNew;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class AcJsonObjectTester : ITester<AcJsonObjectNew> {
+namespace AcManager.Tools.Filters.Testers {
+    public class AcJsonObjectTester : ITester<AcJsonObjectNew>, ITesterDescription {
         public static readonly AcJsonObjectTester Instance = new AcJsonObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -64,6 +65,17 @@ namespace AcManager.Tools.Filters {
             }
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("dlc", "DLC name or ID", KeywordType.String, KeywordPriority.Important),
+                new KeywordDescription("desc", "Description", KeywordType.String, KeywordPriority.Normal, "description"),
+                new KeywordDescription("country", "Country", KeywordType.String, KeywordPriority.Normal, "c"),
+                new KeywordDescription("tag", "Tag", KeywordType.String, KeywordPriority.Important, "t", "#"),
+                new KeywordDescription("version", "Version", KeywordType.String, KeywordPriority.Normal),
+                new KeywordDescription("url", "URL", KeywordType.String, KeywordPriority.Normal),
+            }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }
 }

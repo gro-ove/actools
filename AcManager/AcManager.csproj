@@ -269,6 +269,9 @@
     <Compile Include="Pages\About\ImportantTipsPage.xaml.cs">
       <DependentUpon>ImportantTipsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\About\FiltersPage.xaml.cs">
+      <DependentUpon>FiltersPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\About\ReleaseNotesPage.xaml.cs">
       <DependentUpon>ReleaseNotesPage.xaml</DependentUpon>
     </Compile>
@@ -782,6 +785,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\About\ImportantTipsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\About\FiltersPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1543,6 +1550,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
+    <None Include="About\Filtering\More About Expressions.txt" />
+    <None Include="About\Filtering\Introduction.txt" />
+    <None Include="About\Filtering\More About Quotes.txt" />
+    <None Include="About\Filtering\More About Properties.txt" />
+    <None Include="About\Filtering\More About Sub-Filters.txt" />
+    <None Include="About\Licenses\ImageMagick\LICENSE" />
     <None Include="Assets\Presets.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Presets.cs</LastGenOutput>
@@ -1845,6 +1859,7 @@
     <Content Include="About\Licenses\FMOD\FMOD.txt" />
     <Content Include="About\Licenses\FMOD\LICENSE.TXT" />
     <Content Include="About\Licenses\FXAA\FXAA.txt" />
+    <Content Include="About\Licenses\ImageMagick\ImageMagick.txt" />
     <Content Include="About\Licenses\Json.NET\Json.NET.txt" />
     <Content Include="About\Licenses\LevelDB.net\LevelDB.net.txt" />
     <Content Include="About\Licenses\LevelDB\LevelDB.txt" />
@@ -1852,6 +1867,8 @@
     <Content Include="About\Licenses\LoadingIndicators.WPF\LICENSE" />
     <Content Include="About\Licenses\LoadingIndicators.WPF\LoadingIndicators.WPF.txt" />
     <Content Include="About\Licenses\LZF\LZF.txt" />
+    <Content Include="About\Licenses\Magick.NET\License.txt" />
+    <Content Include="About\Licenses\Magick.NET\Magick.NET.txt" />
     <Content Include="About\Licenses\MegaApiClient\LICENSE" />
     <Content Include="About\Licenses\MegaApiClient\MegaApiClient.txt" />
     <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />

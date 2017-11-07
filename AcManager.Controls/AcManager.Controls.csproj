@@ -153,6 +153,7 @@
     <Compile Include="Graphs\GraphDataViewerBase.cs" />
     <Compile Include="Graphs\OxyExtenstion.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
+    <Compile Include="Helpers\FilterHints.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />

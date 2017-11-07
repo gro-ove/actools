@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class ServerPresetObjectTester : ITester<ServerPresetObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class ServerPresetObjectTester : ITester<ServerPresetObject>, ITesterDescription {
         public static ServerPresetObjectTester Instance = new ServerPresetObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -25,6 +27,11 @@ namespace AcManager.Tools.Filters {
             //}
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new KeywordDescription[] {
+            }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }
 }

@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class TrackObjectTester : ITester<TrackObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class TrackObjectTester : ITester<TrackObject>, ITesterDescription {
         public static readonly TrackObjectTester Instance = new TrackObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -29,6 +31,12 @@ namespace AcManager.Tools.Filters {
             }
 
             return TrackObjectBaseTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("layouts", "Number of layouts", KeywordType.Number, KeywordPriority.Important),
+            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -15,6 +18,27 @@ namespace StringBasedFilter.Parsing {
         MoreThanOrEqualTo = '≥',
         LessThanOrEqualTo = '≤',
         EqualTo = '=',
+    }
+
+    public static class FilterComparingOperations {
+        public static FilterComparingOperation Parse([CanBeNull] string key) {
+            if (key?.Length == 1 && Enum.IsDefined(typeof(FilterComparingOperation), (int)key[0])) {
+                return (FilterComparingOperation)key[0];
+            }
+
+            switch (key) {
+                case "−":
+                    return FilterComparingOperation.IsFalse;
+                case ">=":
+                case "=>":
+                    return FilterComparingOperation.MoreThanOrEqualTo;
+                case "<=":
+                case "=<":
+                    return FilterComparingOperation.LessThanOrEqualTo;
+                default:
+                    return FilterComparingOperation.IsSame;
+            }
+        }
     }
 
     public class FilterPropertyValue {
@@ -43,13 +67,16 @@ namespace StringBasedFilter.Parsing {
     }
 
     [NotNull]
-    public delegate Regex RegexFactory(string query, bool wholeMatch, bool strictMode);
+    public delegate Regex RegexFactory(string query, StringMatchMode mode);
 
     [CanBeNull]
     public delegate FilterPropertyValue ValueSplitFunc([NotNull] string value);
 
     [NotNull]
     public delegate ITestEntry BooleanTestFactory(bool value);
+
+    [CanBeNull]
+    public delegate ITestEntry ExtraTestEntryFactory([CanBeNull] string key);
 
     [NotNull]
     public delegate string ValueConversion([NotNull] string rawValue);
@@ -60,8 +87,10 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         public static readonly FilterParams Defaults = new FilterParams();
 
-        public bool StrictMode { get; set; }
-        public bool FullMatchMode { get; set; }
+        /// <summary>
+        /// How to compare strings with queries.
+        /// </summary>
+        public StringMatchMode StringMatchMode { get; set; } = StringMatchMode.IncludedWithin;
 
         /// <summary>
         /// Converts input value before splitting if needed. Can be null.
@@ -75,8 +104,11 @@ namespace StringBasedFilter.Parsing {
         /// or returns null for simple mode without key.
         /// </summary>
         [NotNull]
-        public ValueSplitFunc ValueSplitFunc { get; set; } = DefaultValueSplitFunc.Default;
+        public ValueSplitter ValueSplitter { get; set; } = ValueSplitter.Default;
 
+        /// <summary>
+        /// Defines how to build Regex objects from queries.
+        /// </summary>
         [NotNull]
         public RegexFactory RegexFactory { get; set; } = RegexFromQuery.Create;
 
@@ -85,17 +117,24 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         [NotNull]
         public BooleanTestFactory BooleanTestFactory { get; set; } = b => new BooleanTestEntry(b);
+
+        /*/// <summary>
+        /// Factory for extra TestEntry objects, for testing stuff like distances or weights.
+        /// </summary>
+        [NotNull]
+        public ExtraTestEntryFactory ExtraTestEntryFactory { get; set; } = key => null;*/
     }
 
     internal static class DefaultValueSplitFunc {
-        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>≥≤=+-])\s*", RegexOptions.Compiled);
+        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*(>=|<=|=>|=<|[:<>≥≤=+\-−])\s*", RegexOptions.Compiled);
+        public static readonly char[] Separators = { ':', '<', '>', '≥', '≤', '=', '+', '-', '−' };
 
         public static FilterPropertyValue Default(string s) {
             var match = ParsingRegex.Match(s);
             if (!match.Success) return null;
 
             var key = match.Groups[1].Value.ToLower();
-            var operation = (FilterComparingOperation)match.Groups[3].Value[0];
+            var operation = FilterComparingOperations.Parse(match.Groups[3].Value);
             var value = s.Substring(match.Length).TrimStart();
 
             if (match.Groups[2].Success) {
@@ -105,6 +144,21 @@ namespace StringBasedFilter.Parsing {
 
             return new FilterPropertyValue(key, operation, value);
         }
+    }
+
+    public class ValueSplitter {
+        public ValueSplitter([NotNull] ValueSplitFunc valueSplitFunc, [NotNull] params char[] keywordSplitCharacters) {
+            ValueSplitFunc = valueSplitFunc;
+            KeywordSplitCharacters = keywordSplitCharacters;
+        }
+
+        [NotNull]
+        public ValueSplitFunc ValueSplitFunc { get; }
+
+        [NotNull]
+        public char[] KeywordSplitCharacters { get; }
+
+        public static ValueSplitter Default { get; } = new ValueSplitter(DefaultValueSplitFunc.Default, DefaultValueSplitFunc.Separators);
     }
 
     internal class FilterParser {
@@ -130,17 +184,32 @@ namespace StringBasedFilter.Parsing {
             return result;
         }
 
-        private bool NextMatchIs(char match) {
-            var i = _pos;
-            for (; i < _filter.Length; i++) {
-                if (char.IsWhiteSpace(_filter[i])) continue;
-                if (_filter[i] != match) return false;
+        private static bool IsTwoOperandsControlChar(char c) {
+            return c == '&' || c == '|' || c == ',' || c == '^';
+        }
 
-                _pos = i + 1;
-                return true;
+        private bool IsKeywordSeparatorChar(char c) {
+            return Array.IndexOf(_params.ValueSplitter.KeywordSplitCharacters, c) != -1;
+        }
+
+        private static bool IsControlChar(char c) {
+            return IsTwoOperandsControlChar(c);
+        }
+
+        private char GetNextNonSpace(out int pos) {
+            pos = _pos;
+            for (; pos < _filter.Length; pos++) {
+                if (char.IsWhiteSpace(_filter[pos])) continue;
+                return _filter[pos];
             }
 
-            return false;
+            return (char)0;
+        }
+
+        private bool NextMatchIs(char match) {
+            if (GetNextNonSpace(out var pos) != match) return false;
+            _pos = pos + 1;
+            return true;
         }
 
         private FilterTreeNode NextNode() {
@@ -149,23 +218,38 @@ namespace StringBasedFilter.Parsing {
 
         private FilterTreeNode NextNodeOr() {
             var node = NextNodeNor();
+            var previousNode = node;
+            var nodeKeySet = false;
+            string nodeKey = null;
+            var nodeKeyNot = false;
 
             while (true) {
                 if (NextMatchIs('|')) {
-                    node = new FilterTreeNodeOr(node, NextNodeNor());
+                    previousNode = NextNodeNor();
+                    nodeKeySet = false;
+                    node = new FilterTreeNodeOr(node, previousNode);
                 } else if (NextMatchIs(',')) {
-                    var a = node;
                     var b = NextNodeNor();
 
-                    var av = a as FilterTreeNodeValue;
-                    if (av != null) {
-                        var bv = b as FilterTreeNodeValue;
-                        if (bv != null && bv.Key == null) {
-                            bv.Key = av.Key;
+                    if (!nodeKeySet) {
+                        nodeKeyNot = previousNode is FilterTreeNodeNot;
+                        nodeKey = ((nodeKeyNot ? ((FilterTreeNodeNot)previousNode).A : previousNode) as FilterTreeNodeValue)?.Key;
+                        nodeKeySet = nodeKey != null;
+                    }
+
+                    if (nodeKey != null) {
+                        if (b is FilterTreeNodeValue bv && bv.Key == null) {
+                            bv.Key = nodeKey;
+                            if (nodeKeyNot) {
+                                b = new FilterTreeNodeNot(b);
+                            }
+                        } else {
+                            previousNode = b;
+                            nodeKeySet = false;
                         }
                     }
 
-                    node = new FilterTreeNodeOr(a, b);
+                    node = new FilterTreeNodeOr(node, b);
                 } else {
                     return node;
                 }
@@ -182,10 +266,42 @@ namespace StringBasedFilter.Parsing {
 
         private FilterTreeNode NextNodeAnd() {
             var node = NextNodeNot();
-            while (NextMatchIs('&')) {
-                node = new FilterTreeNodeAnd(node, NextNodeNot());
+            var previousNode = node;
+            var nodeKeySet = false;
+            string nodeKey = null;
+            var nodeKeyNot = false;
+
+            while (true) {
+                if (NextMatchIs('&')) {
+                    previousNode = NextNodeNot();
+                    nodeKeySet = false;
+                    node = new FilterTreeNodeAnd(node, previousNode);
+                } else if (!IsTwoOperandsControlChar(GetNextNonSpace(out _)) && _filter.Length > _pos && _filter[_pos] == ' ') {
+                    var b = NextNodeNot();
+
+                    if (!nodeKeySet) {
+                        nodeKeyNot = previousNode is FilterTreeNodeNot;
+                        nodeKey = ((nodeKeyNot ? ((FilterTreeNodeNot)previousNode).A : previousNode) as FilterTreeNodeValue)?.Key;
+                        nodeKeySet = nodeKey != null;
+                    }
+
+                    if (nodeKey != null) {
+                        if (b is FilterTreeNodeValue bv && bv.Key == null) {
+                            bv.Key = nodeKey;
+                            if (nodeKeyNot) {
+                                b = new FilterTreeNodeNot(b);
+                            }
+                        } else {
+                            previousNode = b;
+                            nodeKeySet = false;
+                        }
+                    }
+
+                    node = new FilterTreeNodeAnd(node, b);
+                } else {
+                    return node;
+                }
             }
-            return node;
         }
 
         private FilterTreeNode NextNodeNot() {
@@ -196,33 +312,86 @@ namespace StringBasedFilter.Parsing {
             return inverse ? new FilterTreeNodeNot(NextNodeValue()) : NextNodeValue();
         }
 
+        private void SkipSpaces() {
+            for (; _pos < _filter.Length && _filter[_pos] == ' '; _pos++) { }
+        }
+
+        [NotNull]
         private FilterTreeNode NextNodeValue() {
             string s = null;
             FilterTreeNode node = null;
-
             var buffer = new StringBuilder(_filter.Length - _pos);
+
+            SkipSpaces();
+
+            var previousNonSpace = (char)0;
+            var previousNonSpaceIndex = -1;
+            var keywordSeparatorIncluded = false;
+
             for (; _pos < _filter.Length; _pos++) {
                 var c = _filter[_pos];
                 if (c == '\\') {
                     _pos++;
                     if (_pos < _filter.Length) {
-                        buffer.Append(_filter[_pos]);
+                        var e = _filter[_pos];
+                        if (RegexFromQuery.IsQuerySymbol(e)) {
+                            buffer.Append('\\');
+                        }
+
+                        buffer.Append(e);
                     }
                     continue;
                 }
 
-                if (c == ')' || c == '&' || c == '|' || c == ',' || c == '^' || c == '!') {
+                if (c != ' ') {
+                    previousNonSpace = c;
+                    previousNonSpaceIndex = _pos;
+                } else {
+                    var nextNonSpace = GetNextNonSpace(out var nonSpacePos);
+                    if (IsControlChar(nextNonSpace)) break;
+                    if (IsKeywordSeparatorChar(nextNonSpace) || IsKeywordSeparatorChar(previousNonSpace)) {
+                        _pos = nonSpacePos - 1;
+                        continue;
+                    }
+
+                    // Complex and questionable case: ignore spaces when they separate a number from a word, but only then
+                    if (keywordSeparatorIncluded && previousNonSpaceIndex >= 0 && char.IsDigit(previousNonSpace) && char.IsLetter(nextNonSpace)) {
+                        for (var j = previousNonSpaceIndex - 1; j >= 0; j--) {
+                            var p = _filter[j];
+                            if (char.IsLetter(p)) goto BreakPiece;
+                            if (!char.IsDigit(p)) break;
+                        }
+
+                        for (var j = nonSpacePos + 1; j < _filter.Length; j++) {
+                            var p = _filter[j];
+                            if (char.IsDigit(p)) goto BreakPiece;
+                            if (!char.IsLetter(p)) break;
+                        }
+
+                        _pos = nonSpacePos - 1;
+                        continue;
+                    }
+
+                    BreakPiece:
                     break;
                 }
 
-                if (c == '`' || c == '"') {
+                if (IsControlChar(c) || c == ')') {
+                    break;
+                }
+
+                if (IsKeywordSeparatorChar(c)) {
+                    keywordSeparatorIncluded = true;
+                }
+
+                if (c == '`' || c == '"' || c == '\'') {
                     var i = _pos + 1;
                     var literal = new StringBuilder(_filter.Length - _pos);
                     literal.Append(c);
 
                     for (; i < _filter.Length; i++) {
                         var n = _filter[i];
-                        if (n == '\\') {
+                        if (n == '\\' && (c != '`' || i + 1 < _filter.Length && _filter[i + 1] == '`')) {
                             i++;
                             if (i < _filter.Length) {
                                 literal.Append(_filter[i]);
@@ -233,19 +402,13 @@ namespace StringBasedFilter.Parsing {
                         literal.Append(n);
 
                         if (n == c) {
-                            goto Ok;
+                            // If there is only one quote symbol, it’s not going to get processed as quoted text
+                            buffer.Append(literal);
+                            _pos = i;
+                            break;
                         }
                     }
-
-                    continue;
-
-                    Ok:
-                    buffer.Append(literal);
-                    _pos = i;
-                    continue;
-                }
-
-                if (c == '(') {
+                } else if (c == '(') {
                     var value = buffer.ToString().Trim();
 
                     if (value.Length > 0) {
@@ -266,9 +429,9 @@ namespace StringBasedFilter.Parsing {
                     }
 
                     break;
+                } else {
+                    buffer.Append(c);
                 }
-
-                buffer.Append(c);
             }
 
             if (node == null) {

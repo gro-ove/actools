@@ -11,7 +11,6 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {

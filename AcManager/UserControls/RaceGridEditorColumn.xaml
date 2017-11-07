@@ -121,7 +121,6 @@
                 <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
               </mui:BetterImage.ToolTip>
             </mui:BetterImage>
-
             <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
             <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
                 Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}" />
@@ -135,17 +134,22 @@
           </StackPanel>
         </Grid>
       </c:ModernPopup>
+
       <!--<c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="DetailsPopup" Placement="Custom" Padding="8"
-                    IsOpen="{Binding IsChecked, ElementName=DetailsButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
-                    Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
-                <c:RaceGridEditorTable DataContext="{x:Reference This}" Model="{Binding Model, Source={x:Reference This}}" />
-            </c:ModernPopup>-->
+          IsOpen="{Binding IsChecked, ElementName=DetailsButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
+          Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
+        <c:RaceGridEditorTable DataContext="{x:Reference This}" Model="{Binding Model, Source={x:Reference This}}" />
+      </c:ModernPopup>-->
     </Grid>
 
     <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
       <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Margin="0 0 8 0" DockPanel.Dock="Left" />
       <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
-          Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory" />
+          Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory">
+        <mui:HistoricalTextBox.ToolTip>
+          <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value, Source={x:Static c:FilterHints.Cars}}" />
+        </mui:HistoricalTextBox.ToolTip>
+      </mui:HistoricalTextBox>
     </DockPanel>
 
     <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
@@ -217,8 +221,7 @@
               <Setter Property="ItemTemplate">
                 <Setter.Value>
                   <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                    <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent"
-                        c:ToolTips.Car="{Binding Car}">
+                    <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent" c:ToolTips.Car="{Binding Car}">
                       <DockPanel.InputBindings>
                         <MouseBinding Command="{Binding DeleteCommand}" Gesture="MiddleClick" />
                       </DockPanel.InputBindings>

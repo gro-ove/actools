@@ -177,7 +177,7 @@ namespace AcManager.Pages.Selected {
                         break;
 
                     case "length":
-                        FilterRange("length", SelectedTrackConfiguration.SpecsLength);
+                        FilterDistance("length", SelectedTrackConfiguration.SpecsLengthValue, roundTo: 0.1, range: 0.3);
                         break;
 
                     case "width":

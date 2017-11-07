@@ -7,6 +7,7 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;

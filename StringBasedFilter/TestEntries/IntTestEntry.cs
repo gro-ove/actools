@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
@@ -7,7 +8,7 @@ namespace StringBasedFilter.TestEntries {
         private readonly int _value;
 
         public override string ToString() {
-            return (_op == Operator.Less ? "<" : _op == Operator.Equal ? "=" : ">") + _value;
+            return _op.OperatorToString() + _value.ToString(CultureInfo.InvariantCulture);
         }
 
         internal IntTestEntry(Operator op, int value) {

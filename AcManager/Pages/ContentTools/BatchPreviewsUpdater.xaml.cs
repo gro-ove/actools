@@ -14,6 +14,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;

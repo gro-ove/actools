@@ -72,10 +72,10 @@
         <TextBlock Text="Double Sliders Test" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <!--<DockPanel>
-                    <Label Content="Sel. range:" Width="200" DockPanel.Dock="Left" />
-                    <Slider Minimum="0" Maximum="60" AutoToolTipPlacement="TopLeft" IsSelectionRangeEnabled="True" TickPlacement="Both" Margin="0 0 20 0"
-                            SelectionStart="20" SelectionEnd="40" />
-                </DockPanel>-->
+          <Label Content="Sel. range:" Width="200" DockPanel.Dock="Left" />
+          <Slider Minimum="0" Maximum="60" AutoToolTipPlacement="TopLeft" IsSelectionRangeEnabled="True" TickPlacement="Both" Margin="0 0 20 0"
+              SelectionStart="20" SelectionEnd="40" />
+        </DockPanel>-->
 
         <DockPanel>
           <Label Content="Simple button:" Width="240" DockPanel.Dock="Left" />

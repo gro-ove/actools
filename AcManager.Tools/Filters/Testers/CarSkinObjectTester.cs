@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class CarSkinObjectTester : ITester<CarSkinObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class CarSkinObjectTester : ITester<CarSkinObject>, ITesterDescription {
         public static CarSkinObjectTester Instance = new CarSkinObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -59,6 +61,16 @@ namespace AcManager.Tools.Filters {
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("name", "Name", KeywordType.String, KeywordPriority.Obscured, "skinname"),
+                new KeywordDescription("driver", "Driver name", KeywordType.String, KeywordPriority.Normal, "drivername"),
+                new KeywordDescription("team", "Team name", KeywordType.String, KeywordPriority.Normal, "teamname"),
+                new KeywordDescription("number", "Number", KeywordType.Number, KeywordPriority.Normal, "n"),
+                new KeywordDescription("priority", "Priority", KeywordType.Number, KeywordPriority.Obscured),
+            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }
 }

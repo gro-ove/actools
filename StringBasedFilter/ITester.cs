@@ -1,6 +1,11 @@
 ﻿using JetBrains.Annotations;
+using StringBasedFilter.TestEntries;
 
 namespace StringBasedFilter {
+    public interface ITesterExtended {
+        ITestEntryRegister GetExtraTestEntry([CanBeNull] string key);
+    }
+
     public interface ITester<in T> {
         /// <summary>
         /// Only changeable values!

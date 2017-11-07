@@ -1,7 +1,7 @@
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
+namespace AcManager.Tools.Filters.Testers {
     public class WeatherObjectTester : ITester<WeatherObject> {
         public static readonly WeatherObjectTester Instance = new WeatherObjectTester();
 

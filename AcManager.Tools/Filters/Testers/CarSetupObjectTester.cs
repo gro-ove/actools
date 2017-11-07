@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class CarSetupObjectTester : IParentTester<CarSetupObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class CarSetupObjectTester : IParentTester<CarSetupObject>, ITesterDescription {
         public static CarSetupObjectTester Instance = new CarSetupObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -39,6 +41,12 @@ namespace AcManager.Tools.Filters {
             }
 
             return false;
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("track", "Track", KeywordType.Child | KeywordType.String, KeywordPriority.Normal),
+            }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }
 }

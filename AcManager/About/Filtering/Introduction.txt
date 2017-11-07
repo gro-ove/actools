@@ -1,0 +1,23 @@
+﻿sid: 74kigcvs
+id: filtersIntroduction
+
+Basically, (now) CM’s filtering is similar to Google search. Enter any words and CM will try to find entries — such as cars, tracks, online servers, etc. — containing all of those words in their names. Put words in double quotes and CM will try to find them exactly. And, with single quotes, CM will find entries with exactly the same name you entered (and not piece of text inside).
+
+ • [mono][b]lotus 2[/mono][/b] (finds [b]Lotus 2-Eleven[/b], [b]Lotus 2-Eleven GT4[/b] and [b]Lotus Exige 240R[/b]);
+ • [mono][b]"lotus 2"[/mono][/b] (finds both [b]Lotus 2-Eleven[/b] and [b]Lotus 2-Eleven GT4[/b]);
+ • [mono][b]'lotus 2-eleven'[/mono][/b] (finds only [b]Lotus 2-Eleven[/b]).
+
+Another difference is that you can search by various properties, such as car’s manufacturer, country server is located in, track’s length or something else, like so:
+
+ • [mono][b]brand:'lotus'[/mono][/b] (without single quotes, Lotus Classic Cars will also be included);
+ • [mono][b]country:germany[/mono][/b] (finds both [b]Lotus 2-Eleven[/b] and [b]Lotus 2-Eleven GT4[/b]);
+ • [mono][b]length>10 km[/mono][/b] (with “>” and “<”, you can filter out numerical values).
+
+Various flags are supported as well:
+
+ • [mono][b]kunos+[/mono][/b] (all content from Kunos);
+ • [mono][b]kunos-[/mono][/b] (mods).
+
+List of all supported properties should appear as a popup hint of a search box. Oh, and instead of “tag:”, you can always use a shortcut “#”.
+
+That’s not all, there are also some stuff like [url="/Pages/About/FiltersPage.xaml?Key=filteringExpressions"]filter combinations[/url], [url="/Pages/About/FiltersPage.xaml?Key=filteringQuotes"]regular expressions[/url], [url="/Pages/About/FiltersPage.xaml?Key=filteringSubFilters"]inline filters for children entities[/url] and more, but those are the basics you might want to know first. 🙂

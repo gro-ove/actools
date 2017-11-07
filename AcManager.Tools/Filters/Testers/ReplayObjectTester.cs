@@ -1,9 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class ReplayObjectTester : IParentTester<ReplayObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class ReplayObjectTester : IParentTester<ReplayObject>, ITesterDescription {
         public static ReplayObjectTester Instance = new ReplayObjectTester();
 
         public string ParameterFromKey(string key) {
@@ -17,8 +18,8 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.DriverName);
 
                 case "size":
-                    return value.Test(obj.Size.ToMegabytes());
-                    
+                    return value.Test(obj.Size);
+
                 case "date":
                     return value.Test(obj.CreationDateTime);
 
@@ -67,6 +68,18 @@ namespace AcManager.Tools.Filters {
             }
 
             return false;
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("driver", "Driver name", KeywordType.String, KeywordPriority.Important, "drivername"),
+                new KeywordDescription("size", "File size", KeywordType.FileSize, KeywordPriority.Normal),
+                new KeywordDescription("date", "Date", KeywordType.DateTime, KeywordPriority.Normal),
+                new KeywordDescription("car", "Car", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "c"),
+                new KeywordDescription("skin", "Skin", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
+                new KeywordDescription("track", "Track", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "t"),
+                new KeywordDescription("weather", "Weather", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
+            }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }
 }

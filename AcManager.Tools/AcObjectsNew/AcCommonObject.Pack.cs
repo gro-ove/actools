@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -17,6 +18,7 @@ using JetBrains.Annotations;
 using SharpCompress.Common;
 using SharpCompress.Writers;
 using StringBasedFilter;
+using StringBasedFilter.TestEntries;
 using StringBasedFilter.Utils;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -185,7 +187,7 @@ namespace AcManager.Tools.AcObjectsNew {
                                          .Select(x => FileUtils.GetRelativePath(x, location)).ToArray();
                 }
 
-                var f = RegexFromQuery.Create(mask.Replace('/', '\\'), true, true);
+                var f = RegexFromQuery.Create(mask.Replace('/', '\\'), StringMatchMode.CompleteMatch);
                 return _subFiles.Where(x => f.IsMatch(x)).Select(x => Path.Combine(location, x));
             }
 

@@ -14,6 +14,7 @@ using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -97,7 +98,7 @@ namespace AcManager.Pages.Lists {
                 TrackSkinsDialog.Show(track);
             } else {
                 main.OpenSubGroup("track skins", $"Skins for {track.DisplayNameWithoutCount}",
-                        UriExtension.Create("/Pages/Lists/TrackSkinsListPage.xaml?TrackId={0}", track.Id), 3);
+                        UriExtension.Create("/Pages/Lists/TrackSkinsListPage.xaml?TrackId={0}", track.Id), FilterHints.TrackSkins, 3);
             }
         }
 

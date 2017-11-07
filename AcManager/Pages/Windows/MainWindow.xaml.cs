@@ -777,14 +777,15 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        public LinkGroupFilterable OpenSubGroup(string groupKey, string displayName, Uri uri, int limit = 2) {
+        public LinkGroupFilterable OpenSubGroup(string groupKey, string displayName, Uri uri, Lazy<string> filterHint, int limit = 2) {
             var groupLinks = MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == groupKey).ToList();
             var existingLink = groupLinks.FirstOrDefault(x => x.Source == uri);
             if (existingLink == null) {
                 existingLink = new LinkGroupFilterable {
                     DisplayName = displayName,
                     GroupKey = groupKey,
-                    Source = uri
+                    Source = uri,
+                    FilterHint = filterHint
                 };
 
                 while (groupLinks.Count >= limit) {

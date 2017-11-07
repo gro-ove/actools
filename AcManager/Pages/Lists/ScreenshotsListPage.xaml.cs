@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
@@ -77,27 +79,6 @@ namespace AcManager.Pages.Lists {
                 IsDeleting = isDeleting;
             }
         }));
-    }
-
-    public class FileTester : ITester<FileInfo> {
-        public static readonly FileTester Instance = new FileTester();
-
-        public string ParameterFromKey(string key) {
-            return null;
-        }
-
-        public bool Test(FileInfo obj, string key, ITestEntry value) {
-            switch (key) {
-                case "date":
-                    return value.Test(obj.CreationTime);
-                case "age":
-                    return value.Test((DateTime.Now - obj.CreationTime).TotalDays);
-                case "size":
-                    return value.Test(obj.Length);
-            }
-
-            return value.Test(obj.FullName);
-        }
     }
 
     public partial class ScreenshotsListPage : ILoadableContent, IParametrizedUriContent {

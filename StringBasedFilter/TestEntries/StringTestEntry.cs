@@ -3,23 +3,25 @@ using System.Globalization;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
+    public enum StringMatchMode {
+        IncludedWithin, StartsWith, CompleteMatch
+    }
+
     internal class StringTestEntry : ITestEntry {
-        private readonly bool _wholeMatch, _strictMode;
+        private readonly StringMatchMode _mode;
         private readonly string _str;
         private readonly double? _strAsDouble;
         private readonly bool? _strAsBool;
 
-        public StringTestEntry(string str, bool wholeMatch, bool strictMode) {
+        public StringTestEntry(string str, StringMatchMode mode) {
             _str = str.ToLowerInvariant();
-            _wholeMatch = wholeMatch;
-            _strictMode = strictMode;
+            _mode = mode;
             _strAsDouble = AsDouble(_str);
             _strAsBool = AsBool(_str);
         }
 
         internal static double? AsDouble(string s) {
-            double d;
-            return FlexibleParser.TryParseDouble(s, out d) ? d : (double?)null;
+            return FlexibleParser.TryParseDouble(s, out var d) ? d : (double?)null;
         }
 
         internal static bool? AsBool(string s) {
@@ -53,24 +55,25 @@ namespace StringBasedFilter.TestEntries {
         public bool Test(string value) {
             if (value == null) return false;
 
-            if (_strictMode) {
-                return value.Equals(_str, StringComparison.OrdinalIgnoreCase);
-            }
+            switch (_mode) {
+                case StringMatchMode.CompleteMatch:
+                    return value.Equals(_str, StringComparison.OrdinalIgnoreCase);
+                case StringMatchMode.StartsWith:
+                    return value.StartsWith(_str, StringComparison.OrdinalIgnoreCase);
+                case StringMatchMode.IncludedWithin:
+                    var i = value.IndexOf(_str, StringComparison.OrdinalIgnoreCase);
+                    switch (i) {
+                        case -1:
+                            return false;
 
-            if (_wholeMatch) {
-                return value.StartsWith(_str, StringComparison.OrdinalIgnoreCase);
-            }
+                        case 0:
+                            return true;
 
-            var i = value.IndexOf(_str, StringComparison.OrdinalIgnoreCase);
-            switch (i) {
-                case -1:
-                    return false;
-
-                case 0:
-                    return true;
-
+                        default:
+                            return Filter.OptionSimpleMatching || char.IsWhiteSpace(value[i - 1]);
+                    }
                 default:
-                    return Filter.OptionSimpleMatching || char.IsWhiteSpace(value[i - 1]);
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

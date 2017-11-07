@@ -9,8 +9,9 @@
   <ScrollViewer mui:SaveScroll.Key="SettingsAppearance">
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" x:Name="Panel" Style="{StaticResource SettingsPanel}">
-        <ListBox set:Search.Keywords="accent;theme;appearance;color" ItemsSource="{Binding AppAppearanceManager.AccentColors}"
+      <StackPanel set:Search.Keywords="appearance;ui" set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" x:Name="Panel"
+          Style="{StaticResource SettingsPanel}">
+        <ListBox set:Search.LinkedTo="{Binding ElementName=AccentColorPicker}" ItemsSource="{Binding AppAppearanceManager.AccentColors}"
             SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}" Margin="0 0 0 16">
           <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
@@ -28,17 +29,17 @@
           </ListBox.ItemTemplate>
         </ListBox>
 
-        <DockPanel set:Search.Keywords="accent;theme;appearance;color">
+        <DockPanel x:Name="AccentColorPicker" set:Search.Keywords="accent;theme;color">
           <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
           <mui:ColorPicker DataContext="{x:Static c:AppAppearanceManager.Instance}" Color="{Binding AccentColor}" DisplayColor="{Binding AccentDisplayColor}" />
         </DockPanel>
 
-        <DockPanel mui:LimitedService.Limited="True">
+        <DockPanel mui:LimitedService.Limited="True" set:Search.Keywords="accent;theme">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ThemeLabel}" />
           <mui:HierarchicalComboBox ItemsSource="{Binding AppAppearanceManager.Themes}"
               SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
         </DockPanel>
-        <c:PropertiesGrid Margin="156 0 0 0" Columns="1" LabelPadding="0 0 0 4">
+        <c:PropertiesGrid Margin="156 0 0 0" Columns="1" LabelPadding="0 0 0 4" set:Search.Include="False">
           <mui:BbCodeBlock c:PropertiesGrid.Label="Author:" DataContext="{DynamicResource Author}" BbCode="{Binding}" Margin="0 0 0 4"
               Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
           <mui:BbCodeBlock c:PropertiesGrid.Label="Description:" DataContext="{DynamicResource Description}" BbCode="{Binding}" Margin="0 0 0 4"
@@ -46,19 +47,19 @@
           <mui:BbCodeBlock c:PropertiesGrid.Label="Version:" DataContext="{DynamicResource Version}" BbCode="{Binding}" Margin="0 0 0 4"
               Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
         </c:PropertiesGrid>
-        <mui:BetterTextBox Text="{Binding AppAppearanceManager.ThemeError, Mode=OneWay}" Margin="156 0 0 8" FontWeight="Bold"
+        <mui:BetterTextBox Text="{Binding AppAppearanceManager.ThemeError, Mode=OneWay}" Margin="156 0 0 8" FontWeight="Bold" set:Search.Include="False"
             Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Borderless}" IsReadOnly="True"
             Visibility="{Binding AppAppearanceManager.ThemeError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}" set:Search.Keywords="font;text">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
           <Label Content="Larger title links" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.BoldTitleLinks}">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.BoldTitleLinks}" set:Search.Keywords="font;text">
           <Label Content="Bold title links" />
         </CheckBox>
 
@@ -70,7 +71,7 @@
                 UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="font;text">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_TextRenderingLabel}" />
           <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
         </DockPanel>
@@ -86,7 +87,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_PopupToolbars}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes_Tooltip}">
+        <CheckBox set:Search.Keywords="font" IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}"
+            ToolTip="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
         </CheckBox>
 
@@ -106,7 +108,7 @@
         </DockPanel>
 
       </StackPanel>
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Keywords="appearance;ui" set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" Style="{StaticResource SettingsPanel}">
 
         <!--bg-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Background:" />

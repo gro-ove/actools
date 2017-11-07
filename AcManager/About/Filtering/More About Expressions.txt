@@ -1,0 +1,37 @@
+﻿sid: zb6r3e63
+id: filteringExpressions
+
+Things you search for, such as words within name or property values, can be combined together in various ways, for example, allowing you to search for an online server with a specific track and low ping. For that, simply use one (or more) of various operators.
+
+[b]“&” for AND (or, in Venn diagrams terms, intersection):[/b]
+
+ • [mono][b]brand:lotus & kunos+[/mono][/b] (all Lotus cars by Kunos);
+ • [mono][b]len<10 km & country:germany[/mono][/b] (all tracks in Germany shorter than 10 km);
+ • [mono][b]track:spa & ping<100 & drivers>10[/mono][/b] (all servers with Spa track, ping less than 100 ms and more than 10 drivers connected).
+
+[b]“|” for OR (in Venn diagrams terms, union):[/b]
+
+ • [mono][b]year<1960 | bhp<200[/mono][/b] (old or not-so-powerful cars);
+ • [mono][b]#drift | width > 10m[/mono][/b] (either quite wide tracks or tracks with a “drift” tag);
+ • [mono][b]track:imola | track:monza | track:magione[/mono][/b] (servers with one of those three tracks).
+
+[b]“^” for NOR (in Venn diagrams terms, symmetric difference):[/b]
+
+ • [mono][b]kunos- ^ driven<1 km[/mono][/b] (either non-Kunos cars or cars in which you driven less than 1 km, because I struggle to find a real example here).
+
+[b]“!” for NOT:[/b]
+
+ • [mono][b]!#drift[/mono][/b] (cars or tracks without “drift” tag);
+ • [mono][b]!car:bmw[/mono][/b] (exclude servers with BMWs).
+
+And, of course, you can combine those operators as you want. Just keep in mind that AND has a higher priority than OR, and NOT is the most immediate operator of them all (it’s like with addition, multiplication and exponentiation in maths, accordingly). To specify your own priority, use brackets — again, as in maths:
+
+ • [mono][b]age<60 days & (dlc- | kunos-)[/mono][/b] (cars installed within last 60 days, either not from Kunos or not included in any paid DLCs).
+ • [mono][b]track:spa | car:bmw & !car:audi[/mono][/b] (servers with Spa or with at least one BMW and without any Audis).
+
+Another thing is that, in order to reproduce Google’s behavior, CM handles commas and spaces as OR and AND operators, but not without some remarks:
+
+ • Spaces related to properties are being ignored: [mono][b]brand: lotus[/mono][/b], [mono][b]year > 1990[/mono][/b];
+ • As well as spaces related to postfix in property’s value: [mono][b]len>10 km[/mono][/b], [mono][b]age<3 days[/mono][/b];
+ • Also, about properties: they might propagate to left like so: [mono][b]!brand: abarth alfa[/mono][/b] is equal to [mono][b]!(brand: abarth & brand: alfa)[/mono][/b].
+

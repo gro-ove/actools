@@ -53,7 +53,8 @@
         <!-- <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" /> -->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False">
+    <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False"
+        FilterHint="{x:Static c:FilterHints.SpecialEvents}">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Hotlaps" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:hotlap&amp;Special=1" />
         <mui:Link DisplayName="Races" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:*race&amp;Special=1" />
@@ -69,7 +70,7 @@
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
-        Source="/Pages/Drive/Online.xaml">
+        Source="/Pages/Drive/Online.xaml" FilterHint="{x:Static c:FilterHints.ServerEntries}">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Kunos" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />
         <mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />
@@ -78,11 +79,14 @@
     </mui:LinkGroupFilterable>
 
     <!-- Lap times -->
-    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
-    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Table" Source="/Pages/Miscellaneous/LapTimes_Table.xaml" />
+    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml"
+        FilterHint="{x:Static c:FilterHints.LapTimes}" />
+    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Table" Source="/Pages/Miscellaneous/LapTimes_Table.xaml"
+        FilterHint="{x:Static c:FilterHints.LapTimes}" />
     <mui:LinkGroupFilterable x:Name="LapTimesGrid" GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
-        Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
-    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Sources" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml" />
+        Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" FilterHint="{x:Static c:FilterHints.LapTimes}" />
+    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Sources" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml"
+        FilterHint="{x:Static c:FilterHints.LapTimes}" />
 
     <!-- Stats -->
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Results" Source="/Pages/Miscellaneous/RaceResults.xaml" />
@@ -96,13 +100,18 @@
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
     <!-- Media -->
-    <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
-    <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Lists/ReplaysListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.Replays}" />
+    <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Lists/ReplaysListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.Files}" />
 
     <!-- Content -->
-    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml" />
-    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml" />
-    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.Cars}" />
+    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.Tracks}" />
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.Showrooms}" />
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
@@ -121,7 +130,8 @@
     </mui:LinkGroup>
 
     <!-- Server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
-    <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml"
+        FilterHint="{x:Static c:FilterHints.ServerPresets}" />
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
         Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />
 
@@ -139,6 +149,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ReleaseNotes}" Source="/Pages/About/ReleaseNotesPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
+        <mui:Link DisplayName="Everything About Filtering" Source="/Pages/About/FiltersPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 

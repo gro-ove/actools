@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using StringBasedFilter.Parsing;
+using StringBasedFilter.TestEntries;
 
 namespace StringBasedFilter {
     /// <summary>
@@ -57,7 +58,7 @@ namespace StringBasedFilter {
         [NotNull]
         public static IFilter<T> Create<T>([NotNull] ITester<T> tester, [NotNull, Localizable(false)] string filter, bool strictMode) {
             return new Filter<T>(tester, filter, new FilterParams {
-                StrictMode = strictMode
+                StringMatchMode = strictMode ? StringMatchMode.StartsWith : StringMatchMode.IncludedWithin
             });
         }
 
@@ -72,7 +73,7 @@ namespace StringBasedFilter {
         [NotNull]
         public static IFilter Create([NotNull, Localizable(false)] string filter, bool strictMode) {
             return new Filter(filter, new FilterParams {
-                StrictMode = strictMode
+                StringMatchMode = strictMode ? StringMatchMode.StartsWith : StringMatchMode.IncludedWithin
             });
         }
 

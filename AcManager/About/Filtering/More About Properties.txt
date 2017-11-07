@@ -1,0 +1,20 @@
+﻿sid: 1i3lu7rk
+
+First of all, here is a list of comparison symbols you can use while specifying a property:
+
+ • [mono][b]brand:lotus[/mono][/b] (“:” is for regular string match, value can be in [url="/Pages/About/FiltersPage.xaml?Key=filteringQuotes"]quotes[/url] or can contain symbols “*” and “?”);
+ • [mono][b]bhp>500[/mono][/b] (“>” for more than, for numerical values);
+ • [mono][b]len<10000[/mono][/b] (“<” for less than, again, only for numerical values);
+ • [mono][b]year<=1980[/mono][/b] (“<=”, “=<” or “≤” — for less than or equal to, numerical);
+ • [mono][b]capacity>=10[/mono][/b] (“>=”, “=>” or “≥” — for more than or equal to, numerical);
+ • [mono][b]weight=1000[/mono][/b] (unlike “:”, “=” compares values as numbers, converting value if needed);
+ • [mono][b]kunos+[/mono][/b] (“+” to check if flag is active);
+ • [mono][b]enabled-[/mono][/b] (“-” or “−” to check if flag is not active).
+
+For some properties, such as track length, replay size or time passed since entry installation, you can use various postfixes for numerical values, like so:
+
+ • [mono][b]len>10 km[/mono][/b] (instead of [mono][b]len>10000[/mono][/b]);
+ • [mono][b]time<3 minutes[/mono][/b] (for lap times; admittedly [mono][b]time<03:00[/mono][/b] might be more convinient);
+ • [mono][b]age<5 days[/mono][/b].
+
+This part is still in development though, so sometimes it might not work properly, and more types will be added later.

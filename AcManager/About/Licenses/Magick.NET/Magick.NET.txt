@@ -1,0 +1,4 @@
+name: Magick.NET
+url: https://github.com/dlemstra/Magick.NET
+content: License.txt
+sid: 9hzb9mz9

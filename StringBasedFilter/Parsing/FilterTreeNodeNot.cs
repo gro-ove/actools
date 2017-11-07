@@ -1,17 +1,17 @@
 namespace StringBasedFilter.Parsing {
     internal class FilterTreeNodeNot : FilterTreeNode {
-        private readonly FilterTreeNode _a;
+        internal readonly FilterTreeNode A;
 
         public FilterTreeNodeNot(FilterTreeNode a) {
-            _a = a;
+            A = a;
         }
 
         public override string ToString() {
-            return "{ ! " + _a + " }";
+            return "{ ! " + A + " }";
         }
 
         public override bool Test<T>(ITester<T> tester, T obj) {
-            return !_a.Test(tester, obj);
+            return !A.Test(tester, obj);
         }
 
         public static string EscapeDataString(string s) {

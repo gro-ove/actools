@@ -31,6 +31,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return value?.Replace("[", "\\[");
         }
 
+        public static string Decode(string value) {
+            return value?.Replace("\\[", "[");
+        }
+
         public static string EncodeAttribute(string value) {
             return value == null ? null : "\"" + value.Replace("\"", "\\\"") + "\"";
         }

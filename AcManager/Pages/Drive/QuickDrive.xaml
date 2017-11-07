@@ -85,7 +85,8 @@
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                        EasingFunction="{StaticResource EaseInOut}" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
@@ -93,8 +94,9 @@
             <EventTrigger RoutedEvent="Grid.MouseLeave">
               <EventTrigger.Actions>
                 <BeginStoryboard>
-                  <Storyboard BeginTime="0:0:0.3">
-                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                  <Storyboard BeginTime="0:0:0.15">
+                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                        EasingFunction="{StaticResource EaseInOut}" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
@@ -127,7 +129,8 @@
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                        EasingFunction="{StaticResource EaseInOut}" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
@@ -135,8 +138,9 @@
             <EventTrigger RoutedEvent="Grid.MouseLeave">
               <EventTrigger.Actions>
                 <BeginStoryboard>
-                  <Storyboard BeginTime="0:0:0.3">
-                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                  <Storyboard BeginTime="0:0:0.15">
+                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                        EasingFunction="{StaticResource EaseInOut}" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>

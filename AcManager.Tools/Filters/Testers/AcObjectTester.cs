@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using AcManager.Tools.AcObjectsNew;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class AcObjectTester : ITester<AcObjectNew> {
+namespace AcManager.Tools.Filters.Testers {
+    public class AcObjectTester : ITester<AcObjectNew>, ITesterDescription {
         public static readonly AcObjectTester Instance = new AcObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -32,7 +33,7 @@ namespace AcManager.Tools.Filters {
                     return nameof(AcCommonObject.IsNew);
 
                 case "age":
-                    return nameof(AcCommonObject.AgeInDays);
+                    return nameof(AcCommonObject.Age);
 
                 case "date":
                     return nameof(AcCommonObject.CreationDateTime);
@@ -61,7 +62,7 @@ namespace AcManager.Tools.Filters {
         public bool Test(AcObjectNew obj, string key, ITestEntry value) {
             switch (key) {
                 case null:
-                    return value.Test(obj.Id) || value.Test(obj.DisplayName);
+                    return value.Test(obj.Id) || value.Test(obj.Name);
 
                 case "id":
                     return value.Test(obj.Id);
@@ -88,7 +89,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.IsNew);
 
                 case "age":
-                    return value.Test(obj.AgeInDays);
+                    return value.Test(obj.Age);
 
                 case "date":
                     return value.Test(obj.CreationDateTime);
@@ -104,6 +105,21 @@ namespace AcManager.Tools.Filters {
                 default:
                     return false;
             }
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("id", "ID", KeywordType.String, KeywordPriority.Obscured),
+                new KeywordDescription("name", "Name", KeywordType.String, KeywordPriority.Obscured),
+                new KeywordDescription("enabled", "Enabled", KeywordType.Flag, KeywordPriority.Normal),
+                new KeywordDescription("rating", "User rating", KeywordType.Number, KeywordPriority.Normal, "rate", "rated"),
+                new KeywordDescription("fav", "In Favorites", KeywordType.Flag, KeywordPriority.Normal, "favourite", "favorite", "favorited", "favourited"),
+                new KeywordDescription("new", "New, as in “added recently”", KeywordType.Flag, KeywordPriority.Important),
+                new KeywordDescription("age", "Time passed since file was created", KeywordType.TimeSpan, KeywordPriority.Normal),
+                new KeywordDescription("date", "Creation date", KeywordType.DateTime, KeywordPriority.Obscured),
+                new KeywordDescription("author", "Author", KeywordType.String, KeywordPriority.Normal, "a"),
+                new KeywordDescription("kunos", "Made by Kunos", KeywordType.Flag, KeywordPriority.Important, "k"),
+            };
         }
     }
 }

@@ -1,0 +1,7 @@
+﻿sid: jczn0vjd
+id: filteringSubFilters
+
+You might already know that, for example, you can filter servers by names of cars used, like so: [mono][b]car:bmw[/mono][/b]. But it’s more that that, you can actually put any complex car filter for servers as well! For that, simply use brackets right after “car” bit, like so:
+
+
+

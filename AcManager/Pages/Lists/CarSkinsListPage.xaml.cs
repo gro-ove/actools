@@ -18,6 +18,7 @@ using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -119,12 +120,12 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Open([NotNull] CarObject car) {
-            var main = Application.Current?.MainWindow as MainWindow;
-            if (main == null || Keyboard.Modifiers == ModifierKeys.Control || SettingsHolder.Interface.SkinsSetupsNewWindow) {
-                CarSkinsDialog.Show(car);
-            } else {
+            if (Application.Current?.MainWindow is MainWindow main && Keyboard.Modifiers != ModifierKeys.Control &&
+                    !SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 main.OpenSubGroup("skins", $"Skins for {car.DisplayName}",
-                        UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id));
+                        UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id), FilterHints.CarSkins);
+            } else {
+                CarSkinsDialog.Show(car);
             }
         }
 

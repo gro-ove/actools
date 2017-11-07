@@ -14,11 +14,22 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private bool _addAllLink = true;
 
+        private Lazy<string> _filterHint;
+
+        public Lazy<string> FilterHint {
+            get => _filterHint;
+            set {
+                if (Equals(value, _filterHint)) return;
+                _filterHint = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Set it before setting Source!
         /// </summary>
         public bool AddAllLink {
-            get { return _addAllLink; }
+            get => _addAllLink;
             set {
                 if (Equals(value, _addAllLink)) return;
                 _addAllLink = value;

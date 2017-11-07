@@ -4,8 +4,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Filters {
-    public class CarObjectTester : IParentTester<CarObject> {
+namespace AcManager.Tools.Filters.Testers {
+    public class CarObjectTester : IParentTester<CarObject>, ITesterDescription {
         public static readonly CarObjectTester Instance = new CarObjectTester();
 
         internal static string InnerParameterFromKey(string key) {
@@ -27,6 +27,7 @@ namespace AcManager.Tools.Filters {
                     return nameof(CarObject.TotalDrivenDistance);
 
                 case "topspeedachieved":
+                case "tsa":
                     return nameof(CarObject.MaxSpeedAchieved);
 
                 case "bhp":
@@ -53,7 +54,7 @@ namespace AcManager.Tools.Filters {
 
                 case "maxrpm":
                     return nameof(CarObject.SpecsTorqueCurve);
-                    
+
                 case "skin":
                 case "skins":
                     return nameof(CarObject.SkinsEnabledWrappersList);
@@ -96,6 +97,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.TotalDrivenDistance);
 
                 case "topspeedachieved":
+                case "tsa":
                     return value.Test(obj.MaxSpeedAchieved);
 
                 case "bhp":
@@ -111,7 +113,7 @@ namespace AcManager.Tools.Filters {
 
                 case "acceleration":
                     return value.Test(obj.SpecsAcceleration);
-                    
+
                 case "speed":
                 case "topspeed":
                     return value.Test(obj.SpecsTopSpeed);
@@ -142,6 +144,26 @@ namespace AcManager.Tools.Filters {
             }
 
             return false;
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("brand", "Car brand", KeywordType.String, KeywordPriority.Important, "b"),
+                new KeywordDescription("newbrand", "With possibly invalid brand", KeywordType.Flag, KeywordPriority.Obscured),
+                new KeywordDescription("class", "Car class", KeywordType.String, KeywordPriority.Important),
+                new KeywordDescription("parent", "Main unmodified car", KeywordType.Child | KeywordType.String, KeywordPriority.Normal),
+                new KeywordDescription("driven", "Driven distance", KeywordType.Number, KeywordPriority.Normal, "dd", "drivendistance"),
+                new KeywordDescription("topspeedachieved", "Driven distance", KeywordType.Number, KeywordPriority.Normal, "tsa"),
+                new KeywordDescription("power", "Power", KeywordType.Number, KeywordPriority.Normal, "bhp"),
+                new KeywordDescription("torque", "Torque", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("weight", "Weight", KeywordType.Number, KeywordPriority.Normal, "mass"),
+                new KeywordDescription("acceleration", "Acceleration", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("topspeed", "Top Speed", KeywordType.Number, KeywordPriority.Normal, "speed"),
+                new KeywordDescription("maxrpm", "Max RPM from torque curve", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("pwratio", "P/W ratio", KeywordType.Number, KeywordPriority.Normal, "pw"),
+                new KeywordDescription("skins", "Skins count", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("skin", "Skin", KeywordType.Child, KeywordPriority.Normal),
+            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }
 }

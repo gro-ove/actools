@@ -8,6 +8,7 @@ using System.Windows.Data;
 using AcManager.Controls;
 using AcManager.Tools;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using JetBrains.Annotations;

@@ -1,27 +1,50 @@
 using System;
 using System.Globalization;
-using StringBasedFilter.Utils;
+using AcTools.Utils.Helpers;
+using StringBasedFilter;
+using StringBasedFilter.TestEntries;
 
-namespace StringBasedFilter.TestEntries {
-    internal class DateTimeTestEntry : ITestEntry {
+namespace AcManager.Tools.Filters.TestEntries {
+    public class DateTimeTestEntry : ITestEntry {
+        public static ITestEntryRegister RegisterInstance = new Register();
+
+        private class Register : ITestEntryRegister {
+            public ITestEntry Create(Operator op, string value) {
+                try {
+                    var date = DateTime.Parse(value);
+                    return new DateTimeTestEntry(op, date);
+                } catch (FormatException) {
+                    return null;
+                }
+            }
+
+            public bool TestValue(string value) {
+                var point = value.IndexOf('.');
+                return point != -1 && value.IndexOf('.', point + 1) != -1 || value.IndexOf('/') != -1 || value.IndexOf('-') > 0;
+            }
+
+            public bool TestCommonKey(string key) {
+                return string.Equals(key, "date", StringComparison.Ordinal);
+            }
+        }
+
         private readonly Operator _op;
         private readonly DateTime _value;
         private readonly bool _exact;
 
         public override string ToString() {
-            return ((char)_op).ToString(CultureInfo.InvariantCulture) + _value;
+            return _op.OperatorToString() + _value.ToString(CultureInfo.InvariantCulture);
         }
 
-        internal DateTimeTestEntry(Operator op, DateTime value, bool exact = true) {
+        private DateTimeTestEntry(Operator op, DateTime value) {
             _op = op;
             _value = value;
-            _exact = exact;
+            _exact = true;
         }
 
         public bool Test(string value) {
             if (value == null) return false;
-            int val;
-            return FlexibleParser.TryParseInt(value, out val) && Test(val);
+            return FlexibleParser.TryParseInt(value, out var val) && Test(val);
         }
 
         // days ago

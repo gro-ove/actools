@@ -11,7 +11,7 @@
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
-        <DockPanel>
+        <DockPanel x:Name="Starter" set:Search.Keywords="starter;steam">
           <Label>
             <TextBlock>
               <Run Text="{x:Static g:AppStrings.Settings_Drive_Starter}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
@@ -30,7 +30,7 @@
           </ComboBox>
         </DockPanel>
 
-        <c:MessageBlock Margin="0 0 0 8">
+        <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=Starter}">
           <mui:BbCodeBlock BbCode="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
         </c:MessageBlock>
 
@@ -61,7 +61,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
         </CheckBox>
 
-        <DockPanel ToolTip="Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”" Margin="0 20 0 8">
+        <DockPanel x:Name="RaceResultsLimit" ToolTip="Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”" Margin="0 20 0 8">
           <mui:ValueLabel Value="{Binding Drive.RaceResultsLimit}" Content="Keep results of the last"
               Postfix="{Binding Drive.RaceResultsLimit, Converter={StaticResource PluralizingConverter}, ConverterParameter='{} {session}'}"
               Width="{x:Static system:Double.NaN}" DockPanel.Dock="Top" Margin="0 0 0 4" />
@@ -76,7 +76,7 @@
           </Slider>
         </DockPanel>
 
-        <c:MessageBlock Margin="0 0 0 8">
+        <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=RaceResultsLimit}">
           <mui:BbCodeBlock BbCode="When limit is exceeded, oldest results will be recycled after the end of the race." TextWrapping="Wrap" />
         </c:MessageBlock>
 
@@ -104,18 +104,18 @@
         <!-- Player’s name -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_PlayerNameHeader}" />
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="driver;player;name">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_NameLabel}" />
           <mui:BetterTextBox Text="{Binding Drive.PlayerName}" Placeholder="?" />
         </DockPanel>
 
-        <DockPanel>
+        <DockPanel set:Search.Keywords="driver;player;name">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_NationalityLabel}" />
           <mui:BetterComboBox Text="{Binding Drive.PlayerNationality}" Placeholder="?"
               ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
         </DockPanel>
 
-        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
+        <DockPanel set:Search.Keywords="driver;player;name" ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
           <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
           <mui:BetterTextBox Text="{Binding Drive.PlayerNameOnline}" Placeholder="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
@@ -175,7 +175,7 @@
         </CheckBox>
 
         <!-- Real head motion -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+        <TextBlock set:Search.SubCategory="Real Head Motion:" Style="{StaticResource SettingsPanel.Heading2}">
           <Run Text="Real Head Motion:" />
           <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
                         CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->

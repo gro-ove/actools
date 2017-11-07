@@ -36,6 +36,10 @@ namespace AcManager.Tools.About {
             return new PieceOfInformation(false, sid, id, displayName, version, url, content, limited, hidden);
         }
 
+        public static PieceOfInformation Create(string displayName, string content) {
+            return new PieceOfInformation(false, "xc" + displayName.GetHashCode(), null, displayName, null, null, content, false, false);
+        }
+
         public string Id { get; }
 
         public string Version { get; }

@@ -31,8 +31,8 @@ namespace AcManager.Pages.Selected {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
                 var inSentence = string.Equals(parameter as string, "insentence", StringComparison.OrdinalIgnoreCase);
 
-                var obj = values.FirstOrDefault() as IAcObjectFullAuthorshipInformation;
-                if (obj == null || obj.Author != null || obj.Url == null && obj.Version == null) {
+                if (!(values.FirstOrDefault() is IAcObjectFullAuthorshipInformation obj) ||
+                        obj.Author != null || obj.Url == null && obj.Version == null) {
                     return inSentence ? ControlsStrings.AcObject_AuthorLabel.ToSentenceMember() : ControlsStrings.AcObject_AuthorLabel;
                 }
 
@@ -81,14 +81,14 @@ namespace AcManager.Pages.Selected {
 
         protected virtual string PrepareIdForInput(string id) {
             if (string.IsNullOrWhiteSpace(id)) return null;
-            var singleFile = SelectedAcObject as AcCommonSingleFileObject;
-            return singleFile == null ? id : id.ApartFromLast(singleFile.Extension, StringComparison.OrdinalIgnoreCase);
+            return SelectedAcObject is AcCommonSingleFileObject singleFile ?
+                    id.ApartFromLast(singleFile.Extension, StringComparison.OrdinalIgnoreCase) : id;
         }
 
         protected virtual string FixIdFromInput(string id) {
             if (string.IsNullOrWhiteSpace(id)) return null;
-            var singleFile = SelectedAcObject as AcCommonSingleFileObject;
-            return singleFile == null ? id : id + singleFile.Extension;
+            return SelectedAcObject is AcCommonSingleFileObject singleFile ?
+                    id + singleFile.Extension : id;
         }
 
         private ICommand _cloneCommand;
@@ -128,26 +128,21 @@ namespace AcManager.Pages.Selected {
 
         public ICommand FilterCommand => InnerFilterCommand ?? (InnerFilterCommand = new DelegateCommand<string>(FilterExec));
 
-        protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+        protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0,
+                string postfix = "") {
             var delta = (relative ? range * value : range) / 2d;
             NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
-                    $@"{key}={value.Round(roundTo).ToInvariantString()}" :
-                    string.Format(@"{0}>{1} & {0}<{2}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
-                            ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
+                    $@"{key}={value.Round(roundTo).ToInvariantString()}{postfix}" :
+                    string.Format(@"{0}>{1}{3} & {0}<{2}{3}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
+                            ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString(), postfix));
         }
 
         protected void FilterDistance([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
-            value /= 1e3;
-            var delta = (relative ? range * value : range) / 2d;
-            NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
-                    $@"{key}={value.Round(roundTo).ToInvariantString()}km" :
-                    string.Format(@"{0}>{1}km & {0}<{2}km", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
-                            ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
+            FilterRange(key, value / 1e3, range, relative, roundTo, " km");
         }
 
         protected void FilterRange([Localizable(false)] string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
-            double actual;
-            if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out actual)) {
+            if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out var actual)) {
                 FilterRange(key, actual, range, relative, roundTo);
             } else {
                 NewFilterTab($@"{key}-");
@@ -174,7 +169,7 @@ namespace AcManager.Pages.Selected {
                     break;
 
                 case "age":
-                    FilterRange(@"age", SelectedObject.AgeInDays);
+                    FilterRange(@"age", SelectedObject.AgeInDays, postfix: " days");
                     break;
 
                 case "country":
@@ -191,8 +186,13 @@ namespace AcManager.Pages.Selected {
                         NewFilterTab(@"year-");
                     }
 
-                    var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;
-                    NewFilterTab($@"year>{start - 1} & year<{start + 10}");
+                    var yearString = SelectedObject.Year.ToString();
+                    if (yearString.Length == 4) {
+                        NewFilterTab($@"year:{yearString.Substring(0, 3)}?");
+                    } else {
+                        var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;
+                        NewFilterTab($@"year>{start - 1} & year<{start + 10}");
+                    }
                     break;
             }
         }
@@ -265,9 +265,7 @@ namespace AcManager.Pages.Selected {
             if (originalValue == null) return;
 
             var fixedValue = FixFormatCommon(originalValue);
-
-            double actualValue;
-            var replacement = FlexibleParser.TryParseDouble(fixedValue, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
+            var replacement = FlexibleParser.TryParseDouble(fixedValue, out var actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
             fixedValue = SpecsFormat(format, replacement);
             SetSpecsValue(key, originalValue.IndexOf('*') == -1 ? fixedValue : fixedValue + "*");
         }

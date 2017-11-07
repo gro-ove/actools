@@ -8,7 +8,7 @@ namespace StringBasedFilter.TestEntries {
         private readonly double _value;
 
         public override string ToString() {
-            return (_op == Operator.Less ? "<" : _op == Operator.Equal ? "=" : ">") + _value.ToString(CultureInfo.InvariantCulture);
+            return _op.OperatorToString() + _value.ToString(CultureInfo.InvariantCulture);
         }
 
         internal NumberTestEntry(Operator op, double value) {
@@ -18,8 +18,7 @@ namespace StringBasedFilter.TestEntries {
 
         public bool Test(string value) {
             if (value == null) return false;
-            double val;
-            return FlexibleParser.TryParseDouble(value, out val) && Test(val);
+            return FlexibleParser.TryParseDouble(value, out var val) && Test(val);
         }
 
         public bool Test(double value) {

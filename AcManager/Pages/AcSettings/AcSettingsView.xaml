@@ -121,7 +121,7 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static t:ToolsStrings.AcSettings_View_ViewHeader}" />
 
         <DockPanel>
-          <Label Content="Fade color" />
+          <Label Content="Fade color:" />
           <mui:ColorPicker Color="{Binding CameraManager.FadeColor}" />
         </DockPanel>
 
