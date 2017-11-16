@@ -94,12 +94,12 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
             public SevenZipList(IEnumerable<string> items) {
                 _filename = Path.GetTempFileName();
-                File.WriteAllLines(_filename, items);
+                File.WriteAllLines(_filename, items, Encoding.UTF8);
             }
 
             public void Dispose() {
                 try {
-                    File.Delete(_filename);
+                    // File.Delete(_filename);
                 } catch {
                     // ignored
                 }
@@ -209,9 +209,9 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         private async Task GetFiles([NotNull] IEnumerable<string> keys, Func<Stream, Task> streamCallback, CancellationToken c) {
             using (var list = new SevenZipList(keys)) {
                 var o = await ExecuteBinary(new[] {
-                    "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", "--",
+                    "e", "-so", $"-p{Password}", "-sccUTF-8", "-scsUTF-8", $"-i{list.Value}", "--",
                     Path.GetFileName(_filename)
-                }.Append(list.Value), Path.GetDirectoryName(_filename), streamCallback, c);
+                }, Path.GetDirectoryName(_filename), streamCallback, c);
                 if (o == null) return;
                 CheckForErrors(o.Error);
             }
@@ -366,7 +366,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                                 Logging.Debug($"Summary required: {list.Sum(x => x.Size)} bytes");
                                 Logging.Debug($"Able to read: {readInTotal} bytes, {readList.Count} entries");
                                 Logging.Debug($"Now trying to read: {l.Key}");
-                                using (var archive = ZipFile.Open(FilesStorage.Instance.GetTemporaryFilename("Unexpected end.zip"),
+
+                                using (var archive = ZipFile.Open(FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename("Unexpected end.zip")),
                                         ZipArchiveMode.Create)) {
                                     foreach (var r in readList) {
                                         archive.CreateEntryFromBytes(r.Key, r.Value);
@@ -397,6 +398,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             await GetFiles(filtered.Where(x => !x.Item2).Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
+                    Logging.Debug(entry.Item1);
+
                     if (entry.Item2) {
                         FileUtils.EnsureDirectoryExists(entry.Item4);
                     } else {
@@ -406,6 +409,12 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         using (var write = File.Create(entry.Item4)) {
                             await s.CopyToAsync(write, entry.Item3);
                             if (cancellation.IsCancellationRequested) return;
+                        }
+
+                        var written = new FileInfo(entry.Item4).Length;
+                        Logging.Debug("Written bytes: " + written);
+                        if (written != entry.Item3) {
+                            throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
                         }
                     }
                 }

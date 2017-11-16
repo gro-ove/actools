@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="BusyTest.cs" />
     <Compile Include="CommandsTest.cs" />
+    <Compile Include="EmojiTest.cs" />
     <Compile Include="LocalizableTest.cs" />
     <Compile Include="LzfTest.cs" />
     <Compile Include="ValuesStorageTest.cs" />

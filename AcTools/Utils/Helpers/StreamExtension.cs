@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -89,10 +90,21 @@ namespace AcTools.Utils.Helpers {
 
         public static async Task CopyToAsync(this Stream input, Stream output, long bytes, int bufferSize = 81920) {
             var buffer = new byte[bufferSize];
-            int read;
-            while (bytes > 0 && (read = await input.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytes))) > 0) {
-                await output.WriteAsync(buffer, 0, read);
-                bytes -= read;
+
+            for (var i = 0; i < 3 && bytes > 0; i++) {
+                if (i > 0) {
+                    await Task.Delay(500);
+                }
+
+                int read;
+                while (bytes > 0 && (read = await input.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytes))) > 0) {
+                    await output.WriteAsync(buffer, 0, read);
+                    bytes -= read;
+                }
+            }
+
+            if (bytes > 0) {
+                throw new EndOfStreamException($"Unable to read all bytes required, {bytes} left");
             }
         }
     }

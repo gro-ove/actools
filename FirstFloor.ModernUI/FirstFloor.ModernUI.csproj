@@ -169,6 +169,7 @@
     <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
     <Compile Include="Windows\Controls\DoubleSlider.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
+    <Compile Include="Windows\Controls\IEmojiProvider.cs" />
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\LazySwitch.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
@@ -566,10 +567,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\MenuItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\ModernWindowEx.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

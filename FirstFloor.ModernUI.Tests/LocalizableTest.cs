@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {
-    [TestClass]
+    [TestFixture]
     public class LocalizableTest {
-        [TestMethod]
+        [Test]
         public void TitleCaseTest() {
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("Abc Def Qwe", "abc def qwe".ToTitle());
@@ -14,7 +14,7 @@ namespace FirstFloor.ModernUI.Tests {
             Assert.AreEqual("The the The", "the the the".ToTitle());
         }
 
-        [TestMethod]
+        [Test]
         public void PluralizingTest() {
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("hour", PluralizingConverter.PluralizeExt(1, "hour"));

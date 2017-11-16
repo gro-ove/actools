@@ -143,6 +143,7 @@
   <ItemGroup>
     <Compile Include="AppModernWindow.cs" />
     <Compile Include="BatchAction.cs" />
+    <Compile Include="CarBlock.cs" />
     <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
@@ -248,9 +249,6 @@
     </Compile>
     <Compile Include="UserControls\KunosCareerBlock.xaml.cs">
       <DependentUpon>KunosCareerBlock.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\CarBlock.xaml.cs">
-      <DependentUpon>CarBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\WebBrowserWrapper.cs" />
     <Compile Include="Video\WindowsMediaPlayer.cs" />
@@ -413,7 +411,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\CarBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\FavouriteButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\GraphDataViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -485,10 +491,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\KunosCareerBlock.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\CarBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

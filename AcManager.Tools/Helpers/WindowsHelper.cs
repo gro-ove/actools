@@ -26,7 +26,7 @@ namespace AcManager.Tools.Helpers {
                     app.Shutdown();
                 }
             } catch (Exception e) {
-                Logging.Warning("RestartCurrentApplication(): " + e);
+                Logging.Warning(e);
             }
         }
 

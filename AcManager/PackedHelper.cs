@@ -152,11 +152,11 @@ namespace AcManager {
         [NotNull]
         private byte[] GetData(string id) {
             var references = _references;
-            var bytes = references?.GetObject(id) as byte[];
-            if (bytes == null) throw new Exception("Data is missing");
+            if (!(references?.GetObject(id) is byte[] bytes)) {
+                throw new Exception("Data is missing");
+            }
 
-            var key = references.GetObject(id + "//encrypted") as byte[];
-            if (key != null) {
+            if (references.GetObject(id + "//encrypted") is byte[] key) {
                 Xor(bytes, key);
             }
 
@@ -390,13 +390,15 @@ namespace AcManager {
         private readonly Dictionary<string, Assembly> _cached = new Dictionary<string, Assembly>();
 
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
+            if (_logFilename != null) {
+                Log("Call: " + args.Name);
+            }
+
             if (_ignore) return null;
 
             var id = new AssemblyName(args.Name).Name;
 
-            Assembly result;
-            if (_cached.TryGetValue(id, out result)) return result;
-
+            if (_cached.TryGetValue(id, out var result)) return result;
             if (string.Equals(id, "System.Web", StringComparison.OrdinalIgnoreCase)) {
                 if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to download it?", "Error",
                         MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {

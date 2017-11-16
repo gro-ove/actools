@@ -72,18 +72,24 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static string ToInvariantString([NotNull] this object o) {
             if (o == null) throw new ArgumentNullException(nameof(o));
-
-            var s = o as string;
-            if (s != null) return s;
-
-            if (o is double) return ((double)o).ToInvariantString();
-            if (o is float) return ((float)o).ToInvariantString();
-            if (o is int) return ((int)o).ToInvariantString();
-            if (o is uint) return ((uint)o).ToInvariantString();
-            if (o is short) return ((short)o).ToInvariantString();
-            if (o is ushort) return ((ushort)o).ToInvariantString();
-
-            return o.ToString();
+            switch (o) {
+                case string r:
+                    return r;
+                case double d:
+                    return d.ToInvariantString();
+                case float f:
+                    return f.ToInvariantString();
+                case int i:
+                    return i.ToInvariantString();
+                case uint u:
+                    return u.ToInvariantString();
+                case short h:
+                    return h.ToInvariantString();
+                case ushort u:
+                    return u.ToInvariantString();
+                default:
+                    return o.ToString();
+            }
         }
     }
 }

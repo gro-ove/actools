@@ -14,7 +14,9 @@
     <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
     <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
     <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+    <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
     <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BackgroundContent" Value="{StaticResource WindowBackgroundContent}" />
     <Setter Property="FrameMargin" Value="0" />
     <Setter Property="Width" Value="800" />
@@ -28,12 +30,9 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernWindow">
-          <Border x:Name="WindowBorder" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
-            <Border.Background>
-              <SolidColorBrush x:Name="WindowBorderBackground" Color="{DynamicResource WindowBackgroundColor}" />
-            </Border.Background>
+          <Border x:Name="WindowBorder" Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
             <AdornerDecorator a:FancyHintsService.HintsDecorator="True">
-              <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+              <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                 <c:Cell>
                   <c:Cell.LayoutTransform>
                     <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"

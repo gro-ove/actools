@@ -34,6 +34,7 @@
 
       <!--controls test-->
       <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
+      <mui:BbCodeBlock Style="{StaticResource Heading1}">More: 🧚🏿‍♂️🧚🏿‍♀️🧑🏼🧒🏼👨🏼‍🍳👩🏼‍🍳👩‍👩‍👦‍👦💑👩‍❤️‍💋‍👩👆🏾</mui:BbCodeBlock>
 
       <StackPanel Margin="0 20 20 0">
         <TextBlock Text="Better Images" Style="{StaticResource SettingsPanel.Heading2.First}" />

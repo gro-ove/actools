@@ -1,0 +1,118 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:t="http://acstuff.ru/app/tools">
+  <ResourceDictionary.MergedDictionaries>
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <oxy:ThicknessConverter x:Key="ThicknessConverter" />
+
+  <Style TargetType="{x:Type ac:PropertiesGrid}">
+    <Setter Property="LabelFontFamily" Value="{StaticResource CondensedFont}" />
+    <Setter Property="LabelFontWeight" Value="Bold" />
+    <Setter Property="LabelPadding" Value="8 1 0 0" />
+    <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+  </Style>
+
+  <Style TargetType="{x:Type graphs:CustomTrackerControl}">
+    <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
+    <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+    <Setter Property="LineDashArray" Value="4 2" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderEdgeMode" Value="Aliased" />
+    <Setter Property="LineStroke" Value="{DynamicResource Accent}" />
+    <Setter Property="HorizontalLineVisibility" Value="Visible" />
+    <Setter Property="VerticalLineVisibility" Value="Visible" />
+    <Setter Property="Distance" Value="7" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="CanCenterHorizontally" Value="True" />
+    <Setter Property="CanCenterVertically" Value="True" />
+    <Setter Property="ShowPointer" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type graphs:CustomTrackerControl}">
+          <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Line x:Name="PART_HorizontalLine" Visibility="{TemplateBinding HorizontalLineVisibility}" Stroke="{TemplateBinding LineStroke}"
+                RenderOptions.EdgeMode="Aliased" StrokeDashArray="{TemplateBinding LineDashArray}" />
+            <Line x:Name="PART_VerticalLine" Visibility="{TemplateBinding VerticalLineVisibility}" Stroke="{TemplateBinding LineStroke}"
+                RenderOptions.EdgeMode="Aliased" StrokeDashArray="{TemplateBinding LineDashArray}" />
+
+            <Grid x:Name="PART_ContentContainer">
+              <Path x:Name="PART_Path" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}"
+                  StrokeThickness="{TemplateBinding BorderThickness, Converter={StaticResource ThicknessConverter}}"
+                  RenderOptions.EdgeMode="{TemplateBinding BorderEdgeMode}" />
+              <ContentPresenter x:Name="PART_Content" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden" />
+              <Border Margin="{Binding Margin, ElementName=PART_Content}">
+                <mui:BbCodeBlock BbCode="{Binding}" Margin="5 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" Foreground="{DynamicResource WindowText}" />
+              </Border>
+            </Grid>
+          </Canvas>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="graphs:GraphDataViewerBase">
+    <!--<Setter Property="Background" Value="Transparent" />-->
+    <Setter Property="IsManipulationEnabled" Value="False" />
+    <Setter Property="IsMouseWheelEnabled" Value="False" />
+    <Setter Property="Height" Value="200" />
+
+    <!--<Setter Property="PlotMargins" Value="0" />
+    <Setter Property="AxisTierDistance" Value="0" />
+    <Setter Property="LegendMaxWidth" Value="0" />
+    <Setter Property="LegendBorder" Value="Blue" />
+    <Setter Property="LegendBorderThickness" Value="2" />
+    <Setter Property="LegendColumnSpacing" Value="0" />
+    <Setter Property="LegendPadding" Value="0" />
+    <Setter Property="LegendPlacement" Value="Outside" />
+    <Setter Property="PlotAreaBorderColor" Value="Peru" />
+    <Setter Property="PlotAreaBorderThickness" Value="2" />
+    <Setter Property="LegendItemSpacing" Value="0" />
+    <Setter Property="PlotType" Value="Polar" />-->
+
+    <Setter Property="ContextMenu">
+      <Setter.Value>
+        <ContextMenu>
+          <MenuItem Header="Smooth" IsCheckable="True" IsChecked="{Binding SmoothCurves, Source={x:Static t:SettingsHolder.Content}}" />
+        </ContextMenu>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="DefaultTrackerTemplate">
+      <Setter.Value>
+        <ControlTemplate>
+          <graphs:CustomTrackerControl PositionOverride="{Binding Position}" LineExtentsOverride="{Binding PlotModel.PlotArea}">
+            <graphs:CustomTrackerControl.Content>
+              <!--this is just horrible-->
+              <TextBlock Text="{Binding}" Margin="-54 4 0 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch" Foreground="{DynamicResource WindowText}" />
+            </graphs:CustomTrackerControl.Content>
+          </graphs:CustomTrackerControl>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type graphs:GraphDataViewerBase}">
+          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+            <mui:Cell>
+              <Grid x:Name="PART_Grid" />
+              <mui:BooleanSwitch Value="{TemplateBinding IsEmpty}">
+                <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" VerticalAlignment="Center"
+                    Padding="20" Margin="0 -40 0 0">
+                  <TextBlock Text="Nothing to display" Style="{StaticResource Title}" TextAlignment="Center" />
+                </Border>
+              </mui:BooleanSwitch>
+            </mui:Cell>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

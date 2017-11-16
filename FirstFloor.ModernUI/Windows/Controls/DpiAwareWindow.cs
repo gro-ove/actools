@@ -21,6 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
     public abstract class DpiAwareWindow : Window {
+        public static event EventHandler NewWindowCreated;
         public static event EventHandler NewWindowOpened;
 
         private const double BaseDpi = 96d;
@@ -68,6 +69,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                                                       .ToList()) {
                 NavigationCommands.BrowseBack.InputGestures.Remove(gesture);
             }
+
+            NewWindowCreated?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs) {

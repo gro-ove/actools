@@ -196,22 +196,6 @@ namespace AcManager.Pages.Dialogs {
             });
             InitializeComponent();
 
-            CarBlock.BrandArea.PreviewMouseLeftButtonDown += (sender, args) => {
-                Tabs.SelectedSource = BrandUri(SelectedCar.Brand);
-            };
-
-            CarBlock.ClassArea.PreviewMouseLeftButtonDown += (sender, args) => {
-                Tabs.SelectedSource = ClassUri(SelectedCar.CarClass);
-            };
-
-            CarBlock.YearArea.PreviewMouseLeftButtonDown += (sender, args) => {
-                Tabs.SelectedSource = YearUri(SelectedCar.Year);
-            };
-
-            CarBlock.CountryArea.PreviewMouseLeftButtonDown += (sender, args) => {
-                Tabs.SelectedSource = CountryUri(SelectedCar.Country);
-            };
-
             Buttons = new [] { OkButton, CancelButton };
 
             if (defaultFilter != null) {
@@ -259,6 +243,22 @@ namespace AcManager.Pages.Dialogs {
             _loaded = true;
             CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
             CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
+
+            if (CarBlock.BrandArea != null) {
+                CarBlock.BrandArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = BrandUri(SelectedCar.Brand);
+            }
+
+            if (CarBlock.ClassArea != null) {
+                CarBlock.ClassArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = ClassUri(SelectedCar.CarClass);
+            }
+
+            if (CarBlock.YearArea != null) {
+                CarBlock.YearArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = YearUri(SelectedCar.Year);
+            }
+
+            if (CarBlock.CountryArea != null) {
+                CarBlock.CountryArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = CountryUri(SelectedCar.Country);
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

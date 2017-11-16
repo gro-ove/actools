@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [Localizable(false), ContentProperty(nameof(BbCode))]
     public class BbCodeBlock : PlaceholderTextBlock {
         [CanBeNull]
-        public static string OptionEmojiProvider;
+        public static IEmojiProvider OptionEmojiProvider;
 
         [CanBeNull]
         public static string OptionEmojiCacheDirectory;
@@ -118,7 +118,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     code = emoji[i];
                 }
 
-                if (code == 0x200d) continue;
+                if (code == 0x200d || code == 0xfe0f) {
+                    continue;
+                }
 
                 if (result.Length > 0) {
                     result.Append('-');
@@ -178,7 +180,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return new Run { Text = bbCode };
         }
 
-        public static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        private static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
             if (bbCode.IndexOf('[') != -1) {
                 try {
                     return new BbCodeParser(bbCode, element) {
@@ -219,6 +221,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     /// <summary>
+    /// For copying.
+    /// </summary>
+    public class EmojiSpan : Span {
+        public EmojiSpan() { }
+
+        public EmojiSpan(string alt) {
+            BaselineAlignment = BaselineAlignment.Center;
+            Text = alt;
+        }
+
+        public string Text {
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
+        }
+
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+                "Text", typeof(string), typeof(EmojiSpan), new PropertyMetadata("☺"));
+    }
+
+    /// <summary>
     /// Alternative version with selection support (totally different underneath).
     /// </summary>
     [Localizable(false), ContentProperty(nameof(BbCode))]
@@ -247,54 +269,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             AddHandler(FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
             AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(OnRequestNavigate));
-
-            /*CommandManager.RegisterClassCommandBinding(typeof(SelectableBbCodeBlock),
-                    new CommandBinding(ApplicationCommands.Copy, OnCopy, OnCanExecuteCopy));*/
+            DataObject.AddCopyingHandler(this, OnCopy);
         }
 
-        /*private static void OnCanExecuteCopy(object target, CanExecuteRoutedEventArgs args) {
-            var block = (SelectableBbCodeBlock)target;
-            args.CanExecute = block.IsEnabled && !block.Selection.IsEmpty;
-        }
+        private void OnCopy(object o, DataObjectCopyingEventArgs e) {
+            var clipboard = "";
 
-        private static void OnCopy(object sender, ExecutedRoutedEventArgs e) {
-            var block = (SelectableBbCodeBlock)sender;
-            Clipboard.SetText(GetInlineText(block));
+            for (TextPointer p = Selection.Start, next; p != null && p.CompareTo(Selection.End) < 0; p = next) {
+                next = p.GetNextInsertionPosition(LogicalDirection.Forward);
+                if (next == null) break;
+
+                var textRange = new TextRange(p, next);
+                clipboard += textRange.Start.Parent is EmojiSpan span ? span.Text : textRange.Text;
+            }
+
+            Clipboard.SetText(clipboard);
             e.Handled = true;
+            e.CancelCommand();
         }
-
-        private static string GetInlineText(RichTextBox block) {
-            var b = new StringBuilder();
-            var s = block.Selection;
-
-            void Process(Inline inline) {
-                if (!s.Contains(inline.ContentStart)) return;
-
-                s.Text
-
-                if (inline is InlineUIContainer uiContainer){
-                    b.Append(uiContainer.Tag);
-                } else  if (inline is Span span) {
-                    foreach (var i in span.Inlines) {
-                        Process(i);
-                    }
-                } else if (inline is Run) {
-                    var run = (Run)inline;
-                    b.Append(run.Text);
-                } else if (inline is LineBreak) {
-                    b.Append(Environment.NewLine);
-                } else {
-                    Logging.Debug(inline.GetType().Name);
-                }
-            }
-
-            foreach (var p in block.Document.Blocks.OfType<Paragraph>()) {
-                foreach (var inline in p.Inlines) {
-                    Process(inline);
-                }
-            }
-            return b.ToString();
-        }*/
 
         private static void OnBbCodeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((SelectableBbCodeBlock)o).UpdateDirty();

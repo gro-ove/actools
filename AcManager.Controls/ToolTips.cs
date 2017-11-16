@@ -1,13 +1,19 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
     public class ToolTips {
+        static ToolTips (){
+            EventManager.RegisterClassHandler(typeof(ScrollViewer), ScrollViewer.ScrollChangedEvent, new RoutedEventHandler(OnScrollChanged));
+        }
+
         private static ResourceDictionary _dictionary;
 
         private static ResourceDictionary Dictionary => _dictionary ?? (_dictionary = new SharedResourceDictionary {
@@ -126,6 +132,10 @@ namespace AcManager.Controls {
 
             t.DataContext = dataContext;
             obj.ToolTip = t;
+        }
+
+        private static void OnScrollChanged(object sender, RoutedEventArgs e) {
+            Logging.Here();
         }
 
         private static void UpdateToolTip(FrameworkElement element) {

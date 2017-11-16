@@ -161,7 +161,7 @@
 
     <!-- Seperator -->
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent"
-        DragDelta="OnSeparatorDrag" />
+        DragDelta="OnSeparatorDrag" Panel.ZIndex="-1" />
     <Border Grid.Column="1" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.CarDialogThumbinalMode}, Mode=OneTime}"
         VerticalAlignment="Center" />
 

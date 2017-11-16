@@ -14,7 +14,7 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     internal partial class BbCodeParser : Parser<Span> {
-        private static FileCache _imageCache, _emojiCache;
+        private static InlineImageCache _imageCache, _emojiCache;
 
         private const string TagBold = "b";
         private const string TagMono = "mono";
@@ -79,7 +79,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         [CanBeNull]
         private readonly FrameworkElement _source;
-        private readonly List<Tuple<string, string>> _imageUrls = new List<Tuple<string, string>>();
+        private readonly List<Tuple<Uri, string>> _imageUrls = new List<Tuple<Uri, string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:BBCodeParser"/> class.
@@ -237,31 +237,32 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             parent.Inlines.Add(new InlineUIContainer { Child = border });
                             continue;
                         } {
-                        string url;
+
+                        Uri url;
+                        ImageSource imageSource = null;
                         double maxSize;
                         bool expand, toolTip;
-                        FileCache cache;
+                        InlineImageCache cache;
 
                         if (context.ImageUri?.StartsWith(@"emoji://") == true) {
                             maxSize = 0;
                             expand = false;
                             toolTip = false;
 
-                            var provider = BbCodeBlock.OptionEmojiProvider;
-                            if (provider == null) {
-                                url = null;
+                            var emojiCode = context.ImageUri.Substring(8);
+                            url = BbCodeBlock.OptionEmojiProvider?.GetUri(emojiCode);
+                            if (url == null) {
                                 cache = null;
+                                imageSource = BbCodeBlock.OptionEmojiProvider?.GetImageSource(emojiCode);
                             } else {
-                                var emoji = context.ImageUri.Substring(8);
-                                url = string.Format(provider, emoji);
                                 cache = BbCodeBlock.OptionEmojiCacheDirectory == null ? null :
-                                        _emojiCache ?? (_emojiCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
+                                        _emojiCache ?? (_emojiCache = new InlineImageCache(BbCodeBlock.OptionEmojiCacheDirectory));
                             }
                         } else {
                             toolTip = true;
 
                             if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _)) {
-                                url = temporary.OriginalString;
+                                url = new Uri(temporary.OriginalString);
                                 if (double.TryParse(parameter, out maxSize)) {
                                     expand = true;
                                 } else {
@@ -270,7 +271,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 }
 
                                 cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
-                                        _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionImageCacheDirectory));
+                                        _imageCache ?? (_imageCache = new InlineImageCache(BbCodeBlock.OptionImageCacheDirectory));
                             } else {
                                 url = null;
                                 maxSize = double.NaN;
@@ -279,9 +280,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             }
                         }
 
-                        if (url != null) {
-                            FrameworkElement image = new Image(cache) { ImageUrl = url };
-                            // FrameworkElement image = new BetterImage { Filename = uri, AsyncDecode = false };
+                        if (url != null || imageSource != null) {
+                            FrameworkElement image = imageSource != null ?
+                                    new Image { Source = imageSource } : new InlineImage(cache) { ImageUri = url };
 
                             if (toolTip) {
                                 image.ToolTip = new ToolTip {
@@ -308,7 +309,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
                             }
 
-                            if (expand) {
+                            if (expand && url != null) {
                                 _imageUrls.Add(Tuple.Create(url, toolTip ? token.Value : null));
                                 image.Cursor = Cursors.Hand;
                                 image.MouseDown += (sender, args) => {
@@ -322,8 +323,16 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 };
                             }
 
-                            var container = new InlineUIContainer { Child = image, Tag = token.Value };
-                            parent.Inlines.Add(container);
+                            if (!expand) {
+                                parent.Inlines.Add(new EmojiSpan(token.Value) {
+                                    Inlines = {
+                                        new InlineUIContainer { Child = image, Tag = token.Value }
+                                    }
+                                });
+                            } else {
+                                parent.Inlines.Add(new InlineUIContainer { Child = image, Tag = token.Value });
+                            }
+
                             continue;
                         }
                     }

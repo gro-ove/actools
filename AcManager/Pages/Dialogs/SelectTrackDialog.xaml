@@ -73,14 +73,14 @@
     <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
 
     <!-- Seperator -->
-    <mui:ModernTabSplitter Grid.Column="1" SaveKey="TrackSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent" />
+    <mui:ModernTabSplitter Grid.Column="1" SaveKey="TrackSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent"
+        Panel.ZIndex="-1" />
     <Border Grid.Column="1" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.TrackDialogThumbinalMode}, Mode=OneTime}"
         VerticalAlignment="Center" />
 
     <AdornerDecorator Grid.Column="2" Margin="0 -44 0 0">
-      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated"
-          mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack"
-          SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
+      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated" mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml"
+          mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>
             <DockPanel>

@@ -16,6 +16,7 @@ using JetBrains.Annotations;
 // ReSharper disable MemberCanBePrivate.Local
 
 namespace AcTools.Utils {
+    // TODO: Rearrange members according to usage
     public partial class FileUtils {
         #region Recycle Bin
         [Flags]

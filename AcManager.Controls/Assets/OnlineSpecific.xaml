@@ -90,7 +90,7 @@
       <mui:BooleanSwitch.True>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
           <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
-          <u:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="640" ShowDescription="False" />
+          <c:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="640" ShowDescription="False" />
         </StackPanel>
       </mui:BooleanSwitch.True>
       <mui:BooleanSwitch.False>

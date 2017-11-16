@@ -29,27 +29,28 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     internal partial class BbCodeParser {
         public static int OptionReadCachedAsyncThreshold = 20000;
 
-        private class Image : System.Windows.Controls.Image {
-            private readonly FileCache _cache;
+        private class InlineImage : Image {
+            private readonly InlineImageCache _cache;
 
-            static Image() {
-                DefaultStyleKeyProperty.OverrideMetadata(typeof(Image),
-                        new FrameworkPropertyMetadata(typeof(Image)));
+            static InlineImage() {
+                DefaultStyleKeyProperty.OverrideMetadata(typeof(InlineImage),
+                        new FrameworkPropertyMetadata(typeof(InlineImage)));
             }
 
-            public Image(FileCache cache = null) {
+            public InlineImage(InlineImageCache cache = null) {
                 _cache = cache;
             }
 
-            public string ImageUrl {
-                get => (string)GetValue(ImageUrlProperty);
-                set => SetValue(ImageUrlProperty, value);
+            public Uri ImageUri {
+                get => (Uri)GetValue(ImageUriProperty);
+                set => SetValue(ImageUriProperty, value);
             }
 
             public BitmapCreateOptions CreateOptions {
@@ -58,16 +59,15 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             }
 
             private static async void ImageUrlPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
-                var url = e.NewValue as string;
+                var uri = e.NewValue as Uri;
+                if (uri == null) return;
 
-                if (string.IsNullOrEmpty(url)) return;
-
-                var cachedImage = (Image)obj;
+                var cachedImage = (InlineImage)obj;
                 var bitmapImage = new BitmapImage();
 
                 if (cachedImage._cache != null) {
                     try {
-                        var memoryStream = await cachedImage._cache.HitAsync(url);
+                        var memoryStream = await cachedImage._cache.HitAsync(uri);
                         if (memoryStream == null) return;
 
                         bitmapImage.BeginInit();
@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 } else {
                     bitmapImage.BeginInit();
                     bitmapImage.CreateOptions = cachedImage.CreateOptions;
-                    bitmapImage.UriSource = new Uri(url);
+                    bitmapImage.UriSource = uri;
 
                     // Enable IE-like cache policy.
                     bitmapImage.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.Default);
@@ -90,29 +90,28 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 }
             }
 
-            public static readonly DependencyProperty ImageUrlProperty = DependencyProperty.Register("ImageUrl",
-                    typeof(string), typeof(Image), new PropertyMetadata("", ImageUrlPropertyChanged));
+            public static readonly DependencyProperty ImageUriProperty = DependencyProperty.Register("ImageUri",
+                    typeof(Uri), typeof(InlineImage), new PropertyMetadata(null, ImageUrlPropertyChanged));
 
             public static readonly DependencyProperty CreateOptionsProperty = DependencyProperty.Register("CreateOptions",
-                    typeof(BitmapCreateOptions), typeof(Image));
+                    typeof(BitmapCreateOptions), typeof(InlineImage));
         }
 
-        private class FileCache {
+        private class InlineImageCache {
             // Record whether a file is being written.
             private readonly Dictionary<string, bool> _isWritingFile = new Dictionary<string, bool>();
 
-            public FileCache(string directory) {
+            public InlineImageCache(string directory) {
                 _appCacheDirectory = directory;
             }
 
             private readonly string _appCacheDirectory;
 
-            public async Task<MemoryStream> HitAsync(string url) {
+            public async Task<MemoryStream> HitAsync(Uri uri) {
                 if (!Directory.Exists(_appCacheDirectory)) {
                     Directory.CreateDirectory(_appCacheDirectory);
                 }
 
-                var uri = new Uri(url);
                 var fileNameBuilder = new StringBuilder();
                 using (var sha1 = new SHA1Managed()) {
                     var canonicalUrl = uri.ToString();

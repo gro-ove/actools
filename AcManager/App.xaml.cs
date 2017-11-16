@@ -285,7 +285,7 @@ namespace AcManager {
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += OnBbImageClick;
-            BbCodeBlock.OptionEmojiProvider = InternalUtils.GetEmojiProvider();
+            BbCodeBlock.OptionEmojiProvider = new EmojiProvider();
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
 
