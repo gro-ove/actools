@@ -12,7 +12,6 @@ using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Data;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -1455,7 +1454,7 @@ namespace AcManager.Controls.ViewModels {
                     takenNames.Add(name);
                 }
 
-                var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
+                var nationality = skin?.Country ?? entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
                 var skinId = skin?.Id;
 
                 string displayName;

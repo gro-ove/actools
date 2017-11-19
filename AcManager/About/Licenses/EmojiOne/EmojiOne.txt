@@ -1,3 +1,0 @@
-url: https://github.com/Ranks/emojione
-content: LICENSE.md
-sid: 8_-1576396159_-1557838949
