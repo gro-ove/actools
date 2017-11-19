@@ -241,9 +241,9 @@ namespace AcManager.Tools.Managers.Plugins {
             IsObsolete = supported != null && (string.IsNullOrEmpty(supported.Item2) || supported.Item2.IsVersionNewerThan(InstalledVersion ?? Version));
         }
 
-        private CommandBase _installCommand;
+        private AsyncCommand _installCommand;
 
-        public ICommand InstallCommand => _installCommand ??
+        public AsyncCommand InstallCommand => _installCommand ??
                 (_installCommand = new AsyncCommand(Install, () => (!IsInstalled || HasUpdate) && !IsInstalling));
 
         private CancellationTokenSource _cancellation;
@@ -263,9 +263,9 @@ namespace AcManager.Tools.Managers.Plugins {
             _cancellation = null;
         }
 
-        private CommandBase _cancellationCommand;
+        private DelegateCommand _cancellationCommand;
 
-        public ICommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new DelegateCommand(() => {
+        public DelegateCommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new DelegateCommand(() => {
             _cancellation?.Cancel();
         }));
 

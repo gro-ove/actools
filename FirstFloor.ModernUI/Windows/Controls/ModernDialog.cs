@@ -327,12 +327,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(IconSourceProperty, value);
         }
 
-        public static readonly DependencyProperty ButtonRowContentAlignmentProperty = DependencyProperty.Register(nameof(ButtonRowContentAlignment),
+        public static readonly DependencyProperty ButtonsRowContentAlignmentProperty = DependencyProperty.Register(nameof(ButtonsRowContentAlignment),
                 typeof(HorizontalAlignment), typeof(ModernDialog));
 
-        public HorizontalAlignment ButtonRowContentAlignment {
-            get => GetValue(ButtonRowContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
-            set => SetValue(ButtonRowContentAlignmentProperty, value);
+        public HorizontalAlignment ButtonsRowContentAlignment {
+            get => GetValue(ButtonsRowContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            set => SetValue(ButtonsRowContentAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty ButtonsRowContentProperty = DependencyProperty.Register(nameof(ButtonsRowContent), typeof(object),

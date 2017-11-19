@@ -65,21 +65,23 @@
           <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Column="0">
+        <DockPanel Grid.Column="0" Drop="OnDisabledListDrop" AllowDrop="True" Background="Transparent">
           <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Available mods:" Margin="20 20 0 8" />
           <mui:Switch Value="{Binding Disabled.Count}">
             <mui:PlaceholderTextBlock Placeholder="Nothing to display" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Style="{StaticResource Heading1}" mui:Switch.When="0" Margin="0 -100 0 100" />
-            <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Disabled}" />
+            <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Disabled}"
+                mui:Draggable.Enabled="True" />
           </mui:Switch>
         </DockPanel>
 
-        <DockPanel Grid.Column="4">
+        <DockPanel Grid.Column="4" Drop="OnEnabledListDrop" AllowDrop="True" Background="Transparent">
           <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Installed mods:" Margin="20 20 0 8" />
           <mui:Switch Value="{Binding Enabled.Count}">
             <mui:PlaceholderTextBlock Placeholder="Nothing to display" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Style="{StaticResource Heading1}" mui:Switch.When="0" Margin="0 -100 0 100" />
-            <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Enabled}" />
+            <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Enabled}"
+                mui:Draggable.Enabled="True" />
           </mui:Switch>
         </DockPanel>
 

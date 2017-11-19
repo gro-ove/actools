@@ -83,7 +83,9 @@ namespace FirstFloor.ModernUI.Dialogs {
                 textBox.SetBinding(TextBox.TextProperty, new Binding {
                     Source = DataContext,
                     Path = new PropertyPath(nameof(ViewModel.Text)),
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    ValidatesOnDataErrors = true
                 });
 
                 if (maxLength != -1) {

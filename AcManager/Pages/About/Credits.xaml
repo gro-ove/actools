@@ -1,26 +1,25 @@
 ﻿<UserControl x:Class="AcManager.Pages.About.Credits" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}">
-    <UserControl.Style>
-        <Style>
-            <Style.Resources>
-                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                    <Setter Property="Focusable" Value="False" />
-                </Style>
-                <Style TargetType="{x:Type mui:BbCodeBlock}" BasedOn="{StaticResource {x:Type mui:BbCodeBlock}}">
-                    <Setter Property="Width" Value="600" />
-                    <Setter Property="TextWrapping" Value="Wrap" />
-                    <Setter Property="HorizontalAlignment" Value="Left" />
-                </Style>
-                <Style TargetType="{x:Type mui:SelectableBbCodeBlock}" BasedOn="{StaticResource {x:Type mui:SelectableBbCodeBlock}}">
-                    <Setter Property="Width" Value="600" />
-                    <Setter Property="HorizontalAlignment" Value="Left" />
-                </Style>
-            </Style.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" FocusVisualStyle="{x:Null}">
+  <UserControl.Style>
+    <Style>
+      <Style.Resources>
+        <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+          <Setter Property="Focusable" Value="False" />
         </Style>
-    </UserControl.Style>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-        <TreeView x:Name="TreeView" Margin="20" PreviewMouseWheel="OnTreeViewMouseWheel" />
-    </ScrollViewer>
+        <Style TargetType="{x:Type mui:BbCodeBlock}" BasedOn="{StaticResource {x:Type mui:BbCodeBlock}}">
+          <Setter Property="Width" Value="600" />
+          <Setter Property="TextWrapping" Value="Wrap" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style TargetType="{x:Type mui:SelectableBbCodeBlock}" BasedOn="{StaticResource {x:Type mui:SelectableBbCodeBlock}}">
+          <Setter Property="Width" Value="600" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+      </Style.Resources>
+    </Style>
+  </UserControl.Style>
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <TreeView x:Name="TreeView" Margin="20" PreviewMouseWheel="OnTreeViewMouseWheel" />
+  </ScrollViewer>
 </UserControl>

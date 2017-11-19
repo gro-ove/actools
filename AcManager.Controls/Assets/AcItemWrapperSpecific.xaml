@@ -156,6 +156,70 @@
               <Setter Property="FontStyle" Value="Italic" TargetName="PART_DisplayNameText" />
             </DataTrigger>
             <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" TargetName="PART_DisplayNameText" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />
+              <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
+              <Setter Property="ActiveBrush" Value="{DynamicResource ItemTextSelected}" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- AcJsonObjectNew -->
+        <DataTemplate DataType="{x:Type t:AcJsonObjectNew}">
+          <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent"
+              c:ToolTips.GenericObject="{Binding}" c:ContextMenus.GenericObject="{Binding}">
+            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
+                Visibility="Collapsed" x:Name="PART_ErrorIcon" />
+            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
+                x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+
+            <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
+                IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
+            <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
+                Style="{StaticResource CompactRatingBar.ReadOnly}" />
+
+            <TextBlock Text="{Binding DisplayName}" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
+          </DockPanel>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Author}" Value="{x:Static t:AcCommonObject.AuthorKunos}">
+              <Setter Property="Visibility" TargetName="PART_KunosIcon"
+                  Value="{Binding MarkKunosContent, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Enabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding NeedsMargin}" Value="True">
+              <Setter Property="Padding" Value="20 0 0 0" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+              <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_KunosIcon" />
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </DataTrigger>
+            <Trigger Value="True" SourceName="PART_Panel" Property="c:AcListPage.NarrowList">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_FavouriteIcon" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
+            </Trigger>
+            <DataTrigger Binding="{Binding IsNew}" Value="True">
+              <Setter Property="Visibility" Value="Visible" TargetName="PART_NewIcon" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Changed}" Value="True">
+              <Setter Property="FontStyle" Value="Italic" TargetName="PART_DisplayNameText" />
+            </DataTrigger>
+            <DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+              <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" TargetName="PART_DisplayNameText" />
               <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_FavouriteIcon" />
               <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_ErrorIcon" />
               <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="PART_NewIcon" />
@@ -229,6 +293,8 @@
             <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 4 0" Filename="{Binding LiveryImage}" />
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
+            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
+                x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
@@ -241,6 +307,10 @@
                 HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" VerticalAlignment="Center" />
           </DockPanel>
           <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Author}" Value="{x:Static t:AcCommonObject.AuthorKunos}">
+              <Setter Property="Visibility" TargetName="PART_KunosIcon"
+                  Value="{Binding MarkKunosContent, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
             </DataTrigger>
@@ -249,6 +319,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding HasErrors}" Value="True">
               <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_KunosIcon" />
               <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
             </DataTrigger>
 
@@ -466,6 +537,9 @@
               <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" HorizontalAlignment="Stretch" Text="{Binding DisplayName}"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
+            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
+                HorizontalAlignment="Left" x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                Margin="4" />
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
               <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                   Visibility="Collapsed" x:Name="PART_ErrorIcon" Margin="0 0 4 0" />
@@ -478,6 +552,10 @@
             </DockPanel>
           </mui:Cell>
           <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Author}" Value="{x:Static t:AcCommonObject.AuthorKunos}">
+              <Setter Property="Visibility" TargetName="PART_KunosIcon"
+                  Value="{Binding MarkKunosContent, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
             </DataTrigger>
@@ -522,6 +600,9 @@
               <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
+            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
+                HorizontalAlignment="Left" x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                Margin="4" />
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
               <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                   Visibility="Collapsed" x:Name="PART_ErrorIcon" Margin="0 0 4 0" />
@@ -534,6 +615,10 @@
             </DockPanel>
           </mui:Cell>
           <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Author}" Value="{x:Static t:AcCommonObject.AuthorKunos}">
+              <Setter Property="Visibility" TargetName="PART_KunosIcon"
+                  Value="{Binding MarkKunosContent, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
             </DataTrigger>

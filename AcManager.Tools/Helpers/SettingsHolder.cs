@@ -1589,6 +1589,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _markKunosContent;
+
+            public bool MarkKunosContent {
+                get => _markKunosContent ?? (_markKunosContent = ValuesStorage.GetBool("Settings.ContentSettings.MarkKunosContent", true)).Value;
+                set {
+                    if (Equals(value, _markKunosContent)) return;
+                    _markKunosContent = value;
+                    ValuesStorage.Set("Settings.ContentSettings.MarkKunosContent", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _mentionCmInPackedContent;
 
             public bool MentionCmInPackedContent {

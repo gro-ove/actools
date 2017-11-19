@@ -37,7 +37,7 @@
     <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     <Setter Property="Padding" Value="24 20" />
     <Setter Property="ButtonsMargin" Value="24 0 24 24" />
-    <Setter Property="ButtonRowContentAlignment" Value="Right" />
+    <Setter Property="ButtonsRowContentAlignment" Value="Right" />
     <Setter Property="BackgroundContent" Value="{StaticResource DialogBackgroundContent}" />
 
     <Setter Property="Template">
@@ -80,7 +80,7 @@
                             </ItemsPanelTemplate>
                           </ItemsControl.ItemsPanel>
                         </ItemsControl>
-                        <ContentControl x:Name="PART_BottomRow_Content" HorizontalAlignment="{TemplateBinding ButtonRowContentAlignment}"
+                        <ContentControl x:Name="PART_BottomRow_Content" HorizontalAlignment="{TemplateBinding ButtonsRowContentAlignment}"
                             Content="{TemplateBinding ButtonsRowContent}" />
                       </DockPanel>
 

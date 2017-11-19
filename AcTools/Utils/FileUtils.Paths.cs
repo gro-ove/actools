@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using AcTools.DataFile;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {

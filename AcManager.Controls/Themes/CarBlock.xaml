@@ -123,8 +123,7 @@
           <Setter.Value>
             <ControlTemplate TargetType="{x:Type c:CarBlock}">
               <DockPanel>
-                <mui:Cell DockPanel.Dock="Top" MaxWidth="1022"
-                    Visibility="{Binding ShowSkinsAndPreview, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:Cell DockPanel.Dock="Top" MaxWidth="1022">
                   <mui:BetterImage x:Name="PART_PreviewImage" Filename="{Binding SelectedSkin.PreviewImage, RelativeSource={RelativeSource TemplatedParent}}"
                       Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
                       MaxWidth="1022" />
@@ -140,7 +139,7 @@
                       </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                   </ListBox>
-                  <ContentPresenter Content="{Binding PreviewContent, RelativeSource={RelativeSource TemplatedParent}}" />
+                  <ContentPresenter Content="{TemplateBinding PreviewContent}" />
                   <mui:ModernButton x:Name="PART_ShowroomButton" IconData="{StaticResource CarShowroomIconData}" EllipseDiameter="52"
                       EllipseStrokeThickness="2" IconWidth="32" IconHeight="32" Margin="12" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
                 </mui:Cell>

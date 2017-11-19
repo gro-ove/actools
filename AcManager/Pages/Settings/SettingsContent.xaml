@@ -34,6 +34,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically}" />
         </CheckBox>
 
+        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}" mui:NewMarkService.New="True">
+          <Label Content="Mark Kunos content with Assetto Corsa icon" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Holder.MentionCmInPackedContent}"
             ToolTip="I’ve added that bit just so more people using CM would know it supports installing stuff from files or folders dragged onto it, but you can always disable it">
           <Label Content="While packing, mention in description that packed content might be installed by dragging it onto Content Manager" />

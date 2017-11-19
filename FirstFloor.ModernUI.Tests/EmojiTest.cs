@@ -39,10 +39,18 @@ namespace FirstFloor.ModernUI.Tests {
         }
 
         [Test]
+        public void SkinTest() {
+            var s = "🙆🏾";
+            Console.WriteLine(string.Join(", ", ToInts(s)));
+            Assert.AreEqual("[🙆🏾]", ConvertEmoji(s));
+        }
+
+        // not supported in twemoji pack
+        /*[Test]
         public void ComplexJoinedTest() {
             var s = "👩‍❤️‍💋‍👩";
             Console.WriteLine(string.Join(", ", ToInts(s)));
             Assert.AreEqual("[👩‍❤️‍💋‍👩]", ConvertEmoji(s));
-        }
+        }*/
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using AcTools.DataFile;
 using AcTools.GenericMods.Annotations;
 using AcTools.Utils;
@@ -39,6 +40,7 @@ namespace AcTools.GenericMods {
 
         public readonly string RootDirectory;
         public readonly string ModsDirectory;
+        public readonly string ConfigFilename;
 
         public ChangeableObservableCollection<GenericMod> Mods { get; }
 
@@ -48,6 +50,8 @@ namespace AcTools.GenericMods {
 
             RootDirectory = rootDirectory;
             ModsDirectory = modsDirectory;
+            ConfigFilename = Path.Combine(ModsDirectory, ConfigFileName);
+
             _useHardLinks = useHardLinks;
             Mods = new ChangeableObservableCollection<GenericMod>();
             ScanMods();
@@ -69,9 +73,28 @@ namespace AcTools.GenericMods {
 
         private readonly Busy _busy = new Busy(true);
         private readonly Busy _operationBusy = new Busy(true);
+        private List<string> _changedFilesToRescan = new List<string>();
 
-        private void OnWatcher(object sender, EventArgs args) {
-            _busy.DoDelay(ScanMods, 300);
+        private void OnWatcher(object sender, FileSystemEventArgs args) {
+            if (_busy.Is) {
+                _changedFilesToRescan.Add(args.FullPath);
+            } else {
+                _changedFilesToRescan.Clear();
+                _changedFilesToRescan.Add(args.FullPath);
+                _busy.DoDelay(() => ScanMods(_changedFilesToRescan.ToArray()), 300);
+            }
+        }
+
+        private void OnWatcher(object sender, RenamedEventArgs args) {
+            if (_busy.Is) {
+                _changedFilesToRescan.Add(args.OldFullPath);
+                _changedFilesToRescan.Add(args.FullPath);
+            } else {
+                _changedFilesToRescan.Clear();
+                _changedFilesToRescan.Add(args.OldFullPath);
+                _changedFilesToRescan.Add(args.FullPath);
+                _busy.DoDelay(() => ScanMods(_changedFilesToRescan.ToArray()), 300);
+            }
         }
 
         public static string GetBackupFilename(string modsDirectory, string modName, string relative) {
@@ -89,17 +112,35 @@ namespace AcTools.GenericMods {
             return Mods.FirstOrDefault(x => x.DisplayName == name);
         }
 
-        private void ScanMods() {
+        private DateTime? _lastSaved;
+
+        private void ScanMods(params string[] filenames) {
             _operationBusy.Do(() => {
-                Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory)
-                                                         .Where(x => Path.GetFileName(x)?.StartsWith("!") == false)
-                                                         .Select(x => new GenericMod(this, x)));
-                LoadState();
+                var directories = Directory.GetDirectories(ModsDirectory)
+                                           .Where(x => Path.GetFileName(x)?.StartsWith("!") == false).ToList();
+                var replaceMods = !directories.SequenceEqual(Mods.Select(x => x.ModDirectory));
+                if (replaceMods) {
+                    Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory)
+                                                             .Where(x => Path.GetFileName(x)?.StartsWith("!") == false)
+                                                             .Select(x => new GenericMod(this, x)));
+                } else {
+                    foreach (var changed in filenames.Where(x =>
+                            x?.EndsWith(GenericMod.DescriptionExtension, StringComparison.OrdinalIgnoreCase) == true)) {
+                        Mods.FirstOrDefault(x => FileUtils.IsAffected(x.ModDirectory, changed))?.Description.Reset();
+                    }
+                }
+
+                if (replaceMods || filenames.Any(x => x == null || FileUtils.ArePathsEqual(x, ConfigFilename))) {
+                    var state = new FileInfo(ConfigFileName);
+                    if (!_lastSaved.HasValue || !state.Exists || state.LastWriteTime > _lastSaved) {
+                        LoadState();
+                    }
+                }
             });
         }
 
         private IniFile GetState() {
-            return new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
+            return new IniFile(ConfigFilename, IniFileMode.SquareBracketsWithin);
         }
 
         private void LoadState(IniFile state) {
@@ -153,6 +194,7 @@ namespace AcTools.GenericMods {
             if (UpdateApplyOrder(ini) || forceSave) {
                 LoadState(ini);
                 ini.Save();
+                _lastSaved = DateTime.Now;
             }
         }
 
@@ -165,7 +207,7 @@ namespace AcTools.GenericMods {
             return _busy.Delay(() => Task.Run(() => _operationBusy.Do(() => {
                 Debug($"Enabling {mod.DisplayName}…");
 
-                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
+                var iniFile = new IniFile(ConfigFilename, IniFileMode.SquareBracketsWithin);
                 iniFile["MODS"].Set(mod.DisplayName, int.MaxValue);
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in CheckConflicts(mod).Select(x => x.ModName).Distinct()) {
@@ -241,7 +283,7 @@ namespace AcTools.GenericMods {
                             $"“{mod.DisplayName}” cannot be disabled as {mod.DependsOn.Select(x => $"“{x}”").JoinToReadableString()} has overwritten files and must be removed first.");
                 }
 
-                var iniFile = new IniFile(Path.Combine(ModsDirectory, ConfigFileName), IniFileMode.SquareBracketsWithin);
+                var iniFile = new IniFile(ConfigFilename, IniFileMode.SquareBracketsWithin);
                 iniFile["MODS"].Remove(mod.DisplayName);
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in dependancies.Select(x => new {

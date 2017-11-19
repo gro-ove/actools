@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters.Testers {
-    public class WeatherObjectTester : ITester<WeatherObject> {
+    public class WeatherObjectTester : ITester<WeatherObject>, ITesterDescription {
         public static readonly WeatherObjectTester Instance = new WeatherObjectTester();
 
         public static string InnerParameterFromKey(string key) {
@@ -41,6 +43,13 @@ namespace AcManager.Tools.Filters.Testers {
             }
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public IEnumerable<KeywordDescription> GetDescriptions() {
+            return new[] {
+                new KeywordDescription("lights", "Forcing Car Lights", KeywordType.Flag, KeywordPriority.Important, "carlights"),
+                new KeywordDescription("temperature", "Temperature Coefficient", KeywordType.Number, KeywordPriority.Normal, "temperaturecoeff"),
+            }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }
 }

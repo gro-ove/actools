@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Profile;
 using AcTools.Utils.Helpers;

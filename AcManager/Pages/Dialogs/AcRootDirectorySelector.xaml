@@ -4,7 +4,10 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_ContentManager}" ShowInTaskbar="True"
     WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
-    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200">
+    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200" ButtonsRowContentAlignment="Left">
+  <mui:ModernDialog.ButtonsRowContent>
+    <Button Content="Install Recommended Plugins" Command="{Binding InstallRecommendedCommand, Source={x:Static t:PluginsManager.Instance}}" />
+  </mui:ModernDialog.ButtonsRowContent>
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -60,7 +63,7 @@
       <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
           Visibility="{Binding RecommendedListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
       <DockPanel Margin="20 8 0 0">
-        <ScrollViewer MaxHeight="240">
+        <ScrollViewer Height="240">
           <ItemsControl ItemsSource="{Binding RecommendedListView, Source={x:Static t:PluginsManager.Instance}}"
               ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" />
         </ScrollViewer>

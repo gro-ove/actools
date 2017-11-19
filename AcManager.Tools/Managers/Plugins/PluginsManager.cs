@@ -11,6 +11,7 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -18,6 +19,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers.Plugins {
     public class PluginsManager : NotifyPropertyChanged {
+        public static readonly string ManifestFileName = "Manifest.json";
+
         public static PluginsManager Instance { get; private set; }
 
         public static PluginsManager Initialize(string dir) {
@@ -53,6 +56,12 @@ namespace AcManager.Tools.Managers.Plugins {
             // TODO: Directory watching
         }
 
+        private AsyncCommand _installRecommendedCommand;
+
+        public AsyncCommand InstallRecommendedCommand => _installRecommendedCommand ?? (_installRecommendedCommand = new AsyncCommand(() => {
+            return List.Where(x => x.IsRecommended && !x.IsInstalled && !x.IsInstalling).ToList().Select(x => x.InstallCommand.ExecuteAsync()).WhenAll(2);
+        }, () => List.Any(x => x.IsRecommended && !x.IsInstalled && !x.IsInstalling)));
+
         public bool IsPluginEnabled([Localizable(false)] string id) {
             if (!_locallyLoaded) {
                 ReloadLocalList();
@@ -82,7 +91,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public void ReloadLocalList() {
             try {
                 List.ReplaceEverythingBy(Directory.GetDirectories(PluginsDirectory)
-                                                  .Select(x => Path.Combine(x, ManifestName))
+                                                  .Select(x => Path.Combine(x, ManifestFileName))
                                                   .Where(File.Exists)
                                                   .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
                                                   .Where(x => x.IsAllRight)
@@ -126,6 +135,8 @@ namespace AcManager.Tools.Managers.Plugins {
 
                 List.Add(plugin);
             }
+
+            _installRecommendedCommand?.RaiseCanExecuteChanged();
         }
 
         private static async Task<IEnumerable<PluginEntry>> DownloadAndParseList() {
@@ -143,6 +154,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
             try {
                 plugin.IsInstalling = true;
+                _installRecommendedCommand?.RaiseCanExecuteChanged();
 
                 var data = await CmApiProvider.GetDataAsync($"plugins/get/{plugin.Id}", progress, cancellation);
                 if (data == null || cancellation.IsCancellationRequested) return;
@@ -160,7 +172,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 if (cancellation.IsCancellationRequested) return;
 
                 plugin.InstalledVersion = plugin.Version;
-                File.WriteAllText(Path.Combine(destination, ManifestName), JsonConvert.SerializeObject(plugin));
+                File.WriteAllText(Path.Combine(destination, ManifestFileName), JsonConvert.SerializeObject(plugin));
 
                 if (plugin.IsEnabled) {
                     PluginEnabled?.Invoke(this, new AppAddonEventHandlerArgs { PluginId = plugin.Id });
@@ -169,10 +181,9 @@ namespace AcManager.Tools.Managers.Plugins {
                 NonfatalError.Notify(ToolsStrings.Plugins_CannotInstall, e);
             } finally {
                 plugin.IsInstalling = false;
+                _installRecommendedCommand?.RaiseCanExecuteChanged();
             }
         }
-
-        public const string ManifestName = "Manifest.json";
 
         public void RemoveAddon(PluginEntry plugin) {
             throw new NotImplementedException();

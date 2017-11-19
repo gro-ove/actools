@@ -144,54 +144,64 @@ namespace AcManager.Pages.Lists {
 
             private readonly Busy _busy = new Busy();
 
+            public Task EnableMod(GenericMod mod) {
+                return _busy.Task(async () => {
+                    if (_enabler == null || mod.IsEnabled) return;
+
+                    var conflicts = await _enabler.CheckConflictsAsync(mod);
+                    if (conflicts.Length > 0 && ModernDialog.ShowMessage(
+                            conflicts.Select(x => $@"• “{Path.GetFileName(x.RelativeName)}” has already been altered by the “{x.ModName}” mod;")
+                                     .JoinToString("\n").ToSentence
+                                    () + $"\n\nEnabling {mod.DisplayName} may have adverse effects. Are you sure you want to enable this mod?",
+                            "Conflict", MessageBoxButton.YesNo, "genericMods.conflict") != MessageBoxResult.Yes) {
+                        return;
+                    }
+
+                    try {
+                        using (var waiting = WaitingDialog.Create("Enabling mod…")) {
+                            await _enabler.EnableAsync(mod, waiting, waiting.CancellationToken);
+                            Changed?.Invoke(this, EventArgs.Empty);
+
+                            if (waiting.CancellationToken.IsCancellationRequested) {
+                                waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Cancellation…"));
+                                await _enabler.DisableAsync(mod);
+                            }
+                        }
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t enable mod", e);
+                    }
+                });
+            }
+
+            public Task DisableMod(GenericMod mod) {
+                return _busy.Task(async () => {
+                    if (_enabler == null || !mod.IsEnabled) return;
+
+                    try {
+                        using (var waiting = WaitingDialog.Create("Disabling mod…")) {
+                            await _enabler.DisableAsync(mod, waiting, waiting.CancellationToken);
+                            Changed?.Invoke(this, EventArgs.Empty);
+
+                            if (waiting.CancellationToken.IsCancellationRequested) {
+                                waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Cancellation…"));
+                                await _enabler.EnableAsync(mod);
+                            }
+                        }
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t disable mod", e);
+                    }
+                });
+            }
+
             private AsyncCommand _enableCommand;
 
-            public AsyncCommand EnableCommand => _enableCommand ?? (_enableCommand = new AsyncCommand(() => _busy.Task(async () => {
-                if (_enabler == null || Disabled == null || !(Disabled.CurrentItem is GenericMod selected)) return;
-
-                var conflicts = await _enabler.CheckConflictsAsync(selected);
-                if (conflicts.Length > 0 && ModernDialog.ShowMessage(
-                        conflicts.Select(x => $@"• “{Path.GetFileName(x.RelativeName)}” has already been altered by the “{x.ModName}” mod;")
-                                 .JoinToString("\n").ToSentence
-                                () + $"\n\nEnabling {selected.DisplayName} may have adverse effects. Are you sure you want to enable this mod?",
-                        "Conflict", MessageBoxButton.YesNo, "genericMods.conflict") != MessageBoxResult.Yes) {
-                    return;
-                }
-
-                try {
-                    using (var waiting = WaitingDialog.Create("Enabling mod…")) {
-                        await _enabler.EnableAsync(selected, waiting, waiting.CancellationToken);
-                        Changed?.Invoke(this, EventArgs.Empty);
-
-                        if (waiting.CancellationToken.IsCancellationRequested) {
-                            waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Cancellation…"));
-                            await _enabler.DisableAsync(selected);
-                        }
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t enable mod", e);
-                }
-            })));
+            public AsyncCommand EnableCommand => _enableCommand ?? (_enableCommand = new AsyncCommand(() =>
+                    !(Disabled?.CurrentItem is GenericMod selected) ? Task.Delay(0) : EnableMod(selected)));
 
             private AsyncCommand _disableCommand;
 
-            public AsyncCommand DisableCommand => _disableCommand ?? (_disableCommand = new AsyncCommand(() => _busy.Task(async () => {
-                if (_enabler == null || Enabled == null || !(Enabled.CurrentItem is GenericMod selected)) return;
-
-                try {
-                    using (var waiting = WaitingDialog.Create("Disabling mod…")) {
-                        await _enabler.DisableAsync(selected, waiting, waiting.CancellationToken);
-                        Changed?.Invoke(this, EventArgs.Empty);
-
-                        if (waiting.CancellationToken.IsCancellationRequested) {
-                            waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Cancellation…"));
-                            await _enabler.EnableAsync(selected);
-                        }
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t disable mod", e);
-                }
-            })));
+            public AsyncCommand DisableCommand => _disableCommand ?? (_disableCommand = new AsyncCommand(() =>
+                    !(Enabled?.CurrentItem is GenericMod selected) ? Task.Delay(0) : DisableMod(selected)));
 
             private AsyncCommand _disableAllCommand;
 
@@ -296,6 +306,18 @@ namespace AcManager.Pages.Lists {
             FileUtils.EnsureDirectoryExists(SettingsHolder.GenericMods.GetModsDirectory());
             NavigationCommands.Refresh.Execute(null, this);
             // this.GetParents().OfType<ModernFrame>().FirstOrDefault().
+        }
+
+        private void OnDisabledListDrop(object sender, DragEventArgs e) {
+            if (e.Data.GetData(GenericMod.DraggableFormat) is GenericMod mod) {
+                Model.DisableMod(mod);
+            }
+        }
+
+        private void OnEnabledListDrop(object sender, DragEventArgs e) {
+            if (e.Data.GetData(GenericMod.DraggableFormat) is GenericMod mod) {
+                Model.EnableMod(mod);
+            }
         }
     }
 }

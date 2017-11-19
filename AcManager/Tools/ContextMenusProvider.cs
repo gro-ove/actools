@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Controls;
-using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;

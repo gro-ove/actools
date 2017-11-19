@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using StringBasedFilter;

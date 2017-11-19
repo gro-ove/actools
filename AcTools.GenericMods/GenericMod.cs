@@ -12,9 +12,12 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcTools.GenericMods {
-    public class GenericMod : INotifyPropertyChanged {
+    public class GenericMod : INotifyPropertyChanged, IDraggable {
+        public static readonly string DescriptionExtension = ".jsgme";
+
         private readonly GenericModsEnabler _enabler;
 
         public string DisplayName { get; }
@@ -25,7 +28,7 @@ namespace AcTools.GenericMods {
             DisplayName = Path.GetFileName(modDirectory);
             ModDirectory = modDirectory;
             Description = new Lazier<string>(() => Task.Run(() => {
-                var d = Directory.GetFiles(ModDirectory, "*.jsgme", SearchOption.AllDirectories);
+                var d = Directory.GetFiles(ModDirectory, "*" + DescriptionExtension, SearchOption.AllDirectories);
                 return d.Length > 0 ? File.ReadAllText(d[0]) : null;
             }));
         }
@@ -137,8 +140,12 @@ namespace AcTools.GenericMods {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public const string DraggableFormat = "X-GenericMod";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

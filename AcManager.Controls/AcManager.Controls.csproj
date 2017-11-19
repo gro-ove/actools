@@ -194,6 +194,7 @@
     </Compile>
     <Compile Include="StatEntry.cs" />
     <Compile Include="ToolTips.cs" />
+    <Compile Include="TrackBlock.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
@@ -244,9 +245,6 @@
     <Compile Include="UserControls\AssistsDescription.xaml.cs">
       <DependentUpon>AssistsDescription.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\TrackBlock.xaml.cs">
-      <DependentUpon>TrackBlock.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\KunosCareerBlock.xaml.cs">
       <DependentUpon>KunosCareerBlock.xaml</DependentUpon>
     </Compile>
@@ -274,6 +272,10 @@
     <Compile Include="ViewModels\UploaderParams.cs" />
     <Compile Include="WeatherComboBox.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ModernProgressRing.Imported.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -443,6 +445,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\TrackBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\UserPresetsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -485,10 +491,6 @@
     <Page Include="UserControls\ModernPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\TrackBlock.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\KunosCareerBlock.xaml">
       <SubType>Designer</SubType>

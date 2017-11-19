@@ -15,7 +15,6 @@ using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
-using AcManager.Controls.UserControls;
 using AcManager.CustomShowroom;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;

@@ -42,9 +42,7 @@
   <PropertyGroup>
     <StartupObject>AcManager.EntryPoint</StartupObject>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>App.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
@@ -107,6 +105,9 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Awesomium.Core, Version=1.7.5.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
@@ -1558,6 +1559,7 @@
     <None Include="About\Filtering\More About Properties.txt" />
     <None Include="About\Filtering\More About Sub-Filters.txt" />
     <None Include="About\Licenses\ImageMagick\LICENSE" />
+    <None Include="About\Licenses\Twemoji\LICENSE-GRAPHICS" />
     <None Include="Assets\Presets.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Presets.cs</LastGenOutput>
@@ -1579,7 +1581,6 @@
     <None Include="About\Licenses\AssettoCorsaSharedMemory\LICENSE" />
     <None Include="About\Licenses\AvalonEdit\LICENSE" />
     <None Include="About\Licenses\CachedImage\LICENSE" />
-    <None Include="About\Licenses\EmojiOne\LICENSE.md" />
     <None Include="About\Licenses\FirstFloor.ModernUI\LICENSE.md" />
     <None Include="About\Licenses\Flaticon\LICENSE" />
     <None Include="About\Licenses\FXAA\LICENSE" />
@@ -1669,7 +1670,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="About\Licenses\WpfNotifyIcon\" />
     <Folder Include="Assets\Libs\" />
   </ItemGroup>
   <ItemGroup>
@@ -1854,7 +1854,7 @@
     <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />
     <Content Include="About\Licenses\AvalonEdit\AvalonEdit.txt" />
     <Content Include="About\Licenses\CachedImage\CachedImage.txt" />
-    <Content Include="About\Licenses\EmojiOne\EmojiOne.txt" />
+    <Content Include="About\Licenses\Twemoji\Twemoji.txt" />
     <Content Include="About\Licenses\FirstFloor.ModernUI\FirstFloor.ModernUI.txt" />
     <Content Include="About\Licenses\Flaticon\Flaticon.txt" />
     <Content Include="About\Licenses\FMOD\FMOD.txt" />

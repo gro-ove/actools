@@ -1,5 +1,4 @@
-﻿using AcManager.Tools.Filters;
-using AcManager.Tools.Filters.Testers;
+﻿using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

@@ -33,7 +33,8 @@
           Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 
-    <TextBlock Text="{Binding TextureName}" Style="{StaticResource Heading2}" Grid.Column="1" Grid.Row="0" Margin="0 0 0 12" />
+    <mui:BetterTextBox Text="{Binding TextureName, Mode=OneWay}" Style="{StaticResource Borderless.Heading2}" IsReadOnly="True" Grid.Column="1" Grid.Row="0"
+        Margin="0 0 0 12" />
 
     <DockPanel Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top">
       <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
@@ -45,19 +46,20 @@
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureTypeLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureFormat}" Placeholder="?" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding TextureFormat, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureFormatLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureFormatDescription}" Placeholder="?" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding TextureFormatDescription, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureDimensionsLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureDimensions}" Placeholder="?" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding TextureDimensions, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
-          <mui:PlaceholderTextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True"
+              Text="{Binding Data.Length, Mode=OneWay, Converter={StaticResource FileSizeConverter}}" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Used for:" />

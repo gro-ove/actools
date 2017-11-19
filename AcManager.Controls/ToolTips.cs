@@ -1,9 +1,11 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
+using System.Windows.Data;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -102,7 +104,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.RegisterAttached("IsDirty", typeof(bool),
-                typeof(ToolTips), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+                typeof(ToolTips), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None));
 
         [CanBeNull]
         private static ToolTip GetToolTip(string key, FrameworkElement obj = null) {
@@ -130,12 +132,42 @@ namespace AcManager.Controls {
                 return;
             }
 
+            if (obj.ToolTip == null) {
+                obj.SetBinding(ToolTipService.IsEnabledProperty, new Binding {
+                    Path = new PropertyPath(nameof(ToolTipIsEnabledValue.IsEnabled)),
+                    Source = _isIsEnabledValue
+                });
+            }
+
             t.DataContext = dataContext;
             obj.ToolTip = t;
         }
 
+        private static ToolTipIsEnabledValue _isIsEnabledValue = new ToolTipIsEnabledValue();
+
+        private class ToolTipIsEnabledValue : NotifyPropertyChanged {
+            private bool _isEnabled = true;
+
+            public bool IsEnabled {
+                get => _isEnabled;
+                set {
+                    if (Equals(value, _isEnabled)) return;
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                    Logging.Debug(value);
+                }
+            }
+        }
+
+        private static long _scrollId;
+
         private static void OnScrollChanged(object sender, RoutedEventArgs e) {
-            Logging.Here();
+            var scrollId = ++_scrollId;
+            _isIsEnabledValue.IsEnabled = false;
+            Task.Delay(300).ContinueWith(t => {
+                if (_scrollId != scrollId) return;
+                ActionExtension.InvokeInMainThreadAsync(() => _isIsEnabledValue.IsEnabled = true);
+            });
         }
 
         private static void UpdateToolTip(FrameworkElement element) {

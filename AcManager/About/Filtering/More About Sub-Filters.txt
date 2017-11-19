@@ -3,5 +3,17 @@ id: filteringSubFilters
 
 You might already know that, for example, you can filter servers by names of cars used, like so: [mono][b]car:bmw[/mono][/b]. But it’s more that that, you can actually put any complex car filter for servers as well! For that, simply use brackets right after “car” bit, like so:
 
+ • [mono][b]car(year<1980)[/mono][/b] (finds all servers with classic cars);
+ • [mono][b]track(k-)[/mono][/b] (finds all servers with modded tracks);
+ • [mono][b]track(length > 10000)[/mono][/b] (finds all servers with long tracks).
 
+By combining sub-filters with [url="/Pages/About/FiltersPage.xaml?Key=filteringExpressions"]expressions[/url], you do even more:
 
+ • [mono][b]!car(!brand:bmw)[/mono][/b] (keeps servers with nothing but BMWs — or, in other words, does not allow any servers which contain at least one non-BMW car);
+ • [mono][b]!car(!brand:bmw & kunos-)[/mono][/b] (not just servers with BMWs only, but also without any modded cars);
+ • [mono][b]!car(dlc+) & track(dlc-)[/mono][/b] (filters out servers with content from DLCs).
+
+And one more little thing — if you want to simply filter out stuff by child’s properly, you can use dot instead of brackets:
+
+ • [mono][b]car.year:198?[/mono][/b] (finds all servers with cars from 80s);
+ • [mono][b]track.k+[/mono][/b] (finds all servers with tracks made by Kunos.

@@ -57,7 +57,7 @@
       <ColumnDefinition Width="320" MinWidth="180" />
     </Grid.ColumnDefinitions>
 
-    <uc:TrackBlock Track="{Binding SelectedTrackConfiguration}" Margin="0 0 0 -42">
+    <c:TrackBlock Track="{Binding SelectedTrackConfiguration}" Margin="0 0 0 -42">
       <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
           Visibility="{Binding SelectedTrack.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
           ItemsSource="{Binding SelectedTrack.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -68,7 +68,7 @@
           </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
       </ListBox>
-    </uc:TrackBlock>
+    </c:TrackBlock>
 
     <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
 

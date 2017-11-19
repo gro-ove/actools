@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcManager.AcSound;
 using AcManager.Controls;
-using AcManager.Controls.UserControls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

@@ -6,7 +6,7 @@
     xmlns:internal="http://acstuff.ru/app/internal" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
     Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
     SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}"
-    ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonRowContentAlignment="Stretch"
+    ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch"
     Closed="OnClosed">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>

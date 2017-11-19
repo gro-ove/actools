@@ -466,10 +466,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\ModernProgressRing.Imported.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Assets\ModernProgressRing.Special.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

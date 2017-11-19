@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Filters.Testers;
 using AcTools.Utils.Helpers;
