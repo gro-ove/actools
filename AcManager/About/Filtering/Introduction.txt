@@ -10,7 +10,6 @@ Basically, (now) CM’s filtering is similar to Google search. Enter any words a
 Another difference is that you can search by various properties, such as car’s manufacturer, country server is located in, track’s length or something else, like so:
 
  • [mono][b]brand:'lotus'[/mono][/b] (without single quotes, Lotus Classic Cars will also be included);
- • [mono][b]country:germany[/mono][/b] (finds both [b]Lotus 2-Eleven[/b] and [b]Lotus 2-Eleven GT4[/b]);
  • [mono][b]length>10 km[/mono][/b] (with “>” and “<”, you can filter out numerical values).
 
 Various flags are supported as well:

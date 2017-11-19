@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,11 +7,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.About;
 using AcManager.Controls.Helpers;
-using AcManager.Internal;
 using AcManager.Tools.About;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Filters.Testers;
-using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -59,8 +56,17 @@ namespace AcManager.Pages.About {
             public ViewModel() {
                 _entries = new [] {
                     PieceOfInformation.Create("Properties for: Cars", GetHint(CarObjectTester.Instance)),
-                    PieceOfInformation.Create("Properties for: Skins", GetHint(CarSkinObjectTester.Instance)),
                     PieceOfInformation.Create("Properties for: Tracks", GetHint(TrackObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Showrooms", GetHint(ShowroomObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Car Setups", GetHint(CarSetupObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Car Skins", GetHint(CarSkinObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Track Skins", GetHint(TrackSkinObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Weather", GetHint(WeatherObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Replays", GetHint(ReplayObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Screenshots", GetHint(FileTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Lap Times", GetHint(LapTimeTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Challenges", GetHint(SpecialEventObjectTester.Instance)),
+                    PieceOfInformation.Create("Properties for: Online", GetHint(ServerEntryTester.Instance)),
                 };
 
                 NotesList = new ListCollectionView(Filtering.Entries.Concat(_entries).ToList()) { CustomSort = this };
