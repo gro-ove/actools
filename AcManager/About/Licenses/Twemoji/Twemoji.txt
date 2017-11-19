@@ -1,0 +1,4 @@
+name: Twitter Emoji (Twemoji)
+url: https://github.com/twitter/twemoji
+content: LICENSE-GRAPHICS
+sid: cf7d9488

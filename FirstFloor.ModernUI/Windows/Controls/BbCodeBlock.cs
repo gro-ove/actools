@@ -311,9 +311,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty LineHeightProperty = DependencyProperty.Register(nameof(LineHeight), typeof(double),
-                typeof(SelectableBbCodeBlock), new PropertyMetadata(double.NaN, (o, e) => {
-                    ((SelectableBbCodeBlock)o)._lineHeight = (double)e.NewValue;
-                }));
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(double.NaN, (o, e) => { ((SelectableBbCodeBlock)o)._lineHeight = (double)e.NewValue; }));
 
         private double _lineHeight = double.NaN;
 
