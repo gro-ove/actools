@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class CustomUriSchemeHelper {
-        public static bool OptionRegisterEachTime;
+        public static bool OptionRegisterEachTime = true;
 
         private const string UriSchemeLabel = "acmanager";
         public const string UriScheme = UriSchemeLabel + ":";
@@ -45,9 +45,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        private static void RegisterExtension(string ext, string description, bool isEnabled) {
+        private static void RegisterExtension(string ext, string description, bool isEnabled, int iconId) {
             var className = $@"{ClassName}{ext.ToLowerInvariant()}";
-            RegisterClass(className, description, false, 0, isEnabled);
+            RegisterClass(className, description, false, iconId, isEnabled);
 
             var path = @"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext;
             if (!isEnabled) {
@@ -81,8 +81,8 @@ namespace AcManager.Tools.Helpers {
 
                 if (SettingsHolder.Common.IsRegistryEnabled) {
                     RegisterClass(ClassName, AppTitle, true, 0, isEnabled);
-                    RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary, isFilesIntegrationEnabled);
-                    RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay, isFilesIntegrationEnabled);
+                    RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary, isFilesIntegrationEnabled, 1);
+                    RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay, isFilesIntegrationEnabled, 2);
                 }
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
