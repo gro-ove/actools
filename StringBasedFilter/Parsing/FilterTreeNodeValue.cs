@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 using StringBasedFilter.TestEntries;
 using StringBasedFilter.Utils;
@@ -39,7 +38,7 @@ namespace StringBasedFilter.Parsing {
                 keyName = splitted.PropertyKey;
 
                 if (splitted.ChildKey != null) {
-                    var fakeFilter = $"{splitted.PropertyKey}{splitted.ComparingOperation}{splitted.PropertyValue}";
+                    var fakeFilter = $"{splitted.PropertyKey}{(char)splitted.ComparingOperation}{splitted.PropertyValue}";
                     var parser = new FilterParser(filterParams);
                     return new FilterTreeNodeChild(splitted.ChildKey, parser.Parse(fakeFilter, out _), filterParams);
                 }

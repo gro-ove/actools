@@ -225,6 +225,31 @@ namespace StringBasedFilter.Tests {
         }
 
         [Test]
+        public void SubFilterDotTest() {
+            var w0 = Stopwatch.StartNew();
+            var filter = Filter.Create(ListTester.Instance, "len=2 & 1(A & B) | ((0:A* ^ empty+) & f.len > 1) | f.len=3");
+            Console.WriteLine($"creation: {w0.ElapsedMilliseconds} ms");
+
+
+            var s = filter.ToString();
+            Console.WriteLine(s);
+
+            var d = new[] {
+                new[] { "Q", "A B" },
+                new[] { "Q", "Aa BB" },
+                new[] { "Q", "Aa BB", "5" },
+                new[] { "Q", "AaBB" },
+                new[] { "QWE", "AaBB" }
+            };
+
+            var w = Stopwatch.StartNew();
+            var m = 100000;
+            var n = Enumerable.Range(0, m).Select(x => d[x % d.Length]).Count(filter.Test);
+            Console.WriteLine($"{m} items: {w.ElapsedMilliseconds} ms");
+            Assert.AreEqual(n, m * 3 / 5);
+        }
+
+        [Test]
         public void PropagateKeyTest_0() {
             var filter = Filter.Create(new ListTester(), "len<4 & !c:bmw lotus ferrari");
             Console.WriteLine(filter);
