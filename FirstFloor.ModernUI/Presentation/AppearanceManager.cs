@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -208,9 +210,9 @@ namespace FirstFloor.ModernUI.Presentation {
                             value = _actualColor.Value;
                             _actualColor = null;
                         }
-                        await Task.Delay(300);
+                        await Task.Delay(300).ConfigureAwait(false);
                     } while (_actualColor.HasValue);
-                    AccentColor = value;
+                    ActionExtension.InvokeInMainThread(() => AccentColor = value);
                     _lastSet = DateTime.Now;
                 } finally {
                     _settingInProgress = false;

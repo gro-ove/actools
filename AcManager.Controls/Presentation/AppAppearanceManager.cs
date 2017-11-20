@@ -149,6 +149,8 @@ namespace AcManager.Controls.Presentation {
             AppearanceManager.Current.ThemeObsolete += OnThemeObsolete;
 
             var theme = ValuesStorage.GetString(KeyTheme);
+
+            // For compatibility with old settings
             if (theme == "/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml") {
                 theme = "/AcManager.Controls;component/Assets/ModernUI.Light.xaml";
             }
@@ -158,9 +160,9 @@ namespace AcManager.Controls.Presentation {
 
             try {
                 _loading = true;
-                AccentColor = ValuesStorage.GetColor(KeyAccentColor, AccentColors.First());
-                Logging.Debug(AccentColor);
-                if (AccentColor.A == 0) AccentColor = AccentColors.First();
+                var accentColor = ValuesStorage.GetColor(KeyAccentColor, AccentColors.First());
+                Logging.Debug($"Loaded: {accentColor}");
+                AccentColor = accentColor.A == 0 ? AccentColors.First() : accentColor;
 
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
                 BackgroundFilename = ValuesStorage.GetString(KeyBackgroundImage);
