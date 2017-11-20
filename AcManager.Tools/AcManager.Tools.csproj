@@ -371,6 +371,7 @@
     <Compile Include="Miscellaneous\OAuth.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
+    <Compile Include="Objects\CarObject.CustomData.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />

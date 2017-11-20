@@ -439,10 +439,10 @@
         </DockPanel>
 
         <!--<StackPanel Grid.Row="1" Grid.Column="2">
-                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
-                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
-                            Margin="0 0 0 4" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-                </StackPanel>-->
+          <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
+          <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
+              Margin="0 0 0 4" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+        </StackPanel>-->
       </Grid>
     </Grid>
 
@@ -489,6 +489,18 @@
         </CheckBox>
 
         <mui:BooleanLazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" TrueResourceKey="CarSpecificControlsComboBox" />
+
+        <!--<DockPanel>
+          <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+            <ContextMenu>
+              <MenuItem Header="Use Unpacked Data (Global)" IsCheckable="True" IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
+              <MenuItem Header="Reset Car-Specific Flag" Command="{Binding SelectedCar.ResetUseSpecificDataFlagCommand}" />
+            </ContextMenu>
+          </mui:ContextMenuButton>
+          <CheckBox IsChecked="{Binding SelectedCar.UseCustomData}" Margin="0 0 0 0">
+            <Label Content="Use unpacked data if exists" />
+          </CheckBox>
+        </DockPanel>-->
       </mui:SpacingStackPanel>
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"

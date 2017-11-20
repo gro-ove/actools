@@ -66,10 +66,7 @@ namespace AcManager {
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e) {
-            var window = sender as Window;
-            if (window == null) return;
-
-            if (_currentWindow == null) {
+            if (sender is Window window && _currentWindow == null) {
                 SetCurrentWindow(window);
             }
         }
