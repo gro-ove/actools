@@ -1,8 +1,10 @@
 using System;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Xml;
 using System.Xml.Serialization;
@@ -44,7 +46,7 @@ namespace FirstFloor.ModernUI.Windows {
         public struct WindowPlacementStruct {
             public int length;
             public int flags;
-            public int showCmd;
+            public ShowState showCmd;
             public WindowPlacementPoint minPosition;
             public WindowPlacementPoint maxPosition;
             public WindowPlacementRect normalPosition;
@@ -59,8 +61,10 @@ namespace FirstFloor.ModernUI.Windows {
         [DllImport("user32.dll")]
         private static extern bool GetWindowPlacement(IntPtr hWnd, out WindowPlacementStruct lpwndpl);
 
-        private const int SW_SHOWNORMAL = 1;
-        private const int SW_SHOWMINIMIZED = 2;
+        public enum ShowState {
+            Normal = 1,
+            Minimized = 2
+        }
 
         public static void SetPlacement(IntPtr windowHandle, [CanBeNull] string placementXml) {
             if (string.IsNullOrEmpty(placementXml)) {
@@ -77,7 +81,7 @@ namespace FirstFloor.ModernUI.Windows {
 
                 placement.length = Marshal.SizeOf(typeof(WindowPlacementStruct));
                 placement.flags = 0;
-                placement.showCmd = placement.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : placement.showCmd;
+                placement.showCmd = placement.showCmd == ShowState.Minimized ? ShowState.Normal : placement.showCmd;
                 SetWindowPlacement(windowHandle, ref placement);
             } catch (InvalidOperationException e) {
                 Logging.Error(e);
@@ -86,9 +90,7 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public static string GetPlacement(IntPtr windowHandle) {
-            WindowPlacementStruct placement;
-            GetWindowPlacement(windowHandle, out placement);
-
+            GetWindowPlacement(windowHandle, out var placement);
             using (var memoryStream = new MemoryStream()) {
                 using (var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8)) {
                     Serializer.Serialize(xmlTextWriter, placement);
@@ -104,6 +106,27 @@ namespace FirstFloor.ModernUI.Windows {
 
         public static string GetPlacement(this Window window) {
             return GetPlacement(new WindowInteropHelper(window).Handle);
+        }
+
+        public static bool IsWindowOnAnyScreen(this Window window, bool autoAdjustWindow = true) {
+            var width = (int)window.ActualWidth;
+            var height = (int)window.ActualHeight;
+            var screen = Screen.FromHandle(new WindowInteropHelper(window).Handle);
+
+            var leftTest = window.Left >= screen.WorkingArea.Left;
+            var topTest = window.Top >= screen.WorkingArea.Top;
+            var bottomTest = window.Top + height <= screen.WorkingArea.Bottom;
+            var rightTest = window.Left + width <= screen.WorkingArea.Right;
+            if (leftTest && topTest && bottomTest && rightTest) return true;
+
+            if (autoAdjustWindow) {
+                if (!leftTest) window.Left = window.Left - (window.Left - screen.WorkingArea.Left);
+                if (!topTest) window.Top = window.Top - (window.Top - screen.WorkingArea.Top);
+                if (!bottomTest) window.Top = window.Top - (window.Top + height - screen.WorkingArea.Bottom);
+                if (!rightTest) window.Left = window.Left - (window.Left + width - screen.WorkingArea.Right);
+            }
+
+            return false;
         }
     }
 }

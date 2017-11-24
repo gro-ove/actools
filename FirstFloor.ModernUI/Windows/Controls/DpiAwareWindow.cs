@@ -532,6 +532,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 RescaleIfNeeded();
                 this.SetPlacement(ValuesStorage.GetString(key));
+                this.IsWindowOnAnyScreen();
             } catch (Exception e) {
                 Logging.Warning(e);
             }
