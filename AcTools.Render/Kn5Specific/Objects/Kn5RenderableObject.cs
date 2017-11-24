@@ -13,40 +13,6 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
-    public class AcDynamicMaterialParams {
-        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
-
-        public float RadialSpeedBlur { get; set; }
-
-        public void SetMaterial(IDeviceContextHolder contextHolder, IAcDynamicMaterial material) {
-            if (material == null) return;
-            Emissive.SetMaterial(contextHolder, material);
-
-            if (RadialSpeedBlur != 0f) {
-                material.SetRadialSpeedBlurNext(RadialSpeedBlur);
-            }
-        }
-    }
-
-    public interface IKn5RenderableObject : IRenderableObject {
-        [NotNull]
-        Kn5Node OriginalNode { get; }
-
-        Matrix ModelMatrixInverted { set; }
-
-        bool IsInitialized { get; }
-
-        void SetMirrorMode(IDeviceContextHolder holder, bool enabled);
-
-        void SetDebugMode(IDeviceContextHolder holder, bool enabled);
-
-        void SetTransparent(bool? isTransparent);
-
-        AcDynamicMaterialParams DynamicMaterialParams { get; }
-
-        int TrianglesCount { get; }
-    }
-
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
         public readonly bool IsCastingShadows;
 
@@ -157,6 +123,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public AcDynamicMaterialParams DynamicMaterialParams { get; } = new AcDynamicMaterialParams();
 
+        private void DrawOverrideBase(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            base.DrawOverride(contextHolder, camera, mode);
+        }
+
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if ((_renderModes & mode) == 0) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
@@ -195,14 +165,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             internal ClonedKn5RenderableObject(Kn5RenderableObject original) : base(original.Name + "_copy", original.Vertices, original.Indices) {
                 _original = original;
+                CloneFrom(_original);
             }
 
             public override bool IsEnabled => _original.IsEnabled;
-
             public override bool IsReflectable => _original.IsReflectable;
 
+            protected override void Initialize(IDeviceContextHolder contextHolder) {}
+
             protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-                if (!(_original.IsTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
+                if ((_original._renderModes & mode) == 0) return;
                 if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows || _original._material == null) return;
 
                 if (_original._distanceFromSqr != 0f || _original._distanceToSqr != 0f) {
@@ -213,7 +185,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 var material = _original.Material;
                 if (!material.Prepare(contextHolder, mode)) return;
 
-                base.DrawOverride(contextHolder, camera, mode);
+                _original.DrawOverrideBase(contextHolder, camera, mode);
                 _original.DynamicMaterialParams.SetMaterial(contextHolder, material as IAcDynamicMaterial);
 
                 material.SetMatrices(ParentMatrix, camera);

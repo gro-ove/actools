@@ -13,7 +13,7 @@ namespace AcTools.Render.Base {
 
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState, _shadowsDepthState;
-        private BlendState _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
+        private BlendState _opaqueBlendState, _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
 
         private RasterizerState _doubleSidedState, _doubleSidedClockwiseState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState,
                 _wireframeInvertedState, _ambientShadowState, _shadowsState, _shadowsPointState;
@@ -72,6 +72,18 @@ namespace AcTools.Render.Base {
                     IsStencilEnabled = false,
                     DepthWriteMask = DepthWriteMask.Zero,
                     DepthComparison = Comparison.LessEqual
+                }));
+
+        public BlendState OpaqueBlendState => _opaqueBlendState ?? (_opaqueBlendState =
+                _device.CreateBlendState(new RenderTargetBlendDescription {
+                    BlendEnable = false,
+                    SourceBlend = BlendOption.One,
+                    DestinationBlend = BlendOption.Zero,
+                    BlendOperation = BlendOperation.Add,
+                    SourceBlendAlpha = BlendOption.One,
+                    DestinationBlendAlpha = BlendOption.One,
+                    BlendOperationAlpha = BlendOperation.Maximum,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.Red | ColorWriteMaskFlags.Green | ColorWriteMaskFlags.Blue
                 }));
 
         public BlendState TransparentBlendState => _transparentBlendState ?? (_transparentBlendState =
@@ -239,6 +251,7 @@ namespace AcTools.Render.Base {
                 DisposeHelper.Dispose(ref _greaterReadOnlyDepthState);
                 DisposeHelper.Dispose(ref _lessEqualDepthState);
                 DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
+                DisposeHelper.Dispose(ref _opaqueBlendState);
                 DisposeHelper.Dispose(ref _transparentBlendState);
                 DisposeHelper.Dispose(ref _addBlendState);
                 DisposeHelper.Dispose(ref _addState);

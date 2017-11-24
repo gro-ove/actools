@@ -19,7 +19,7 @@ technique10 Standard {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Standard()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Standard()));
 	}
 }
 
@@ -34,7 +34,7 @@ technique10 Sky {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Sky()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Sky()));
 	}
 }
 
@@ -53,7 +53,7 @@ technique10 Alpha {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Alpha()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Alpha()));
 	}
 }
 
@@ -107,7 +107,7 @@ technique10 Nm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Nm()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Nm()));
 	}
 }
 
@@ -134,7 +134,7 @@ technique10 NmUvMult {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_NmUvMult()));
+		SetPixelShader(CompileShader(ps_4_0, ps_NmUvMult()));
 	}
 }
 
@@ -154,7 +154,7 @@ technique10 AtNm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_AtNm()));
+		SetPixelShader(CompileShader(ps_4_0, ps_AtNm()));
 	}
 }
 
@@ -181,7 +181,7 @@ technique10 Maps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
 	}
 }
 
@@ -232,7 +232,7 @@ technique10 SkinnedMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_SkinnedMaps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_SkinnedMaps()));
 	}
 }
 
@@ -258,7 +258,7 @@ technique10 DiffMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_DiffMaps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_DiffMaps()));
 	}
 }*/
 
@@ -284,7 +284,7 @@ technique10 Tyres {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Tyres()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Tyres()));
 	}
 }
 
@@ -299,7 +299,7 @@ technique10 Gl {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Gl()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
 	}
 }
 
@@ -307,7 +307,7 @@ technique10 SkinnedGl {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Gl()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
 	}
 }
 
@@ -345,7 +345,7 @@ technique10 Windscreen {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Windscreen()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen()));
 	}
 }
 
@@ -368,7 +368,7 @@ technique10 Collider {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Collider()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Collider()));
 	}
 }
 
@@ -431,7 +431,7 @@ technique10 Debug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
 	}
 }
 
@@ -439,7 +439,7 @@ technique10 SkinnedDebug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
 	}
 }
 
@@ -488,7 +488,7 @@ float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
 	float3 gLightColor = gLights[0].Type == LIGHT_DIRECTIONAL ? gLights[0].Color.xyz : (float3)0.0;
 #endif
 
-	float value = gDiffuseMap.Sample(samAnisotropic, pin.Tex).r;
+	float value = gDiffuseMap.Sample(samAnisotropic, pin.Tex).r * gAmbientShadowOpacity;
 	float lightBrightness = saturate(Luminance(gLightColor) * 1.5);
 
 #if ENABLE_SHADOWS == 1
@@ -503,7 +503,7 @@ technique10 AmbientShadow {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_AmbientShadow()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_AmbientShadow()));
+		SetPixelShader(CompileShader(ps_4_0, ps_AmbientShadow()));
 	}
 }
 
@@ -518,7 +518,7 @@ technique10 Mirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_Mirror()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Mirror()));
 	}
 }
 
@@ -589,7 +589,7 @@ technique10 FlatMirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_FlatMirror()));
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatMirror()));
 	}
 }
 
@@ -601,15 +601,21 @@ float4 ps_TransparentGround(pt_PS_IN pin) : SV_Target {
 #endif
 
 	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
-    float shadowOpacity = saturate(Luminance(gLightColor) / (1 + saturate(Luminance(ambient))));
-	return float4(0, 0, 0, shadow * shadowOpacity);
+    shadow *= saturate(Luminance(gLightColor) / (1 + saturate(Luminance(ambient))));
+
+	float2 tex = pin.PosH.xy / gScreenSize.xy;
+	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
+	shadow *= 1 - gFlatMirrorPower;
+	return float4(
+	    gFlatMirrorPower == 0.0 ? (float3)0 : value.rgb * gFlatMirrorPower / (shadow + gFlatMirrorPower),
+	    shadow * (1 - gFlatMirrorPower) + gFlatMirrorPower);
 }
 
 technique10 TransparentGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_TransparentGround()));
+		SetPixelShader(CompileShader(ps_4_0, ps_TransparentGround()));
 	}
 }
 
@@ -626,7 +632,21 @@ technique10 FlatTextureMirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_FlatTextureMirror()));
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirror()));
+	}
+}
+
+float4 ps_FlatTextureMirrorNoGround(pt_PS_IN pin) : SV_Target {
+	float2 tex = pin.PosH.xy / gScreenSize.xy;
+	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
+	return float4(value.rgb, gFlatMirrorPower);
+}
+
+technique10 FlatTextureMirrorNoGround {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirrorNoGround()));
 	}
 }
 
@@ -638,7 +658,7 @@ technique10 FlatBackgroundGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_FlatBackgroundGround()));
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatBackgroundGround()));
 	}
 }
 
@@ -679,6 +699,6 @@ technique10 FlatAmbientGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, ps_FlatAmbientGround()));
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatAmbientGround()));
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -387,6 +388,18 @@ namespace AcTools.Render.Forward {
             }
         }
 
+        private bool _useDither;
+
+        public bool UseDither {
+            get => _useDither;
+            set {
+                if (Equals(value, _useDither)) return;
+                _useDither = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Returns null if result is in output.
         /// </summary>
@@ -466,6 +479,8 @@ namespace AcTools.Render.Forward {
 
                 _hdr.FxInputMap.SetResource(input);
                 _hdr.FxBloomMap.SetResource(_bufferH1.View);
+                _hdr.FxScreenSize.Set(new Vector4(ActualWidth, ActualHeight, 1f / ActualWidth, 1f / ActualHeight));
+                _hdr.FxUseDither.Set(UseDither);
                 GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
 
                 return null;
@@ -482,6 +497,8 @@ namespace AcTools.Render.Forward {
 
                 _hdr.FxInputMap.SetResource(input);
                 _hdr.FxBloomMap.SetResource(null);
+                _hdr.FxScreenSize.Set(new Vector4(ActualWidth, ActualHeight, 1f / ActualWidth, 1f / ActualHeight));
+                _hdr.FxUseDither.Set(UseDither);
                 GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
                 return null;
             }

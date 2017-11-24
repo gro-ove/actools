@@ -69,7 +69,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             SetInputLayout(contextHolder);
 
             if (mode == SpecialRenderMode.GBuffer) return;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ?
+                    contextHolder.States.TransparentBlendState : contextHolder.States.OpaqueBlendState;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
             switch (Kn5Material.DepthMode) {

@@ -81,10 +81,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 OnPropertyChanged();
                 IsDirty = true;
                 _mirrorDirty = true;
-                if (!value) {
+                UpdateMirrorBuffers();
+
+                /*if (!value) {
                     FlatMirror = false;
                     OpaqueGround = false;
-                }
+                }*/
             }
         }
 
@@ -98,11 +100,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 OnPropertyChanged();
                 IsDirty = true;
                 _mirrorDirty = true;
-                UpdateBlurredFlatMirror();
+                UpdateMirrorBuffers();
 
-                if (value) {
+                /*if (value) {
                     AnyGround = true;
-                }
+                }*/
             }
         }
 
@@ -115,7 +117,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _flatMirrorBlurred = value;
                 IsDirty = true;
                 OnPropertyChanged();
-                UpdateBlurredFlatMirror();
+                UpdateMirrorBuffers();
+            }
+        }
+
+        private float _flatMirrorBlurMuiltiplier;
+
+        public float FlatMirrorBlurMuiltiplier {
+            get => _flatMirrorBlurMuiltiplier;
+            set {
+                if (Equals(value, _flatMirrorBlurMuiltiplier)) return;
+                _flatMirrorBlurMuiltiplier = value;
+                IsDirty = true;
+                OnPropertyChanged();
             }
         }
 
@@ -403,6 +417,80 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsDirty = true;
                 _pcssParamsSet = false;
                 OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Debugging
+        private bool _meshDebug;
+
+        public bool MeshDebug {
+            get => _meshDebug;
+            set {
+                if (Equals(value, _meshDebug)) return;
+                _meshDebug = value;
+                IsDirty = true;
+                OnPropertyChanged();
+                UpdateMeshDebug(CarNode);
+            }
+        }
+
+        private bool _showDepth;
+
+        public bool ShowDepth {
+            get => _showDepth;
+            set {
+                if (Equals(value, _showDepth)) return;
+                _showDepth = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+        #endregion
+
+        #region DOF
+        private DarkDof _dof;
+        private bool _useDof;
+
+        public bool UseDof {
+            get => _useDof;
+            set {
+                if (Equals(value, _useDof)) return;
+                _useDof = value;
+                OnPropertyChanged();
+
+                if (!value) {
+                    DisposeHelper.Dispose(ref _dof);
+                } else if (_dof == null) {
+                    _dof = new DarkDof();
+                }
+
+                IsDirty = true;
+                UpdateGBuffers();
+            }
+        }
+
+        private float _dofFocusPlane = 1.6f;
+
+        public float DofFocusPlane {
+            get => _dofFocusPlane;
+            set {
+                if (Equals(value, _dofFocusPlane)) return;
+                _dofFocusPlane = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        private float _dofScale = 1f;
+
+        public float DofScale {
+            get => _dofScale;
+            set {
+                if (Equals(value, _dofScale)) return;
+                _dofScale = value;
+                OnPropertyChanged();
+                IsDirty = true;
             }
         }
         #endregion

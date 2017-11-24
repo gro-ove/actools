@@ -64,6 +64,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool AnyGround = true;
         public bool FlatMirror = false;
         public bool FlatMirrorBlurred = false;
+        public double FlatMirrorBlurMuiltiplier = 1d;
         public double FlatMirrorReflectiveness = 1d;
 
         public float CubemapAmbient = 0.5f;
@@ -77,6 +78,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public int ShadowMapSize = 4096;
         public bool ReflectionCubemapAtCamera = true;
         public bool ReflectionsWithShadows = false;
+        public bool ReflectionsWithMultipleLights = false;
 
         public Color BackgroundColor = Color.Black;
         public Color LightColor = Color.FromArgb(0xffffff);
@@ -89,6 +91,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double[] LightDirection = { 0.2, 1.0, 0.8 };
 
         public ToneMappingFn ToneMapping = ToneMappingFn.None;
+        public bool UseDither = false;
         public bool UseColorGrading = false;
         public double ToneExposure = 0.8;
         public double ToneGamma = 1.0;
@@ -96,6 +99,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public byte[] ColorGradingData = null;
 
         public double MaterialsReflectiveness = 1.2;
+        public double CarShadowsOpacity = 1.0;
         public double BloomRadiusMultiplier = 0.8d;
         public double PcssSceneScale = 0.06d;
         public double PcssLightScale = 2d;
@@ -178,13 +182,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffsetRelative.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraHorizontallyOffset.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffset.GetHashCode();
-
-                if (!AnyGround) {
-                    hashCode = (hashCode * 397) ^ 91001923;
-                }
+                if (!AnyGround) hashCode = (hashCode * 397) ^ 91001923;
 
                 hashCode = (hashCode * 397) ^ FlatMirror.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorBlurred.GetHashCode();
+                if (FlatMirrorBlurMuiltiplier != 1d) hashCode = (hashCode * 397) ^ FlatMirrorBlurMuiltiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorReflectiveness.GetHashCode();
                 hashCode = (hashCode * 397) ^ CubemapAmbient.GetHashCode();
                 hashCode = (hashCode * 397) ^ CubemapAmbientWhite.GetHashCode();
@@ -197,6 +199,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ ShadowMapSize;
                 hashCode = (hashCode * 397) ^ ReflectionCubemapAtCamera.GetHashCode();
                 hashCode = (hashCode * 397) ^ ReflectionsWithShadows.GetHashCode();
+                if (ReflectionsWithMultipleLights) hashCode = (hashCode * 397) ^ 8909091223;
+
                 hashCode = (hashCode * 397) ^ BackgroundColor.GetHashCode();
                 hashCode = (hashCode * 397) ^ LightColor.GetHashCode();
                 hashCode = (hashCode * 397) ^ AmbientUp.GetHashCode();
@@ -205,12 +209,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ BackgroundBrightness.GetHashCode();
                 hashCode = (hashCode * 397) ^ LightBrightness.GetHashCode();
                 hashCode = (hashCode * 397) ^ GetHashCode(LightDirection);
+
+                if (UseDither) hashCode = (hashCode * 397) ^ 142004286;
                 hashCode = (hashCode * 397) ^ UseColorGrading.GetHashCode();
                 hashCode = (hashCode * 397) ^ ToneExposure.GetHashCode();
                 hashCode = (hashCode * 397) ^ ToneGamma.GetHashCode();
                 hashCode = (hashCode * 397) ^ ToneWhitePoint.GetHashCode();
                 hashCode = (hashCode * 397) ^ GetHashCode(ColorGradingData);
                 hashCode = (hashCode * 397) ^ MaterialsReflectiveness.GetHashCode();
+                if (CarShadowsOpacity != 1d) hashCode = (hashCode * 397) ^ CarShadowsOpacity.GetHashCode();
                 hashCode = (hashCode * 397) ^ BloomRadiusMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssSceneScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ PcssLightScale.GetHashCode();
@@ -231,17 +238,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
                 }
 
-                if (!LoadCarLights) {
-                    hashCode = (hashCode * 397) ^ 96745201;
-                }
-
-                if (!TryToGuessCarLights) {
-                    hashCode = (hashCode * 397) ^ 64351024;
-                }
-
-                if (!LoadShowroomLights) {
-                    hashCode = (hashCode * 397) ^ 93872189;
-                }
+                if (!LoadCarLights) hashCode = (hashCode * 397) ^ 96745201;
+                if (!TryToGuessCarLights) hashCode = (hashCode * 397) ^ 64351024;
+                if (!LoadShowroomLights) hashCode = (hashCode * 397) ^ 93872189;
 
                 return Convert.ToBase64String(BitConverter.GetBytes(hashCode)).TrimEnd('=');
             }
@@ -357,6 +356,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.AnyGround = options.AnyGround;
             renderer.FlatMirror = options.FlatMirror;
             renderer.FlatMirrorBlurred = options.FlatMirrorBlurred;
+            renderer.FlatMirrorBlurMuiltiplier = (float)options.FlatMirrorBlurMuiltiplier;
             renderer.FlatMirrorReflectiveness = (float)options.FlatMirrorReflectiveness;
 
             // Cool effects
@@ -371,6 +371,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.AoType = options.AoType;
             renderer.ReflectionCubemapAtCamera = options.ReflectionCubemapAtCamera;
             renderer.ReflectionsWithShadows = options.ReflectionsWithShadows;
+            renderer.ReflectionsWithMultipleLights = options.ReflectionsWithMultipleLights;
 
             // Colors
             renderer.BackgroundColor = options.BackgroundColor;
@@ -386,6 +387,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             // Color
             renderer.ToneMapping = options.ToneMapping;
+            renderer.UseDither = options.UseDither;
             renderer.UseColorGrading = options.UseColorGrading;
             renderer.ToneExposure = (float)options.ToneExposure;
             renderer.ToneGamma = (float)options.ToneGamma;
@@ -395,6 +397,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // Extra
             renderer.BloomRadiusMultiplier = (float)(options.SsaaMultiplier * options.BloomRadiusMultiplier);
             renderer.MaterialsReflectiveness = (float)options.MaterialsReflectiveness;
+            renderer.CarShadowsOpacity = (float)options.CarShadowsOpacity;
             renderer.PcssLightScale = (float)options.PcssLightScale;
             renderer.PcssSceneScale = (float)options.PcssSceneScale;
             renderer.AoOpacity = (float)options.AoOpacity;

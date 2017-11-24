@@ -145,7 +145,9 @@ namespace AcManager.CustomShowroom {
             public virtual bool AnyGround { get; set; } = true;
             public virtual bool FlatMirror { get; set; }
             public virtual bool FlatMirrorBlurred { get; set; } = true;
+            public virtual float FlatMirrorBlurMuiltiplier { get; set; } = 1f;
             public virtual bool UseBloom { get; set; } = true;
+            public virtual bool UseDither { get; set; } = false;
             public virtual bool UseColorGrading { get; set; }
             public virtual bool UseFxaa { get; set; }
             public virtual bool UsePcss { get; set; }
@@ -154,6 +156,7 @@ namespace AcManager.CustomShowroom {
             public virtual bool UseSslr { get; set; }
             public virtual bool ReflectionCubemapAtCamera { get; set; }
             public virtual bool ReflectionsWithShadows { get; set; }
+            public virtual bool ReflectionsWithMultipleLights { get; set; }
 
             public virtual float AmbientBrightness { get; set; } = 3.0f;
             public virtual float BackgroundBrightness { get; set; } = 0.2f;
@@ -162,6 +165,7 @@ namespace AcManager.CustomShowroom {
             public virtual float Lightθ { get; set; } = 50f;
             public virtual float Lightφ { get; set; } = 104f;
             public virtual float MaterialsReflectiveness { get; set; } = 1f;
+            public virtual float CarShadowsOpacity { get; set; } = 1f;
 
             public int ToneVersion;
             public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
@@ -323,11 +327,14 @@ namespace AcManager.CustomShowroom {
             obj.CubemapReflectionFacesPerFrame = Renderer.CubemapReflectionFacesPerFrame;
             obj.ReflectionCubemapAtCamera = Renderer.ReflectionCubemapAtCamera;
             obj.ReflectionsWithShadows = Renderer.ReflectionsWithShadows;
+            obj.ReflectionsWithMultipleLights = Renderer.ReflectionsWithMultipleLights;
             obj.EnableShadows = Renderer.EnableShadows;
             obj.AnyGround = Renderer.AnyGround;
             obj.FlatMirror = Renderer.FlatMirror;
             obj.FlatMirrorBlurred = Renderer.FlatMirrorBlurred;
+            obj.FlatMirrorBlurMuiltiplier = Renderer.FlatMirrorBlurMuiltiplier;
             obj.UseBloom = Renderer.UseBloom;
+            obj.UseDither = Renderer.UseDither;
             obj.UseColorGrading = Renderer.UseColorGrading;
             obj.UseFxaa = Renderer.UseFxaa;
             obj.UsePcss = Renderer.UsePcss;
@@ -346,6 +353,7 @@ namespace AcManager.CustomShowroom {
             obj.Lightθ = LightθDeg;
             obj.Lightφ = LightφDeg;
             obj.MaterialsReflectiveness = Renderer.MaterialsReflectiveness;
+            obj.CarShadowsOpacity = Renderer.CarShadowsOpacity;
             obj.BloomRadiusMultiplier = Renderer.BloomRadiusMultiplier;
 
             obj.ToneVersion = CurrentToneVersion;
@@ -563,9 +571,12 @@ namespace AcManager.CustomShowroom {
             Renderer.CubemapAmbientWhite = o.CubemapAmbientWhite;
             Renderer.ReflectionCubemapAtCamera = o.ReflectionCubemapAtCamera;
             Renderer.ReflectionsWithShadows = o.ReflectionsWithShadows;
+            Renderer.ReflectionsWithMultipleLights = o.ReflectionsWithMultipleLights;
             Renderer.AnyGround = o.AnyGround;
             Renderer.FlatMirror = o.FlatMirror;
             Renderer.FlatMirrorBlurred = o.FlatMirrorBlurred;
+            Renderer.FlatMirrorBlurMuiltiplier = o.FlatMirrorBlurMuiltiplier;
+            Renderer.CarShadowsOpacity = o.CarShadowsOpacity;
 
             Renderer.AmbientBrightness = o.AmbientBrightness;
             Renderer.BackgroundBrightness = o.BackgroundBrightness;
@@ -579,6 +590,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected void LoadHdr(SaveableData o) {
+            Renderer.UseDither = o.UseDither;
             Renderer.ColorGradingData = o.ColorGradingData;
             Renderer.UseColorGrading = o.UseColorGrading;
 
@@ -803,7 +815,9 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.AnyGround):
                 case nameof(Renderer.FlatMirror):
                 case nameof(Renderer.FlatMirrorBlurred):
+                case nameof(Renderer.FlatMirrorBlurMuiltiplier):
                 case nameof(Renderer.UseBloom):
+                case nameof(Renderer.UseDither):
                 case nameof(Renderer.UseColorGrading):
                 case nameof(Renderer.UseFxaa):
                 case nameof(Renderer.UsePcss):
@@ -818,11 +832,13 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.FlatMirrorReflectiveness):
                 case nameof(Renderer.LightBrightness):
                 case nameof(Renderer.MaterialsReflectiveness):
+                case nameof(Renderer.CarShadowsOpacity):
                 case nameof(Renderer.ToneExposure):
                 case nameof(Renderer.ToneGamma):
                 case nameof(Renderer.ToneWhitePoint):
                 case nameof(Renderer.ReflectionCubemapAtCamera):
                 case nameof(Renderer.ReflectionsWithShadows):
+                case nameof(Renderer.ReflectionsWithMultipleLights):
                 case nameof(Renderer.BloomRadiusMultiplier):
                 case nameof(Renderer.PcssLightScale):
                 case nameof(Renderer.PcssSceneScale):

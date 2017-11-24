@@ -5,10 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
@@ -35,9 +36,16 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 using Newtonsoft.Json;
+using Button = System.Windows.Controls.Button;
+using CheckBox = System.Windows.Controls.CheckBox;
+using Control = System.Windows.Controls.Control;
+using FileDialogCustomPlace = Microsoft.Win32.FileDialogCustomPlace;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.CustomShowroom {
@@ -369,10 +377,10 @@ namespace AcManager.CustomShowroom {
 
         private readonly string _loadPreset;
 
-        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset) {
+        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, Size screenSize) {
             _loadPreset = loadPreset;
 
-            DataContext = new ViewModel(renderer, car, skinId);
+            DataContext = new ViewModel(renderer, car, skinId, screenSize);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
@@ -382,10 +390,7 @@ namespace AcManager.CustomShowroom {
             });
             InitializeComponent();
             Buttons = new Button[0];
-
-            this.OnActualUnload(() => {
-                Model.Dispose();
-            });
+            this.OnActualUnload(() => Model.Dispose());
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
@@ -443,6 +448,7 @@ namespace AcManager.CustomShowroom {
             Cars,
             Skin,
             Camera,
+            Shot
         }
 
         public bool CanSelectNodes => Model.CanSelectNodes();
@@ -621,6 +627,9 @@ namespace AcManager.CustomShowroom {
                 [JsonProperty("cr")]
                 public bool CameraAutoRotate = true;
 
+                [JsonProperty("cd")]
+                public double CameraAutoRotateSpeed = 1d;
+
                 [JsonProperty("cg")]
                 public bool CameraAutoAdjustTarget = true;
             }
@@ -631,7 +640,7 @@ namespace AcManager.CustomShowroom {
                 Saveable.SaveLater();
             }
 
-            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId) {
+            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId, Size screenSize) {
                 Car = carObject;
 
                 Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
@@ -654,12 +663,127 @@ namespace AcManager.CustomShowroom {
                     CameraFov = CameraFov,
                     CameraOrbit = CameraOrbit,
                     CameraAutoRotate = CameraAutoRotate,
+                    CameraAutoRotateSpeed = CameraAutoRotateSpeed,
                     CameraAutoAdjustTarget = CameraAutoAdjustTarget,
                 }, Load);
 
                 Saveable.Initialize();
                 PaintShopSupported = Lazier.CreateAsync(async () => (await CmApiProvider.GetPaintShopIdsAsync())?.Contains(Car.Id) == true);
+
+                ShotWidth = (int)screenSize.Width;
+                ShotHeight = (int)screenSize.Height;
             }
+
+            #region Shots
+            public bool ShotMagickWarning => ImageUtils.IsMagickSupported;
+
+            public bool ShotMagickMontageWarning => ShotSizeMultiplier > (ShotDownsizeInTwo ? 2 : 1) &&
+                    !PluginsManager.Instance.IsPluginEnabled("ImageMontage");
+
+            private int _shotWidth;
+
+            public int ShotWidth {
+                get => _shotWidth;
+                set {
+                    value = value.Clamp(16, 3860);
+                    if (Equals(value, _shotWidth)) return;
+                    _shotWidth = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayShotSize));
+                }
+            }
+
+            private int _shotHeight;
+
+            public int ShotHeight {
+                get => _shotHeight;
+                set {
+                    value = value.Clamp(16, 2160);
+                    if (Equals(value, _shotHeight)) return;
+                    _shotHeight = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayShotSize));
+                }
+            }
+
+            private DelegateCommand<string> _shotSetResolutionCommand;
+
+            public DelegateCommand<string> ShotSetResolutionCommand => _shotSetResolutionCommand ?? (_shotSetResolutionCommand = new DelegateCommand<string>(s => {
+                var d = s?.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (d?.Length == 2) {
+                    ShotWidth = d[0].AsInt();
+                    ShotHeight = d[1].AsInt();
+                }
+            }));
+
+            public string DisplayShotSize => $"{ShotWidth * ShotSizeMultiplier}×{ShotHeight * ShotSizeMultiplier}";
+
+            private int _shotSizeMultiplier = 1;
+
+            public int ShotSizeMultiplier {
+                get => _shotSizeMultiplier;
+                set {
+                    value = value.Clamp(1, 100);
+                    if (Equals(value, _shotSizeMultiplier)) return;
+                    _shotSizeMultiplier = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayShotSize));
+                    OnPropertyChanged(nameof(ShotMagickMontageWarning));
+                }
+            }
+
+            private bool _shotDownsizeInTwo = true;
+
+            public bool ShotDownsizeInTwo {
+                get => _shotDownsizeInTwo;
+                set {
+                    if (Equals(value, _shotDownsizeInTwo)) return;
+                    _shotDownsizeInTwo = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShotMagickMontageWarning));
+                }
+            }
+
+            private SettingEntry _shotFormat = ShotFormatJpeg;
+
+            public SettingEntry ShotFormat {
+                get => _shotFormat;
+                set {
+                    if (Equals(value, _shotFormat)) return;
+                    _shotFormat = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public static readonly SettingEntry ShotFormatJpeg = new SettingEntry("jpg", "JPEG");
+
+            public static readonly SettingEntry ShotFormatPng = new SettingEntry("png", "PNG") {
+                Tag = "Without showroom selected, will produce a semi-transparent screenshot"
+            };
+
+            public static readonly SettingEntry ShotFormatHdr = new SettingEntry("hdr", "HDR (DDS)") {
+                Tag =
+                    "Tone mapping, color mapping and dithering don’t work in HDR mode. Resolution multiplier is not available.[br][br]If you’re using Adobe Photoshop, install something like [url=\"https://developer.nvidia.com/nvidia-texture-tools-adobe-photoshop\"]NVIDIA Texture Tools[/url] to open DDS textures."
+            };
+
+            public SettingEntry[] ShotFormats { get; } = {
+                ShotFormatJpeg,
+                ShotFormatPng,
+                ShotFormatHdr,
+            };
+
+            private DelegateCommand _shotOpenDirectoryCommand;
+
+            public DelegateCommand ShotOpenDirectoryCommand => _shotOpenDirectoryCommand ?? (_shotOpenDirectoryCommand = new DelegateCommand(() => {
+                WindowsHelper.ViewDirectory(FileUtils.GetDocumentsScreensDirectory());
+            }));
+
+            private AsyncCommand<CancellationToken?> _shotCommand;
+
+            public AsyncCommand<CancellationToken?> ShotCommand => _shotCommand ?? (_shotCommand = new AsyncCommand<CancellationToken?>(async c => {
+                ;
+            }));
+            #endregion
 
             #region Camera
             public Coordinates CameraPosition { get; } = new Coordinates();
@@ -718,8 +842,25 @@ namespace AcManager.CustomShowroom {
                     if (Equals(value, _cameraAutoRotate)) return;
                     _cameraAutoRotate = value;
 
-                    if (!_cameraBusy && !_cameraIgnoreNext && Renderer != null) {
+                    if (!_cameraBusy && Renderer != null) {
                         Renderer.AutoRotate = value;
+                    }
+
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private double _cameraAutoRotateSpeed;
+
+            public double CameraAutoRotateSpeed {
+                get => _cameraAutoRotateSpeed;
+                set {
+                    if (Equals(value, _cameraAutoRotateSpeed)) return;
+                    _cameraAutoRotateSpeed = value;
+
+                    if (!_cameraBusy && Renderer != null) {
+                        Renderer.AutoRotateSpeed = (float)value;
                     }
 
                     OnPropertyChanged();
@@ -735,7 +876,7 @@ namespace AcManager.CustomShowroom {
                     if (Equals(value, _cameraAutoAdjustTarget)) return;
                     _cameraAutoAdjustTarget = value;
 
-                    if (!_cameraBusy && !_cameraIgnoreNext && Renderer != null) {
+                    if (!_cameraBusy && Renderer != null) {
                         Renderer.AutoAdjustTarget = value;
                     }
 
@@ -775,14 +916,10 @@ namespace AcManager.CustomShowroom {
                 }
             }, () => Settings != null));
 
-            private bool _cameraBusy, _cameraIgnoreNext;
+            private bool _cameraBusy;
 
             private void OnCameraMoved(object sender, EventArgs e) {
-                if (_cameraIgnoreNext) {
-                    _cameraIgnoreNext = false;
-                } else {
-                    SyncCamera();
-                }
+                SyncCamera();
             }
 
             private void SyncCamera() {
@@ -814,8 +951,8 @@ namespace AcManager.CustomShowroom {
                     }
 
                     renderer.AutoRotate = CameraAutoRotate;
+                    renderer.AutoRotateSpeed = (float)CameraAutoRotateSpeed;
                     renderer.AutoAdjustTarget = CameraAutoAdjustTarget;
-                    _cameraIgnoreNext = true;
                 } finally {
                     _cameraBusy = false;
                 }
@@ -835,6 +972,7 @@ namespace AcManager.CustomShowroom {
                     CameraFov = o.CameraFov;
                     CameraOrbit = o.CameraOrbit;
                     CameraAutoRotate = o.CameraAutoRotate;
+                    CameraAutoRotateSpeed = o.CameraAutoRotateSpeed;
                     CameraAutoAdjustTarget = o.CameraAutoAdjustTarget;
                 } finally {
                     _cameraBusy = false;
@@ -842,12 +980,12 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private void Reset(bool saveLater) {
+            /*private void Reset(bool saveLater) {
                 Load(new SaveableData());
                 if (saveLater) {
                     SaveLater();
                 }
-            }
+            }*/
 
             private INotifyPropertyChanged _carNode;
 
@@ -896,6 +1034,10 @@ namespace AcManager.CustomShowroom {
 
                     case nameof(Renderer.AutoRotate):
                         CameraAutoRotate = Renderer?.AutoRotate != false;
+                        break;
+
+                    case nameof(Renderer.AutoRotateSpeed):
+                        CameraAutoRotateSpeed = Renderer?.AutoRotateSpeed ?? 1d;
                         break;
 
                     case nameof(Renderer.SelectedObject):

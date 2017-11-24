@@ -330,14 +330,15 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 multipler = 2;
             }
 
-            var size = new Size(1920 * multipler, 1080 * multipler);
             var directory = FileUtils.GetDocumentsScreensDirectory();
             FileUtils.EnsureDirectoryExists(directory);
             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
 
             if (splitMode && multipler > 2d) {
+                var size = new Size(_renderer.ActualWidth.Round(4) * multipler, _renderer.ActualHeight.Round(4) * multipler);
                 SplitShot(size, downscale, filename);
             } else {
+                var size = new Size(_renderer.ActualWidth * multipler, _renderer.ActualHeight * multipler);
                 Shot(size, downscale, filename);
             }
         }

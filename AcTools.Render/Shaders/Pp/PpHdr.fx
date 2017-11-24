@@ -5,6 +5,9 @@
 		float2 gCropImage;
 
 		float4 gParams;
+
+		float4 gScreenSize;
+		bool gUseDither;
 	}
 
 // downsampling
@@ -129,7 +132,12 @@
 		}
 	}
 
-// Tone mapping
+// Tone mappings
+	float4 CombineInput(float2 uv){
+        return tex(uv) + tex(gBloomMap, uv)
+            + (gUseDither ? lerp(0.00196, -0.00196, frac(0.25 + dot(uv, gScreenSize.xy * 0.5))) : 0);
+	}
+
 	#define gamma gParams[0]
 	#define exposure gParams[1]
 	#define whitePoint gParams[2]
@@ -142,7 +150,7 @@
 
 // Luma-based Reinhard tone mapping
 	float4 ps_Combine_ToneLumaBasedReinhard(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 color = max(inputValue.rgb, 0.0) * exposure * 3.4;
         float luma = dot(color, float3(0.2126, 0.7152, 0.0722));
         float toneMappedLuma = luma / (whitePoint + luma);
@@ -161,7 +169,7 @@
 
 // White preserving luma-based Reinhard tone mapping
 	float4 ps_Combine_ToneWhitePreservingLumaBasedReinhard(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 color = max(inputValue.rgb, 0.0) * exposure * 1.428;
         float luma = dot(color, float3(0.2126, 0.7152, 0.0722));
         float white = whitePoint * 1.20481927710843;
@@ -181,7 +189,7 @@
 
 // Uncharted 2 tone mapping
 	float4 ps_Combine_ToneUncharted2(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 color = max(inputValue.rgb, 0.0);
         float A = 0.15;
         float B = 0.50;
@@ -208,7 +216,7 @@
 
 // Reinhard (Habrahabr version)
 	float4 ps_Combine_ToneReinhard(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 value = max(inputValue.rgb, 0.0);
 		return float4(SaturateColor(pow(max(ToneReinhard(value, 0.5, exposure * 0.715, whitePoint), 0.0), 1.0 / gamma)), inputValue.a);
 	}
@@ -246,7 +254,7 @@
 	}
 
 	float4 ps_Combine_ToneFilmic(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 value = inputValue.rgb;
 		return float4(SaturateColor(pow(max(Filmic(1.17504 * exposure * value), 0.0), 1.0 / gamma)), inputValue.a);
 	}
@@ -277,7 +285,7 @@
 	}
 
 	float4 ps_Combine_ToneFilmicReinhard(PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 value = inputValue.rgb;
 		return float4(SaturateColor(pow(max(FilmicReinhard(1.008 * exposure * value), 0.0), 1.0 / gamma)), inputValue.a);
 	}
@@ -292,7 +300,7 @@
 
 // Disabled
 	float4 ps_Combine (PS_IN pin) : SV_Target {
-		float4 inputValue = tex(pin.Tex) + tex(gBloomMap, pin.Tex);
+		float4 inputValue = CombineInput(pin.Tex);
 		float3 value = inputValue.rgb;
 		return float4(SaturateColor(value), inputValue.a);
 	}

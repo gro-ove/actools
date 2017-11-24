@@ -130,10 +130,13 @@
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\AoType.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkDof.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.AccumulationDof.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Interface.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Lights.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.DebugMode.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Properties.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.UserInput.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaLightBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaPlaneLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaTubeLight.cs" />
@@ -214,9 +217,11 @@
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
+    <Compile Include="Kn5Specific\Objects\AcDynamicMaterialParams.cs" />
     <Compile Include="Kn5Specific\Objects\CarDescription.cs" />
     <Compile Include="Kn5Specific\Objects\ExtraModels.cs" />
     <Compile Include="Kn5Specific\Objects\IExtraModelProvider.cs" />
+    <Compile Include="Kn5Specific\Objects\IKn5RenderableObject.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.AmbientShadows.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Cameras.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.DriverCrew.cs" />

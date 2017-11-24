@@ -364,7 +364,7 @@ namespace AcTools.Render.Base {
             return texture;
         }
 
-        private ShaderResourceView _flatNmView;
+        private ShaderResourceView _flatNmView, _transparentView;
 
         public delegate Color FillColor(int x, int y);
 
@@ -464,6 +464,10 @@ namespace AcTools.Render.Base {
             return _flatNmView ?? (_flatNmView = CreateTextureView(4, 4, (x, y) => Color.FromArgb(255, 127, 127, 255)));
         }
 
+        public ShaderResourceView GetTransparentTexture() {
+            return _transparentView ?? (_transparentView = CreateTextureView(4, 4, (x, y) => Color.FromArgb(0, 0, 0, 0)));
+        }
+
         double IDeviceContextHolder.LastFrameTime => _clock.GetLastFrameTime();
 
         public void Dispose() {
@@ -485,7 +489,10 @@ namespace AcTools.Render.Base {
             Debug.WriteLine("_randomTextures disposed");
 
             DisposeHelper.Dispose(ref _flatNmView);
-            Debug.WriteLine("_flatNm disposed");
+            Debug.WriteLine("_flatNmView disposed");
+
+            DisposeHelper.Dispose(ref _transparentView);
+            Debug.WriteLine("_transparentView disposed");
 
             _something.Values.OfType<IDisposable>().DisposeEverything();
             _something.Clear();

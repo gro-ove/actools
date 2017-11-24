@@ -3,7 +3,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base.Shaders {
-    // To make it more type-strict (and avoid losing tons of hours because of accidental “Set()” instead of “SetMatrix()” in the future! Arghh…)
+    // To make it more type-strict (and avoid losing tons of hours because of accidental â€œSet()â€ instead of â€œSetMatrix()â€ in the future! Arghhâ€¦)
     public class EffectOnlyMatrixVariable {
         [CanBeNull]
         private readonly EffectMatrixVariable _v;
@@ -81,7 +81,7 @@ namespace AcTools.Render.Base.Shaders {
         }
 
         public bool IsValid => _v != null;
-        
+
         public void Set(int m) {
             _v?.Set(m);
         }
@@ -126,7 +126,7 @@ namespace AcTools.Render.Base.Shaders {
         }
 
         public bool IsValid => _v != null;
-        
+
         public void Set(int[] m) {
             _v?.Set(m);
         }

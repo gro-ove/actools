@@ -12,9 +12,11 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum FlatMirrorMode {
-        TransparentMirror, BackgroundGround, SolidGround, ShadowOnlyGround, TextureMirror
+        TransparentMirror, BackgroundGround, SolidGround, ShadowOnlyGround, TextureMirror, TextureMirrorNoGround
     }
 
+    // TODO: SORT OUT MODES!
+    // I believe, at least one of them is not used
     public class FlatMirror : RenderableList {
         private abstract class FlatMirrorMaterialBase : IRenderableMaterial {
             protected EffectDarkMaterial Effect;
@@ -110,23 +112,46 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private class ShadowOnlyGroundMaterial : FlatMirrorMaterialBase {
+        private interface ITextureMirrorMaterial {
+            void SetTextures(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals);
+        }
+
+        private class ShadowOnlyGroundMaterial : FlatMirrorMaterialBase, ITextureMirrorMaterial {
             public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-                if (mode != SpecialRenderMode.SimpleTransparent) return false;
+                if (mode == SpecialRenderMode.GBuffer) {
+                    contextHolder.DeviceContext.OutputMerger.BlendState = null;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+                } else if (mode == SpecialRenderMode.Simple) {
+                    contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+                } else {
+                    return false;
+                }
+
                 contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
-                contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
-                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
                 return true;
             }
 
+            public void SetTextures(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals) {
+                Effect.FxDiffuseMap.SetResource(reflection);
+                //Effect.FxMapsMap.SetResource(depth);
+                //Effect.FxNormalMap.SetResource(normals);
+            }
+
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
+
                 Effect.TechTransparentGround.DrawAllPasses(contextHolder.DeviceContext, indices);
                 contextHolder.DeviceContext.OutputMerger.BlendState = null;
                 contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
             }
         }
 
-        private class TextureMirrorMaterial : FlatMirrorMaterialBase {
+        private class TextureMirrorMaterial : FlatMirrorMaterialBase, ITextureMirrorMaterial {
             public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
                 if (!base.Prepare(contextHolder, mode)) return false;
                 contextHolder.DeviceContext.OutputMerger.BlendState = null;
@@ -147,6 +172,30 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 Effect.TechFlatTextureMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+            }
+        }
+
+        private class TextureNoGroundMirrorMaterial : FlatMirrorMaterialBase, ITextureMirrorMaterial {
+            public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
+                if (!base.Prepare(contextHolder, mode)) return false;
+                contextHolder.DeviceContext.OutputMerger.BlendState = null;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+                return true;
+            }
+
+            public void SetTextures(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals) {
+                Effect.FxDiffuseMap.SetResource(reflection);
+                //Effect.FxMapsMap.SetResource(depth);
+                //Effect.FxNormalMap.SetResource(normals);
+            }
+
+            public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
+                Effect.TechFlatTextureMirrorNoGround.DrawAllPasses(contextHolder.DeviceContext, indices);
             }
         }
 
@@ -196,6 +245,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     case FlatMirrorMode.TextureMirror:
                         _material = new TextureMirrorMaterial();
                         break;
+                    case FlatMirrorMode.TextureMirrorNoGround:
+                        _material = new TextureNoGroundMirrorMaterial();
+                        break;
                     case FlatMirrorMode.BackgroundGround:
                         _material = new SemiTransparentGroundMaterial();
                         break;
@@ -223,7 +275,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public void SetTexture(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals) {
-                var material = _material as TextureMirrorMaterial;
+                var material = _material as ITextureMirrorMaterial;
                 material?.SetTextures(reflection, depth, normals);
             }
         }
@@ -248,10 +300,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         [CanBeNull]
         public IRenderableObject MirroredObject { get; }
 
-        public FlatMirror([NotNull] IRenderableObject mirroredObject, Plane plane) : this(mirroredObject, plane, FlatMirrorMode.TransparentMirror) {}
+        public FlatMirror([NotNull] IRenderableObject mirroredObject, Plane plane, bool noGround) : this(mirroredObject, plane,
+                noGround ? FlatMirrorMode.ShadowOnlyGround : FlatMirrorMode.TransparentMirror) {}
 
-        public FlatMirror(Plane plane, bool opaqueMode, bool shadowOnlyMode) : this(null, plane,
-                shadowOnlyMode ? FlatMirrorMode.ShadowOnlyGround :
+        public FlatMirror(Plane plane, bool opaqueMode, bool noGround) : this(null, plane,
+                noGround ? FlatMirrorMode.ShadowOnlyGround :
                         opaqueMode ? FlatMirrorMode.SolidGround : FlatMirrorMode.TransparentMirror) {}
 
         private RasterizerState _rasterizerState;
@@ -261,9 +314,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _object.Draw(holder, camera, mode, filter);
         }
 
-        public void Draw(IDeviceContextHolder holder, ICamera camera, ShaderResourceView reflected, ShaderResourceView depth, ShaderResourceView normals) {
+        public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, ShaderResourceView reflected, ShaderResourceView depth, ShaderResourceView normals) {
             _object.SetTexture(reflected, depth, normals);
-            _object.Draw(holder, camera, SpecialRenderMode.Simple);
+            _object.Draw(holder, camera, mode);
         }
 
         public void DrawReflection(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null,

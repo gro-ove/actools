@@ -30,13 +30,24 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public FpsCamera FpsCamera => Camera as FpsCamera;
 
-        private bool _autoRotate = true;
+        private bool _autoRotate;
 
         public bool AutoRotate {
             get => _autoRotate;
             set {
                 if (value == _autoRotate) return;
                 _autoRotate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _autoRotateSpeed = 1f;
+
+        public float AutoRotateSpeed {
+            get => _autoRotateSpeed;
+            set {
+                if (Equals(value, _autoRotateSpeed)) return;
+                _autoRotateSpeed = value;
                 OnPropertyChanged();
             }
         }
@@ -49,6 +60,18 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (value == _autoAdjustTarget) return;
                 _autoAdjustTarget = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private float _carShadowsOpacity = 1f;
+
+        public float CarShadowsOpacity {
+            get => _carShadowsOpacity;
+            set {
+                if (Equals(value, _carShadowsOpacity)) return;
+                _carShadowsOpacity = value;
+                OnPropertyChanged();
+                IsDirty = true;
             }
         }
 
@@ -737,9 +760,9 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             } else {
                 _lastOffset = float.MaxValue;
                 if (AutoRotate && CameraOrbit != null) {
-                    CameraOrbit.Alpha -= dt * 0.29f;
+                    CameraOrbit.Alpha -= dt * AutoRotateSpeed * 0.29f;
                     CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
-                    _elapsedCamera += dt;
+                    _elapsedCamera += dt * AutoRotateSpeed;
 
                     IsDirty = true;
                 }
@@ -748,8 +771,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             if (AutoAdjustTarget && CameraOrbit != null) {
                 var t = AutoAdjustedTarget;
                 var d = t - CameraOrbit.Target;
-                if (d.LengthSquared() > 0.001) {
-                    CameraOrbit.Target += (t - CameraOrbit.Target) / 3f;
+                if (d.LengthSquared() > 0.0001 || AutoRotate) {
+                    CameraOrbit.Target += (t - CameraOrbit.Target) / (AutoRotate ? 90f : 3f);
                     IsDirty = true;
                 }
             }

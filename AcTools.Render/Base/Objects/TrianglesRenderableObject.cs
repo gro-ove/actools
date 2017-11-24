@@ -53,6 +53,11 @@ namespace AcTools.Render.Base.Objects {
             _positions = positions;
         }
 
+        protected void CloneFrom(TrianglesRenderableObject<T> obj) {
+            _positions = obj._positions;
+            _temporary = obj._temporary;
+        }
+
         private void PrepareSmart() {
             var sqrLength = new float[Vertices.Length];
             var normalized = new Vector3[Vertices.Length];

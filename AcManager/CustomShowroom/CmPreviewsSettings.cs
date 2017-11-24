@@ -224,7 +224,9 @@ namespace AcManager.CustomShowroom {
             public override bool EnableShadows { get; set; } = true;
             public override bool FlatMirror { get; set; }
             public override bool FlatMirrorBlurred { get; set; } = true;
+            public override float FlatMirrorBlurMuiltiplier { get; set; } = 1f;
             public override bool UseBloom { get; set; } = true;
+            public override bool UseDither { get; set; }
             public override bool UseColorGrading { get; set; }
             public override bool UseFxaa { get; set; } = true;
             public override bool UsePcss { get; set; }
@@ -233,6 +235,7 @@ namespace AcManager.CustomShowroom {
             public override bool UseSslr { get; set; } = true;
             public override bool ReflectionCubemapAtCamera { get; set; } = true;
             public override bool ReflectionsWithShadows { get; set; } = false;
+            public override bool ReflectionsWithMultipleLights { get; set; } = false;
 
             public override float AmbientBrightness { get; set; } = 3f;
             public override float BackgroundBrightness { get; set; } = 3f;
@@ -241,6 +244,7 @@ namespace AcManager.CustomShowroom {
             public override float Lightθ { get; set; } = 45f;
             public override float Lightφ { get; set; } = 0f;
             public override float MaterialsReflectiveness { get; set; } = 0.66f;
+            public override float CarShadowsOpacity { get; set; } = 1f;
             public override float ToneExposure { get; set; } = 1.634f;
             public override float ToneGamma { get; set; } = 0.85f;
             public override float ToneWhitePoint { get; set; } = 2.0f;
@@ -303,6 +307,8 @@ namespace AcManager.CustomShowroom {
                     FlatMirror = FlatMirror,
                     UseBloom = UseBloom,
                     FlatMirrorBlurred = FlatMirrorBlurred,
+                    FlatMirrorBlurMuiltiplier = FlatMirrorBlurMuiltiplier,
+                    UseDither = UseDither,
                     UseColorGrading = UseColorGrading,
                     UseFxaa = UseFxaa,
                     UseSmaa = UseSmaa,
@@ -313,6 +319,7 @@ namespace AcManager.CustomShowroom {
                     ToneMapping = ToneMapping,
                     ReflectionCubemapAtCamera = ReflectionCubemapAtCamera,
                     ReflectionsWithShadows = ReflectionsWithShadows,
+                    ReflectionsWithMultipleLights = ReflectionsWithMultipleLights,
 
                     AmbientBrightness = AmbientBrightness,
                     BackgroundBrightness = BackgroundBrightness,
@@ -320,6 +327,7 @@ namespace AcManager.CustomShowroom {
                     LightBrightness = LightBrightness,
                     LightDirection = new double[] { light.X, light.Y, light.Z },
                     MaterialsReflectiveness = MaterialsReflectiveness,
+                    CarShadowsOpacity = CarShadowsOpacity,
                     ToneExposure = ToneExposure,
                     ToneGamma = ToneGamma,
                     ToneWhitePoint = ToneWhitePoint,

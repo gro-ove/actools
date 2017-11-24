@@ -35,6 +35,7 @@ cbuffer cbParams : register(b0) {
 	float3 gShadowPosition;
 	float2 gNoiseSize;
 	float2 gShadowSize;
+	float gShadowOpacity;
 }
 
 // fn structs
@@ -88,7 +89,7 @@ float4 ps_AddShadow(PS_IN pin) : SV_Target {
 	float delta = gShadowPosition.y - pos.y;
 	float opacity = GetOpacity(delta);
 
-	return (float4)(1.0 - opacity * gShadowMap.SampleLevel(samLinear, uv.xz, 0.0).x);
+	return (float4)(1.0 - gShadowOpacity * opacity * gShadowMap.SampleLevel(samLinear, uv.xz, 0.0).x);
 }
 
 technique10 AddShadow {
@@ -145,7 +146,7 @@ float4 ps_AddShadowBlur(PS_IN pin) : SV_Target {
 	}
 
 	shadowAvg /= _POISSON_DISKS_SIZE;
-	return (float4)saturate(1.0 - opacity * shadowAvg);
+	return (float4)saturate(1.0 - gShadowOpacity * opacity * shadowAvg);
 }
 
 technique10 AddShadowBlur {

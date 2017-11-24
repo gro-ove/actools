@@ -96,6 +96,7 @@ cbuffer cbPerFrame {
 	bool gCubemapReflections;
 	float gCubemapReflectionsOffset;
 	float gCubemapAmbient;
+	float gAmbientShadowOpacity;
 
 	int gFlatMirrorSide;
 }

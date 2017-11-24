@@ -18,7 +18,9 @@ namespace AcManager.CustomShowroom {
 
         public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
                 : base(renderer, car.DisplayName) {
-            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename);
+            var screen = Screen.FromControl(Form);
+            var size = new Size(screen.Bounds.Width, screen.Bounds.Height);
+            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, size);
             _helper = new AttachedHelper(this, _tools, limitHeight: false);
             GoToNormalMode();
 

@@ -52,7 +52,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ?
+                    contextHolder.States.TransparentBlendState : contextHolder.States.OpaqueBlendState;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
             switch (Kn5Material.DepthMode) {

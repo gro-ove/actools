@@ -225,7 +225,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
+		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatTextureMirrorNoGround, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj, FxViewProj;
@@ -238,7 +238,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyIntVariable FxNumSplits, FxFlatMirrorSide;
 		[NotNull]
-		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapReflectionsOffset, FxCubemapAmbient, FxFlatMirrorPower;
+		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapReflectionsOffset, FxCubemapAmbient, FxAmbientShadowOpacity, FxFlatMirrorPower;
 		[NotNull]
 		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxUseAo, FxCubemapReflections;
 		[NotNull]
@@ -318,6 +318,7 @@ namespace AcTools.Render.Shaders {
 			TechFlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatMirror"));
 			TechTransparentGround = new EffectReadyTechnique(E.GetTechniqueByName("TransparentGround"));
 			TechFlatTextureMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatTextureMirror"));
+			TechFlatTextureMirrorNoGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatTextureMirrorNoGround"));
 			TechFlatBackgroundGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatBackgroundGround"));
 			TechFlatAmbientGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatAmbientGround"));
 			TechGPass_Standard = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Standard"));
@@ -381,6 +382,7 @@ namespace AcTools.Render.Shaders {
 			FxReflectionPower = new EffectOnlyFloatVariable(E.GetVariableByName("gReflectionPower"));
 			FxCubemapReflectionsOffset = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapReflectionsOffset"));
 			FxCubemapAmbient = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapAmbient"));
+			FxAmbientShadowOpacity = new EffectOnlyFloatVariable(E.GetVariableByName("gAmbientShadowOpacity"));
 			FxFlatMirrorPower = new EffectOnlyFloatVariable(E.GetVariableByName("gFlatMirrorPower"));
 			FxGPassTransparent = new EffectOnlyBoolVariable(E.GetVariableByName("gGPassTransparent"));
 			FxPcssEnabled = new EffectOnlyBoolVariable(E.GetVariableByName("gPcssEnabled"));
@@ -784,7 +786,7 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
-	public class EffectPpHdr : IEffectWrapper {
+	public class EffectPpHdr : IEffectWrapper, IEffectScreenSizeWrapper {
 		public static readonly Vector3 LumConvert = new Vector3(0.299f, 0.587f, 0.114f);
 		private ShaderBytecode _b;
 		public Effect E;
@@ -797,9 +799,13 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap, FxColorGradingMap;
 		[NotNull]
+		public EffectOnlyBoolVariable FxUseDither;
+		[NotNull]
 		public EffectOnlyVector2Variable FxPixel, FxCropImage;
 		[NotNull]
-		public EffectOnlyVector4Variable FxParams;
+		public EffectOnlyVector4Variable FxParams, FxScreenSize;
+
+		EffectOnlyVector4Variable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHdr");
@@ -830,9 +836,11 @@ namespace AcTools.Render.Shaders {
 			FxBrightnessMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBrightnessMap"));
 			FxBloomMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBloomMap"));
 			FxColorGradingMap = new EffectOnlyResourceVariable(E.GetVariableByName("gColorGradingMap"));
+			FxUseDither = new EffectOnlyBoolVariable(E.GetVariableByName("gUseDither"));
 			FxPixel = new EffectOnlyVector2Variable(E.GetVariableByName("gPixel"));
 			FxCropImage = new EffectOnlyVector2Variable(E.GetVariableByName("gCropImage"));
 			FxParams = new EffectOnlyVector4Variable(E.GetVariableByName("gParams"));
+			FxScreenSize = new EffectOnlyVector4Variable(E.GetVariableByName("gScreenSize"));
 		}
 
         public void Dispose() {
@@ -937,6 +945,8 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyResourceVariable FxDepthMap, FxShadowMap, FxNoiseMap;
 		[NotNull]
+		public EffectOnlyFloatVariable FxShadowOpacity;
+		[NotNull]
 		public EffectOnlyVector2Variable FxNoiseSize, FxShadowSize;
 		[NotNull]
 		public EffectOnlyVector3Variable FxShadowPosition;
@@ -960,6 +970,7 @@ namespace AcTools.Render.Shaders {
 			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap"));
 			FxShadowMap = new EffectOnlyResourceVariable(E.GetVariableByName("gShadowMap"));
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
+			FxShadowOpacity = new EffectOnlyFloatVariable(E.GetVariableByName("gShadowOpacity"));
 			FxNoiseSize = new EffectOnlyVector2Variable(E.GetVariableByName("gNoiseSize"));
 			FxShadowSize = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowSize"));
 			FxShadowPosition = new EffectOnlyVector3Variable(E.GetVariableByName("gShadowPosition"));

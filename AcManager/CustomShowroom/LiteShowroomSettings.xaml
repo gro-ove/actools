@@ -290,13 +290,20 @@
           <Label Content="Draw ground" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Renderer.FlatMirror}" IsEnabled="{Binding Renderer.AnyGround}">
+        <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
           <Label Content="Mirror" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Renderer.FlatMirrorBlurred}" IsEnabled="{Binding Renderer.FlatMirror}">
           <Label Content="Blurred mirror" />
         </CheckBox>
+
+        <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding FlatMirrorBlurred}">
+          <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Blur multiplier" Postfix="%"
+              Value="{Binding FlatMirrorBlurMuiltiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1, StringFormat='{}{0:F1}'}" />
+          <Slider Minimum="0.1" Maximum="1.6" TickFrequency="0.15" TickPlacement="BottomRight"
+              Value="{Binding FlatMirrorBlurMuiltiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
 
         <Border IsEnabled="{Binding Renderer.FlatMirrorBlurred, Converter={StaticResource InvertBooleanConverter}}">
           <CheckBox IsChecked="{Binding Renderer.FlatMirrorReflectedLight}" IsEnabled="{Binding Renderer.FlatMirror}">
@@ -354,6 +361,13 @@
           </mui:BetterComboBox>
         </DockPanel>
       </mui:SpacingStackPanel>
+
+      <DockPanel DataContext="{Binding Renderer}">
+        <mui:ValueLabel Value="{Binding CarShadowsOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Car shadows multiplier" Postfix="%" />
+        <Slider Minimum="0" Maximum="150" Value="{Binding CarShadowsOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+            TickFrequency="15" TickPlacement="BottomRight" />
+      </DockPanel>
 
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetSceneCommand}" />
     </mui:SpacingStackPanel>
@@ -1076,6 +1090,10 @@
         <Slider Minimum="100" Maximum="400" Value="{Binding ToneWhitePoint, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
             TickFrequency="30" TickPlacement="BottomRight" />
       </DockPanel>
+
+      <CheckBox IsChecked="{Binding Renderer.UseDither}" ToolTip="Helps to avoid banding">
+        <Label Content="Dithering" />
+      </CheckBox>
 
       <TextBlock Style="{StaticResource Heading2}" Margin="0 20 0 0">
         <Run Text="Color grading" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
