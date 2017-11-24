@@ -4,12 +4,13 @@ using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.GameProperties {
     public abstract class CarSpecificHelperBase : Game.RaceIniProperties, IDisposable {
         private bool _requiresDisposal;
 
-        public sealed override void Set(IniFile file) {
+        public sealed override void Set([NotNull] IniFile file) {
             try {
                 var carId = file["RACE"].GetNonEmpty("MODEL");
                 var car = carId == null ? null : CarsManager.Instance.GetById(carId);
@@ -20,7 +21,7 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
-        protected abstract bool SetOverride(CarObject car);
+        protected abstract bool SetOverride([NotNull] CarObject car);
 
         public void Dispose() {
             if (_requiresDisposal) {

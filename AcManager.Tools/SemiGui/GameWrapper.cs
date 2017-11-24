@@ -146,6 +146,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             AcSettingsHolder.Graphics.FixShadowMapBias();
+            CarCustomDataHelper.Revert();
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());

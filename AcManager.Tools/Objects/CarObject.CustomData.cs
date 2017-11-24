@@ -1,8 +1,6 @@
-﻿using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.Managers.Presets;
+﻿using System.IO;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {
@@ -12,6 +10,27 @@ namespace AcManager.Tools.Objects {
         private void InitializeCustomDataKeys() {
             if (_keyUseCustomData != null) return;
             _keyUseCustomData = $@"CarObject:{Id}:UseCustomData";
+        }
+
+        public bool SetCustomData(bool allowCustom) {
+            var data = Path.Combine(Location, "data.acd");
+            var unpacked = Path.Combine(Location, "data");
+            var backup = Path.Combine(Location, "data.acd~cm_bak");
+
+            var custom = allowCustom && UseCustomData;
+            if (custom) {
+                if (File.Exists(backup) && !File.Exists(data)) {
+                    File.Move(backup, data);
+                    return true;
+                }
+            } else {
+                if (Directory.Exists(unpacked) && File.Exists(data) && !File.Exists(backup)) {
+                    File.Move(data, backup);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool? _useCustomData;

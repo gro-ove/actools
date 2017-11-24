@@ -9,6 +9,7 @@ using System.Windows.Data;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
@@ -323,7 +324,8 @@ namespace AcManager.Pages.Drive {
                     TrackProperties = trackProperties,
                     ModeProperties = GetModeProperties(botCars),
                     AdditionalPropertieses = {
-                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset),
+                        new CarCustomDataHelper()
                     }
                 });
             }

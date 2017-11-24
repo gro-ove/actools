@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Profile;
 using AcTools.Processes;
@@ -61,7 +62,8 @@ namespace AcManager.Pages.Drive {
                         StartType = SelectedStartType
                     },
                     AdditionalPropertieses = {
-                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset),
+                        new CarCustomDataHelper()
                     }
                 });
             }

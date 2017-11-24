@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
 using AcTools.Processes;
@@ -28,7 +29,8 @@ namespace AcManager.Pages.Drive {
                         Penalties = Penalties
                     },
                     AdditionalPropertieses = {
-                        new QuickDrivePresetProperty(serializedQuickDrivePreset)
+                        new QuickDrivePresetProperty(serializedQuickDrivePreset),
+                        new CarCustomDataHelper()
                     }
                 });
             }
