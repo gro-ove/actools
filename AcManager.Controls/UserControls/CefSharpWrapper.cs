@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -59,10 +61,12 @@ namespace AcManager.Controls.UserControls {
 
         public bool RunContextMenu(IWebBrowser browserControl, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model,
                 IRunContextMenuCallback callback) {
-            callback.Dispose();
+            if (!callback.IsDisposed) {
+                callback.Dispose();
+            }
 
             ActionExtension.InvokeInMainThread(() => {
-                var menu = new ContextMenu {
+                new ContextMenu {
                     Items = {
                         new MenuItem {
                             Header = "Back",
@@ -87,9 +91,7 @@ namespace AcManager.Controls.UserControls {
                             CommandParameter = frame.Url
                         },
                     }
-                };
-
-                menu.IsOpen = true;
+                }.IsOpen = true;
             });
 
             return true;
@@ -148,6 +150,11 @@ namespace AcManager.Controls.UserControls {
             return true;
         }
 
+        /*public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates,
+                ISelectClientCertificateCallback callback) {
+            return true;
+        }*/
+
         public void OnRenderProcessTerminated(IWebBrowser browserControl, IBrowser browser, CefTerminationStatus status) {
             Logging.Warning(status);
         }
@@ -161,6 +168,8 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, ref string newUrl) {}
+
+        /*public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) {}*/
 
         public bool OnProtocolExecution(IWebBrowser browserControl, IBrowser browser, string url) {
             return url.StartsWith(@"mailto") || url.StartsWith(@"acmanager");
@@ -296,16 +305,93 @@ namespace AcManager.Controls.UserControls {
 
         public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
             if (schemeName == SchemeName) {
-                var slice = SchemeName.Length + 4;
-                if (slice >= request.Url.Length) return null;
-
-                var filename = $@"{request.Url[slice - 1].ToInvariantString()}:{request.Url.Substring(slice)}";
-                var mimeType = ResourceHandler.GetMimeType(Path.GetExtension(filename));
-                return ResourceHandler.FromFilePath(filename, mimeType);
+                try {
+                    var slice = SchemeName.Length + 4;
+                    if (slice >= request.Url.Length) return null;
+                    var filename = $@"{request.Url[slice - 1].ToInvariantString()}:{request.Url.Substring(slice)}";
+                    return new CustomResourceHandler(filename);
+                } catch (Exception e) {
+                    Logging.Error(e);
+                    return null;
+                }
             }
 
             return null;
         }
+
+        private class CustomResourceHandler : IResourceHandler {
+            [CanBeNull]
+            private readonly Stream _data;
+            private readonly string _mimeType;
+
+            public CustomResourceHandler(string filename) {
+                try {
+                    _data = File.Exists(filename) ? File.OpenRead(filename) : null;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    _data = null;
+                }
+
+                try {
+                    _mimeType = ResourceHandler.GetMimeType(Path.GetExtension(filename));
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    _mimeType = "application/octet-stream";
+                }
+            }
+
+            public void Dispose() {
+                _data?.Dispose();
+            }
+
+            public bool ProcessRequest(IRequest request, ICallback callback) {
+                callback.Continue();
+                return true;
+            }
+
+            public void GetResponseHeaders(IResponse response, out long responseLength, out string redirectUrl) {
+                redirectUrl = null;
+                if (_data == null) {
+                    responseLength = 0L;
+                    response.ErrorCode = CefErrorCode.FileNotFound;
+                } else {
+                    response.MimeType = _mimeType;
+                    response.StatusCode = 200;
+                    response.StatusText = "OK";
+                    response.ResponseHeaders = new NameValueCollection();
+                    responseLength = _data.Length;
+                }
+            }
+
+            public bool ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
+                if (!callback.IsDisposed) {
+                    callback.Dispose();
+                }
+
+                if (_data == null) {
+                    bytesRead = 0;
+                    return false;
+                }
+
+                bytesRead = _data.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                return bytesRead > 0;
+            }
+
+            public bool CanGetCookie(Cookie cookie) {
+                return true;
+            }
+
+            public bool CanSetCookie(Cookie cookie) {
+                return true;
+            }
+
+            public void Cancel() {}
+        }
+    }
+
+    public static class CefSharpPluginInformation {
+        public static readonly string Id = "CefSharp";
+        // public static readonly string Id = "CefSharp-57.0.0-" + BuildInformation.Platform;
     }
 
     internal class CefSharpWrapper : IWebSomething {
@@ -324,7 +410,7 @@ namespace AcManager.Controls.UserControls {
 
         public FrameworkElement Initialize() {
             if (!Cef.IsInitialized) {
-                var path = PluginsManager.Instance.GetPluginDirectory("CefSharp");
+                var path = PluginsManager.Instance.GetPluginDirectory(CefSharpPluginInformation.Id);
                 var settings = new CefSettings {
                     UserAgent = DefaultUserAgent,
                     MultiThreadedMessageLoop = true,
@@ -403,7 +489,11 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void SetScriptProvider(ScriptProviderBase provider) {
-            _inner.RegisterJsObject(@"external", provider, new BindingOptions { CamelCaseJavascriptNames = false });
+            try {
+                _inner.RegisterJsObject(@"external", provider, new BindingOptions { CamelCaseJavascriptNames = false });
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
         }
 
         public void SetUserAgent(string userAgent) {
@@ -437,8 +527,12 @@ document.addEventListener('mousedown', function(e){
         }
 
         public void Execute(string js) {
-            using (var mainFrame = _inner.GetMainFrame()) {
-                mainFrame.ExecuteJavaScriptAsync(js, @"about:contentmanager");
+            try {
+                using (var mainFrame = _inner.GetMainFrame()) {
+                    mainFrame.ExecuteJavaScriptAsync(js, @"about:contentmanager");
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
         }
 

@@ -1,11 +1,10 @@
 using AcManager.Controls.Helpers;
+using AcManager.Controls.UserControls;
 using AcManager.Tools.Managers.Plugins;
 
 namespace AcManager.Plugins {
     public class CefSharpPluginWrapper : IPluginWrapper {
-        public const string IdValue = "CefSharp";
-
-        public string Id => IdValue;
+        public string Id => CefSharpPluginInformation.Id;
 
         public void Enable() {
             EnsureEnabled();
@@ -17,7 +16,7 @@ namespace AcManager.Plugins {
 
         public static void EnsureEnabled() {
             if (CefSharpResolverService.IsInitialized) return;
-            CefSharpResolverService.Initialize(PluginsManager.Instance.GetPluginDirectory(IdValue));
+            CefSharpResolverService.Initialize(PluginsManager.Instance.GetPluginDirectory(CefSharpPluginInformation.Id));
         }
 
         public static void EnsureDisabled() {

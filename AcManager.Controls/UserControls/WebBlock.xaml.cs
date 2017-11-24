@@ -14,7 +14,7 @@ namespace AcManager.Controls.UserControls {
         private readonly IWebSomething _something;
 
         private static IWebSomething GetSomething() {
-            if (PluginsManager.Instance.IsPluginEnabled("CefSharp")) return new CefSharpWrapper();
+            if (PluginsManager.Instance.IsPluginEnabled(CefSharpPluginInformation.Id)) return new CefSharpWrapper();
             if (PluginsManager.Instance.IsPluginEnabled("Awesomium")) return new AwesomiumWrapper();
             return new WebBrowserWrapper();
         }
@@ -58,9 +58,13 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void Execute(string js, bool onload = false) {
-            _something.Execute(onload ?
+            try {
+                _something.Execute(onload ?
                         @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
                         @"(function(){" + js + @"})();");
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
         }
 
         public void Execute(string fnName, params object[] args) {

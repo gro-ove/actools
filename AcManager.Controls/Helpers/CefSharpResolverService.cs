@@ -77,9 +77,7 @@ namespace AcManager.Controls.Helpers {
             try {
                 var id = new AssemblyName(args.Name).Name.ToLower();
 
-                Assembly result;
-                if (Cached.TryGetValue(id, out result)) return result;
-
+                if (Cached.TryGetValue(id, out var result)) return result;
                 if (Dependencies.Contains(id)) {
                     var dependencyPath = Path.Combine(_cefSharpPath, $"{id}{DllExtension}");
                     if (!File.Exists(dependencyPath)) {

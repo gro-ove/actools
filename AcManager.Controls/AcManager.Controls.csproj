@@ -64,15 +64,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-$(ActualPlatform)\CefSharp.dll</HintPath>
+      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp.Core, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp.Wpf, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
