@@ -6,7 +6,7 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class AcDriftingProLoader : RedirectingLoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?acdriftingpro\.com/\?.*\bp=\d+", RegexOptions.IgnoreCase);
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?acdriftingpro\.com/", RegexOptions.IgnoreCase);
 
         public AcDriftingProLoader(string url) : base(url) { }
 

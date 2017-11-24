@@ -13,7 +13,17 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         protected override async Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             using (client.SetUserAgent("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")) {
-                return Reverse(Regex.Match(await client.DownloadStringTaskAsync(url), @"ysmm\s=\s'(.*?)'").Groups[1].Value);
+                var redirectTo = Reverse(Regex.Match(await client.DownloadStringTaskAsync(url), @"ysmm\s=\s'(.*?)'").Groups[1].Value);
+                if (Test(redirectTo)) {
+                    var redirected = await client.DownloadStringTaskAsync(redirectTo);
+                    var match = Regex.Match(redirected, @"please\s+<a[^>]+href=""([^""]+)""[^>]*>click");
+                    if (match.Success) {
+                        return match.Groups[1].Value;
+                    }
+                }
+
+
+                return redirectTo;
             }
         }
 
