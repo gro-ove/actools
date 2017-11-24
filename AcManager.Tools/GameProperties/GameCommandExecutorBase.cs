@@ -26,7 +26,7 @@ namespace AcManager.Tools.GameProperties {
                     FileName = "cmd",
                     Arguments = $"/C \"{command}\"",
                     UseShellExecute = false,
-                    WorkingDirectory = FileUtils.GetDocumentsDirectory(),
+                    WorkingDirectory = AcPaths.GetDocumentsDirectory(),
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                 });

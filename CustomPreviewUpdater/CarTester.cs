@@ -22,7 +22,7 @@ namespace CustomPreviewUpdater {
         private bool TestIfKunosUsingGuids(string id) {
             if (_kunosCarsIds == null) {
                 try {
-                    _kunosCarsIds = File.ReadAllLines(FileUtils.GetSfxGuidsFilename(_acRoot))
+                    _kunosCarsIds = File.ReadAllLines(AcPaths.GetSfxGuidsFilename(_acRoot))
                                         .Select(x => x.Split('/'))
                                         .Where(x => x.Length > 3 && x[1] == "cars" && x[0].EndsWith("event:"))
                                         .Select(x => x[2].ToLowerInvariant())
@@ -53,14 +53,14 @@ namespace CustomPreviewUpdater {
 
                 case "a":
                 case "age": {
-                    var directory = FileUtils.GetCarDirectory(_acRoot, carId);
+                    var directory = AcPaths.GetCarDirectory(_acRoot, carId);
                     var age = File.GetCreationTime(directory);
                     return value.Test((DateTime.Now - age).TotalDays);
                 }
 
                 case "n":
                 case "new": {
-                    var directory = FileUtils.GetCarDirectory(_acRoot, carId);
+                    var directory = AcPaths.GetCarDirectory(_acRoot, carId);
                     var age = File.GetCreationTime(directory);
                     return value.Test((DateTime.Now - age).TotalDays < 7d);
                 }
@@ -76,7 +76,7 @@ namespace CustomPreviewUpdater {
             if (key != "s" && key != "skin") return false;
 
             if (!_skinsPerCar.TryGetValue(carId, out var skins)) {
-                skins = Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(_acRoot, carId)).Select(Path.GetFileName).ToArray();
+                skins = Directory.GetDirectories(AcPaths.GetCarSkinsDirectory(_acRoot, carId)).Select(Path.GetFileName).ToArray();
                 _skinsPerCar[carId] = skins;
             }
 

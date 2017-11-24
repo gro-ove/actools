@@ -18,7 +18,7 @@ namespace AcManager.Tools.Data {
         private static KunosCareerProgress _instance;
 
         public static KunosCareerProgress Instance => _instance ??
-                (_instance = new KunosCareerProgress(FileUtils.GetKunosCareerProgressFilename()));
+                (_instance = new KunosCareerProgress(AcPaths.GetKunosCareerProgressFilename()));
 
         private readonly string _filename;
         private IDisposable _watcher;

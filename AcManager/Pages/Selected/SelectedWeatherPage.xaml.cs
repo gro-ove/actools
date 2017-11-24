@@ -224,7 +224,7 @@ namespace AcManager.Pages.Selected {
                     return;
                 }
 
-                var directory = FileUtils.GetDocumentsScreensDirectory();
+                var directory = AcPaths.GetDocumentsScreensDirectory();
                 var shots = FileUtils.GetFilesSafe(directory);
 
                 await QuickDrive.RunAsync(weatherId: SelectedObject.Id);
@@ -262,7 +262,7 @@ namespace AcManager.Pages.Selected {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,
-                    InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
+                    InitialDirectory = AcPaths.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
 

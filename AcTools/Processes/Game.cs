@@ -40,7 +40,7 @@ namespace AcTools.Processes {
         [CanBeNull]
         public static Result GetResult(DateTime gameStartTime) {
             try {
-                var filename = OptionDebugMode ? FileUtils.GetResultJsonFilename().Replace("race_out", "race_out_debug") : FileUtils.GetResultJsonFilename();
+                var filename = OptionDebugMode ? AcPaths.GetResultJsonFilename().Replace("race_out", "race_out_debug") : AcPaths.GetResultJsonFilename();
                 var info = new FileInfo(filename);
                 if (!info.Exists || info.LastWriteTime < gameStartTime) return null;
                 var result = JsonConvert.DeserializeObject<Result>(FileUtils.ReadAllText(filename));
@@ -51,7 +51,7 @@ namespace AcTools.Processes {
         }
 
         private static void RemoveResultJson() {
-            FileUtils.TryToDelete(FileUtils.GetResultJsonFilename());
+            FileUtils.TryToDelete(AcPaths.GetResultJsonFilename());
         }
 
         private static bool _busy;
@@ -268,7 +268,7 @@ namespace AcTools.Processes {
                 _disposeLater = new List<IDisposable>();
                 _removeLater = new List<string>();
 
-                var iniFilename = FileUtils.GetRaceIniFilename();
+                var iniFilename = AcPaths.GetRaceIniFilename();
                 if (OptionEnableRaceIniRestoration) {
                     _disposeLater.Add(FileUtils.RestoreLater(iniFilename));
                 }
@@ -287,7 +287,7 @@ namespace AcTools.Processes {
                         TrackProperties?.Set(iniFile);
                     } else if (ReplayProperties != null) {
                         if (ReplayProperties.Name == null && ReplayProperties.Filename != null) {
-                            var dir = FileUtils.GetReplaysDirectory();
+                            var dir = AcPaths.GetReplaysDirectory();
                             if (Path.GetDirectoryName(ReplayProperties.Filename)?.Equals(dir, StringComparison.OrdinalIgnoreCase) == true) {
                                 ReplayProperties.Name = Path.GetFileName(ReplayProperties.Filename);
                             } else {

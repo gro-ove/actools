@@ -37,8 +37,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         protected IniSettings([Localizable(false)] string name, bool reload = true, bool systemConfig = false) {
             try {
-                var directory = systemConfig ? FileUtils.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue) :
-                        FileUtils.GetDocumentsCfgDirectory();
+                var directory = systemConfig ? AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue) :
+                        AcPaths.GetDocumentsCfgDirectory();
 
                 Filename = Path.Combine(directory, name + ".ini");
                 if (reload) {

@@ -775,7 +775,7 @@ namespace AcManager.CustomShowroom {
             private DelegateCommand _shotOpenDirectoryCommand;
 
             public DelegateCommand ShotOpenDirectoryCommand => _shotOpenDirectoryCommand ?? (_shotOpenDirectoryCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewDirectory(FileUtils.GetDocumentsScreensDirectory());
+                WindowsHelper.ViewDirectory(AcPaths.GetDocumentsScreensDirectory());
             }));
 
             private AsyncCommand<CancellationToken?> _shotCommand;

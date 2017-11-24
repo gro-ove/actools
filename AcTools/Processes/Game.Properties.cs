@@ -690,7 +690,7 @@ namespace AcTools.Processes {
             }
 
             public override IDisposable Set() {
-                ToIniFile().Save(FileUtils.GetAssistsIniFilename());
+                ToIniFile().Save(AcPaths.GetAssistsIniFilename());
                 return null;
             }
 

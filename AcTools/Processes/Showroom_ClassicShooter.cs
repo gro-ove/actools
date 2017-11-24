@@ -16,7 +16,7 @@ namespace AcTools.Processes {
         private readonly string _cfgFile, _originalValue;
 
         public DistanceChange(double value) {
-            _cfgFile = FileUtils.GetCfgShowroomFilename();
+            _cfgFile = AcPaths.GetCfgShowroomFilename();
             var iniFile = new IniFile(_cfgFile);
             _originalValue = iniFile["SETTINGS"].GetPossiblyEmpty("CAMERA_DISTANCE");
             iniFile["SETTINGS"].Set("CAMERA_DISTANCE", value);
@@ -34,7 +34,7 @@ namespace AcTools.Processes {
         private readonly string _cfgFile, _originalValue;
 
         public LogActivateChange(string acRoot) {
-            _cfgFile = Path.Combine(FileUtils.GetSystemCfgDirectory(acRoot), "assetto_corsa.ini");
+            _cfgFile = Path.Combine(AcPaths.GetSystemCfgDirectory(acRoot), "assetto_corsa.ini");
             var iniFile = new IniFile(_cfgFile);
             _originalValue = iniFile["LOG"].GetPossiblyEmpty("SUPPRESS");
             iniFile["LOG"].Set("SUPPRESS", false);
@@ -121,7 +121,7 @@ namespace AcTools.Processes {
                 base.Prepare();
 
                 _logActivateChange = new LogActivateChange(AcRoot);
-                _skins = Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(AcRoot, CarId))
+                _skins = Directory.GetDirectories(AcPaths.GetCarSkinsDirectory(AcRoot, CarId))
                     .Select(Path.GetFileName).ToArray();
             }
 
@@ -266,7 +266,7 @@ namespace AcTools.Processes {
                 }
 
                 for (; time > 0; time -= WaitTimeoutStep) {
-                    var files = FileUtils.GetFilesSafe(FileUtils.GetDocumentsScreensDirectory(), $"Showroom_{CarId}_*.bmp")
+                    var files = FileUtils.GetFilesSafe(AcPaths.GetDocumentsScreensDirectory(), $"Showroom_{CarId}_*.bmp")
                         .Where(x => new FileInfo(x).CreationTime > from).ToList();
                     if (files.Any()) {
                         Wait(WaitTimeoutEnsure);

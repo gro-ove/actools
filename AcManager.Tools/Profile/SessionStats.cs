@@ -348,7 +348,7 @@ namespace AcManager.Tools.Profile {
             private string ThisOr([CanBeNull] string s, int limit, ref IniFile raceIni, string key) {
                 if (s?.Length == limit) {
                     // ID could be shorten, let’s try to find a longer version
-                    var actual = (raceIni ?? (raceIni = new IniFile(FileUtils.GetRaceIniFilename())))["RACE"].GetNonEmpty(key);
+                    var actual = (raceIni ?? (raceIni = new IniFile(AcPaths.GetRaceIniFilename())))["RACE"].GetNonEmpty(key);
                     if (actual != null && actual.StartsWith(s)) {
                         return actual;
                     }

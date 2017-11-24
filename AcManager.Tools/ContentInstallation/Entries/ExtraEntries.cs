@@ -106,7 +106,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public SystemConfigEntry([NotNull] string path, [NotNull] string id, string name = null)
                 : base(path, id, name ?? AcStringValues.NameFromId(id.ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase))) {
-            _destination = Path.Combine(FileUtils.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
+            _destination = Path.Combine(AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
         }
 
         public override bool GenericModSupported => true;

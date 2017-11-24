@@ -9,7 +9,7 @@ namespace AcTools.Processes {
     public partial class Game {
         [Obsolete]
         public static void PrepareIni(string carName, string skinName, string trackName, string trackConfig) {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
 
             IniFile.Write(ini, "RACE", "MODEL", carName);
             IniFile.Write(ini, "RACE", "SKIN", skinName);
@@ -20,7 +20,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         private static void EnableGhostCar() {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
 
             IniFile.Write(ini, "GHOST_CAR", "RECORDING", "1");
             IniFile.Write(ini, "GHOST_CAR", "PLAYING", "1");
@@ -32,7 +32,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         private static void DisableGhostCar() {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
 
             IniFile.Write(ini, "GHOST_CAR", "RECORDING", "0");
             IniFile.Write(ini, "GHOST_CAR", "PLAYING", "0");
@@ -44,7 +44,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         public static void PrepareIniHotlapMode() {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
             EnableGhostCar();
 
             IniFile.Write(ini, "RACE", "CARS", "1");
@@ -66,7 +66,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         public static void PrepareIniDriftMode() {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
             DisableGhostCar();
 
             IniFile.Write(ini, "RACE", "CARS", "1");
@@ -87,7 +87,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         public static void PrepareIniPracticeMode() {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
             DisableGhostCar();
 
             IniFile.Write(ini, "RACE", "CARS", "1");
@@ -109,7 +109,7 @@ namespace AcTools.Processes {
 
         [Obsolete]
         public static void PrepareIniRaceMode(RaceProperties properties) {
-            var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
+            var ini = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "race.ini");
 
             var iniFile = new IniFile(ini);
             for (var i = 1; i < 100; i++) {

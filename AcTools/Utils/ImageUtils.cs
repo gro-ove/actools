@@ -212,7 +212,7 @@ namespace AcTools.Utils {
         public static void ApplyPreviews([NotNull] string acRoot, [NotNull] string carName, [NotNull] string source, bool resize,
                 [CanBeNull] AcPreviewImageInformation information) {
             foreach (var file in Directory.GetFiles(source, "*.bmp")) {
-                var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName,
+                var skinDirectory = AcPaths.GetCarSkinDirectory(acRoot, carName,
                         Path.GetFileNameWithoutExtension(file));
                 if (!Directory.Exists(skinDirectory)) continue;
                 ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize, information);
@@ -226,7 +226,7 @@ namespace AcTools.Utils {
             for (var i = 0; i < files.Length; i++) {
                 var file = files[i];
                 var id = Path.GetFileNameWithoutExtension(file);
-                var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName, id);
+                var skinDirectory = AcPaths.GetCarSkinDirectory(acRoot, carName, id);
                 if (!Directory.Exists(skinDirectory)) continue;
 
                 progress?.Report(new Tuple<string, double?>(id, (double)i / files.Length));

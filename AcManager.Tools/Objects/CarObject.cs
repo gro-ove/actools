@@ -594,7 +594,7 @@ namespace AcManager.Tools.Objects {
                     yield return Add("templates/*");
                 }
 
-                var textureNames = Kn5.FromFile(FileUtils.GetMainCarFilename(t.Location, t.AcdData),
+                var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(t.Location, t.AcdData),
                         SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
                 yield return Add(textureNames.Select(x => $"skins/*/{x}"));
                 yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");

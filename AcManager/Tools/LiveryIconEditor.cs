@@ -475,7 +475,7 @@ namespace AcManager.Tools {
             string kn5Filename = null;
 
             string GetKn5Filename() {
-                return kn5Filename ?? (kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData));
+                return kn5Filename ?? (kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData));
             }
 
             var materialsKn5 = Kn5MaterialsCache.FirstOrDefault(x => x?.Item1 == car.Id)?.Item2;

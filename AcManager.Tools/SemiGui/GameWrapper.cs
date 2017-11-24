@@ -220,7 +220,7 @@ namespace AcManager.Tools.SemiGui {
         private static async Task PrepareReplay(Game.StartProperties properties, IGameUi ui, CancellationToken cancellation) {
             var replayProperties = properties.ReplayProperties;
             if (replayProperties != null) {
-                var replayFilename = replayProperties.Filename ?? Path.Combine(FileUtils.GetReplaysDirectory(), replayProperties.Name);
+                var replayFilename = replayProperties.Filename ?? Path.Combine(AcPaths.GetReplaysDirectory(), replayProperties.Name);
                 ui.OnProgress("Checking replay for fake cars…");
 
                 var fakes = await FakeCarsHelper.GetFakeCarsIds(replayFilename);

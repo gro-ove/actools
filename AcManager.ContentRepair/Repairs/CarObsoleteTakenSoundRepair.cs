@@ -33,7 +33,7 @@ namespace AcManager.ContentRepair.Repairs {
 
         [CanBeNull]
         private static string GetSoundbankChecksum(string carId) {
-            return ChecksumFast(Path.Combine(FileUtils.GetCarDirectory(AcRootDirectory.Instance.RequireValue, carId), @"sfx",
+            return ChecksumFast(Path.Combine(AcPaths.GetCarDirectory(AcRootDirectory.Instance.RequireValue, carId), @"sfx",
                     carId + @".bank"));
         }
 

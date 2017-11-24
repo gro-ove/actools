@@ -302,7 +302,7 @@ namespace AcTools.DataFile {
 
         [NotNull]
         public static DataWrapper FromCarDirectory([NotNull] string acRoot, [NotNull] string carId) {
-            return FromCarDirectory(FileUtils.GetCarDirectory(acRoot, carId));
+            return FromCarDirectory(AcPaths.GetCarDirectory(acRoot, carId));
         }
 
         public event EventHandler<DataChangedEventArgs> DataChanged;

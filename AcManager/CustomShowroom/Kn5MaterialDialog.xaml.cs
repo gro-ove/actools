@@ -586,7 +586,7 @@ namespace AcManager.CustomShowroom {
 
             public bool CanBeSaved => Material != null;
             public PresetsCategory PresetableCategory { get; } = new PresetsCategory(
-                    Path.Combine(FileUtils.GetDocumentsDirectory(), "Editor", "Materials Library"), ".material");
+                    Path.Combine(AcPaths.GetDocumentsDirectory(), "Editor", "Materials Library"), ".material");
             string IUserPresetable.PresetableKey => PresetableKey;
 
             // It’s not the best format, but it’s compatible with patched KsEditor

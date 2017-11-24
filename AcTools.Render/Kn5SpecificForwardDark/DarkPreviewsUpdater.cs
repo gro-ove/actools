@@ -284,8 +284,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private CarDescription GetCarDescription(string carId, [CanBeNull] DataWrapper carData) {
-            var carDirectory = FileUtils.GetCarDirectory(_acRoot, carId);
-            var carKn5 = carData == null ? FileUtils.GetMainCarFilename(carDirectory) : FileUtils.GetMainCarFilename(carDirectory, carData);
+            var carDirectory = AcPaths.GetCarDirectory(_acRoot, carId);
+            var carKn5 = carData == null ? AcPaths.GetMainCarFilename(carDirectory) : AcPaths.GetMainCarFilename(carDirectory, carData);
             return new CarDescription(carKn5, carDirectory);
         }
 
@@ -312,7 +312,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var showroom = options.Showroom;
 
             if (showroom != null && !File.Exists(showroom)) {
-                var kn5 = Path.Combine(FileUtils.GetShowroomDirectory(acRoot, showroom), $"{showroom}.kn5");
+                var kn5 = Path.Combine(AcPaths.GetShowroomDirectory(acRoot, showroom), $"{showroom}.kn5");
                 showroom = File.Exists(kn5) ? kn5 : null;
             }
 
@@ -477,7 +477,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private void ShotInner(string carId, string skinId, string destination, ImageUtils.ImageInformation information, Action callback) {
             if (destination == null) {
-                destination = Path.Combine(FileUtils.GetCarSkinDirectory(_acRoot, carId, skinId), _options.PreviewName);
+                destination = Path.Combine(AcPaths.GetCarSkinDirectory(_acRoot, carId, skinId), _options.PreviewName);
             }
 
             var shotStream = new MemoryStream(_approximateSize ?? 100000);

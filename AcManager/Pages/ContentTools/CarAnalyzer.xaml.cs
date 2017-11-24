@@ -496,7 +496,7 @@ All found similarities:
 
                     var data = Car.AcdData;
                     if (data != null) {
-                        var kn5Filename = FileUtils.GetMainCarFilename(Car.Location, data);
+                        var kn5Filename = AcPaths.GetMainCarFilename(Car.Location, data);
                         var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename));
 
                         // triangles count

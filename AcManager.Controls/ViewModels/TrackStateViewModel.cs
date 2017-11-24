@@ -87,7 +87,7 @@ namespace AcManager.Controls.ViewModels {
         private readonly FileSystemWatcher _watcher;
 
         private TrackStatesHelper() {
-            _templates = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "templates");
+            _templates = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "templates");
             RegisterBuiltInPresets();
 
             Directory.CreateDirectory(_templates);

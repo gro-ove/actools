@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Tools.Managers {
     internal class CarSetupsDirectories : IAcDirectories, IDirectoryListener {
         public CarSetupsDirectories(CarObject car) {
-            _enabledDirectory = FileUtils.GetCarSetupsDirectory(car.Id);
+            _enabledDirectory = AcPaths.GetCarSetupsDirectory(car.Id);
         }
 
         private readonly string _enabledDirectory;
@@ -95,7 +95,7 @@ namespace AcManager.Tools.Managers {
 
         private static void AddDirectoryListener(IDirectoryListener listener) {
             if (_watcher == null) {
-                _watcher = new DirectoryWatcher(FileUtils.GetCarSetupsDirectory());
+                _watcher = new DirectoryWatcher(AcPaths.GetCarSetupsDirectory());
                 _watcher.Subscribe(new InternalListener());
                 Logging.Write("[CarSetupsDirectories.InternalListener] Start watching…");
             }

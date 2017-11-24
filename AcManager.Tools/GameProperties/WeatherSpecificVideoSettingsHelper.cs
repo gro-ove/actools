@@ -11,7 +11,7 @@ namespace AcManager.Tools.GameProperties {
     public class WeatherSpecificVideoSettingsHelper : WeatherSpecificHelperBase {
         private const string FilterId = "__cm_weather";
 
-        private static string Destination => Path.Combine(FileUtils.GetPpFiltersDirectory(AcRootDirectory.Instance.RequireValue), $"{FilterId}.ini");
+        private static string Destination => Path.Combine(AcPaths.GetPpFiltersDirectory(AcRootDirectory.Instance.RequireValue), $"{FilterId}.ini");
 
         public static void Revert() {
             if (AcRootDirectory.Instance.Value == null) return;
@@ -24,7 +24,7 @@ namespace AcManager.Tools.GameProperties {
 
                 var changed = false;
 
-                var ini = new IniFile(FileUtils.GetCfgVideoFilename());
+                var ini = new IniFile(AcPaths.GetCfgVideoFilename());
 
                 {
                     var section = ini["POST_PROCESS"];
@@ -55,7 +55,7 @@ namespace AcManager.Tools.GameProperties {
         private string _destination;
 
         protected override bool SetOverride(WeatherObject weather) {
-            var videoCfg = FileUtils.GetCfgVideoFilename();
+            var videoCfg = AcPaths.GetCfgVideoFilename();
             if (!File.Exists(videoCfg)) return false;
 
             var customFilter = false;

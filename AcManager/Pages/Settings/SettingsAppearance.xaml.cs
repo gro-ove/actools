@@ -114,7 +114,7 @@ namespace AcManager.Pages.Settings {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = "Select Image For Background",
-                    InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? FileUtils.GetDocumentsScreensDirectory(),
+                    InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? AcPaths.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
 

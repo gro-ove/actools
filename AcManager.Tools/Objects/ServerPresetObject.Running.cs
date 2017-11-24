@@ -210,7 +210,7 @@ namespace AcManager.Tools.Objects {
             var root = AcRootDirectory.Instance.RequireValue;
             for (var i = 0; i < CarIds.Length; i++) {
                 var carId = CarIds[i];
-                var packedData = Path.Combine(FileUtils.GetCarDirectory(root, carId), "data.acd");
+                var packedData = Path.Combine(AcPaths.GetCarDirectory(root, carId), "data.acd");
                 if (File.Exists(packedData)) {
                     result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData));
                 }
@@ -219,7 +219,7 @@ namespace AcManager.Tools.Objects {
             // Track
             var localPath = TrackLayoutId != null ? Path.Combine(TrackId, TrackLayoutId) : TrackId;
             foreach (var file in TrackDataToKeep) {
-                var actualData = Path.Combine(FileUtils.GetTracksDirectory(root), localPath, @"data", file);
+                var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file);
                 if (File.Exists(actualData)) {
                     result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
                 }
@@ -236,7 +236,7 @@ namespace AcManager.Tools.Objects {
 
         private static void PrepareCar([NotNull] string carId) {
             var root = AcRootDirectory.Instance.RequireValue;
-            var actualData = new FileInfo(Path.Combine(FileUtils.GetCarDirectory(root, carId), "data.acd"));
+            var actualData = new FileInfo(Path.Combine(AcPaths.GetCarDirectory(root, carId), "data.acd"));
             var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"cars", carId, @"data.acd"));
 
             if (actualData.Exists && (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime)) {
@@ -250,7 +250,7 @@ namespace AcManager.Tools.Objects {
             var localPath = configurationId != null ? Path.Combine(trackId, configurationId) : trackId;
 
             foreach (var file in TrackDataToKeep) {
-                var actualData = new FileInfo(Path.Combine(FileUtils.GetTracksDirectory(root), localPath, @"data", file));
+                var actualData = new FileInfo(Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file));
                 var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", localPath, @"data", file));
 
                 if (actualData.Exists && (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime)) {

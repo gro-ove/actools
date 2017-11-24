@@ -38,11 +38,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public static CarDescription FromDirectory(string carDirectory) {
-            return new CarDescription(FileUtils.GetMainCarFilename(carDirectory), carDirectory);
+            return new CarDescription(AcPaths.GetMainCarFilename(carDirectory), carDirectory);
         }
 
         public static CarDescription FromDirectory(string carDirectory, DataWrapper data) {
-            return new CarDescription(FileUtils.GetMainCarFilename(carDirectory, data), carDirectory, data);
+            return new CarDescription(AcPaths.GetMainCarFilename(carDirectory, data), carDirectory, data);
         }
 
         public static CarDescription FromKn5(Kn5 kn5) {

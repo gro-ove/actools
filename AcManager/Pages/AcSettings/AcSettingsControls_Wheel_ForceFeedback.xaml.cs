@@ -192,7 +192,7 @@ namespace AcManager.Pages.AcSettings {
 
                     var lut = new LutDataFile();
                     lut.Values.AddRange(_wrapper.ToLut(filename));
-                    lut.Save(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), name));
+                    lut.Save(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), name));
                     SwitchFfPostProcessLutName(name);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t import CSV-file", e);
@@ -202,7 +202,7 @@ namespace AcManager.Pages.AcSettings {
             private void ImportLut(string filename) {
                 try {
                     string name;
-                    if (!FileUtils.ArePathsEqual(Path.GetDirectoryName(filename), FileUtils.GetDocumentsCfgDirectory())) {
+                    if (!FileUtils.ArePathsEqual(Path.GetDirectoryName(filename), AcPaths.GetDocumentsCfgDirectory())) {
                         name = Prompt.Show("Choose a name for the new LUT setting:", "New LUT",
                                 Path.GetFileNameWithoutExtension(filename) + ".lut", "?", required: true, maxLength: 120);
                         if (string.IsNullOrWhiteSpace(name)) return;
@@ -211,7 +211,7 @@ namespace AcManager.Pages.AcSettings {
                             name += ".lut";
                         }
 
-                        File.Copy(filename, Path.Combine(FileUtils.GetDocumentsCfgDirectory(), name), true);
+                        File.Copy(filename, Path.Combine(AcPaths.GetDocumentsCfgDirectory(), name), true);
                     } else {
                         name = Path.GetFileName(filename);
                     }
@@ -236,7 +236,7 @@ namespace AcManager.Pages.AcSettings {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.LutFilter,
                     Title = "Select LUT-file",
-                    InitialDirectory = FileUtils.GetDocumentsCfgDirectory(),
+                    InitialDirectory = AcPaths.GetDocumentsCfgDirectory(),
                     RestoreDirectory = true
                 };
 

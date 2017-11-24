@@ -340,7 +340,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.Extra:
-                    var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
+                    var filename = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetCarSetupsDirectory(carId),
                             result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllText(filename, content);

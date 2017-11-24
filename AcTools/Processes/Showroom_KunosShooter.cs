@@ -17,7 +17,7 @@ namespace AcTools.Processes {
             private bool _terminated;
 
             public void SetCamera(string cameraPosition, string cameraLookAt, double cameraFov, double cameraExposure) {
-                var iniFilename = FileUtils.GetCfgShowroomFilename();
+                var iniFilename = AcPaths.GetCfgShowroomFilename();
                 _originalShowroomFile = File.ReadAllText(iniFilename);
 
                 new IniFile {
@@ -74,7 +74,7 @@ namespace AcTools.Processes {
 
                 _process.WaitForExit();
 
-                var filename = Path.Combine(FileUtils.GetCarSkinDirectory(AcRoot, CarId, skinId),
+                var filename = Path.Combine(AcPaths.GetCarSkinDirectory(AcRoot, CarId, skinId),
                         "preview_original.jpg");
                 if (_terminated) {
                     throw new ShotingCancelledException();
@@ -104,7 +104,7 @@ namespace AcTools.Processes {
                 }
 
                 if (_originalShowroomFile != null) {
-                    File.WriteAllText(FileUtils.GetCfgShowroomFilename(), _originalShowroomFile);
+                    File.WriteAllText(AcPaths.GetCfgShowroomFilename(), _originalShowroomFile);
                 }
             }
         }

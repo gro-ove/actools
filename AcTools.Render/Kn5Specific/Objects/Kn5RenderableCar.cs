@@ -58,7 +58,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             _rootDirectory = car.CarDirectoryRequire;
 
-            _skinsDirectory = FileUtils.GetCarSkinsDirectory(_rootDirectory);
+            _skinsDirectory = AcPaths.GetCarSkinsDirectory(_rootDirectory);
             _scanForSkins = scanForSkins;
             _shadowsHeight = shadowsHeight;
             _asyncOverrideTexturesLoading = asyncOverrideTexturesLoading;

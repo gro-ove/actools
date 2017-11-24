@@ -39,7 +39,7 @@ namespace AcManager.CustomShowroom {
         [ItemCanBeNull]
         private static async Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] CarObject car, [CanBeNull] string skinId,
                 [CanBeNull] IReadOnlyList<ToUpdatePreview> toUpdate, [CanBeNull] string presetFilename) {
-            var carKn5 = FileUtils.GetMainCarFilename(car.Location, car.AcdData);
+            var carKn5 = AcPaths.GetMainCarFilename(car.Location, car.AcdData);
             if (!File.Exists(carKn5)) {
                 ModernDialog.ShowMessage("Model not found");
                 return null;

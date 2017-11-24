@@ -291,7 +291,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.Extra:
-                    var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(details.Item1.CarId),
+                    var filename = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetCarSetupsDirectory(details.Item1.CarId),
                             result == Choise.Save
                                     ? (track?.Id ?? details.Item1.TrackKunosId ?? CarSetupObject.GenericDirectory) : CarSetupObject.GenericDirectory, setupId));
                     FileUtils.EnsureFileDirectoryExists(filename);
@@ -351,7 +351,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.Extra:
-                    var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(car.Id),
+                    var filename = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetCarSetupsDirectory(car.Id),
                             result == Choise.Save ? track.Id : CarSetupObject.GenericDirectory, header));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllText(filename, data);

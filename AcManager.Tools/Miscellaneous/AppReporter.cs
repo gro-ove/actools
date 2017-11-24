@@ -93,7 +93,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     }
 
                     try {
-                        writer.Write("AC Log.txt", FileUtils.GetLogFilename());
+                        writer.Write("AC Log.txt", AcPaths.GetLogFilename());
                     } catch (Exception e) {
                         Logging.Warning("Can’t attach AC Log.txt: " + e);
                     }
@@ -139,7 +139,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         Logging.Warning("Can’t attach Arguments.txt: " + e);
                     }
 
-                    foreach (var fileInfo in new DirectoryInfo(FileUtils.GetDocumentsCfgDirectory()).GetFiles("*.ini").Where(x => x.Length < 500000).Take(100)) {
+                    foreach (var fileInfo in new DirectoryInfo(AcPaths.GetDocumentsCfgDirectory()).GetFiles("*.ini").Where(x => x.Length < 500000).Take(100)) {
                         try {
                             writer.Write("Config/" + fileInfo.Name, fileInfo.FullName);
                         } catch (Exception e) {
@@ -148,7 +148,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     }
 
                     if (AcRootDirectory.Instance.Value != null) {
-                        foreach (var fileInfo in new DirectoryInfo(FileUtils.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue)).GetFiles("*.ini")
+                        foreach (var fileInfo in new DirectoryInfo(AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue)).GetFiles("*.ini")
                                                                                                                                  .Where(x => x.Length < 500000)
                                                                                                                                  .Take(100)) {
                             try {
@@ -159,7 +159,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         }
                     }
 
-                    var raceOut = FileUtils.GetResultJsonFilename();
+                    var raceOut = AcPaths.GetResultJsonFilename();
                     if (File.Exists(raceOut)) {
                         try {
                             writer.Write("Race.json", raceOut);
@@ -168,7 +168,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         }
                     }
 
-                    var career = FileUtils.GetKunosCareerProgressFilename(); ;
+                    var career = AcPaths.GetKunosCareerProgressFilename(); ;
                     if (File.Exists(career)) {
                         try {
                             writer.Write("Career.ini", career);

@@ -24,7 +24,7 @@ namespace AcTools.Render.Tests {
             var cars = Directory.GetDirectories(path, "ks_lamborghini_*").Select(x => new {
                 CarId = Path.GetFileName(x),
                 CarDirectory = x,
-                Kn5 = FileUtils.GetMainCarFilename(x)
+                Kn5 = AcPaths.GetMainCarFilename(x)
             }).ToList();
 
             var sw = Stopwatch.StartNew();

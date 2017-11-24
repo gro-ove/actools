@@ -6,7 +6,7 @@ using AcTools.DataFile;
 namespace AcTools.Processes {
     public partial class Showroom {
         private static void PrepareIni(string carId, string carSkinId, string showroomId) {
-            var filename = FileUtils.GetCfgShowroomFilename();
+            var filename = AcPaths.GetCfgShowroomFilename();
             var iniFile = new IniFile(filename);
             iniFile["SHOWROOM"].Set("CAR", (carId ?? "").ToLowerInvariant());
             iniFile["SHOWROOM"].Set("SKIN", (carSkinId ?? "").ToLowerInvariant());
@@ -15,11 +15,11 @@ namespace AcTools.Processes {
         }
 
         private static string GetCurrentFilterIni() {
-            return new IniFile(FileUtils.GetCfgVideoFilename())["POST_PROCESS"].GetPossiblyEmpty("FILTER");
+            return new IniFile(AcPaths.GetCfgVideoFilename())["POST_PROCESS"].GetPossiblyEmpty("FILTER");
         }
 
         private static void SetCurrentFilterIni(string filter) {
-            var filename = FileUtils.GetCfgVideoFilename();
+            var filename = AcPaths.GetCfgVideoFilename();
             var iniFile = new IniFile(filename);
             iniFile["POST_PROCESS"].Set("FILTER", filter);
             iniFile.Save();
@@ -46,7 +46,7 @@ namespace AcTools.Processes {
             _busy = true;
 
             try {
-                var filename = FileUtils.GetCfgShowroomFilename();
+                var filename = AcPaths.GetCfgShowroomFilename();
                 var originalShowroomFile = File.ReadAllText(filename);
 
                 var iniFile = IniFile.Parse(originalShowroomFile);

@@ -41,7 +41,7 @@ namespace AcTools.Processes {
                 if (CarId == null) throw new Exception("CarId is null");
                 if (ShowroomId == null) throw new Exception("ShowroomId is null");
 
-                if (!Directory.Exists(FileUtils.GetShowroomDirectory(AcRoot, ShowroomId))) {
+                if (!Directory.Exists(AcPaths.GetShowroomDirectory(AcRoot, ShowroomId))) {
                     throw new ShotingCancelledException("Showroom not found");
                 }
 
@@ -77,7 +77,7 @@ namespace AcTools.Processes {
 
             public IEnumerable<string> CarSkins {
                 get {
-                    var unfiltered = Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(AcRoot, CarId)).Select(Path.GetFileName);
+                    var unfiltered = Directory.GetDirectories(AcPaths.GetCarSkinsDirectory(AcRoot, CarId)).Select(Path.GetFileName);
                     if (SkinIds == null) return unfiltered;
 
                     var skinIdsLower = SkinIds.Select(x => x.ToLowerInvariant()).ToList();

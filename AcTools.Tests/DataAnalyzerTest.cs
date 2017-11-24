@@ -25,7 +25,7 @@ namespace AcTools.Tests {
             var wrapper = RulesWrapper.FromFile(AcRoot, rulesSet, storage, ids);
             wrapper.EnsureActual();
 
-            var d = ids.Where(x => Directory.Exists(FileUtils.GetCarDirectory(AcRoot, x)))
+            var d = ids.Where(x => Directory.Exists(AcPaths.GetCarDirectory(AcRoot, x)))
                        .Select(x => new { Id = x, Data = DataWrapper.FromCarDirectory(AcRoot, x) })
                        .ToList();
 

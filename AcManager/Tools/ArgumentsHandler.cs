@@ -194,7 +194,7 @@ namespace AcManager.Tools {
         private static async Task<ArgumentHandleResult> ProcessInputFile(string filename) {
             var isDirectory = FileUtils.IsDirectory(filename);
             if (!isDirectory && filename.EndsWith(@".acreplay", StringComparison.OrdinalIgnoreCase) ||
-                    Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
+                    Path.GetDirectoryName(filename)?.Equals(AcPaths.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Filename = filename
                 }));

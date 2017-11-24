@@ -95,7 +95,7 @@ namespace CustomPreviewUpdater {
                 filter = Filter.Create(new CarTester(acRoot), ids.Select(x =>
                         "(" + (x.EndsWith("/") ? x.Substring(0, x.Length - 1) : x) + ")").JoinToString("|"), true);
                 if (options.FilterTest) {
-                    Console.WriteLine(Directory.GetDirectories(FileUtils.GetCarsDirectory(acRoot))
+                    Console.WriteLine(Directory.GetDirectories(AcPaths.GetCarsDirectory(acRoot))
                                                .Select(Path.GetFileName).Where(x => filter.Test(x)).JoinToString(", "));
                     return 0;
                 }
@@ -163,12 +163,12 @@ namespace CustomPreviewUpdater {
                 FlatMirrorReflectiveness = options.FlatMirrorReflectiveness,
                 LightDirection = options.LightDirection.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
             })) {
-                foreach (var carId in Directory.GetDirectories(FileUtils.GetCarsDirectory(acRoot))
+                foreach (var carId in Directory.GetDirectories(AcPaths.GetCarsDirectory(acRoot))
                                             .Select(Path.GetFileName).Where(x => filter.Test(x))) {
                     Console.WriteLine($"  {carId}...");
                     j++;
 
-                    foreach (var skinId in Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(acRoot, carId))
+                    foreach (var skinId in Directory.GetDirectories(AcPaths.GetCarSkinsDirectory(acRoot, carId))
                                                     .Where(x => !options.WithoutPreviews || !File.Exists(Path.Combine(x, options.FileName)))
                                                     .Select(Path.GetFileName)) {
                         var success = false;

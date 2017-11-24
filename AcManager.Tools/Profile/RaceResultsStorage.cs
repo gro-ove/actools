@@ -54,7 +54,7 @@ namespace AcManager.Tools.Profile {
             FileUtils.EnsureDirectoryExists(directory);
 
             var fileName = DateTime.Now.ToString("yyMMdd-HHmmss") + ".json";
-            var raceOut = FileUtils.GetResultJsonFilename();
+            var raceOut = AcPaths.GetResultJsonFilename();
 
             JObject data = null;
             if (File.Exists(raceOut)) {
@@ -74,7 +74,7 @@ namespace AcManager.Tools.Profile {
             // Trying to keep race params as well…
             // TODO: Do it the other way around, from start params?
 
-            var raceIni = FileUtils.GetRaceIniFilename();
+            var raceIni = AcPaths.GetRaceIniFilename();
             if (File.Exists(raceIni)) {
                 data[KeyRaceIni] = File.ReadAllText(raceIni);
             }

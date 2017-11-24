@@ -221,7 +221,7 @@ namespace AcManager.Pages.Windows {
                 return false;
             }
 
-            var launcher = FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+            var launcher = AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
             if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan(@"0.16.714")) {
                 return false;
             }

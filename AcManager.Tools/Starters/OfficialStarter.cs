@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 namespace AcManager.Tools.Starters {
     // Specially for cases when there is a CM instead of AssettoCorsa.exe
     internal class CmStarter : StarterBase {
-        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+        private static string LauncherFilename => AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
         public override void Run() {
             ProcessExtension.Start(LauncherFilename, new[] {
@@ -27,7 +27,7 @@ namespace AcManager.Tools.Starters {
     }
 
     public class OfficialStarter : StarterBase {
-        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+        private static string LauncherFilename => AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
         private enum Mode {
             DefaultMode, CmMode, AcServiceMode
@@ -90,7 +90,7 @@ namespace AcManager.Tools.Starters {
 
         private void RunInner() {
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
-            new IniFile(FileUtils.GetRaceIniFilename()) {
+            new IniFile(AcPaths.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = true,
                     ["__CM_SERVICE"] = IniFile.Nothing
@@ -135,7 +135,7 @@ namespace AcManager.Tools.Starters {
 
         public override void CleanUp() {
             base.CleanUp();
-            new IniFile(FileUtils.GetRaceIniFilename()) {
+            new IniFile(AcPaths.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = IniFile.Nothing,
                     ["__CM_SERVICE"] = IniFile.Nothing

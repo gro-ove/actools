@@ -14,7 +14,7 @@ namespace AcManager.Tools.Starters {
 
         public string Id => AddonId;
 
-        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+        private static string LauncherFilename => AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
         public static string BackupFilename => LauncherFilename.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
 

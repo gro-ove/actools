@@ -117,7 +117,7 @@ namespace AcManager.Tools.ContentInstallation {
             // TODO: or PP-filter, or …?
             try {
                 return FileUtils.IsDirectory(filename) ||
-                        !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.IsAffected(FileUtils.GetReplaysDirectory(), filename);
+                        !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.IsAffected(AcPaths.GetReplaysDirectory(), filename);
             } catch (Exception) {
                 return false;
             }

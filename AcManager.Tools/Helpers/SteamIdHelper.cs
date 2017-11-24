@@ -108,7 +108,7 @@ namespace AcManager.Tools.Helpers {
 
             string selectedId = null;
             try {
-                var selectedKey = new IniFile(FileUtils.GetRaceIniFilename());
+                var selectedKey = new IniFile(AcPaths.GetRaceIniFilename());
                 selectedId = selectedKey["REMOTE"].GetNonEmpty("GUID");
             } catch (Exception) {
                 // ignored

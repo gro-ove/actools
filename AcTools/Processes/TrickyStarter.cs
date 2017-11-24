@@ -29,7 +29,7 @@ namespace AcTools.Processes {
         public void Run() {
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
 
-            _acLauncher = FileUtils.GetAcLauncherFilename(AcRoot);
+            _acLauncher = AcPaths.GetAcLauncherFilename(AcRoot);
             _acLauncherBackup = _acLauncher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";
 
             if (File.Exists(_acLauncherBackup) && new FileInfo(_acLauncher).Length > ApproximateAcstarterSize) {

@@ -62,19 +62,19 @@ namespace AcManager.Tools.Managers {
             DriverModelsDirectories?.Obsolete();
             PythonAppsDirectories?.Obsolete();
 
-            CarsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetCarsDirectory(Value));
-            TracksDirectories = Value == null ? null : new AcDirectories(FileUtils.GetTracksDirectory(Value));
-            ShowroomsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetShowroomsDirectory(Value));
-            WeatherDirectories = Value == null ? null : new AcDirectories(FileUtils.GetWeatherDirectory(Value));
-            PpFiltersDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPpFiltersDirectory(Value));
-            DriverModelsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetDriverModelsDirectory(Value));
-            PythonAppsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPythonAppsDirectory(Value));
-            FontsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetFontsDirectory(Value));
-            KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
+            CarsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetCarsDirectory(Value));
+            TracksDirectories = Value == null ? null : new AcDirectories(AcPaths.GetTracksDirectory(Value));
+            ShowroomsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetShowroomsDirectory(Value));
+            WeatherDirectories = Value == null ? null : new AcDirectories(AcPaths.GetWeatherDirectory(Value));
+            PpFiltersDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPpFiltersDirectory(Value));
+            DriverModelsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetDriverModelsDirectory(Value));
+            PythonAppsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPythonAppsDirectory(Value));
+            FontsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetFontsDirectory(Value));
+            KunosCareerDirectories = Value == null ? null : new AcDirectories(AcPaths.GetKunosCareerDirectory(Value));
 
-            FileUtils.EnsureDirectoryExists(FileUtils.GetReplaysDirectory());
-            ReplaysDirectories = ReplaysDirectories ?? new MultiDirectories(FileUtils.GetReplaysDirectory(), null);
-            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(FileUtils.GetDocumentsDirectory(), "champs"));
+            FileUtils.EnsureDirectoryExists(AcPaths.GetReplaysDirectory());
+            ReplaysDirectories = ReplaysDirectories ?? new MultiDirectories(AcPaths.GetReplaysDirectory(), null);
+            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(AcPaths.GetDocumentsDirectory(), "champs"));
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();

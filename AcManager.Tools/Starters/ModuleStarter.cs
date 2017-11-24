@@ -16,9 +16,9 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Starters {
     public class ModuleStarter : StarterBase {
-        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+        private static string LauncherFilename => AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
-        private static string BackdoorFilename => Path.Combine(FileUtils.GetDocumentsDirectory(), @"launcherdata", @"filestore", @"cmhelper.ini");
+        private static string BackdoorFilename => Path.Combine(AcPaths.GetDocumentsDirectory(), @"launcherdata", @"filestore", @"cmhelper.ini");
 
         public static bool IsAssettoCorsaRunning => Process.GetProcessesByName("AssettoCorsa").Any();
 
@@ -74,7 +74,7 @@ namespace AcManager.Tools.Starters {
 
         private static bool InstallModule() {
             try {
-                var ini = new IniFile(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "launcher.ini"));
+                var ini = new IniFile(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "launcher.ini"));
                 var theme = ini["WINDOW"].GetNonEmpty("theme");
                 var directory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"launcher", @"themes", theme ?? @"default", @"modules", ModuleId);
 

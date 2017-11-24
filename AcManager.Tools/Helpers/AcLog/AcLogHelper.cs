@@ -29,7 +29,7 @@ namespace AcManager.Tools.Helpers.AcLog {
         [CanBeNull]
         public static WhatsGoingOn TryToDetermineWhatsGoingOn() {
             try {
-                var log = File.Open(FileUtils.GetLogFilename(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite).ReadAsStringAndDispose();
+                var log = File.Open(AcPaths.GetLogFilename(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite).ReadAsStringAndDispose();
 
                 {
                     var match = Regex.Match(log,

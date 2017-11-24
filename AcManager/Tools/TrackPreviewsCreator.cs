@@ -36,7 +36,7 @@ namespace AcManager.Tools {
                 return;
             }
 
-            var directory = FileUtils.GetDocumentsScreensDirectory();
+            var directory = AcPaths.GetDocumentsScreensDirectory();
             var shots = FileUtils.GetFilesSafe(directory);
 
             await run();
@@ -87,7 +87,7 @@ namespace AcManager.Tools {
             var dialog = new OpenFileDialog {
                 Filter = FileDialogFilters.ImagesFilter,
                 Title = AppStrings.Common_SelectImageForPreview,
-                InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
+                InitialDirectory = AcPaths.GetDocumentsScreensDirectory(),
                 RestoreDirectory = true
             };
 

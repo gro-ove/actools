@@ -14,7 +14,7 @@ namespace AcManager.Tools.GameProperties {
 
         private ReplaysExtensionSetter() {
             try {
-                _previous = Directory.GetFiles(FileUtils.GetReplaysDirectory());
+                _previous = Directory.GetFiles(AcPaths.GetReplaysDirectory());
             } catch (Exception e) {
                 Logging.Error("Can’t get files: " + e);
                 _previous = new string[0];
@@ -28,7 +28,7 @@ namespace AcManager.Tools.GameProperties {
 
         private static IEnumerable<string> GetWithoutExtension() {
             try {
-                return Directory.GetFiles(FileUtils.GetReplaysDirectory(), "*", SearchOption.AllDirectories)
+                return Directory.GetFiles(AcPaths.GetReplaysDirectory(), "*", SearchOption.AllDirectories)
                                 .Where(file => !file.EndsWith(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase) &&
                                         !string.Equals(Path.GetFileName(file), @"cr", StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
@@ -63,7 +63,7 @@ namespace AcManager.Tools.GameProperties {
 
         public static bool HasWithExtension() {
             try {
-                return Directory.GetFiles(FileUtils.GetReplaysDirectory()).Any(file => file.EndsWith(ReplayObject.ReplayExtension));
+                return Directory.GetFiles(AcPaths.GetReplaysDirectory()).Any(file => file.EndsWith(ReplayObject.ReplayExtension));
             } catch (Exception e) {
                 Logging.Error("Can’t get files with extension: " + e);
                 return false;

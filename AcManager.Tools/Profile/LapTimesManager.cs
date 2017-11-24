@@ -53,7 +53,7 @@ namespace AcManager.Tools.Profile {
                 new LapTimesSource(AcNewSourceId,
                         "New AC storage", "Used by the original launcher. Much faster and more stable.",
                         "Settings.LapTimesSettings.SourceAcNew", true, true,
-                        () => new AcLapTimesNewReader(FileUtils.GetDocumentsDirectory(), this), () => TracksManager.Instance.EnsureLoadedAsync()),
+                        () => new AcLapTimesNewReader(AcPaths.GetDocumentsDirectory(), this), () => TracksManager.Instance.EnsureLoadedAsync()),
 #if AC_OLD_DB
                 new LapTimesSource(AcOldSourceId,
                         "Old AC database", "Used by the original launcher. Reading is quite wobbly, so I recommend to keep it disabled.",
@@ -64,7 +64,7 @@ namespace AcManager.Tools.Profile {
                         "Sidekick", "Very good source of lap times, accurate and reliable.",
                         "Settings.LapTimesSettings.SourceSidekick", true, false,
                         () => new SidekickLapTimesReader(
-                                Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick"),
+                                Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick"),
                                 this), () => TracksManager.Instance.EnsureLoadedAsync()) {
                                     DetailsUrl = "http://www.racedepartment.com/downloads/sidekick.11007/"
                                 },
@@ -72,13 +72,13 @@ namespace AcManager.Tools.Profile {
                         "Race Essentials", "Quite good source of lap times as well.",
                         "Settings.LapTimesSettings.SourceRaceEssentials", true, false,
                         () => new SidekickLapTimesReader(
-                                Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials"),
+                                Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials"),
                                 this), () => TracksManager.Instance.EnsureLoadedAsync()),
                 new LapTimesSource(Ov1InfoSourceId,
                         "Rivali OV1 Info", "Sadly, there is no information about entries date. If you need a patch for 64-bit AC or layouts support, you can get it [url=\"http://acstuff.ru/f/d/15-rivali-ov1-info\"]here[/url].",
                         "Settings.LapTimesSettings.SourceOv1Info", false, false,
                         () => new Ov1InfoLapTimesReader(
-                                Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "OV1Info"),
+                                Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "OV1Info"),
                                 this), () => TracksManager.Instance.EnsureLoadedAsync()),
             };
 

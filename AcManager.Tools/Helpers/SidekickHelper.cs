@@ -161,7 +161,7 @@ namespace AcManager.Tools.Helpers {
 
         public static void UpdateSidekickDatabase([NotNull] CarObject car, bool? separateFiles = null) {
             try {
-                var directory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId);
+                var directory = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId);
                 if (!Directory.Exists(directory)) return;
 
                 if (!AcSettingsHolder.Python.IsActivated(SidekickAppId)) {
@@ -214,7 +214,7 @@ namespace AcManager.Tools.Helpers {
         /// Meters!
         /// </summary>
         private static IEnumerable<Tuple<string, double>> LoadDistances() {
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
             if (!File.Exists(filename)) yield break;
             foreach (var v in new IniFile(filename)) {
                 var carId = v.Key;
@@ -246,7 +246,7 @@ namespace AcManager.Tools.Helpers {
             var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
             if (cmDistance <= 0d) return;
 
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
             if (!File.Exists(filename)) return;
 
             OdometerImportIfNeeded(carId, new IniFile(filename)[carId].GetDouble("odometer", 0d) * 1e3);
@@ -258,7 +258,7 @@ namespace AcManager.Tools.Helpers {
             var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
             if (!(cmDistance > 0d)) return;
 
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId, OdometerDataFileName);
             if (!File.Exists(filename)) return;
 
             var ini = new IniFile(filename);

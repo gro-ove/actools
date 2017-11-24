@@ -34,7 +34,7 @@ namespace AcManager.Tools.SemiGui {
                     value += ReplayObject.ReplayExtension;
                 }
 
-                var renamed = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), value));
+                var renamed = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetReplaysDirectory(), value));
 
                 if (IsKept && _renamedFilename != null) {
                     try {
@@ -69,7 +69,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         internal ReplayHelper([CanBeNull] Game.StartProperties startProperties, Game.Result result) {
-            var directory = FileUtils.GetReplaysDirectory();
+            var directory = AcPaths.GetReplaysDirectory();
 
             if (AcSettingsHolder.Replay.Autosave) {
                 var autosave = new DirectoryInfo(Path.Combine(directory, ReplayObject.AutosaveCategory));

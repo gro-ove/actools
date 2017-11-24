@@ -330,7 +330,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 multipler = 2;
             }
 
-            var directory = FileUtils.GetDocumentsScreensDirectory();
+            var directory = AcPaths.GetDocumentsScreensDirectory();
             FileUtils.EnsureDirectoryExists(directory);
             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
 

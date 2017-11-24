@@ -625,12 +625,12 @@ namespace AcManager.Tools.Helpers {
         public class DriveSettings : NotifyPropertyChanged {
             internal DriveSettings() {
                 if (PlayerName == null) {
-                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].GetNonEmpty("DRIVER_NAME") ?? ToolsStrings.Settings_DefaultPlayerName;
+                    PlayerName = new IniFile(AcPaths.GetRaceIniFilename())["CAR_0"].GetNonEmpty("DRIVER_NAME") ?? ToolsStrings.Settings_DefaultPlayerName;
                     PlayerNameOnline = PlayerName;
                 }
 
                 if (PlayerNationality == null) {
-                    PlayerNationality = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].GetPossiblyEmpty("NATIONALITY");
+                    PlayerNationality = new IniFile(AcPaths.GetRaceIniFilename())["CAR_0"].GetPossiblyEmpty("NATIONALITY");
                 }
             }
 

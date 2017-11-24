@@ -43,7 +43,7 @@ namespace AcManager.Tools.Starters {
         }
 
         protected void SetAcX86Param() {
-            IniFile.Write(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32Version ? @"1" : @"0");
+            IniFile.Write(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32Version ? @"1" : @"0");
         }
 
         public virtual void WaitGame() {

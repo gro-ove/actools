@@ -671,7 +671,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return new CopyCallback(info => {
                 var b = callback?.File(info);
                 return b != null || !icons.Contains(info.Key) ? b :
-                        Path.Combine(FileUtils.GetGuiIconsFilename(AcRootDirectory.Instance.RequireValue),
+                        Path.Combine(AcPaths.GetGuiIconsFilename(AcRootDirectory.Instance.RequireValue),
                                 Path.GetFileName(info.Key) ?? "icon.tmp");
             }, info => callback?.Directory(info));
         }

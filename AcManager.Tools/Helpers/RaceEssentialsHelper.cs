@@ -176,7 +176,7 @@ namespace AcManager.Tools.Helpers {
 
         public static void UpdateRaceEssentialsDatabase([NotNull] CarObject car, bool? separateFiles = null) {
             try {
-                var directory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), RaceEssentialsAppId);
+                var directory = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), RaceEssentialsAppId);
                 if (!Directory.Exists(directory)) return;
 
                 if (!AcSettingsHolder.Python.IsActivated(RaceEssentialsAppId)) {

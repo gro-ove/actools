@@ -16,7 +16,7 @@ namespace AcTools.Processes {
                 : this(null, ppFilter, fxaa, specialResolution, maximizeSettings) {}
 
         private VideoIniChange(string presetFilename, string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
-            _filename = FileUtils.GetCfgVideoFilename();
+            _filename = AcPaths.GetCfgVideoFilename();
             _originalContent = File.ReadAllText(_filename);
 
             var parseContent = _originalContent;
@@ -84,7 +84,7 @@ namespace AcTools.Processes {
         private readonly string _cfgFile, _originalFormat;
 
         public ScreenshotFormatChange(string acRoot, string value) {
-            _cfgFile = Path.Combine(FileUtils.GetSystemCfgDirectory(acRoot), "assetto_corsa.ini");
+            _cfgFile = Path.Combine(AcPaths.GetSystemCfgDirectory(acRoot), "assetto_corsa.ini");
             var iniFile = new IniFile(_cfgFile);
             _originalFormat = iniFile["SCREENSHOT"].GetPossiblyEmpty("FORMAT");
             iniFile["SCREENSHOT"].Set("FORMAT", value);
@@ -102,7 +102,7 @@ namespace AcTools.Processes {
         private readonly string _acLogo, _acLogoBackup;
 
         public DisableShowroomWatermarkChange(string acRoot) {
-            _acLogo = FileUtils.GetAcLogoFilename(acRoot);
+            _acLogo = AcPaths.GetAcLogoFilename(acRoot);
             if (File.Exists(_acLogo)) {
                 _acLogoBackup = _acLogo + "~at_bak";
                 if (!File.Exists(_acLogoBackup)) {

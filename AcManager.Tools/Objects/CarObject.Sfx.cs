@@ -29,7 +29,7 @@ namespace AcManager.Tools.Objects {
 
             _kunosGuids = new Dictionary<string, string>();
 
-            var filename = FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue);
+            var filename = AcPaths.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue);
             if (File.Exists(filename)) {
                 var lines = await FileUtils.ReadAllLinesAsync(filename).ConfigureAwait(false);
                 for (var i = 0; i < lines.Length; i++) {
@@ -102,7 +102,7 @@ namespace AcManager.Tools.Objects {
                     File.WriteAllText(putGuids.Filename, File.ReadAllText(guids).Replace(donor.Id, id));
                 } else if (File.Exists(soundbank) && donor.Author == AuthorKunos) {
                     FileUtils.HardLinkOrCopy(soundbank, putSoundbank.Filename);
-                    File.WriteAllText(putGuids.Filename, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
+                    File.WriteAllText(putGuids.Filename, File.ReadAllLines(AcPaths.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
                                                     .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
                                                             x.EndsWith(@"} bank:/" + donor.Id))
                                                     .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))

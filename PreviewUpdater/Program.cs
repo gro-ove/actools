@@ -40,7 +40,7 @@ namespace PreviewUpdater {
                 filter = Filter.Create(new CarTester(acRoot), options.Ids.Select(x =>
                         "(" + (x.EndsWith("/") ? x.Substring(0, x.Length - 1) : x) + ")").JoinToString("|"), true);
                 if (options.FilterTest) {
-                    Console.WriteLine(Directory.GetDirectories(FileUtils.GetCarsDirectory(options.AcRoot))
+                    Console.WriteLine(Directory.GetDirectories(AcPaths.GetCarsDirectory(options.AcRoot))
                                                .Select(Path.GetFileName).Where(x => filter.Test(x)).JoinToString(", "));
                     return 0;
                 }
@@ -70,10 +70,10 @@ namespace PreviewUpdater {
                 Console.WriteLine("Starting shoting...");
             }
 
-            foreach (var id in Directory.GetDirectories(FileUtils.GetCarsDirectory(options.AcRoot))
+            foreach (var id in Directory.GetDirectories(AcPaths.GetCarsDirectory(options.AcRoot))
                                         .Select(Path.GetFileName).Where(x => filter.Test(x))) {
                 string[] skinIds = options.WithoutPreviews
-                        ? Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(acRoot, id))
+                        ? Directory.GetDirectories(AcPaths.GetCarSkinsDirectory(acRoot, id))
                                    .Where(x => !File.Exists(Path.Combine(x, "preview.jpg")))
                                    .Select(Path.GetFileName)
                                    .ToArray()

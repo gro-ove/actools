@@ -365,7 +365,7 @@ namespace AcManager.Pages.Selected {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,
-                    InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
+                    InitialDirectory = AcPaths.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
 

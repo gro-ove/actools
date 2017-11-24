@@ -72,7 +72,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     if (string.IsNullOrWhiteSpace(LutName)) {
                         LutGraphData = null;
                     } else {
-                        var filename = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), LutName);
+                        var filename = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), LutName);
                         if (File.Exists(filename)) {
                             var lut = new LutDataFile(filename).Values;
                             lut.TransformSelf(x => new LutPoint(x.X * 100, x.Y * 100));
@@ -92,7 +92,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void RescanLuts() {
             _rescanning.DoDelay(() => {
-                LutNames = new DirectoryInfo(FileUtils.GetDocumentsCfgDirectory())
+                LutNames = new DirectoryInfo(AcPaths.GetDocumentsCfgDirectory())
                         .GetFiles("*.lut").Select(x => x.Name).ToArray();
             }, 200);
         }

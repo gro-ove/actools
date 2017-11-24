@@ -22,7 +22,7 @@ namespace AcManager.Tools.Starters {
         public void Run() {
             if (_watcher != null) return;
 
-            _resultFilename = FileUtils.GetResultJsonFilename();
+            _resultFilename = AcPaths.GetResultJsonFilename();
             FileUtils.EnsureFileDirectoryExists(_resultFilename);
 
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5), IsEnabled = true };

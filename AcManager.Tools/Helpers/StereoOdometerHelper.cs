@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers {
         /// Meters!
         /// </summary>
         private static IEnumerable<Tuple<string, double>> LoadDistances() {
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
             if (!File.Exists(filename)) yield break;
 
             var section = new IniFile(filename)["Cars"];
@@ -64,7 +64,7 @@ namespace AcManager.Tools.Helpers {
             var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
             if (cmDistance <= 0d) return;
 
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
             if (!File.Exists(filename)) return;
 
             var ini = new IniFile(filename);
@@ -77,7 +77,7 @@ namespace AcManager.Tools.Helpers {
             var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
             if (!(cmDistance > 0d)) return;
 
-            var filename = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
+            var filename = Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OdometerAppId, DataFileName);
             if (!File.Exists(filename)) return;
 
             var ini = new IniFile(filename);

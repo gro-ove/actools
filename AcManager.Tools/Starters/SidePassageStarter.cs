@@ -18,7 +18,7 @@ namespace AcManager.Tools.Starters {
     public class SidePassageStarter : StarterBase {
         private static readonly string Version = @"1.0.3.64";
 
-        private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+        private static string LauncherFilename => AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
         private static string LauncherOriginalFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, "AssettoCorsa_original.exe");
         private static string BackgroundFlagFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, "AssettoCorsa_background.flag");
 
@@ -217,7 +217,7 @@ namespace AcManager.Tools.Starters {
         public override async Task RunAsync(CancellationToken cancellation) {
             await Task.Run(() => SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false));
 
-            new IniFile(FileUtils.GetRaceIniFilename()) {
+            new IniFile(AcPaths.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = true,
                     ["__CM_SERVICE"] = true
@@ -242,7 +242,7 @@ namespace AcManager.Tools.Starters {
                 File.Delete(BackgroundFlagFilename);
             }
 
-            new IniFile(FileUtils.GetRaceIniFilename()) {
+            new IniFile(AcPaths.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = IniFile.Nothing,
                     ["__CM_SERVICE"] = IniFile.Nothing

@@ -37,7 +37,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public IAcControlsConflictResolver ConflictResolver { get; set; }
 
         static ControlsSettings() {
-            PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
+            PresetsDirectory = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "controllers");
             UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
         }
 

@@ -68,7 +68,7 @@ namespace AcManager.Pages.Settings {
 
             public AsyncCommand StartDirectCommand => _startDirectCommand ?? (_startDirectCommand =
                     new AsyncCommand(() => GameWrapper.StartAsync(new Game.StartProperties {
-                        PreparedConfig = new IniFile(FileUtils.GetRaceIniFilename())
+                        PreparedConfig = new IniFile(AcPaths.GetRaceIniFilename())
                     })));
         }
     }

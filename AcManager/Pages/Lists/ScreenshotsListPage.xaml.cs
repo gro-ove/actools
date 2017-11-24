@@ -111,12 +111,12 @@ namespace AcManager.Pages.Lists {
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
-            _directory = FileUtils.GetDocumentsScreensDirectory();
+            _directory = AcPaths.GetDocumentsScreensDirectory();
             _images = await Task.Run(() => GetFiles(_directory, _filter).ToList(), cancellationToken);
         }
 
         public void Load() {
-            _directory = FileUtils.GetDocumentsScreensDirectory();
+            _directory = AcPaths.GetDocumentsScreensDirectory();
             _images = GetFiles(_directory, _filter).ToList();
         }
 

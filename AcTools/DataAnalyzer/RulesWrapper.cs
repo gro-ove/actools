@@ -75,7 +75,7 @@ namespace AcTools.DataAnalyzer {
         private HashStorage CreateNew([NotNull] RulesEntry[] rulesSet, string[] carIds) {
             var hashStorage = new HashStorage(_rulesKeys);
             foreach (var car in carIds) {
-                var carLocation = FileUtils.GetCarDirectory(_acRoot, car);
+                var carLocation = AcPaths.GetCarDirectory(_acRoot, car);
                 if (!Directory.Exists(carLocation)) continue;
 
                 var carData = DataWrapper.FromCarDirectory(carLocation);
@@ -126,7 +126,7 @@ namespace AcTools.DataAnalyzer {
         }
 
         public IEnumerable<HashStorage.Simular> FindSimular(string carId, string setId, bool keepWorkedRules, double threshold) {
-            var carLocation = FileUtils.GetCarDirectory(_acRoot, carId);
+            var carLocation = AcPaths.GetCarDirectory(_acRoot, carId);
             return Directory.Exists(carLocation) ?
                     FindSimular(DataWrapper.FromCarDirectory(carLocation), setId, keepWorkedRules, threshold) :
                     new HashStorage.Simular[0];

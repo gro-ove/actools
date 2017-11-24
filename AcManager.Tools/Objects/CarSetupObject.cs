@@ -364,7 +364,7 @@ namespace AcManager.Tools.Objects {
 
         public AsyncCommand<string> InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand<string>(async d => {
             await EnsureDataLoaded();
-            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(CarId),
+            var filename = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetCarSetupsDirectory(CarId),
                     d ?? (Track?.Id ?? _information.TrackKunosId ?? CarSetupObject.GenericDirectory), _information.FileName));
             FileUtils.EnsureFileDirectoryExists(filename);
             File.WriteAllText(filename, _loadedData);

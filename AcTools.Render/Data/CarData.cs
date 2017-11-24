@@ -39,7 +39,7 @@ namespace AcTools.Render.Data {
         public bool IsEmpty => _data.IsEmpty;
 
         public string GetMainKn5(string carDirectory) {
-            return FileUtils.GetMainCarFilename(carDirectory, _data);
+            return AcPaths.GetMainCarFilename(carDirectory, _data);
         }
 
         #region Ambient shadows

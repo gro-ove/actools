@@ -15,7 +15,7 @@ namespace AcManager.Tools.Data {
         private static UserChampionshipsProgress _instance;
 
         public static UserChampionshipsProgress Instance => _instance ??
-                (_instance = new UserChampionshipsProgress(Path.Combine(FileUtils.GetDocumentsDirectory(), "launcherdata", "filestore", "champs.ini")));
+                (_instance = new UserChampionshipsProgress(Path.Combine(AcPaths.GetDocumentsDirectory(), "launcherdata", "filestore", "champs.ini")));
 
         private readonly string _filename;
         private IDisposable _watcher;

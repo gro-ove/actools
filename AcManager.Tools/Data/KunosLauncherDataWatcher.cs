@@ -13,7 +13,7 @@ namespace AcManager.Tools.Data {
 
         private static void EnsureInitialized() {
             if (_fsWatcher == null) {
-                var directory = Path.Combine(FileUtils.GetDocumentsDirectory(), @"launcherdata", @"filestore");
+                var directory = Path.Combine(AcPaths.GetDocumentsDirectory(), @"launcherdata", @"filestore");
                 Directory.CreateDirectory(directory);
                 _fsWatcher = new FileSystemWatcher {
                     Path = directory,

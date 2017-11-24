@@ -91,7 +91,7 @@ namespace AcManager.Pages.Settings {
             private ICommand _magickNetMemoryLeakingCommand;
 
             public ICommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async () => {
-                var image = FileUtils.GetDocumentsScreensDirectory();
+                var image = AcPaths.GetDocumentsScreensDirectory();
                 var filename = new DirectoryInfo(image).GetFiles("*.bmp")
                                                        .OrderByDescending(f => f.LastWriteTime)
                                                        .FirstOrDefault();

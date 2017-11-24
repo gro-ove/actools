@@ -124,7 +124,7 @@
     <Compile Include="Processes\FakeCarIds.cs" />
     <Compile Include="Utils\AcKunosContent.cs" />
     <Compile Include="Utils\AcLocaleProvider.cs" />
-    <Compile Include="Utils\FileUtils.AssettoCorsa.cs" />
+    <Compile Include="Utils\AcPaths.cs" />
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
