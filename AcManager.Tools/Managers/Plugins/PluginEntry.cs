@@ -20,6 +20,7 @@ namespace AcManager.Tools.Managers.Plugins {
         [Localizable(false)]
         public static readonly Tuple<string, string>[] SupportedVersions = {
             Tuple.Create("Magick", ""),
+            Tuple.Create("Awesomium", ""),
             Tuple.Create("SSE", "1.4.2.1"),
         };
 
