@@ -5,6 +5,8 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {
+    public static class AcPaths { }
+
     public partial class FileUtils {
         [NotNull, Pure]
         public static string GetDocumentsDirectory() {

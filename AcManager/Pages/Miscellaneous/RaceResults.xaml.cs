@@ -139,7 +139,8 @@ namespace AcManager.Pages.Miscellaneous {
                     case "car":
                         return obj.Cars.ForceGetValue().Result?.Any(x => x.Car != null && filter.Test(CarObjectTester.Instance, x.Car)) == true;
                     case "playercar":
-                        return obj.PlayerCar.ForceGetValue().Result.With(c => c != null && filter.Test(CarObjectTester.Instance, c));
+                        var c = obj.PlayerCar.ForceGetValue().Result;
+                        return c != null && filter.Test(CarObjectTester.Instance, c);
                     case "track":
                         return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
                 }
@@ -546,11 +547,14 @@ namespace AcManager.Pages.Miscellaneous {
         private void OnTryAgainClick(object sender, RoutedEventArgs e) {
             if (((FrameworkElement)sender).DataContext is RaceResultsObject item) {
                 e.Handled = true;
-                new ContextMenu()
-                        .If(item.JoinOnlineServerCommand.CanExecute, c => { c.AddItem("Join Online", item.JoinOnlineServerCommand).AddSeparator(); })
-                        .AddItem("Setup Race", item.SetupRaceCommand)
-                        .AddItem("Start Race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
-                        .IsOpen = true;
+                var c = new ContextMenu();
+                if (item.JoinOnlineServerCommand.CanExecute()) {
+                    c.AddItem("Join Online", item.JoinOnlineServerCommand).AddSeparator();
+                }
+
+                c.AddItem("Setup Race", item.SetupRaceCommand)
+                 .AddItem("Start Race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
+                 .IsOpen = true;
             }
         }
     }

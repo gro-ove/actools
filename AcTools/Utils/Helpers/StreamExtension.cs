@@ -78,13 +78,16 @@ namespace AcTools.Utils.Helpers {
             return ReadAsBytesAndDispose(s).ToUtf8String();
         }
 
-        public static void CopyTo(this Stream input, Stream output, int bytes, int bufferSize = 81920) {
+        public static int CopyTo(this Stream input, Stream output, int bytes, int bufferSize = 81920) {
             var buffer = new byte[bufferSize];
-            int read;
+            int read, totalRead = 0;
             while (bytes > 0 && (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0) {
                 output.Write(buffer, 0, read);
                 bytes -= read;
+                totalRead += read;
             }
+
+            return totalRead;
         }
 
         public static async Task CopyToAsync(this Stream input, Stream output, long bytes, int bufferSize = 81920) {

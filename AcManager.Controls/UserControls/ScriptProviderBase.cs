@@ -14,11 +14,24 @@ namespace AcManager.Controls.UserControls {
         private WeakReference<WebBlock> _lastAssociatedWebBrowser;
 
         protected void Sync(Action action) {
-            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(action);
+            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
+                try {
+                    action();
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            });
         }
 
         protected T Sync<T>(Func<T> action) {
-            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(action);
+            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
+                try {
+                    return action();
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    return default(T);
+                }
+            });
         }
 
         [CanBeNull]
@@ -27,7 +40,7 @@ namespace AcManager.Controls.UserControls {
                 WebBlock res = null;
                 return _lastAssociatedWebBrowser?.TryGetTarget(out res) == true ? res : null;
             }
-            set { _lastAssociatedWebBrowser = value == null ? null : new WeakReference<WebBlock>(value); }
+            set => _lastAssociatedWebBrowser = value == null ? null : new WeakReference<WebBlock>(value);
         }
 
         public void NavigateTo(string url) {

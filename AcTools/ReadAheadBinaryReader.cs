@@ -205,9 +205,12 @@ namespace AcTools {
             return NextByte();
         }
 
+        [NotNull]
+        public Encoding Encoding { get; set; } = Encoding.ASCII;
+
         public string ReadString() {
             var length = ReadInt32();
-            return Encoding.ASCII.GetString(_buffer, GetPosAndMove(length), length);
+            return Encoding.GetString(_buffer, GetPosAndMove(length), length);
         }
 
         public void SkipString() {

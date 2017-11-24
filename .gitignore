@@ -86,3 +86,7 @@ AcTools/AcdFile/AcdEncryption.cs
 Libraries/*
 Libraries.zip
 *.vsp
+
+# Not ready to release yet
+AcTools.NeuralTyres/*
+AcTools.NeuralTyres.Tests/*

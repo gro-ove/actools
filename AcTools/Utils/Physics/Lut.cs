@@ -26,7 +26,7 @@ namespace AcTools.Utils.Physics {
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is LutPoint && Equals((LutPoint)obj);
+            return obj is LutPoint point && Equals(point);
         }
 
         public override int GetHashCode() {

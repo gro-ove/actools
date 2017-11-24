@@ -88,7 +88,7 @@ namespace AcManager {
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = EntryPoint.GetLogName("Main Log");
-                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename), AppArguments.GetBool(AppFlag.OptimizeLogging, true));
+                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename), AppArguments.GetBool(AppFlag.OptimizeLogging));
                 Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
@@ -456,6 +456,7 @@ namespace AcManager {
             WeatherSpecificTyreSmokeHelper.Revert();
             WeatherSpecificVideoSettingsHelper.Revert();
             CarSpecificControlsPresetHelper.Revert();
+            CarCustomDataHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
         }
 

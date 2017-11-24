@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ObjectExtension {
-        public static T If<T>(this T input, bool condition, Func<T, T> c) {
+        /*public static T If<T>(this T input, bool condition, Func<T, T> c) {
             return condition ? c(input) : input;
         }
 
@@ -33,7 +33,7 @@ namespace AcTools.Utils.Helpers {
 
         public static TOutput With<TInput, TOutput>(this TInput input, Func<TInput, TOutput> fn) {
             return fn(input);
-        }
+        }*/
 
         [Pure]
         public static string ToInvariantString(this float o) {

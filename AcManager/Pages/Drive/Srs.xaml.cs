@@ -369,6 +369,8 @@ namespace AcManager.Pages.Drive {
                     if (json == null || Associated == null) return;
 
                     var ids = JArray.Parse(json).ToObject<string[]>();
+                    Logging.Debug(ids.JoinToString("; "));
+
                     var i = 0;
                     using (var waiting = new WaitingDialog()) {
                         waiting.Report(0);
@@ -377,9 +379,10 @@ namespace AcManager.Pages.Drive {
                             var car = await CarsManager.Instance.GetByIdAsync(id);
                             if (car == null) continue;
 
+                            Logging.Debug($"Car found: {car}");
                             await car.SkinsManager.EnsureLoadedAsync();
 
-                            var skins = car.SkinsManager.LoadedOnly.ToList();
+                            var skins = car.EnabledOnlySkins.ToList();
                             var skin = skins.FirstOrDefault();
                             if (skin == null) continue;
 
@@ -390,11 +393,11 @@ namespace AcManager.Pages.Drive {
                                                 Associated.GetImageUrlAsync(x.LiveryImage)}'>");
                             }
 
-                            Associated.Execute($@"
+                            var code = $@"
 document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='{await Associated.GetImageUrlAsync(skin.PreviewImage)}'>"";
 document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='{await
-                                    Associated.GetImageUrlAsync(car.LogoIcon)}'>"";
-document.querySelector('[id^=""{id}3""]').innerHTML = ""{liveries}"";
+        Associated.GetImageUrlAsync(car.LogoIcon)}'>"";
+document.querySelector('[id^=""{id}3""]').innerHTML = {JsonConvert.SerializeObject(liveries.ToString())};
 document.querySelector('[id^=""{id}4""]').textContent = {JsonConvert.SerializeObject(skin.Id)};
 
 var l = document.querySelectorAll('[id^=""{id}3""] img');
@@ -403,10 +406,10 @@ for (var i = 0; i < l.length; i++){{
         var s = this.getAttribute('data-skin-id');
         document.querySelector('[id^=""{id}4""]').innerHTML = s;
         window.external.UpdatePreview(""{id}"", s);
-    }}, false);                   
+    }}, false);
 }}
-");
-
+";
+                            Associated.Execute(code);
                             waiting.Report(new AsyncProgressEntry(car.DisplayName, i++, ids.Length));
                         }
                     }
@@ -640,7 +643,7 @@ try {
     }
 
     if (/\$\('#mainbuttondiv'\).load\('([^']+)'/.test(s) && window.$){
-        $.ajax(RegExp.$1).done(function(r){ 
+        $.ajax(RegExp.$1).done(function(r){
             r.replace(/\/\/setsetting\/race\?(\w+\/\w+)=([^']*)/g, function(_, k, v){ o[k] = v == '' ? null : v; });
             window.external.SetParams(JSON.stringify(o));
         });
@@ -655,7 +658,7 @@ if (!found){
 /* Catch all $.get requests */
 if (window.$){
     if (!$._get_orig) $._get_orig = $.get;
-    $.get = function(p){ 
+    $.get = function(p){
         var s = p.split('?');
         switch (s[0]){
             case 'ac://start/':
@@ -686,12 +689,14 @@ if (o['car']){
         }
 
         private void SrsSelectCar() {
+            Logging.Debug("Preparing…");
             WebBrowser.Execute(@"
 /* Fix cars list */
 var a = [];
 var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
 for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
 window.external.SetCars(JSON.stringify(a));", true);
+            Logging.Debug("Ready to select car");
         }
 
         private async void SrsUnregister() {

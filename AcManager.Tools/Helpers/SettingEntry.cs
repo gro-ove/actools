@@ -22,6 +22,8 @@ namespace AcManager.Tools.Helpers {
             set => base.DisplayName = value;
         }
 
+        public string Tag { get; set; }
+
         [Localizable(false)]
         public string Value { get; }
 

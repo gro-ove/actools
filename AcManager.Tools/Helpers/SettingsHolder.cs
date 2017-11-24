@@ -1924,8 +1924,8 @@ namespace AcManager.Tools.Helpers {
             private MissingContentSearchEntry[] _missingContentSearchEntries;
 
             public MissingContentSearchEntry[] MissingContentSearchEntries => _missingContentSearchEntries ?? (_missingContentSearchEntries = new[] {
-                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
-                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true),
+                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id} Assetto Corsa", true),
+                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\" Assetto Corsa", true),
                 new MissingContentSearchEntry("Assetto-DB.com (by ID, strict)", (type, id) => {
                     switch (type) {
                         case MissingContentType.Car:

@@ -59,7 +59,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static bool IsTrackAvailable(string trackId) {
-            return AvailableTrackIds != null && Array.IndexOf(AvailableCarIds, trackId.Replace(@"/", @"-")) != -1;
+            return AvailableTrackIds != null && Array.IndexOf(AvailableTrackIds, trackId.Replace(@"/", @"-")) != -1;
         }
 
         public static async Task DownloadCarAsync([NotNull] string id, string version = null) {
