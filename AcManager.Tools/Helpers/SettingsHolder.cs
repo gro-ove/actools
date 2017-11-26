@@ -1244,6 +1244,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveAllowCustomData;
+
+            public bool QuickDriveAllowCustomData {
+                get => _quickDriveAllowCustomData ?? (_quickDriveAllowCustomData = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveAllowCustomData", false)).Value;
+                set {
+                    if (Equals(value, _quickDriveAllowCustomData)) return;
+                    _quickDriveAllowCustomData = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveAllowCustomData", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _quickDriveExpandBounds;
 
             public bool QuickDriveExpandBounds {

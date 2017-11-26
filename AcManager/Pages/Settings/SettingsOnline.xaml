@@ -79,7 +79,7 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.SearchForMissingContent}" mui:NewMarkService.New="True">
-          <CheckBox.ToolTip>Please, keep in mind that some content found might not be exactly legal (for example, models might be used permission)</CheckBox.ToolTip>
+          <CheckBox.ToolTip>Please, keep in mind that some content found might not be exactly legal (for example, models might be ported)</CheckBox.ToolTip>
           <Label Content="Search for links to missing content automatically" />
         </CheckBox>
 

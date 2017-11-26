@@ -8,8 +8,8 @@ using Newtonsoft.Json.Linq;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
-    public class DarkAreaPlaneLight : DarkAreaLightBase {
-        public DarkAreaPlaneLight() : base(DarkLightType.LtcPlane) {}
+    public class DarkLtcPlaneLight : DarkAreaLightBase {
+        public DarkLtcPlaneLight() : base(DarkLightType.LtcPlane) {}
 
         protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
             switch (newType) {
@@ -23,13 +23,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Range = Range
                     };
-                case DarkLightType.Sphere:
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight {
                         Range = Range,
                         Radius = Width,
                         VisibleLight = VisibleLight
                     };
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight {
                         Direction = Direction,
                         Range = Range,
@@ -38,7 +38,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight {
+                    return new DarkLtcPlaneLight {
                         Direction = Direction,
                         Up = Up,
                         Range = Range,
@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight {
+                    return new DarkLtcTubeLight {
                         Direction = Direction,
                         Range = Range,
                         Radius = Width,

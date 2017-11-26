@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AcManager.Tools.Filters.Testers;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -195,7 +196,7 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        private readonly Dictionary<string, OverallStats> _prepared = new Dictionary<string, OverallStats>();
+        // private readonly Dictionary<string, OverallStats> _prepared = new Dictionary<string, OverallStats>();
 
         private WatchingSessionStats _current;
         private SessionStats _last;
@@ -255,14 +256,27 @@ namespace AcManager.Tools.Profile {
 
             _current = new WatchingSessionStats();
             Last = _current;
+
+            if (CarCustomDataHelper.IsActive) {
+                _current.SetSpoiled("Custom car data");
+            }
         }
 
         private void OnFinish(object sender, EventArgs e) {
             var current = _current;
             if (current != null) {
                 _current = null;
-                Apply(current);
-                NewSessionAdded?.Invoke(this, new SessionStatsEventArgs(current));
+
+                if (current.MaxSpeed > 800d || current.AverageSpeed > 500d || current.Distance > 10e6) {
+                    current.SetSpoiled("Potentially damaged values");
+                }
+
+                if (current.IsSpoiled) {
+                    Logging.Warning("Session spoiled: " + current.SpoiledReason);
+                } else {
+                    Apply(current);
+                    NewSessionAdded?.Invoke(this, new SessionStatsEventArgs(current));
+                }
             }
         }
 

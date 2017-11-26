@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcTools.Render.Base;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
@@ -59,11 +60,12 @@ namespace AcTools.Render.Tests {
                         Console.WriteLine(first.CarId);
 
                         foreach (var skinDirectory in Directory.GetDirectories(Path.Combine(first.CarDirectory, "skins"))) {
-                            // Console.WriteLine(skinDirectory);
+                            using (var stream = new MemoryStream()) {
+                                renderer.Shot(renderer.Width * 4, renderer.Height * 4, 1d, 1d, stream, RendererShotFormat.Png);
+                                Image.FromStream(stream).HighQualityResize(new Size(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
+                                     .Save(Path.Combine(skinDirectory, "preview_new.jpg"));
+                            }
 
-                            renderer.Shot(renderer.Width * 4, renderer.Height * 4, 1d, 1d, true)
-                                    .HighQualityResize(new Size(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
-                                    .Save(Path.Combine(skinDirectory, "preview_new.jpg"));
                             renderer.SelectNextSkin();
                             i++;
                         }

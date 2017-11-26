@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -46,7 +45,7 @@ namespace FirstFloor.ModernUI.Windows {
         public struct WindowPlacementStruct {
             public int length;
             public int flags;
-            public ShowState showCmd;
+            public int showCmd;
             public WindowPlacementPoint minPosition;
             public WindowPlacementPoint maxPosition;
             public WindowPlacementRect normalPosition;
@@ -61,10 +60,8 @@ namespace FirstFloor.ModernUI.Windows {
         [DllImport("user32.dll")]
         private static extern bool GetWindowPlacement(IntPtr hWnd, out WindowPlacementStruct lpwndpl);
 
-        public enum ShowState {
-            Normal = 1,
-            Minimized = 2
-        }
+        public const int ShowStateNormal = 1;
+        public const int ShowStateMinimized = 1;
 
         public static void SetPlacement(IntPtr windowHandle, [CanBeNull] string placementXml) {
             if (string.IsNullOrEmpty(placementXml)) {
@@ -81,7 +78,7 @@ namespace FirstFloor.ModernUI.Windows {
 
                 placement.length = Marshal.SizeOf(typeof(WindowPlacementStruct));
                 placement.flags = 0;
-                placement.showCmd = placement.showCmd == ShowState.Minimized ? ShowState.Normal : placement.showCmd;
+                placement.showCmd = placement.showCmd == ShowStateMinimized ? ShowStateNormal : placement.showCmd;
                 SetWindowPlacement(windowHandle, ref placement);
             } catch (InvalidOperationException e) {
                 Logging.Error(e);

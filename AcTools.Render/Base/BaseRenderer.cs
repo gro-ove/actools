@@ -297,8 +297,7 @@ namespace AcTools.Render.Base {
                 Usage = Usage.RenderTargetOutput
             };
 
-            Device device;
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags, _swapChainDescription, out device, out _swapChain);
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags, _swapChainDescription, out var device, out _swapChain);
             SetDeviceContextHolder(new DeviceContextHolder(device));
 
             using (var factory = _swapChain.GetParent<Factory>()) {
@@ -561,9 +560,7 @@ namespace AcTools.Render.Base {
         public Form AssociatedWindow {
             get {
                 if (_associatedWindow != null) {
-                    Form result;
-                    if (_associatedWindow.TryGetTarget(out result)) return result;
-
+                    if (_associatedWindow.TryGetTarget(out var result)) return result;
                     _associatedWindow = null;
                 }
 
@@ -634,6 +631,7 @@ namespace AcTools.Render.Base {
         public bool ShotInProcess => ShotInProcessValue > 0;
         public double ShotResolutionMultiplier { get; private set; }
         public bool ShotDrawInProcess { get; private set; }
+        public bool ShotKeepHdr { get; private set; }
 
         protected virtual void DrawShot([CanBeNull] RenderTargetView target, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             try {
@@ -649,21 +647,21 @@ namespace AcTools.Render.Base {
         protected virtual bool CanShotWithoutExtraTextures => !UseMsaa;
         protected int LastShotWidth, LastShotHeight;
 
-        public void Shot(int baseWidth, int baseHeight, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
+        public void Shot(int baseWidth, int baseHeight, double downscale, double crop, Stream outputStream, RendererShotFormat shotFormat, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             // AcToolsLogging.Write($"{baseWidth}×{baseHeight}, downscale={downscale}, crop={crop}");
 
             ShotInProcessValue++;
             var original = new { Width, Height, ResolutionMultiplier };
-            var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
             try {
                 Width = baseWidth;
                 Height = baseHeight;
                 ResolutionMultiplier = 1d;
                 ShotResolutionMultiplier = (double)Width / original.Width;
+                ShotKeepHdr = shotFormat.IsHdr();
 
-                if (Equals(downscale, 1d) && Equals(crop, 1d) && CanShotWithoutExtraTextures) {
+                if (Equals(downscale, 1d) && Equals(crop, 1d) && CanShotWithoutExtraTextures && !ShotKeepHdr) {
                     // Simplest case: existing buffer will do just great, so let’s use it
                     if (_resized) {
                         Resize();
@@ -680,10 +678,13 @@ namespace AcTools.Render.Base {
                     // More complicated situation: we need to temporary replace existing _renderBuffer
                     // with a custom one
 
+                    var shotRenderBufferFormat = shotFormat.IsHdr() ? Format.R32G32B32A32_Float : Format.R8G8B8A8_UNorm;
+
                     // Preparing temporary replacement for _renderBuffer…
-                    if (_shotRenderBuffer == null) {
+                    if (_shotRenderBuffer?.Format != shotRenderBufferFormat) {
                         // Let’s keep all those buffers in memory between shots to make series shooting faster
-                        _shotRenderBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        DisposeHelper.Dispose(ref _shotRenderBuffer);
+                        _shotRenderBuffer = TargetResourceTexture.Create(shotRenderBufferFormat);
                     }
 
                     _shotRenderBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
@@ -711,8 +712,9 @@ namespace AcTools.Render.Base {
                     // For MSAA, we need to copy the result into a texture without MSAA enabled to save it later
                     TargetResourceTexture result;
                     if (UseMsaa) {
-                        if (_shotMsaaTemporaryTexture == null) {
-                            _shotMsaaTemporaryTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        if (_shotMsaaTemporaryTexture?.Format != shotRenderBufferFormat) {
+                            DisposeHelper.Dispose(ref _shotMsaaTemporaryTexture);
+                            _shotMsaaTemporaryTexture = TargetResourceTexture.Create(shotRenderBufferFormat);
                         }
 
                         _shotMsaaTemporaryTexture.Resize(DeviceContextHolder, Width, Height, null);
@@ -726,8 +728,9 @@ namespace AcTools.Render.Base {
 
                     // Optional downscale
                     if (!Equals(downscale, 1d)) {
-                        if (_shotDownsampleTexture == null) {
-                            _shotDownsampleTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        if (_shotDownsampleTexture?.Format != shotRenderBufferFormat) {
+                            DisposeHelper.Dispose(ref _shotDownsampleTexture);
+                            _shotDownsampleTexture = TargetResourceTexture.Create(shotRenderBufferFormat);
                         }
 
                         _shotDownsampleTexture.Resize(DeviceContextHolder, outputWidth, outputHeight, null);
@@ -738,8 +741,9 @@ namespace AcTools.Render.Base {
 
                     // Optional cut
                     if (!Equals(crop, 1d)) {
-                        if (_shotCutTexture == null) {
-                            _shotCutTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        if (_shotCutTexture?.Format != shotRenderBufferFormat) {
+                            DisposeHelper.Dispose(ref _shotCutTexture);
+                            _shotCutTexture = TargetResourceTexture.Create(shotRenderBufferFormat);
                         }
 
                         var width = (outputWidth / crop).RoundToInt();
@@ -754,8 +758,7 @@ namespace AcTools.Render.Base {
                     var desc = result.Texture.Description;
                     LastShotWidth = desc.Width;
                     LastShotHeight = desc.Height;
-
-                    Texture2D.ToStream(DeviceContext, result.Texture, format, outputStream);
+                    shotFormat.ConvertToStream(DeviceContext, result.Texture, outputStream);
 
                     if (swapChainMode) {
                         RecreateSwapChain();
@@ -768,6 +771,7 @@ namespace AcTools.Render.Base {
                 Width = original.Width;
                 Height = original.Height;
                 ResolutionMultiplier = original.ResolutionMultiplier;
+                ShotKeepHdr = false;
 
                 if (_resized) {
                     Resize();
@@ -775,15 +779,6 @@ namespace AcTools.Render.Base {
                 }
 
                 ShotInProcessValue--;
-            }
-        }
-
-        public Image Shot(int baseWidth, int baseHeight, double downscale, double crop, bool lossless, IProgress<double> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            using (var stream = new MemoryStream()) {
-                Shot(baseWidth, baseHeight, downscale, crop, stream, lossless, progress, cancellation);
-                stream.Position = 0;
-                return Image.FromStream(stream);
             }
         }
 

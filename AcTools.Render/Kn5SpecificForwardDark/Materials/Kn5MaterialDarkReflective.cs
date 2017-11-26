@@ -9,7 +9,7 @@ using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleReflective : Kn5MaterialSimple {
+    public class Kn5MaterialDarkReflective : Kn5MaterialDark {
         private EffectDarkMaterial.ReflectiveMaterial _material;
 
 #if REFLECTION_DEBUG && DEBUG
@@ -17,7 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         private EffectSpecialDebugReflections _debugReflections;
 #endif
 
-        public Kn5MaterialSimpleReflective([NotNull] Kn5MaterialDescription description) : base(description) {
+        public Kn5MaterialDarkReflective([NotNull] Kn5MaterialDescription description) : base(description) {
 #if REFLECTION_DEBUG && DEBUG
             _debugReflectionsMode = description.Material?.Name == "Material #25";
 #endif
@@ -85,7 +85,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 #endif
 
         protected override EffectReadyTechnique GetTechnique() {
-            return Effect.TechReflective;
+            return IsBlending ? Effect.TechReflective : Effect.TechReflective_NoAlpha;
         }
 
         protected override EffectReadyTechnique GetGBufferTechnique() {

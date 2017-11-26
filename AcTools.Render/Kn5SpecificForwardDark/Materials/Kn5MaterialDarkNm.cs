@@ -7,10 +7,10 @@ using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleNm : Kn5MaterialSimpleReflective {
+    public class Kn5MaterialDarkNm : Kn5MaterialDarkReflective {
         private IRenderableTexture _txNormal;
 
-        public Kn5MaterialSimpleNm([NotNull] Kn5MaterialDescription description) : base(description) { }
+        public Kn5MaterialDarkNm([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = GetTexture("txNormal", contextHolder);
@@ -32,7 +32,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected override EffectReadyTechnique GetTechnique() {
-            return Effect.TechNm;
+            return IsBlending ? Effect.TechNm : Effect.TechNm_NoAlpha;
         }
 
         protected override EffectReadyTechnique GetGBufferTechnique() {

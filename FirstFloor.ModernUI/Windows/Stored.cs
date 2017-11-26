@@ -43,37 +43,20 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
-        public static StoredValue Get(string key, object defaultValue = null) {
-            return StoredValue.Create(key, defaultValue);
-        }
-
-        public static string GetValue(string key, object defaultValue = null) {
-            return StoredValue.Create(key, defaultValue).Value;
-        }
-
-        public static void SetValue(string key, string value) {
-            StoredValue.Create(key, null).Value = value;
-        }
-
         public class StoredValue : NotifyPropertyChanged {
             private static readonly Dictionary<string, WeakReference<StoredValue>> Instances = new Dictionary<string, WeakReference<StoredValue>>();
 
             private static void RemoveDeadReferences<TKey, TValue>([NotNull] IDictionary<TKey, WeakReference<TValue>> dictionary) where TValue : class {
                 if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
 
-                TValue temp;
-                var toRemove = dictionary.Where(x => !x.Value.TryGetTarget(out temp)).Select(x => x.Key).ToList();
-
+                var toRemove = dictionary.Where(x => !x.Value.TryGetTarget(out _)).Select(x => x.Key).ToList();
                 foreach (var key in toRemove) {
                     dictionary.Remove(key);
                 }
             }
 
-            internal static StoredValue Create(string key, object defaultValue) {
-                WeakReference<StoredValue> link;
-                StoredValue result;
-
-                if (!Instances.TryGetValue(key, out link) || !link.TryGetTarget(out result)) {
+            internal static StoredValue Create([NotNull] string key, [CanBeNull] object defaultValue) {
+                if (!Instances.TryGetValue(key, out var link) || !link.TryGetTarget(out var result)) {
                     if (link != null) {
                         RemoveDeadReferences(Instances);
                     }
@@ -96,6 +79,7 @@ namespace FirstFloor.ModernUI.Windows {
 
             private string _value;
 
+            [CanBeNull]
             public string Value {
                 get => _value ?? (_value = ValuesStorage.GetString(_storageKey, _defaultValue));
                 set {
@@ -105,6 +89,18 @@ namespace FirstFloor.ModernUI.Windows {
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public static StoredValue Get(string key, object defaultValue = null) {
+            return StoredValue.Create(key, defaultValue);
+        }
+
+        public static string GetValue(string key, object defaultValue = null) {
+            return StoredValue.Create(key, defaultValue).Value;
+        }
+
+        public static void SetValue(string key, string value) {
+            StoredValue.Create(key, null).Value = value;
         }
 
         private void Initialize(string key, object defaultValue) {

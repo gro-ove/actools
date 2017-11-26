@@ -6,20 +6,28 @@
 
 //// Standart
 
-float4 ps_Standard(PS_IN pin) : SV_Target {
+float4 ps_Standard(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
 	Unpack(pin, color, alpha, normal);
 	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
-	return float4(lighted, alpha);
+	return float4(lighted, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Standard {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Standard()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Standard(true)));
+	}
+}
+
+technique10 Standard_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Standard(false)));
 	}
 }
 
@@ -40,26 +48,34 @@ technique10 Sky {
 
 //// Alpha
 
-float4 ps_Alpha(PS_IN pin) : SV_Target {
+float4 ps_Alpha(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
 	Unpack_Alpha(pin, color, alpha, normal);
 	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
-	return float4(lighted, alpha);
+	return float4(lighted, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Alpha {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Alpha()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Alpha(true)));
+	}
+}
+
+technique10 Alpha_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Alpha(false)));
 	}
 }
 
 //// Reflective
 
-float4 ps_Reflective(PS_IN pin) : SV_Target {
+float4 ps_Reflective(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
@@ -73,20 +89,28 @@ float4 ps_Reflective(PS_IN pin) : SV_Target {
 		alpha = alpha + refl.a * (1.0 - alpha);
 	}
 
-	return float4(lighted + refl.rgb * refl.a, alpha);
+	return float4(lighted + refl.rgb * refl.a, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Reflective {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Reflective()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Reflective(true)));
+	}
+}
+
+technique10 Reflective_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Reflective(false)));
 	}
 }
 
 //// NM
 
-float4 ps_Nm(PS_IN pin) : SV_Target {
+float4 ps_Nm(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
@@ -100,20 +124,28 @@ float4 ps_Nm(PS_IN pin) : SV_Target {
 		alpha = alpha + refl.a * (1.0 - alpha);
 	}
 
-	return float4(lighted + refl.rgb * refl.a, alpha);
+	return float4(lighted + refl.rgb * refl.a, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Nm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Nm()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Nm(true)));
+	}
+}
+
+technique10 Nm_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Nm(false)));
 	}
 }
 
 //// NM UV Mult
 
-float4 ps_NmUvMult(PS_IN pin) : SV_Target {
+float4 ps_NmUvMult(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
@@ -127,40 +159,56 @@ float4 ps_NmUvMult(PS_IN pin) : SV_Target {
 		alpha = alpha + refl.a * (1.0 - alpha);
 	}
 
-	return float4(lighted + refl.rgb * refl.a, alpha);
+	return float4(lighted + refl.rgb * refl.a, alphaOutput ? alpha : 1.0);
 }
 
 technique10 NmUvMult {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_NmUvMult()));
+		SetPixelShader(CompileShader(ps_4_0, ps_NmUvMult(true)));
+	}
+}
+
+technique10 NmUvMult_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_NmUvMult(false)));
 	}
 }
 
 //// AT NM
 
-float4 ps_AtNm(PS_IN pin) : SV_Target {
+float4 ps_AtNm(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal; float alpha;
 	Unpack_AtNm(pin, color, alpha, normal);
 
 	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
-	return float4(lighted, alpha);
+	return float4(lighted, alphaOutput ? alpha : 1.0);
 }
 
 technique10 AtNm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_AtNm()));
+		SetPixelShader(CompileShader(ps_4_0, ps_AtNm(true)));
+	}
+}
+
+technique10 AtNm_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_AtNm(false)));
 	}
 }
 
 //// Maps
 
-float4 ps_Maps(PS_IN pin) : SV_Target {
+float4 ps_Maps(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal, maps; float alpha;
@@ -174,14 +222,22 @@ float4 ps_Maps(PS_IN pin) : SV_Target {
 		alpha = alpha + refl.a * (1.0 - alpha);
 	}
 
-	return float4(lighted + refl.rgb * refl.a * maps.z, alpha);
+	return float4(lighted + refl.rgb * refl.a * maps.z, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Maps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps(true)));
+	}
+}
+
+technique10 Maps_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps(false)));
 	}
 }
 
@@ -194,7 +250,7 @@ technique10 Maps_TesselatePhong {
         SetHullShader(CompileShader(hs_5_0, HS()));
         SetDomainShader(CompileShader(ds_5_0, DS_phong()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps(false)));
 	}
 }
 
@@ -204,14 +260,14 @@ technique10 Maps_TesselatePn {
         SetHullShader(CompileShader(hs_5_0, HS_pn()));
         SetDomainShader(CompileShader(ds_5_0, DS_pn()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps(false)));
 	}
 }
 #endif
 
 //// Skinned maps
 
-float4 ps_SkinnedMaps(PS_IN pin) : SV_Target {
+float4 ps_SkinnedMaps(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 color, normal, maps; float alpha;
@@ -225,42 +281,24 @@ float4 ps_SkinnedMaps(PS_IN pin) : SV_Target {
 		alpha = alpha + refl.a * (1.0 - alpha);
 	}
 
-	return float4(lighted + refl.rgb * refl.a * maps.z, alpha);
+	return float4(lighted + refl.rgb * refl.a * maps.z, alphaOutput ? alpha : 1.0);
 }
 
 technique10 SkinnedMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_SkinnedMaps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_SkinnedMaps(true)));
 	}
 }
 
-// Diff maps (as Maps, but multipliers are taken from diffuse alpha-channel)
-
-/*float4 ps_DiffMaps(PS_IN pin) : SV_Target {
-    FlatMirrorTest(pin);
-
-	float3 color, normal; float alpha;
-	Unpack_DiffMaps(pin, color, alpha, normal);
-
-	float4 refl = CalculateReflection_Maps(pin.PosW, normal, alpha);
-	float3 lighted = CalculateLight_Maps(color, normal, pin.PosW, alpha, 1.0, pin.PosH.xy);
-
-	if (!HAS_FLAG(IS_ADDITIVE)) {
-		lighted *= 1.0 - refl.a;
-	}
-
-	return float4(lighted + refl.rgb * refl.a * alpha, alpha);
-}
-
-technique10 DiffMaps {
+technique10 SkinnedMaps_NoAlpha {
 	pass P0 {
-		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_DiffMaps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_SkinnedMaps(false)));
 	}
-}*/
+}
 
 // Tyres
 
@@ -313,7 +351,7 @@ technique10 SkinnedGl {
 
 //// Windscreen
 
-float4 ps_Windscreen(PS_IN pin) : SV_Target {
+float4 ps_Windscreen(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float4 txColor = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
@@ -338,14 +376,22 @@ float4 ps_Windscreen(PS_IN pin) : SV_Target {
 
 	float3 ambient = GetAmbient(normal);
 	float3 lighted = txColor.rgb * (gMaterial.Ambient * ambient + gMaterial.Diffuse * diffuse + gMaterial.Emissive);
-	return float4(lighted, alpha > 0.5 ? alpha : alpha * saturate(Luminance(diffuse) * 0.76));
+	return float4(lighted, alphaOutput ? (alpha > 0.5 ? alpha : alpha * saturate(Luminance(diffuse) * 0.76)) : 1.0);
 }
 
 technique10 Windscreen {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen(true)));
+	}
+}
+
+technique10 Windscreen_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen(false)));
 	}
 }
 
@@ -374,7 +420,7 @@ technique10 Collider {
 
 //// Debug
 
-float4 ps_Debug(PS_IN pin) : SV_Target {
+float4 ps_Debug(PS_IN pin, uniform bool alphaOutput) : SV_Target {
     FlatMirrorTest(pin);
 
 	float3 position = pin.PosW;
@@ -424,14 +470,14 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 	light += refl * val + gMaterial.Emissive * diffuseMapValue.rgb;
 	AlphaTest(alpha);
 
-	return float4(light, alpha);
+	return float4(light, alphaOutput ? alpha : 1.0);
 }
 
 technique10 Debug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug(true)));
 	}
 }
 
@@ -439,7 +485,23 @@ technique10 SkinnedDebug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug(true)));
+	}
+}
+
+technique10 Debug_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug(false)));
+	}
+}
+
+technique10 SkinnedDebug_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug(false)));
 	}
 }
 
@@ -608,7 +670,7 @@ float4 ps_TransparentGround(pt_PS_IN pin) : SV_Target {
 	shadow *= 1 - gFlatMirrorPower;
 	return float4(
 	    gFlatMirrorPower == 0.0 ? (float3)0 : value.rgb * gFlatMirrorPower / (shadow + gFlatMirrorPower),
-	    shadow * (1 - gFlatMirrorPower) + gFlatMirrorPower);
+	    shadow * (1 - gFlatMirrorPower) + gFlatMirrorPower * value.a);
 }
 
 technique10 TransparentGround {

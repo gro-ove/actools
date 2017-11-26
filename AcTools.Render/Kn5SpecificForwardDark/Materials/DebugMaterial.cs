@@ -123,7 +123,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected virtual EffectReadyTechnique GetTechnique() {
-            return _bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug;
+            return IsBlending
+                    ? (_bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug)
+                    : (_bonesMode ? _effect.TechSkinnedDebug_NoAlpha : _effect.TechDebug_NoAlpha);
         }
 
         protected virtual EffectReadyTechnique GetShadowTechnique() {

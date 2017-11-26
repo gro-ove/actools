@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 
@@ -17,15 +18,19 @@ namespace AcManager.Tools.Objects {
             var unpacked = Path.Combine(Location, "data");
             var backup = Path.Combine(Location, "data.acd~cm_bak");
 
-            var custom = allowCustom && UseCustomData;
+            var custom = allowCustom && UseCustomData && SettingsHolder.Drive.QuickDriveAllowCustomData;
+            if (SettingsHolder.Drive.QuickDriveAllowCustomData) {
+                Logging.Write("Custom data: " + custom);
+            }
+
             if (custom) {
-                if (File.Exists(backup) && !File.Exists(data)) {
-                    File.Move(backup, data);
+                if (Directory.Exists(unpacked) && File.Exists(data) && !File.Exists(backup)) {
+                    File.Move(data, backup);
                     return true;
                 }
             } else {
-                if (Directory.Exists(unpacked) && File.Exists(data) && !File.Exists(backup)) {
-                    File.Move(data, backup);
+                if (File.Exists(backup) && !File.Exists(data)) {
+                    File.Move(backup, data);
                     return true;
                 }
             }
@@ -38,7 +43,7 @@ namespace AcManager.Tools.Objects {
         public bool UseCustomData {
             get {
                 InitializeCustomDataKeys();
-                return _useCustomData ?? (_useCustomData = ValuesStorage.GetBool(_keyUseCustomData, UseCustomDataGlobal)).Value;
+                return _useCustomData ?? (_useCustomData = ValuesStorage.GetBoolNullable(_keyUseCustomData)) ?? UseCustomDataGlobal;
             }
             set {
                 if (Equals(value, UseCustomData)) return;
@@ -53,7 +58,7 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand ResetUseSpecificDataFlagCommand => _resetUseSpecificDataFlagCommand ?? (_resetUseSpecificDataFlagCommand = new DelegateCommand(() => {
             InitializeCustomDataKeys();
-            _useCustomData = UseCustomDataGlobal;
+            _useCustomData = null;
             ValuesStorage.Remove(_keyUseCustomData);
             OnPropertyChanged(nameof(UseCustomData));
             _resetUseSpecificDataFlagCommand.RaiseCanExecuteChanged();
@@ -69,8 +74,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, UseCustomDataGlobal)) return;
                 _useCustomDataGlobal = value;
-                OnPropertyChanged();
                 ValuesStorage.Set(KeyUseCustomDataGlobal, value);
+                OnPropertyChanged();
+                if (_useCustomData == null) {
+                    OnPropertyChanged(nameof(UseCustomData));
+                }
             }
         }
     }

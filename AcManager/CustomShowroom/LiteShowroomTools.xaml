@@ -481,7 +481,7 @@
                   <Slider.Value>
                     <Binding Path="ShotSizeMultiplier">
                       <Binding.Converter>
-                        <mui:LogarithmicScale Minimum="1" Middle="8" Maximum="36" FixedValues="1 2 3 4 6 8 10 12 16 20 24 30 36 40 48" />
+                        <mui:LogarithmicScale Minimum="1" Middle="6" Maximum="16" FixedValues="1 2 3 4 6 8 10 12 16" />
                       </Binding.Converter>
                     </Binding>
                   </Slider.Value>
@@ -496,14 +496,14 @@
               <Label Content="{Binding DisplayShotSize}" ContentStringFormat="{}Output size: {0}" />
 
               <DockPanel Margin="0 12 0 0">
-                <Button Width="60" Margin="4 0 0 0" DockPanel.Dock="Right" Command="{Binding AmbientShadow.SizeFitCommand}"
-                    ToolTip="Open a folder with screenshots">
+                <Button Width="60" Margin="4 0 0 0" DockPanel.Dock="Right" ToolTip="Open a folder with screenshots"
+                    Command="{Binding ShotOpenDirectoryCommand}">
                   <Button.Content>
                     <Path Width="12" Height="12" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                         Data="{StaticResource FolderIconData}" />
                   </Button.Content>
                 </Button>
-                <Button Content="Make A Shot" />
+                <Button Content="Make A Shot" Command="{Binding ShotCommand}" />
               </DockPanel>
 
             </mui:SpacingStackPanel>

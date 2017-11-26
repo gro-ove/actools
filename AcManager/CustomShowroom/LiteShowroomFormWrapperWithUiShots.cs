@@ -54,26 +54,23 @@ namespace AcManager.CustomShowroom {
                 base.OnKeyUp(sender, args);
             }
         }
+        
         protected virtual void OnKeyUpOverride(KeyEventArgs args) { }
 
-        private async void ShotAsync(Action<IProgress<Tuple<string, double?>>, CancellationToken> action) {
+        private async Task ShotAsync(Action<IProgress<Tuple<string, double?>>, CancellationToken> action, CancellationToken cancellationToken) {
             if (_busy) return;
             _busy = true;
 
             try {
-                using (var waiting = new WaitingDialog {
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Owner = null
-                }) {
+                using (var waiting = new WaitingDialog { WindowStartupLocation = WindowStartupLocation.CenterScreen, Owner = null })
+                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, waiting.CancellationToken)) {
                     waiting.Report(AsyncProgressEntry.Indetermitate);
-
-                    var cancellation = waiting.CancellationToken;
                     Renderer.IsPaused = true;
 
                     try {
                         await Task.Run(() => {
                             // ReSharper disable once AccessToDisposedClosure
-                            action(waiting, cancellation);
+                            action(waiting, linked.Token);
                         });
                     } finally {
                         Renderer.IsPaused = false;
@@ -87,10 +84,26 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        public Task SplitShotAsync(Size size, bool downscale, string filename, RendererShotFormat format, CancellationToken cancellationToken) {
+            return ShotAsync((progress, token) => {
+                SplitShotInner(size, downscale, filename, format, progress, token);
+            }, cancellationToken);
+        }
+
+        public Task ShotAsync(Size size, bool downscale, string filename, RendererShotFormat format, CancellationToken cancellationToken) {
+            return ShotAsync((progress, token) => {
+                ShotInner(size, downscale, filename, format, progress, token);
+            }, cancellationToken);
+        }
+
         private static bool _warningShown;
 
-        protected override void SplitShotPieces(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected override void SplitShotPieces(Size size, bool downscale, string filename, RendererShotFormat format, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            if (format.IsHdr()) {
+                throw new NotSupportedException("Can’t make an HDR-screenshot in super-resolution");
+            }
+
             PiecesBlender.OptionMaxCacheSize = SettingsHolder.Plugins.MontageVramCache;
 
             var plugin = PluginsManager.Instance.GetById("ImageMontage");
@@ -101,7 +114,7 @@ namespace AcManager.CustomShowroom {
                 }
 
                 OptionMontageMemoryLimit = SettingsHolder.Plugins.MontageMemoryLimit;
-                base.SplitShotPieces(size, downscale, filename, progress, cancellation);
+                base.SplitShotPieces(size, downscale, filename, format, progress, cancellation);
             } else {
                 var dark = (DarkKn5ObjectRenderer)Renderer;
                 var destination = Path.Combine(SettingsHolder.Plugins.MontageTemporaryDirectory, Path.GetFileNameWithoutExtension(filename) ?? "image");
@@ -124,7 +137,7 @@ namespace AcManager.CustomShowroom {
                     StartInfo = {
                         FileName = magick,
                         WorkingDirectory = destination,
-                        Arguments = $"montage piece-*-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg",
+                        Arguments = $"montage piece-*-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out{format.GetExtension()}",
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
                         RedirectStandardOutput = true,
@@ -141,7 +154,7 @@ namespace AcManager.CustomShowroom {
 
                 progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.99));
 
-                var result = Path.Combine(destination, "out.jpg");
+                var result = Path.Combine(destination, $"out{format.GetExtension()}");
                 if (!File.Exists(result)) {
                     throw new Exception("Combining failed, file not found");
                 }
@@ -151,16 +164,12 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected override void SplitShot(Size size, bool downscale, string filename) {
-            ShotAsync((progress, token) => {
-                SplitShotInner(size, downscale, filename, progress, token);
-            });
+        protected override void SplitShot(Size size, bool downscale, string filename, RendererShotFormat format) {
+            SplitShotAsync(size, downscale, filename, format, default(CancellationToken));
         }
 
-        protected override void Shot(Size size, bool downscale, string filename) {
-            ShotAsync((progress, token) => {
-                ShotInner(size, downscale, filename, progress, token);
-            });
+        protected override void Shot(Size size, bool downscale, string filename, RendererShotFormat format) {
+            ShotAsync(size, downscale, filename, format, default(CancellationToken));
         }
     }
 }

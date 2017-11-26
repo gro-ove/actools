@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Forms;
 using AcManager.Tools.Objects;
@@ -7,10 +8,11 @@ using AcTools.Utils;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
+using Size = System.Drawing.Size;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.CustomShowroom {
-    public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots {
+    public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots, ICustomShowroomShots {
         private readonly AttachedHelper _helper;
         private readonly LiteShowroomTools _tools;
 
@@ -18,9 +20,7 @@ namespace AcManager.CustomShowroom {
 
         public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
                 : base(renderer, car.DisplayName) {
-            var screen = Screen.FromControl(Form);
-            var size = new Size(screen.Bounds.Width, screen.Bounds.Height);
-            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, size);
+            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this);
             _helper = new AttachedHelper(this, _tools, limitHeight: false);
             GoToNormalMode();
 
@@ -31,6 +31,13 @@ namespace AcManager.CustomShowroom {
         protected override void OnClickOverride() {
             if (_tools.CanSelectNodes && !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
                 Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
+            }
+        }
+
+        public Size DefaultSize {
+            get {
+                var screen = Screen.FromControl(Form);
+                return new Size(screen.Bounds.Width, screen.Bounds.Height);
             }
         }
 
@@ -122,12 +129,21 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        public event EventHandler<CancelEventArgs> PreviewScreenshot;
+
         protected override void OnKeyUpOverride(KeyEventArgs args) {
             switch (args.KeyCode) {
+                case Keys.F8:
+                    var cancelEventArgs = new CancelEventArgs();
+                    PreviewScreenshot?.Invoke(this, cancelEventArgs);
+                    if (cancelEventArgs.Cancel) {
+                        args.Handled = true;
+                    }
+                    break;
+
                 case Keys.H:
                     if (args.Alt) {
-                        var tools = Renderer as ToolsKn5ObjectRenderer;
-                        if (tools != null) {
+                        if (Renderer is ToolsKn5ObjectRenderer tools) {
                             if (!args.Control && !args.Shift) {
                                 tools.ToggleSelected();
                                 args.Handled = true;

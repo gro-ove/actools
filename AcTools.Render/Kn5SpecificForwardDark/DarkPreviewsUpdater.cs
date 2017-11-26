@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
@@ -482,7 +483,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             var shotStream = new MemoryStream(_approximateSize ?? 100000);
 
-            _renderer.Shot(_renderer.Width, _renderer.Height, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, 1d, shotStream, true);
+            _renderer.Shot(_renderer.Width, _renderer.Height, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, 1d, shotStream,
+                    RendererShotFormat.Png);
             if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
                 _approximateSize = (int)(shotStream.Position * 1.2);
             }

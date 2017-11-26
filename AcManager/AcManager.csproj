@@ -228,6 +228,7 @@
     <Compile Include="CustomShowroom\DarkRendererCars.cs" />
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
+    <Compile Include="CustomShowroom\ICustomShowroomShots.cs" />
     <Compile Include="CustomShowroom\Kn5Extension.cs" />
     <Compile Include="CustomShowroom\Kn5MaterialDialog.xaml.cs">
       <DependentUpon>Kn5MaterialDialog.xaml</DependentUpon>
@@ -1558,6 +1559,7 @@
     <None Include="About\Filtering\More About Quotes.txt" />
     <None Include="About\Filtering\More About Properties.txt" />
     <None Include="About\Filtering\More About Sub-Filters.txt" />
+    <None Include="About\ImportantTips\Custom Car Data.txt" />
     <None Include="About\Licenses\ImageMagick\LICENSE" />
     <None Include="About\Licenses\Twemoji\LICENSE-GRAPHICS" />
     <None Include="Assets\Presets.tt">

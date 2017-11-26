@@ -24,6 +24,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
@@ -35,6 +36,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -377,10 +379,10 @@ namespace AcManager.CustomShowroom {
 
         private readonly string _loadPreset;
 
-        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, Size screenSize) {
+        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, ICustomShowroomShots shots) {
             _loadPreset = loadPreset;
 
-            DataContext = new ViewModel(renderer, car, skinId, screenSize);
+            DataContext = new ViewModel(renderer, car, skinId, shots);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
@@ -608,30 +610,19 @@ namespace AcManager.CustomShowroom {
 
             private class SaveableData {
                 public bool LiveReload;
-
-                [JsonProperty("cp")]
-                public double[] CameraPosition = { 3.194, 0.342, 13.049 };
-
-                [JsonProperty("cl")]
-                public double[] CameraLookAt = { 0, 0, 0 };
-
-                [JsonProperty("ti")]
-                public float CameraTilt;
-
-                [JsonProperty("cf")]
-                public float CameraFov = 36f;
-
-                [JsonProperty("co")]
-                public bool CameraOrbit = true;
-
-                [JsonProperty("cr")]
-                public bool CameraAutoRotate = true;
-
-                [JsonProperty("cd")]
-                public double CameraAutoRotateSpeed = 1d;
-
-                [JsonProperty("cg")]
-                public bool CameraAutoAdjustTarget = true;
+                [JsonProperty("cp")] public double[] CameraPosition = { 3.194, 0.342, 13.049 };
+                [JsonProperty("cl")] public double[] CameraLookAt = { 0, 0, 0 };
+                [JsonProperty("ti")] public float CameraTilt;
+                [JsonProperty("cf")] public float CameraFov = 36f;
+                [JsonProperty("co")] public bool CameraOrbit = true;
+                [JsonProperty("cr")] public bool CameraAutoRotate = true;
+                [JsonProperty("cd")] public double CameraAutoRotateSpeed = 1d;
+                [JsonProperty("cg")] public bool CameraAutoAdjustTarget = true;
+                [JsonProperty("sw")] public int ShotWidth = 1920;
+                [JsonProperty("sh")] public int ShotHeight = 1080;
+                [JsonProperty("sm")] public int ShotSizeMultiplier = 1;
+                [JsonProperty("sf")] public int ShotFormat = (int)RendererShotFormat.Jpeg;
+                [JsonProperty("sd")] public bool ShotDownsizeInTwo = true;
             }
 
             protected ISaveHelper Saveable { get; }
@@ -640,8 +631,11 @@ namespace AcManager.CustomShowroom {
                 Saveable.SaveLater();
             }
 
-            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId, Size screenSize) {
+            private readonly ICustomShowroomShots _shots;
+
+            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId, ICustomShowroomShots shots) {
                 Car = carObject;
+                _shots = shots;
 
                 Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
                 renderer.PropertyChanged += OnRendererPropertyChanged;
@@ -665,20 +659,35 @@ namespace AcManager.CustomShowroom {
                     CameraAutoRotate = CameraAutoRotate,
                     CameraAutoRotateSpeed = CameraAutoRotateSpeed,
                     CameraAutoAdjustTarget = CameraAutoAdjustTarget,
+
+                    ShotWidth = ShotWidth,
+                    ShotHeight = ShotHeight,
+                    ShotSizeMultiplier = ShotSizeMultiplier,
+                    ShotFormat = ShotFormat.IntValue ?? 0,
+                    ShotDownsizeInTwo = ShotDownsizeInTwo,
                 }, Load);
 
                 Saveable.Initialize();
                 PaintShopSupported = Lazier.CreateAsync(async () => (await CmApiProvider.GetPaintShopIdsAsync())?.Contains(Car.Id) == true);
 
-                ShotWidth = (int)screenSize.Width;
-                ShotHeight = (int)screenSize.Height;
+                var defaultSize = _shots.DefaultSize;
+                ShotWidth = defaultSize.Width;
+                ShotHeight = defaultSize.Height;
+
+                _shots.PreviewScreenshot += OnScreenshot;
+            }
+
+            private void OnScreenshot(object sender, CancelEventArgs cancelEventArgs) {
+                if (Keyboard.Modifiers == ModifierKeys.None) {
+                    cancelEventArgs.Cancel = true;
+                    ShotCommand.Execute(null);
+                }
             }
 
             #region Shots
-            public bool ShotMagickWarning => ImageUtils.IsMagickSupported;
-
-            public bool ShotMagickMontageWarning => ShotSizeMultiplier > (ShotDownsizeInTwo ? 2 : 1) &&
-                    !PluginsManager.Instance.IsPluginEnabled("ImageMontage");
+            public bool ShotSplitMode => ShotSizeMultiplier > (ShotDownsizeInTwo ? 2 : 1);
+            public bool ShotMagickWarning => !ImageUtils.IsMagickSupported;
+            public bool ShotMagickMontageWarning => ShotSplitMode && !PluginsManager.Instance.IsPluginEnabled("ImageMontage");
 
             private int _shotWidth;
 
@@ -690,6 +699,7 @@ namespace AcManager.CustomShowroom {
                     _shotWidth = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayShotSize));
+                    SaveLater();
                 }
             }
 
@@ -703,6 +713,7 @@ namespace AcManager.CustomShowroom {
                     _shotHeight = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayShotSize));
+                    SaveLater();
                 }
             }
 
@@ -728,7 +739,9 @@ namespace AcManager.CustomShowroom {
                     _shotSizeMultiplier = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayShotSize));
+                    OnPropertyChanged(nameof(ShotSplitMode));
                     OnPropertyChanged(nameof(ShotMagickMontageWarning));
+                    SaveLater();
                 }
             }
 
@@ -740,7 +753,9 @@ namespace AcManager.CustomShowroom {
                     if (Equals(value, _shotDownsizeInTwo)) return;
                     _shotDownsizeInTwo = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShotSplitMode));
                     OnPropertyChanged(nameof(ShotMagickMontageWarning));
+                    SaveLater();
                 }
             }
 
@@ -752,36 +767,59 @@ namespace AcManager.CustomShowroom {
                     if (Equals(value, _shotFormat)) return;
                     _shotFormat = value;
                     OnPropertyChanged();
+                    SaveLater();
                 }
             }
 
-            public static readonly SettingEntry ShotFormatJpeg = new SettingEntry("jpg", "JPEG");
+            public static readonly SettingEntry ShotFormatJpeg = new SettingEntry((int)RendererShotFormat.Jpeg, "JPEG");
 
-            public static readonly SettingEntry ShotFormatPng = new SettingEntry("png", "PNG") {
+            public static readonly SettingEntry ShotFormatPng = new SettingEntry((int)RendererShotFormat.Png, "PNG") {
                 Tag = "Without showroom selected, will produce a semi-transparent screenshot"
             };
 
-            public static readonly SettingEntry ShotFormatHdr = new SettingEntry("hdr", "HDR (DDS)") {
-                Tag =
-                    "Tone mapping, color mapping and dithering don’t work in HDR mode. Resolution multiplier is not available.[br][br]If you’re using Adobe Photoshop, install something like [url=\"https://developer.nvidia.com/nvidia-texture-tools-adobe-photoshop\"]NVIDIA Texture Tools[/url] to open DDS textures."
+            public static readonly SettingEntry ShotFormatHdrExr = new SettingEntry((int)RendererShotFormat.HdrExr, "HDR (OpenEXR)") {
+                Tag = "Tone mapping, color mapping and dithering don’t work in HDR mode. Resolution multiplier is not available."
             };
 
             public SettingEntry[] ShotFormats { get; } = {
                 ShotFormatJpeg,
                 ShotFormatPng,
-                ShotFormatHdr,
+                ShotFormatHdrExr
             };
+
+            private static readonly Stored.StoredValue LastShot = Stored.Get("customShowroom.lastShot", null);
 
             private DelegateCommand _shotOpenDirectoryCommand;
 
             public DelegateCommand ShotOpenDirectoryCommand => _shotOpenDirectoryCommand ?? (_shotOpenDirectoryCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewDirectory(AcPaths.GetDocumentsScreensDirectory());
+                if (LastShot.Value != null && File.Exists(LastShot.Value)) {
+                    WindowsHelper.ViewFile(LastShot.Value);
+                } else {
+                    WindowsHelper.ViewDirectory(AcPaths.GetDocumentsScreensDirectory());
+                }
             }));
 
             private AsyncCommand<CancellationToken?> _shotCommand;
 
-            public AsyncCommand<CancellationToken?> ShotCommand => _shotCommand ?? (_shotCommand = new AsyncCommand<CancellationToken?>(async c => {
-                ;
+            public AsyncCommand<CancellationToken?> ShotCommand => _shotCommand ?? (_shotCommand = new AsyncCommand<CancellationToken?>(c => {
+                var format = (RendererShotFormat)(ShotFormat.IntValue ?? 0);
+                Logging.Debug($"format: {ShotFormat}, {ShotFormat.IntValue ?? -1}, {format}");
+
+                var downscale = ShotDownsizeInTwo;
+                var multiplier = ShotSizeMultiplier * (downscale ? 2 : 1);
+                var directory = AcPaths.GetDocumentsScreensDirectory();
+                FileUtils.EnsureDirectoryExists(directory);
+
+                var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}{format.GetExtension()}");
+                LastShot.Value = filename;
+
+                if (ImageUtils.IsMagickSupported && ShotSplitMode) {
+                    var size = new System.Drawing.Size(ShotWidth.Round(4) * multiplier, ShotHeight.Round(4) * multiplier);
+                    return _shots.SplitShotAsync(size, downscale, filename, format, c ?? default(CancellationToken));
+                } else {
+                    var size = new System.Drawing.Size(ShotWidth * multiplier, ShotHeight * multiplier);
+                    return _shots.ShotAsync(size, downscale, filename, format, c ?? default(CancellationToken));
+                }
             }));
             #endregion
 
@@ -978,6 +1016,12 @@ namespace AcManager.CustomShowroom {
                     _cameraBusy = false;
                     UpdateCamera();
                 }
+
+                ShotWidth = o.ShotWidth;
+                ShotHeight = o.ShotHeight;
+                ShotSizeMultiplier = o.ShotSizeMultiplier;
+                ShotFormat = ShotFormats.GetByIdOrDefault((int?)o.ShotFormat) ?? ShotFormatJpeg;
+                ShotDownsizeInTwo = o.ShotDownsizeInTwo;
             }
 
             /*private void Reset(bool saveLater) {

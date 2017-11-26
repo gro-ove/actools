@@ -70,7 +70,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             if (mode == SpecialRenderMode.GBuffer) return;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ?
-                    contextHolder.States.TransparentBlendState : contextHolder.States.OpaqueBlendState;
+                    contextHolder.States.TransparentBlendState : null;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
             switch (Kn5Material.DepthMode) {
@@ -111,7 +111,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected virtual EffectReadyTechnique GetTechnique() {
-            return Effect.TechStandard;
+            return IsBlending ? Effect.TechStandard : Effect.TechStandard_NoAlpha;
         }
 
         protected virtual EffectReadyTechnique GetShadowTechnique() {

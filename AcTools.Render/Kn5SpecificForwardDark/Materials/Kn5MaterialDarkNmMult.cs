@@ -6,10 +6,10 @@ using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleNmMult : Kn5MaterialSimpleNm {
+    public class Kn5MaterialDarkNmMult : Kn5MaterialDarkNm {
         private EffectDarkMaterial.NmUvMultMaterial _material;
 
-        public Kn5MaterialSimpleNmMult([NotNull] Kn5MaterialDescription description) : base(description) { }
+        public Kn5MaterialDarkNmMult([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectDarkMaterial.NmUvMultMaterial {
@@ -28,7 +28,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected override EffectReadyTechnique GetTechnique() {
-            return Effect.TechNmUvMult;
+            return IsBlending ? Effect.TechNmUvMult : Effect.TechNmUvMult_NoAlpha;
         }
 
         protected override EffectReadyTechnique GetGBufferTechnique() {

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Windows.Forms;
 using AcTools.Render.Base;
@@ -155,8 +156,7 @@ namespace AcTools.Render.Wrapper {
                     }
                 }
 
-                var renderer = _renderer as DarkKn5ObjectRenderer;
-                if (renderer != null) {
+                if (_renderer is DarkKn5ObjectRenderer renderer) {
                     if (User32.IsKeyPressed(Keys.Up)) {
                         renderer.FlatMirrorReflectiveness += (1f - renderer.FlatMirrorReflectiveness) / 12f;
                     }
@@ -229,80 +229,61 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        private class ProgressWrapper : IProgress<double> {
-            private readonly IProgress<Tuple<string, double?>> _main;
-            private readonly string _message;
-
-            public ProgressWrapper(IProgress<Tuple<string, double?>> main, string message) {
-                _main = main;
-                _message = message;
-            }
-
-            public void Report(double value) {
-                _main.Report(Tuple.Create(_message, (double?)value));
-            }
-        }
-
-        protected static IProgress<double> Wrap(IProgress<Tuple<string, double?>> baseProgress, string message = null) {
-            return new ProgressWrapper(baseProgress, message ?? "Rendering…");
-        }
-
-        protected virtual void SplitShotPieces(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected virtual void SplitShotPieces(Size size, bool downscale, string filename, RendererShotFormat format, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            if (format.IsHdr()) {
+                throw new NotSupportedException("Can’t make an HDR-screenshot in super-resolution");
+            }
+
             var dark = (DarkKn5ObjectRenderer)Renderer;
-            var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
+            var destination = filename.ApartFromLast(Path.GetExtension(filename), StringComparison.OrdinalIgnoreCase);
             var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress, cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
 rem Use magick.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
 set MAGICK_TMPDIR=tmp
 mkdir tmp
-magick.exe montage piece-*-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out.jpg
+magick.exe montage piece-*-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out{format.GetExtension()}
 rmdir /q tmp
 echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected void SplitShotInner(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected void SplitShotInner(Size size, bool downscale, string filename, RendererShotFormat format, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            SplitShotPieces(size, downscale, filename, progress, cancellation);
-
-            /*if (multipler > 4d) {
-                SplitShotPieces(size.Width, size.Height, downscale, filename, progress, cancellation);
-            } else {
-                var dark = (DarkKn5ObjectRenderer)Renderer;
-                using (var image = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, progress, cancellation)) {
-                    if (cancellation.IsCancellationRequested) return;
-
-                    progress?.Report(Tuple.Create("Saving…", (double?)0.95));
-                    ImageUtils.SaveImage(image, filename, 95, new ImageUtils.ImageInformation());
-                }
-            }*/
+            SplitShotPieces(size, downscale, filename, format, progress, cancellation);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected void ShotInner(Size size, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+        protected void ShotInner(Size size, bool downscale, string filename, RendererShotFormat format, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            using (var stream = new MemoryStream()) {
+            using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
                 progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
-                _renderer.Shot(size.Width, size.Height, downscale ? 0.5 : 1d, 1d, stream, true,
-                        progress.ToDouble("Rendering…").SubrangeDouble(0.2, 0.6), cancellation);
-                stream.Position = 0;
-                if (cancellation.IsCancellationRequested) return;
 
-                using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                    progress?.Report(Tuple.Create("Saving…", (double?)0.9));
-                    ImageUtils.Convert(stream, destination, null, 95, new ImageUtils.ImageInformation());
+                if (format.IsWindowsEncoderBroken()) {
+                    using (var stream = new MemoryStream()) {
+                        _renderer.Shot(size.Width, size.Height, downscale ? 0.5 : 1d, 1d, stream,
+                                RendererShotFormat.Png, progress.ToDouble("Rendering…").SubrangeDouble(0.2, 0.6), cancellation);
+                        stream.Position = 0;
+                        if (cancellation.IsCancellationRequested) return;
+
+                        progress?.Report(Tuple.Create("Saving…", (double?)0.9));
+                        ImageUtils.Convert(stream, destination, null, 95, new ImageUtils.ImageInformation());
+                    }
+                } else {
+                    _renderer.Shot(size.Width, size.Height, downscale ? 0.5 : 1d, 1d, destination,
+                            format.IsWindowsEncoderBroken() ? RendererShotFormat.Png : format,
+                            progress.ToDouble("Rendering…").SubrangeDouble(0.2, 0.9), cancellation);
                 }
             }
         }
 
-        protected virtual void SplitShot(Size size, bool downscale, string filename) {
-            SplitShotInner(size, downscale, filename);
+        protected virtual void SplitShot(Size size, bool downscale, string filename, RendererShotFormat format) {
+            SplitShotInner(size, downscale, filename, format);
         }
 
-        protected virtual void Shot(Size size, bool downscale, string filename) {
-            ShotInner(size, downscale, filename);
+        protected virtual void Shot(Size size, bool downscale, string filename, RendererShotFormat format) {
+            ShotInner(size, downscale, filename, format);
         }
 
         private void Shot() {
@@ -319,27 +300,27 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             var winPressed = User32.IsKeyPressed(Keys.LWin) || User32.IsKeyPressed(Keys.RWin);
 
             var downscale = !shiftPressed;
-            int multipler;
+            int multiplier;
             if (winPressed && splitMode) {
-                multipler = altPressed ? ctrlPressed ? 48 : 32 : ctrlPressed ? 24 : 16;
+                multiplier = altPressed ? ctrlPressed ? 48 : 32 : ctrlPressed ? 24 : 16;
             } else if (ctrlPressed) {
-                multipler = altPressed ? 1 : splitMode ? 8 : 4;
+                multiplier = altPressed ? 1 : splitMode ? 8 : 4;
             } else if (altPressed) {
-                multipler = splitMode ? 4 : 3;
+                multiplier = splitMode ? 4 : 3;
             } else {
-                multipler = 2;
+                multiplier = 2;
             }
 
             var directory = AcPaths.GetDocumentsScreensDirectory();
             FileUtils.EnsureDirectoryExists(directory);
             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
 
-            if (splitMode && multipler > 2d) {
-                var size = new Size(_renderer.ActualWidth.Round(4) * multipler, _renderer.ActualHeight.Round(4) * multipler);
-                SplitShot(size, downscale, filename);
+            if (splitMode && multiplier > 2d) {
+                var size = new Size(_renderer.ActualWidth.Round(4) * multiplier, _renderer.ActualHeight.Round(4) * multiplier);
+                SplitShot(size, downscale, filename, RendererShotFormat.Jpeg);
             } else {
-                var size = new Size(_renderer.ActualWidth * multipler, _renderer.ActualHeight * multipler);
-                Shot(size, downscale, filename);
+                var size = new Size(_renderer.ActualWidth * multiplier, _renderer.ActualHeight * multiplier);
+                Shot(size, downscale, filename, RendererShotFormat.Jpeg);
             }
         }
 
@@ -397,13 +378,13 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     } else if (!args.Control && !args.Alt && !args.Shift) {
                         _renderer.ShowMovementArrows = !_renderer.ShowMovementArrows;
                     } else if (args.Control && !args.Alt && !args.Shift) {
-                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Phong;
+                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Phong;
                         Renderer.IsDirty = true;
                     } else if (!args.Control && args.Alt && !args.Shift) {
-                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Pn;
+                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Pn;
                         Renderer.IsDirty = true;
                     } else if (!args.Control && !args.Alt && args.Shift) {
-                        Kn5MaterialSimpleMaps.TesselationMode = TesselationMode.Disabled;
+                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Disabled;
                         Renderer.IsDirty = true;
                     }
                     break;

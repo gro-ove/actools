@@ -264,6 +264,24 @@ namespace AcManager.Tools.Profile {
                     return null;
                 }
             }
+
+            private string _spoiledReason;
+
+            public string SpoiledReason {
+                get => _spoiledReason;
+                private set {
+                    if (value == _spoiledReason) return;
+                    _spoiledReason = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSpoiled));
+                }
+            }
+
+            public bool IsSpoiled => SpoiledReason != null;
+
+            public void SetSpoiled([NotNull] string reason) {
+                SpoiledReason = reason;
+            }
         }
 
         /// <summary>
@@ -290,7 +308,7 @@ namespace AcManager.Tools.Profile {
             // [JsonProperty, JsonConverter(typeof(StringEnumConverter))]
             [JsonIgnore]
             public Status CurrentStatus {
-                get { return _currentStatus; }
+                get => _currentStatus;
                 internal set {
                     if (Equals(_currentStatus, value)) return;
 

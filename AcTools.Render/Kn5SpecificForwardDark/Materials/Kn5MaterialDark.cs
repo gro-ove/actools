@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimple : Kn5MaterialSimpleBase, IAcDynamicMaterial {
+    public class Kn5MaterialDark : Kn5MaterialSimpleBase, IAcDynamicMaterial {
         /// <summary>
         /// Should be set before Kn5MaterialSimple.Initialize()
         /// </summary>
@@ -17,7 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         private EffectDarkMaterial.StandartMaterial _material;
         private IRenderableTexture _txDiffuse;
 
-        internal Kn5MaterialSimple([NotNull] Kn5MaterialDescription description) : base(description) {}
+        internal Kn5MaterialDark([NotNull] Kn5MaterialDescription description) : base(description) {}
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);

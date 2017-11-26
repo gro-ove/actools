@@ -560,6 +560,17 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
+              <!-- spot -->
+              <DataTemplate DataType="{x:Type lights:DarkPlaneLight}">
+                <mui:SpacingStackPanel Spacing="4">
+                  <DockPanel>
+                    <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"
+                        Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
+                    <Slider Minimum="0" Maximum="10" Value="{Binding Range}" TickFrequency="1" TickPlacement="None" />
+                  </DockPanel>
+                </mui:SpacingStackPanel>
+              </DataTemplate>
+
               <!-- area sphere -->
               <DataTemplate DataType="{x:Type lights:DarkAreaSphereLight}">
                 <mui:SpacingStackPanel Spacing="4">
@@ -604,7 +615,7 @@
               </DataTemplate>
 
               <!-- area plane -->
-              <DataTemplate DataType="{x:Type lights:DarkAreaPlaneLight}">
+              <DataTemplate DataType="{x:Type lights:DarkLtcPlaneLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <!--<DockPanel>
                       <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"

@@ -517,7 +517,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 if (FlatMirrorBlurred) {
                     DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
-                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
+                    var bg = (Color4)BackgroundColor * BackgroundBrightness;
+                    bg.Alpha = 0f;
+                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, bg);
                     DeviceContext.ClearRenderTargetView(_mirrorBlurBuffer.TargetView, default(Color4));
                     DeviceContext.ClearRenderTargetView(_mirrorTemporaryBuffer.TargetView, default(Color4));
                     DeviceContext.OutputMerger.SetTargets(_mirrorDepthBuffer.DepthView, _mirrorBuffer.TargetView);
@@ -536,7 +538,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     DrawMirror();
                 } else {
                     DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
-                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
+                    var bg = (Color4)BackgroundColor * BackgroundBrightness;
+                    bg.Alpha = 0f;
+                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, bg);
                     DeviceContext.OutputMerger.SetTargets(_mirrorDepthBuffer.DepthView, _mirrorBuffer.TargetView);
                     DrawMirror();
                     DeviceContext.OutputMerger.SetTargets(DepthStencilView, InnerBuffer.TargetView);

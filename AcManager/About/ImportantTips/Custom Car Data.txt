@@ -1,0 +1,13 @@
+﻿sid: 1u2m4dxl
+id: customCarData
+
+This feature might help you if you’re working on new mods. For example, you need to create physics for a new car, but you don’t have a model at the moment. Or, let’s say, you already have a car released, with data packed, but now you want to update physics without confusion when data is packed or not.
+
+To enable it, go to Settings/Drive and look for “Use unpacked data if exists” option. After you enable it, you’ll find a new checkbox in Quick Drive section, allowing you to turn on that feature per car (or, in popup options next to it, globally).
+
+When enabled, Content Manager will rename “data.acd” to “data.acd~cm_bak” each time you start a new Quick Drive race (of course, only if unpacked data is present), and revert it back afterwards. If by any reason app crashes during the race, it should revert everything back next time it’s launched.
+
+In any other mode (online, Kunos career, challenges) original data will be used instead. Also, no stats or lap times are saved with custom data.
+
+Please, use this option carefully.
+

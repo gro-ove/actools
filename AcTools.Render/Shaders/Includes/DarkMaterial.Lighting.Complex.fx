@@ -11,13 +11,14 @@ static const dword LIGHT_OFF = 0;
 static const dword LIGHT_POINT = 1;
 static const dword LIGHT_SPOT = 2;
 static const dword LIGHT_DIRECTIONAL = 3;
+static const dword LIGHT_PLANE = 4;
 
 #if ENABLE_AREA_LIGHTS == 1
-static const dword LIGHT_SPHERE = 4;
-static const dword LIGHT_TUBE = 5;
-static const dword LIGHT_LTC_PLANE = 6;
-static const dword LIGHT_LTC_TUBE = 7;
-static const dword LIGHT_LTC_SPHERE = 4;
+static const dword LIGHT_SPHERE = 104;
+static const dword LIGHT_TUBE = 105;
+static const dword LIGHT_LTC_PLANE = 106;
+static const dword LIGHT_LTC_TUBE = 107;
+static const dword LIGHT_LTC_SPHERE = 104;
 #endif
 
 #define _AREA_LIGHTS_FROM 4
@@ -126,8 +127,8 @@ float2 GetCubemapUv(float3 L) {
 		e = L.x > 0 ? 0 : 1;
 	} else if (A.y > A.z) {
 		float m = 0.5 / A.y;
-		x = L.y > 0 ? 0.5 - L.x * m : 0.5 + L.x * m;
-		y = 0.5 - L.z * m;
+		x = 0.5 + L.x * m;
+		y = L.y > 0 ? 0.5 + L.z * m : 0.5 - L.z * m;
 		e = L.y > 0 ? 2 : 3;
 	} else {
 		float m = 0.5 / A.z;
@@ -144,7 +145,7 @@ float2 GetCubemapUv(float3 L) {
 float3 GetExtraShadowUv(float3 position, float3 normal, Light light, uint extra) {
 	if (LIGHT_HAS_FLAG(light, LIGHT_SHADOWS_CUBE)){
 		float4 nearFar = gExtraShadowNearFar[extra];
-		float3 toLightW = position - light.PosW.xyz;
+		float3 toLightW = position - (gFlatMirrored ? float3(light.PosW.x, -light.PosW.y, light.PosW.z) : light.PosW.xyz);
 		float3 toLightN = normalize(toLightW);
 		float sD = VectorToDepth(toLightW, nearFar.z, nearFar.w, LIGHT_HAS_FLAG(light, LIGHT_SMOOTH_SHADOWS) ? 0.06 * dot(normal, toLightN) - 0.07 : 0.0);
 		return float3(GetCubemapUv(toLightN), sD);
@@ -365,6 +366,14 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 			float spotCone = smoothstep(light.SpotlightCosMin, light.SpotlightCosMax, cosAngle);
 			attenuation = Attenuation(light.Range, distance) * spotCone;
 			break;
+		}
+		case LIGHT_PLANE: {
+			direction = light.DirectionW.xyz;
+            float3 onPlane = position - dot(direction, position - light.PosW.xyz) * direction;
+			float distance = length(position - onPlane);
+			attenuation = pow(1 - saturate(distance / light.Range), 2);
+            diffuse += light.Color.xyz * (GetDiffuseMultiplier(normal, direction) * 0.5 + 0.5) * attenuation;
+			return;
 		}
 #if ENABLE_AREA_LIGHTS == 1
 #if ENABLE_ADDITIONAL_AREA_LIGHTS == 1

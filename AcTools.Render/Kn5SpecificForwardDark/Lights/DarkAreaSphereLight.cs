@@ -11,7 +11,7 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkAreaSphereLight : DarkAreaLightBase {
-        public DarkAreaSphereLight() : base(DarkLightType.Sphere) {}
+        public DarkAreaSphereLight() : base(DarkLightType.AreaSphere) {}
 
         protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
             switch (newType) {
@@ -25,20 +25,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Range = Range
                     };
-                case DarkLightType.Sphere:
+                case DarkLightType.Plane:
+                    return new DarkPlaneLight {
+                        Range = Range
+                    };
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight {
                         Range = Range,
                         Radius = Radius,
                         VisibleLight = VisibleLight
                     };
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight {
                         Range = Range,
                         Radius = Radius,
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight {
+                    return new DarkLtcPlaneLight {
                         Range = Range,
                         Width = Radius,
                         Height = Radius,
@@ -46,7 +50,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight {
+                    return new DarkLtcTubeLight {
                         Range = Range,
                         Radius = Radius,
                         VisibleLight = VisibleLight

@@ -7,11 +7,11 @@ using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleTyres : Kn5MaterialSimpleReflective {
+    public class Kn5MaterialDarkTyres : Kn5MaterialDarkReflective {
         private EffectDarkMaterial.TyresMaterial _material;
         private IRenderableTexture _txNormal, _txDiffuseBlur, _txNormalBlur;
 
-        public Kn5MaterialSimpleTyres([NotNull] Kn5MaterialDescription description) : base(description) { }
+        public Kn5MaterialDarkTyres([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechTyres;

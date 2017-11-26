@@ -124,40 +124,61 @@
         <!-- Quick drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveTrackDayViaPractice}" ToolTip="This way, there'll be a crew for pitstops, but bots might be more passive">
+        <CheckBox IsChecked="{Binding Drive.QuickDriveTrackDayViaPractice}" ToolTip="This way, there'll be a crew for pitstops, but bots might be more passive"
+            set:Search.Keywords="quick;drive;trackday">
           <Label Content="For Track Day, use Practice as a session type" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}">
+        <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}"
+            set:Search.Keywords="quick;drive">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveCheckTrack}">
-          <CheckBox.ToolTip>I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do.</CheckBox.ToolTip>
+        <CheckBox IsChecked="{Binding Drive.QuickDriveCheckTrack}" set:Search.Keywords="quick;drive"
+            ToolTip="I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do.">
           <Label Content="Check if track fits selected mode" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}">
+        <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}"
+            set:Search.Keywords="quick;drive;hotlap">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveUseSkinNames}">
+        <CheckBox IsChecked="{Binding Drive.QuickDriveUseSkinNames}" set:Search.Keywords="quick;drive;ai">
           <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveAiLevelInName}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName_Tooltip}">
+        <CheckBox IsChecked="{Binding Drive.QuickDriveAiLevelInName}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName_Tooltip}"
+            set:Search.Keywords="quick;drive">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName}" />
         </CheckBox>
 
-        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_LocalAddress_Tooltip}"
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_LocalAddress_Tooltip}" set:Search.Keywords="quick;drive;real;conditions"
             Visibility="{Binding Drive.LocalAddress, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_LocalAddress}" />
           <mui:BetterTextBox Text="{Binding Drive.LocalAddress}" Placeholder="?" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}"
-            ToolTip="Very experimental feature which might be removed later, for more information, go to About section">
-          <Label Content="Enable AI limitations" mui:LimitedService.Limited="True" />
+        <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
+            ToolTip="Very experimental feature which might be removed later">
+          <Label mui:LimitedService.Limited="True">
+            <TextBlock>
+              <Run Text="Enable AI limitations" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                                                      Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
+            </TextBlock>
+          </Label>
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.QuickDriveAllowCustomData}"
+            ToolTip="If found, temporary replace packed data by unpacked; for more information, go to About section and look for Custom Car Data post"
+            mui:NewMarkService.New="True" set:Search.Keywords="quick;drive;modding">
+          <Label>
+            <TextBlock>
+              <Run Text="Allow to use custom car’s data" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                                                               Command="{Binding NavigateCommand}"
+                                                               CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData">[?]</Hyperlink>
+            </TextBlock>
+          </Label>
         </CheckBox>
 
       </StackPanel>

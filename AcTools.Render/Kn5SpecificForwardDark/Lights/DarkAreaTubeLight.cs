@@ -11,8 +11,8 @@ using Newtonsoft.Json.Linq;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
-    public class DarkAreaLtcTubeLight : DarkAreaTubeLight {
-        public DarkAreaLtcTubeLight() : base(DarkLightType.LtcTube) {}
+    public class DarkLtcTubeLight : DarkAreaTubeLight {
+        public DarkLtcTubeLight() : base(DarkLightType.LtcTube) {}
 
         protected override IRenderableObject CreateDummy() {
             return DebugLinesObject.GetLinesCylinder(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, Radius, Length);
@@ -47,7 +47,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     }
 
     public class DarkAreaTubeLight : DarkAreaLightBase {
-        public DarkAreaTubeLight() : base(DarkLightType.Tube) {}
+        public DarkAreaTubeLight() : base(DarkLightType.AreaTube) {}
 
         protected DarkAreaTubeLight(DarkLightType type) : base(type) {
             ShadowsAvailable = false;
@@ -66,13 +66,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Range = Range
                     };
-                case DarkLightType.Sphere:
+                case DarkLightType.Plane:
+                    return new DarkPlaneLight {
+                        Direction = Direction,
+                        Range = Range
+                    };
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight {
                         Range = Range,
                         Radius = Radius,
                         VisibleLight = VisibleLight
                     };
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight {
                         Direction = Direction,
                         Range = Range,
@@ -81,7 +86,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight {
+                    return new DarkLtcPlaneLight {
                         Direction = Direction,
                         Range = Range,
                         Width = Radius,
@@ -89,7 +94,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         VisibleLight = VisibleLight
                     };
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight {
+                    return new DarkLtcTubeLight {
                         Direction = Direction,
                         Range = Range,
                         Radius = Radius,

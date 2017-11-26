@@ -245,16 +245,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 case StackMode.Both:
                     ArrangeStackBoth(arrangeSize, children);
                     break;
-                default:
+                case StackMode.None:
                     ArrangeStackNone(arrangeSize, children);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return arrangeSize;
         }
 
         private void ArrangeStackVertical(Size arrangeSize, UIElementCollection children) {
-            var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, 0);
+            var childBounds = new Rect(0, 0, Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns, 0);
             var xStep = childBounds.Width + _horizontalSpacing;
             var maxHeight = 0d;
             var xBound = arrangeSize.Width - 1.0;
@@ -283,7 +285,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void ArrangeStackHorizontal(Size arrangeSize, UIElementCollection children) {
-            var childBounds = new Rect(0, 0, 0, (arrangeSize.Height - _totalSpacingHeight) / _rows);
+            var childBounds = new Rect(0, 0, 0, Math.Max(arrangeSize.Height - _totalSpacingHeight, 0) / _rows);
             var xSteps = _columnWidths;
             var yStep = childBounds.Height + _verticalSpacing;
             var xBound = arrangeSize.Width - 1.0;
@@ -353,7 +355,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void ArrangeStackNone(Size arrangeSize, UIElementCollection children) {
-            var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, (arrangeSize.Height - _totalSpacingHeight) / _rows);
+            var childBounds = new Rect(0, 0,
+                    Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns,
+                    Math.Max(arrangeSize.Height - _totalSpacingHeight, 0) / _rows);
             var xStep = childBounds.Width + _horizontalSpacing;
             var yStep = childBounds.Height + _verticalSpacing;
             var xBound = arrangeSize.Width - 1.0;

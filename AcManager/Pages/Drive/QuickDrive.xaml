@@ -490,7 +490,8 @@
 
         <mui:BooleanLazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" TrueResourceKey="CarSpecificControlsComboBox" />
 
-        <!--<DockPanel>
+        <DockPanel
+            Visibility="{Binding QuickDriveAllowCustomData, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
             <ContextMenu>
               <MenuItem Header="Use Unpacked Data (Global)" IsCheckable="True" IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
@@ -500,7 +501,7 @@
           <CheckBox IsChecked="{Binding SelectedCar.UseCustomData}" Margin="0 0 0 0">
             <Label Content="Use unpacked data if exists" />
           </CheckBox>
-        </DockPanel>-->
+        </DockPanel>
       </mui:SpacingStackPanel>
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"

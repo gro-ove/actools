@@ -184,11 +184,12 @@ namespace AcTools.Render.Shaders {
 		public const uint LightPoint = 1;
 		public const uint LightSpot = 2;
 		public const uint LightDirectional = 3;
-		public const uint LightSphere = 4;
-		public const uint LightTube = 5;
-		public const uint LightLtcPlane = 6;
-		public const uint LightLtcTube = 7;
-		public const uint LightLtcSphere = 4;
+		public const uint LightPlane = 4;
+		public const uint LightSphere = 104;
+		public const uint LightTube = 105;
+		public const uint LightLtcPlane = 106;
+		public const uint LightLtcTube = 107;
+		public const uint LightLtcSphere = 104;
 		public const uint LightNoShadows = 1;
 		public const uint LightSmoothShadows = 2;
 		public const uint LightShadowsCube = 4;
@@ -202,7 +203,7 @@ namespace AcTools.Render.Shaders {
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
-		public const bool DebugMode = false;
+		public const bool DebugMode = true;
 		public const float Tessellationfactor = 5.0f;
 		public const bool EnableTesselation = true;
 		public const float Pi = 3.141592653f;
@@ -213,11 +214,11 @@ namespace AcTools.Render.Shaders {
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
-		public const int MaxLighsAmount = 50;
-		public const int MaxExtraShadows = 25;
+		public const int MaxLighsAmount = 5;
+		public const int MaxExtraShadows = 2;
 		public const bool EnableAreaLights = true;
 		public const bool EnableAdditionalAreaLights = false;
-		public const int MaxExtraShadowsSmooth = 25;
+		public const int MaxExtraShadowsSmooth = 2;
 		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
 		public Effect E;
@@ -225,7 +226,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatTextureMirrorNoGround, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
+		public EffectReadyTechnique TechStandard, TechStandard_NoAlpha, TechSky, TechAlpha, TechAlpha_NoAlpha, TechReflective, TechReflective_NoAlpha, TechNm, TechNm_NoAlpha, TechNmUvMult, TechNmUvMult_NoAlpha, TechAtNm, TechAtNm_NoAlpha, TechMaps, TechMaps_NoAlpha, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechSkinnedMaps_NoAlpha, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechWindscreen_NoAlpha, TechCollider, TechDebug, TechSkinnedDebug, TechDebug_NoAlpha, TechSkinnedDebug_NoAlpha, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatTextureMirrorNoGround, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj, FxViewProj;
@@ -293,24 +294,34 @@ namespace AcTools.Render.Shaders {
 			E = new Effect(device, _b);
 
 			TechStandard = new EffectReadyTechnique(E.GetTechniqueByName("Standard"));
+			TechStandard_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Standard_NoAlpha"));
 			TechSky = new EffectReadyTechnique(E.GetTechniqueByName("Sky"));
 			TechAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha"));
+			TechAlpha_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha_NoAlpha"));
 			TechReflective = new EffectReadyTechnique(E.GetTechniqueByName("Reflective"));
+			TechReflective_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Reflective_NoAlpha"));
 			TechNm = new EffectReadyTechnique(E.GetTechniqueByName("Nm"));
+			TechNm_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Nm_NoAlpha"));
 			TechNmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("NmUvMult"));
+			TechNmUvMult_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("NmUvMult_NoAlpha"));
 			TechAtNm = new EffectReadyTechnique(E.GetTechniqueByName("AtNm"));
+			TechAtNm_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("AtNm_NoAlpha"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechMaps_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Maps_NoAlpha"));
 			TechMaps_TesselatePhong = new EffectReadyTechnique(E.GetTechniqueByName("Maps_TesselatePhong"));
 			TechMaps_TesselatePn = new EffectReadyTechnique(E.GetTechniqueByName("Maps_TesselatePn"));
 			TechSkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedMaps"));
-			TechDiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("DiffMaps"));
+			TechSkinnedMaps_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedMaps_NoAlpha"));
 			TechTyres = new EffectReadyTechnique(E.GetTechniqueByName("Tyres"));
 			TechGl = new EffectReadyTechnique(E.GetTechniqueByName("Gl"));
 			TechSkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedGl"));
 			TechWindscreen = new EffectReadyTechnique(E.GetTechniqueByName("Windscreen"));
+			TechWindscreen_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Windscreen_NoAlpha"));
 			TechCollider = new EffectReadyTechnique(E.GetTechniqueByName("Collider"));
 			TechDebug = new EffectReadyTechnique(E.GetTechniqueByName("Debug"));
 			TechSkinnedDebug = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedDebug"));
+			TechDebug_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Debug_NoAlpha"));
+			TechSkinnedDebug_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedDebug_NoAlpha"));
 			TechDepthOnly = new EffectReadyTechnique(E.GetTechniqueByName("DepthOnly"));
 			TechSkinnedDepthOnly = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedDepthOnly"));
 			TechAmbientShadow = new EffectReadyTechnique(E.GetTechniqueByName("AmbientShadow"));

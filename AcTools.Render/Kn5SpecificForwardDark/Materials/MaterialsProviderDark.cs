@@ -53,33 +53,33 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
                 case "ksTyres":
                 case "ksBrakeDisc":
-                    return new Kn5MaterialSimpleTyres(description);
+                    return new Kn5MaterialDarkTyres(description);
 
                 //case "ksBrakeDisc":
                 //    return new Kn5MaterialSimpleDiffMaps(description);
 
                 case "ksWindscreen":
-                    return new Kn5MaterialSimpleWindscreen(description);
+                    return new Kn5MaterialDarkWindscreen(description);
 
                 case "ksPerPixel":
                 case "ksPerPixelAT":
                 case "ksPerPixelAT_NS":
                 case "ksTree":
-                    return new Kn5MaterialSimple(description);
+                    return new Kn5MaterialDark(description);
 
                 case "ksPerPixelAT_NM":
-                    return new Kn5MaterialSimpleAtNm(description);
+                    return new Kn5MaterialDarkAtNm(description);
 
                 case "ksPerPixelReflection":
                 case "ksPerPixelSimpleRefl":
-                    return new Kn5MaterialSimpleReflective(description);
+                    return new Kn5MaterialDarkReflective(description);
 
                 case "ksPerPixelNM":
                 case "ksPerPixelNM_UV2":
-                    return new Kn5MaterialSimpleNm(description);
+                    return new Kn5MaterialDarkNm(description);
 
                 case "ksPerPixelNM_UVMult":
-                    return new Kn5MaterialSimpleNmMult(description);
+                    return new Kn5MaterialDarkNmMult(description);
 
                 case "ksPerPixelMultiMap":
                 case "ksPerPixelMultiMap_AT":
@@ -89,14 +89,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 case "ksPerPixelMultiMap_damage_dirt_sunspot":
                 case "ksPerPixelMultiMap_NMDetail":
                 case "ksPerPixelMultiMapSimpleRefl":
-                    return new Kn5MaterialSimpleMaps(description);
+                    return new Kn5MaterialDarkMaps(description);
 
                 case "ksPerPixelAlpha":
-                    return new Kn5MaterialSimpleAlpha(description);
+                    return new Kn5MaterialDarkAlpha(description);
 
                 case "ksSkinnedMesh":
                 case "ksSkinnedMesh_NMDetaill":
-                    return new Kn5MaterialSimpleSkinnedMaps(description);
+                    return new Kn5MaterialDarkSkinnedMaps(description);
 
                 case "ksSky":
                 case "ksSkyBox":
@@ -107,7 +107,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                         return new Kn5MaterialSimpleSkinnedGl(description);
                     }
 
-                    return new Kn5MaterialSimple(description);
+                    return new Kn5MaterialDark(description);
             }
         }
     }

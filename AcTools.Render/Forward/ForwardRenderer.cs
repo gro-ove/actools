@@ -404,7 +404,7 @@ namespace AcTools.Render.Forward {
         /// Returns null if result is in output.
         /// </summary>
         protected ShaderResourceView HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
-            if (_bufferH1 == null || _bufferH2 == null) return input;
+            if (_bufferH1 == null || _bufferH2 == null || ShotKeepHdr) return input;
 
             if (UseLensFlares) {
                 // prepare effects
@@ -540,7 +540,7 @@ namespace AcTools.Render.Forward {
         /// Returns null if result is in output.
         /// </summary>
         protected ShaderResourceView ColorGradingPass(ShaderResourceView input, RenderTargetView target, Viewport viewport) {
-            if (ColorGradingData == null) return input;
+            if (ColorGradingData == null || ShotKeepHdr) return input;
 
             if (!_colorGradingSet) {
                 _colorGradingSet = true;

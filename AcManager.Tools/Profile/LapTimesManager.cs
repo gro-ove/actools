@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
@@ -106,6 +107,12 @@ namespace AcManager.Tools.Profile {
             TimeSpan? time;
 
             if (e.Result?.GetExtraByType<Game.ResultExtraDrag>() != null) {
+                if (CarsManager.Instance.GetById(carId ?? "")?.UseCustomData == true
+                        && e.StartProperties.GetAdditional<CarCustomDataHelper>() != null) {
+                    Logging.Warning("Race finished, but custom data was enabled");
+                    return;
+                }
+
                 time = e.Result.Sessions?.Where(x => x.Type == Game.SessionType.Drag)
                         .SelectMany(x => x.BestLaps?.Where(y => y.CarNumber == 0) ?? new Game.ResultBestLap[0])
                         .MinEntryOrDefault(x => x.Time)?.Time;
@@ -113,6 +120,11 @@ namespace AcManager.Tools.Profile {
                 var last = PlayerStatsManager.Instance.Last;
                 if (last == null) {
                     Logging.Warning("Race finished, but PlayerStatsManager.Instance.Last is missing");
+                    return;
+                }
+
+                if (last.IsSpoiled) {
+                    Logging.Warning("Race finished, but PlayerStatsManager.Instance.Last is spoiled: " + last.SpoiledReason);
                     return;
                 }
 

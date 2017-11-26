@@ -35,11 +35,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         [Description("Spot")]
         Spot = EffectDarkMaterial.LightSpot,
 
-        [Description("Sphere")]
-        Sphere = EffectDarkMaterial.LightSphere,
+        [Description("Plane (Ambient)")]
+        Plane = EffectDarkMaterial.LightPlane,
 
-        [Description("Cylinder")]
-        Tube = EffectDarkMaterial.LightTube,
+        [Description("Sphere (Area)")]
+        AreaSphere = EffectDarkMaterial.LightSphere,
+
+        [Description("Cylinder (Area)")]
+        AreaTube = EffectDarkMaterial.LightTube,
 
         [Description("Plane (LTC)")]
         LtcPlane = EffectDarkMaterial.LightLtcPlane,
@@ -213,14 +216,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkDirectionalLight();
                 case DarkLightType.Spot:
                     return new DarkSpotLight();
-                case DarkLightType.Sphere:
+                case DarkLightType.Plane:
+                    return new DarkPlaneLight();
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight();
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight();
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight();
+                    return new DarkLtcPlaneLight();
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight();
+                    return new DarkLtcTubeLight();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
             }

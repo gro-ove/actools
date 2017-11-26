@@ -27,16 +27,20 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Direction = Direction
                     };
-                case DarkLightType.Sphere:
+                case DarkLightType.Plane:
+                    return new DarkPlaneLight {
+                        Direction = Direction
+                    };
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight();
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight();
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight {
+                    return new DarkLtcPlaneLight {
                         Direction = Direction
                     };
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight();
+                    return new DarkLtcTubeLight();
                 default:
                     return base.ChangeTypeOverride(newType);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using AcTools.Render.Base;
 using AcTools.Render.Special;
 using AcTools.Utils;
 using JetBrains.Annotations;
@@ -64,7 +65,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                         var filename = Path.Combine(temporary, $"tmp-{y:D2}-{x:D2}.png");
                         using (var stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                            Shot(extraWidth, extraHeight, downscale, 1d, stream, true);
+                            Shot(extraWidth, extraHeight, downscale, 1d, stream, RendererShotFormat.Png);
                         }
                     }
 
@@ -101,7 +102,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         Camera.SetLens(Camera.Aspect);
 
                         callback(s => {
-                            Shot(extraWidth, extraHeight, downscale, expand ? OptionGBufferExtra : 1d, s, true);
+                            Shot(extraWidth, extraHeight, downscale, expand ? OptionGBufferExtra : 1d, s, RendererShotFormat.Png);
                         }, x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
 
                     }

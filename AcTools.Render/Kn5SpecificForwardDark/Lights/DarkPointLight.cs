@@ -26,20 +26,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Range = Range
                     };
-                case DarkLightType.Sphere:
+                case DarkLightType.Plane:
+                    return new DarkPlaneLight {
+                        Range = Range
+                    };
+                case DarkLightType.AreaSphere:
                     return new DarkAreaSphereLight {
                         Range = Range
                     };
-                case DarkLightType.Tube:
+                case DarkLightType.AreaTube:
                     return new DarkAreaTubeLight {
                         Range = Range
                     };
                 case DarkLightType.LtcPlane:
-                    return new DarkAreaPlaneLight {
+                    return new DarkLtcPlaneLight {
                         Range = Range
                     };
                 case DarkLightType.LtcTube:
-                    return new DarkAreaLtcTubeLight {
+                    return new DarkLtcTubeLight {
                         Range = Range
                     };
                 default:

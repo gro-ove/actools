@@ -15,7 +15,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         Disabled, Phong, Pn
     }
 
-    public class Kn5MaterialSimpleMaps : Kn5MaterialSimpleReflective {
+    public class Kn5MaterialDarkMaps : Kn5MaterialDarkReflective {
         // Temporary
         public static TesselationMode TesselationMode;
 
@@ -23,7 +23,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         private IRenderableTexture _txNormal, _txMaps, _txDetails, _txDetailsNormal;
         private bool _hasNormalMap;
 
-        public Kn5MaterialSimpleMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
+        public Kn5MaterialDarkMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         protected override bool IsAdditive() {
             var value = Kn5Material.GetPropertyValueAByName("isAdditive");
@@ -121,7 +121,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected override EffectReadyTechnique GetTechnique() {
-            return Effect.TechMaps;
+            return IsBlending ? Effect.TechMaps : Effect.TechMaps_NoAlpha;
         }
 
         protected override EffectReadyTechnique GetGBufferTechnique() {
@@ -129,8 +129,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
     }
 
-    public class Kn5MaterialSimpleSkinnedMaps : Kn5MaterialSimpleMaps, ISkinnedMaterial {
-        public Kn5MaterialSimpleSkinnedMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
+    public class Kn5MaterialDarkSkinnedMaps : Kn5MaterialDarkMaps, ISkinnedMaterial {
+        public Kn5MaterialDarkSkinnedMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         protected override void SetInputLayout(IDeviceContextHolder contextHolder) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTGW4B;
@@ -145,7 +145,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected override EffectReadyTechnique GetTechnique() {
-            return Effect.TechSkinnedMaps;
+            return IsBlending ? Effect.TechSkinnedMaps : Effect.TechSkinnedMaps_NoAlpha;
         }
 
         void ISkinnedMaterial.SetBones(Matrix[] bones) {

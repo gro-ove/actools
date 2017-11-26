@@ -96,7 +96,7 @@ namespace AcManager.CustomShowroom {
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
         public static DarkLightType[] LightTypes { get; } = EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
                 ? EnumExtension.GetValues<DarkLightType>()
-                : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.Sphere, DarkLightType.Tube, DarkLightType.LtcTube).ToArray();
+                : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube).ToArray();
 
         public static void ResetHeavy() {
             if (!ValuesStorage.Contains(DefaultKey)) return;
