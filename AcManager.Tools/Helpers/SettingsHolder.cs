@@ -1577,6 +1577,20 @@ namespace AcManager.Tools.Helpers {
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
 
+            private string _cupRegistries;
+
+            public string CupRegistries {
+                get => _cupRegistries ?? (_cupRegistries =
+                        ValuesStorage.GetString("Settings.ContentSettings.CupRegistries", "http://cm.custom.ru/cup/"));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _cupRegistries)) return;
+                    _cupRegistries = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CupRegistries", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _displaySteerLock;
 
             public bool DisplaySteerLock {

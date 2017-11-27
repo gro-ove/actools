@@ -83,7 +83,8 @@ namespace AcManager {
                         InternalUtils.GetValuesStorageEncryptionKey(),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
-                LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"),
+                        AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
@@ -164,11 +165,9 @@ namespace AcManager {
 
             DataProvider.Initialize();
             CountryIdToImageConverter.Initialize(
-                FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.CountryFlags),
-                FilesStorage.Instance.GetDirectory(FilesStorage.DataUserDirName, ContentCategory.CountryFlags));
-            FilesStorage.Instance.Watcher(ContentCategory.CountryFlags).Update += (sender, args) => {
-                CountryIdToImageConverter.ResetCache();
-            };
+                    FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.CountryFlags),
+                    FilesStorage.Instance.GetDirectory(FilesStorage.DataUserDirName, ContentCategory.CountryFlags));
+            FilesStorage.Instance.Watcher(ContentCategory.CountryFlags).Update += (sender, args) => { CountryIdToImageConverter.ResetCache(); };
 
             TestKey();
 
@@ -289,13 +288,17 @@ namespace AcManager {
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/car"), new DelegateCommand<string>(id => {
-                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car));
-            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/car"),
+                    new DelegateCommand<string>(
+                            id => {
+                                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car));
+                            }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/track"), new DelegateCommand<string>(id => {
-                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
-            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/track"),
+                    new DelegateCommand<string>(
+                            id => {
+                                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
+                            }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/car"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
@@ -307,9 +310,8 @@ namespace AcManager {
                 IndexDirectDownloader.DownloadTrackAsync(s[0], s.ElementAtOrDefault(1)).Forget();
             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"), new DelegateCommand<string>(id => {
-                NeutralColorGradingLut.CreateNeutralLut(id.AsInt(16));
-            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"),
+                    new DelegateCommand<string>(id => { NeutralColorGradingLut.CreateNeutralLut(id.AsInt(16)); }));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
@@ -340,7 +342,8 @@ namespace AcManager {
             } else if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType) {
                 SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.DefaultStarterType;
                 Toast.Show($"Starter Changed to {SettingsHolder.Drive.SelectedStarterType.DisplayName}", "Steam Starter is unavailable", () => {
-                    ModernDialog.ShowMessage("To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
+                    ModernDialog.ShowMessage(
+                            "To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
                             "Steam Starter is unavailable", MessageBoxButton.OK);
                 });
             }
@@ -390,7 +393,7 @@ namespace AcManager {
         }
 
         private class CarSetupsView : ICarSetupsView {
-            public void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None,  bool forceNewWindow = false) {
+            public void Open(CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
                 CarSetupsListPage.Open(car, forceRemoteSource, forceNewWindow);
             }
         }
@@ -462,6 +465,10 @@ namespace AcManager {
 
         private static async void BackgroundInitialization() {
             try {
+#if DEBUG
+                CupClient.Initialize();
+#endif
+
                 await Task.Delay(500);
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
 
@@ -480,7 +487,7 @@ namespace AcManager {
                     List<ChangelogEntry> changelog;
                     try {
                         changelog = await Task.Run(() =>
-                            AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
+                                AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
                     } catch (WebException e) {
                         NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
                         return;
@@ -494,7 +501,7 @@ namespace AcManager {
                         Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
                             ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
                                                               .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
-                                MessageBoxButton.OK);
+                                    MessageBoxButton.OK);
                         });
                     }
                 }
@@ -504,6 +511,10 @@ namespace AcManager {
 
                 await Task.Delay(1500);
                 CustomUriSchemeHelper.Initialize();
+
+#if !DEBUG
+                CupClient.Initialize();
+#endif
 
                 await Task.Delay(5000);
                 await Task.Run(() => {
@@ -554,9 +565,8 @@ namespace AcManager {
 
         private void OnAppUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_NewVersion,
-                    string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
-                        AppUpdater.Instance.FinishUpdateCommand.Execute();
-                    });
+                    string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady),
+                    () => { AppUpdater.Instance.FinishUpdateCommand.Execute(); });
         }
 
         private void OnLocaleUpdated(object sender, EventArgs e) {

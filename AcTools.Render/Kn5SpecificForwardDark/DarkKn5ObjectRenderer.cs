@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base;
@@ -16,6 +17,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -136,6 +138,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
+        private bool _gBuffersReady;
         private TargetResourceTexture _gBufferNormals, _gBufferDepthAlt;
         private TargetResourceDepthTexture _gBufferDepthD;
 
@@ -151,14 +154,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _gBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                 _gBufferDepthAlt = TargetResourceTexture.Create(Format.R32_Float);
                 _gBufferDepthD = TargetResourceDepthTexture.Create();
+                if (InitiallyResized) {
+                    ResizeGBuffers();
+                }
+                _gBuffersReady = true;
             } else {
                 DisposeHelper.Dispose(ref _gBufferNormals);
                 DisposeHelper.Dispose(ref _gBufferDepthAlt);
                 DisposeHelper.Dispose(ref _gBufferDepthD);
-            }
-
-            if (InitiallyResized) {
-                ResizeGBuffers();
+                _gBuffersReady = false;
             }
         }
 
@@ -407,8 +411,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             base.DrawPrepare(eyesPosition, light);
         }
 
+        protected override void SetReflectionCubemapDirty() {
+            base.SetReflectionCubemapDirty();
+            for (var i = 0; i < _sphericalHarmonics.Count; i++) {
+                _sphericalHarmonics[i].SetDirty();
+            }
+        }
+
+        private readonly List<SphericalHarmonic> _sphericalHarmonics = new List<SphericalHarmonic>();
+
         private readonly LazierFn<float, float> _cubemapReflectionOffset =
                 new LazierFn<float, float>(v => (float)((Math.Log(v, 2) - 11) / 8.0));
+
+        protected override void InitializeInner() {
+            base.InitializeInner();
+            for (var i = 0; i < _sphericalHarmonics.Count; i++) {
+                _sphericalHarmonics[i].Initialize(DeviceContextHolder);
+            }
+        }
 
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection,
                 bool singleLight) {
@@ -465,11 +485,51 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             effect.FxReflectionCubemap.SetResource(reflection?.View);
 
+            // Spherical harmonics
+            if (CubemapAmbient > 0f) {
+                while (_sphericalHarmonics.Count < CarSlots.Length) {
+                    var sh = new SphericalHarmonic();
+                    sh.Initialize(DeviceContextHolder);
+                    _sphericalHarmonics.Add(sh);
+                }
+
+                for (var i = _sphericalHarmonics.Count - 1; i >= CarSlots.Length; i--) {
+                    _sphericalHarmonics[i].Dispose();
+                    _sphericalHarmonics.RemoveAt(i);
+                }
+
+                var anyShUpdated = false;
+                for (var i = 0; i < CarSlots.Length; i++) {
+                    var sh = _sphericalHarmonics[i];
+                    var center = CarSlots[i].GetCarBoundingBox()?.GetCenter();
+                    if (center.HasValue) {
+                        sh.Update(center.Value);
+
+                        sh.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
+                        if (!anyShUpdated && !sh.DrawScene(DeviceContextHolder, this, ShotDrawInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
+                            IsDirty = true;
+                            anyShUpdated = true;
+                        }
+                    }
+                }
+            }
+
 #if DEBUG
             var debugReflections = DeviceContextHolder.GetEffect<EffectSpecialDebugReflections>();
             debugReflections.FxEyePosW.Set(eyesPosition);
             debugReflections.FxReflectionCubemap.SetResource(reflection?.View);
 #endif
+        }
+
+        protected override void DrawCars(DeviceContextHolder holder, ICamera camera, SpecialRenderMode mode) {
+            var sh = _sphericalHarmonics;
+            for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                if (i < sh.Count) {
+                    _effect.FxLightProbe.Set(sh[i].Values);
+                }
+
+                CarSlots[i].CarNode?.Draw(holder, camera, mode);
+            }
         }
 
         private void UpdateMeshDebug([CanBeNull] Kn5RenderableCar carNode) {
@@ -721,7 +781,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void DrawSceneToBuffer() {
-            if (!GMode()) {
+            if (!_gBuffersReady) {
                 base.DrawSceneToBuffer();
                 return;
             }
@@ -1058,6 +1118,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DisposeHelper.Dispose(ref _accumulationMaxTexture);
             DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
             DisposeHelper.Dispose(ref _accumulationBaseTexture);
+            _sphericalHarmonics.DisposeEverything();
 
             DisposeLights();
             base.DisposeOverride();

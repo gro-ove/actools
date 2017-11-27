@@ -94,9 +94,14 @@ namespace AcManager.CustomShowroom {
         public static ToneMappingFn[] ToneMappings { get; } = EnumExtension.GetValues<ToneMappingFn>();
         public static AoType[] AoTypes { get; } = EnumExtension.GetValues<AoType>().Where(AoTypeExtension.IsProductionReady).ToArray();
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
-        public static DarkLightType[] LightTypes { get; } = EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
-                ? EnumExtension.GetValues<DarkLightType>()
-                : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube).ToArray();
+
+        public static DarkLightType[] LightTypes { get; }
+            = EnumExtension.GetValues<DarkLightType>()
+                           .ApartFrom(EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
+                                   ? new DarkLightType[0] : new[] { DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube })
+                           .ApartFrom(EffectDarkMaterial.EnableAdditionalFakeLights.AsBoolean()
+                                   ? new DarkLightType[0] : new[] { DarkLightType.Plane })
+                           .ToArray();
 
         public static void ResetHeavy() {
             if (!ValuesStorage.Contains(DefaultKey)) return;

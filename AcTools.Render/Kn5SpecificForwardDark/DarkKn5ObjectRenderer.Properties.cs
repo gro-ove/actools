@@ -376,6 +376,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _cubemapAmbient = value;
                 IsDirty = true;
                 OnPropertyChanged();
+
+                if (value <= 0f) {
+                    _sphericalHarmonics.DisposeEverything();
+                }
             }
         }
 

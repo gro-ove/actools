@@ -360,7 +360,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return new MaterialsProviderSimple();
         }
 
-        protected void DrawCars(DeviceContextHolder holder, ICamera camera, SpecialRenderMode mode) {
+        protected virtual void DrawCars(DeviceContextHolder holder, ICamera camera, SpecialRenderMode mode) {
             for (var i = CarSlots.Length - 1; i >= 0; i--) {
                 CarSlots[i].CarNode?.Draw(holder, camera, mode);
             }
@@ -470,7 +470,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             _previousShadowsTarget = null;
         }
 
-        protected void SetReflectionCubemapDirty() {
+        protected virtual void SetReflectionCubemapDirty() {
             _reflectionCubemap?.SetDirty();
         }
 

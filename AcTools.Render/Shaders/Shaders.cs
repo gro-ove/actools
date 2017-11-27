@@ -218,6 +218,7 @@ namespace AcTools.Render.Shaders {
 		public const int MaxExtraShadows = 25;
 		public const bool EnableAreaLights = true;
 		public const bool EnableAdditionalAreaLights = false;
+		public const bool EnableAdditionalFakeLights = false;
 		public const int MaxExtraShadowsSmooth = 25;
 		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
@@ -249,7 +250,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyVector4Variable FxScreenSize;
 		[NotNull]
-		public EffectOnlyVectorArrayVariable FxExtraShadowMapSize, FxExtraShadowNearFar, FxPcssScale;
+		public EffectOnlyVectorArrayVariable FxExtraShadowMapSize, FxExtraShadowNearFar, FxLightProbe, FxPcssScale;
 		[NotNull]
 		public EffectStructStandartMaterialVariable FxMaterial;
 		[NotNull]
@@ -409,6 +410,7 @@ namespace AcTools.Render.Shaders {
 			FxScreenSize = new EffectOnlyVector4Variable(E.GetVariableByName("gScreenSize"));
 			FxExtraShadowMapSize = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gExtraShadowMapSize"));
 			FxExtraShadowNearFar = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gExtraShadowNearFar"));
+			FxLightProbe = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gLightProbe"));
 			FxPcssScale = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gPcssScale"));
 			FxMaterial = new EffectStructStandartMaterialVariable(E.GetVariableByName("gMaterial"));
 			FxReflectiveMaterial = new EffectStructReflectiveMaterialVariable(E.GetVariableByName("gReflectiveMaterial"));

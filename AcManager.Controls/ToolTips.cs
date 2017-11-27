@@ -154,7 +154,6 @@ namespace AcManager.Controls {
                     if (Equals(value, _isEnabled)) return;
                     _isEnabled = value;
                     OnPropertyChanged();
-                    Logging.Debug(value);
                 }
             }
         }

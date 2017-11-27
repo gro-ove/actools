@@ -4,6 +4,13 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public partial class FileUtils {
+        #region For compatibility
+        [NotNull, Pure, UsedImplicitly, Obsolete]
+        public static string GetSfxGuidsFilename(string acRoot) {
+            return AcPaths.GetSfxGuidsFilename(acRoot);
+        }
+        #endregion
+
         [NotNull, Pure]
         public static string[] Split(string s) {
             return s.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);

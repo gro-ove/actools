@@ -188,6 +188,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 CarNode.CurrentLod = lod;
             }
 
+            [NotNull]
             public readonly RenderableList CarWrapper;
 
             private void ClearExisting() {
@@ -223,10 +224,10 @@ namespace AcTools.Render.Kn5SpecificForward {
                 try {
                     _loadingCar = car;
 
-                    if (CarWrapper == null) {
+                    /*if (CarWrapper == null) {
                         _car = car;
                         return;
-                    }
+                    }*/
 
                     if (car == null) {
                         ClearExisting();
@@ -296,10 +297,10 @@ namespace AcTools.Render.Kn5SpecificForward {
                 try {
                     _loadingCar = car;
 
-                    if (CarWrapper == null) {
+                    /*if (CarWrapper == null) {
                         _car = car;
                         return;
-                    }
+                    }*/
 
                     if (car == null) {
                         ClearExisting();
@@ -395,12 +396,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             public event PropertyChangedEventHandler PropertyChanged;
 
             [NotifyPropertyChangedInvocator]
-            protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
 
             public void Dispose() {
-                CarWrapper?.Dispose();
+                CarWrapper.Dispose();
             }
         }
 

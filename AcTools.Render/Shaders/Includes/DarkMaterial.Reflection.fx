@@ -1,18 +1,49 @@
-// real reflection
-TextureCube gReflectionCubemap;
+cbuffer cbLightProbe {
+    float4 gLightProbe[9];
+};
+
+float4 ProjectOntoSH9(float3 n, float4 sphericalHarmonicBase[9]){
+    n = float3(-n.x, -n.y, n.z);
+    float4 result = 0.0f;
+
+    // Cosine kernel
+    const float A0 = 1.0f;
+    const float A1 = 2.0f / 3.0f;
+    const float A2 = 0.25f;
+
+    // Band 0
+    result += sphericalHarmonicBase[0] * 0.282095f * A0;
+
+    // Band 1
+    result += sphericalHarmonicBase[1] * 0.488603f * n.y * A1;
+    result += sphericalHarmonicBase[2] * 0.488603f * n.z * A1;
+    result += sphericalHarmonicBase[3] * 0.488603f * n.x * A1;
+
+    // Band 2
+    result += sphericalHarmonicBase[4] * 1.092548f * n.x * n.y * A2;
+    result += sphericalHarmonicBase[5] * 1.092548f * n.y * n.z * A2;
+    result += sphericalHarmonicBase[6] * 0.315392f * (3.0f * n.z * n.z - 1.0f) * A2;
+    result += sphericalHarmonicBase[7] * 1.092548f * n.x * n.z * A2;
+    result += sphericalHarmonicBase[8] * 0.546274f * (n.x * n.x - n.y * n.y) * A2;
+
+     // Clamp to zero
+    return result;
+}
 
 float3 GetAmbient(float3 normal) {
-	float value = abs(gCubemapAmbient);
 	float3 gradient = gCubemapAmbient < 0.0 ? (float3)1.0 : gAmbientDown + saturate(normal.y * 0.5 + 0.5) * gAmbientRange;
 
-	[branch]
 	if (gCubemapAmbient != 0) {
-		float3 refl = gReflectionCubemap.SampleLevel(samAnisotropic, normal, 99).rgb;
-		return max(refl, 0.0) / (max(dot(refl, float3(0.299f, 0.587f, 0.114f)), 0.0) + 0.04) * value + gradient * (1.0 - value);
+	    float value = abs(gCubemapAmbient);
+		float3 refl = ProjectOntoSH9(normal, gLightProbe).rgb;
+		return max(refl, 0.0) / (max(dot(refl, float3(0.299f, 0.587f, 0.114f)), 0.0) + 0.1) * value + gradient * (1.0 - value);
 	} else {
 		return gradient;
 	}
 }
+
+// real reflection
+TextureCube gReflectionCubemap;
 
 float GetFakeHorizon(float3 d, float e) {
 	return saturate((d.y + 0.02) * 5.0 * e) * saturate(1 - pow(d.y * 1.5, 2)) * 0.3;

@@ -10,7 +10,8 @@
     <mui:SpacingStackPanel Spacing="4">
       <DockPanel Margin="0 0 0 4">
         <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-            IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+            IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
+            ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
         <TextBlock Text="Car" Style="{StaticResource Heading2}" />
       </DockPanel>
 

@@ -367,6 +367,7 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 			attenuation = Attenuation(light.Range, distance) * spotCone;
 			break;
 		}
+#if ENABLE_ADDITIONAL_FAKE_LIGHTS == 1
 		case LIGHT_PLANE: {
 			direction = light.DirectionW.xyz;
             float3 onPlane = position - dot(direction, position - light.PosW.xyz) * direction;
@@ -375,6 +376,7 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
             diffuse += light.Color.xyz * (GetDiffuseMultiplier(normal, direction) * 0.5 + 0.5) * attenuation;
 			return;
 		}
+#endif
 #if ENABLE_AREA_LIGHTS == 1
 #if ENABLE_ADDITIONAL_AREA_LIGHTS == 1
 		case LIGHT_SPHERE: {

@@ -10,21 +10,32 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Reflections {
     public class ReflectionCubemap : IDisposable {
-        private readonly FpsCamera[] _cameras;
+        protected Texture2D CubeTex;
 
         private int _cubeMapSize;
+        private int _mipLevels;
         private Viewport _viewport;
         private ShaderResourceView _view;
         private RenderTargetView[] _targetView;
         private DepthStencilView _depthTargetView;
 
-        public Color4 BackgroundColor { get; set; }
+        private Color4 _backgroundColor;
+
+        public Color4 BackgroundColor {
+            get => _backgroundColor;
+            set {
+                if (value.Red == _backgroundColor.Red &&
+                        value.Green == _backgroundColor.Green &&
+                        value.Blue == _backgroundColor.Blue) return;
+                _backgroundColor = value;
+                SetDirty();
+            }
+        }
 
         public ShaderResourceView View => _view;
 
         public ReflectionCubemap(int cubeMapSize) {
             _cubeMapSize = cubeMapSize;
-            _cameras = new FpsCamera[6];
             _viewport = new Viewport(0, 0, _cubeMapSize, _cubeMapSize, 0, 1.0f);
         }
 
@@ -36,7 +47,7 @@ namespace AcTools.Render.Base.Reflections {
             SetDirty();
         }
 
-        private static int GetMipLevels(int resolution, int minResolution) {
+        protected virtual int GetMipLevels(int resolution, int minResolution) {
             var v = 1 + Math.Log(resolution, 2) - Math.Log(minResolution, 2);
             return double.IsNaN(v) || v < 1 ? 1 : v.RoundToInt();
         }
@@ -47,11 +58,13 @@ namespace AcTools.Render.Base.Reflections {
             DisposeHelper.Dispose(ref _view);
             DisposeHelper.Dispose(ref _depthTargetView);
             DisposeHelper.Dispose(ref _targetView);
+            DisposeHelper.Dispose(ref CubeTex);
 
-            using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription {
+            _mipLevels = GetMipLevels(_cubeMapSize, 4);
+            CubeTex = new Texture2D(holder.Device, new Texture2DDescription {
                 Width = _cubeMapSize,
                 Height = _cubeMapSize,
-                MipLevels = GetMipLevels(_cubeMapSize, 4),
+                MipLevels = _mipLevels,
                 ArraySize = 6,
                 SampleDescription = new SampleDescription(1, 0),
                 Format = format,
@@ -59,23 +72,23 @@ namespace AcTools.Render.Base.Reflections {
                 BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.GenerateMipMaps | ResourceOptionFlags.TextureCube
-            })) {
-                _targetView = Enumerable.Range(0, 6).Select(x => new RenderTargetView(holder.Device, cubeTex,
-                        new RenderTargetViewDescription {
-                            Format = format,
-                            Dimension = RenderTargetViewDimension.Texture2DArray,
-                            ArraySize = 1,
-                            FirstArraySlice = x,
-                            MipSlice = 0
-                        })).ToArray();
+            });
 
-                _view = new ShaderResourceView(holder.Device, cubeTex, new ShaderResourceViewDescription {
-                    Format = format,
-                    Dimension = ShaderResourceViewDimension.TextureCube,
-                    MostDetailedMip = 0,
-                    MipLevels = -1
-                });
-            }
+            _targetView = Enumerable.Range(0, 6).Select(x => new RenderTargetView(holder.Device, CubeTex,
+                    new RenderTargetViewDescription {
+                        Format = format,
+                        Dimension = RenderTargetViewDimension.Texture2DArray,
+                        ArraySize = 1,
+                        FirstArraySlice = x,
+                        MipSlice = 0
+                    })).ToArray();
+
+            _view = new ShaderResourceView(holder.Device, CubeTex, new ShaderResourceViewDescription {
+                Format = format,
+                Dimension = ShaderResourceViewDimension.TextureCube,
+                MostDetailedMip = 0,
+                MipLevels = -1
+            });
 
             const Format depthFormat = Format.D32_Float;
             using (var depthTex = new Texture2D(holder.Device, new Texture2DDescription {
@@ -101,34 +114,35 @@ namespace AcTools.Render.Base.Reflections {
 
         private Vector3 _previousCenter;
 
+        private readonly FpsCamera[] _cameras = Enumerable.Range(0, 6).Select(x => {
+            var c = new FpsCamera(MathF.PI / 2) { NearZ = 0.05f, FarZ = 500.0f, RhMode = false };
+            c.SetLens(1f);
+            return c;
+        }).ToArray();
+
+        private readonly Vector3[] _targets = {
+            new Vector3(1, 0, 0),
+            new Vector3(-1, 0, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(0, -1, 0),
+            new Vector3(0, 0, 1),
+            new Vector3(0, 0, -1)
+        };
+
+        private readonly Vector3[] _ups = {
+            new Vector3(0, 1, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 0, -1),
+            new Vector3(0, 0, 1),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 1, 0),
+        };
+
         public void Update(Vector3 center) {
             if (_cameras[0] != null && (center - _previousCenter).LengthSquared() < 0.01) return;
 
-            var targets = new[] {
-                new Vector3(center.X + 1, center.Y, center.Z),
-                new Vector3(center.X - 1, center.Y, center.Z),
-                new Vector3(center.X, center.Y + 1, center.Z),
-                new Vector3(center.X, center.Y - 1, center.Z),
-                new Vector3(center.X, center.Y, center.Z + 1),
-                new Vector3(center.X, center.Y, center.Z - 1)
-            };
-
-            var ups = new[] {
-                new Vector3(0, 1, 0),
-                new Vector3(0, 1, 0),
-                new Vector3(0, 0, -1),
-                new Vector3(0, 0, 1),
-                new Vector3(0, 1, 0),
-                new Vector3(0, 1, 0),
-            };
-
             for (var i = 0; i < 6; i++) {
-                _cameras[i] = new FpsCamera(MathF.PI / 2) {
-                    FarZ = 500.0f,
-                    RhMode = false
-                };
-                _cameras[i].LookAt(center, targets[i], ups[i]);
-                _cameras[i].SetLens(1f);
+                _cameras[i].LookAt(center, center + _targets[i], _ups[i]);
                 _cameras[i].UpdateViewMatrix();
             }
 
@@ -136,20 +150,22 @@ namespace AcTools.Render.Base.Reflections {
             SetDirty();
         }
 
-        private readonly bool[] _dirty = {
-            true, true, true, true, true, true
-        };
+        private int _dirty;
 
         public void SetDirty(bool dirty = true) {
-            for (var i = 0; i < _dirty.Length; i++) {
-                _dirty[i] = dirty;
+            _dirty = dirty ? 63 : 0;
+        }
+
+        protected virtual void OnCubemapUpdate(DeviceContextHolder holder) {
+            if (_mipLevels > 1) {
+                holder.DeviceContext.GenerateMips(_view);
             }
         }
 
         private int _previouslyUpdated;
 
         public bool DrawScene(DeviceContextHolder holder, IReflectionDraw draw, int facesPerFrame) {
-            if (facesPerFrame == 0 || _dirty.All(x => !x)) return true;
+            if (facesPerFrame == 0 || _dirty == 0) return true;
 
             using (holder.SaveRenderTargetAndViewport()) {
                 holder.DeviceContext.Rasterizer.SetViewports(_viewport);
@@ -157,10 +173,10 @@ namespace AcTools.Render.Base.Reflections {
                 var offset = _previouslyUpdated + 1;
                 for (var k = 0; k < 6; k++) {
                     var i = (k + offset) % 6;
-                    if (_dirty[i] && --facesPerFrame >= 0) {
-                        _dirty[i] = false;
+                    if (((_dirty >> i) & 1) == 1 && --facesPerFrame >= 0) {
+                        _dirty ^= 1 << i;
 
-                        holder.DeviceContext.ClearRenderTargetView(_targetView[i], BackgroundColor);
+                        holder.DeviceContext.ClearRenderTargetView(_targetView[i], _backgroundColor);
                         holder.DeviceContext.ClearDepthStencilView(_depthTargetView,
                                 DepthStencilClearFlags.Depth,
                                 1.0f, 0);
@@ -170,7 +186,7 @@ namespace AcTools.Render.Base.Reflections {
                     }
                 }
 
-                holder.DeviceContext.GenerateMips(_view);
+                OnCubemapUpdate(holder);
             }
 
             return facesPerFrame >= 0;
@@ -180,6 +196,7 @@ namespace AcTools.Render.Base.Reflections {
             DisposeHelper.Dispose(ref _view);
             DisposeHelper.Dispose(ref _depthTargetView);
             DisposeHelper.Dispose(ref _targetView);
+            DisposeHelper.Dispose(ref CubeTex);
         }
     }
 }
