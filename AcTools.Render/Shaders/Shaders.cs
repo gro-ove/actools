@@ -203,7 +203,7 @@ namespace AcTools.Render.Shaders {
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
-		public const bool DebugMode = true;
+		public const bool DebugMode = false;
 		public const float Tessellationfactor = 5.0f;
 		public const bool EnableTesselation = true;
 		public const float Pi = 3.141592653f;
@@ -214,11 +214,11 @@ namespace AcTools.Render.Shaders {
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
-		public const int MaxLighsAmount = 5;
-		public const int MaxExtraShadows = 2;
+		public const int MaxLighsAmount = 50;
+		public const int MaxExtraShadows = 25;
 		public const bool EnableAreaLights = true;
 		public const bool EnableAdditionalAreaLights = false;
-		public const int MaxExtraShadowsSmooth = 2;
+		public const int MaxExtraShadowsSmooth = 25;
 		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
 		public Effect E;

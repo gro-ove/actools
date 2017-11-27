@@ -10,7 +10,7 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
     public interface INavigateUriHandler {
-        bool HandleUri(Uri uri);
+        bool NavigateTo(Uri uri);
     }
 
     /// <summary>
@@ -101,8 +101,7 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
                     throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, UiStrings.NavigationFailedFrameNotFound, uri, parameter));
                 }
 
-                var window = Window.GetWindow(frame) as INavigateUriHandler;
-                if (window == null || frame.GetParent<ModernFrame>() != null || window.HandleUri(uri) != true) {
+                if (!(Window.GetWindow(frame) is INavigateUriHandler window) || frame.GetParent<ModernFrame>() != null || window.NavigateTo(uri) != true) {
                     // delegate navigation to the frame
                     frame.Source = uri;
                 }

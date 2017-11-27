@@ -15,7 +15,7 @@
           <Label>
             <TextBlock>
               <Run Text="{x:Static g:AppStrings.Settings_Drive_Starter}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                                                               BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+                                                                               BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
                                                                                CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run
                                                                                                                                                                       Text=":" />
             </TextBlock>
@@ -164,7 +164,7 @@
           <Label mui:LimitedService.Limited="True">
             <TextBlock>
               <Run Text="Enable AI limitations" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                      Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
+                                                      Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
             </TextBlock>
           </Label>
         </CheckBox>
@@ -175,7 +175,7 @@
           <Label>
             <TextBlock>
               <Run Text="Allow to use custom car’s data" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                               Command="{Binding NavigateCommand}"
+                                                               Command="mui:LinkCommands.NavigateMainWindow"
                                                                CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData">[?]</Hyperlink>
             </TextBlock>
           </Label>
@@ -198,7 +198,7 @@
         <!-- Real head motion -->
         <TextBlock set:Search.SubCategory="Real Head Motion:" Style="{StaticResource SettingsPanel.Heading2}">
           <Run Text="Real Head Motion:" />
-          <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+          <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
                         CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->
         </TextBlock>
 

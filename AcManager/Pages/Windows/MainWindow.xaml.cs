@@ -735,7 +735,7 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        public bool HandleUri(Uri uri) {
+        bool INavigateUriHandler.NavigateTo(Uri uri) {
             Logging.Debug(uri);
 
             if (uri.ToString().Contains("/Pages/AcSettings/")) {
@@ -747,6 +747,12 @@ namespace AcManager.Pages.Windows {
             if (uri.ToString().Contains("/Pages/Settings/")) {
                 SwitchGroup("settings");
                 NavigateTo(UriExtension.Create("/Pages/Settings/SettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            if (uri.ToString().Contains("/Pages/About/ImportantTipsPage.xaml")) {
+                SwitchGroup("about");
+                NavigateTo(uri);
                 return true;
             }
 

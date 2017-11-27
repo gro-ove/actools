@@ -171,7 +171,7 @@
               c:ToolTips.GenericObject="{Binding}" c:ContextMenus.GenericObject="{Binding}">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
-            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
+            <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
                 x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
@@ -293,7 +293,7 @@
             <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 4 0" Filename="{Binding LiveryImage}" />
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
-            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
+            <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
                 x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
@@ -537,7 +537,7 @@
               <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" HorizontalAlignment="Stretch" Text="{Binding DisplayName}"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
-            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
+            <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
                 HorizontalAlignment="Left" x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                 Margin="4" />
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
@@ -600,7 +600,7 @@
               <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
-            <Path Data="{StaticResource AcIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
+            <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
                 HorizontalAlignment="Left" x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                 Margin="4" />
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
