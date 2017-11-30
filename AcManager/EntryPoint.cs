@@ -122,9 +122,7 @@ namespace AcManager {
                     Thread.Sleep(200);
 
                     using (var mutex = new Mutex(false, mutexId)) {
-                        if (mutex.WaitOne(0, false)) {
-                            break;
-                        }
+                        if (mutex.WaitOne(0, false)) break;
                     }
                 }
 

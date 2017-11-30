@@ -77,7 +77,7 @@ namespace AcManager.Tools.Helpers {
                         await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
                             AllowExecutables = false,
                             DisplayName = entry.UiName,
-                            DisplayVersion = entry.UiVersion,
+                            Version = entry.UiVersion,
                             InformationUrl = entry.OriginUrl
                         });
                     }
@@ -106,7 +106,7 @@ namespace AcManager.Tools.Helpers {
                         await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
                             AllowExecutables = false,
                             DisplayName = entry.UiName ?? entry.OriginName,
-                            DisplayVersion = entry.UiVersion,
+                            Version = entry.UiVersion,
                             InformationUrl = entry.OriginUrl
                         });
                     }

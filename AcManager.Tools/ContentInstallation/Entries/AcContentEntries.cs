@@ -512,8 +512,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
             return base.GetUpdateOptions().Union(new[] {
                 new UpdateOption(ToolsStrings.ContentInstallation_KeepUiInformation){ Filter = UiFilter },
-                new UpdateOption("Keep Preview") { Filter = PreviewFilter },
-                new UpdateOption("Keep UI Information & Preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
+                new UpdateOption("Update over existing files, keep preview") { Filter = PreviewFilter },
+                new UpdateOption("Update over existing files, keep UI information & preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
             });
         }
 
@@ -552,8 +552,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
             return base.GetUpdateOptions().Union(new[] {
                 new UpdateOption(ToolsStrings.ContentInstallation_KeepUiInformation){ Filter = UiFilter },
-                new UpdateOption("Keep Preview") { Filter = PreviewFilter },
-                new UpdateOption("Keep UI Information & Preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
+                new UpdateOption("Update over existing files, keep preview") { Filter = PreviewFilter },
+                new UpdateOption("Update over existing files, keep UI information & preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
             });
         }
     }
@@ -587,9 +587,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
 
             return base.GetUpdateOptions().Union(new[] {
-                new UpdateOption(ToolsStrings.ContentInstallation_KeepUiInformation){ Filter = UiFilter },
-                new UpdateOption("Keep Preview") { Filter = PreviewFilter },
-                new UpdateOption("Keep UI Information & Preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
+                new UpdateOption(ToolsStrings.ContentInstallation_KeepUiInformation) { Filter = UiFilter },
+                new UpdateOption("Update over existing files, keep preview") { Filter = PreviewFilter },
+                new UpdateOption("Update over existing files, keep UI information & preview") { Filter = x => UiFilter(x) && PreviewFilter(x) }
             });
         }
     }
@@ -697,9 +697,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return new[] {
                 new UpdateOption(ToolsStrings.Installator_UpdateEverything),
                 new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst) { RemoveExisting = true },
-                new UpdateOption("Update Everything, Remove Existing Clouds If Any"){ CleanUp = RemoveClouds },
-                new UpdateOption("Keep Preview"){ Filter = PreviewFilter },
-                new UpdateOption("Update Everything, Remove Existing Clouds If Any & Keep Preview"){ Filter = PreviewFilter, CleanUp = RemoveClouds },
+                new UpdateOption("Update over existing files, remove existing clouds if any"){ CleanUp = RemoveClouds },
+                new UpdateOption("Update over existing files, keep preview"){ Filter = PreviewFilter },
+                new UpdateOption("Update over existing files, remove existing clouds if any & keep preview"){ Filter = PreviewFilter, CleanUp = RemoveClouds },
             };
         }
 

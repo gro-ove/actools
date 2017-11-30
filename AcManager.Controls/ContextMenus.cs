@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using JetBrains.Annotations;
 
@@ -13,6 +14,7 @@ namespace AcManager.Controls {
         void SetCarObjectMenu([NotNull] ContextMenu menu, [NotNull] CarObject car, [CanBeNull] CarSkinObject skin);
         void SetCarSkinObjectMenu([NotNull] ContextMenu menu, [NotNull] CarSkinObject skin);
         void SetTrackObjectMenu([NotNull] ContextMenu menu, [NotNull] TrackObjectBase track);
+        void SetCupUpdateMenu([NotNull] ContextMenu menu, [NotNull] ICupSupportedObject obj);
     }
 
     public class ContextMenusItems : Collection<object>{}
@@ -69,6 +71,17 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty TrackProperty = DependencyProperty.RegisterAttached("Track", typeof(TrackObjectBase),
+                typeof(ContextMenus), new UIPropertyMetadata(OnContextMenuChanged));
+
+        public static ICupSupportedObject GetCupUpdate(DependencyObject obj) {
+            return (ICupSupportedObject)obj.GetValue(CupUpdateProperty);
+        }
+
+        public static void SetCupUpdate(DependencyObject obj, ICupSupportedObject value) {
+            obj.SetValue(CupUpdateProperty, value);
+        }
+
+        public static readonly DependencyProperty CupUpdateProperty = DependencyProperty.RegisterAttached("CupUpdate", typeof(ICupSupportedObject),
                 typeof(ContextMenus), new UIPropertyMetadata(OnContextMenuChanged));
 
         private static void OnContextMenuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -165,6 +178,11 @@ namespace AcManager.Controls {
             return CreateContextMenu(element, menu => ContextMenusProvider?.SetTrackObjectMenu(menu, track));
         }
 
+        [CanBeNull]
+        public static ContextMenu GetCupUpdateMenu([CanBeNull] FrameworkElement element, [NotNull] ICupSupportedObject obj) {
+            return CreateContextMenu(element, menu => ContextMenusProvider?.SetCupUpdateMenu(menu, obj));
+        }
+
         private static void SetContextMenu(FrameworkElement obj, [CanBeNull] ContextMenu t, object dataContext) {
             if (t == null) {
                 obj.ContextMenu = null;
@@ -194,6 +212,12 @@ namespace AcManager.Controls {
             var track = GetTrack(element);
             if (track != null) {
                 SetContextMenu(element, GetTrackContextMenu(element, track), track);
+                return;
+            }
+
+            var cupUpdate = GetCupUpdate(element);
+            if (cupUpdate != null) {
+                SetContextMenu(element, GetCupUpdateMenu(element, cupUpdate), cupUpdate);
                 return;
             }
         }

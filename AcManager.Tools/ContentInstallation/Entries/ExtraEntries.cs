@@ -17,7 +17,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
                 : base(path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
 
-        public override bool GenericModSupported => false;
+        protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => null;
         public override string NewFormat => "New CM theme {0}";
         public override string ExistingFormat => "Update for a CM theme {0}";
@@ -70,7 +70,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", id);
         }
 
-        public override bool GenericModSupported => true;
+        protected sealed override bool GenericModSupportedByDesign => true;
         public override string GenericModTypeName => "Set Of Textures";
         public override string NewFormat => "New set of textures “{0}”";
         public override string ExistingFormat => "Update for the set of textures “{0}”";
@@ -109,7 +109,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
         }
 
-        public override bool GenericModSupported => true;
+        protected sealed override bool GenericModSupportedByDesign => true;
         public override string GenericModTypeName => "AC Config";
         public override string NewFormat => "New AC config {0}";
         public override string ExistingFormat => "Update for a AC config {0}";

@@ -398,7 +398,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             await GetFiles(filtered.Where(x => !x.Item2).Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
-                    Logging.Debug(entry.Item1);
+                    // Logging.Debug(entry.Item1);
 
                     if (entry.Item2) {
                         FileUtils.EnsureDirectoryExists(entry.Item4);
@@ -412,7 +412,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         }
 
                         var written = new FileInfo(entry.Item4).Length;
-                        Logging.Debug("Written bytes: " + written);
+                        // Logging.Debug("Written bytes: " + written);
                         if (written != entry.Item3) {
                             throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
                         }

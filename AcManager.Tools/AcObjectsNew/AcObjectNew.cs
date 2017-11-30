@@ -9,6 +9,12 @@ namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcObjectNew : AcPlaceholderNew {
         protected readonly IAcManagerNew Manager;
 
+        // Not really a nullable, but don’t rely on it too much.
+        [CanBeNull]
+        public IAcManagerNew GetManager() {
+            return Manager;
+        }
+
         protected AcObjectNew(IAcManagerNew manager, string id, bool enabled)
                 : base(id, enabled) {
             Manager = manager;

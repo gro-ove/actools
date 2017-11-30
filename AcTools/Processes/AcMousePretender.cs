@@ -52,7 +52,7 @@ namespace AcTools.Processes {
                     case Screen1280X720:
                         return new Point(640, 290);
                     default:
-                        return new Point(screen.X / 2, ((290d / 720d + 468d / 1080d) / 2d * screen.Y).RoundToInt());
+                        return new Point(screen.X / 2, screen.Y / 2 - 72);
                 }
             });
         }

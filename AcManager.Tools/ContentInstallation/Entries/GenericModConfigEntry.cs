@@ -26,7 +26,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private bool _enabled;
         private string[] _dependsOn;
 
-        public override bool GenericModSupported => false;
+        protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => null;
         public override string NewFormat => "New mod {0}";
         public override string ExistingFormat => _dependsOn != null

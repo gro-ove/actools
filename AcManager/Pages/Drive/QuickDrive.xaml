@@ -2,9 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
-    xmlns:tools="clr-namespace:AcManager.Tools" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged"
-    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -104,6 +104,10 @@
           </Border.Triggers>
         </Border>
 
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" c:CupUi.Object="{Binding SelectedCar}">
+          <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+              Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+        </Button>
         <mui:ContextMenuButton Click="OnCarContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
       </mui:Cell>
 
@@ -148,6 +152,10 @@
           </Border.Triggers>
         </Border>
 
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
+          <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+              Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+        </Button>
         <mui:ContextMenuButton Click="OnTrackContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
       </mui:Cell>
 

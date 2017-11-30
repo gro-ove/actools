@@ -148,11 +148,15 @@
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
+    <Compile Include="Dialogs\CupInformationDialog.xaml.cs">
+      <DependentUpon>CupInformationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Graphs\CarGraphViewer.cs" />
     <Compile Include="Graphs\CustomGraphViewer.cs" />
     <Compile Include="Graphs\CustomTrackerControl.cs" />
     <Compile Include="Graphs\GraphDataViewerBase.cs" />
     <Compile Include="Graphs\OxyExtenstion.cs" />
+    <Compile Include="Helpers\CupUi.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\FilterHints.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
@@ -354,6 +358,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\UserPresets.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CupInformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

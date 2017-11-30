@@ -1,12 +1,20 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
 using AcManager.Internal;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools {
     public class ContextMenusProvider : IContextMenusProvider {
@@ -56,6 +64,38 @@ namespace AcManager.Tools {
 
             menu.AddItem("Open track in Content tab", () => TracksListPage.Show(track), isEnabled: AppKeyHolder.IsAllRight)
                 .AddItem(AppStrings.Toolbar_Folder, track.ViewInExplorer);
+        }
+
+        private static SharedResourceDictionary Icons = new SharedResourceDictionary {
+            Source = new Uri("/AcManager.Controls;component/Assets/IconData.xaml", UriKind.Relative)
+        };
+
+        public void SetCupUpdateMenu(ContextMenu menu, ICupSupportedObject obj) {
+            var information = obj.CupUpdateInformation;
+            if (information == null) return;
+
+            if (information.IsLimited) {
+                menu.AddItem("Download and install update", new AsyncCommand(() =>
+                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id, default(CancellationToken))),
+                        iconData: (Geometry)Icons["UpdateIconData"]);
+                menu.AddItem("Download update", new AsyncCommand(async () => {
+                    WindowsHelper.ViewInBrowser(await CupClient.Instance.GetUpdateUrlAsync(obj.CupContentType, obj.Id));
+                }));
+                menu.AddSeparator();
+            }
+
+            menu.AddItem("View information", () => new CupInformationDialog(obj).ShowDialog());
+
+            if (!string.IsNullOrWhiteSpace(information.InformationUrl)) {
+                menu.AddItem("Open information page", () => {
+                    WindowsHelper.ViewInBrowser(information.InformationUrl);
+                });
+            }
+
+            menu.AddSeparator()
+                .AddItem("Ignore update", () => CupClient.Instance.IgnoreUpdate(obj.CupContentType, obj.Id))
+                .AddItem("Ignore all updates", () => CupClient.Instance.IgnoreAllUpdates(obj.CupContentType, obj.Id))
+                .AddItem("Report update as faulty", () => CupClient.Instance.IgnoreAllUpdates(obj.CupContentType, obj.Id));
         }
     }
 }

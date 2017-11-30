@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
@@ -18,6 +19,10 @@ namespace AcManager.Tools.Managers {
         public static TracksManager Initialize() {
             if (Instance != null) throw new Exception("Already initialized");
             return Instance = new TracksManager();
+        }
+
+        private TracksManager() {
+            CupClient.Instance.Register(this, CupContentType.Track);
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;

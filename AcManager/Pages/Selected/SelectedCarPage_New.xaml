@@ -272,7 +272,7 @@
                   </FrameworkElement.ContextMenu>
                 </mui:BetterComboBox>
 
-                <mui:Cell ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                <DockPanel ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <c:PropertiesGrid.Label>
                     <MultiBinding Converter="{x:Static sel:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
                       <Binding Path="SelectedObject" />
@@ -285,10 +285,16 @@
                       <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
-                  <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
-                      TextTrimming="CharacterEllipsis" />
-                  <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
-                </mui:Cell>
+                  <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" c:CupUi.Object="{Binding SelectedObject}">
+                    <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+                  </Button>
+                  <mui:Cell>
+                    <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
+                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
+                  </mui:Cell>
+                </DockPanel>
               </c:PropertiesGrid>
 
               <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">

@@ -46,8 +46,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var trimmed = GetTrimmedPath(ActualWidth);
                 ToolTip = trimmed == text ? null : text;
 
+                var r = new Run(trimmed);
+                r.SetBinding(TextElement.ForegroundProperty, new Binding { Path = new PropertyPath(ForegroundProperty), Source = this });
+                r.SetBinding(Inline.TextDecorationsProperty, new Binding { Path = new PropertyPath(TextBlock.TextDecorationsProperty), Source = this });
+
                 Document.Blocks.Clear();
-                Document.Blocks.Add(new Paragraph(new Run(trimmed)) {
+                Document.Blocks.Add(new Paragraph(r) {
                     TextAlignment = TextAlignment.Left
                 });
             }
@@ -64,11 +68,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var brush = value as SolidColorBrush;
-            if (brush == null) return new SolidColorBrush();
+            if (value is SolidColorBrush brush) {
+                var color = brush.Color;
+                return new SolidColorBrush(Color.FromArgb((byte)(color.A / 2.7), color.R, color.G, color.B));
+            }
 
-            var color = brush.Color;
-            return new SolidColorBrush(Color.FromArgb((byte)(color.A / 2.7), color.R, color.G, color.B));
+            return new SolidColorBrush();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

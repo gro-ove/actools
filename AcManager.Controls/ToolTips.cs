@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -53,6 +54,17 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty TrackProperty = DependencyProperty.RegisterAttached("Track", typeof(TrackObjectBase),
+                typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
+
+        public static ICupSupportedObject GetCupUpdate(DependencyObject obj) {
+            return (ICupSupportedObject)obj.GetValue(CupUpdateProperty);
+        }
+
+        public static void SetCupUpdate(DependencyObject obj, ICupSupportedObject value) {
+            obj.SetValue(CupUpdateProperty, value);
+        }
+
+        public static readonly DependencyProperty CupUpdateProperty = DependencyProperty.RegisterAttached("CupUpdate", typeof(ICupSupportedObject),
                 typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
 
         private static void OnToolTipChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -126,6 +138,11 @@ namespace AcManager.Controls {
             return GetToolTip(@"TrackPreviewTooltip", obj);
         }
 
+        [CanBeNull]
+        public static ToolTip GetCupUpdateToolTip(FrameworkElement obj = null) {
+            return GetToolTip(@"CupUpdateTooltip", obj);
+        }
+
         private static void SetToolTip(FrameworkElement obj, [CanBeNull] ToolTip t, object dataContext) {
             if (t == null) {
                 obj.ToolTip = null;
@@ -188,6 +205,12 @@ namespace AcManager.Controls {
             var track = GetTrack(element);
             if (track != null) {
                 SetToolTip(element, GetTrackToolTip(element), track);
+                return;
+            }
+
+            var cupUpdate = GetCupUpdate(element);
+            if (cupUpdate != null) {
+                SetToolTip(element, GetCupUpdateToolTip(element), cupUpdate);
                 return;
             }
         }

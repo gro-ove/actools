@@ -246,23 +246,38 @@
                     HorizontalAlignment="Center" StrokeThickness="1" />
               </Button>
 
-              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom">
+              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom"
+                  Visibility="{Binding DisplayUpdateFor, Converter={StaticResource NullToVisibilityConverter}}">
                 <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
                     Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Text="Name: " />
+                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Name: " />
                   <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayNameWithUrl, Mode=OneWay}" />
                 </DockPanel>
                 <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Text="File name: " />
+                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="File name: " />
                   <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />
                 </DockPanel>
                 <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Text="Version: " />
+                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Version: " />
                   <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" />
                 </DockPanel>
               </mui:SpacingUniformGrid>
 
-              <TextBlock Style="{StaticResource Small}" Text="Installing from: " DockPanel.Dock="Left" />
+              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="1" DockPanel.Dock="Bottom">
+                <DockPanel Visibility="{Binding PreferCleanInstallation, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 4 0 0">
+                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Clean installation is highly recommended!" FontWeight="Bold" Foreground="{DynamicResource Error}" />
+                </DockPanel>
+              </mui:SpacingUniformGrid>
+
+              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="1" DockPanel.Dock="Bottom">
+                <DockPanel Visibility="{Binding DisplayUpdateFor, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                    Margin="0 4 0 0">
+                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Update for: " />
+                  <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayUpdateFor, Mode=OneWay}" />
+                </DockPanel>
+              </mui:SpacingUniformGrid>
+
+              <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Installing from: " DockPanel.Dock="Left" />
               <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" />
             </DockPanel>
 

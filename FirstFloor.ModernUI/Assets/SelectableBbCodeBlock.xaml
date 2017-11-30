@@ -44,6 +44,22 @@
     <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
   </Style>
 
+  <Style x:Key="RichTextBox.Hyperlink" TargetType="{x:Type RichTextBox}" BasedOn="{StaticResource RichTextBox.ReadOnly}">
+    <Setter Property="Foreground" Value="{DynamicResource Hyperlink}" />
+    <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Control.Foreground" Value="{DynamicResource HyperlinkHover}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Control.Foreground" Value="{DynamicResource HyperlinkDisabled}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter Property="Cursor" Value="Hand" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
   <Style TargetType="c:SelectableBbCodeBlock" BasedOn="{StaticResource RichTextBox.ReadOnly}" />
   <Style TargetType="c:PathTrimmingTextBlock" BasedOn="{StaticResource RichTextBox.ReadOnly}" />
 </ResourceDictionary>

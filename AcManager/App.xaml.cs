@@ -58,6 +58,7 @@ using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -270,6 +271,7 @@ namespace AcManager {
             }
 
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
+            CupClient.Initialize();
             Superintendent.Initialize();
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
@@ -385,9 +387,23 @@ namespace AcManager {
             // paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
 
+            // reshade?
+            var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
+            if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), "kn5only", StringComparison.OrdinalIgnoreCase)) {
+                loadReShade = AppArguments.Values.Any(x => x.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (loadReShade) {
+                var reshade = Path.Combine(MainExecutingFile.Directory, "dxgi.dll");
+                if (File.Exists(reshade)) {
+                    Kernel32.LoadLibrary(reshade);
+                }
+            }
+
             // auto-show that thing
             InstallAdditionalContentDialog.Initialize();
 
+            // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run();
         }
@@ -466,7 +482,7 @@ namespace AcManager {
         private static async void BackgroundInitialization() {
             try {
 #if DEBUG
-                CupClient.Initialize();
+                CupClient.Instance.LoadRegistries();
 #endif
 
                 await Task.Delay(500);
@@ -513,7 +529,7 @@ namespace AcManager {
                 CustomUriSchemeHelper.Initialize();
 
 #if !DEBUG
-                CupClient.Initialize();
+                CupClient.Instance.LoadRegistries();
 #endif
 
                 await Task.Delay(5000);

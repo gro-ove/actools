@@ -185,11 +185,11 @@ namespace AcTools.Render.Shaders {
 		public const uint LightSpot = 2;
 		public const uint LightDirectional = 3;
 		public const uint LightPlane = 4;
-		public const uint LightSphere = 104;
-		public const uint LightTube = 105;
-		public const uint LightLtcPlane = 106;
-		public const uint LightLtcTube = 107;
-		public const uint LightLtcSphere = 104;
+		public const uint LightSphere = 8;
+		public const uint LightTube = 5;
+		public const uint LightLtcPlane = 6;
+		public const uint LightLtcTube = 7;
+		public const uint LightLtcSphere = 8;
 		public const uint LightNoShadows = 1;
 		public const uint LightSmoothShadows = 2;
 		public const uint LightShadowsCube = 4;

@@ -14,6 +14,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Utils;
@@ -34,6 +35,11 @@ namespace AcManager.Tools.ContentInstallation {
         [NotNull]
         public string DisplaySource => Source.Split(new[] { "?password=" }, StringSplitOptions.None)[0];
 
+        [CanBeNull]
+        public string DisplayUpdateFor { get; }
+
+        public bool PreferCleanInstallation { get; }
+
         [NotNull]
         private readonly ContentInstallationParams _installationParams;
 
@@ -42,7 +48,17 @@ namespace AcManager.Tools.ContentInstallation {
             _installationParams = installationParams ?? ContentInstallationParams.Default;
             DisplayName = _installationParams.DisplayName;
             InformationUrl = _installationParams.InformationUrl;
-            Version = _installationParams.DisplayVersion;
+            Version = _installationParams.Version;
+
+            if (_installationParams.CupType.HasValue) {
+                var manager = CupClient.Instance.GetAssociatedManager(_installationParams.CupType.Value);
+                DisplayUpdateFor = _installationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
+                if (string.IsNullOrWhiteSpace(DisplayUpdateFor)) {
+                    DisplayUpdateFor = null;
+                }
+
+                PreferCleanInstallation = _installationParams.PreferCleanInstallation;
+            }
         }
 
         public ContentInstallationEntryState State => _progress.IsReady ? ContentInstallationEntryState.Finished :
@@ -539,6 +555,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             Entries = entries.ToArray();
+                            Entries.ForEach(x => x.SetInstallationParams(_installationParams));
                             ExtraOptions = (await GetExtraOptionsAsync(Entries)).ToArray();
 
                             if (CheckCancellation()) return false;
@@ -554,6 +571,12 @@ namespace AcManager.Tools.ContentInstallation {
 
                             string GetToInstallName(InstallationDetails details) {
                                 return details.OriginalEntry?.DisplayName;
+                            }
+
+                            foreach (var extra in _installationParams.PreInstallation.NonNull()) {
+                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                                await extra(progress, cancellation.Token);
+                                if (CheckCancellation()) return false;
                             }
 
                             foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
@@ -592,6 +615,12 @@ namespace AcManager.Tools.ContentInstallation {
                             if (CheckCancellation()) return false;
 
                             foreach (var extra in ExtraOptions.Select(x => x.PostInstallation).NonNull()) {
+                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                                await extra(progress, cancellation.Token);
+                                if (CheckCancellation()) return false;
+                            }
+
+                            foreach (var extra in _installationParams.PostInstallation.NonNull()) {
                                 _taskbar?.Set(TaskbarState.Indeterminate, 0d);
                                 await extra(progress, cancellation.Token);
                                 if (CheckCancellation()) return false;
@@ -789,21 +818,6 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             return SharpCompressContentInstallator.Create(filename, installationParams, cancellation);
-        }
-
-        private const int ZipLeadBytes = 0x04034b50;
-
-        private static bool IsZipArchive(string filename) {
-            try {
-                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                    var bytes = new byte[4];
-                    fs.Read(bytes, 0, 4);
-                    return BitConverter.ToInt32(bytes, 0) == ZipLeadBytes;
-                }
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return false;
-            }
         }
         #endregion
 

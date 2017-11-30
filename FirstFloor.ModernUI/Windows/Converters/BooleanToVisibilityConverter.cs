@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(bool), typeof(Visibility))]
     public class BooleanToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var flag = value is bool && (bool)value;
+            var flag = value is bool b && b;
             var parameterString = parameter as string ?? "";
             var inverse = parameterString.Contains(@"inverse");
             var hidden = parameterString.Contains(@"hidden");

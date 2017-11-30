@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -14,6 +15,10 @@ namespace AcManager.Tools.Managers {
         public static CarsManager Initialize() {
             if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new CarsManager();
+        }
+
+        private CarsManager() {
+            CupClient.Instance.Register(this, CupContentType.Car);
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;

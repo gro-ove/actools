@@ -519,25 +519,25 @@
     <value>Sorry, but {0} encryption isn’t supported</value>
   </data>
   <data name="Installator_UpdateEverything" xml:space="preserve">
-    <value>Update Everything</value>
+    <value>Update over existing files</value>
   </data>
   <data name="Installator_RemoveExistingFirst" xml:space="preserve">
-    <value>Remove Existing First</value>
+    <value>Clean installation</value>
   </data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>Keep UI Information</value>
+    <value>Update over existing files, keep UI information</value>
   </data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Keep Skins Previews</value>
+    <value>Update over existing files, keep Skins previews</value>
   </data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>Keep UI Information &amp; Skins Previews</value>
+    <value>Update over existing files, keep UI information &amp; skins previews</value>
   </data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
-    <value>Keep Skin Preview</value>
+    <value>Update over existing files, keep skin preview</value>
   </data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>Keep UI Information &amp; Skin Preview</value>
+    <value>Update over existing files, keep UI information &amp; skin preview</value>
   </data>
   <data name="Input_Axle" xml:space="preserve">
     <value>Axle {0}</value>

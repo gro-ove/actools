@@ -14,11 +14,11 @@ static const dword LIGHT_DIRECTIONAL = 3;
 static const dword LIGHT_PLANE = 4;
 
 #if ENABLE_AREA_LIGHTS == 1
-static const dword LIGHT_SPHERE = 104;
-static const dword LIGHT_TUBE = 105;
-static const dword LIGHT_LTC_PLANE = 106;
-static const dword LIGHT_LTC_TUBE = 107;
-static const dword LIGHT_LTC_SPHERE = 104;
+static const dword LIGHT_SPHERE = 8;
+static const dword LIGHT_TUBE = 5;
+static const dword LIGHT_LTC_PLANE = 6;
+static const dword LIGHT_LTC_TUBE = 7;
+static const dword LIGHT_LTC_SPHERE = 8;
 #endif
 
 #define _AREA_LIGHTS_FROM 4

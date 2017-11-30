@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -27,7 +28,7 @@ namespace AcManager.Tools.Helpers {
                     _value = Lazier.Create(() => _values.Select(x => $"{x.Key}={x.Value}").JoinToString(';'));
                 }
 
-                private Lazier<string> _value;
+                private readonly Lazier<string> _value;
                 public string Value => _value.Value;
 
             }
@@ -56,11 +57,15 @@ namespace AcManager.Tools.Helpers {
 
         private readonly CookieContainer _container = new CookieContainer();
 
-        /*[CanBeNull]
-        private string _cookiesHost;
+        public HttpStatusCode StatusCode {
+            get {
+                if (_lastRequest != null && base.GetWebResponse(_lastRequest) is HttpWebResponse response) {
+                    return response.StatusCode;
+                }
 
-        [CanBeNull]
-        private CookieCollection _cookies;*/
+                throw new InvalidOperationException(@"No request were made to get status code");
+            }
+        }
 
         private string _method;
 
@@ -121,6 +126,8 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => Headers[HttpRequestHeader.UserAgent] = oldValue);
         }
 
+        private WebRequest _lastRequest;
+
         protected override WebRequest GetWebRequest(Uri address) {
             if (_debugMode) Logging.Debug(address);
 
@@ -171,6 +178,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            _lastRequest = request;
             return request;
         }
 
@@ -258,6 +266,43 @@ namespace AcManager.Tools.Helpers {
 
             UploadProgressChanged += Handler;
             return new ActionAsDisposable(() => UploadProgressChanged -= Handler);
+        }
+
+        public static async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
+            using (var w = new CookieAwareWebClient())
+            using (w.SetAutoRedirect(false))
+            using (w.SetMethod("HEAD")) {
+                var newUrl = url;
+                do {
+                    try {
+                        await w.DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
+                        switch (w.StatusCode) {
+                            case HttpStatusCode.OK:
+                                return newUrl;
+                            case HttpStatusCode.Redirect:
+                            case HttpStatusCode.MovedPermanently:
+                            case HttpStatusCode.RedirectKeepVerb:
+                            case HttpStatusCode.RedirectMethod:
+                                newUrl = w.ResponseHeaders["Location"];
+                                if (newUrl == null) return url;
+                                if (newUrl.IndexOf(@"://", StringComparison.Ordinal) == -1) {
+                                    // Doesn't have a URL Schema, meaning it's a relative or absolute URL
+                                    var u = new Uri(new Uri(url), newUrl);
+                                    newUrl = u.ToString();
+                                }
+                                break;
+                            default:
+                                return newUrl;
+                        }
+                    } catch (WebException) {
+                        return newUrl;
+                    } catch (Exception ex) {
+                        Logging.Warning(ex);
+                        return null;
+                    }
+                } while (maxRedirectCount-- > 0);
+                return newUrl;
+            }
         }
     }
 }

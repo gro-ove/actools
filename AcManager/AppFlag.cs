@@ -5,26 +5,34 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Manually load ReShade’s dxgi.dll if found. Possible values: on/off/kn5only. With “kn5only”,
+        /// CM will load it only if KN5-file to view was passed in arguments as well. Be careful!
+        /// ReShade can mess up WPF windows!
+        /// Example: --force-reshade=kn5only.
+        /// </summary>
+        ForceReshade,
+
+        /// <summary>
         /// While loading from Google Drive, handle 304 response manually for debug purposes.
-        /// Example: --google-drive-loader-manual-redirect
+        /// Example: --google-drive-loader-manual-redirect.
         /// </summary>
         GoogleDriveLoaderManualRedirect,
 
         /// <summary>
         /// While loading from Google Drive, log a lot of information.
-        /// Example: --google-drive-loader-debug-mode
+        /// Example: --google-drive-loader-debug-mode.
         /// </summary>
         GoogleDriveLoaderDebugMode,
 
         /// <summary>
         /// Detailed logging for pinging a specific by IP-address server online.
-        /// Example: --debug-ping=103.62.50.22
+        /// Example: --debug-ping=103.62.50.22.
         /// </summary>
         DebugPing,
 
         /// <summary>
         /// For testing.
-        /// Example: --sidekick-optimal-range-threshold=0.01
+        /// Example: --sidekick-optimal-range-threshold=0.01.
         /// </summary>
         SidekickOptimalRangeThreshold,
 

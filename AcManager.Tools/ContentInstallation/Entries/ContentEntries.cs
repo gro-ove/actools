@@ -33,7 +33,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public string Name { get; }
 
         [CanBeNull]
-        public string Version { get; }
+        public string Version { get; private set; }
 
         [CanBeNull]
         public byte[] IconData { get; protected set; }
@@ -63,15 +63,16 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
         }
 
-        public abstract bool GenericModSupported { get; }
+        public bool GenericModSupported => GenericModSupportedByDesign && _installationParams?.CupType.HasValue != true;
+        protected abstract bool GenericModSupportedByDesign { get; }
 
         [CanBeNull]
         public abstract string GenericModTypeName { get; }
         public abstract string NewFormat { get; }
         public abstract string ExistingFormat { get; }
 
-        protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null,
-                byte[] iconData = null, string description = null) {
+        protected ContentEntryBase([NotNull] string path, [NotNull] string id,
+                string name = null, string version = null, byte[] iconData = null, string description = null) {
             EntryPath = path ?? throw new ArgumentNullException(nameof(path));
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Name = name ?? id;
@@ -109,8 +110,19 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             OnPropertyChanged(nameof(SelectedOption));
         }
 
+        private ContentInstallationParams _installationParams;
+
+        public void SetInstallationParams([NotNull] ContentInstallationParams installationParams) {
+            _installationParams = installationParams;
+            if (_installationParams.CupType.HasValue && _installationParams.Version != null) {
+                Version = _installationParams.Version;
+            }
+        }
+
         protected virtual UpdateOption GetDefaultUpdateOption(UpdateOption[] list) {
-            return list.FirstOrDefault();
+            return _installationParams?.PreferCleanInstallation == true
+                    ? (list.FirstOrDefault(x => x.RemoveExisting) ?? list.FirstOrDefault())
+                    : list.FirstOrDefault();
         }
 
         private UpdateOption _selectedOption;
@@ -290,7 +302,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
 
-        public sealed override bool GenericModSupported => true;
+        protected sealed override bool GenericModSupportedByDesign => true;
 
         public abstract FileAcManager<T> GetManager();
 

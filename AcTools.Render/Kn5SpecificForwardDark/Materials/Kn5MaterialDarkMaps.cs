@@ -98,7 +98,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             var tech = GetTechnique(mode);
 
-            if (tech == Effect.TechMaps && TesselationMode != TesselationMode.Disabled && EffectDarkMaterial.EnableTesselation) {
+            if (tech == Effect.TechMaps_NoAlpha && TesselationMode != TesselationMode.Disabled && EffectDarkMaterial.EnableTesselation) {
                 contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
                 switch (TesselationMode) {

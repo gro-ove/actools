@@ -368,7 +368,10 @@
     <Compile Include="Miscellaneous\AuthenticodeTools.cs" />
     <Compile Include="Miscellaneous\CarUtils.cs" />
     <Compile Include="Miscellaneous\CupClient.cs" />
+    <Compile Include="Miscellaneous\CupContentType.cs" />
+    <Compile Include="Miscellaneous\CupEventArgs.cs" />
     <Compile Include="Miscellaneous\FakeCarsHelper.cs" />
+    <Compile Include="Miscellaneous\ICupSupportedObject.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\OAuth.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
@@ -376,6 +379,7 @@
     <Compile Include="Objects\CarObject.CustomData.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />
     <Compile Include="Objects\DriverModelObject.cs" />

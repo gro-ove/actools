@@ -82,14 +82,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             baseMatrix = _currentLodObject.GetOriginalRelativeToModelMatrix(node);
 
             BaseMatrixSet:
-            Vector3 position, scale;
-            Quaternion rotation;
-            baseMatrix.Decompose(out scale, out rotation, out position);
+            baseMatrix.Decompose(out var scale, out var rotation, out var position);
 
             var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
             var p = new Plane(position, rotationAxis);
-            Vector3 con;
-            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out con)) {
+            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out var con)) {
                 AcToolsLogging.Write("10f is not enough!?");
                 return null;
             }
@@ -106,8 +103,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [ItemNotNull]
         private static IEnumerable<string> GetWheelNodesNames([NotNull] IRenderableObject parent, string namePostfix) {
-            var c = parent as Kn5RenderableCar;
-            var getDummyByName = c != null ? (Func<string, RenderableList>)c.GetDummyByName :
+            var getDummyByName = parent is Kn5RenderableCar c ? (Func<string, RenderableList>)c.GetDummyByName :
                 ((RenderableList)parent).GetDummyByName;
 
             var susp = $@"SUSP_{namePostfix}";
@@ -130,8 +126,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var getDummyByName = c != null ? (Func<string, RenderableList>)c.GetDummyByName :
                 ((RenderableList)parent).GetDummyByName;
 
-            var names = GetWheelNodesNames(parent, namePostfix);
-
+            var names = GetWheelNodesNames(parent, namePostfix).ToList();
             var wheel = getDummyByName($@"WHEEL_{namePostfix}") as Kn5RenderableList;
             var result = collectNodes ? new List<Kn5RenderableList>() : null;
             if (wheel == null) return result;
@@ -156,6 +151,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 AcToolsLogging.Write("res: " + (callback(node) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted));*/
 
+                names.Remove(node.Name);
                 node.LocalMatrix = /*Matrix.Scaling(node.GetOriginalScale()) **/ (callback(node) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
                 /*AcToolsLogging.Write(node.LocalMatrix);*/
@@ -263,21 +259,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private void UpdatePreudoSteer() {
             var pack = SuspensionsPack;
-            var front = pack.Front as CarData.IndependentSuspensionsGroup;
-            if (front == null) return;
+            if (pack.Front is CarData.IndependentSuspensionsGroup front) {
+                var angle = SteerDeg;
+                if (Equals(_steerDegPrevious, angle) && Equals(_wheelsPosPrevious, _wheelsPosition)) return;
+                _steerDegPrevious = angle;
+                _wheelsPosPrevious = _wheelsPosition;
 
-            var angle = SteerDeg;
-            if (Equals(_steerDegPrevious, angle) && Equals(_wheelsPosPrevious, _wheelsPosition)) return;
-            _steerDegPrevious = angle;
-            _wheelsPosPrevious = _wheelsPosition;
+                SteerWheel(true, pack, front.Left, angle);
+                SteerWheel(false, pack, front.Right, angle);
+                SteerSteeringWheel(GetSteerOffset());
+                UpdateDriverSteerAnimation(GetSteerOffset());
 
-            SteerWheel(true, pack, front.Left, angle);
-            SteerWheel(false, pack, front.Right, angle);
-            SteerSteeringWheel(GetSteerOffset());
-            UpdateDriverSteerAnimation(GetSteerOffset());
-
-            UpdateFrontWheelsShadowsRotation();
-            _skinsWatcherHolder?.RaiseSceneUpdated();
+                UpdateFrontWheelsShadowsRotation();
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+            }
         }
         #endregion
 

@@ -312,8 +312,12 @@ namespace AcManager.Tools.AcObjectsNew {
                     OnPropertyChanged(nameof(VersionInfoDisplay));
                     Changed = true;
                 }
+
+                OnVersionChanged();
             }
         }
+
+        protected virtual void OnVersionChanged() { }
 
         private string _url;
 
