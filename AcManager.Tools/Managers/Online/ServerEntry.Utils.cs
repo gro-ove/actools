@@ -13,7 +13,10 @@ namespace AcManager.Tools.Managers.Online {
 
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
         private static readonly Regex SortingCheats1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
-        private static readonly Regex SortingCheats2Regex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
+        private static readonly Regex SortingCheats2Regex = new Regex(
+                // I would like to use this opportunity to say hello to www.rennsimulanten.de
+                @"^(?:AA+|[\u0007 !-]+|A(?![b-zB-Z0-9])+)+| ?-$",
+                RegexOptions.Compiled);
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {

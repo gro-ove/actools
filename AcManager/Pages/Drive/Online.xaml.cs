@@ -34,11 +34,24 @@ using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : IParametrizedUriContent, IContent {
-        private string _hideIconSourceId;
+        private string[] _hideIconSourceIds;
 
         private void SetHideIcon() {
             var sources = Model.Pack.SourceWrappers;
-            _hideIconSourceId = sources.Count == 1 ? sources[0].Id : null;
+
+            var hideIcons = new List<string>();
+            if (sources.Count == 1) {
+                hideIcons.Add(sources[0].Id);
+            }
+
+            if (sources.All(x => x.Id != MinoratingOnlineSource.Key)) {
+                // As @Topuz pointed out, same inputs shouldn’t provide different output. So,
+                // if user visited a list of servers without Minorating details loaded, then switched
+                // to Minorating tab, and then back, they shouldn’t see those icons suddenly appeared.
+                hideIcons.Add(MinoratingOnlineSource.Key);
+            }
+
+            _hideIconSourceIds = hideIcons.ToArray();
         }
 
         public void OnUri(Uri uri) {
@@ -116,7 +129,7 @@ namespace AcManager.Pages.Drive {
                         factory.SetValue(StyleProperty, FindResource(@"OnlineItem.Plus"));
                     }
 
-                    factory.SetValue(OnlineItem.HideSourceIconProperty, _hideIconSourceId);
+                    factory.SetValue(OnlineItem.HideSourceIconsProperty, _hideIconSourceIds);
 
                     ServersListBox.ItemTemplate = new DataTemplate(typeof(OnlineItem)) {
                         VisualTree = factory

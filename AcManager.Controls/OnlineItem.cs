@@ -74,16 +74,19 @@ namespace AcManager.Controls {
             _errorIcons.Add(released);
         }
 
-        public static readonly DependencyProperty HideSourceIconProperty = DependencyProperty.Register(nameof(HideSourceIcon), typeof(string),
-                typeof(OnlineItem), new PropertyMetadata(null));
+        public static readonly DependencyProperty HideSourceIconsProperty = DependencyProperty.Register(nameof(HideSourceIcons), typeof(string[]),
+                typeof(OnlineItem), new PropertyMetadata(null, (o, e) => {
+                    ((OnlineItem)o)._hideSourceIcons = (string[])e.NewValue;
+                }));
+
+        private string[] _hideSourceIcons;
 
         /// <summary>
         /// ID of the source which icon is should be hidden.
         /// </summary>
-        [CanBeNull]
-        public string HideSourceIcon {
-            get { return (string)GetValue(HideSourceIconProperty); }
-            set { SetValue(HideSourceIconProperty, value); }
+        public string[] HideSourceIcons {
+            get => _hideSourceIcons;
+            set => SetValue(HideSourceIconsProperty, value);
         }
 
         private Inline _minoratingIcon;
@@ -120,8 +123,8 @@ namespace AcManager.Controls {
                 typeof(OnlineItem), new PropertyMetadata(OnServerChanged));
 
         public ServerEntry Server {
-            get { return (ServerEntry)GetValue(ServerProperty); }
-            set { SetValue(ServerProperty, value); }
+            get => (ServerEntry)GetValue(ServerProperty);
+            set => SetValue(ServerProperty, value);
         }
 
         private static void OnServerChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -132,13 +135,11 @@ namespace AcManager.Controls {
             }
         }
 
-        private string _hideIcon;
-
         private readonly Dictionary<string, Inline> _customIcons = new Dictionary<string, Inline>();
 
         [CanBeNull]
         private Inline GetIcon(string originId) {
-            if (originId == _hideIcon) return null;
+            if (_hideSourceIcons != null && Array.IndexOf(_hideSourceIcons, originId) != -1) return null;
 
             switch (originId) {
                 case FileBasedOnlineSources.FavouritesKey:
@@ -203,7 +204,6 @@ namespace AcManager.Controls {
         private void UpdateName(ServerEntry n) {
             if (n.ReferencesString != _origins) {
                 _origins = n.ReferencesString;
-                _hideIcon = HideSourceIcon;
 
                 var icons = n.GetReferencesIds().Select(GetIcon).NonNull().ToList();
                 if (icons.Any()) {
@@ -225,7 +225,7 @@ namespace AcManager.Controls {
         }
 
         private void UpdateCountryFlag(ServerEntry n) {
-            if (HideSourceIcon != LanOnlineSource.Key) {
+            if (_hideSourceIcons == null || Array.IndexOf(_hideSourceIcons, LanOnlineSource.Key) == -1) {
                 _countryFlagImage.Source = CountryIdToImageConverter.Convert(n.CountryId);
             } else if (_countryFlagImage.Visibility != Visibility.Hidden) {
                 _countryFlagImage.Visibility = Visibility.Collapsed;
