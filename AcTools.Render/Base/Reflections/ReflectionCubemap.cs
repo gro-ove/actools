@@ -156,6 +156,8 @@ namespace AcTools.Render.Base.Reflections {
             _dirty = dirty ? 63 : 0;
         }
 
+        public bool IsDirty => _dirty != 0;
+
         protected virtual void OnCubemapUpdate(DeviceContextHolder holder) {
             if (_mipLevels > 1) {
                 holder.DeviceContext.GenerateMips(_view);
@@ -164,8 +166,8 @@ namespace AcTools.Render.Base.Reflections {
 
         private int _previouslyUpdated;
 
-        public bool DrawScene(DeviceContextHolder holder, IReflectionDraw draw, int facesPerFrame) {
-            if (facesPerFrame == 0 || _dirty == 0) return true;
+        public void DrawScene(DeviceContextHolder holder, IReflectionDraw draw, int facesPerFrame) {
+            if (facesPerFrame == 0 || _dirty == 0) return;
 
             using (holder.SaveRenderTargetAndViewport()) {
                 holder.DeviceContext.Rasterizer.SetViewports(_viewport);
@@ -188,8 +190,6 @@ namespace AcTools.Render.Base.Reflections {
 
                 OnCubemapUpdate(holder);
             }
-
-            return facesPerFrame >= 0;
         }
 
         public void Dispose() {

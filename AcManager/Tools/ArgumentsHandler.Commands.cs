@@ -304,11 +304,7 @@ namespace AcManager.Tools {
 
         private static async Task<ArgumentHandleResult> ProcessRsrSetup(string id) {
             string data, header;
-            using (var client = new WebClient {
-                Headers = {
-                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                }
-            }) {
+            using (var client = new WebClient()) {
                 data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
                 header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
             }

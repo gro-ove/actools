@@ -1047,12 +1047,12 @@
             ItemsSource="{x:Static cs:DarkRendererSettings.CubemapReflectionResolutions}" DisplayMemberPath="DisplayName" />
       </DockPanel>
 
-      <DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}">
+      <!--<DockPanel IsEnabled="{Binding Renderer.IsCubemapReflectionActive}">
         <mui:ValueLabel mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Faces per frame"
             Value="{Binding Renderer.CubemapReflectionFacesPerFrame}" />
         <Slider Minimum="1" Maximum="6" Value="{Binding Renderer.CubemapReflectionFacesPerFrame}" TickFrequency="1" TickPlacement="BottomRight"
             IsSnapToTickEnabled="True" />
-      </DockPanel>
+      </DockPanel>-->
 
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetQualityCommand}" />
     </mui:SpacingStackPanel>

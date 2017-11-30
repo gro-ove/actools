@@ -46,7 +46,9 @@ namespace AcManager.Controls.Dialogs {
 
             Buttons = new[] {
                 CreateCloseDialogButton("Update", true, false, MessageBoxResult.OK, new AsyncCommand(() =>
-                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id, default(CancellationToken)))),
+                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id))),
+                CreateCloseDialogButton("Report Update As Broken", false, true, MessageBoxResult.No,
+                        new AsyncCommand(() => CupClient.Instance.ReportUpdateAsync(obj.CupContentType, obj.Id))),
                 CloseButton
             };
         }

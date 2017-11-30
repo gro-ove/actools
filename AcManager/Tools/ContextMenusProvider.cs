@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -74,12 +73,18 @@ namespace AcManager.Tools {
             var information = obj.CupUpdateInformation;
             if (information == null) return;
 
-            if (information.IsLimited) {
+            if (information.IsToUpdateManually) {
                 menu.AddItem("Download and install update", new AsyncCommand(() =>
-                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id, default(CancellationToken))),
+                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id)),
                         iconData: (Geometry)Icons["UpdateIconData"]);
                 menu.AddItem("Download update", new AsyncCommand(async () => {
                     WindowsHelper.ViewInBrowser(await CupClient.Instance.GetUpdateUrlAsync(obj.CupContentType, obj.Id));
+                }));
+                menu.AddSeparator();
+            } else {
+                menu.AddItem("Get update", new AsyncCommand(async () => {
+                    WindowsHelper.ViewInBrowser(await CupClient.Instance.GetUpdateUrlAsync(obj.CupContentType, obj.Id)
+                            ?? obj.CupUpdateInformation?.InformationUrl);
                 }));
                 menu.AddSeparator();
             }
@@ -95,7 +100,7 @@ namespace AcManager.Tools {
             menu.AddSeparator()
                 .AddItem("Ignore update", () => CupClient.Instance.IgnoreUpdate(obj.CupContentType, obj.Id))
                 .AddItem("Ignore all updates", () => CupClient.Instance.IgnoreAllUpdates(obj.CupContentType, obj.Id))
-                .AddItem("Report update as faulty", () => CupClient.Instance.IgnoreAllUpdates(obj.CupContentType, obj.Id));
+                .AddItem("Report update as broken", new AsyncCommand(() => CupClient.Instance.ReportUpdateAsync(obj.CupContentType, obj.Id)));
         }
     }
 }

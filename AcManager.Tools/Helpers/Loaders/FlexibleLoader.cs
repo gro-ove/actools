@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -123,11 +122,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
-            using (var order = KillerOrder.Create(new CookieAwareWebClient {
-                Headers = {
-                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                }
-            }, TimeSpan.FromMinutes(10))) {
+            using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
 
                 if (_proxy != null) {
@@ -146,11 +141,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
-                using (var order = KillerOrder.Create(new CookieAwareWebClient {
-                    Headers = {
-                        [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                    }
-                }, TimeSpan.FromMinutes(10))) {
+                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                     var client = order.Victim;
 
                     if (_proxy != null) {

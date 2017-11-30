@@ -27,7 +27,7 @@
 
     <c:PropertiesGrid Columns="1" HorizontalSpacing="12" VerticalSpacing="4" Margin="0 0 0 0" LabelPadding="0 1 0 0" LabelWidth="180"
         DataContext="{Binding CupObject}">
-      <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsLimited}">
+      <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsToUpdateManually}">
         <mui:BooleanSwitch.True>
           <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
         </mui:BooleanSwitch.True>

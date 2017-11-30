@@ -301,7 +301,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private bool _isCubemapReflectionActive = false;
+        private bool _isCubemapReflectionActive;
 
         public bool IsCubemapReflectionActive {
             get => _isCubemapReflectionActive;
@@ -505,6 +505,17 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private bool _forceUpdateWholeCubemapAtOnce;
+
+        public bool ForceUpdateWholeCubemapAtOnce {
+            get => _forceUpdateWholeCubemapAtOnce;
+            set {
+                if (Equals(value, _forceUpdateWholeCubemapAtOnce)) return;
+                _forceUpdateWholeCubemapAtOnce = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _cubemapReflectionFacesPerFrame = 1;
 
         public int CubemapReflectionFacesPerFrame {
@@ -547,7 +558,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (_reflectionCubemap != null) {
                 _reflectionCubemap.Update(reflectionPosition);
                 _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
-                if (!_reflectionCubemap.DrawScene(DeviceContextHolder, this, ShotDrawInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
+
+                _reflectionCubemap.DrawScene(DeviceContextHolder, this,
+                        ShotDrawInProcess || ForceUpdateWholeCubemapAtOnce ? 6 : CubemapReflectionFacesPerFrame);
+                if (_reflectionCubemap.IsDirty) {
+                    // Finish updating in the next frame
                     IsDirty = true;
                 }
             }

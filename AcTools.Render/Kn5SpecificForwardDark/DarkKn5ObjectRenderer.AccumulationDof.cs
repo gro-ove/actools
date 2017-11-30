@@ -102,45 +102,54 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return new ActionAsDisposable(() => { Camera = camera; });
         }
 
+        private bool _accumulationDofShotInProcess;
+
         protected override void DrawShot(RenderTargetView target, IProgress<double> progress, CancellationToken cancellation) {
             if (UseDof && UseAccumulationDof && target != null) {
                 var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+
                 _useDof = false;
+                _accumulationDofShotInProcess = true;
 
-                if (IsDirty) {
-                    _realTimeAccumulationSize = 0;
-                }
-
-                using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
-                using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                    summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
-                    temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
-                    DeviceContext.ClearRenderTargetView(summary.TargetView, default(Color4));
-                    DeviceContext.ClearRenderTargetView(temporary.TargetView, default(Color4));
-
-                    var iterations = AccumulationDofIterations;
-                    for (var i = 0; i < iterations; i++) {
-                        if (cancellation.IsCancellationRequested) return;
-
-                        Vector2 direction;
-                        do {
-                            direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
-                        } while (direction.LengthSquared() > 1f);
-
-                        using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f))) {
-                            progress?.Report(0.05 + 0.9 * i / iterations);
-                            base.DrawShot(temporary.TargetView, progress, cancellation);
-                        }
-
-                        DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-                        copy.DrawSqr(DeviceContextHolder, temporary.View, summary.TargetView);
-                        DeviceContext.OutputMerger.BlendState = null;
+                try {
+                    if (IsDirty) {
+                        _realTimeAccumulationSize = 0;
                     }
 
-                    copy.AccumulateDivide(DeviceContextHolder, summary.View, target, iterations);
+                    using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
+                    using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                        summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                        temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                        DeviceContext.ClearRenderTargetView(summary.TargetView, default(Color4));
+                        DeviceContext.ClearRenderTargetView(temporary.TargetView, default(Color4));
+
+                        var iterations = AccumulationDofIterations;
+                        for (var i = 0; i < iterations; i++) {
+                            if (cancellation.IsCancellationRequested) return;
+
+                            Vector2 direction;
+                            do {
+                                direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
+                            } while (direction.LengthSquared() > 1f);
+
+                            using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f))) {
+                                progress?.Report(0.05 + 0.9 * i / iterations);
+                                base.DrawShot(temporary.TargetView, progress, cancellation);
+                            }
+
+                            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
+                            copy.DrawSqr(DeviceContextHolder, temporary.View, summary.TargetView);
+                            DeviceContext.OutputMerger.BlendState = null;
+                        }
+
+                        copy.AccumulateDivide(DeviceContextHolder, summary.View, target, iterations);
+                    }
+
+                } finally {
+                    _useDof = true;
+                    _accumulationDofShotInProcess = false;
                 }
 
-                _useDof = true;
                 return;
             }
 

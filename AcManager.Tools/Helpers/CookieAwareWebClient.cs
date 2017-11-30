@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -12,6 +13,10 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public class CookieAwareWebClient : WebClient {
+        public CookieAwareWebClient() {
+            Headers[HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent;
+        }
+
         private class CookieContainer {
             private class CookieHolder {
                 private readonly Dictionary<string, string> _values = new Dictionary<string, string>();

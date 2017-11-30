@@ -785,8 +785,7 @@ namespace AcManager.Tools.Objects {
             json[@"maxCars"] = MaxCars;
 
             // Save rules
-            var jobj = json[@"rules"] as JObject;
-            if (jobj == null) {
+            if (!(json[@"rules"] is JObject jobj)) {
                 json[@"rules"] = jobj = new JObject();
             }
             Rules.SaveTo(jobj);
@@ -985,7 +984,6 @@ namespace AcManager.Tools.Objects {
         #region Version info
         private string _author;
 
-        [CanBeNull]
         public string Author {
             get => _author;
             set {
@@ -1003,7 +1001,6 @@ namespace AcManager.Tools.Objects {
 
         private string _version;
 
-        [CanBeNull]
         public string Version {
             get => _version;
             set {
@@ -1020,7 +1017,6 @@ namespace AcManager.Tools.Objects {
 
         private string _url;
 
-        [CanBeNull]
         public string Url {
             get => _url;
             set {
@@ -1243,10 +1239,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public int Compare(object x, object y) {
-            var xc = x as UserChampionshipDriver;
-            var yc = y as UserChampionshipDriver;
-            if (xc == null || yc == null) return 0;
-            return yc.Points - xc.Points;
+            return x is UserChampionshipDriver xc && y is UserChampionshipDriver yc ? yc.Points - xc.Points : 0;
         }
 
         private ListCollectionView _championshipDriversView;
@@ -1432,7 +1425,7 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
             UserChampionshipsProgress.Instance.UpdateEntry(Id.ApartFromLast(FileExtension), new UserChampionshipProgressEntry(0, null, 0, null), true);
-        }, () => Type == KunosCareerObjectType.Championship && IsStarted));
+        }, () => Type == KunosCareerObjectType.Championship));
         #endregion
     }
 }

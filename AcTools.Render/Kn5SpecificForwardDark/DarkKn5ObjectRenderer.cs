@@ -17,7 +17,6 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -413,25 +412,81 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         protected override void SetReflectionCubemapDirty() {
             base.SetReflectionCubemapDirty();
-            for (var i = 0; i < _sphericalHarmonics.Count; i++) {
-                _sphericalHarmonics[i].SetDirty();
+            for (var i = 0; i < _lightProbes.Count; i++) {
+                _lightProbes[i].SetDirty();
             }
         }
 
-        private readonly List<SphericalHarmonic> _sphericalHarmonics = new List<SphericalHarmonic>();
+        private readonly List<LightProbe> _lightProbes = new List<LightProbe>();
 
         private readonly LazierFn<float, float> _cubemapReflectionOffset =
                 new LazierFn<float, float>(v => (float)((Math.Log(v, 2) - 11) / 8.0));
 
         protected override void InitializeInner() {
             base.InitializeInner();
-            for (var i = 0; i < _sphericalHarmonics.Count; i++) {
-                _sphericalHarmonics[i].Initialize(DeviceContextHolder);
+            for (var i = 0; i < _lightProbes.Count; i++) {
+                _lightProbes[i].Initialize(DeviceContextHolder);
+            }
+        }
+
+        private void PrepareLightProbes() {
+            if (CubemapAmbient <= 0f) return;
+
+            var slots = CarSlots;
+            var slotsCount = CarSlots.Length;
+            var shs = _lightProbes;
+
+            if (shs.Count != slotsCount) {
+                while (shs.Count < slotsCount) {
+                    var sh = new LightProbe();
+                    sh.Initialize(DeviceContextHolder);
+                    shs.Add(sh);
+                }
+
+                for (var i = shs.Count - 1; i >= slotsCount; i--) {
+                    shs[i].Dispose();
+                    shs.RemoveAt(i);
+                }
+            }
+
+            var shotAll = ShotDrawInProcess || ForceUpdateWholeCubemapAtOnce;
+            var shotAny = false;
+            for (var i = 0; i < slotsCount; i++) {
+                var sh = shs[i];
+                var center = slots[i].GetCarBoundingBox()?.GetCenter();
+                if (center.HasValue) {
+                    sh.Update(center.Value);
+                    sh.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
+                    if (!sh.IsDirty) continue;
+
+                    if (shotAny) {
+                        // Something already was shot in this frame, wait for the next…
+                        IsDirty = true;
+
+                        // No point checking other light probes:
+                        break;
+                    }
+
+                    sh.DrawScene(DeviceContextHolder, this, shotAll ? 6 : CubemapReflectionFacesPerFrame);
+                    if (!shotAll && sh.IsDirty) {
+                        // Wait for next frame
+                        IsDirty = true;
+
+                        // No point checking other light probes:
+                        break;
+                    }
+
+                    shotAny = !shotAll;
+                }
             }
         }
 
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection,
                 bool singleLight) {
+            if (reflection != null) {
+                PrepareLightProbes();
+            }
+
             var effect = Effect;
             effect.FxEyePosW.Set(eyesPosition);
             effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
@@ -460,8 +515,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 effect.FxCubemapReflectionsOffset.Set(_cubemapReflectionOffset.Get(CubemapReflectionMapSize));
             }
 
-            effect.FxCubemapAmbient.Set(reflection == null ? 0f : FxCubemapAmbientValue);
-
             // Shadows
             var useShadows = EnableShadows && LightBrightness > 0f && shadows != null;
             effect.FxNumSplits.Set(useShadows ? _numSplits : 0);
@@ -484,35 +537,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             effect.FxReflectionCubemap.SetResource(reflection?.View);
-
-            // Spherical harmonics
-            if (CubemapAmbient > 0f) {
-                while (_sphericalHarmonics.Count < CarSlots.Length) {
-                    var sh = new SphericalHarmonic();
-                    sh.Initialize(DeviceContextHolder);
-                    _sphericalHarmonics.Add(sh);
-                }
-
-                for (var i = _sphericalHarmonics.Count - 1; i >= CarSlots.Length; i--) {
-                    _sphericalHarmonics[i].Dispose();
-                    _sphericalHarmonics.RemoveAt(i);
-                }
-
-                var anyShUpdated = false;
-                for (var i = 0; i < CarSlots.Length; i++) {
-                    var sh = _sphericalHarmonics[i];
-                    var center = CarSlots[i].GetCarBoundingBox()?.GetCenter();
-                    if (center.HasValue) {
-                        sh.Update(center.Value);
-
-                        sh.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
-                        if (!anyShUpdated && !sh.DrawScene(DeviceContextHolder, this, ShotDrawInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
-                            IsDirty = true;
-                            anyShUpdated = true;
-                        }
-                    }
-                }
-            }
+            effect.FxCubemapAmbient.Set(reflection == null ? 0f : FxCubemapAmbientValue);
 
 #if DEBUG
             var debugReflections = DeviceContextHolder.GetEffect<EffectSpecialDebugReflections>();
@@ -522,7 +547,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void DrawCars(DeviceContextHolder holder, ICamera camera, SpecialRenderMode mode) {
-            var sh = _sphericalHarmonics;
+            var sh = _lightProbes;
             for (var i = CarSlots.Length - 1; i >= 0; i--) {
                 if (i < sh.Count) {
                     _effect.FxLightProbe.Set(sh[i].Values);
@@ -879,7 +904,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
 
                     aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView,
-                            AoOpacity, aoRadius, UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep);
+                            AoOpacity, aoRadius, UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep || _accumulationDofShotInProcess);
                     aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
                 } else {
                     DeviceContext.ClearRenderTargetView(_aoBuffer.TargetView, new Color4(1f, 1f, 1f, 1f));
@@ -1118,7 +1143,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DisposeHelper.Dispose(ref _accumulationMaxTexture);
             DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
             DisposeHelper.Dispose(ref _accumulationBaseTexture);
-            _sphericalHarmonics.DisposeEverything();
+            _lightProbes.DisposeEverything();
 
             DisposeLights();
             base.DisposeOverride();

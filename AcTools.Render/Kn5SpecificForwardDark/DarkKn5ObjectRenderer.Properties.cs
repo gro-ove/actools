@@ -378,7 +378,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 OnPropertyChanged();
 
                 if (value <= 0f) {
-                    _sphericalHarmonics.DisposeEverything();
+                    _lightProbes.DisposeEverything();
                 }
             }
         }

@@ -44,7 +44,7 @@
         <StackPanel Margin="20 8">
           <TextBlock Text="New version is available!" Style="{StaticResource Heading1}" />
           <c:PropertiesGrid Columns="1" HorizontalSpacing="4" VerticalSpacing="4" Margin="0 8 0 0" LabelPadding="0 1 0 0" LabelWidth="160">
-            <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsLimited}">
+            <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsToUpdateManually}">
               <mui:BooleanSwitch.True>
                 <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
               </mui:BooleanSwitch.True>

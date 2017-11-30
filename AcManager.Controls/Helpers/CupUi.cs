@@ -27,8 +27,7 @@ namespace AcManager.Controls.Helpers {
                 element.PreviewMouseLeftButtonUp -= OnButtonMouseUp;
                 element.PreviewMouseLeftButtonUp += OnButtonMouseUp;
 
-                element.Command = new AsyncCommand(() => CupClient.Instance.InstallUpdateAsync(newValue.CupContentType,
-                        newValue.Id, default(CancellationToken)));
+                element.Command = new AsyncCommand(() => CupClient.Instance.InstallUpdateAsync(newValue.CupContentType, newValue.Id));
                 element.SetBinding(UIElement.VisibilityProperty, new Binding {
                     Path = new PropertyPath(nameof(newValue.IsCupUpdateAvailable)),
                     Converter = new BooleanToVisibilityConverter(),

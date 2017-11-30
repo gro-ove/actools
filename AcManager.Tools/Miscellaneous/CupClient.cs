@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -13,6 +12,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,9 +29,13 @@ namespace AcManager.Tools.Miscellaneous {
             Instance = new CupClient();
         }
 
-        private CupClient() { }
+        private readonly Storage _storage;
 
-        private Dictionary<CupContentType, IAcManagerNew> _managers = new Dictionary<CupContentType, IAcManagerNew>();
+        private CupClient() {
+            _storage = new Storage(FilesStorage.Instance.GetFilename("Progress", "CUP.data"));
+        }
+
+        private readonly Dictionary<CupContentType, IAcManagerNew> _managers = new Dictionary<CupContentType, IAcManagerNew>();
 
         [CanBeNull]
         public IAcManagerNew GetAssociatedManager(CupContentType type) {
@@ -49,7 +53,9 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public void LoadRegistries() {
+#if DEBUG
             CheckRegistriesAsync().Forget();
+#endif
         }
 
         private async Task CheckRegistriesAsync() {
@@ -99,7 +105,7 @@ namespace AcManager.Tools.Miscellaneous {
             [NotNull]
             public string Version { get; }
 
-            public bool IsLimited { get; }
+            public bool IsToUpdateManually { get; }
 
             internal string SourceRegistry;
             internal bool IsExtendedLoaded;
@@ -131,17 +137,17 @@ namespace AcManager.Tools.Miscellaneous {
             [JsonConstructor]
             private CupInformation(string version, bool limited) {
                 Version = version;
-                IsLimited = limited;
+                IsToUpdateManually = limited;
             }
 
-            public CupInformation([NotNull] string version, bool isLimited, string sourceRegistry) {
+            public CupInformation([NotNull] string version, bool limited, string sourceRegistry) {
                 Version = version ?? throw new ArgumentNullException(nameof(version));
-                IsLimited = isLimited;
-                SourceRegistry = sourceRegistry;
+                IsToUpdateManually = limited;
+                SourceRegistry = sourceRegistry.ApartFromLast("/");
             }
 
             public override string ToString() {
-                return $"(version={Version}; limited={IsLimited})";
+                return $"(version={Version}; limited={IsToUpdateManually})";
             }
         }
 
@@ -151,8 +157,9 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadExtendedInformation(CupKey key, string registry) {
             try {
-                var data = JsonConvert.DeserializeObject<CupInformation>(await Cache.GetStringAsync($"{registry}/{key.Type.ToString().ToLowerInvariant()}/{key.Id}"));
-                data.SourceRegistry = registry;
+                var data =
+                        JsonConvert.DeserializeObject<CupInformation>(await Cache.GetStringAsync($"{registry}/{key.Type.ToString().ToLowerInvariant()}/{key.Id}"));
+                data.SourceRegistry = registry.ApartFromLast("/");
                 data.IsExtendedLoaded = true;
                 RegisterLatestVersion(key, data);
             } catch (Exception e) {
@@ -180,31 +187,60 @@ namespace AcManager.Tools.Miscellaneous {
             var information = GetInformation(type, id);
             if (information == null || information._updateUrl != null) return Task.FromResult(information?._updateUrl);
 
-            var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
             return _installationUrlTaskCache.Get(async () => {
-                var updateUrl = await CookieAwareWebClient.GetFinalRedirectAsync(url);
-                if (updateUrl != null) {
-                    information._updateUrl = updateUrl;
+                try {
+                    var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
+                    var updateUrl = await CookieAwareWebClient.GetFinalRedirectAsync(url);
+                    if (updateUrl != null) {
+                        information._updateUrl = updateUrl;
+                    }
+                    return updateUrl;
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t download an update", e);
+                    return null;
                 }
-                return updateUrl;
-            }, url);
+            }, type, id);
+        }
+
+        private readonly TaskCache _reportTaskCache = new TaskCache();
+
+        public Task<bool> ReportUpdateAsync(CupContentType type, [NotNull] string id) {
+            var information = GetInformation(type, id);
+            if (information == null) return Task.FromResult(false);
+
+            return _reportTaskCache.Get(async () => {
+                try {
+                    var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/complain";
+                    using (var client = new CookieAwareWebClient()) {
+                        await client.DownloadStringTaskAsync(url);
+                        IgnoreUpdate(type, id);
+                        Toast.Show("Update Reported", "Update reported and will be ignored. Thank you for your participation");
+                        return true;
+                    }
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t report an update", e);
+                    return false;
+                }
+            }, type, id);
         }
 
         private readonly TaskCache _installTaskCache = new TaskCache();
 
-        public Task<bool> InstallUpdateAsync(CupContentType type, [NotNull] string id, CancellationToken cancellationToken) {
+        public Task<bool> InstallUpdateAsync(CupContentType type, [NotNull] string id) {
             var information = GetInformation(type, id);
             if (information == null) return Task.FromResult(false);
 
-            if (information.IsLimited) {
-                WindowsHelper.ViewInBrowser(information.InformationUrl);
-                return Task.FromResult(false);
-            }
-
             return _installTaskCache.Get(async () => {
                 var updateUrl = await GetUpdateUrlAsync(type, id);
+                Logging.Debug(updateUrl);
+
+                if (information.IsToUpdateManually) {
+                    WindowsHelper.ViewInBrowser(updateUrl ?? information.InformationUrl);
+                    return false;
+                }
+
                 var idsToUpdate = new[] { id }.Append(information.AlternativeIds ?? new string[0]).ToArray();
-                return updateUrl != null && !cancellationToken.IsCancellationRequested &&
+                return updateUrl != null &&
                         await ContentInstallationManager.Instance.InstallAsync(updateUrl, new ContentInstallationParams {
                             CupType = type,
                             IdsToUpdate = idsToUpdate,
@@ -227,23 +263,28 @@ namespace AcManager.Tools.Miscellaneous {
                                 }
                             }
                         });
-            });
+            }, type, id);
         }
 
         public void IgnoreUpdate(CupContentType type, [NotNull] string id) {
-            // TODO
+            var information = GetInformation(type, id);
+            if (information == null) return;
+            _storage.Set($"ignore:{new CupKey(type, id)}:{information.Version}", true);
         }
 
         public void IgnoreAllUpdates(CupContentType type, [NotNull] string id) {
-            // TODO
+            _storage.Set($"ignore:{new CupKey(type, id)}", true);
         }
 
         private readonly Dictionary<CupKey, CupInformation> _versions = new Dictionary<CupKey, CupInformation>();
 
+        public IReadOnlyDictionary<CupKey, CupInformation> List => _versions;
+
         public event EventHandler<CupEventArgs> NewLatestVersion;
 
         private void RegisterLatestVersion([NotNull] CupKey key, [NotNull] CupInformation information) {
-            if (_versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
+            if (_storage.GetBool($"ignore:{key}") || _storage.GetBool($"ignore:{key}:{information.Version}") ||
+                    _versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
                 return;
             }
 

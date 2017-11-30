@@ -119,7 +119,7 @@
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
     <Compile Include="Base\PostEffects\SmaaHelper.cs" />
-    <Compile Include="Base\Reflections\SphericalHarmonic.cs" />
+    <Compile Include="Base\Reflections\LightProbe.cs" />
     <Compile Include="Base\RendererShotFormat.cs" />
     <Compile Include="Base\Shaders\EffectOnlyMatrixVariable.cs" />
     <Compile Include="Base\Shaders\EffectReadyTechnique.cs" />

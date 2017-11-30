@@ -57,7 +57,8 @@ namespace AcManager.CustomShowroom {
                 AutoRotate = false,
                 AutoAdjustTarget = false,
                 AsyncTexturesLoading = true,
-                AsyncOverridesLoading = true
+                AsyncOverridesLoading = true,
+                ForceUpdateWholeCubemapAtOnce = true
             }) {
                 var wrapper = new CmPreviewsFormWrapper(car, renderer, skinId, presetFilename);
 

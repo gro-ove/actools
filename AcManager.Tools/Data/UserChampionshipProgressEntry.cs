@@ -7,7 +7,7 @@ namespace AcManager.Tools.Data {
         /// Starts from 0.
         /// </summary>
         internal readonly int SelectedEvent;
-        
+
         [NotNull]
         internal readonly IReadOnlyDictionary<int, int> EventsResults;
         internal readonly int? Points;
@@ -27,10 +27,10 @@ namespace AcManager.Tools.Data {
         /// <param name="aiPoints"></param>
         internal UserChampionshipProgressEntry(int selectedEvent, [CanBeNull] IReadOnlyDictionary<int, int> eventsResults, int? points,
                 [CanBeNull] IReadOnlyDictionary<int, int> aiPoints) {
-            SelectedEvent = selectedEvent;
             EventsResults = eventsResults ?? new Dictionary<int, int>(0);
             Points = points;
             AiPoints = aiPoints ?? new Dictionary<int, int>(0);
+            SelectedEvent = Points == 0 && EventsResults.Count == 0 && AiPoints.Count == 0 ? 0 : selectedEvent;
         }
     }
 }

@@ -41,7 +41,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         internal string Current {
-            get { return _current; }
+            get => _current;
             set {
                 if (Equals(value, _current)) return;
                 _current = value;
@@ -53,7 +53,7 @@ namespace AcManager.Tools.Data {
         private double _aiLevel;
 
         internal double AiLevel {
-            get { return _aiLevel; }
+            get => _aiLevel;
             set {
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
@@ -65,7 +65,7 @@ namespace AcManager.Tools.Data {
         private Dictionary<string, UserChampionshipProgressEntry> _entries;
 
         internal IReadOnlyDictionary<string, UserChampionshipProgressEntry> Entries {
-            get { return _entries; }
+            get => _entries;
             set {
                 if (Equals(value, _entries)) return;
                 _entries = (Dictionary<string, UserChampionshipProgressEntry>)value;
@@ -120,7 +120,7 @@ namespace AcManager.Tools.Data {
                     NonfatalError.Notify("Can’t load Kunos career progress", e);
                     return false;
                 }
-                
+
                 Current = iniFile["CAREER"].GetNonEmpty("CURRENT");
                 AiLevel = iniFile["CAREER"].GetDouble("AI_LEVEL", 95d);
                 Entries = iniFile.Where(x => x.Key != "CHAMPS").ToDictionary(
@@ -154,7 +154,7 @@ namespace AcManager.Tools.Data {
             foreach (var pair in Entries) {
                 var section = iniFile[pair.Key.ToUpperInvariant()];
                 section.Clear();
-                
+
                 section["EVENT"] = pair.Value.SelectedEvent;
 
                 if (pair.Value.Points.HasValue) {

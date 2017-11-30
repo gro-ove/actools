@@ -6,8 +6,8 @@ using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base.Reflections {
-    public class SphericalHarmonic : ReflectionCubemap {
-        public SphericalHarmonic() : base(32) { }
+    public class LightProbe : ReflectionCubemap {
+        public LightProbe() : base(32) { }
 
         protected override int GetMipLevels(int resolution, int minResolution) {
             return 1;
