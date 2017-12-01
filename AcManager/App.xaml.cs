@@ -163,8 +163,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
 
             LimitedSpace.Initialize();
-            LimitedStorage.Initialize();
-
             DataProvider.Initialize();
             CountryIdToImageConverter.Initialize(
                     FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.CountryFlags),

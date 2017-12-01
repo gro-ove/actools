@@ -13,15 +13,15 @@ namespace AcManager.Tools.Helpers {
         public const string LapTimesSortingDescending = ".LapTimesSortingDescending";
 
         public static void Initialize() {
-            LimitedStorage.RegisterSpace(SelectedSkin, 25);
-            LimitedStorage.RegisterSpace(SelectedLayout, 25);
-            LimitedStorage.RegisterSpace(SelectedEntry, 25);
-            LimitedStorage.RegisterSpace(OnlineQuickFilter, 25);
-            LimitedStorage.RegisterSpace(OnlineSelected, 25);
-            LimitedStorage.RegisterSpace(OnlineSelectedCar, 25);
-            LimitedStorage.RegisterSpace(OnlineSorting, 25);
-            LimitedStorage.RegisterSpace(LapTimesSortingColumn, 25);
-            LimitedStorage.RegisterSpace(LapTimesSortingDescending, 25);
+            LimitedStorage.RegisterSpace(SelectedSkin, 1000);
+            LimitedStorage.RegisterSpace(SelectedLayout, 1000);
+            LimitedStorage.RegisterSpace(SelectedEntry, 100);
+            LimitedStorage.RegisterSpace(OnlineQuickFilter, 100);
+            LimitedStorage.RegisterSpace(OnlineSelected, 100);
+            LimitedStorage.RegisterSpace(OnlineSelectedCar, 1000);
+            LimitedStorage.RegisterSpace(OnlineSorting, 100);
+            LimitedStorage.RegisterSpace(LapTimesSortingColumn, 100);
+            LimitedStorage.RegisterSpace(LapTimesSortingDescending, 100);
         }
     }
 }
