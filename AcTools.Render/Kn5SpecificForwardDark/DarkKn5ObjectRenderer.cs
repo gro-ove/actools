@@ -186,6 +186,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             EnableShadows = EffectDarkMaterial.EnableShadows;
 
             InitializeLights();
+            InitializeAccumulationDof();
         }
 
         protected override void OnBackgroundColorChanged() {
@@ -973,14 +974,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _accumulationTemporaryTexture, _accumulationBaseTexture;
 
         private void DrawRealTimeDofAccumulation() {
+            var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+
             if (_realTimeAccumulationSize >= AccumulationDofIterations) {
                 foreach (var slot in CarSlots) {
                     slot.CarNode?.UpdateSound(DeviceContextHolder, Camera);
                 }
 
                 PrepareForFinalPass();
-                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
-
                 if (_accumulationDofBokeh) {
                     var between = PpBetweenBuffer;
                     copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, between.TargetView, _realTimeAccumulationSize);
@@ -1019,7 +1020,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 DeviceContext.ClearRenderTargetView(_accumulationTexture.TargetView, default(Color4));
                 DrawSceneToBuffer();
             } else {
-                using (ReplaceCamera(GetDofAccumulationCamera(Camera, (_realTimeAccumulationSize / 50f).Saturate()))) {
+                using (ReplaceCamera(GetDofAccumulationCamera(Camera, (_realTimeAccumulationSize / 50f).Saturate(),
+                        NextAccumulationDofPoissonDiskSample(),
+                        NextAccumulationDofPoissonSquareSample()))) {
                     DrawSceneToBuffer();
                 }
             }
@@ -1036,7 +1039,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             if (accumulationDofBokeh) {
                 var result = AaPass(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
-                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
 
                 if (_realTimeAccumulationFirstStep) {
                     UseFxaa = originalFxaa ?? true;
@@ -1064,7 +1066,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             } else {
                 var result = AaThenBloom(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
-                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
 
                 if (_realTimeAccumulationFirstStep) {
                     UseFxaa = originalFxaa ?? true;
@@ -1105,6 +1106,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 base.DrawOverride();
             } else if (_realTimeAccumulationMode) {
                 DrawRealTimeDofAccumulation();
+            } else if (_accumulationDofShotInProcess) {
+                DrawDofShotAccumulation();
             } else {
                 DrawDof();
             }

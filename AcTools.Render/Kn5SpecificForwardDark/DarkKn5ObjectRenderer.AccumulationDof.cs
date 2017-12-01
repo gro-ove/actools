@@ -3,14 +3,49 @@ using System.Threading;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer {
+        private void InitializeAccumulationDof() {
+            _lazyAccumulationDofPoissonDiskSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations).ToArray());
+            _lazyAccumulationDofPoissonSquareSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations).ToArray());
+        }
+
+        #region Poisson disk for accumulation DOF, for “round” blur
+        private Lazier<Vector2[]> _lazyAccumulationDofPoissonDiskSamples;
+        private int _accumulationDofPoissonPreviousDiskSample;
+
+        [NotNull]
+        private Vector2[] AccumulationDofPoissonDiskSamples => _lazyAccumulationDofPoissonDiskSamples.Value ?? new Vector2[2];
+
+        private Vector2 NextAccumulationDofPoissonDiskSample() {
+            var samples = AccumulationDofPoissonDiskSamples;
+            _accumulationDofPoissonPreviousDiskSample = ++_accumulationDofPoissonPreviousDiskSample % samples.Length;
+            return samples[_accumulationDofPoissonPreviousDiskSample];
+        }
+        #endregion
+
+        #region Poisson square for accumulation AA, for square pixels
+        private Lazier<Vector2[]> _lazyAccumulationDofPoissonSquareSamples;
+        private int _accumulationDofPoissonPreviousSquareSample;
+
+        [NotNull]
+        private Vector2[] AccumulationDofPoissonSquareSamples => _lazyAccumulationDofPoissonSquareSamples.Value ?? new Vector2[2];
+
+        private Vector2 NextAccumulationDofPoissonSquareSample() {
+            var samples = AccumulationDofPoissonSquareSamples;
+            _accumulationDofPoissonPreviousSquareSample = ++_accumulationDofPoissonPreviousSquareSample % samples.Length;
+            return samples[_accumulationDofPoissonPreviousSquareSample];
+        }
+        #endregion
+
         private bool _useAccumulationDof;
 
         public bool UseAccumulationDof {
@@ -33,6 +68,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _accumulationDofIterations = value;
                 IsDirty = true;
                 OnPropertyChanged();
+                _lazyAccumulationDofPoissonDiskSamples.Reset();
+                _lazyAccumulationDofPoissonSquareSamples.Reset();
                 _realTimeAccumulationSize = 0;
             }
         }
@@ -64,24 +101,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         protected override bool CanShotWithoutExtraTextures => base.CanShotWithoutExtraTextures && (!UseDof || !UseAccumulationDof);
 
-        private CameraBase GetDofAccumulationCamera(CameraBase camera, float apertureMultipler) {
+        private CameraBase GetDofAccumulationCamera(CameraBase camera, float apertureMultipler, Vector2 diskOffset, Vector2 squareOffset) {
             var apertureSize = AccumulationDofApertureSize;
+            var bokeh = camera.Right * diskOffset.X + camera.Up * diskOffset.Y;
+            var positionOffset = apertureSize * apertureMultipler * bokeh;
 
-            Vector2 direction;
-            if (apertureSize <= 0f) {
-                direction = Vector2.Zero;
-            } else {
-                do {
-                    direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
-                } while (direction.LengthSquared() > 1f);
-                // direction.Normalize();
-                // direction *= MathF.Pow(MathUtils.Random(0f, 1f), 0.4f);
-            }
-
-            var bokeh = camera.Right * direction.X + camera.Up * direction.Y;
-            var positionOffset = AccumulationDofApertureSize * apertureMultipler * bokeh;
-
-            var aaOffset = Matrix.Translation(MathUtils.Random(-1f, 1f) / Width, MathUtils.Random(-1f, 1f) / Height, 0f);
+            var aaOffset = Matrix.Translation(squareOffset.X / Width, squareOffset.Y / Height, 0f);
             var focusDistance = DofFocusPlane;
 
             var newCamera = new FpsCamera(camera.FovY) {
@@ -102,7 +127,27 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return new ActionAsDisposable(() => { Camera = camera; });
         }
 
+        // private TargetResourceTexture _bufferFDofShotBokeh;
+
+        private void DrawDofShotAccumulation() {
+            if (!_accumulationDofBokehShotInProcess) {
+                base.DrawOverride();
+                return;
+            }
+
+            DrawSceneToBuffer();
+
+            var bufferF = InnerBuffer;
+            if (bufferF == null) return;
+
+            var result = AaPass(bufferF.View, RenderTargetView);
+            if (result != null) {
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
+            }
+        }
+
         private bool _accumulationDofShotInProcess;
+        private bool _accumulationDofBokehShotInProcess;
 
         protected override void DrawShot(RenderTargetView target, IProgress<double> progress, CancellationToken cancellation) {
             if (UseDof && UseAccumulationDof && target != null) {
@@ -110,30 +155,34 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 _useDof = false;
                 _accumulationDofShotInProcess = true;
+                _accumulationDofBokehShotInProcess = false; // AccumulationDofBokeh;
+
+                // var bokeh = AccumulationDofBokeh;
 
                 try {
                     if (IsDirty) {
                         _realTimeAccumulationSize = 0;
                     }
 
+                    // using (_bufferFDofShotBokeh = bokeh ? TargetResourceTexture.Create(Format.R32G32B32A32_Float) : null)
                     using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
                     using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                        /*if (_bufferFDofShotBokeh != null) {
+                            _bufferFDofShotBokeh.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                            DeviceContext.ClearRenderTargetView(_bufferFDofShotBokeh.TargetView, default(Color4));
+                        }*/
+
                         summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
                         temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
                         DeviceContext.ClearRenderTargetView(summary.TargetView, default(Color4));
                         DeviceContext.ClearRenderTargetView(temporary.TargetView, default(Color4));
 
-                        var iterations = AccumulationDofIterations;
-                        for (var i = 0; i < iterations; i++) {
+                        var samples = AccumulationDofPoissonDiskSamples;
+                        for (var i = 0; i < samples.Length; i++) {
                             if (cancellation.IsCancellationRequested) return;
 
-                            Vector2 direction;
-                            do {
-                                direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
-                            } while (direction.LengthSquared() > 1f);
-
-                            using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f))) {
-                                progress?.Report(0.05 + 0.9 * i / iterations);
+                            using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f, samples[i], NextAccumulationDofPoissonSquareSample()))) {
+                                progress?.Report(0.05 + 0.9 * i / samples.Length);
                                 base.DrawShot(temporary.TargetView, progress, cancellation);
                             }
 
@@ -142,12 +191,28 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             DeviceContext.OutputMerger.BlendState = null;
                         }
 
-                        copy.AccumulateDivide(DeviceContextHolder, summary.View, target, iterations);
+                        if (_accumulationDofBokehShotInProcess) {
+                            copy.AccumulateDivide(DeviceContextHolder, summary.View, temporary.TargetView, samples.Length);
+                            var bufferAColorGrading = PpColorGradingBuffer;
+                            if (!UseColorGrading || bufferAColorGrading == null) {
+                                if (HdrPass(temporary.View, target, OutputViewport) == temporary.View) {
+                                    copy.Draw(DeviceContextHolder, temporary.View, target);
+                                }
+                            } else {
+                                var hdrView = HdrPass(temporary.View, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ?? bufferAColorGrading.View;
+                                if (ColorGradingPass(hdrView, target, OutputViewport) == hdrView) {
+                                    copy.Draw(DeviceContextHolder, hdrView, target);
+                                }
+                            }
+                        } else {
+                            copy.AccumulateDivide(DeviceContextHolder, summary.View, target, samples.Length);
+                        }
                     }
 
                 } finally {
                     _useDof = true;
                     _accumulationDofShotInProcess = false;
+                    _accumulationDofBokehShotInProcess = false;
                 }
 
                 return;

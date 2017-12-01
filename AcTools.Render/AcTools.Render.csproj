@@ -127,6 +127,7 @@
     <Compile Include="Base\Shadows\ShadowsPointFlat.cs" />
     <Compile Include="Base\Shadows\ShadowsSpot.cs" />
     <Compile Include="Base\Utils\ColorGradingConverter.cs" />
+    <Compile Include="Base\Utils\UniformPoissonDiskSampler.cs" />
     <Compile Include="Data\CarSuspensionModifiers.cs" />
     <Compile Include="Forward\ToneMappingFn.cs" />
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
