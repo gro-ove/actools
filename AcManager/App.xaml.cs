@@ -160,6 +160,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.GoogleDriveLoaderManualRedirect, ref GoogleDriveLoader.OptionManualRedirect);
             AppArguments.Set(AppFlag.RdLoaderAllowed, ref RaceDepartmentLoader.OptionAllowed);
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
+            AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();

@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Encoding JPEG quality. Doesn’t have a lot of effect without Magick.NET plugin, because
+        /// frankly Windows’ encoder is a piece of junk. Default value: 97.
+        /// Example: --jpeg-quality=99.
+        /// </summary>
+        JpegQuality,
+
+        /// <summary>
         /// Manually load ReShade’s dxgi.dll if found. Possible values: on/off/kn5only. With “kn5only”,
         /// CM will load it only if KN5-file to view was passed in arguments as well. Be careful!
         /// ReShade can mess up WPF windows!

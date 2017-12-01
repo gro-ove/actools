@@ -26,6 +26,11 @@ namespace AcTools.Utils {
         public string ExifStyle => Style == null ? null : "Style: " + Style;
     }
 
+    // Separate class to avoid Magick-related static variables to be initialized beforehand.
+    public static class ImageUtilsOptions {
+        public static int JpegQuality = 97;
+    }
+
     public static partial class ImageUtils {
         private static bool? _isMagickSupported;
 
@@ -131,7 +136,7 @@ namespace AcTools.Utils {
                     image.Crop((int)maxWidth, (int)maxHeight, Gravity.Center);
                 }
 
-                image.Quality = 95;
+                image.Quality = ImageUtilsOptions.JpegQuality;
                 image.Density = new Density(96, 96);
                 if (File.Exists(destination)) {
                     try {
@@ -273,14 +278,14 @@ namespace AcTools.Utils {
             image.Resize(new Percentage(scale * 100d));
         }
 
-        public static void SaveImage(MagickImage image, string destination, int quality = 95, ImageInformation exif = null,
+        public static void SaveImage(MagickImage image, string destination, int? quality = null, ImageInformation exif = null,
                 MagickFormat format = MagickFormat.Jpeg) {
             using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
                 SaveImage(image, stream, quality, exif, format);
             }
         }
 
-        public static void SaveImage(MagickImage image, Stream destination, int quality = 95, ImageInformation exif = null, MagickFormat format = MagickFormat.Jpeg) {
+        public static void SaveImage(MagickImage image, Stream destination, int? quality = null, ImageInformation exif = null, MagickFormat format = MagickFormat.Jpeg) {
             if (exif != null) {
                 var profile = new ExifProfile();
 
@@ -305,7 +310,7 @@ namespace AcTools.Utils {
                 image.AddProfile(profile);
             }
 
-            image.Quality = quality;
+            image.Quality = quality ?? ImageUtilsOptions.JpegQuality;
             image.Density = new Density(96, 96);
             image.Write(destination, format);
         }
@@ -389,17 +394,17 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void Convert(Stream source, Stream destination, Size? resize, int quality = 95, ImageInformation exif = null, ImageFormat format = null) {
+        public static void Convert(Stream source, Stream destination, Size? resize, int? quality = null, ImageInformation exif = null, ImageFormat format = null) {
             if (!IsMagickSupported) {
-                ConvertGdi(source, destination, resize, quality, exif, format);
+                ConvertGdi(source, destination, resize, quality ?? ImageUtilsOptions.JpegQuality, exif, format);
             } else if (OptionConvertCombined) {
-                ConvertCombined(source, destination, resize, quality, exif, format);
+                ConvertCombined(source, destination, resize, quality ?? ImageUtilsOptions.JpegQuality, exif, format);
             } else {
-                ConvertImageMagick(source, destination, resize, quality, exif, format);
+                ConvertImageMagick(source, destination, resize, quality ?? ImageUtilsOptions.JpegQuality, exif, format);
             }
         }
 
-        public static void Convert(string source, string destination, Size? resize, int quality = 95, ImageInformation exif = null, ImageFormat format = null) {
+        public static void Convert(string source, string destination, Size? resize, int? quality = null, ImageInformation exif = null, ImageFormat format = null) {
             if (File.Exists(destination)) {
                 try {
                     File.Delete(destination);
@@ -415,11 +420,11 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void Convert(Stream source, Stream destination, int quality = 95, ImageInformation exif = null, ImageFormat format = null) {
+        public static void Convert(Stream source, Stream destination, int? quality = null, ImageInformation exif = null, ImageFormat format = null) {
             Convert(source, destination, null, quality, exif);
         }
 
-        public static void Convert(string source, string destination, int quality = 95, ImageInformation exif = null, ImageFormat format = null) {
+        public static void Convert(string source, string destination, int? quality = null, ImageInformation exif = null, ImageFormat format = null) {
             Convert(source, destination, null, quality, exif);
         }
     }
