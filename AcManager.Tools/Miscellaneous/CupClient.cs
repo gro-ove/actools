@@ -52,10 +52,14 @@ namespace AcManager.Tools.Miscellaneous {
             };
         }
 
-        public void LoadRegistries() {
-#if DEBUG
-            CheckRegistriesAsync().Forget();
-#endif
+        private readonly TaskCache _loadCache = new TaskCache();
+
+        public Task LoadRegistries(bool clearCache = false) {
+            if (clearCache) {
+                _cache.Clear();
+            }
+
+            return _loadCache.Get(CheckRegistriesAsync);
         }
 
         private async Task CheckRegistriesAsync() {

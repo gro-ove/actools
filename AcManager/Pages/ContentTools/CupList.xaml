@@ -32,15 +32,18 @@
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
 
-    <ListBox ItemsSource="{Binding BrokenCars}" Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding BrokenCar}">
+    <ListBox ItemsSource="{Binding ItemsToUpdate}" Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding SelectedItem}">
       <ListBox.ItemTemplate>
-        <DataTemplate DataType="{x:Type tools:CarAnalyzer+BrokenDetails}">
+        <DataTemplate DataType="{x:Type t:ICupSupportedObject}">
           <DockPanel Margin="8 4">
-            <TextBlock Text="{Binding LeftUnsolved}" Style="{StaticResource Small}" VerticalAlignment="Center" DockPanel.Dock="Right" />
+            <TextBlock Text="{Binding CupUpdateInformation.Version}" Style="{StaticResource Small}" VerticalAlignment="Center" DockPanel.Dock="Right" />
+            <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+
+            <!--<TextBlock Text="{Binding LeftUnsolved}" Style="{StaticResource Small}" VerticalAlignment="Center" DockPanel.Dock="Right" />
             <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Margin="2 2 4 0" VerticalAlignment="Center"
                 Visibility="{Binding Car.Author, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:AcCommonObject.AuthorKunos}}" />
-            <TextBlock Text="{Binding Car.DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+            <TextBlock Text="{Binding Car.DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />-->
           </DockPanel>
         </DataTemplate>
       </ListBox.ItemTemplate>
@@ -48,14 +51,14 @@
 
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
 
-    <ScrollViewer Grid.Column="2" DataContext="{Binding BrokenCar}" Margin="20 0 20 0" mui:FancyScrollHelper.Outside="True">
+    <ScrollViewer Grid.Column="2" DataContext="{Binding SelectedItem}" Margin="20 0 20 0" mui:FancyScrollHelper.Outside="True">
       <mui:SpacingStackPanel Spacing="20" d:DataContext="{d:DesignInstance {x:Type tools:CarAnalyzer+BrokenDetails}}">
         <DockPanel>
           <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="0 0 8 0" Filename="{Binding Car.BrandBadge}" />
           <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
         </DockPanel>
 
-        <DockPanel
+        <!--<DockPanel
             Visibility="{Binding Car.Author, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:AcCommonObject.AuthorKunos}}">
           <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
               Margin="2 2 4 0" VerticalAlignment="Center" />
@@ -109,7 +112,7 @@
               <DataTemplate DataType="{x:Type t:ContentRepairSuggestion}">
                 <mui:Cell Margin="0 0 0 20">
                   <DockPanel IsEnabled="{Binding IsSolved, Converter={StaticResource InvertBooleanConverter}}">
-                    <!--<Separator DockPanel.Dock="Bottom" Margin="0 0 0 -10" Background="{DynamicResource SeparatorBackground}" />-->
+                    ~1~<Separator DockPanel.Dock="Bottom" Margin="0 0 0 -10" Background="{DynamicResource SeparatorBackground}" />@1@
                     <StackPanel DockPanel.Dock="Right" Margin="8 0 5 0" Width="100">
                       <ItemsControl ItemsSource="{Binding Fixes}">
                         <ItemsControl.ItemTemplate>
@@ -154,9 +157,9 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-        </mui:Switch>
+        </mui:Switch>-->
 
-        <WrapPanel Orientation="Horizontal">
+        <!--<WrapPanel Orientation="Horizontal">
           <WrapPanel.Resources>
             <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
               <Setter Property="Padding" Value="8 3 8 5" />
@@ -180,7 +183,7 @@
 
           <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
               ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
-        </WrapPanel>
+        </WrapPanel>-->
       </mui:SpacingStackPanel>
     </ScrollViewer>
   </Grid>

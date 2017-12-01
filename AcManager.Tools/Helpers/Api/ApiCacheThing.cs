@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -32,6 +33,21 @@ namespace AcManager.Tools.Helpers.Api {
             using (var sha1 = new SHA1Managed()) {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(argument));
                 return BitConverter.ToString(hash).Replace(@"-", "").ToLower();
+            }
+        }
+
+        public void Clear() {
+            try {
+                foreach (var file in Directory.GetFiles(_directory).Where(
+                        x => Path.GetFileName(x).All(y => char.IsDigit(y) || y >= 'a' && y <= 'f' || y >= 'A' && y <= 'F'))) {
+                    File.Delete(file);
+                }
+
+                lock (_cache) {
+                    _cache.Clear();
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
         }
 
