@@ -6,7 +6,7 @@ namespace AcManager {
     public enum AppFlag {
         /// <summary>
         /// Encoding JPEG quality. Doesn’t have a lot of effect without Magick.NET plugin, because
-        /// frankly Windows’ encoder is a piece of junk. Default value: 97.
+        /// frankly Windows’ encoder is a piece of junk. Default value: 98.
         /// Example: --jpeg-quality=99.
         /// </summary>
         JpegQuality,

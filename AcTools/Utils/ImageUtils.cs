@@ -28,7 +28,7 @@ namespace AcTools.Utils {
 
     // Separate class to avoid Magick-related static variables to be initialized beforehand.
     public static class ImageUtilsOptions {
-        public static int JpegQuality = 97;
+        public static int JpegQuality = 98;
     }
 
     public static partial class ImageUtils {
