@@ -31,7 +31,10 @@ namespace FirstFloor.ModernUI.Helpers {
                     if (split.Length < 2 || string.IsNullOrWhiteSpace(split[0])) continue;
                     _values[i++] = new KeyValue(Storage.Decode(split[0]), split[1]);
                 }
-                Logging.Debug($"{_key}, loaded {_values.Length} values : {s.Elapsed.TotalMilliseconds:F2} ms");
+
+                if (s.Elapsed.TotalMilliseconds > 0.1) {
+                    Logging.Debug($"{_key}, loaded {i} values : {s.Elapsed.TotalMilliseconds:F2} ms");
+                }
             }
 
             public string Get(string key) {

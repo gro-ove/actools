@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,8 +49,6 @@ namespace AcManager.Pages.AcSettings {
             }
 
             this.OnActualUnload(() => {
-                Logging.Here();
-                DisposeHelper.Dispose(ref _wrapper);
                 if (mainWindow != null) {
                     mainWindow.Drop -= OnMainWindowDrop;
                 }
@@ -74,63 +73,39 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        public class LutLibraryWrapper : IDisposable {
-            private readonly string _library;
+        public class LutLibraryWrapper {
+            private readonly Assembly _assembly;
 
             private LutLibraryWrapper(string library) {
                 if (FileUtils.Unblock(library)) {
                     Logging.Warning("Library unblocked");
                 }
 
-                _library = library;
-                AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+                _assembly = Assembly.LoadFrom(library);
+
                 try {
                     Test();
                 } catch (Exception e) {
                     Logging.Warning(e);
-                    Dispose();
                 }
             }
 
             public Lut ToLut(string csvFilename) {
-                var lut = LUTLibrary.LUTReader.Read(csvFilename);
-                lut.getMaxDeltaX();
-
-                // ReSharper disable once ObjectCreationAsStatement
-                new LUTLibrary.LUTCalculator(lut);
-
-                var force = (double)lut.getMaxForce();
-                return lut.getForce().OfType<int>().Zip(lut.getLut2().OfType<double>(),
+                var lut = _assembly.GetType("LUTLibrary.LUT");
+                var lutInstance = _assembly.GetType("LUTLibrary.LUTReader").GetMethod("Read").Invoke(null, new object[]{ csvFilename });
+                lut.GetMethod("getMaxDeltaX").Invoke(lutInstance, new object[0]);
+                Activator.CreateInstance(_assembly.GetType("LUTLibrary.LUTCalculator"), lutInstance);
+                var forceList = (ArrayList)lut.GetMethod("getForce").Invoke(lutInstance, new object[0]);
+                var lut2List = (ArrayList)lut.GetMethod("getLut2").Invoke(lutInstance, new object[0]);
+                var force = (double)(int)lut.GetMethod("getMaxForce").Invoke(lutInstance, new object[0]);
+                return forceList.OfType<int>().Zip(lut2List.OfType<double>(),
                         (x, i) => new LutPoint(x / force, Math.Round(i / force, 3))).ToLut();
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
-            private static void Test() {
-                var lut = new LUTLibrary.LUT();
-                lut.getMaxForce();
-            }
-
-            public void Dispose() {
-                AppDomain.CurrentDomain.AssemblyResolve -= OnAssemblyResolve;
-            }
-
-            private Assembly _assembly;
-
-            private Assembly OnAssemblyResolve(object sender, ResolveEventArgs args) {
-                var name = new AssemblyName(args.Name);
-                if (name.Name == "LUTLibrary") {
-                    if (_assembly == null) {
-                        try {
-                            _assembly = Assembly.LoadFrom(_library);
-                        } catch (Exception e) {
-                            Logging.Error(e);
-                        }
-                    }
-
-                    return _assembly;
-                }
-
-                return null;
+            private void Test() {
+                var lut = _assembly.GetType("LUTLibrary.LUT");
+                Logging.Debug((int)lut.GetMethod("getMaxForce").Invoke(Activator.CreateInstance(lut, new object[0]), new object[0]));
             }
 
             [MethodImpl(MethodImplOptions.NoInlining), CanBeNull]

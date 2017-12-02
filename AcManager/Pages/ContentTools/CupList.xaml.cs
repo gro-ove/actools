@@ -74,7 +74,7 @@ namespace AcManager.Pages.ContentTools {
         private ICupSupportedObject _selectedItem;
 
         public ICupSupportedObject SelectedItem {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
