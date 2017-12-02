@@ -341,13 +341,13 @@ Author: [b]{3}[/b]</value>
     <value>Setup and generate new preview</value>
   </data>
   <data name="Solution_GenerateLivery" xml:space="preserve">
-    <value>Generate new livery</value>
+    <value>Generate new livery icon</value>
   </data>
   <data name="Solution_RandomLivery" xml:space="preserve">
-    <value>Generate random livery</value>
+    <value>Generate random livery icon</value>
   </data>
   <data name="Solution_SetupLivery" xml:space="preserve">
-    <value>Setup new livery</value>
+    <value>Setup new livery icon</value>
   </data>
   <data name="Solution_RemoveReplay" xml:space="preserve">
     <value>Remove replay</value>
@@ -362,13 +362,13 @@ Author: [b]{3}[/b]</value>
     <value>Replay will be removed to the Recycle Bin</value>
   </data>
   <data name="Solution_SetupLivery_Details" xml:space="preserve">
-    <value>Select a new livery using Livery Editor</value>
+    <value>Select a new livery icon using Livery Icon Editor</value>
   </data>
   <data name="Solution_RandomLivery_Details" xml:space="preserve">
-    <value>Generate a new livery using random settings</value>
+    <value>Generate a new livery icon using random settings</value>
   </data>
   <data name="Solution_GenerateLivery_Details" xml:space="preserve">
-    <value>Generate a new livery using last settings of Livery Editor</value>
+    <value>Generate a new livery icon using last settings of Livery Icon Editor</value>
   </data>
   <data name="Solution_SetupPreview_Details" xml:space="preserve">
     <value>Select a new preview through settings</value>
@@ -1350,19 +1350,19 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update Preview</value>
   </data>
   <data name="Toolbar_ChangeLivery" xml:space="preserve">
-    <value>Change Livery</value>
+    <value>Change Livery Icon</value>
   </data>
   <data name="Toolbar_GenerateLivery" xml:space="preserve">
-    <value>Generate Livery</value>
+    <value>Generate Livery Icon</value>
   </data>
   <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
     <value>Generate Random Livery</value>
   </data>
   <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
-    <value>Generate a new livery using last settings of Livery Editor</value>
+    <value>Generate a new livery icon using last settings of Livery Icon Editor</value>
   </data>
   <data name="Toolbar_GenerateRandomLivery_Tooltip" xml:space="preserve">
-    <value>Generate a new livery using random settings</value>
+    <value>Generate a new livery icon using random settings</value>
   </data>
   <data name="Car_DeleteSkin" xml:space="preserve">
     <value>Delete Skin</value>
@@ -2765,7 +2765,7 @@ Accepted values are from -1 to 1.</value>
     <value>Skin Number Is Changed</value>
   </data>
   <data name="LiveryIcon_CannotChange" xml:space="preserve">
-    <value>Can’t change livery image</value>
+    <value>Can’t change livery icon</value>
   </data>
   <data name="LiveryIcon_CannotChange_Commentary" xml:space="preserve">
     <value>Make sure livery.png isn’t busy</value>
