@@ -32,7 +32,7 @@ namespace AcTools.LapTimes {
                 } else if (kunosLayoutId.StartsWith(track.Item1 + "-", StringComparison.OrdinalIgnoreCase)) {
                     var layoutId = kunosLayoutId.Substring(track.Item1.Length + 1);
                     if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
-                        /* track with layout ID found! can’t believe my luck */
+                        /* track with layout ID found! canâ€™t believe my luck */
                         return track.Item1 + "/" + track.Item2;
                     }
                 }

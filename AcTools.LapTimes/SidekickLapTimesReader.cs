@@ -55,12 +55,11 @@ namespace AcTools.LapTimes {
         private IReadOnlyList<Tuple<string, string>> _trackLayoutIds;
 
         public SidekickLapTimesReader(string sidekickDirectory, IAcIdsProvider provider) {
-            if (provider == null) throw new ArgumentNullException(nameof(provider));
             /* TODO: Convert IDs to lower case? */
             _sidekickDirectory = sidekickDirectory;
-            _provider = provider;
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
-        
+
         private bool TryToGuessCarAndTrack(string filename, out string carId, out string trackLayoutId) {
             filename = Path.GetFileName(filename)?.ApartFromLast("_pb.ini", StringComparison.OrdinalIgnoreCase);
             if (filename != null) {
@@ -75,7 +74,7 @@ namespace AcTools.LapTimes {
                     carId = filename.Substring(0, i);
                     trackLayoutId = filename.Substring(i + 1);
                     if (!_carIds.Contains(carId, StringComparer.OrdinalIgnoreCase)) continue;
-                    /* car found! hopefully */
+                    /* carâ€™s found! hopefully */
 
                     foreach (var track in _trackLayoutIds) {
                         if (track.Item2 == null) {
@@ -86,7 +85,7 @@ namespace AcTools.LapTimes {
                         } else if (trackLayoutId.StartsWith(track.Item1, StringComparison.OrdinalIgnoreCase)) {
                             var layoutId = trackLayoutId.Substring(track.Item1.Length);
                             if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
-                                /* track with layout ID found! can’t believe my luck */
+                                /* track with layout ID found! canâ€™t believe my luck */
                                 trackLayoutId = track.Item1 + "/" + track.Item2;
                                 return true;
                             }
@@ -113,12 +112,11 @@ namespace AcTools.LapTimes {
                         if (!ReadPickle(reader, out time) || time == 0) continue;
                     }
                 } catch (Exception e) {
-                    AcToolsLogging.Write($"Can’t read {file.Name}: {e}");
+                    AcToolsLogging.Write($"Canâ€™t read {file.Name}: {e}");
                     continue;
                 }
 
-                string carId, trackLayoutId;
-                if (TryToGuessCarAndTrack(file.FullName, out carId, out trackLayoutId)) {
+                if (TryToGuessCarAndTrack(file.FullName, out var carId, out var trackLayoutId)) {
                     yield return new LapTimeEntry(sourceName, carId, trackLayoutId,
                             file.LastWriteTime, TimeSpan.FromMilliseconds(time));
                 }
