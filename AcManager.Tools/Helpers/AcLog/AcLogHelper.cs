@@ -100,6 +100,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                         return new WhatsGoingOn(WhatsGoingOnType.DriverModelIsMissing);
                     }
 
+                    if (crash.Contains(@"KGLTexture::initSize")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.WrongTextureFormat);
+                    }
+
                     if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
                         return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
                     }

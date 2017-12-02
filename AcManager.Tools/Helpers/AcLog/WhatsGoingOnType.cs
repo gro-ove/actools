@@ -66,6 +66,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         [Description("Default tyres index might be wrong")]
         DefaultTyresIndexMightBeWrong,
 
+        [Description("Some texture’s format or size might be wrong")]
+        WrongTextureFormat,
+
         [Description("Tyres might be wrong")]
         TyresMightBeWrong
     }
