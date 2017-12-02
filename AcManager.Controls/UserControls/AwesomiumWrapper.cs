@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -122,7 +122,7 @@ namespace AcManager.Controls.UserControls {
         public void ModifyPage() {
             Execute(@"window.__cm_loaded = true;
 window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };
-document.addEventListener('mousedown', function(e){ 
+document.addEventListener('mousedown', function(e){
     var t = e.target;
     if (t.tagName != 'A' || !t.href) return;
     if (t.href.indexOf(location.host) !== -1){
@@ -186,4 +186,4 @@ document.addEventListener('mousedown', function(e){
             return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
         }
     }
-}
+}*/

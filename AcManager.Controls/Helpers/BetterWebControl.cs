@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,7 +158,7 @@ namespace AcManager.Controls.Helpers {
 
             base.OnDocumentReady(e);
         }
-        
+
         private static object ConvertArgument(JSValue a) {
             if (a.IsNaN) return double.NaN;
             if (a.IsDouble) return (double)a;
@@ -196,3 +197,4 @@ namespace AcManager.Controls.Helpers {
         }
     }
 }
+*/
