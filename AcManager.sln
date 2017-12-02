@@ -51,10 +51,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.AcSound", "AcMana
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.GenericMods", "AcTools.GenericMods\AcTools.GenericMods.csproj", "{11EAD82E-0325-44A8-9785-B02BAACD1D3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres", "AcTools.NeuralTyres\AcTools.NeuralTyres.csproj", "{FE9D676D-5E05-491D-A998-7D561475D440}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres.Tests", "AcTools.NeuralTyres.Tests\AcTools.NeuralTyres.Tests.csproj", "{C098567B-C6FD-45AE-AE3F-85DE42F18F96}"
-EndProject
+# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres", "AcTools.NeuralTyres\AcTools.NeuralTyres.csproj", "{FE9D676D-5E05-491D-A998-7D561475D440}"
+# EndProject
+# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres.Tests", "AcTools.NeuralTyres.Tests\AcTools.NeuralTyres.Tests.csproj", "{C098567B-C6FD-45AE-AE3F-85DE42F18F96}"
+# EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -245,22 +245,22 @@ Global
 		{11EAD82E-0325-44A8-9785-B02BAACD1D3E}.Release|x64.Build.0 = Release|x64
 		{11EAD82E-0325-44A8-9785-B02BAACD1D3E}.Release|x86.ActiveCfg = Release|x86
 		{11EAD82E-0325-44A8-9785-B02BAACD1D3E}.Release|x86.Build.0 = Release|x86
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x64.ActiveCfg = Debug|x64
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x64.Build.0 = Debug|x64
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x86.ActiveCfg = Debug|x86
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x86.Build.0 = Debug|x86
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Release|x64.ActiveCfg = Release|x64
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Release|x64.Build.0 = Release|x64
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Release|x86.ActiveCfg = Release|x86
-		{FE9D676D-5E05-491D-A998-7D561475D440}.Release|x86.Build.0 = Release|x86
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x64.ActiveCfg = Debug|x64
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x64.Build.0 = Debug|x64
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x86.ActiveCfg = Debug|x86
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x86.Build.0 = Debug|x86
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.ActiveCfg = Release|x64
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.Build.0 = Release|x64
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.ActiveCfg = Release|x86
-		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.Build.0 = Release|x86
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x64.ActiveCfg = Debug|x64
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x64.Build.0 = Debug|x64
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x86.ActiveCfg = Debug|x86
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Debug|x86.Build.0 = Debug|x86
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Release|x64.ActiveCfg = Release|x64
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Release|x64.Build.0 = Release|x64
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Release|x86.ActiveCfg = Release|x86
+		# {FE9D676D-5E05-491D-A998-7D561475D440}.Release|x86.Build.0 = Release|x86
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x64.ActiveCfg = Debug|x64
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x64.Build.0 = Debug|x64
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x86.ActiveCfg = Debug|x86
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Debug|x86.Build.0 = Debug|x86
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.ActiveCfg = Release|x64
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.Build.0 = Release|x64
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.ActiveCfg = Release|x86
+		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
