@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -31,7 +33,55 @@ namespace AcManager.Tools.Objects {
                            .Aggregate((string)null, (a, b) => a == null || a.IsVersionOlderThan(b) ? b : a);
         }
 
-        public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
+        public Lazier<string> AppIcon { get; }
+
+        public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
+            AppIcon = Lazier.CreateAsync(TryToFindAppIcon);
+        }
+
+        private IEnumerable<string> GetPythonFilenames() {
+            var main = Path.Combine(Location, Id + ".py");
+            if (File.Exists(main)) {
+                yield return main;
+            }
+
+            foreach (var file in Directory.GetFiles(Location, "*.py").Where(x => !FileUtils.ArePathsEqual(x, main))) {
+                yield return file;
+            }
+
+            foreach (var file in Directory.GetDirectories(Location).SelectMany(x => Directory.GetFiles(x, "*.py"))) {
+                yield return file;
+            }
+        }
+
+        private string TryToFindAppIconInPythonFiles() {
+            foreach (var filename in GetPythonFilenames()) {
+                var data = File.ReadAllText(filename);
+                var apps = Regex.Matches(data, @"\bac\.newApp\s*\(\s*""([^""]+)\s*""\)").OfType<Match>()
+                                .Select(x => x.Groups[1].Value).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                if (apps.Count == 0) continue;
+
+                var appId = apps.Any(x => string.Equals(x, Id, StringComparison.OrdinalIgnoreCase)) ? Id : apps[0];
+                return Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "gui", "icons", appId + "_OFF.png");
+            }
+
+            return null;
+        }
+
+        private async Task<string> TryToFindAppIcon() {
+            const string iconMissing = "_";
+
+            var iconKey = $"appIcon:{Id}";
+            var result = ValuesStorage.GetString(iconKey);
+            if (result != null) {
+                return result == iconMissing ? null : result;
+            }
+
+            var icon = await Task.Run(() => TryToFindAppIconInPythonFiles()).ConfigureAwait(false);
+            ValuesStorage.Set(iconKey, icon ?? iconMissing);
+
+            return icon;
+        }
 
         protected override void LoadOrThrow() {
             Name = Id;
