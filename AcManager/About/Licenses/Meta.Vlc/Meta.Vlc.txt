@@ -1,2 +1,3 @@
 url: https://github.com/higankanshi/Meta.Vlc
+content: LICENSE
 sid: 8_140457287_

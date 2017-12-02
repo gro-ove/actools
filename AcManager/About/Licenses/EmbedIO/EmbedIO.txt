@@ -1,0 +1,3 @@
+url: https://github.com/unosquare/embedio
+content: LICENSE
+sid: wu9zno0b

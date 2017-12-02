@@ -1,0 +1,3 @@
+url: https://github.com/amibar/SmartThreadPool
+content: LICENSE
+sid: 0hu2lbcj
