@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace AcTools.AcdFile {
     internal class AcdWriter : BinaryWriter {
         [NotNull]
-        private readonly AcdEncryption _enc;
+        private readonly IAcdEncryption _enc;
 
         public AcdWriter([NotNull] string filename) : this(filename, File.Open(filename, FileMode.Create, FileAccess.Write)) {}
 

@@ -51,6 +51,7 @@ using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
 using AcTools;
+using AcTools.AcdEncryption;
 using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
@@ -493,7 +494,8 @@ namespace AcManager {
                 }
 
                 await Task.Delay(500);
-                if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
+                Acd.Factory = new AcdFactory();
+                if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable) {
                     NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
                 }
 

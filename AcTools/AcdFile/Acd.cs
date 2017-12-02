@@ -9,6 +9,14 @@ using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
     public class Acd {
+        public static bool IsAvailable => Factory != null;
+
+        [CanBeNull]
+        public static IAcdEncryptionFactory Factory {
+            get => AcdEncryption.Factory;
+            set => AcdEncryption.Factory = value;
+        }
+
         [CanBeNull]
         private readonly string _packedFile;
 
@@ -215,18 +223,6 @@ namespace AcTools.AcdFile {
                     }
                 }
             }
-        }
-
-        public static bool IsAvailable() {
-            try {
-                AcdEncryption.CreateKey(null);
-            } catch (NotImplementedException) {
-                return false;
-            } catch (NullReferenceException) {
-                return true;
-            }
-
-            return true;
         }
     }
 }

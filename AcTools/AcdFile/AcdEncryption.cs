@@ -1,39 +1,27 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
-    internal class AcdEncryption {
-        public string Id;
-        public string Key;
+    public interface IAcdEncryptionFactory {
+        IAcdEncryption Create(string keySource);
+    }
 
-        public AcdEncryption(string id) {
-            Id = id;
-            Key = CreateKey(Id);
-        }
+    public interface IAcdEncryption {
+        void Decrypt([NotNull] byte[] data);
+        void Encrypt([NotNull] byte[] data, [NotNull] byte[] result);
+    }
 
-        public void Decrypt(byte[] data) {
-            throw new NotImplementedException();
-        }
+    public static class AcdEncryption {
+        internal static IAcdEncryptionFactory Factory;
 
-        public byte Decrypt(int data, int position) {
-            throw new NotImplementedException();
-        }
-
-        public void Encrypt(byte[] data) {
-            throw new NotImplementedException();
-        }
-
-        public int Encrypt(byte data, int position) {
-            throw new NotImplementedException();
-        }
-
-        public static string CreateKey(string s) {
-            throw new NotImplementedException();
-        }
-
-        public static AcdEncryption FromAcdFilename(string acdFilename) {
-            return new AcdEncryption(Path.GetFileName(Path.GetDirectoryName(acdFilename)));
+        [NotNull]
+        public static IAcdEncryption FromAcdFilename([NotNull] string acdFilename) {
+            if (Factory == null) throw new NotSupportedException();
+            var name = Path.GetFileName(acdFilename) ?? "";
+            var id = name.StartsWith("data", StringComparison.OrdinalIgnoreCase) ? Path.GetFileName(Path.GetDirectoryName(acdFilename)) : name;
+            return Factory.Create(id);
         }
     }
 }

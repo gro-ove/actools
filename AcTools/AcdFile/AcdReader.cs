@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace AcTools.AcdFile {
     internal sealed class AcdReader : ReadAheadBinaryReader {
         [NotNull]
-        private readonly AcdEncryption _enc;
+        private readonly IAcdEncryption _enc;
 
         public AcdReader(string filename) : this(filename, File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {}
 
@@ -27,7 +27,7 @@ namespace AcTools.AcdFile {
                 result[i] = ReadByte();
                 Skip(3);
             }
-            
+
             _enc.Decrypt(result);
             return result;
         }
