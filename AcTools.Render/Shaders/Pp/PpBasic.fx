@@ -61,7 +61,7 @@
 	}
 
 	float4 ps_CopySqr(PS_IN pin) : SV_Target {
-	    float4 v = gInputMap.Sample(samInputImage, pin.Tex);
+	    float4 v = min(gInputMap.Sample(samInputImage, pin.Tex), (float4)gMultipler);
 		return v * v;
 	}
 

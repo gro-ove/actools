@@ -1047,7 +1047,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView);
+                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView, 50f);
                 DeviceContext.OutputMerger.BlendState = null;
 
                 var between = PpBetweenBuffer;
@@ -1074,7 +1074,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView);
+                copy.DrawSqr(DeviceContextHolder, result, _accumulationTexture.TargetView, 1f);
                 DeviceContext.OutputMerger.BlendState = null;
 
                 if (_realTimeAccumulationSize < 4) {
@@ -1102,12 +1102,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void DrawOverride() {
-            if (!UseDof || _dof == null) {
+            if (_accumulationDofShotInProcess) {
+                DrawDofShotAccumulation();
+            } else if (!UseDof || _dof == null) {
                 base.DrawOverride();
             } else if (_realTimeAccumulationMode) {
                 DrawRealTimeDofAccumulation();
-            } else if (_accumulationDofShotInProcess) {
-                DrawDofShotAccumulation();
             } else {
                 DrawDof();
             }

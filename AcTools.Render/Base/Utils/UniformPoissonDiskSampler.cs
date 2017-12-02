@@ -80,7 +80,7 @@ namespace AcTools.Render.Base.Utils {
         /// <summary>
         /// Get a number of vectors uniformly distibuted within a unit-size square. Size of result list might be a little smaller.
         /// </summary>
-        public static List<Vector2> SampleSquare(int count) {
+        public static List<Vector2> SampleSquare(int count, bool tileMode) {
             if (count <= 1) {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
@@ -89,12 +89,18 @@ namespace AcTools.Render.Base.Utils {
 
             var result = SampleRectangle(new Vector2(-1f, -1f), new Vector2(1f, 1f), minimumDistance);
             while (result.Count > count) {
-                result.Remove(result.MaxEntry(x => Math.Max(x.X, x.Y)));
+                result.Remove(result.MaxEntry(x => Math.Max(Math.Abs(x.X), Math.Abs(x.Y))));
             }
 
-            var maximumLength = result.Max(x => Math.Max(x.X, x.Y));
+            var maximumLength = result.Max(x => Math.Max(Math.Abs(x.X), Math.Abs(x.Y)));
+            var multiplier = 1 / maximumLength;
+
+            if (tileMode) {
+                multiplier *= 1 - 2f / (1f / minimumDistance + 2f);
+            }
+
             for (var i = 0; i < result.Count; i++) {
-                result[i] = result[i] / maximumLength;
+                result[i] = result[i] * multiplier;
             }
 
             return result;

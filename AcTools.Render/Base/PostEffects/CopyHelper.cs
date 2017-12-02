@@ -27,10 +27,11 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechCopyFromRed.DrawAllPasses(holder.DeviceContext, 6);
         }
 
-        public void DrawSqr(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
+        public void DrawSqr(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, float cap) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxInputMap.SetResource(view);
+            _effect.FxMultipler.Set(cap);
             _effect.TechCopySqr.DrawAllPasses(holder.DeviceContext, 6);
         }
 

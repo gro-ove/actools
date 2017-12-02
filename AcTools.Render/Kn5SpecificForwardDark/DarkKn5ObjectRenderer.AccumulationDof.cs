@@ -15,7 +15,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer {
         private void InitializeAccumulationDof() {
             _lazyAccumulationDofPoissonDiskSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations).ToArray());
-            _lazyAccumulationDofPoissonSquareSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations).ToArray());
+            _lazyAccumulationDofPoissonSquareSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleSquare(_accumulationDofIterations, false).ToArray());
         }
 
         #region Poisson disk for accumulation DOF, for “round” blur
@@ -106,7 +106,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var bokeh = camera.Right * diskOffset.X + camera.Up * diskOffset.Y;
             var positionOffset = apertureSize * apertureMultipler * bokeh;
 
-            var aaOffset = Matrix.Translation(squareOffset.X / Width, squareOffset.Y / Height, 0f);
+            var sharpnessCoeffient = 1f; // 0.9f - ((40f - AccumulationDofIterations) / 100f).Saturate();
+            var aaOffset = Matrix.Translation(squareOffset.X / Width * sharpnessCoeffient, squareOffset.Y / Height * sharpnessCoeffient, 0f);
             var focusDistance = DofFocusPlane;
 
             var newCamera = new FpsCamera(camera.FovY) {
@@ -155,23 +156,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 _useDof = false;
                 _accumulationDofShotInProcess = true;
-                _accumulationDofBokehShotInProcess = false; // AccumulationDofBokeh;
-
-                // var bokeh = AccumulationDofBokeh;
+                _accumulationDofBokehShotInProcess = AccumulationDofBokeh;
 
                 try {
                     if (IsDirty) {
                         _realTimeAccumulationSize = 0;
                     }
 
-                    // using (_bufferFDofShotBokeh = bokeh ? TargetResourceTexture.Create(Format.R32G32B32A32_Float) : null)
                     using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
-                    using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                        /*if (_bufferFDofShotBokeh != null) {
-                            _bufferFDofShotBokeh.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
-                            DeviceContext.ClearRenderTargetView(_bufferFDofShotBokeh.TargetView, default(Color4));
-                        }*/
-
+                    using (var temporary = TargetResourceTexture.Create(Format.R16G16B16A16_Float)) {
                         summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
                         temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
                         DeviceContext.ClearRenderTargetView(summary.TargetView, default(Color4));
@@ -187,7 +180,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             }
 
                             DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
-                            copy.DrawSqr(DeviceContextHolder, temporary.View, summary.TargetView);
+                            copy.DrawSqr(DeviceContextHolder, temporary.View, summary.TargetView, _accumulationDofBokehShotInProcess ? 50f : 1f);
                             DeviceContext.OutputMerger.BlendState = null;
                         }
 
@@ -195,13 +188,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             copy.AccumulateDivide(DeviceContextHolder, summary.View, temporary.TargetView, samples.Length);
                             var bufferAColorGrading = PpColorGradingBuffer;
                             if (!UseColorGrading || bufferAColorGrading == null) {
-                                if (HdrPass(temporary.View, target, OutputViewport) == temporary.View) {
-                                    copy.Draw(DeviceContextHolder, temporary.View, target);
+                                var hdrView = HdrPass(temporary.View, target, OutputViewport);
+                                if (hdrView != null) {
+                                    copy.Draw(DeviceContextHolder, hdrView, target);
                                 }
                             } else {
                                 var hdrView = HdrPass(temporary.View, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ?? bufferAColorGrading.View;
-                                if (ColorGradingPass(hdrView, target, OutputViewport) == hdrView) {
-                                    copy.Draw(DeviceContextHolder, hdrView, target);
+                                var colorGradingView = ColorGradingPass(hdrView, target, OutputViewport);
+                                if (colorGradingView != hdrView) {
+                                    copy.Draw(DeviceContextHolder, colorGradingView, target);
                                 }
                             }
                         } else {
