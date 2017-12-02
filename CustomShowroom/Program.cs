@@ -9,6 +9,8 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
 using AcTools;
+using AcTools.AcdEncryption;
+using AcTools.AcdFile;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
@@ -65,6 +67,8 @@ namespace CustomShowroom {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
+            Acd.Factory = new AcdFactory();
+
             var argsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Arguments.txt");
             if (File.Exists(argsFile)) {
                 args = File.ReadAllLines(argsFile).Concat(args).ToArray();

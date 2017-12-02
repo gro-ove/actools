@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AcTools.AcdEncryption;
+using AcTools.AcdFile;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -40,6 +42,8 @@ namespace CustomPreviewUpdater {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
+            Acd.Factory = new AcdFactory();
+
             var presets = args.Where(x => x.EndsWith(".pu-preset")).ToList();
             var actualList = new List<string>();
 

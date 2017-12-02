@@ -95,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\actools-internal\AcTools.AcdEncryption\AcTools.AcdEncryption.csproj">
+      <Project>{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}</Project>
+      <Name>AcTools.AcdEncryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
       <Name>AcTools.Render</Name>
