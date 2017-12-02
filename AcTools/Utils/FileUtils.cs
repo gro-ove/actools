@@ -431,7 +431,7 @@ namespace AcTools.Utils {
         /// <param name="parent">For example, “C:\Windows”</param>
         /// <param name="child">For example, “c:/windows/system32”</param>
         /// <returns>For example, true</returns>
-        public static bool IsAffected([NotNull] string parent, [NotNull] string child) {
+        public static bool Affects([NotNull] string parent, [NotNull] string child) {
             if (parent == null) throw new ArgumentNullException(nameof(parent));
             if (child == null) throw new ArgumentNullException(nameof(child));
 

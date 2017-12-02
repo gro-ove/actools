@@ -695,7 +695,7 @@ namespace AcManager.Tools.ContentInstallation {
             if (!File.Exists(destination)) return;
 
             var root = AcRootDirectory.Instance.RequireValue;
-            if (!FileUtils.IsAffected(root, destination)) return;
+            if (!FileUtils.Affects(root, destination)) return;
 
             var modsDirectory = SettingsHolder.GenericMods.GetModsDirectory();
 
@@ -746,7 +746,7 @@ namespace AcManager.Tools.ContentInstallation {
                 await Task.Run(() => {
                     Directory.CreateDirectory(destination);
 
-                    var files = p.Value.Item2.Where(x => FileUtils.IsAffected(root, x)).ToList();
+                    var files = p.Value.Item2.Where(x => FileUtils.Affects(root, x)).ToList();
                     File.WriteAllText(Path.Combine(destination, "name.jsgme"), p.Value.Item1);
 
                     foreach (var v in files) {

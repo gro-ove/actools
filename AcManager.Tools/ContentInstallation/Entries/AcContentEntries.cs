@@ -454,15 +454,15 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                         ? modelsToCopy.Any(x => string.Equals(x, path, StringComparison.OrdinalIgnoreCase)) ||
                                 inisToCopy.Any(x => string.Equals(x, path, StringComparison.OrdinalIgnoreCase))
                         // If file is in subfolder in track’s root directory
-                        : FileUtils.IsAffected(@"ui", path)
+                        : FileUtils.Affects(@"ui", path)
                                 ? (string.Equals(Path.GetDirectoryName(path), @"ui", StringComparison.OrdinalIgnoreCase) ? !mainDisabled :
-                                        !disabled.Any(x => FileUtils.IsAffected($@"ui\{x}", path)))
-                                : !disabled.Any(x => FileUtils.IsAffected(x, path)));
+                                        !disabled.Any(x => FileUtils.Affects($@"ui\{x}", path)))
+                                : !disabled.Any(x => FileUtils.Affects(x, path)));
             }
 
             return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
-                if (EntryPath != string.Empty && !FileUtils.IsAffected(EntryPath, filename)) return null;
+                if (EntryPath != string.Empty && !FileUtils.Affects(EntryPath, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, EntryPath);
                 return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
@@ -477,7 +477,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
 
             bool UiFilter(string x) {
-                if (!FileUtils.IsAffected("ui", x)) return true;
+                if (!FileUtils.Affects("ui", x)) return true;
 
                 var name = Path.GetFileName(x).ToLowerInvariant();
                 return name != "ui_track.json" && name != "preview.png" && name != "outline.png";

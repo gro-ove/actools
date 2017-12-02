@@ -22,6 +22,7 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -29,6 +30,15 @@ using Newtonsoft.Json.Linq;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Objects {
+    public class AcObjectFileChangedArgs : EventArgs {
+        public bool Handled;
+        public readonly string Filename;
+
+        public AcObjectFileChangedArgs(string filename) {
+            Filename = filename;
+        }
+    }
+
     [MoonSharpUserData]
     public sealed partial class CarObject : AcJsonObjectNew, IDraggable {
         public static int OptionSkinsLoadingConcurrency = 5;
@@ -132,31 +142,33 @@ namespace AcManager.Tools.Objects {
             base.Reload();
         }
 
+        public event EventHandler<AcObjectFileChangedArgs> ChangedFile;
+
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
 
-            if (FileUtils.IsAffected(filename, LogoIcon)) {
+            if (FileUtils.Affects(filename, LogoIcon)) {
                 OnImageChangedValue(LogoIcon);
-            } else if (FileUtils.IsAffected(filename, BrandBadge)) {
+            } else if (FileUtils.Affects(filename, BrandBadge)) {
                 CheckBrandBadge();
                 OnImageChangedValue(BrandBadge);
-            } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
+            } else if (FileUtils.Affects(filename, UpgradeIcon)) {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
-            } else if (FileUtils.IsAffected(filename, SoundbankFilename)) {
+            } else if (FileUtils.Affects(filename, SoundbankFilename)) {
                 _soundDonorId = null;
                 _soundDonor = null;
                 _soundDonorSet = false;
                 OnPropertyChanged(nameof(SoundDonorId));
                 OnPropertyChanged(nameof(SoundDonor));
-            } else if (_acdDataRead && FileUtils.IsAffected(Path.Combine(Location, "data.acd"), filename)) {
+            } else if (_acdDataRead && FileUtils.Affects(filename, Path.Combine(Location, "data.acd"))) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));
                 } else {
                     _acdData.Refresh(null);
                 }
-            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.IsAffected(Path.Combine(Location, "data"), filename)) {
+            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.Affects(filename, Path.Combine(Location, "data"))) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));
@@ -165,6 +177,7 @@ namespace AcManager.Tools.Objects {
                 }
             }
 
+            ChangedFile?.Invoke(this, new AcObjectFileChangedArgs(filename));
             return true;
         }
 
@@ -316,8 +329,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public double? GetWidthValue() {
-            double v;
-            if (!FlexibleParser.TryParseDouble(_specsWeight, out v)) {
+            if (!FlexibleParser.TryParseDouble(_specsWeight, out var v)) {
                 return null;
             }
 
@@ -383,8 +395,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public double GetSpecsPwRatioValue() {
-            double value;
-            if (!FlexibleParser.TryParseDouble(_specsPwRatio, out value)) return double.NaN;
+            if (!FlexibleParser.TryParseDouble(_specsPwRatio, out var value)) return double.NaN;
 
             if (SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio)) {
                 value = 1 / value;
@@ -408,8 +419,7 @@ namespace AcManager.Tools.Objects {
 
                 var pwRatio = SpecsPwRatio;
                 if (pwRatio != null && SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(pwRatio)) {
-                    double value;
-                    pwRatio = FlexibleParser.TryParseDouble(pwRatio, out value) ? $"{1 / value:F2} hp/kg" : pwRatio;
+                    pwRatio = FlexibleParser.TryParseDouble(pwRatio, out var value) ? $"{1 / value:F2} hp/kg" : pwRatio;
                 }
 
                 foreach (var val in new[] {
@@ -505,8 +515,7 @@ namespace AcManager.Tools.Objects {
             Year = json.GetIntValueOnly("year");
             if (Year.HasValue) return;
 
-            int year;
-            if (DataProvider.Instance.CarYears.TryGetValue(Id, out year)) {
+            if (DataProvider.Instance.CarYears.TryGetValue(Id, out var year)) {
                 Year = year;
             } else if (Name != null) {
                 Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
@@ -530,8 +539,7 @@ namespace AcManager.Tools.Objects {
                 json.Remove("parent");
             }
 
-            var specsObj = json["specs"] as JObject;
-            if (specsObj == null) {
+            if (!(json["specs"] is JObject specsObj)) {
                 json["specs"] = specsObj = new JObject();
             }
 
@@ -551,7 +559,7 @@ namespace AcManager.Tools.Objects {
         string IDraggable.DraggableFormat => DraggableFormat;
 
         #region Packing
-        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`";
+        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`&!author:Race Sim Studio";
 
         private static readonly Lazy<IFilter<CarObject>> CanBePackedFilterObj = new Lazy<IFilter<CarObject>>(() =>
                 Filter.Create(CarObjectTester.Instance, OptionCanBePackedFilter));

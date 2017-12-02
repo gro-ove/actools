@@ -407,7 +407,7 @@ namespace AcManager.Pages.ServerPreset {
 
         private void RemoveCurrentIfNeeded() {
             var filename = Filename;
-            if (filename != null && FileUtils.IsAffected(_contentDirectory, filename) && Path.GetFileName(filename).StartsWith(GetTypePrefix())) {
+            if (filename != null && FileUtils.Affects(_contentDirectory, filename) && Path.GetFileName(filename).StartsWith(GetTypePrefix())) {
                 _toRemove.Add(filename);
             }
         }

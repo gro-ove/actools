@@ -67,7 +67,7 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            if (FileUtils.IsAffected(filename, PreviewImage)) {
+            if (FileUtils.Affects(filename, PreviewImage)) {
                 OnImageChangedValue(PreviewImage);
                 CheckPreview();
                 return true;

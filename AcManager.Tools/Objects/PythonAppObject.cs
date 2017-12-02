@@ -389,7 +389,7 @@ namespace AcManager.Tools.Objects {
         }
 
         internal bool IsAffectedBy(string changed) {
-            return FileUtils.IsAffected(changed, Filename) || _defaultsFilename != null && FileUtils.IsAffected(changed, _defaultsFilename);
+            return FileUtils.Affects(changed, Filename) || _defaultsFilename != null && FileUtils.Affects(changed, _defaultsFilename);
         }
 
         public List<PythonAppConfigSection> Sections { get; }

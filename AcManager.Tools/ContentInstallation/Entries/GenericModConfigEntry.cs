@@ -109,7 +109,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var path = EntryPath;
             return new CopyCallback(info => {
                 var filename = info.Key;
-                if (path != string.Empty && !FileUtils.IsAffected(path, filename)) return null;
+                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);

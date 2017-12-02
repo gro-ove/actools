@@ -583,7 +583,7 @@ namespace AcManager.Tools.Objects {
 
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
-            if (FileUtils.IsAffected(filename, OpponentsIniFilename) && Type == KunosCareerObjectType.Championship) {
+            if (FileUtils.Affects(filename, OpponentsIniFilename) && Type == KunosCareerObjectType.Championship) {
                 LoadOpponents();
             }
 

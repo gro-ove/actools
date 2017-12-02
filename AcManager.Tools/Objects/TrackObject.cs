@@ -258,7 +258,7 @@ namespace AcManager.Tools.Objects {
             if (IsMultiLayoutsChanged()) return false;
 
             if (MultiLayouts != null) {
-                foreach (var layout in MultiLayouts.Skip(1).Where(layout => FileUtils.IsAffected(layout.Location, filename))) {
+                foreach (var layout in MultiLayouts.Skip(1).Where(layout => FileUtils.Affects(layout.Location, filename))) {
                     return layout.HandleChangedFile(filename);
                 }
             }

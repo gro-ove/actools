@@ -33,12 +33,12 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            if (FileUtils.IsAffected(filename, PreviewImage)) {
+            if (FileUtils.Affects(filename, PreviewImage)) {
                 OnImageChangedValue(PreviewImage);
                 return true;
             }
 
-            if (FileUtils.IsAffected(filename, Kn5Filename)) {
+            if (FileUtils.Affects(filename, Kn5Filename)) {
                 CheckKn5();
                 return true;
             }

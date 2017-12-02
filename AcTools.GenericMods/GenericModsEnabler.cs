@@ -125,7 +125,7 @@ namespace AcTools.GenericMods {
                 } else {
                     foreach (var changed in filenames.Where(x =>
                             x?.EndsWith(GenericMod.DescriptionExtension, StringComparison.OrdinalIgnoreCase) == true)) {
-                        Mods.FirstOrDefault(x => FileUtils.IsAffected(x.ModDirectory, changed))?.Description.Reset();
+                        Mods.FirstOrDefault(x => FileUtils.Affects(x.ModDirectory, changed))?.Description.Reset();
                     }
                 }
 

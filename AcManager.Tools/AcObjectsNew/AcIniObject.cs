@@ -22,7 +22,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (FileUtils.IsAffected(filename, IniFilename)) {
+            if (FileUtils.Affects(filename, IniFilename)) {
                 if (!Changed ||
                         ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Ini, ToolsStrings.AcObject_ReloadAutomatically,
                                 MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {
