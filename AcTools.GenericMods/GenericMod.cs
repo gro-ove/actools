@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using AcTools.GenericMods.Annotations;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -13,6 +12,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 
 namespace AcTools.GenericMods {
     public class GenericMod : INotifyPropertyChanged, IDraggable {

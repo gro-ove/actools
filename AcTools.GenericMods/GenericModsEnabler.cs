@@ -5,14 +5,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using AcTools.DataFile;
-using AcTools.GenericMods.Annotations;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 
 namespace AcTools.GenericMods {
     public static class GenericModsExtension {

@@ -1,4 +1,4 @@
-using AcTools.GenericMods.Annotations;
+using JetBrains.Annotations;
 
 namespace AcTools.GenericMods {
     public class GenericModFile {

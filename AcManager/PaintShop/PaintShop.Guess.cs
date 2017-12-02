@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using AcTools.GenericMods.Annotations;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.PaintShop {
     public static partial class PaintShop {
