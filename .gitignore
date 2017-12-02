@@ -69,14 +69,6 @@ Output/*
 # Tests’ output
 AcTools.Tests/test/kn5/*
 
-# Specific unnecessary source files
-AcManager/Assets/Data/ShowroomPreviewSphere/*
-AcManager/Assets/Data/TrackPreviewNothing/*
-
-# Some files with private values (you can always add your own)
-FirstFloor.ModernUI/Helpers/ValuesStorage_EncryptionKey.cs
-AcTools/AcdFile/AcdEncryption.cs
-
 # RAM Disk trick
 */bin~
 */obj~
