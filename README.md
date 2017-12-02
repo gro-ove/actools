@@ -79,9 +79,9 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
 # Build notes
 
- - I recommend to switch to x86 (or, if you need, x64) platform. As far as I can see, most libraries (such as SlimDX, Magick.NET or CefSharp) won’t work with AnyCPU.
+ - For now, please, ignore AcTools.NeuralTyres library, it’s so much WIP I’m not even sure I’ll keep it. Feel free to remove it from solution to clean things up.
 
- - Take AcTools.Internal from [the unpacked version](https://trello.com/c/JoXMYzwx/47-about-avs) (or make your own compatible version, it mostly contains different API codes, addresses and salts for testing checksums).
+ - I recommend to switch to x86 (or, if you need, x64) platform. As far as I can see, most libraries (such as SlimDX, Magick.NET or CefSharp) won’t work with AnyCPU.
 
  - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included.
 
