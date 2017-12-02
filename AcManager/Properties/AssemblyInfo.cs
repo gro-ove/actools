@@ -11,7 +11,7 @@ using System.Windows.Media;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("Content Manager")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,8 +37,8 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.733.14232")]
-[assembly: AssemblyFileVersion("0.7.733.14232")]
+[assembly: AssemblyVersion("0.8.1289.26378")]
+[assembly: AssemblyFileVersion("0.8.1289.26378")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 16/12/26 17:21:33
+// Modified at: 17/12/03 01:47:13

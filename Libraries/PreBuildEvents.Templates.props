@@ -3,7 +3,7 @@
   <PropertyGroup Condition="'$(ACTOOLS_BUILD_SCRIPTS)' == 'On'">
     <PreBuildEvent>
 cd "$(ProjectDir)" &amp; zsh -c "$(TemplatesToUpdate)"
-vsincver --smart $(ProjectDir)</PreBuildEvent>
+vsincver --smart " $(ProjectDir) "</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
 </Project>

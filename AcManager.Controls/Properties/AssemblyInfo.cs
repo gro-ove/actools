@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
 
-// General Information about an assembly is controlled through the following 
+// General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AcManager.Controls")]
@@ -12,16 +12,16 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Controls")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
+// Setting ComVisible to false makes the types in this assembly not visible
+// to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-//In order to begin building localizable applications, set 
+//In order to begin building localizable applications, set
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
 //inside a <PropertyGroup>.  For example, if you are using US english
 //in your source files, set the <UICulture> to en-US.  Then uncomment
@@ -33,30 +33,31 @@ using System.Windows.Markup;
 
 [assembly:ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
-                             //(used if a resource is not found in the page, 
+                             //(used if a resource is not found in the page,
                              // or application resource dictionaries)
     ResourceDictionaryLocation.SourceAssembly //where the generic resource dictionary is located
-                                      //(used if a resource is not found in the page, 
+                                      //(used if a resource is not found in the page,
                                       // app, or any theme specific resource dictionaries)
 )]
 
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
-//      Minor Version 
+//      Minor Version
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.1912")]
-[assembly: AssemblyFileVersion("1.0.1.1912")]
+[assembly: AssemblyVersion("1.0.1.10359")]
+[assembly: AssemblyFileVersion("1.0.1.10359")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Converters")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.CustomShowroom")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Dialogs")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Graphs")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Helpers")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Presentation")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.QuickSwitches")]
@@ -66,4 +67,4 @@ using System.Windows.Markup;
 [assembly: XmlnsPrefix("http://acstuff.ru/app/controls", "c")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 16/12/26 15:06:09
+// Modified at: 17/12/03 01:47:13

@@ -90,7 +90,6 @@ namespace AcManager.Tools.Filters.TestEntries {
                     timeSpan = default(TimeSpan);
                     strict = false;
                     return false;
-                    break;
             }
 
             if (!result.HasValue) {

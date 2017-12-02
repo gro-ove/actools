@@ -134,7 +134,7 @@
     <Resource Include="Assets\Icons\OneDrive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
+  <Import Project="..\Libraries\PreBuildEvents.props" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
