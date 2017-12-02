@@ -11,14 +11,6 @@
     <AssemblyName>FirstFloor.ModernUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
@@ -92,12 +84,22 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  <!-- Win8+ special: begin -->
+  <PropertyGroup>
+    <Windows8Reference>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</Windows8Reference>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(Windows8Reference)')">
+    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(Windows8Reference)</HintPath>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup Condition="Exists('$(Windows8Reference)')">
+    <DefineConstants>$(DefineConstants);WIN8SUPPORTED</DefineConstants>
+  </PropertyGroup>
+  <!-- Win8+ special: end -->
   <ItemGroup>
     <Compile Include="ActionExtension.cs" />
     <Compile Include="BetterListCollectionView.cs" />

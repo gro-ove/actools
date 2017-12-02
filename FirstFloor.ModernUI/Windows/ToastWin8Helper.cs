@@ -1,3 +1,5 @@
+#if WIN8SUPPORTED
+
 using System;
 using System.IO;
 using System.Windows;
@@ -49,3 +51,15 @@ namespace FirstFloor.ModernUI.Windows {
         }
     }
 }
+
+#else
+
+namespace FirstFloor.ModernUI.Windows {
+    public static class ToastWin8Helper {
+        public static void ShowToast(string title, string message, object icon, object click) {
+            throw new System.NotSupportedException();
+        }
+    }
+}
+
+#endif
