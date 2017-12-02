@@ -46,11 +46,11 @@ Temporary Items
 Packages
 AcManager.VC.*
 .idea/*
+TestResults/*
 
 # Result files
 */bin
 */Publish
-*.dll
 
 # For debugging, VS builds faster in just one output folder
 Output/*
@@ -83,7 +83,7 @@ AcTools/AcdFile/AcdEncryption.cs
 *.tmp_proj
 
 # Libraries
-Libraries/*
+Libraries (Off)/*
 Libraries.zip
 *.vsp
 

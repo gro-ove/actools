@@ -1,0 +1,1 @@
+Modified version of Newtonsoft.Json, reads numbers properly.

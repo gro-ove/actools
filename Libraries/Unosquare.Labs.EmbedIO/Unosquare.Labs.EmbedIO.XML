@@ -1,0 +1,1590 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unosquare.Labs.EmbedIO</name>
+    </assembly>
+    <members>
+        <member name="T:Unosquare.Labs.EmbedIO.Constants">
+            <summary>
+            Defines assembly-wide constants
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.CommaSplitChar">
+            <summary>
+            The comma split character for String.Split method calls.
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.ArgumentNullExceptionMessage">
+            <summary>
+            The standard argument null exception message
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.StandardCultureInfo">
+            <summary>
+            The format culture used for header outputs
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.StandardStringComparer">
+            <summary>
+            The standard string comparer
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.DefaultEncoding">
+            <summary>
+            The default encoding
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderContentLength">
+            <summary>
+            Content-Length HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.CookieHeader">
+            <summary>
+            The cookie header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAcceptEncoding">
+            <summary>
+            Accept-Encoding HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderContentEncoding">
+            <summary>
+            Content-Encoding HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderIfModifiedSince">
+            <summary>
+            If-Modified-Since HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderCacheControl">
+            <summary>
+            Cache-Control HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderPragma">
+            <summary>
+            Pragma HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderExpires">
+            <summary>
+            Expires HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderLastModified">
+            <summary>
+            Last-Modified HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderIfNotMatch">
+            <summary>
+            If-None-Match HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderETag">
+            <summary>
+            ETag HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAcceptRanges">
+            <summary>
+            Accept-Ranges HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderRange">
+            <summary>
+            Range HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderContentRanges">
+            <summary>
+            Content-Range HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderCompressionGzip">
+            <summary>
+            The header compression gzip
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.BrowserTimeFormat">
+            <summary>
+             Default Browser time format
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.Response404Html">
+            <summary>
+            Default Http Status 404 response output
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.CorsWildcard">
+            <summary>
+            Default CORS rule
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAccessControlAllowOrigin">
+            <summary>
+            Access-Control-Allow-Origin HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAccessControlAllowHeaders">
+            <summary>
+            Access-Control-Allow-Headers HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAccessControlAllowMethods">
+            <summary>
+            Access-Control-Allow-Methods HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderOrigin">
+            <summary>
+            Origin HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAccessControlRequestHeaders">
+            <summary>
+            Access-Control-Request-Headers HTTP Header
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.HeaderAccessControlRequestMethod">
+            <summary>
+            Access-Control-Request-Headers HTTP Method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.Response500HtmlFormat">
+            <summary>
+            Default Http Status 500 response output
+            The first format argument takes the error message.
+            The second format argument takes the stack trace.
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Constants.DefaultMimeTypes">
+            <summary>
+            A big list of default MIME types
+            Originally started from: http://stackoverflow.com/questions/1029740/get-mime-type-from-filename-extension
+            </summary>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.RoutingStrategy">
+            <summary>
+            Defines the routing strategy for URL matching
+            This is especially useful for REST service implementations
+            in the WebApi module.
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.RoutingStrategy.Wildcard">
+            <summary>
+            The wildcard strategy, default one
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.RoutingStrategy.Regex">
+            <summary>
+            The Regex strategy
+            </summary>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Extensions">
+            <summary>
+            Extension methods to help your coding!
+            </summary>
+            <summary>
+            Extensions methods to EmbedIO's Fluent Interface
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.GetSession(System.Net.HttpListenerContext,Unosquare.Labs.EmbedIO.WebServer)">
+            <summary>
+            Gets the session object associated to the current context.
+            Returns null if the LocalSessionWebModule has not been loaded.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="server">The server.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.GetSession(System.Net.WebSockets.WebSocketContext,Unosquare.Labs.EmbedIO.WebServer)">
+            <summary>
+            Gets the session object associated to the current context.
+            Returns null if the LocalSessionWebModule has not been loaded.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="server">The server.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.GetSession(Unosquare.Labs.EmbedIO.WebServer,System.Net.HttpListenerContext)">
+            <summary>
+            Gets the session object associated to the current context.
+            Returns null if the LocalSessionWebModule has not been loaded.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.GetSession(Unosquare.Labs.EmbedIO.WebServer,System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Gets the session.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestPath(System.Net.HttpListenerContext)">
+            <summary>
+            Gets the request path for the specified context.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ExceptionMessage(System.Exception)">
+            <summary>
+            Retrieves the exception message, plus all the inner exception messages separated by new lines
+            </summary>
+            <param name="ex">The ex.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ExceptionMessage(System.Exception,System.String)">
+            <summary>
+            Retrieves the exception message, plus all the inner exception messages separated by new lines
+            </summary>
+            <param name="ex">The ex.</param>
+            <param name="priorMessage">The prior message.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.NoCache(System.Net.HttpListenerContext)">
+            <summary>
+            Sends headers to disable caching on the client side.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.QueryString(System.Net.HttpListenerContext,System.String)">
+            <summary>
+            Gets the value for the specified query string key.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="key">The key.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.InQueryString(System.Net.HttpListenerContext,System.String)">
+            <summary>
+            Determines if a key exists within the Request's query string
+            </summary>
+            <param name="context">The context.</param>
+            <param name="key">The key.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestVerb(System.Net.HttpListenerContext)">
+            <summary>
+            Retrieves the Request Verb of this context.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.Redirect(System.Net.HttpListenerContext,System.String,System.Boolean)">
+            <summary>
+            Redirects the specified context.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="location">The location.</param>
+            <param name="useAbsoluteUrl">if set to <c>true</c> [use absolute URL].</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestBody(System.Net.HttpListenerContext)">
+            <summary>
+            Retrieves the request body as a string.
+            Note that once this method returns, the underlying input stream cannot be read again as 
+            it is not rewindable for obvious reasons. This functionality is by design.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestHeader(System.Net.HttpListenerContext,System.String)">
+            <summary>
+            Retrieves the specified request the header.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="headerName">Name of the header.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.HasRequestHeader(System.Net.HttpListenerContext,System.String)">
+            <summary>
+            Determines whether [has request header] [the specified context].
+            </summary>
+            <param name="context">The context.</param>
+            <param name="headerName">Name of the header.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestFormData(System.Net.HttpListenerContext)">
+            <summary>
+            Returns dictionary from Request POST data
+            Please note the underlying input stream is not rewindable.
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.RequestFormData(System.String)">
+            <summary>
+            Returns dictionary from Request POST data
+            </summary>
+            <param name="requestBody">The request body.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ParseFormData(System.String)">
+            <summary>
+            Parses the form data given the request body string.
+            </summary>
+            <param name="requestBody">The request body.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.Compress(System.IO.Stream)">
+            <summary>
+            Compresses the specified buffer using the G-Zip compression algorithm.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ComputeMd5Hash(System.IO.Stream)">
+            <summary>
+            Computes the MD5 hash.
+            </summary>
+            <param name="stream">The stream.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ComputeMd5Hash(System.Byte[])">
+            <summary>
+            Hash with MD5
+            </summary>
+            <param name="inputBytes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.ComputeMd5Hash(System.String)">
+            <summary>
+            Hash with MD5
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.WithStaticFolderAt(Unosquare.Labs.EmbedIO.WebServer,System.String,System.String)">
+            <summary>
+            Add the StaticFilesModule to the specified WebServer
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <param name="rootPath">The static folder path.</param>
+            <param name="defaultDocument">The default document name</param>
+            <returns>
+            The webserver instance.
+            </returns>
+            <exception cref="T:System.ArgumentException">Argument cannot be null.;webserver</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.WithVirtualPaths(Unosquare.Labs.EmbedIO.WebServer,System.Collections.Generic.Dictionary{System.String,System.String},System.String)">
+            <summary>
+            Add the StaticFilesModule with Multiple paths
+            </summary>
+            <param name="webserver">The webserver.</param>
+            <param name="virtualPaths">The virtual paths.</param>
+            <param name="defaultDocument">The default document.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.WithWebApi(Unosquare.Labs.EmbedIO.WebServer,System.Reflection.Assembly)">
+            <summary>
+            Add WebApiModule to WebServer
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <param name="assembly">The assembly to load WebApi Controllers from. Leave null to avoid autoloading.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.WithWebSocket(Unosquare.Labs.EmbedIO.WebServer,System.Reflection.Assembly)">
+            <summary>
+            Add WebSocketsModule to WebServer
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <param name="assembly">The assembly to load Web Sockets from. Leave null to avoid autoloading.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.LoadApiControllers(Unosquare.Labs.EmbedIO.WebServer,System.Reflection.Assembly)">
+            <summary>
+            Load all the WebApi Controllers in an assembly
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <param name="assembly">The assembly to load WebApi Controllers from. Leave null to load from the currently executing assembly.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.LoadApiControllers(Unosquare.Labs.EmbedIO.Modules.WebApiModule,System.Reflection.Assembly)">
+            <summary>
+            Load all the WebApi Controllers in an assembly
+            </summary>
+            <param name="apiModule">The apíModule instance.</param>
+            <param name="assembly">The assembly to load WebApi Controllers from. Leave null to load from the currently executing assembly.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.LoadWebSockets(Unosquare.Labs.EmbedIO.WebServer,System.Reflection.Assembly)">
+            <summary>
+            Load all the WebSockets in an assembly
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <param name="assembly">The assembly to load WebSocketsServer types from. Leave null to load from the currently executing assembly.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Extensions.WithWebApiController``1(Unosquare.Labs.EmbedIO.WebServer)">
+            <summary>
+            Add WebApi Controller to WebServer
+            </summary>
+            <param name="webserver">The webserver instance.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.HttpVerbs">
+            <summary>
+            Enumerates the different HTTP Verbs
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Any">
+            <summary>
+            Wildcard Method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Delete">
+            <summary>
+            DELETE Method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Get">
+            <summary>
+            GET Method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Head">
+            <summary>
+            HEAD method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Options">
+            <summary>
+            OPTIONS method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Patch">
+            <summary>
+            PATCH method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Post">
+            <summary>
+            POST method
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.HttpVerbs.Put">
+            <summary>
+            PUT method
+            </summary>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Log.ILog">
+            <summary>
+            This interface represents all that is needed for logging
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.Info(System.Object)">
+            <summary>
+            Writes an Info level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.Error(System.Object)">
+            <summary>
+            Writes an Error level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.Error(System.Object,System.Exception)">
+            <summary>
+            Writes an Error message with Exception
+            </summary>
+            <param name="message"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.InfoFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Info level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.WarnFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Warn level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.ErrorFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Error level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.ILog.DebugFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Debug level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog">
+            <summary>
+            Provides a simple logger with colored console output.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.WriteLine(System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes the given line. This method is used by all other methods and it is asynchronous.
+            </summary>
+            <param name="color">The color.</param>
+            <param name="format">The format.</param>
+            <param name="args">The arguments.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.Info(System.Object)">
+            <summary>
+            Writes an Info level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.Error(System.Object)">
+            <summary>
+            Writes an Error level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.Error(System.Object,System.Exception)">
+            <summary>
+            Writes an Error message with Exception
+            </summary>
+            <param name="message"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.InfoFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Info level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.WarnFormat(System.String,System.Object[])">
+            <summary>
+            Writes a Warning level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.ErrorFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Error level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.SimpleConsoleLog.DebugFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Debug level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Log.NullLog">
+            <summary>
+            A Null Log. Useful if you don't want to pass a real logger to the Web Server constructor.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.Info(System.Object)">
+            <summary>
+            Writes an Info level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.Error(System.Object)">
+            <summary>
+            Writes an Error level message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.Error(System.Object,System.Exception)">
+            <summary>
+            Writes an Error message with a given Exception
+            </summary>
+            <param name="message"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.InfoFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Info level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.WarnFormat(System.String,System.Object[])">
+            <summary>
+            Writes a Warning level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.ErrorFormat(System.String,System.Object[])">
+            <summary>
+            Writes an Error level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Log.NullLog.DebugFormat(System.String,System.Object[])">
+            <summary>
+            Writes a Debug level message with format
+            </summary>
+            <param name="format"></param>
+            <param name="args"></param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.ISessionWebModule">
+            <summary>
+            Interface to create session modules
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.ISessionWebModule.Sessions">
+            <summary>
+            The concurrent dictionary holding the sessions
+            </summary>
+            <value>
+            The sessions.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.ISessionWebModule.GetSession(System.Net.HttpListenerContext)">
+            <summary>
+            Gets a session object for the given server context.
+            If no session exists for the context, then null is returned
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.ISessionWebModule.GetSession(System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Gets the session.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.ISessionWebModule.Expiration">
+            <summary>
+            Gets or sets the expiration.
+            </summary>
+            <value>
+            The expiration.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.ResponseHandler">
+            <summary>
+            A delegate that handles certain action in a module given a path and a verb
+            </summary>
+            <param name="server">The server.</param>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.AsyncResponseHandler">
+            <summary>
+            An async delegate that handles certain action in a module given a path and a verb
+            </summary>
+            <param name="server">The server.</param>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.IWebModule">
+            <summary>
+            Interface to create web modules
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.IWebModule.Name">
+            <summary>
+            Gets the friendly name of the module.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.IWebModule.Handlers">
+            <summary>
+            Gets the handlers.
+            </summary>
+            <value>
+            The handlers.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.IWebModule.AddHandler(System.String,Unosquare.Labs.EmbedIO.HttpVerbs,Unosquare.Labs.EmbedIO.ResponseHandler)">
+            <summary>
+            Adds a handler that gets called when a path and verb are matched.
+            </summary>
+            <param name="path">The path.</param>
+            <param name="verb">The verb.</param>
+            <param name="handler">The handler.</param>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.IWebModule.Server">
+            <summary>
+            Gets the server owning this module. This property is set automatically after registering the module.
+            </summary>
+            <value>
+            The server.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Middleware">
+            <summary>
+            Represents a Middleware abstract class
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Middleware.Invoke(Unosquare.Labs.EmbedIO.MiddlewareContext)">
+            <summary>
+            Invokes the Middleware with a context
+            </summary>
+            <param name="context">The Middleware context</param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.MiddlewareContext">
+            <summary>
+            A Middlware context
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.MiddlewareContext.HttpContext">
+            <summary>
+            The Http Context
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.MiddlewareContext.Handled">
+            <summary>
+            Flags if the middleware resolves the request
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.MiddlewareContext.WebServer">
+            <summary>
+            Web Server instance
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.MiddlewareContext.#ctor(System.Net.HttpListenerContext,Unosquare.Labs.EmbedIO.WebServer)">
+            <summary>
+            Instances a Middleware context
+            </summary>
+            <param name="httpListenerContext">The HttpListenerContext</param>
+            <param name="webserver">The WebServer instance</param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule">
+            <summary>
+            Represents a simple module to server static files from the file system.
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.ChuckSize">
+            <summary>
+            The chuck size for sending files
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.MaxGzipInputLength">
+            <summary>
+            The maximum gzip input length
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.DefaultDocumentName">
+            <summary>
+            Default document constant to "index.html"
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.MaxRamCacheFileSize">
+            <summary>
+            Gets or sets the maximum size of the ram cache file.
+            </summary>
+            <value>
+            The maximum size of the ram cache file.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.DefaultDocument">
+            <summary>
+            Gets or sets the default document.
+            Defaults to "index.html"
+            Example: "root.xml"
+            </summary>
+            <value>
+            The default document.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.DefaultExtension">
+            <summary>
+            Gets or sets the default extension.
+            Defaults to null
+            Example: ".html"
+            </summary>
+            <value>
+            The default extension.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.MimeTypes">
+            <summary>
+            Gets the collection holding the MIME types.
+            </summary>
+            <value>
+            The MIME types.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.FileSystemPath">
+            <summary>
+            Gets the file system path from which files are retrieved.
+            </summary>
+            <value>
+            The file system path.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.UseRamCache">
+            <summary>
+            Gets or sets a value indicating whether or not to use the RAM Cache feature
+            RAM Cache will only cache files that are MaxRamCacheSize in bytes or less
+            </summary>
+            <value>
+              <c>true</c> if [use ram cache]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.UseGzip">
+            <summary>
+            Gets or sets a value indicating whether [use gzip].
+            </summary>
+            <value>
+              <c>true</c> if [use gzip]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.DefaultHeaders">
+            <summary>
+            The default headers
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.VirtualPaths">
+            <summary>
+            Gets the virtual paths.
+            </summary>
+            <value>
+            The virtual paths.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.Name">
+            <summary>
+            Gets the name of this module.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.ClearRamCache">
+            <summary>
+            Clears the RAM cache.
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.RamCache">
+            <summary>
+            Private collection holding the contents of the RAM Cache.
+            </summary>
+            <value>
+            The ram cache.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.RamCacheEntry">
+            <summary>
+            Represents a RAM Cache dictionary entry
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule"/> class.
+            </summary>
+            <param name="paths">The paths.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.#ctor(System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule" /> class.
+            </summary>
+            <param name="fileSystemPath">The file system path.</param>
+            <param name="headers">The headers to set in every request.</param>
+            <param name="additionalPaths">The additional paths.</param>
+            <exception cref="T:System.ArgumentException">Path ' + fileSystemPath + ' does not exist.</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.RegisterVirtualPath(System.String,System.String)">
+            <summary>
+            Registers the virtual path.
+            </summary>
+            <param name="virtualPath">The virtual path.</param>
+            <param name="physicalPath">The physical path.</param>
+            <exception cref="T:System.InvalidOperationException">
+            </exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.StaticFilesModule.UnregisterVirtualPath(System.String)">
+            <summary>
+            Unregisters the virtual path.
+            </summary>
+            <param name="virtualPath">The virtual path.</param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebApiModule">
+            <summary>
+            A very simple module to register class methods as handlers.
+            Public instance methods that match the WebServerModule.ResponseHandler signature, and have the WebApi handler attribute
+            will be used to respond to web server requests
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebApiModule"/> class.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.NormalizeRegexPath(Unosquare.Labs.EmbedIO.HttpVerbs,System.Net.HttpListenerContext,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Normalizes a path meant for Regex matching, extracts the route parameters, and returns the registered
+            path in the internal delegate map.
+            </summary>
+            <param name="verb">The verb.</param>
+            <param name="context">The context.</param>
+            <param name="routeParams">The route parameters.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.NormalizeWildcardPath(Unosquare.Labs.EmbedIO.HttpVerbs,System.Net.HttpListenerContext)">
+            <summary>
+            Normalizes a URL request path meant for Wildcard matching and returns the registered
+            path in the internal delegate map.
+            </summary>
+            <param name="verb">The verb.</param>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebApiModule.Name">
+            <summary>
+            Gets the name of this module.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebApiModule.ControllersCount">
+            <summary>
+            Gets the number of controller objects registered in this API
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.RegisterController``1">
+            <summary>
+            Registers the controller.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.ArgumentException">Controller types must be unique within the module</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.RegisterController``1(System.Func{``0})">
+            <summary>
+            Registers the controller.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="controllerFactory"></param>
+            <exception cref="T:System.ArgumentException">Controller types must be unique within the module</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.RegisterController(System.Type)">
+            <summary>
+            Registers the controller.
+            </summary>
+            <param name="controllerType">Type of the controller.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiModule.RegisterController(System.Type,System.Func{System.Object})">
+            <summary>
+            Registers the controller.
+            </summary>
+            <param name="controllerType">Type of the controller.</param>
+            <param name="controllerFactory">The controller factory method.</param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute">
+            <summary>
+            Decorate methods within controllers with this attribute in order to make them callable from the Web API Module
+            Method Must match the WebServerModule.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute.#ctor(Unosquare.Labs.EmbedIO.HttpVerbs,System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute"/> class.
+            </summary>
+            <param name="verb">The verb.</param>
+            <param name="paths">The paths.</param>
+            <exception cref="T:System.ArgumentException">The argument 'paths' must be specified.</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute.#ctor(Unosquare.Labs.EmbedIO.HttpVerbs,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute"/> class.
+            </summary>
+            <param name="verb">The verb.</param>
+            <param name="path">The path.</param>
+            <exception cref="T:System.ArgumentException">The argument 'path' must be specified.</exception>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute.Verb">
+            <summary>
+            Gets or sets the verb.
+            </summary>
+            <value>
+            The verb.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebApiHandlerAttribute.Paths">
+            <summary>
+            Gets or sets the paths.
+            </summary>
+            <value>
+            The paths.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebApiController">
+            <summary>
+            Inherit from this class and define your own Web API methods
+            You must RegisterController in the Web API Module to make it active
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebApiController.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebApiController"/> class.
+            </summary>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule">
+            <summary>
+            A WebSockets module confirming to RFC 6455
+            Works only on Chrome 16+, FireFox 11+ and IE 10+
+            This module is experimental and still needs extensive testing.
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule._serverMap">
+            <summary>
+            Holds the collection of paths and WebSockets Servers registered
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.#ctor">
+            <summary>
+            Initialize WebSocket module
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.Name">
+            <summary>
+            Gets the name of this module.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.RegisterWebSocketsServer``1">
+            <summary>
+            Registers the web sockets server given a WebSocketsServer Type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.ArgumentException">Argument 'path' cannot be null;path</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.RegisterWebSocketsServer(System.Type)">
+            <summary>
+            Registers the web sockets server given a WebSocketsServer Type.
+            </summary>
+            <param name="socketType"></param>
+            <exception cref="T:System.ArgumentException">Argument 'socketType' cannot be null;socketType</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.RegisterWebSocketsServer``1(System.String)">
+            <summary>
+            Registers the web sockets server given a WebSocketsServer Type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="path">The path. For example: '/echo'</param>
+            <exception cref="T:System.ArgumentException">Argument 'path' cannot be null;path</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsModule.RegisterWebSocketsServer``1(System.String,``0)">
+            <summary>
+            Registers the web sockets server.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="path">The path. For example: '/echo'</param>
+            <param name="server">The server.</param>
+            <exception cref="T:System.ArgumentException">Argument 'server' cannot be null;server</exception>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebSocketHandlerAttribute">
+            <summary>
+            Decorate methods within controllers with this attribute in order to make them callable from the Web API Module
+            Method Must match the WebServerModule.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketHandlerAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebSocketHandlerAttribute"/> class.
+            </summary>
+            <param name="path">The path.</param>
+            <exception cref="T:System.ArgumentException">The argument 'paths' must be specified.</exception>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebSocketHandlerAttribute.Path">
+            <summary>
+            Gets or sets the path.
+            </summary>
+            <value>
+            The paths.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer">
+            <summary>
+            A base class that defines how to handle WebSockets connections.
+            It keeps a list of connected WebSockets and has the basic logic to handle connections
+            and data transmission
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.WebServer">
+            <summary>
+            WebServer internal instance
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.WebSockets">
+            <summary>
+            Gets the Currently-Connected WebSockets.
+            </summary>
+            <value>
+            The web sockets.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.#ctor(System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer" /> class.
+            </summary>
+            <param name="enableConnectionWatchdog">if set to <c>true</c> [enable connection watchdog].</param>
+            <param name="maxMessageSize">Maximum size of the message in bytes. Enter 0 or negative number to prevent checks.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer"/> class. With dead connection watchdog and no message size checks.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.RunConnectionWatchdog">
+            <summary>
+            Runs the connection watchdog.
+            Removes and disposes stale WebSockets connections every 10 minutes.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.AcceptWebSocket(Unosquare.Labs.EmbedIO.WebServer,System.Net.HttpListenerContext)">
+            <summary>
+            Accepts the WebSocket connection.
+            This is a blocking call so it must be called within an independent thread.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.RemoveWebSocket(System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Removes and disposes the web socket.
+            </summary>
+            <param name="webSocketContext">The web socket context.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.CollectDisconnected">
+            <summary>
+            Removes and disposes all disconnected sockets
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Send(System.Net.WebSockets.WebSocketContext,System.String)">
+            <summary>
+            Sends a UTF-8 payload
+            </summary>
+            <param name="webSocket">The web socket.</param>
+            <param name="payload">The payload.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Send(System.Net.WebSockets.WebSocketContext,System.Byte[])">
+            <summary>
+            Sends a binary payload
+            </summary>
+            <param name="webSocket">The web socket.</param>
+            <param name="payload">The payload.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Broadcast(System.Byte[])">
+            <summary>
+            Broadcasts the specified payload to all connected WebSockets clients.
+            </summary>
+            <param name="payload">The payload.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Broadcast(System.String)">
+            <summary>
+            Broadcasts the specified payload to all connected WebSockets clients.
+            </summary>
+            <param name="payload">The payload.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Close(System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Closes the specified web socket, removes it and disposes it.
+            </summary>
+            <param name="webSocket">The web socket.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.OnMessageReceived(System.Net.WebSockets.WebSocketContext,System.Byte[],System.Net.WebSockets.WebSocketReceiveResult)">
+            <summary>
+            Called when this WebSockets Server receives a full message (EndOfMessage) form a WebSockets client.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="rxBuffer">The rx buffer.</param>
+            <param name="rxResult">The rx result.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.OnFrameReceived(System.Net.WebSockets.WebSocketContext,System.Byte[],System.Net.WebSockets.WebSocketReceiveResult)">
+            <summary>
+            Called when this WebSockets Server receives a message frame regardless if the frame represents the EndOfMessage.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="rxBuffer">The rx buffer.</param>
+            <param name="rxResult">The rx result.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.OnClientConnected(System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Called when this WebSockets Server accepts a new WebSockets client.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.OnClientDisconnected(System.Net.WebSockets.WebSocketContext)">
+            <summary>
+            Called when the server has removed a WebSockets connected client for any reason.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposeAll"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Modules.WebSocketsServer.ServerName">
+            <summary>
+            Gets the name of the server.
+            </summary>
+            <value>
+            The name of the server.
+            </value>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.SessionInfo">
+            <summary>
+            Represents the contents of an HTTP Session
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.SessionInfo.#ctor">
+            <summary>
+            Initialize Session data
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.SessionInfo.SessionId">
+            <summary>
+            Current Session Identifier
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.SessionInfo.DateCreated">
+            <summary>
+            Current Session creation date
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.SessionInfo.LastActivity">
+            <summary>
+            Current Session last activity date
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.SessionInfo.Data">
+            <summary>
+            Current Session Data Repo
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.SessionInfo.Item(System.String)">
+            <summary>
+            Retrieve an item. If the key does not exist, it return null.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.WebServer">
+            <summary>
+            Represents our tiny web server used to handle requests
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.Listener">
+            <summary>
+            Gets the underlying HTTP listener.
+            </summary>
+            <value>
+            The listener.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.UrlPrefixes">
+            <summary>
+            Gets the Url Prefix for which the server is serving requests.
+            </summary>
+            <value>
+            The URL prefix.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.Modules">
+            <summary>
+            Gets a list of registered modules
+            </summary>
+            <value>
+            The modules.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.SessionModule">
+            <summary>
+            Gets registered the ISessionModule.
+            </summary>
+            <value>
+            The session module.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.Log">
+            <summary>
+            Gets the log interface to which this instance will log messages.
+            </summary>
+            <value>
+            The log.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebServer.RoutingStrategy">
+            <summary>
+            Gets the URL RoutingStrategy used in this instance.
+            By default it is set to Wildcard, but Regex is the the recommended value.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            This constructor does not provide any Logging capabilities.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            This constructor does not provide any Logging capabilities.
+            </summary>
+            <param name="port">The port.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.Int32,Unosquare.Labs.EmbedIO.Log.ILog)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            </summary>
+            <param name="port">The port.</param>
+            <param name="log"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.Int32,Unosquare.Labs.EmbedIO.Log.ILog,Unosquare.Labs.EmbedIO.RoutingStrategy)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            </summary>
+            <param name="port">The port.</param>
+            <param name="log"></param>
+            <param name="routingStrategy">The routing strategy</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            This constructor does not provide any Logging capabilities.
+            </summary>
+            <param name="urlPrefix">The URL prefix.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.String,Unosquare.Labs.EmbedIO.Log.ILog)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            </summary>
+            <param name="urlPrefix">The URL prefix.</param>
+            <param name="log">The log.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.String,Unosquare.Labs.EmbedIO.Log.ILog,Unosquare.Labs.EmbedIO.RoutingStrategy)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            </summary>
+            <param name="urlPrefix">The URL prefix.</param>
+            <param name="log">The log.</param>
+            <param name="routingStrategy">The routing strategy</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            This constructor does not provide any Logging capabilities.
+            </summary>
+            <param name="urlPrefixes">The URL prefixes.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.#ctor(System.String[],Unosquare.Labs.EmbedIO.Log.ILog,Unosquare.Labs.EmbedIO.RoutingStrategy)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebServer"/> class.
+            NOTE: urlPrefix must be specified as something similar to: http://localhost:9696/
+            Please notice the ending slash. -- It is important
+            </summary>
+            <param name="urlPrefixes">The URL prefix.</param>
+            <param name="log">The Log component</param>
+            <param name="routingStrategy">The routing strategy</param>
+            <exception cref="T:System.InvalidOperationException">The HTTP Listener is not supported in this OS</exception>
+            <exception cref="T:System.ArgumentException">Argument urlPrefix must be specified</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Module``1">
+            <summary>
+            Gets the module registered for the given type.
+            Returns null if no module matches the given type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Module(System.Type)">
+            <summary>
+            Gets the module registered for the given type.
+            Returns null if no module matches the given type.
+            </summary>
+            <param name="moduleType">Type of the module.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.RegisterModule(Unosquare.Labs.EmbedIO.IWebModule)">
+            <summary>
+            Registers an instance of a web module. Only 1 instance per type is allowed.
+            </summary>
+            <param name="module">The module.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.UnregisterModule(System.Type)">
+            <summary>
+            Unregisters the module identified by its type.
+            </summary>
+            <param name="moduleType">Type of the module.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.HandleClientRequest(System.Net.HttpListenerContext,Unosquare.Labs.EmbedIO.Middleware)">
+            <summary>
+            Handles the client request.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="app"></param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.ProcessRequest(System.Net.HttpListenerContext)">
+            <summary>
+            Process HttpListener Request and returns true if it was handled
+            </summary>
+            <param name="context">The HttpListenerContext</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.RunAsync(System.Threading.CancellationToken,Unosquare.Labs.EmbedIO.Middleware)">
+            <summary>
+            Starts the listener and the registered modules
+            </summary>
+            <returns>
+            Returns the task that the HTTP listener is 
+            running inside of, so that it can be waited upon after it's been canceled.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">The method was already called.</exception>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Run">
+            <summary>
+            Starts the listener and the registered modules
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Create(System.String,Unosquare.Labs.EmbedIO.Log.ILog)">
+            <summary>
+            Static method to create webserver instance
+            </summary>
+            <param name="urlPrefix">The URL prefix.</param>
+            <param name="log">The log.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.Create(System.Int32,Unosquare.Labs.EmbedIO.Log.ILog)">
+            <summary>
+            Static method to create webserver instance
+            </summary>
+            <param name="port">The port.</param>
+            <param name="log">The log.</param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.CreateWithConsole(System.String)">
+            <summary>
+            Static method to create a webserver instance using a simple console output.
+            This method is useful for fluent configuration.
+            </summary>
+            <param name="urlPrefix"></param>
+            <returns>The webserver instance.</returns>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebServer.CreateWithConsole(System.String,Unosquare.Labs.EmbedIO.RoutingStrategy)">
+            <summary>
+            Static method to create a webserver instance using a simple console output.
+            This method is useful for fluent configuration.
+            </summary>
+            <param name="urlPrefix">The URL prefix.</param>
+            <param name="routingStrategy">The routing strategy.</param>
+            <returns>
+            The webserver instance.
+            </returns>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.WebModuleBase">
+            <summary>
+            Base class to define custom web modules
+            inherit from this class and use the AddHandler Method to register your method calls
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebModuleBase.Name">
+            <summary>
+            Gets the name of this module.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebModuleBase.Handlers">
+            <summary>
+            Gets the registered handlers.
+            Use the AddHandler method to register Handlers
+            </summary>
+            <value>
+            The handlers.
+            </value>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.WebModuleBase.Server">
+            <summary>
+            Gets the associated Web Server object.
+            This property is automatically set when the module is registered
+            </summary>
+            <value>
+            The server.
+            </value>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebModuleBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Unosquare.Labs.EmbedIO.WebModuleBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Unosquare.Labs.EmbedIO.WebModuleBase.AddHandler(System.String,Unosquare.Labs.EmbedIO.HttpVerbs,Unosquare.Labs.EmbedIO.ResponseHandler)">
+            <summary>
+            Adds a method handler for a given path and verb
+            </summary>
+            <param name="path">The path.</param>
+            <param name="verb">The verb.</param>
+            <param name="handler">The handler.</param>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.Map">
+            <summary>
+            Represents a binding of path and verb to a given method call (delegate)
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Map.Path">
+            <summary>
+            The HTTP resource path
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Map.Verb">
+            <summary>
+            The HTTP Verb of this Map
+            </summary>
+        </member>
+        <member name="P:Unosquare.Labs.EmbedIO.Map.ResponseHandler">
+            <summary>
+            The delegate to call for the given path and verb.
+            </summary>
+        </member>
+        <member name="T:Unosquare.Labs.EmbedIO.ModuleMap">
+            <summary>
+            Represents a list which binds Paths and their corresponding HTTP Verbs to Method calls
+            </summary>
+        </member>
+        <member name="F:Unosquare.Labs.EmbedIO.ModuleMap.AnyPath">
+            <summary>
+            Defines the path used to bind to all paths
+            </summary>
+        </member>
+    </members>
+</doc>

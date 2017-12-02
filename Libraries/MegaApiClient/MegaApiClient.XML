@@ -1,0 +1,378 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MegaApiClient</name>
+    </assembly>
+    <members>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.Ok">
+            <summary>
+            API_OK (0): Success
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.InternalError">
+            <summary>
+            API_EINTERNAL (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.BadArguments">
+            <summary>
+            API_EARGS (-2): You have passed invalid arguments to this command.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.RequestFailedRetry">
+            <summary>
+            API_EAGAIN (-3) (always at the request level): A temporary congestion or server malfunction prevented your request from being processed. No data was altered. Retry. Retries must be spaced with exponential backoff.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.TooManyRequests">
+            <summary>
+            API_ERATELIMIT (-4): You have exceeded your command weight per time quota. Please wait a few seconds, then try again (this should never happen in sane real-life applications).
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.RequestFailedPermanetly">
+            <summary>
+            API_EFAILED (-5): The upload failed. Please restart it from scratch.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ToManyRequestsForThisResource">
+            <summary>
+            API_ETOOMANY (-6): Too many concurrent IP addresses are accessing this upload target URL.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceAccessOutOfRange">
+            <summary>
+            API_ERANGE (-7): The upload file packet is out of range or not starting and ending on a chunk boundary.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceExpired">
+            <summary>
+            API_EEXPIRED (-8): The upload target URL you are trying to access has expired. Please request a fresh one.
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceNotExists">
+            <summary>
+            API_EOENT (-9): Object (typically, node or user) not found
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.CircularLinkage">
+            <summary>
+            API_ECIRCULAR (-10): Circular linkage attempted
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.AccessDenied">
+            <summary>
+            API_EACCESS (-11): Access violation (e.g., trying to write to a read-only share)
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceAlreadyExists">
+            <summary>
+            API_EEXIST (-12): Trying to create an object that already exists
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.RequestIncomplete">
+            <summary>
+            API_EINCOMPLETE (-13): Trying to access an incomplete resource
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.CryptographicError">
+            <summary>
+            API_EKEY (-14): A decryption operation failed (never returned by the API)
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.BadSessionId">
+            <summary>
+            API_ESID (-15): Invalid or expired user session, please relogin
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceAdministrativelyBlocked">
+            <summary>
+            API_EBLOCKED (-16): User blocked
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.QuotaExceeded">
+            <summary>
+            API_EOVERQUOTA (-17): Request over quota
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.ResourceTemporarilyNotAvailable">
+            <summary>
+            API_ETEMPUNAVAIL (-18): Resource temporarily not available, please try again later
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.TooManyConnectionsOnThisResource">
+            <summary>
+            API_ETOOMANYCONNECTIONS (-19): Too many connections on this resource
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.FileCouldNotBeWrittenTo">
+            <summary>
+            API_EWRITE (-20): Write failed
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.FileCouldNotBeReadFrom">
+            <summary>
+            API_EREAD (-21): Read failed
+            </summary>
+        </member>
+        <member name="F:CG.Web.MegaApiClient.ApiResultCode.InvalidOrMissingApplicationKey">
+            <summary>
+            API_EAPPKEY (-22): Invalid application key; request not processed
+            </summary>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.#ctor">
+            <summary>
+            Instantiate a new <see cref="T:CG.Web.MegaApiClient.MegaApiClient" /> object with default <see cref="T:CG.Web.MegaApiClient.Options"/> and default <see cref="T:CG.Web.MegaApiClient.IWebClient"/> 
+            </summary>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.#ctor(CG.Web.MegaApiClient.Options)">
+            <summary>
+            Instantiate a new <see cref="T:CG.Web.MegaApiClient.MegaApiClient" /> object with custom <see cref="T:CG.Web.MegaApiClient.Options" /> and default <see cref="T:CG.Web.MegaApiClient.IWebClient"/> 
+            </summary>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.#ctor(CG.Web.MegaApiClient.IWebClient)">
+            <summary>
+            Instantiate a new <see cref="T:CG.Web.MegaApiClient.MegaApiClient" /> object with default <see cref="T:CG.Web.MegaApiClient.Options" /> and custom <see cref="T:CG.Web.MegaApiClient.IWebClient"/> 
+            </summary>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.#ctor(CG.Web.MegaApiClient.Options,CG.Web.MegaApiClient.IWebClient)">
+            <summary>
+            Instantiate a new <see cref="T:CG.Web.MegaApiClient.MegaApiClient" /> object with custom <see cref="T:CG.Web.MegaApiClient.Options"/> and custom <see cref="T:CG.Web.MegaApiClient.IWebClient" />
+            </summary>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GenerateAuthInfos(System.String,System.String)">
+            <summary>
+            Generate authentication informations and store them in a serializable object to allow persistence
+            </summary>
+            <param name="email">email</param>
+            <param name="password">password</param>
+            <returns><see cref="T:CG.Web.MegaApiClient.MegaApiClient.AuthInfos" /> object containing encrypted data</returns>
+            <exception cref="T:System.ArgumentNullException">email or password is null</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Login(System.String,System.String)">
+            <summary>
+            Login to Mega.co.nz service using email/password credentials
+            </summary>
+            <param name="email">email</param>
+            <param name="password">password</param>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Service is not available or credentials are invalid</exception>
+            <exception cref="T:System.ArgumentNullException">email or password is null</exception>
+            <exception cref="T:System.NotSupportedException">Already logged in</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Login(CG.Web.MegaApiClient.MegaApiClient.AuthInfos)">
+            <summary>
+            Login to Mega.co.nz service using hashed credentials
+            </summary>
+            <param name="authInfos">Authentication informations generated by <see cref="M:CG.Web.MegaApiClient.MegaApiClient.GenerateAuthInfos(System.String,System.String)"/> method</param>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Service is not available or authInfos is invalid</exception>
+            <exception cref="T:System.ArgumentNullException">authInfos is null</exception>
+            <exception cref="T:System.NotSupportedException">Already logged in</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.LoginAnonymous">
+            <summary>
+            Login anonymously to Mega.co.nz service
+            </summary>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Throws if service is not available</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Logout">
+            <summary>
+            Logout from Mega.co.nz service
+            </summary>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetAccountInformation">
+            <summary>
+            Retrieve account (quota) information
+            </summary>
+            <returns>An object containing account information</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetNodes">
+            <summary>
+            Retrieve all filesystem nodes
+            </summary>
+            <returns>Flat representation of all the filesystem nodes</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetNodes(CG.Web.MegaApiClient.INode)">
+            <summary>
+            Retrieve children nodes of a parent node
+            </summary>
+            <returns>Flat representation of children nodes</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">Parent node is null</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Delete(CG.Web.MegaApiClient.INode,System.Boolean)">
+            <summary>
+            Delete a node from the filesytem
+            </summary>
+            <remarks>
+            You can only delete <see cref="F:CG.Web.MegaApiClient.NodeType.Directory" /> or <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> node
+            </remarks>
+            <param name="node">Node to delete</param>
+            <param name="moveToTrash">Moved to trash if true, Permanently deleted if false</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">node is null</exception>
+            <exception cref="T:System.ArgumentException">node is not a directory or a file</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.CreateFolder(System.String,CG.Web.MegaApiClient.INode)">
+            <summary>
+            Create a folder on the filesytem
+            </summary>
+            <param name="name">Folder name</param>
+            <param name="parent">Parent node to attach created folder</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">name or parent is null</exception>
+            <exception cref="T:System.ArgumentException">parent is not valid (all types are allowed expect <see cref="F:CG.Web.MegaApiClient.NodeType.File" />)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetDownloadLink(CG.Web.MegaApiClient.INode)">
+            <summary>
+            Retrieve an url to download specified node
+            </summary>
+            <param name="node">Node to retrieve the download link (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> or <see cref="F:CG.Web.MegaApiClient.NodeType.Directory" /> can be downloaded)</param>
+            <returns>Download link to retrieve the node with associated key</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">node is null</exception>
+            <exception cref="T:System.ArgumentException">node is not valid (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> or <see cref="F:CG.Web.MegaApiClient.NodeType.Directory" /> can be downloaded)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.DownloadFile(CG.Web.MegaApiClient.INode,System.String,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Download a specified node and save it to the specified file
+            </summary>
+            <param name="node">Node to download (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> can be downloaded)</param>
+            <param name="outputFile">File to save the node to</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">node or outputFile is null</exception>
+            <exception cref="T:System.ArgumentException">node is not valid (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> can be downloaded)</exception>
+            <exception cref="T:CG.Web.MegaApiClient.DownloadException">Checksum is invalid. Downloaded data are corrupted</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.DownloadFile(System.Uri,System.String,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Download a specified Uri from Mega and save it to the specified file
+            </summary>
+            <param name="uri">Uri to download</param>
+            <param name="outputFile">File to save the Uri to</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">uri or outputFile is null</exception>
+            <exception cref="T:System.ArgumentException">Uri is not valid (id and key are required)</exception>
+            <exception cref="T:CG.Web.MegaApiClient.DownloadException">Checksum is invalid. Downloaded data are corrupted</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Download(CG.Web.MegaApiClient.INode,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Retrieve a Stream to download and decrypt the specified node
+            </summary>
+            <param name="node">Node to download (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> can be downloaded)</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">node or outputFile is null</exception>
+            <exception cref="T:System.ArgumentException">node is not valid (only <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> can be downloaded)</exception>
+            <exception cref="T:CG.Web.MegaApiClient.DownloadException">Checksum is invalid. Downloaded data are corrupted</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Download(System.Uri,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Retrieve a Stream to download and decrypt the specified Uri
+            </summary>
+            <param name="uri">Uri to download</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">uri is null</exception>
+            <exception cref="T:System.ArgumentException">Uri is not valid (id and key are required)</exception>
+            <exception cref="T:CG.Web.MegaApiClient.DownloadException">Checksum is invalid. Downloaded data are corrupted</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetNodeFromLink(System.Uri)">
+            <summary>
+            Retrieve public properties of a file from a specified Uri
+            </summary>
+            <param name="uri">Uri to retrive properties</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">uri is null</exception>
+            <exception cref="T:System.ArgumentException">Uri is not valid (id and key are required)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.GetNodesFromLink(System.Uri)">
+            <summary>
+            Retrieve list of nodes from a specified Uri
+            </summary>
+            <param name="uri">Uri</param>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">uri is null</exception>
+            <exception cref="T:System.ArgumentException">Uri is not valid (id and key are required)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.UploadFile(System.String,CG.Web.MegaApiClient.INode,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Upload a file on Mega.co.nz and attach created node to selected parent
+            </summary>
+            <param name="filename">File to upload</param>
+            <param name="parent">Node to attach the uploaded file (all types except <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</param>
+            <returns>Created node</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">filename or parent is null</exception>
+            <exception cref="T:System.IO.FileNotFoundException">filename is not found</exception>
+            <exception cref="T:System.ArgumentException">parent is not valid (all types except <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Upload(System.IO.Stream,System.String,CG.Web.MegaApiClient.INode,System.Nullable{System.DateTime},System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Upload a stream on Mega.co.nz and attach created node to selected parent
+            </summary>
+            <param name="stream">Data to upload</param>
+            <param name="name">Created node name</param>
+            <param name="parent">Node to attach the uploaded file (all types except <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</param>
+            <returns>Created node</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">stream or name or parent is null</exception>
+            <exception cref="T:System.ArgumentException">parent is not valid (all types except <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</exception>
+        </member>
+        <member name="M:CG.Web.MegaApiClient.MegaApiClient.Move(CG.Web.MegaApiClient.INode,CG.Web.MegaApiClient.INode)">
+            <summary>
+            Change node parent
+            </summary>
+            <param name="node">Node to move</param>
+            <param name="destinationParentNode">New parent</param>
+            <returns>Moved node</returns>
+            <exception cref="T:System.NotSupportedException">Not logged in</exception>
+            <exception cref="T:CG.Web.MegaApiClient.ApiException">Mega.co.nz service reports an error</exception>
+            <exception cref="T:System.ArgumentNullException">node or destinationParentNode is null</exception>
+            <exception cref="T:System.ArgumentException">node is not valid (only <see cref="F:CG.Web.MegaApiClient.NodeType.Directory" /> and <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</exception>
+            <exception cref="T:System.ArgumentException">parent is not valid (all types except <see cref="F:CG.Web.MegaApiClient.NodeType.File" /> are supported)</exception>
+        </member>
+        <member name="P:CG.Web.MegaApiClient.Options.BufferSize">
+            <summary>
+            Size of the buffer used when downloading files
+            This value has an impact on the progression.
+            A lower value means more progression reports but a possible higher CPU usage
+            </summary>
+        </member>
+        <member name="P:CG.Web.MegaApiClient.Options.ChunksPackSize">
+            <summary>
+            Upload is splitted in multiple fragments (useful for big uploads)
+            The size of the fragments is defined by mega.nz and are the following:
+            0 / 128K / 384K / 768K / 1280K / 1920K / 2688K / 3584K / 4608K / ... (every 1024 KB) / EOF
+            The upload method tries to upload multiple fragments at once.
+            Fragments are merged until the total size reaches this value.
+            The special value -1 merges all chunks in a single fragment and a single upload
+            </summary>
+        </member>
+        <member name="T:DamienG.Security.Cryptography.Crc32">
+            <summary>
+            Implements a 32-bit CRC hash algorithm compatible with Zip etc.
+            </summary>
+            <remarks>
+            Crc32 should only be used for backward compatibility with older file formats
+            and algorithms. It is not secure enough for new applications.
+            If you need to call multiple times for the same data either use the HashAlgorithm
+            interface or remember that the result of one Compute call needs to be ~ (XOR) before
+            being passed in as the seed for the next Compute call.
+            </remarks>
+        </member>
+    </members>
+</doc>
