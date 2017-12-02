@@ -12,6 +12,7 @@ using System.Windows.Media;
 using AcManager.PaintShop;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.InnerHelpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -33,6 +34,7 @@ namespace AcManager.CustomShowroom {
                 Renderer?.DisposePaintShop();
                 FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update -= OnPaintShopDataChanged;
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
+                Car.ChangedFile -= OnCarChangedFile;
                 SkinItems = null;
             }
 
@@ -115,6 +117,7 @@ namespace AcManager.CustomShowroom {
                             UpdateLicensePlatesStyles();
                             FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update += OnPaintShopDataChanged;
                             FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
+                            Car.ChangedFile += OnCarChangedFile;
                             SkinFlagCountry = SettingsHolder.Drive.PlayerNationality;
                         }
 
@@ -122,6 +125,15 @@ namespace AcManager.CustomShowroom {
                         SkinNumber = Skin.SkinNumber.AsInt(1);
                         SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
+
+            private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
+                var paintShopFile = Path.Combine(Car.Location, "ui", "cm_paintshop.json");
+                var paintShopDirectory = Path.Combine(Car.Location, "ui", "cm_paintshop");
+                if (FileUtils.Affects(args.Filename, paintShopFile)
+                        || FileUtils.Affects(args.Filename, paintShopDirectory)) {
+                    OnPaintShopDataChanged(sender, args);
+                }
+            }
 
             private IList<PaintableItem> _skinItems;
 

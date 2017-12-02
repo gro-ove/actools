@@ -55,7 +55,8 @@ namespace AcManager.Tools.Managers {
             @"ui",
             @"ui\badge.png",
             @"ui\upgrade.png",
-            @"ui\ui_car.json"
+            @"ui\ui_car.json",
+            @"ui\cm_paintshop.json",
         };
 
         private static readonly string[] WatchedSkinFileNames = {
@@ -72,12 +73,13 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (inner.StartsWith(@"data\") ||
-                    inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
+            if (inner.StartsWith(@"data\")
+                    || inner.StartsWith(@"ui\cm_paintshop\")
+                    || inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
 
-            if (!inner.StartsWith(@"skins\") || // texture\…
-                    inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png
-                    inner.EndsWith(@".dds", StringComparison.OrdinalIgnoreCase)) {
+            if (!inner.StartsWith(@"skins\") // texture\…
+                    || inner.Count(x => x == '\\') > 2 // skins\abc\def\file.png
+                    || inner.EndsWith(@".dds", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
 
