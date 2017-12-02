@@ -74,7 +74,7 @@ namespace AcManager {
         CanPack,
 
         /// <summary>
-        /// Filter specifying which cars CM can pack and share. Default value: kunos-&!id:`^ad_`.
+        /// Filter specifying which cars CM can pack and share. Default value: kunos-&!id:`^ad_`&!author:Race Sim Studio.
         /// Example: --can-pack-cars=kunos-|dlc-.
         /// </summary>
         CanPackCars,

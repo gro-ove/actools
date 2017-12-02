@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     // TODO: Rename to Values?
-    public static partial class ValuesStorage {
+    public static class ValuesStorage {
         public static Storage Storage { get; private set; }
 
         public static void Initialize(string filename, string encryptionKey, bool disableCompression = false) {
