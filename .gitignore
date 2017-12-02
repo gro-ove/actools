@@ -30,11 +30,11 @@ $RECYCLE.BIN/
 .Trashes
 
 # Directories potentially created on remote AFP share
+.apdisk
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
-.apdisk
 
 # Project special files
 *.pdb
@@ -42,11 +42,12 @@ Temporary Items
 *.psess
 *.vspx
 *.suo
-*/obj
-Packages
+*.tmp_proj
 AcManager.VC.*
 .idea/*
+Packages/*
 TestResults/*
+*/obj/*
 
 # Result files
 */bin
@@ -66,19 +67,10 @@ Output/*
 # Compiled shaders
 *.fx.o
 
-# Tests’ output
+# Output from tests
 AcTools.Tests/test/kn5/*
-
-# RAM Disk trick
-*/bin~
-*/obj~
-*.tmp_proj
-
-# Libraries
-Libraries (Off)/*
-Libraries.zip
-*.vsp
 
 # Not ready to release yet
 AcTools.NeuralTyres/*
 AcTools.NeuralTyres.Tests/*
+IgnoreVersionFiles.bat
