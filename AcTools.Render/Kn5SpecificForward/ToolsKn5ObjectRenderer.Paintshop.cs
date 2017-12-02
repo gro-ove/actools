@@ -535,7 +535,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             result = new TextBlockRenderer(_patternSprite, GetFontCollectionProvider(description.Font), description.Font.FamilyName,
-                    description.Weight, description.Style, description.Stretch, (float)description.Size);
+                    description.Weight, description.Style, description.Stretch, (float)description.Size, description.KerningAdjustment);
             _patternTextRenderers[hashCode] = result;
             return result;
         }

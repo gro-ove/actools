@@ -15,6 +15,7 @@ using Debug = System.Diagnostics.Debug;
 using Device1 = SlimDX.Direct3D10_1.Device1;
 using Factory = SlimDX.DirectWrite.Factory;
 using FactoryType = SlimDX.DirectWrite.FactoryType;
+using FontStretch = SlimDX.DirectWrite.FontStretch;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
 using FontWeight = SlimDX.DirectWrite.FontWeight;
 using Resource = SlimDX.DXGI.Resource;
@@ -114,20 +115,9 @@ namespace AcTools.Render.Base.Sprites {
         protected readonly SpriteRenderer Sprite;
         protected readonly TextFormat Font;
 
-        /// <summary>
-        /// Returns the font size that this TextRenderer was created for.
-        /// </summary>
-        public float FontSize { get; }
-
-        /// <summary>
-        /// Gets or sets whether this TextRenderer should behave PIX compatibly.
-        /// </summary>
-        /// <remarks>
-        /// PIX compatibility means that no shared resource is used.
-        /// However, this will result in no visible text being drawn.
-        /// The geometry itself will be visible in PIX.
-        /// </remarks>
-        public static bool PixCompatible { get; set; }
+        public readonly float FontSize;
+        public readonly int KerningAdjustment;
+        public static bool PixCompatible { get; }
 
         static TextBlockRenderer() {
             PixCompatible = false;
@@ -140,14 +130,16 @@ namespace AcTools.Render.Base.Sprites {
         private readonly IFontCollectionProvider _fcp;
 
         public TextBlockRenderer(SpriteRenderer sprite, string fontName, FontWeight fontWeight,
-                FontStyle fontStyle, FontStretch fontStretch, float fontSize) : this(sprite, null, fontName, fontWeight, fontStyle, fontStretch, fontSize) {}
+                FontStyle fontStyle, FontStretch fontStretch, float fontSize, int kerningAdjustment = 0)
+                : this(sprite, null, fontName, fontWeight, fontStyle, fontStretch, fontSize, kerningAdjustment) { }
 
         public TextBlockRenderer(SpriteRenderer sprite, [CanBeNull] IFontCollectionProvider collection, string fontName, FontWeight fontWeight,
-                FontStyle fontStyle, FontStretch fontStretch, float fontSize) {
+                FontStyle fontStyle, FontStretch fontStretch, float fontSize, int kerningAdjustment = 0) {
             AssertDevice();
             IncRefCount();
             Sprite = sprite;
             FontSize = fontSize;
+            KerningAdjustment = kerningAdjustment;
 
             Monitor.Enter(sprite.Device);
             try {
@@ -249,7 +241,6 @@ namespace AcTools.Render.Base.Sprites {
                     tex11 = device11.OpenSharedResource<SlimDX.Direct3D11.Texture2D>(dxgiResource.SharedHandle);
                 }
                 srv11 = new ShaderResourceView(device11, tex11);
-                // device11.ImmediateContext.GenerateMips((global::SlimDX.Direct3D11.ShaderResourceView)srv11);
                 texture11 = tex11;
                 dxgiResource.Dispose();
             }
@@ -268,18 +259,12 @@ namespace AcTools.Render.Base.Sprites {
         /// The table containing ASCII has a prefix of 0 (0x00/00 - 0x00/FF).
         /// </summary>
         /// <param name="bytePrefix">The byte prefix of characters.</param>
-        protected void CreateCharTable(byte bytePrefix) {
-            int sizeX;
-            int sizeY;
-            TextLayout[] tl;
+        private void CreateCharTable(byte bytePrefix) {
             // Get appropriate texture width height and layout accoring to 'Font' field member
-            GenerateTextLayout(bytePrefix, out sizeX, out sizeY, out tl);
-
-            CharTableDescription tableDesc;
-            CharRenderCall[] drawCalls;
+            GenerateTextLayout(bytePrefix, out var sizeX, out var sizeY, out var tl);
 
             // Get Draw calls and table description
-            GenerateDrawCalls(sizeX, sizeY, tl, out tableDesc, out drawCalls);
+            GenerateDrawCalls(sizeX, sizeY, KerningAdjustment, tl, out var tableDesc, out var drawCalls);
 
             // Create font map texture from previously created draw calls
             var fontMapTexture = CreateFontMapTexture(sizeX, sizeY, drawCalls);
@@ -327,7 +312,7 @@ namespace AcTools.Render.Base.Sprites {
             sizeY = (int)Math.Pow(2, Math.Ceiling(Math.Log(sizeY, 2)));
         }
 
-        private static void GenerateDrawCalls(int sizeX, int sizeY, TextLayout[] tl, out CharTableDescription tableDesc, out CharRenderCall[] drawCalls) {
+        private static void GenerateDrawCalls(int sizeX, int sizeY, int kernelAdjustment, TextLayout[] tl, out CharTableDescription tableDesc, out CharRenderCall[] drawCalls) {
             drawCalls = new CharRenderCall[256];
             tableDesc = new CharTableDescription();
             int line = 0, xPos = 0, yPos = 0;
@@ -354,7 +339,7 @@ namespace AcTools.Render.Base.Sprites {
                 charDesc.OverhangRight = charWidth - charDesc.CharSize.X - charDesc.OverhangLeft;
                 charDesc.OverhangBottom = charHeight - charDesc.CharSize.Y - charDesc.OverhangTop;
 
-                charDesc.TexCoordsStart = new Vector2(((float)xPos / sizeX), ((float)yPos / sizeY));
+                charDesc.TexCoordsStart = new Vector2((float)xPos / sizeX, (float)yPos / sizeY);
                 charDesc.TexCoordsSize = new Vector2((float)charWidth / sizeX, (float)charHeight / sizeY);
 
                 charDesc.TableDescription = tableDesc;
@@ -371,8 +356,7 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         public StringMetrics DrawString(string text, Vector2 position, float angle, float realFontSize, Color4 color, CoordinateType coordinateType) {
-            StringMetrics sm;
-            IterateStringEm(text, position, angle, true, realFontSize, color, coordinateType, out sm);
+            IterateStringEm(text, position, angle, true, realFontSize, color, coordinateType, out var sm);
             return sm;
         }
 
@@ -381,14 +365,12 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         public StringMetrics MeasureString(string text) {
-            StringMetrics sm;
-            IterateString(text, Vector2.Zero, 0f, false, 1, new Color4(), CoordinateType.Absolute, out sm);
+            IterateString(text, Vector2.Zero, 0f, false, 1, new Color4(), CoordinateType.Absolute, out var sm);
             return sm;
         }
 
         public StringMetrics MeasureString(string text, float angle, float realFontSize, CoordinateType coordinateType) {
-            StringMetrics sm;
-            IterateStringEm(text, Vector2.Zero, angle, false, realFontSize, new Color4(), coordinateType, out sm);
+            IterateStringEm(text, Vector2.Zero, angle, false, realFontSize, new Color4(), coordinateType, out var sm);
             return sm;
         }
 
@@ -496,7 +478,7 @@ namespace AcTools.Render.Base.Sprites {
                     }
                 }
 
-                var delta = new Vector2(charMetrics.Size.X, 0f);
+                var delta = new Vector2(charMetrics.Size.X + KerningAdjustment, 0f);
 
                 switch (c) {
                     case '\n':
@@ -536,8 +518,7 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         private void DecRefCount() {
-            DeviceDescriptor desc;
-            if (DeviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount--;
+            if (DeviceDescriptors.TryGetValue(GetType(), out var desc)) desc.ReferenceCount--;
             if (desc != null && desc.ReferenceCount == 0) {
                 desc.DisposeAll();
                 DeviceDescriptors.Remove(GetType());
@@ -546,8 +527,7 @@ namespace AcTools.Render.Base.Sprites {
         }
 
         private void IncRefCount() {
-            DeviceDescriptor desc;
-            if (DeviceDescriptors.TryGetValue(GetType(), out desc)) desc.ReferenceCount++;
+            if (DeviceDescriptors.TryGetValue(GetType(), out var desc)) desc.ReferenceCount++;
         }
 
         protected IDisposable D3DDevice10 => _desc.D3DDevice10;

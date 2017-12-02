@@ -250,7 +250,8 @@ namespace AcManager.PaintShop {
                     GetPatternColorReference(o[KeyColor], refSolver),
                     GetFontWeight(o[KeyWeight]),
                     GetFontStyle(o[KeyStyle]),
-                    GetFontStretch(o[KeyStretch])) : null;
+                    GetFontStretch(o[KeyStretch]),
+                    o.GetIntValueOnly(KeyKerningAdjustment, 0)) : null;
         }
 
         [CanBeNull]
@@ -277,6 +278,7 @@ namespace AcManager.PaintShop {
                     GetFontWeight(o[KeyWeight]),
                     GetFontStyle(o[KeyStyle]),
                     GetFontStretch(o[KeyStretch]),
+                    o.GetIntValueOnly(KeyKerningAdjustment, 0),
                     o.GetStringValueOnly(KeyRole)) : null;
         }
 
@@ -385,6 +387,7 @@ namespace AcManager.PaintShop {
         private const string KeyTop = "top";
         private const string KeyHorizontalAlignment = "horizontalAlignment";
         private const string KeyVerticalAlignment = "verticalAlignment";
+        private const string KeyKerningAdjustment = "kerning";
         private const string KeyAngle = "angle";
         private const string KeyAspectMultiplier = "aspectMultiplier";
         private const string KeyWeight = "weight";
