@@ -256,7 +256,6 @@ namespace AcManager {
                 PluginsWrappers.Initialize(
                         new FmodPluginWrapper(),
                         new MagickPluginWrapper(),
-                        new AwesomiumPluginWrapper(),
                         new CefSharpPluginWrapper(),
                         new StarterPlus());
             }

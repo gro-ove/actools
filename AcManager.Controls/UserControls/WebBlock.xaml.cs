@@ -15,7 +15,6 @@ namespace AcManager.Controls.UserControls {
 
         private static IWebSomething GetSomething() {
             if (PluginsManager.Instance.IsPluginEnabled(CefSharpPluginInformation.Id)) return new CefSharpWrapper();
-            // if (PluginsManager.Instance.IsPluginEnabled("Awesomium")) return new AwesomiumWrapper();
             return new WebBrowserWrapper();
         }
 

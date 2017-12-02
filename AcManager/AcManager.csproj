@@ -110,19 +110,6 @@
     <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Awesomium.Core, Version=1.7.5.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Awesomium-x86\Awesomium.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Awesomium.Windows.Controls, Version=1.7.5.1, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
-      <HintPath>..\Libraries\Awesomium-x86\Awesomium.Windows.Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="LUTLibrary, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libraries\LUTLibrary\LUTLibrary.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -600,7 +587,6 @@
     <Compile Include="PaintShop\TexturePattern.cs" />
     <Compile Include="PaintShop\TintedWindows.cs" />
     <Compile Include="PaintShop\TransparentIfFlagged.cs" />
-    <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
     <Compile Include="QuickSwitches\QuickSwitchCommands.cs" />
@@ -1560,6 +1546,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\Licenses\CefSharp\CefSharp.txt" />
+    <Content Include="About\Licenses\EmbedIO\EmbedIO.txt" />
+    <Content Include="About\Licenses\Meta.Vlc\LICENSE" />
+    <Content Include="About\Licenses\SmartThreadPool\SmartThreadPool.txt" />
     <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
     <None Include="About\Filtering\More About Expressions.txt" />
     <None Include="About\Filtering\Introduction.txt" />
@@ -1567,7 +1557,10 @@
     <None Include="About\Filtering\More About Properties.txt" />
     <None Include="About\Filtering\More About Sub-Filters.txt" />
     <None Include="About\ImportantTips\Custom Car Data.txt" />
+    <None Include="About\Licenses\CefSharp\LICENSE" />
+    <None Include="About\Licenses\EmbedIO\LICENSE" />
     <None Include="About\Licenses\ImageMagick\LICENSE" />
+    <None Include="About\Licenses\SmartThreadPool\LICENSE" />
     <None Include="About\Licenses\Twemoji\LICENSE-GRAPHICS" />
     <None Include="Assets\Presets.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

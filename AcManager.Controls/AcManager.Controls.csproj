@@ -54,15 +54,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <!--<Reference Include="Awesomium.Core, Version=1.7.5.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Awesomium-x86\Awesomium.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Awesomium.Windows.Controls, Version=1.7.5.1, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
-      <HintPath>..\Libraries\Awesomium-x86\Awesomium.Windows.Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>-->
     <Reference Include="CefSharp, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
@@ -80,11 +71,6 @@
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <!--<Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
-      <Private>False</Private>
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-    </Reference>-->
     <Reference Include="xZune.Vlc">
       <HintPath>..\Libraries\xZune.Vlc\xZune.Vlc.dll</HintPath>
     </Reference>
@@ -177,8 +163,6 @@
     </Compile>
     <Compile Include="FavouriteButton.cs" />
     <Compile Include="FlexibleDataTemplateSelector.cs" />
-    <Compile Include="Helpers\AwesomiumResolverService.cs" />
-    <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\CefSharpResolverService.cs" />
     <Compile Include="Helpers\CommonCommands.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
@@ -202,7 +186,6 @@
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\CefSharpWrapper.cs" />
     <Compile Include="UserControls\UploaderBlock.xaml.cs">
       <DependentUpon>UploaderBlock.xaml</DependentUpon>
