@@ -94,8 +94,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

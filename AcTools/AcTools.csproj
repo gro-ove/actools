@@ -271,11 +271,9 @@
     <Folder Include="Test\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
-    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

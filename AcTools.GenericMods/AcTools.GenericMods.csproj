@@ -81,17 +81,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
-    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

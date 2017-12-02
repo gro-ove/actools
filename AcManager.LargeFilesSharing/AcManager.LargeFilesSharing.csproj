@@ -50,6 +50,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AcManager.Internal, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Libraries\AcManager.Internal\AcManager.Internal.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -102,11 +106,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
-      <Project>{e1c50bb6-5b63-4917-b5e0-836f38061811}</Project>
-      <Name>AcManager.Internal</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>
@@ -135,11 +134,9 @@
     <Resource Include="Assets\Icons\OneDrive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
-    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

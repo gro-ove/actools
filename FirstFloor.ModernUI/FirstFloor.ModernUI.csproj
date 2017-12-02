@@ -742,8 +742,4 @@
     <Resource Include="Effects\Shaders\InvertKeepColorEffect.ps" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-  </PropertyGroup>
 </Project>

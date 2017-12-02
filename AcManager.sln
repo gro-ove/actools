@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringBasedFilter", "String
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringBasedFilter.Tests", "StringBasedFilter.Tests\StringBasedFilter.Tests.csproj", "{AE8B296E-F557-42A5-AFCA-3371153AD45B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.Internal", "..\actools-internal\AcManager.Internal\AcManager.Internal.csproj", "{E1C50BB6-5B63-4917-B5E0-836F38061811}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreviewUpdater", "PreviewUpdater\PreviewUpdater.csproj", "{E91BBDF8-5B2F-4F19-A5A4-140E3ED50B7D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.LargeFilesSharing", "AcManager.LargeFilesSharing\AcManager.LargeFilesSharing.csproj", "{FB438F1B-BE94-494A-BD40-B6C08F0A5598}"
@@ -56,8 +54,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres", "AcTools.NeuralTyres\AcTools.NeuralTyres.csproj", "{FE9D676D-5E05-491D-A998-7D561475D440}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres.Tests", "AcTools.NeuralTyres.Tests\AcTools.NeuralTyres.Tests.csproj", "{C098567B-C6FD-45AE-AE3F-85DE42F18F96}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.AcdEncryption", "..\actools-internal\AcTools.AcdEncryption\AcTools.AcdEncryption.csproj", "{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,14 +143,6 @@ Global
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Debug|x86.Build.0 = Debug|x86
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Release|x64.ActiveCfg = Release|x64
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Release|x86.ActiveCfg = Release|x86
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x64.ActiveCfg = Debug|x64
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x64.Build.0 = Debug|x64
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x86.ActiveCfg = Debug|x86
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x86.Build.0 = Debug|x86
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x64.ActiveCfg = Release|x64
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x64.Build.0 = Release|x64
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x86.ActiveCfg = Release|x86
-		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x86.Build.0 = Release|x86
 		{E91BBDF8-5B2F-4F19-A5A4-140E3ED50B7D}.Debug|x64.ActiveCfg = Debug|x64
 		{E91BBDF8-5B2F-4F19-A5A4-140E3ED50B7D}.Debug|x64.Build.0 = Debug|x64
 		{E91BBDF8-5B2F-4F19-A5A4-140E3ED50B7D}.Debug|x86.ActiveCfg = Debug|x86
@@ -273,14 +261,6 @@ Global
 		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.Build.0 = Release|x64
 		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.ActiveCfg = Release|x86
 		{C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.Build.0 = Release|x86
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Debug|x64.ActiveCfg = Debug|x64
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Debug|x64.Build.0 = Debug|x64
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Debug|x86.ActiveCfg = Debug|x86
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Debug|x86.Build.0 = Debug|x86
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Release|x64.ActiveCfg = Release|x64
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Release|x64.Build.0 = Release|x64
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Release|x86.ActiveCfg = Release|x86
-		{5D981FA7-A8C8-4671-A8EB-C5C881E513F1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -81,6 +81,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+      <Reference Include="AcManager.Internal, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\Libraries\AcManager.Internal\AcManager.Internal.dll</HintPath>
+          <SpecificVersion>False</SpecificVersion>
+      </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -562,11 +566,6 @@
     <Compile Include="Starters\SseStarter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
-      <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
-      <Name>AcManager.Internal</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\AcTools.GenericMods\AcTools.GenericMods.csproj">
       <Project>{11EAD82E-0325-44A8-9785-B02BAACD1D3E}</Project>
       <Name>AcTools.GenericMods</Name>

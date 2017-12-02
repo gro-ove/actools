@@ -427,14 +427,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <TransformOnBuild>true</TransformOnBuild>
+    <TemplatesToUpdate>~/bin/t4auto Shaders/Shaders.tt Shaders/*(F)</TemplatesToUpdate>
   </PropertyGroup>
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
-    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; zsh -c "~/bin/t4auto Shaders.tt *(F)"
-vsincver --smart $(ProjectDir)</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
