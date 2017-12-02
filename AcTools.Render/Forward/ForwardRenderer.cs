@@ -471,7 +471,8 @@ namespace AcTools.Render.Forward {
                 _hdr.TechBloomHighThreshold.DrawAllPasses(DeviceContext, 6);
 
                 // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one
-                _blur.Blur(DeviceContextHolder, _bufferH1, _bufferH2, 0.5f * BloomRadiusMultiplier, 2);
+                _blur.Blur(DeviceContextHolder, _bufferH1, _bufferH2,
+                        0.5f * BloomRadiusMultiplier * (float)(ShotInProcess ? ShotResolutionMultiplier : ResolutionMultiplier), 3);
 
                 // combine original buffer and buffer #1 with blurred bright areas to buffer #2
                 DeviceContext.Rasterizer.SetViewports(viewport);
