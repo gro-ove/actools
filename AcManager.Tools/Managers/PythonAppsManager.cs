@@ -2,6 +2,7 @@
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.Managers {
@@ -9,6 +10,10 @@ namespace AcManager.Tools.Managers {
         private static PythonAppsManager _instance;
 
         public static PythonAppsManager Instance => _instance ?? (_instance = new PythonAppsManager());
+
+        private PythonAppsManager() {
+            CupClient.Instance.Register(this, CupContentType.App);
+        }
 
         protected override bool Filter(string id, string filename) {
             return !string.Equals(id, @"system", StringComparison.OrdinalIgnoreCase);

@@ -400,24 +400,28 @@ namespace AcManager.Tools.ContentInstallation {
                     }
                 }
 
-                if (missing) {
-                    throw new MissingContentException();
-                }
-
                 // And icon
                 byte[] icon;
                 List<FileNode> icons;
 
                 if (gui != null) {
                     icons = gui.Files.Where(x => x.NameLowerCase.EndsWith("_on.png") || x.NameLowerCase.EndsWith("_off.png")).ToList();
-                    var mainIcon = icons.GetByIdOrDefault(directory.NameLowerCase + "_on.png") ??
+                    var mainIcon = icons.GetByIdOrDefault(directory.NameLowerCase + "_off.png") ??
                             icons.OrderByDescending(x => x.NameLowerCase.Length).FirstOrDefault();
 
                     icon = await (mainIcon?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                    if (mainIcon != null && icon == null) {
+                        missing = true;
+                    }
+
                     cancellation.ThrowIfCancellationRequested();
                 } else {
                     icon = null;
                     icons = null;
+                }
+
+                if (missing) {
+                    throw new MissingContentException();
                 }
 
                 return new PythonAppContentEntry(directory.Key ?? "", id,

@@ -7,6 +7,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ValueLabel.xaml" />
       </ResourceDictionary.MergedDictionaries>
@@ -63,6 +64,10 @@
 
         <DockPanel Visibility="{Binding SelectedObject.Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
             ToolTip="Taken from changelog or readme files">
+          <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" c:CupUi.Object="{Binding SelectedObject}">
+            <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+          </Button>
           <Label Content="Version:" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Version, Mode=OneWay}" Placeholder="?" IsReadOnly="True" />
         </DockPanel>

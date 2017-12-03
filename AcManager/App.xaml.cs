@@ -481,7 +481,7 @@ namespace AcManager {
         private static async void BackgroundInitialization() {
             try {
 #if DEBUG
-                CupClient.Instance.LoadRegistries();
+                CupClient.Instance.LoadRegistries().Forget();
 #endif
 
                 await Task.Delay(500);
@@ -529,7 +529,7 @@ namespace AcManager {
                 CustomUriSchemeHelper.Initialize();
 
 #if !DEBUG
-                CupClient.Instance.LoadRegistries();
+                CupClient.Instance.LoadRegistries().Forget();
 #endif
 
                 await Task.Delay(5000);

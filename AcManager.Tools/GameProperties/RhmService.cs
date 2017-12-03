@@ -291,7 +291,12 @@ namespace AcManager.Tools.GameProperties {
 
         public string PresetableKey => "rhmPresets";
         public PresetsCategory PresetableCategory => new PresetsCategory("Real Head Motion Presets", ".xml");
-        public event EventHandler Changed;
+
+        event EventHandler IUserPresetable.Changed {
+            add { }
+            remove { }
+        }
+
         public void ImportFromPresetData(string data) {
             var filename = SettingsHolder.Drive.RhmSettingsLocation;
             FileUtils.EnsureFileDirectoryExists(filename);

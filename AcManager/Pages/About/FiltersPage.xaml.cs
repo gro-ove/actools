@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.About;
@@ -14,21 +12,10 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.About {
-    public partial class FiltersPage : ILoadableContent {
-        // private IReadOnlyList<ChangelogEntry> _changelog;
-
-        public async Task LoadAsync(CancellationToken cancellationToken) {
-            // _changelog = await Task.Run(() => InternalUtils.LoadChangelog(CmApiProvider.UserAgent, false));
-        }
-
-        public void Load() {
-            // _changelog = InternalUtils.LoadChangelog(CmApiProvider.UserAgent, false);
-        }
-
-        public void Initialize() {
+    public partial class FiltersPage {
+        public FiltersPage() {
             DataContext = new ViewModel();
             InitializeComponent();
         }

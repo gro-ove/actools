@@ -1,6 +1,7 @@
 ﻿namespace AcManager.Tools.Miscellaneous {
     public enum CupContentType {
-        Car = 0,
-        Track = 1
+        App = 100,
+        Car = 500,
+        Track = 510,
     }
 }

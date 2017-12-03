@@ -10,6 +10,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -22,7 +23,7 @@ using StringBasedFilter.Parsing;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Objects {
-    public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation {
+    public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation, ICupSupportedObject {
         public static readonly string[] VersionSources = { "version.txt", "changelog.txt", "readme.txt", "read me.txt" };
         private static readonly Regex VersionRegex = new Regex(@"^\s{0,4}(?:-\s*)?v?(\d+(?:\.\d+)+)", RegexOptions.Compiled);
 
@@ -55,17 +56,16 @@ namespace AcManager.Tools.Objects {
         }
 
         private string TryToFindAppIconInPythonFiles() {
-            foreach (var filename in GetPythonFilenames()) {
-                var data = File.ReadAllText(filename);
-                var apps = Regex.Matches(data, @"\bac\.newApp\s*\(\s*""([^""]+)\s*""\)").OfType<Match>()
-                                .Select(x => x.Groups[1].Value).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-                if (apps.Count == 0) continue;
-
-                var appId = apps.Any(x => string.Equals(x, Id, StringComparison.OrdinalIgnoreCase)) ? Id : apps[0];
-                return Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "gui", "icons", appId + "_OFF.png");
-            }
-
-            return null;
+            return (from filename in GetPythonFilenames()
+                    select File.ReadAllText(filename)
+                    into data
+                    select Regex.Matches(data, @"\bac\.newApp\s*\(\s*""([^""]+)\s*""\)").OfType<Match>().Select(x => x.Groups[1].Value)
+                                .Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
+                    into apps
+                    where apps.Count != 0
+                    select apps.Any(x => string.Equals(x, Id, StringComparison.OrdinalIgnoreCase)) ? Id : apps[0]
+                    into appId
+                    select Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "gui", "icons", appId + "_OFF.png")).FirstOrDefault();
         }
 
         private async Task<string> TryToFindAppIcon() {
@@ -176,7 +176,33 @@ namespace AcManager.Tools.Objects {
                 if (value == _version) return;
                 _version = value;
                 OnPropertyChanged();
+                OnVersionChanged();
             }
+        }
+
+        string ICupSupportedObject.InstalledVersion => Version;
+        public CupContentType CupContentType => CupContentType.App;
+        public bool IsCupUpdateAvailable => CupClient.Instance.ContainsAnUpdate(CupContentType, Id, Version);
+        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance.GetInformation(CupContentType, Id);
+
+        private void OnVersionChanged() {
+            OnPropertyChanged(nameof(ICupSupportedObject.InstalledVersion));
+            OnPropertyChanged(nameof(IsCupUpdateAvailable));
+            OnPropertyChanged(nameof(CupUpdateInformation));
+        }
+
+        void ICupSupportedObject.OnCupUpdateAvailableChanged() {
+            OnPropertyChanged(nameof(IsCupUpdateAvailable));
+            OnPropertyChanged(nameof(CupUpdateInformation));
+        }
+
+        void ICupSupportedObject.SetValues(string author, string informationUrl, string version) {
+            return;
+
+            /*Author = author;
+            Url = informationUrl;*/
+            Version = version;
+            Save();
         }
     }
 

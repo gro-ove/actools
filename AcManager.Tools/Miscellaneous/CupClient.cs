@@ -216,7 +216,7 @@ namespace AcManager.Tools.Miscellaneous {
                 try {
                     var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/complain";
                     using (var client = new CookieAwareWebClient()) {
-                        await client.DownloadStringTaskAsync(url);
+                        await client.UploadStringTaskAsync(url, "");
                         IgnoreUpdate(type, id);
                         Toast.Show("Update Reported", "Update reported and will be ignored. Thank you for your participation");
                         return true;
@@ -287,6 +287,8 @@ namespace AcManager.Tools.Miscellaneous {
         public event EventHandler<CupEventArgs> NewLatestVersion;
 
         private void RegisterLatestVersion([NotNull] CupKey key, [NotNull] CupInformation information) {
+            Logging.Debug("New update: " + key + information);
+
             if (_storage.GetBool($"ignore:{key}") || _storage.GetBool($"ignore:{key}:{information.Version}") ||
                     _versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
                 return;
