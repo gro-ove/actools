@@ -31,14 +31,14 @@ namespace FirstFloor.ModernUI {
         public event PropertyChangedEventHandler ItemPropertyChanged;
 
         protected virtual void Subscribe(T item) {
-            item.PropertyChanged += Item_PropertyChanged;
+            item.PropertyChanged += OnItemPropertyChanged;
         }
 
         protected virtual void Unsubscribe(T item) {
-            item.PropertyChanged -= Item_PropertyChanged;
+            item.PropertyChanged -= OnItemPropertyChanged;
         }
 
-        protected void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        protected virtual void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             ItemPropertyChanged?.Invoke(sender, e);
         }
 

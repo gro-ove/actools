@@ -42,13 +42,13 @@ namespace AcManager.Tools.Lists {
 
         protected override void Subscribe(AcItemWrapper item) {
             item.ValueChanged += OnItemValueChanged;
-            item.Value.PropertyChanged += Item_PropertyChanged;
+            item.Value.PropertyChanged += OnItemPropertyChanged;
             _index[item.Id.ToLowerInvariant()] = item;
         }
 
         protected override void Unsubscribe(AcItemWrapper item) {
             item.ValueChanged -= OnItemValueChanged;
-            item.Value.PropertyChanged -= Item_PropertyChanged;
+            item.Value.PropertyChanged -= OnItemPropertyChanged;
             _index.Remove(item.Id.ToLowerInvariant());
         }
 
@@ -69,8 +69,8 @@ namespace AcManager.Tools.Lists {
         public event WrappedValueChangedEventHandler WrappedValueChanged;
 
         private void OnItemValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            e.OldValue.PropertyChanged -= Item_PropertyChanged;
-            e.NewValue.PropertyChanged += Item_PropertyChanged;
+            e.OldValue.PropertyChanged -= OnItemPropertyChanged;
+            e.NewValue.PropertyChanged += OnItemPropertyChanged;
             WrappedValueChanged?.Invoke(sender, e);
         }
 

@@ -8,7 +8,7 @@
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="SettingsOnline">
-    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
+    <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True" set:Search.Keywords="online;servers">
 
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Online}" Style="{StaticResource SettingsPanel}">
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
@@ -18,7 +18,7 @@
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Auto-update selected:" />
+          <Label Content="Auto-refresh selected:" />
           <ComboBox ItemsSource="{Binding Online.RefreshPeriods}" SelectedItem="{Binding Online.RefreshPeriod}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
@@ -40,11 +40,11 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Display:" />
 
         <CheckBox IsChecked="{Binding Online.CompactUi}">
-          <Label Content="{x:Static g:AppStrings.Settings_Online_CompactUi}" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_CompactUi}" set:Search.Keywords="appearance;ui" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.ShowBrandBadges}">
-          <Label Content="{x:Static g:AppStrings.Settings_Online_ShowBrandBadges}" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_ShowBrandBadges}" set:Search.Keywords="appearance;ui" />
         </CheckBox>
 
         <!--passwords-->
@@ -84,7 +84,7 @@
         </CheckBox>
 
       </StackPanel>
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Online}" Style="{StaticResource SettingsPanel}">
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Online}" Style="{StaticResource SettingsPanel}" set:Search.Keywords="online;servers">
 
         <!--pinging-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Online_PingingHeader}" />

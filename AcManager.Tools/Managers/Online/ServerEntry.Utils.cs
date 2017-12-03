@@ -20,6 +20,8 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
+            var originalName = name;
+
             var specialIndex = name.IndexOf(ExtendedSeparator, StringComparison.InvariantCulture);
             if (specialIndex != -1) {
                 extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + ExtendedSeparator.Length));
@@ -44,7 +46,7 @@ namespace AcManager.Tools.Managers.Online {
                 name = SimpleCleanUpRegex.Replace(name, "");
             }
 
-            return name;
+            return string.IsNullOrWhiteSpace(name) ? originalName : name;
         }
 
         private void CheckPostUpdate() {
