@@ -1,5 +1,9 @@
 # AcTools (and Content Manager)
 
+[![Build status](https://img.shields.io/appveyor/ci/gro-ove/actools.svg?label=Build&maxAge=60)](https://ci.appveyor.com/project/gro-ove/actools)
+[![License](https://img.shields.io/github/license/gro-ove/actools.svg?label=License&maxAge=86400)](./LICENSE.txt)
+[![Release](https://img.shields.io/github/release/gro-ove/actools.svg?label=Release&maxAge=60)](https://github.com/gro-ove/actools/releases/latest)
+
 Set of utils and apps designed for Assetto Corsa. Some obsolete projects are moved [here](https://github.com/gro-ove/actools-utils).
 
 ## Common libraries
@@ -26,12 +30,7 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     [![Dark Showroom](http://i.imgur.com/uWV4zTw.jpg)](http://i.imgur.com/uWV4zTw.jpg)
     
     [![Lite Showroom](http://i.imgur.com/neffgq2.png)](http://i.imgur.com/neffgq2.png)
-    
-- ### [AcTools.Render.Deferred](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
-    Deferred rendering with dynamic lighting, dynamic shadows, HDR, tricky SSLR… Sadly, I couldn’t find a way to move all materials here correctly, so I decided to switch to forward rendering instead. Also, with forward, I can vary options on-fly, getting either very high-performance simple renderer (≈900 FPS) or pretty good looking one (≈60 FPS, without MSAA or higher pixel density).
-
-    [![Custom Showroom](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)
-    
+        
 - ### [LicensePlates](https://github.com/gro-ove/actools/tree/master/LicensePlates)
     Fully independent from AcTools.\* library which generates number plates using Lua to interpret style files and Magick.NET to create and save textures. [In action](http://i.imgur.com/T7SVlLF.gifv).
     
@@ -79,10 +78,12 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
 # Build notes
 
- - For now, please, ignore AcTools.NeuralTyres library, it’s so much WIP I’m not even sure I’ll keep it. Feel free to remove it from solution to clean things up.
+ - For now, only x86 platform is supported. Project can be built in x64, but won’t work. I think it should be fixable, all referenced libraries have both x86 and x64 version. Going to solve it later.
+ 
+ - If you need a support for new Windows 8, 8.1 and 10 notifications, make sure [this path](https://github.com/gro-ove/actools/blob/master/FirstFloor.ModernUI/FirstFloor.ModernUI.csproj#L91) is correct. If it’s not, or you don’t have that library, no problem, dependant piece of code will be disabled, and fallback notifications will be used.
+ 
+ - I use a couple of small tools (they are closer to like shell scripts, to be honest) to increment version number and auto-build T4 templates automatically, but those scripts are disabled by default unless you have `ACTOOLS_BUILD_SCRIPTS=On` environment variable set. So… Don’t set it.
 
- - I recommend to switch to x86 (or, if you need, x64) platform. As far as I can see, most libraries (such as SlimDX, Magick.NET or CefSharp) won’t work with AnyCPU.
+ - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included. Also, it takes quite a long time to rebuild those shaders, up to 5–10 minutes on my PC.
 
- - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included.
-
- - Please, feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don’t have any experience it open-source, there might be some things I forgot to mention.
+ - Feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don’t have any experience with open-source projects, but I’d be glad to learn.
