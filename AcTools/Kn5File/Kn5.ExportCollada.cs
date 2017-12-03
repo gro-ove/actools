@@ -84,7 +84,31 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
+        private bool _uniqueNamesSet;
+
+        private void EnsureUniqueNamesSet() {
+            if (_uniqueNamesSet) return;
+            _uniqueNamesSet = true;
+
+            var names = new List<string>();
+            foreach (var node in Nodes) {
+                if (node.NodeClass == Kn5NodeClass.Mesh || node.NodeClass == Kn5NodeClass.SkinnedMesh) {
+                    var name = node.Name;
+                    for (var i = 1; names.Contains(name) && i < 1000; i++) {
+                        name = $"{node.Name}-{i}";
+                    }
+
+                    node.UniqueName = name;
+                    names.Add(name);
+                } else {
+                    node.UniqueName = node.Name;
+                }
+            }
+        }
+
         public void ExportCollada(string filename) {
+            EnsureUniqueNamesSet();
+
             using (var xml = XmlWriter.Create(filename, new XmlWriterSettings {
                 Indent = true,
                 Encoding = Encoding.UTF8
@@ -153,7 +177,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("image");
             xml.WriteAttributeStringSafe("id", $"{texture.Name}-image");
             xml.WriteAttributeStringSafe("name", texture.Name);
-            
+
             xml.WriteStartElement("init_from");
             xml.WriteString("file://texture/" + texture.Name);
             xml.WriteEndElement();
@@ -197,7 +221,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("technique");
             xml.WriteAttributeString("sid", "common");
             xml.WriteStartElement("phong");
-            
+
             xml.WriteStartElement("emission");
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "emission");
@@ -206,7 +230,7 @@ namespace AcTools.Kn5File {
                     $"{ksEmissive.ValueC[0].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[1].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[2].ToString(CultureInfo.InvariantCulture)} 1");
             xml.WriteEndElement();
             xml.WriteEndElement();
-            
+
             xml.WriteStartElement("ambient");
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "ambient");
@@ -214,7 +238,7 @@ namespace AcTools.Kn5File {
             xml.WriteString(ksAmbient == null ? "0.4 0.4 0.4 1" : string.Format("{0} {0} {0} 1", ksAmbient.ValueA.ToString(CultureInfo.InvariantCulture)));
             xml.WriteEndElement();
             xml.WriteEndElement();
-            
+
             xml.WriteStartElement("diffuse");
             var txDiffuse = material.GetMappingByName("txDiffuse");
             if (txDiffuse != null) {
@@ -227,7 +251,7 @@ namespace AcTools.Kn5File {
             xml.WriteString(ksDiffuse == null ? "0.6 0.6 0.6 1" : string.Format("{0} {0} {0} 1", ksDiffuse.ValueA.ToString(CultureInfo.InvariantCulture)));
             xml.WriteEndElement();
             xml.WriteEndElement();
-            
+
             xml.WriteStartElement("specular");
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "specular");
@@ -235,14 +259,14 @@ namespace AcTools.Kn5File {
             xml.WriteString(ksSpecular == null ? "0.5 0.5 0.5 1" : string.Format("{0} {0} {0} 1", ksSpecular.ValueA.ToString(CultureInfo.InvariantCulture)));
             xml.WriteEndElement();
             xml.WriteEndElement();
-            
+
             xml.WriteStartElement("shininess");
             xml.WriteStartElement("float");
             xml.WriteAttributeString("sid", "shininess");
             xml.WriteString(material.GetPropertyByName("ksSpecularEXP")?.ValueA ?? 50);
             xml.WriteEndElement();
             xml.WriteEndElement();
-            
+
             xml.WriteStartElement("index_of_refraction");
             xml.WriteStartElement("float");
             xml.WriteAttributeString("sid", "index_of_refraction");
@@ -263,7 +287,7 @@ namespace AcTools.Kn5File {
                 } else if (txDiffuse != null) {
                     ExportCollada_MaterialEffectTexture(xml, txDiffuse);
                 }
-                
+
                 xml.WriteEndElement(); // transparent
             }
 
@@ -296,11 +320,11 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("material");
             xml.WriteAttributeStringSafe("id", $"{material.Name}-material");
             xml.WriteAttributeStringSafe("name", material.Name);
-            
+
             xml.WriteStartElement("instance_effect");
             xml.WriteAttributeStringSafe("url", $"#{material.Name}-effect");
             xml.WriteEndElement();
-            
+
             xml.WriteEndElement();
         }
 
@@ -317,27 +341,27 @@ namespace AcTools.Kn5File {
 
                 case Kn5NodeClass.SkinnedMesh:
                     xml.WriteStartElement("controller");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller");
 
                     xml.WriteStartElement("skin");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}-mesh");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}-mesh");
 
                     // xml.WriteElementString("bind_shape_matrix", "1 0 0 0 0 0 1 0 0 -1 0 0 0 0 0 1");
                     xml.WriteElementString("bind_shape_matrix", "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1");
 
                     // Joints
                     xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Joints");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Joints");
 
                     xml.WriteStartElement("Name_array");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Joints-array");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Joints-array");
                     xml.WriteAttributeString("count", node.Bones.Length);
                     xml.WriteString(node.Bones.Select(x => x.Name).JoinToString(" "));
                     xml.WriteEndElement(); // Name_array
 
                     xml.WriteStartElement("technique_common");
                     xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints-array");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Joints-array");
                     xml.WriteAttributeString("count", node.Bones.Length);
                     xml.WriteAttributeString("stride", 1);
                     xml.WriteStartElement("param");
@@ -350,10 +374,10 @@ namespace AcTools.Kn5File {
 
                     // Matrices
                     xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Matrices");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Matrices");
 
                     xml.WriteStartElement("float_array");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Matrices-array");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Matrices-array");
                     xml.WriteAttributeString("count", node.Bones.Length * 16);
                     xml.WriteString(node.Bones.Select(x => XmlWriterExtension.MatrixToCollada(x.Transform))
                                         .JoinToString(" "));
@@ -361,7 +385,7 @@ namespace AcTools.Kn5File {
 
                     xml.WriteStartElement("technique_common");
                     xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Matrices-array");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Matrices-array");
                     xml.WriteAttributeString("count", node.Bones.Length);
                     xml.WriteAttributeString("stride", 16);
                     xml.WriteStartElement("param");
@@ -374,10 +398,10 @@ namespace AcTools.Kn5File {
 
                     // Weights
                     xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Weights");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Weights");
 
                     xml.WriteStartElement("float_array");
-                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Weights-array");
+                    xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Weights-array");
 
                     var weights = node.VerticeWeights.SelectMany(x => x.Weights.Where((y, i) => !Equals(x.Indices[i], -1f))).ToList();
                     xml.WriteAttributeString("count", weights.Count);
@@ -386,7 +410,7 @@ namespace AcTools.Kn5File {
 
                     xml.WriteStartElement("technique_common");
                     xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Weights-array");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Weights-array");
                     xml.WriteAttributeString("count", weights.Count);
                     xml.WriteAttributeString("stride", 1);
                     xml.WriteStartElement("param");
@@ -396,15 +420,15 @@ namespace AcTools.Kn5File {
                     xml.WriteEndElement(); // accessor
                     xml.WriteEndElement(); // technique_common
                     xml.WriteEndElement(); // source (Matrices)
-                    
+
                     xml.WriteStartElement("joints");
                     xml.WriteStartElement("input");
                     xml.WriteAttributeString("semantic", "JOINT");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Joints");
                     xml.WriteEndElement(); // input
                     xml.WriteStartElement("input");
                     xml.WriteAttributeString("semantic", "INV_BIND_MATRIX");
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Matrices");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Matrices");
                     xml.WriteEndElement(); // input
                     xml.WriteEndElement(); // joints
 
@@ -414,15 +438,15 @@ namespace AcTools.Kn5File {
                     xml.WriteStartElement("input");
                     xml.WriteAttributeString("semantic", "JOINT");
                     xml.WriteAttributeString("offset", 0);
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Joints");
                     xml.WriteEndElement(); // input
                     xml.WriteStartElement("input");
                     xml.WriteAttributeString("semantic", "WEIGHT");
                     xml.WriteAttributeString("offset", 1);
-                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Weights");
+                    xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Weights");
                     xml.WriteEndElement(); // input
 
-                    xml.WriteElementString("vcount", node.VerticeWeights.Select(x => x.Weights.Where(y => !Equals(y, 0f)).Count()).JoinToString(" "));
+                    xml.WriteElementString("vcount", node.VerticeWeights.Select(x => x.Weights.Count(y => !Equals(y, 0f))).JoinToString(" "));
                     var k = 0;
                     xml.WriteElementString("v", node.VerticeWeights.SelectMany(x =>
                             x.Indices.Where(y => !Equals(y, -1f)).SelectMany((y, i) => new[] { y, k++ })).JoinToString(" "));
@@ -437,6 +461,8 @@ namespace AcTools.Kn5File {
         }
 
         private void ExportCollada_Mesh(XmlWriter xml, string name, IReadOnlyList<Kn5Node> unsorted) {
+            AcToolsLogging.Write($"{name}: {unsorted.Sum(x => x.Vertices.Length)} vertices, {unsorted.Sum(x => x.Indices.Length / 3d)} triangles");
+
             xml.WriteStartElement("geometry");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh");
             xml.WriteAttributeStringSafe("name", name);
@@ -444,7 +470,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("mesh");
 
             var nodes = unsorted.Count == 1 ? unsorted :
-                    unsorted.OrderBy(x => int.Parse(x.Name.Split(new[] { "_SUB" }, StringSplitOptions.None).Last())).ToList();
+                    unsorted.OrderBy(x => int.Parse(x.UniqueName.Split(new[] { "_SUB" }, StringSplitOptions.None).Last())).ToList();
 
             /* coordinates */
             var vertexCount = nodes.Sum(x => x.Vertices.Length);
@@ -490,7 +516,7 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeStringSafe("source", $"#{name}-mesh-normals-array");
             xml.WriteAttributeString("count", vertexCount);
             xml.WriteAttributeString("stride", "3");
-            
+
             xml.WriteElement("param",
                     "name", "X",
                     "type", "float");
@@ -543,7 +569,7 @@ namespace AcTools.Kn5File {
             var offset = 0;
             foreach (var node in nodes) {
                 xml.WriteStartElement("triangles");
-                xml.WriteAttributeStringSafe("original_node", $"{node.Name}");
+                xml.WriteAttributeStringSafe("original_node", $"{node.UniqueName}");
                 xml.WriteAttributeStringSafe("material", $"{Materials.Values.ElementAt((int)node.MaterialId).Name}-material");
                 xml.WriteAttributeString("count", node.Indices.Length / 3);
 
@@ -567,7 +593,7 @@ namespace AcTools.Kn5File {
 
                 offset += node.Vertices.Length;
             }
-            
+
             xml.WriteEndElement(); // mesh
             xml.WriteEndElement(); // geometry
         }
@@ -576,14 +602,14 @@ namespace AcTools.Kn5File {
             return node.NodeClass == Kn5NodeClass.Base &&
                     node.Children.Any() &&
                     node.Children.All(x => x.NodeClass == Kn5NodeClass.Mesh) &&
-                    Enumerable.Range(0, node.Children.Count).All(x => node.Children.Any(y => y.Name == node.Name + "_SUB" + x));
+                    Enumerable.Range(0, node.Children.Count).All(x => node.Children.Any(y => y.UniqueName == node.UniqueName + "_SUB" + x));
         }
 
         private void ExportCollada_MeshWrapper(XmlWriter xml, Kn5Node node) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
                     if (IsMultiMaterial(node)) {
-                        ExportCollada_Mesh(xml, node.Name, node.Children);
+                        ExportCollada_Mesh(xml, node.UniqueName, node.Children);
                     } else {
                         foreach (var child in node.Children) {
                             ExportCollada_MeshWrapper(xml, child);
@@ -593,7 +619,7 @@ namespace AcTools.Kn5File {
 
                 case Kn5NodeClass.Mesh:
                 case Kn5NodeClass.SkinnedMesh:
-                    ExportCollada_Mesh(xml, node.Name, new [] { node });
+                    ExportCollada_Mesh(xml, node.UniqueName, new [] { node });
                     break;
             }
         }
@@ -632,7 +658,7 @@ namespace AcTools.Kn5File {
                         "symbol", $"{materialName}-material",
                         "target", $"#{materialName}-material");
             }
-            
+
             xml.WriteEndElement(); // technique_common
             xml.WriteEndElement(); // bind_material
         }
@@ -651,14 +677,14 @@ namespace AcTools.Kn5File {
 
                 case Kn5NodeClass.Mesh:
                     xml.WriteStartElement("instance_geometry");
-                    xml.WriteAttributeStringSafe("url", $"#{node.Name}-mesh");
+                    xml.WriteAttributeStringSafe("url", $"#{node.UniqueName}-mesh");
                     ExportCollada_NodeSub_BindMaterial(xml, node.MaterialId);
                     xml.WriteEndElement();
                     break;
 
                 case Kn5NodeClass.SkinnedMesh:
                     xml.WriteStartElement("instance_controller");
-                    xml.WriteAttributeStringSafe("url", $"#{node.Name}Controller");
+                    xml.WriteAttributeStringSafe("url", $"#{node.UniqueName}Controller");
                     ExportCollada_NodeSub_BindMaterial(xml, node.MaterialId);
 
                     foreach (var bone in node.Bones) {
@@ -672,12 +698,12 @@ namespace AcTools.Kn5File {
 
         private void ExportCollada_NodeSub(XmlWriter xml, IReadOnlyList<string> boneNames, Kn5Node node) {
             xml.WriteStartElement("node");
-            xml.WriteAttributeStringSafe("id", node.Name);
-            xml.WriteAttributeStringSafe("sid", node.Name);
-            xml.WriteAttributeStringSafe("name", node.Name);
+            xml.WriteAttributeStringSafe("id", node.UniqueName);
+            xml.WriteAttributeStringSafe("sid", node.UniqueName);
+            xml.WriteAttributeStringSafe("name", node.UniqueName);
 
             xml.WriteAttributeString("layer", node.Active ? "Visible" : "Hidden");
-            xml.WriteAttributeString("type", node.NodeClass == Kn5NodeClass.Base && boneNames.Contains(node.Name) ? "JOINT" : "NODE");
+            xml.WriteAttributeString("type", node.NodeClass == Kn5NodeClass.Base && boneNames.Contains(node.UniqueName) ? "JOINT" : "NODE");
 
             if (node.Children?.FirstOrDefault()?.NodeClass != Kn5NodeClass.SkinnedMesh) {
                 xml.WriteElement("matrix",
@@ -687,7 +713,7 @@ namespace AcTools.Kn5File {
 
             if (IsMultiMaterial(node) && node.Children != null) {
                 xml.WriteStartElement("instance_geometry");
-                xml.WriteAttributeStringSafe("url", $"#{node.Name}-mesh");
+                xml.WriteAttributeStringSafe("url", $"#{node.UniqueName}-mesh");
                 ExportCollada_NodeSub_BindMaterial(xml, node.Children.Select(x => x.MaterialId).ToArray());
                 xml.WriteEndElement();
             } else {

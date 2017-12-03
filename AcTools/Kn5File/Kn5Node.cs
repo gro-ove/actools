@@ -28,6 +28,9 @@ namespace AcTools.Kn5File {
         /* Only for skinned meshes */
         public byte[] MisteryBytes;
 
+        /* For export, guaranteed to be unique */
+        public string UniqueName;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertice {
             public float[] Co, Normal, Uv, Tangent;
