@@ -59,6 +59,9 @@ namespace AcTools.Render.Base.Objects {
         }
 
         private void PrepareSmart() {
+            const int lookAhead = 10;
+            const double angleThreshold = 0.97;
+
             var sqrLength = new float[Vertices.Length];
             var normalized = new Vector3[Vertices.Length];
 
@@ -70,17 +73,22 @@ namespace AcTools.Render.Base.Objects {
                 normalized[i] = l == 0f ? Vector3.Zero : p / l.Sqrt();
             }
 
+            var zeroed = new int[lookAhead];
+
             var filtered = new List<Vector3>(Vertices.Length);
             for (var i = 0; i < Vertices.Length; i++) {
                 var pl = sqrLength[i];
                 if (sqrLength[i] == 0f) continue;
 
                 var add = true;
-                for (int j = i + 1, l = Math.Min(Vertices.Length, i + 10); j < l; j++) {
+                var limit = Math.Min(Vertices.Length, i + lookAhead);
+                var zeroedId = 0;
+
+                for (var j = i + 1; j < limit; j++) {
                     var nl = sqrLength[j];
-                    if (nl != 0f && Vector3.Dot(normalized[i], normalized[j]) > 0.97) {
+                    if (nl != 0f && Vector3.Dot(normalized[i], normalized[j]) > angleThreshold) {
                         if (pl > nl) {
-                            sqrLength[j] = 0f;
+                            zeroed[zeroedId++] = j;
                         } else {
                             add = false;
                             break;
@@ -89,6 +97,9 @@ namespace AcTools.Render.Base.Objects {
                 }
 
                 if (add) {
+                    for (var j = 0; j < zeroedId; j++) {
+                        sqrLength[zeroed[j]] = 0f;
+                    }
                     filtered.Add(Vertices[i].Position);
                 }
             }
