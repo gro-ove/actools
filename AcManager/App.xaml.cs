@@ -163,6 +163,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
             AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
 
+            Acd.Factory = new AcdFactory();
             LimitedSpace.Initialize();
             DataProvider.Initialize();
             CountryIdToImageConverter.Initialize(
@@ -494,7 +495,6 @@ namespace AcManager {
                 }
 
                 await Task.Delay(500);
-                Acd.Factory = new AcdFactory();
                 if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable) {
                     NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
                 }
