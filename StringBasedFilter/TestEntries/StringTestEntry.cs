@@ -20,11 +20,11 @@ namespace StringBasedFilter.TestEntries {
             _strAsBool = AsBool(_str);
         }
 
-        internal static double? AsDouble(string s) {
+        private static double? AsDouble(string s) {
             return FlexibleParser.TryParseDouble(s, out var d) ? d : (double?)null;
         }
 
-        internal static bool? AsBool(string s) {
+        private static bool? AsBool(string s) {
             switch (s) {
                 case "true":
                 case "yes":
@@ -51,6 +51,8 @@ namespace StringBasedFilter.TestEntries {
         public override string ToString() {
             return "=" + _str;
         }
+
+        public void Set(ITestEntryFactory factory) {}
 
         public bool Test(string value) {
             if (value == null) return false;

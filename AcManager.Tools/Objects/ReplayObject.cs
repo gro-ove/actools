@@ -38,6 +38,10 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        protected override DateTime GetCreationDateTime() {
+            return File.GetLastWriteTime(Location);
+        }
+
         public ReplayObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             Category = Path.GetDirectoryName(id);

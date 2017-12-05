@@ -81,10 +81,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-      <Reference Include="AcManager.Internal, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\Libraries\AcManager.Internal\AcManager.Internal.dll</HintPath>
-          <SpecificVersion>False</SpecificVersion>
-      </Reference>
+    <Reference Include="AcManager.Internal, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Libraries\AcManager.Internal\AcManager.Internal.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -208,9 +208,9 @@
     <Compile Include="Filters\KeywordPriority.cs" />
     <Compile Include="Filters\KeywordType.cs" />
     <Compile Include="Filters\TestEntries\DateTimeTestEntry.cs" />
-    <Compile Include="Filters\TestEntries\DistanceTestEntry.cs" />
-    <Compile Include="Filters\TestEntries\ExtraTestEntries.cs" />
-    <Compile Include="Filters\TestEntries\FileSizeTestEntry.cs" />
+    <Compile Include="Filters\TestEntries\TestEntryFactories.cs" />
+    <Compile Include="Filters\TestEntries\TestEntryFactory.cs" />
+    <Compile Include="Filters\TestEntries\TestEntryFactoryConvertation.cs" />
     <Compile Include="Filters\TestEntries\TimeSpanTestEntry.cs" />
     <Compile Include="Filters\Testers\AcCommonObjectTester.cs" />
     <Compile Include="Filters\Testers\AcJsonObjectTester.cs" />

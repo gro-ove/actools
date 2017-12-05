@@ -396,12 +396,7 @@ namespace AcManager.Tools.Objects {
 
         public double GetSpecsPwRatioValue() {
             if (!FlexibleParser.TryParseDouble(_specsPwRatio, out var value)) return double.NaN;
-
-            if (SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio)) {
-                value = 1 / value;
-            }
-
-            return value;
+            return SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio) ? 1d / value : value;
         }
 
         private static readonly Regex FixMissingSpace = new Regex(@"(\d)([a-z])/", RegexOptions.IgnoreCase | RegexOptions.Compiled);

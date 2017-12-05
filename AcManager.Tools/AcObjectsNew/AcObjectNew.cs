@@ -81,7 +81,6 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public TimeSpan Age => DateTime.Now - CreationDateTime;
-        public double AgeInDays => (DateTime.Now - CreationDateTime).TotalDays;
 
         public DateTime CreationDateTime { get; protected set; }
 

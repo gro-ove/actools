@@ -6,6 +6,9 @@ namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {
         private double? _totalDrivenDistance;
 
+        /// <summary>
+        /// Meters!
+        /// </summary>
         public double TotalDrivenDistance => _totalDrivenDistance ?? (_totalDrivenDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(Id)).Value;
 
         public void RaiseTotalDrivenDistanceChanged() {

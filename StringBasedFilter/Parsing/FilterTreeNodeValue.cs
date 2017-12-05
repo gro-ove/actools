@@ -8,20 +8,6 @@ namespace StringBasedFilter.Parsing {
         internal string Key;
         private readonly ITestEntry _testEntry;
 
-        private static ITestEntry CreateNumericTestEntry(Operator op, string key, string value) {
-            if (TestEntriesRegistry.GetEntry(op, key, value, out var entry)) {
-                return entry;
-            }
-
-            if (value.IndexOf('.') != -1 || value.IndexOf(',') != -1) {
-                return FlexibleParser.TryParseDouble(value, out var num) ? new NumberTestEntry(op, num) :
-                        (ITestEntry)new ConstTestEntry(false);
-            } else {
-                return FlexibleParser.TryParseInt(value, out var num) ? new IntTestEntry(op, num) :
-                        (ITestEntry)new ConstTestEntry(false);
-            }
-        }
-
         public static FilterTreeNode Create(string value, FilterParams filterParams, out string keyName) {
             ITestEntry testEntry;
 
@@ -58,7 +44,7 @@ namespace StringBasedFilter.Parsing {
                     case FilterComparingOperation.LessThanOrEqualTo:
                     case FilterComparingOperation.MoreThanOrEqualTo:
                     case FilterComparingOperation.EqualTo:
-                        testEntry = CreateNumericTestEntry((Operator)splitted.ComparingOperation, keyName, splitted.PropertyValue);
+                        testEntry = new NumberTestEntry((Operator)splitted.ComparingOperation, splitted.PropertyValue);
                         break;
                     default:
                         testEntry = new ConstTestEntry(false);

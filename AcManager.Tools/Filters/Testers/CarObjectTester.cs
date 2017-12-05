@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
@@ -94,31 +95,39 @@ namespace AcManager.Tools.Filters.Testers {
                 case "dd":
                 case "driven":
                 case "drivendistance":
-                    return value.Test(obj.TotalDrivenDistance);
+                    value.Set(TestEntryFactories.DistanceKilometers);
+                    return value.Test(obj.TotalDrivenDistance / 1e3);
 
                 case "topspeedachieved":
                 case "tsa":
+                    value.Set(TestEntryFactories.SpeedKph);
                     return value.Test(obj.MaxSpeedAchieved);
 
                 case "bhp":
                 case "power":
+                    value.Set(TestEntryFactories.PowerBhp);
                     return value.Test(obj.SpecsBhp);
 
                 case "torque":
+                    value.Set(TestEntryFactories.TorqueNm);
                     return value.Test(obj.SpecsTorque);
 
                 case "weight":
                 case "mass":
+                    value.Set(TestEntryFactories.WeightKg);
                     return value.Test(obj.SpecsWeight);
 
                 case "acceleration":
+                    value.Set(TestEntryFactories.TimeSeconds);
                     return value.Test(obj.SpecsAcceleration);
 
                 case "speed":
                 case "topspeed":
+                    value.Set(TestEntryFactories.SpeedKph);
                     return value.Test(obj.SpecsTopSpeed);
 
                 case "maxrpm":
+                    value.Set(TestEntryFactories.UnitsOne);
                     return value.Test(obj.GetRpmMaxValue());
 
                 case "pw":
@@ -152,13 +161,13 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("newbrand", "With possibly invalid brand", KeywordType.Flag, KeywordPriority.Obscured),
                 new KeywordDescription("class", "Car class", KeywordType.String, KeywordPriority.Important),
                 new KeywordDescription("parent", "Main unmodified car", KeywordType.Child | KeywordType.String, KeywordPriority.Normal),
-                new KeywordDescription("driven", "Driven distance", KeywordType.Number, KeywordPriority.Normal, "dd", "drivendistance"),
-                new KeywordDescription("topspeedachieved", "Driven distance", KeywordType.Number, KeywordPriority.Normal, "tsa"),
-                new KeywordDescription("power", "Power", KeywordType.Number, KeywordPriority.Normal, "bhp"),
-                new KeywordDescription("torque", "Torque", KeywordType.Number, KeywordPriority.Normal),
-                new KeywordDescription("weight", "Weight", KeywordType.Number, KeywordPriority.Normal, "mass"),
-                new KeywordDescription("acceleration", "Acceleration", KeywordType.Number, KeywordPriority.Normal),
-                new KeywordDescription("topspeed", "Top Speed", KeywordType.Number, KeywordPriority.Normal, "speed"),
+                new KeywordDescription("driven", "Driven distance", "kilometres", KeywordType.Number, KeywordPriority.Normal, "dd", "drivendistance"),
+                new KeywordDescription("topspeedachieved", "Top speed achieved", "km/h", KeywordType.Number, KeywordPriority.Normal, "tsa"),
+                new KeywordDescription("power", "Power", "bhp", KeywordType.Number, KeywordPriority.Normal, "bhp"),
+                new KeywordDescription("torque", "Torque", "N×m", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("weight", "Weight", "kg", KeywordType.Number, KeywordPriority.Normal, "mass"),
+                new KeywordDescription("acceleration", "Acceleration", "seconds", KeywordType.Number, KeywordPriority.Normal),
+                new KeywordDescription("topspeed", "Top Speed", "km/h", KeywordType.Number, KeywordPriority.Normal, "speed"),
                 new KeywordDescription("maxrpm", "Max RPM from torque curve", KeywordType.Number, KeywordPriority.Normal),
                 new KeywordDescription("pwratio", "P/W ratio", KeywordType.Number, KeywordPriority.Normal, "pw"),
                 new KeywordDescription("skins", "Skins count", KeywordType.Number, KeywordPriority.Normal),

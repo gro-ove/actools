@@ -36,8 +36,11 @@ namespace AcManager.Controls.Helpers {
         }
 
         private static string GetShortList_Line(KeywordDescription x) {
-            return $" • [mono][b]{x.Key}[/b][/mono]: {x.Description.ToSentenceMember()} ({GetReadableType(x.Type).ToSentenceMember()}" +
-                    (x.AlternativeKeys.Length > 0 ? $", alt.: {x.AlternativeKeys.Select(y => $"[mono][b]{y}[/b][/mono]").First()}" : "") + ");";
+            return x.Unit != null
+                    ? $" • [mono][b]{x.Key}[/b][/mono]: {x.Description.ToSentenceMember()} ({GetReadableType(x.Type).ToSentenceMember()}, in {x.Unit} by default" +
+                            (x.AlternativeKeys.Length > 0 ? $", alt.: {x.AlternativeKeys.Select(y => $"[mono][b]{y}[/b][/mono]").First()}" : "") + ");"
+                    : $" • [mono][b]{x.Key}[/b][/mono]: {x.Description.ToSentenceMember()} ({GetReadableType(x.Type).ToSentenceMember()}" +
+                            (x.AlternativeKeys.Length > 0 ? $", alt.: {x.AlternativeKeys.Select(y => $"[mono][b]{y}[/b][/mono]").First()}" : "") + ");";
         }
 
         public static string GetShortList(ITesterDescription descriptions) {

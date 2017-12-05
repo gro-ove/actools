@@ -538,6 +538,8 @@ namespace AcManager.Tools.Objects {
                 _value = b;
             }
 
+            public void Set(ITestEntryFactory factory) {}
+
             public bool Test(bool value) {
                 return value == _value;
             }

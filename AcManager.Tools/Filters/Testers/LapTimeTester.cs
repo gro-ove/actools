@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Profile;
 using StringBasedFilter;
 
@@ -28,6 +29,7 @@ namespace AcManager.Tools.Filters.Testers {
 
             switch (key) {
                 case "time":
+                    value.Set(TestEntryFactories.TimeMinutes);
                     return value.Test(obj.Entry.LapTime);
 
                 case "c":
@@ -39,6 +41,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.Track?.Name) || value.Test(obj.Track?.IdWithLayout);
 
                 case "date":
+                    value.Set(DateTimeTestEntry.Factory);
                     return value.Test(obj.Entry.EntryDate);
 
                 case "source":
@@ -66,7 +69,7 @@ namespace AcManager.Tools.Filters.Testers {
 
         public IEnumerable<KeywordDescription> GetDescriptions() {
             return new[] {
-                new KeywordDescription("time", "Lap time", KeywordType.TimeSpan, KeywordPriority.Important),
+                new KeywordDescription("time", "Lap time", "minutes", KeywordType.TimeSpan, KeywordPriority.Important),
                 new KeywordDescription("date", "Date lap time was set", KeywordType.DateTime, KeywordPriority.Normal),
                 new KeywordDescription("car", "Car", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "c"),
                 new KeywordDescription("track", "Track", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "t"),

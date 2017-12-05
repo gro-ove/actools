@@ -79,12 +79,11 @@
     <Compile Include="IFilter.cs" />
     <Compile Include="ITester.cs" />
     <Compile Include="ITestEntry.cs" />
-    <Compile Include="TestEntries\IntTestEntry.cs" />
+    <Compile Include="TestEntries\ITestEntryFactory.cs" />
     <Compile Include="TestEntries\NumberTestEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestEntries\Operator.cs" />
     <Compile Include="TestEntries\StringTestEntry.cs" />
-    <Compile Include="TestEntries\TestEntriesRegistry.cs" />
     <Compile Include="Utils\FlexibleParser.cs" />
     <Compile Include="Utils\RegexFromQuery.cs" />
     <Compile Include="TestEntries\RegexTestEntry.cs" />

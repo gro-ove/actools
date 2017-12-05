@@ -12,6 +12,8 @@ namespace StringBasedFilter.TestEntries {
             return "==" + _value;
         }
 
+        public void Set(ITestEntryFactory factory) {}
+
         public bool Test(bool value) {
             return value == _value;
         }
@@ -23,7 +25,7 @@ namespace StringBasedFilter.TestEntries {
         public bool Test(string value) {
             return _value != string.IsNullOrEmpty(value);
         }
-        
+
         public bool Test(TimeSpan value) {
             return Test(value > default(TimeSpan));
         }

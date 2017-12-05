@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
@@ -51,9 +52,11 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "len":
                 case "length":
-                    return  value.Test(obj.SpecsLengthValue);
+                    value.Set(TestEntryFactories.DistanceKilometers);
+                    return  value.Test(obj.SpecsLengthValue / 1e3);
 
                 case "width":
+                    value.Set(TestEntryFactories.DistanceMeters);
                     return value.Test(obj.SpecsWidth);
 
                 case "pits":
@@ -68,8 +71,8 @@ namespace AcManager.Tools.Filters.Testers {
             return new[] {
                 new KeywordDescription("city", "City", KeywordType.String, KeywordPriority.Normal),
                 new KeywordDescription("geotags", "Geo tags", KeywordType.String, KeywordPriority.Normal),
-                new KeywordDescription("len", "Length", KeywordType.Distance, KeywordPriority.Important, "length"),
-                new KeywordDescription("width", "Width", KeywordType.Distance, KeywordPriority.Normal),
+                new KeywordDescription("len", "Length", "kilometres", KeywordType.Distance, KeywordPriority.Important, "length"),
+                new KeywordDescription("width", "Width", "metres", KeywordType.Distance, KeywordPriority.Normal),
                 new KeywordDescription("pits", "Pit boxes", KeywordType.Number, KeywordPriority.Important, "pitboxes"),
             }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }

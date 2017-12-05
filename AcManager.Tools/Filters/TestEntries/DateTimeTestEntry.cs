@@ -5,42 +5,37 @@ using StringBasedFilter;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Filters.TestEntries {
-    public class DateTimeTestEntry : ITestEntry {
-        public static ITestEntryRegister RegisterInstance = new Register();
+    public class DateTimeTestEntry : ITestEntry, ITestEntryFactory {
+        public static readonly ITestEntryFactory Factory = new DateTimeTestEntry();
 
-        private class Register : ITestEntryRegister {
-            public ITestEntry Create(Operator op, string value) {
-                try {
-                    var date = DateTime.Parse(value);
-                    return new DateTimeTestEntry(op, date);
-                } catch (FormatException) {
-                    return null;
-                }
-            }
-
-            public bool TestValue(string value) {
-                var point = value.IndexOf('.');
-                return point != -1 && value.IndexOf('.', point + 1) != -1 || value.IndexOf('/') != -1 || value.IndexOf('-') > 0;
-            }
-
-            public bool TestCommonKey(string key) {
-                return string.Equals(key, "date", StringComparison.Ordinal);
+        ITestEntry ITestEntryFactory.Create(Operator op, string value) {
+            try {
+                var date = DateTime.Parse(value);
+                return new DateTimeTestEntry(op, date);
+            } catch (FormatException) {
+                return null;
             }
         }
+
+        // For factory
+        private DateTimeTestEntry() { }
 
         private readonly Operator _op;
         private readonly DateTime _value;
         private readonly bool _exact;
 
-        public override string ToString() {
-            return _op.OperatorToString() + _value.ToString(CultureInfo.InvariantCulture);
-        }
-
+        // For test entry
         private DateTimeTestEntry(Operator op, DateTime value) {
             _op = op;
             _value = value;
             _exact = true;
         }
+
+        public override string ToString() {
+            return _op.OperatorToString() + _value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public void Set(ITestEntryFactory factory) {}
 
         public bool Test(string value) {
             if (value == null) return false;

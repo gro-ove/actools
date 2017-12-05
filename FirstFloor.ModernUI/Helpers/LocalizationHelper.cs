@@ -170,49 +170,57 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             var split = -1;
-
             for (var i = 0; i < size.Length; i++) {
-                if (size[i] >= 'a' && size[i] <= 'z' || size[i] >= 'A' && size[i] <= 'Z') {
+                if (char.IsLetter(size[i])) {
                     split = i;
                     break;
                 }
             }
 
-            if (split == -1) {
-                return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
-            }
+            string postfix;
+            double value;
 
-            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out var val)) {
-                bytes = 0;
-                return false;
-            }
-
-            var postfix = size.Substring(split).Trim().ToLower();
-            if (string.IsNullOrWhiteSpace(postfix)) {
-                if (defaultPostfix == null) {
+            if (split != -1) {
+                if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
                     bytes = 0;
                     return false;
                 }
 
+                postfix = size.Substring(split).Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(postfix)) {
+                    if (defaultPostfix == null) {
+                        bytes = 0;
+                        return false;
+                    }
+
+                    postfix = defaultPostfix;
+                }
+            } else if (defaultPostfix == null) {
+                return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
+            } else {
                 postfix = defaultPostfix;
+                if (!double.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                    bytes = 0;
+                    return false;
+                }
             }
 
             if (postfix == "b" || postfix == UiStrings.LocalizationHelper_ReadableSize_B.ToLower()) {
-                bytes = (long)val;
+                bytes = (long)value;
             } else if (postfix == "kb" || postfix == UiStrings.LocalizationHelper_ReadableSize_KB.ToLower()) {
-                bytes = (long)(1024 * val);
+                bytes = (long)(1024 * value);
             } else if (postfix == "mb" || postfix == UiStrings.LocalizationHelper_ReadableSize_MB.ToLower()) {
-                bytes = (long)(1048576 * val);
+                bytes = (long)(1048576 * value);
             } else if (postfix == "gb" || postfix == UiStrings.LocalizationHelper_ReadableSize_GB.ToLower()) {
-                bytes = (long)(1073741824 * val);
+                bytes = (long)(1073741824 * value);
             } else if (postfix == "tb" || postfix == UiStrings.LocalizationHelper_ReadableSize_TB.ToLower()) {
-                bytes = (long)(1099511627776 * val);
+                bytes = (long)(1099511627776 * value);
             } else if (postfix == "pb" || postfix == UiStrings.LocalizationHelper_ReadableSize_PB.ToLower()) {
-                bytes = (long)(1099511627776 * val);
+                bytes = (long)(1099511627776 * value);
             } else if (postfix == "eb" || postfix == UiStrings.LocalizationHelper_ReadableSize_EB.ToLower()) {
-                bytes = (long)(1099511627776 * val);
+                bytes = (long)(1099511627776 * value);
             } else {
-                bytes = (long)val;
+                bytes = (long)value;
                 return false;
             }
 

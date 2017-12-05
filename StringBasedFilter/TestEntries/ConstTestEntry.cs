@@ -12,6 +12,8 @@ namespace StringBasedFilter.TestEntries {
             return "===" + _value;
         }
 
+        public void Set(ITestEntryFactory factory) {}
+
         public bool Test(bool value) {
             return _value;
         }

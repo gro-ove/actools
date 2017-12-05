@@ -53,13 +53,17 @@ namespace AcManager.Tools.AcObjectsNew {
 
         protected abstract void LoadOrThrow();
 
+        protected virtual DateTime GetCreationDateTime() {
+            return File.GetCreationTime(Location);
+        }
+
         public sealed override void Load() {
             InitializeLocationsOnce();
 
             ClearErrors();
             Changed = false;
 
-            CreationDateTime = File.GetCreationTime(Location);
+            CreationDateTime = GetCreationDateTime();
             CheckIfNew();
 
             try {

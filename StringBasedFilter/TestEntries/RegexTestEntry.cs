@@ -14,6 +14,8 @@ namespace StringBasedFilter.TestEntries {
             return "~" + _regex;
         }
 
+        public void Set(ITestEntryFactory factory) {}
+
         public bool Test(string value) {
             return value != null && _regex.IsMatch(value);
         }

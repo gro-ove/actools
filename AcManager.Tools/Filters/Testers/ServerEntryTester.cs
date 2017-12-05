@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcTools.Processes;
@@ -169,6 +170,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.RaceMode != RaceMode.Laps);
 
                 case "racetime":
+                    value.Set(TestEntryFactories.TimeMinutes);
                     return value.Test(obj.RaceMode != RaceMode.Laps
                             ? TimeSpan.FromSeconds(obj.Sessions?.FirstOrDefault(x => x.Type == Game.SessionType.Race)?.Duration ?? 0) : TimeSpan.Zero);
 
@@ -208,6 +210,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.CurrentSessionType?.ToString());
 
                 case "left":
+                    value.Set(TestEntryFactories.TimeMinutes);
                     var now = DateTime.Now;
                     return obj.SessionEnd > now && value.Test(obj.SessionEnd - now);
 
@@ -300,7 +303,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("cap", "Capacity", KeywordType.Number, KeywordPriority.Normal, "capacity"),
                 new KeywordDescription("laps", "Number of laps", KeywordType.Number, KeywordPriority.Normal, "l"),
                 new KeywordDescription("timed", "With race limited by time rather than amount of laps", KeywordType.Flag, KeywordPriority.Obscured),
-                new KeywordDescription("racetime", "Time of a race session limited by it", KeywordType.TimeSpan, KeywordPriority.Obscured),
+                new KeywordDescription("racetime", "Time of a race session limited by it", "minutes", KeywordType.TimeSpan, KeywordPriority.Obscured),
                 new KeywordDescription("extra", "With race limited by time rather than amount of laps, plus one extra lap", KeywordType.Flag, KeywordPriority.Obscured),
                 new KeywordDescription("drivers", "Number of drivers", KeywordType.Number, KeywordPriority.Important, "d", "players"),
                 new KeywordDescription("full", "Full (no more empty slots)", KeywordType.Flag, KeywordPriority.Important),
@@ -311,7 +314,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("errors", "With errors", KeywordType.Flag, KeywordPriority.Obscured, "haserrors"),
                 new KeywordDescription("booking", "In booking mode", KeywordType.Flag, KeywordPriority.Important),
                 new KeywordDescription("active", "Active session", KeywordType.String, KeywordPriority.Important),
-                new KeywordDescription("left", "Time left to the end of current session", KeywordType.TimeSpan, KeywordPriority.Normal),
+                new KeywordDescription("left", "Time left to the end of current session", "minutes", KeywordType.TimeSpan, KeywordPriority.Normal),
                 new KeywordDescription("ended", "With current session ended", KeywordType.Flag, KeywordPriority.Normal),
                 new KeywordDescription("friend", "With drivers tagged as friends", KeywordType.Flag, KeywordPriority.Normal, "friends"),
                 new KeywordDescription("connected", "Date of previous connection", KeywordType.DateTime, KeywordPriority.Normal, "lastconnected"),

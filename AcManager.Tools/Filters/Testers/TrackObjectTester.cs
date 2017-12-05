@@ -36,7 +36,7 @@ namespace AcManager.Tools.Filters.Testers {
         public IEnumerable<KeywordDescription> GetDescriptions() {
             return new[] {
                 new KeywordDescription("layouts", "Number of layouts", KeywordType.Number, KeywordPriority.Important),
-            }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
+            }.Concat(TrackObjectBaseTester.Instance.GetDescriptions());
         }
     }
 }

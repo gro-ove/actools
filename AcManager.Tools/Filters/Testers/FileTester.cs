@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using AcManager.Tools.Filters.TestEntries;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters.Testers {
@@ -14,10 +15,13 @@ namespace AcManager.Tools.Filters.Testers {
         public bool Test(FileInfo obj, string key, ITestEntry value) {
             switch (key) {
                 case "date":
+                    value.Set(DateTimeTestEntry.Factory);
                     return value.Test(obj.CreationTime);
                 case "age":
+                    value.Set(TestEntryFactories.TimeDays);
                     return value.Test(DateTime.Now - obj.CreationTime);
                 case "size":
+                    value.Set(TestEntryFactories.FileSizeMegabytes);
                     return value.Test(obj.Length);
             }
 
@@ -26,9 +30,9 @@ namespace AcManager.Tools.Filters.Testers {
 
         public IEnumerable<KeywordDescription> GetDescriptions() {
             return new[] {
-                new KeywordDescription("size", "Size", KeywordType.FileSize, KeywordPriority.Normal),
+                new KeywordDescription("size", "Size", "megabytes", KeywordType.FileSize, KeywordPriority.Normal),
                 new KeywordDescription("date", "Date", KeywordType.DateTime, KeywordPriority.Normal),
-                new KeywordDescription("age", "Age", KeywordType.TimeSpan, KeywordPriority.Normal)
+                new KeywordDescription("age", "Age", "days", KeywordType.TimeSpan, KeywordPriority.Normal)
             };
         }
     }

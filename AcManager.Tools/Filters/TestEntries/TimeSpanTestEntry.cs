@@ -1,74 +1,71 @@
 using System;
+using System.ServiceModel.Configuration;
 using JetBrains.Annotations;
 using AcTools.Utils.Helpers;
 using StringBasedFilter;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Filters.TestEntries {
-    public class TimeSpanTestEntry : ITestEntry {
-        public static ITestEntryRegister RegisterInstance = new Register();
+    public class TimeSpanTestEntry : ITestEntry, ITestEntryFactory {
+        private readonly string _defaultPostfix;
 
-        private class Register : ITestEntryRegister {
-            public ITestEntry Create(Operator op, string value) {
-                return ToTimeSpan(value, out var timeSpan, out var strict) ? new TimeSpanTestEntry(op, timeSpan, strict) : null;
-            }
+        // For factory
+        public TimeSpanTestEntry(string defaultPostfix) {
+            _defaultPostfix = defaultPostfix;
+        }
 
-            public bool TestValue(string value) {
-                return ToTimeSpan(value, out _, out _);
-            }
+        ITestEntry ITestEntryFactory.Create(Operator op, string value) {
+            return ToTimeSpan(value, _defaultPostfix, out var timeSpan, out var strict)
+                    ? new TimeSpanTestEntry(op, timeSpan, strict, _defaultPostfix) : null;
+        }
 
-            public bool TestCommonKey(string key) {
-                return string.Equals(key, "time", StringComparison.Ordinal) ||
-                        string.Equals(key, "duration", StringComparison.Ordinal);
+        private static TimeSpan? GetTimeSpanPostfix(double value, [CanBeNull] string postfix) {
+            switch (postfix) {
+                case "y":
+                case "ye":
+                case "yr":
+                    return TimeSpan.FromDays(value * 365);
+                case "mo":
+                case "mn":
+                    return TimeSpan.FromDays(value * 30);
+                case "w":
+                case "we":
+                case "wk":
+                    return TimeSpan.FromDays(value * 7);
+                case "d":
+                case "da":
+                    return TimeSpan.FromDays(value);
+                case "h":
+                case "hr":
+                case "ho":
+                    return TimeSpan.FromHours(value);
+                case "m":
+                case "mi":
+                    return TimeSpan.FromMinutes(value);
+                case "s":
+                case "sc":
+                case "se":
+                    return TimeSpan.FromSeconds(value);
+                case "ms":
+                    return TimeSpan.FromMilliseconds(value);
+                default:
+                    return null;
             }
         }
 
-        private static bool ToTimeSpan([CanBeNull] string value, out TimeSpan timeSpan, out bool strict) {
+        private static bool ToTimeSpan([CanBeNull] string value, [CanBeNull] string defaultPostfix, out TimeSpan timeSpan, out bool strict) {
             if (value == null) {
                 timeSpan = default(TimeSpan);
                 strict = false;
                 return false;
             }
 
-            if (value.IndexOf("year", StringComparison.InvariantCultureIgnoreCase) != -1) {
+            var postfix = TestEntryFactory.GetPostfix(value, 2)
+                    ?? (value.IndexOf(':') == -1 ? defaultPostfix?.Substring(0, Math.Min(defaultPostfix.Length, 2)) : null);
+            var fromPostfix = GetTimeSpanPostfix(FlexibleParser.TryParseDouble(value) ?? 1d, postfix);
+            if (fromPostfix.HasValue) {
                 strict = false;
-                timeSpan = TimeSpan.FromDays((FlexibleParser.TryParseDouble(value) ?? 1d) * 365);
-                return true;
-            }
-
-            if (value.IndexOf("month", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromDays((FlexibleParser.TryParseDouble(value) ?? 1d) * 30);
-                return true;
-            }
-
-            if (value.IndexOf("week", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromDays((FlexibleParser.TryParseDouble(value) ?? 1d) * 7);
-                return true;
-            }
-
-            if (value.IndexOf("day", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromDays(FlexibleParser.TryParseDouble(value) ?? 1d);
-                return true;
-            }
-
-            if (value.IndexOf("hour", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromHours(FlexibleParser.TryParseDouble(value) ?? 1d);
-                return true;
-            }
-
-            if (value.IndexOf("minute", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromMinutes(FlexibleParser.TryParseDouble(value) ?? 1d);
-                return true;
-            }
-
-            if (value.IndexOf("second", StringComparison.InvariantCultureIgnoreCase) != -1) {
-                strict = false;
-                timeSpan = TimeSpan.FromSeconds(FlexibleParser.TryParseDouble(value) ?? 1d);
+                timeSpan = fromPostfix.Value;
                 return true;
             }
 
@@ -107,19 +104,23 @@ namespace AcManager.Tools.Filters.TestEntries {
         private readonly TimeSpan _value;
         private readonly bool _exact;
 
+        // For test entry
+        private TimeSpanTestEntry(Operator op, TimeSpan value, bool exact, string defaultPostfix) {
+            _op = op;
+            _value = value;
+            _exact = exact;
+            _defaultPostfix = defaultPostfix;
+        }
+
         public override string ToString() {
             return _op.OperatorToString() + _value;
         }
 
-        private TimeSpanTestEntry(Operator op, TimeSpan value, bool exact) {
-            _op = op;
-            _value = value;
-            _exact = exact;
-        }
+        public void Set(ITestEntryFactory factory) {}
 
         public bool Test(string value) {
-            if (value == null) return false;
-            return FlexibleParser.TryParseInt(value, out var val) && Test(val);
+            return value != null && (ToTimeSpan(value, _defaultPostfix, out var parsed, out var _) ? Test(parsed)
+                    : FlexibleParser.TryParseInt(value, out var val) && Test(val));
         }
 
         public bool Test(double value) {

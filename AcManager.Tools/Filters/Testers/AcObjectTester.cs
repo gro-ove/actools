@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Filters.TestEntries;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters.Testers {
@@ -89,9 +90,11 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.IsNew);
 
                 case "age":
+                    value.Set(TestEntryFactories.TimeDays);
                     return value.Test(obj.Age);
 
                 case "date":
+                    value.Set(DateTimeTestEntry.Factory);
                     return value.Test(obj.CreationDateTime);
 
                 case "a":
@@ -114,8 +117,8 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("enabled", "Enabled", KeywordType.Flag, KeywordPriority.Normal),
                 new KeywordDescription("rating", "User rating", KeywordType.Number, KeywordPriority.Normal, "rate", "rated"),
                 new KeywordDescription("fav", "In Favorites", KeywordType.Flag, KeywordPriority.Normal, "favourite", "favorite", "favorited", "favourited"),
-                new KeywordDescription("new", "New, as in “added recently”", KeywordType.Flag, KeywordPriority.Important),
-                new KeywordDescription("age", "Time passed since file was created", KeywordType.TimeSpan, KeywordPriority.Normal),
+                new KeywordDescription("new", "Added recently", KeywordType.Flag, KeywordPriority.Important),
+                new KeywordDescription("age", "Time passed since file was created", "days", KeywordType.TimeSpan, KeywordPriority.Normal),
                 new KeywordDescription("date", "Creation date", KeywordType.DateTime, KeywordPriority.Obscured),
                 new KeywordDescription("author", "Author", KeywordType.String, KeywordPriority.Normal, "a"),
                 new KeywordDescription("kunos", "Made by Kunos", KeywordType.Flag, KeywordPriority.Important, "k"),

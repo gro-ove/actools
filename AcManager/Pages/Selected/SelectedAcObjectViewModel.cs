@@ -169,7 +169,7 @@ namespace AcManager.Pages.Selected {
                     break;
 
                 case "age":
-                    FilterRange(@"age", SelectedObject.AgeInDays, postfix: " days");
+                    FilterRange(@"age", SelectedObject.Age.TotalDays, postfix: " days");
                     break;
 
                 case "country":

@@ -334,7 +334,6 @@ namespace AcManager {
             BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
-            ExtraTestEntries.Initialize();
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
