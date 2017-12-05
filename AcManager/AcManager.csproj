@@ -367,6 +367,7 @@
     <Compile Include="Pages\Dialogs\PackServerDialog.xaml.cs">
       <DependentUpon>PackServerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>

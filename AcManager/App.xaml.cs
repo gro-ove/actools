@@ -60,6 +60,7 @@ using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -224,6 +225,11 @@ namespace AcManager {
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/
             AppAppearanceManager.Initialize();
+
+            ContentUtils.Register("AppStrings", AppStrings.ResourceManager);
+            ContentUtils.Register("ControlsStrings", ControlsStrings.ResourceManager);
+            ContentUtils.Register("ToolsStrings", ToolsStrings.ResourceManager);
+            ContentUtils.Register("UiStrings", UiStrings.ResourceManager);
 
             AcObjectsUriManager.Register(new UriProvider());
 

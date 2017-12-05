@@ -12,7 +12,7 @@
 
       <ContextMenu x:Key="StatusContextMenu">
         <MenuItem Header="{x:Static g:AppStrings.Online_SortByName}" Command="{Binding ChangeSortingCommand}" CommandParameter="name"
-            IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Null}, Mode=OneWay}" />
+            IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='name', Mode=OneWay}" />
         <MenuItem Header="{x:Static g:AppStrings.Online_SortByDrivers}" Command="{Binding ChangeSortingCommand}" CommandParameter="drivers"
             IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='drivers', Mode=OneWay}" />
         <MenuItem Header="{x:Static g:AppStrings.Online_SortByCapacity}" Command="{Binding ChangeSortingCommand}" CommandParameter="capacity"
@@ -88,23 +88,40 @@
             <StackPanel mui:Switch.When="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
               <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
               <StackPanel Orientation="Horizontal" Margin="8 16 0 0">
-                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
-                    IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
-                    Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
-                    IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
-                    Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
-                    ToolTip="{x:Static g:AppStrings.Online_FilterFull}" Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                    ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
-                    IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
-                    Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                <mui:BooleanSwitch Value="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}">
-                  <mui:ModernToggleButton Style="{StaticResource BigToggleButton.Include}" IconData="{StaticResource MultiplePeopleIconData}"
-                      IsChecked="{Binding FilterFriendsOnly}" ToolTip="Only servers with friends" Content="Friends" />
-                </mui:BooleanSwitch>
+                <ItemsControl ItemsSource="{Binding Filters}" Margin="0 0 8 0">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" Height="48" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" MaxWidth="48"
+                          Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="48">
+                        <mui:Cell>
+                          <DockPanel Margin="0">
+                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Bottom" Style="{StaticResource Label}" HorizontalAlignment="Center" />
+                            <Border Margin="0 0 0 4">
+                              <ContentPresenter Content="{Binding Icon}" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                          </DockPanel>
+                          <Path x:Name="PART_Hidden" Data="F1 M 62,0 L0,62 L2,64 L64,2 Z" Fill="Red" Stretch="Uniform"
+                              Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" Margin="0" />
+                          <Ellipse x:Name="PART_Shown" StrokeThickness="2" Stroke="Red" Stretch="Uniform"
+                              Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" Margin="0" />
+                        </mui:Cell>
+                      </ToggleButton>
+                      <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Exclude}" Value="True">
+                          <Setter TargetName="PART_Shown" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Exclude}" Value="False">
+                          <Setter TargetName="PART_Hidden" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                      </DataTemplate.Triggers>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <Separator />
                 <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}"
                     Content="Refresh" />
@@ -130,7 +147,7 @@
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
 
-              <Grid Grid.Column="0">
+              <Grid Grid.Column="0" x:Name="BigButtonsParent">
                 <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
                   <RowDefinition />
@@ -144,18 +161,35 @@
                     <mui:BooleanSwitch Value="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}}" VerticalAlignment="Center" DockPanel.Dock="Right"
                         Margin="4 0">
                       <mui:BooleanSwitch.True>
-                        <StackPanel Orientation="Horizontal">
-                          <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
-                              ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" />
-                          <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
-                              ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" />
-                          <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
-                              ToolTip="{x:Static g:AppStrings.Online_FilterFull}" />
-                          <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                              ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" />
-                          <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}" IsChecked="{Binding FilterMissing}"
-                              ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
-                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Filters}">
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="6" Height="16" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" Width="16"
+                                  Height="16" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <mui:Cell>
+                                  <ContentPresenter Content="{Binding Icon}" Margin="0" />
+                                  <Path x:Name="PART_Hidden" Data="F1 M 62,0 L0,62 L2,64 L64,2 Z" Fill="Red" Stretch="Uniform"
+                                      Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" />
+                                  <Ellipse x:Name="PART_Shown" StrokeThickness="2" Stroke="Red" Stretch="Uniform"
+                                      Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" />
+                                </mui:Cell>
+                              </ToggleButton>
+                              <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Exclude}" Value="True">
+                                  <Setter TargetName="PART_Shown" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Exclude}" Value="False">
+                                  <Setter TargetName="PART_Hidden" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                              </DataTemplate.Triggers>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                       </mui:BooleanSwitch.True>
                       <mui:BooleanSwitch.False>
                         <StackPanel Orientation="Horizontal">
@@ -187,35 +221,47 @@
                       Height="2" />
                 </mui:Cell>
 
-                <DockPanel Grid.Row="0" x:Name="BigButtons"
+                <DockPanel Grid.Row="0" HorizontalAlignment="Left"
                     Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                  <StackPanel Orientation="Horizontal" Margin="16 0 0 16" DockPanel.Dock="Left">
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
-                        IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
-                        Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
-                        IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
-                        Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
-                        IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
-                        Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
-                        IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
-                        Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
-                        IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
-                        Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                    <mui:BooleanSwitch Value="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}">
-                      <mui:ModernToggleButton x:Name="FriendsFilteringButton" Style="{StaticResource BigToggleButton.Include}"
-                          IconData="{StaticResource MultiplePeopleIconData}" IsChecked="{Binding FilterFriendsOnly}" ToolTip="Only servers with friends"
-                          Content="Friends" />
-                    </mui:BooleanSwitch>
-                  </StackPanel>
-
-                  <StackPanel x:Name="FilteringComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16">
+                  <StackPanel x:Name="FilteringComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16" DockPanel.Dock="Right">
                     <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
                     <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}" DisplayMemberPath="DisplayName" />
                   </StackPanel>
+
+                  <ItemsControl ItemsSource="{Binding Filters}" Margin="16 0 0 16">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" Height="48" />
+                        <!--<WrapPanel Height="48" ClipToBounds="True" />-->
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" MaxWidth="48"
+                            Height="48" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                          <mui:Cell>
+                            <DockPanel Margin="4 4 4 2">
+                              <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Bottom" Style="{StaticResource Label}" HorizontalAlignment="Center"
+                                  FontSize="{DynamicResource SmallFontSize}" />
+                              <ContentPresenter Content="{Binding Icon}" Margin="4 0 4 4" />
+                            </DockPanel>
+                            <Path x:Name="PART_Hidden" Data="F1 M 62,0 L0,62 L2,64 L64,2 Z" Fill="Red" Stretch="Uniform"
+                                Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" />
+                            <Ellipse x:Name="PART_Shown" StrokeThickness="2" Stroke="Red" Stretch="Uniform"
+                                Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True" />
+                          </mui:Cell>
+                        </ToggleButton>
+                        <DataTemplate.Triggers>
+                          <DataTrigger Binding="{Binding Exclude}" Value="True">
+                            <Setter TargetName="PART_Shown" Property="Visibility" Value="Collapsed" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding Exclude}" Value="False">
+                            <Setter TargetName="PART_Hidden" Property="Visibility" Value="Collapsed" />
+                          </DataTrigger>
+                        </DataTemplate.Triggers>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
                 </DockPanel>
 
                 <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"

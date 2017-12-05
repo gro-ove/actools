@@ -69,6 +69,8 @@ namespace AcManager.Pages.Drive {
             var pack = Model.Pack;
             pack.SubscribeWeak(OnPackPropertyChanged);
             this.OnActualUnload(() => pack.UnsubscribeWeak(OnPackPropertyChanged));
+
+            // BigButtonsParent.AddWidthCondition(430).Add(FilteringComboBox);
         }
 
         private async void OnPackPropertyChanged(object sender, PropertyChangedEventArgs args) {
@@ -156,36 +158,11 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private bool? _showFilteringComboBox;
-
-        public bool ShowFilteringComboBox {
-            get => _showFilteringComboBox ?? false;
-            set {
-                if (Equals(value, _showFilteringComboBox)) return;
-                _showFilteringComboBox = value;
-                FilteringComboBox.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        private bool? _showFriendsFilteringButton;
-
-        public bool ShowFriendsFilteringButton {
-            get => _showFriendsFilteringButton ?? false;
-            set {
-                if (Equals(value, _showFriendsFilteringButton)) return;
-                _showFriendsFilteringButton = value;
-                FriendsFilteringButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
 
         private void ResizingStuff() {
             var width = ActualWidth;
             SimpleListMode = width > 1080 ? ListMode.DetailedPlus : width > 800 ? ListMode.Detailed : ListMode.Simple;
             WideInformationMode = width > 1280;
-
-            var buttonsWidth = BigButtons.ActualWidth;
-            ShowFilteringComboBox = buttonsWidth > 430;
-            ShowFriendsFilteringButton = buttonsWidth > 490;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -281,46 +258,12 @@ namespace AcManager.Pages.Drive {
 
         public class OnlineViewModel : NotifyPropertyChanged {
             public string Key { get; }
-
             public OnlineManager Manager { get; }
-
             public SourcesPack Pack { get; }
-
             public BetterListCollectionView MainList { get; }
 
             [NotNull]
             public readonly CombinedFilter<ServerEntry> ListFilter;
-
-            private void LoadQuickFilter() {
-                var loaded = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, Key);
-                if (loaded == null) return;
-                FilterEmpty = loaded.Contains(@"drivers");
-                FilterFull = loaded.Contains(@"full");
-                FilterPassword = loaded.Contains(@"password");
-                FilterMissing = loaded.Contains(@"haserrors");
-                FilterBooking = loaded.Contains(@"booking");
-                FilterFriendsOnly = loaded.Contains(@"friends");
-            }
-
-            private void SaveQuickFilter() {
-                LimitedStorage.Set(LimitedSpace.OnlineQuickFilter, Key, GetQuickFilterString());
-            }
-
-            private string GetQuickFilterString() {
-                return new[] {
-                    FilterEmpty ? @"(drivers>0)" : null,
-                    FilterFull ? @"(full-)" : null,
-                    FilterPassword ? @"(password-)" : null,
-                    FilterMissing ? @"(haserrors- & missing-)" : null,
-                    FilterBooking ? @"(booking-)" : null,
-                    FilterFriendsOnly ? @"(friends+)" : null
-                }.Where(x => x != null).JoinToString('&');
-            }
-
-            private IFilter<ServerEntry> CreateQuickFilter() {
-                var value = GetQuickFilterString();
-                return string.IsNullOrWhiteSpace(value) ? null : Filter.Create(ServerEntryTester.Instance, value);
-            }
 
             private bool _updatingQuickFilter;
 
@@ -329,8 +272,7 @@ namespace AcManager.Pages.Drive {
                 _updatingQuickFilter = true;
 
                 await Task.Delay(50);
-                SaveQuickFilter();
-                ListFilter.Second = CreateQuickFilter();
+                ListFilter.Second = Filters.CreateFilter();
                 MainList.Refresh();
 
                 if (MainList.CurrentItem == null) {
@@ -427,6 +369,7 @@ namespace AcManager.Pages.Drive {
             public bool UserListMode { get; }
 
             public SettingEntry[] SortingModes { get; }
+            public OnlineQuickFilters Filters { get; }
 
             private readonly Action<ServerEntry> _showDetails;
 
@@ -462,9 +405,16 @@ namespace AcManager.Pages.Drive {
                 SortingModes = sources?.Length == 1 && sources[0] == FileBasedOnlineSources.RecentKey
                         ? DefaultSortingModes.Prepend(new SettingEntry(null, "Default")).ToArray() : DefaultSortingModes;
 
-                LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
-                ListFilter.Second = CreateQuickFilter();
+                // ListFilter.Second = CreateQuickFilter();
+
+                Filters = new OnlineQuickFilters(Key);
+                ListFilter.Second = Filters.CreateFilter();
+                Filters.Changed += OnFiltersChanged;
+            }
+
+            private void OnFiltersChanged(object sender, EventArgs eventArgs) {
+                UpdateQuickFilter();
             }
 
             private bool _loaded;
@@ -510,6 +460,8 @@ namespace AcManager.Pages.Drive {
 
                 Pack.Ready -= Pack_Ready;
                 Pack.Dispose();
+
+                Filters.Dispose();
             }
 
             private void Pack_Ready(object sender, EventArgs e) {
@@ -641,9 +593,7 @@ namespace AcManager.Pages.Drive {
 
             private bool FilterTest(object obj) {
                 if (ReferenceEquals(_testMeLater, obj)) return true;
-
-                var s = obj as ServerEntry;
-                return s != null && ListFilter.Test(s);
+                return obj is ServerEntry s && ListFilter.Test(s);
             }
 
             private ServerEntrySorter _sorting;
@@ -721,78 +671,6 @@ namespace AcManager.Pages.Drive {
                     var testMeLater = _testMeLater;
                     _testMeLater = null;
                     MainList.Refresh(testMeLater);
-                }
-            }
-
-            private bool _filterBooking;
-
-            public bool FilterBooking {
-                get => _filterBooking;
-                set {
-                    if (Equals(value, _filterBooking)) return;
-                    _filterBooking = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
-                }
-            }
-
-            private bool _filterEmpty;
-
-            public bool FilterEmpty {
-                get => _filterEmpty;
-                set {
-                    if (Equals(value, _filterEmpty)) return;
-                    _filterEmpty = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
-                }
-            }
-
-            private bool _filterFull;
-
-            public bool FilterFull {
-                get => _filterFull;
-                set {
-                    if (Equals(value, _filterFull)) return;
-                    _filterFull = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
-                }
-            }
-
-            private bool _filterPassword;
-
-            public bool FilterPassword {
-                get => _filterPassword;
-                set {
-                    if (Equals(value, _filterPassword)) return;
-                    _filterPassword = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
-                }
-            }
-
-            private bool _filterMissing = true;
-
-            public bool FilterMissing {
-                get => _filterMissing;
-                set {
-                    if (Equals(value, _filterMissing)) return;
-                    _filterMissing = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
-                }
-            }
-
-            private bool _filterFriendsOnly;
-
-            public bool FilterFriendsOnly {
-                get => _filterFriendsOnly;
-                set {
-                    if (Equals(value, _filterFriendsOnly)) return;
-                    _filterFriendsOnly = value;
-                    OnPropertyChanged();
-                    UpdateQuickFilter();
                 }
             }
         }
