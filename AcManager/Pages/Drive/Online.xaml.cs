@@ -70,7 +70,7 @@ namespace AcManager.Pages.Drive {
             pack.SubscribeWeak(OnPackPropertyChanged);
             this.OnActualUnload(() => pack.UnsubscribeWeak(OnPackPropertyChanged));
 
-            // BigButtonsParent.AddWidthCondition(430).Add(FilteringComboBox);
+            BigButtonsParent.AddWidthCondition(430).Add(FilteringComboBox);
         }
 
         private async void OnPackPropertyChanged(object sender, PropertyChangedEventArgs args) {
