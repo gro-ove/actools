@@ -5,14 +5,15 @@
     mc:Ignorable="d" Style="{StaticResource {x:Type ListBox}}">
   <ListBox.ItemsPanel>
     <ItemsPanelTemplate>
-      <WrapPanel HorizontalAlignment="Left" ItemWidth="76" ItemHeight="76" SizeChanged="OnPanelSizeChanged" />
+      <WrapPanel HorizontalAlignment="Left" ItemWidth="104" ItemHeight="104" SizeChanged="OnPanelSizeChanged" Margin="0 0 0 12" />
     </ItemsPanelTemplate>
   </ListBox.ItemsPanel>
   <ListBox.ItemTemplate>
     <DataTemplate DataType="{x:Type sl:SelectCategory}">
-      <mui:Cell Width="72" Height="72" PreviewMouseLeftButtonDown="OnItemMouseDown" Background="Transparent" ToolTip="{Binding Description.Description}">
-        <mui:BetterImage Filename="{Binding Description.Icon}" Margin="8 8 8 24" Width="40" Height="40" HorizontalAlignment="Center" ClearOnChange="True"
-            Effect="{DynamicResource TrackOutlineAloneEffect}" />
+      <mui:Cell Width="100" Height="100" PreviewMouseLeftButtonDown="OnItemMouseDown" Background="Transparent" ToolTip="{Binding Description.Description}">
+        <!--<mui:BetterImage Filename="{Binding Description.Icon}" Margin="8 8 8 24" Width="40" Height="40" HorizontalAlignment="Center" ClearOnChange="True"
+            Effect="{DynamicResource TrackOutlineAloneEffect}" />-->
+        <ContentPresenter Content="{Binding Description.Icon}" Width="68" Height="60" Margin="8 8 8 24" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
             VerticalAlignment="Bottom" />
         <TextBlock x:Name="CountText" Style="{StaticResource Label}" FontSize="10" HorizontalAlignment="Right" Text="{Binding ItemsCount}" Margin="4"

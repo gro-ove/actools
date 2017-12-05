@@ -254,6 +254,7 @@
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
+    <Compile Include="Helpers\ContentUtils.cs" />
     <Compile Include="Helpers\IndexDirectDownloader.cs" />
     <Compile Include="Helpers\AcContext.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />

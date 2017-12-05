@@ -425,6 +425,7 @@
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\SelectionCategoriesList.cs" />
     <Compile Include="Pages\SelectionLists\TrackDlcs.xaml.cs">
       <DependentUpon>TrackDlcs.xaml</DependentUpon>
     </Compile>

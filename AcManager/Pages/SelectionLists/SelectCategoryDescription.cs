@@ -10,21 +10,19 @@ using Newtonsoft.Json;
 namespace AcManager.Pages.SelectionLists {
     public class SelectCategoryDescription {
         public string Name { get; }
-
         public string Description { get; }
-        
         public string Filter { get; }
-        
-        public string Icon { get; }
-
+        public double Order { get; }
+        public object Icon { get; }
         public string Source { get; }
 
         [JsonConstructor]
-        private SelectCategoryDescription([NotNull] string name, string description, string filter, string icon) {
-            Name = name;
-            Description = description;
+        private SelectCategoryDescription([NotNull] string name, string description, string filter, string icon, double order) {
+            Name = ContentUtils.Translate(name);
+            Description = ContentUtils.Translate(description);
             Filter = filter;
-            Icon = FilesStorage.Instance.GetContentFile(_type, icon ?? name + @".png").Filename;
+            Order = order;
+            Icon = ContentUtils.GetIcon(_type, icon ?? name + ".png");
             Source = _source;
         }
 
