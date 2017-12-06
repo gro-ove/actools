@@ -20,7 +20,8 @@ namespace AcManager.Pages.About {
 
         public class ViewModel : NotifyPropertyChanged {
             public ViewModel(string key) {
-                NotesList = new ListCollectionView(ImportantTips.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).Reverse().ToList());
+                NotesList = new ListCollectionView(
+                        ImportantTips.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).OrderBy(x => x.DisplayName).ToList());
                 if (key != null) {
                     NotesList.MoveCurrentTo(ImportantTips.Entries.FirstOrDefault(x => x.Id?.Contains(key) == true));
                 } else {
@@ -39,7 +40,7 @@ namespace AcManager.Pages.About {
             private ListCollectionView _notesList;
 
             public ListCollectionView NotesList {
-                get { return _notesList; }
+                get => _notesList;
                 set {
                     if (Equals(value, _notesList)) return;
                     _notesList = value;

@@ -186,7 +186,7 @@ namespace AcManager.Tools.AcObjectsNew {
                                          .Select(x => FileUtils.GetRelativePath(x, location)).ToArray();
                 }
 
-                var f = RegexFromQuery.Create(mask.Replace('/', '\\'), StringMatchMode.CompleteMatch);
+                var f = RegexFromQuery.Create(mask.Replace('/', '\\').Replace(@"\", @"\\"), StringMatchMode.CompleteMatch);
                 return _subFiles.Where(x => f.IsMatch(x)).Select(x => Path.Combine(location, x));
             }
 

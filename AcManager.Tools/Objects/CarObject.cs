@@ -22,7 +22,6 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -577,7 +576,7 @@ namespace AcManager.Tools.Objects {
                 // Fonts
                 yield return Add(t.AcdData?.GetIniFile("digital_instruments.ini")
                                   .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
-                                  .NonNull()?.Select(FontsManager.Instance.GetByAcId).Where(x => x?.Author != AuthorKunos));
+                                  .NonNull().Select(FontsManager.Instance.GetByAcId).Where(x => x?.Author != AuthorKunos));
 
                 // Driver models
                 var driver = DriverModelsManager.Instance.GetByAcId(

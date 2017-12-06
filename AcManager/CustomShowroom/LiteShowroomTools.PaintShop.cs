@@ -8,9 +8,11 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Media;
 using AcManager.PaintShop;
 using AcManager.Tools;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcManager.Tools.Objects;
@@ -363,6 +365,12 @@ namespace AcManager.CustomShowroom {
             #endregion
 
             #region Skin flags
+            public ListCollectionView Countries { get; } = new ListCollectionView(new List<string>(DataProvider.Instance.KunosIdsCountries)) {
+                SortDescriptions = {
+                    new SortDescription()
+                }
+            };
+
             private string _skinFlagCountry;
 
             public string SkinFlagCountry {

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -89,7 +90,7 @@ namespace AcManager.Tools.Helpers {
 
         [CanBeNull]
         public static string GetCountryId([NotNull] string countryNameOrTag) {
-            return DataProvider.Instance.CountryToIds.GetValueOrDefault(CountryFromTag(countryNameOrTag) ?? "");
+            return DataProvider.Instance.CountryToIds.GetValueOrDefault(CountryFromTag(countryNameOrTag) ?? countryNameOrTag);
         }
 
         private static readonly Regex SplitWordsRegex = new Regex(@"[\s_]+|(?<=[a-z])-?(?=[A-Z])|(?<=[a-z]{2})-?(?=[A-Z\d])", RegexOptions.Compiled);

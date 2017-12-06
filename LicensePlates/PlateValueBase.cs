@@ -31,7 +31,7 @@ namespace LicensePlates {
         private string _value;
 
         public string Value {
-            get { return _value; }
+            get => _value;
             set {
                 if (Equals(value, _value)) return;
                 _value = value;
@@ -108,10 +108,7 @@ namespace LicensePlates {
         }
 
         public double NumberValue {
-            get {
-                double v;
-                return double.TryParse(Value, NumberStyles.Any, CultureInfo.InvariantCulture, out v) ? v : From;
-            }
+            get => double.TryParse(Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var v) ? v : From;
             set {
                 var v = Math.Round(value).ToString(CultureInfo.InvariantCulture);
                 if (Equals(v, Value)) return;
@@ -120,8 +117,7 @@ namespace LicensePlates {
         }
 
         protected override string ConvertValue(string userValue) {
-            int value;
-            return int.TryParse(userValue, NumberStyles.Any, CultureInfo.InvariantCulture, out value) ? value.ToString("D" + Length) :
+            return int.TryParse(userValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var value) ? value.ToString("D" + Length) :
                     base.ConvertValue(userValue);
         }
 

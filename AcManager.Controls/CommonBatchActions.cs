@@ -325,7 +325,7 @@ namespace AcManager.Controls {
                     var objs = OfType(list).ToList();
                     if (objs.Count == 0) return;
 
-                    if (PackSeparately) {
+                    if (PackSeparately && objs.Count > 1) {
                         var filename = GetPackedFilename(new[]{ objs[0] }, ".zip", true);
                         if (filename == null) return;
 

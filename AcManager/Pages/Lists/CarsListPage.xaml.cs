@@ -77,13 +77,11 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Show(CarObject car, string carSkinId = null) {
-            var mainWindow = Application.Current?.MainWindow as MainWindow;
-            if (mainWindow == null) return;
-
-            _selectNextCar = car.Id;
-            _selectNextCarSkinId = carSkinId;
-
-            NavigateToPage();
+            if (Application.Current?.MainWindow is MainWindow) {
+                _selectNextCar = car.Id;
+                _selectNextCarSkinId = carSkinId;
+                NavigateToPage();
+            }
         }
 
         public static void NavigateToPage() {

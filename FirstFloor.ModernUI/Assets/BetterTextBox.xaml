@@ -425,6 +425,8 @@
     <Setter Property="Background" Value="{DynamicResource InputBackground}" />
     <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
     <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic}" />
+    <Setter Property="IsTextSearchEnabled" Value="True" />
+    <Setter Property="IsTextSearchCaseSensitive" Value="False" />
     <Style.Triggers>
       <Trigger Property="IsEditable" Value="True">
         <Setter Property="IsTabStop" Value="True" />

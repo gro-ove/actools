@@ -223,7 +223,7 @@
                 </CheckBox>
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 4 0 0"
                     DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}"
-                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}"  />
+                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}" />
                 <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
                     Visibility="{Binding CurrentPattern.Colors.Colors.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
@@ -271,7 +271,7 @@
                 </CheckBox>
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CurrentPattern}" ItemsSource="{Binding Patterns}" Margin="0 4 0 0"
                     DisplayMemberPath="DisplayName" IsEnabled="{Binding PatternEnabled}"
-                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}"  />
+                    Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}" />
                 <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
                     Visibility="{Binding CurrentPattern.Colors.Colors.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
@@ -352,8 +352,7 @@
     <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
         Visibility="{Binding HasFlags, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Label Content="Country:" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0 0 0 4" />
-      <mui:BetterComboBox Text="{Binding SkinFlagCountry}" Placeholder="?" IsEditable="False"
-          ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
+      <mui:BetterComboBox ItemsSource="{Binding Countries}" Text="{Binding SkinFlagCountry}" Placeholder="?" IsEditable="False" />
     </DockPanel>
 
     <ItemsControl ItemsSource="{Binding SkinLabels}" DockPanel.Dock="Top">

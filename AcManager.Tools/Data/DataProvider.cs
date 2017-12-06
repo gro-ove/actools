@@ -118,26 +118,26 @@ namespace AcManager.Tools.Data {
         }
 
         private readonly Lazier<Dictionary<string, string[]>> _kunosContent = Lazier.Create(
-                Load("KunosContent.json", j => {
-                    var layouts = new List<string>();
-                    var jLayouts = j[@"layouts"] as JObject;
-                    if (jLayouts != null) {
-                        foreach (var pair in jLayouts) {
-                            var jLayoutIds = pair.Value as JArray;
-                            if (jLayoutIds != null) {
-                                layouts.AddRange(jLayoutIds.Select(v => $@"{pair.Key}/{v}"));
-                            }
-                        }
-                    }
+                Load("KunosContent.json", LoadKunosContent));
 
-                    return new Dictionary<string, string[]> {
-                        [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
-                        [@"layouts"] = layouts.ToArray(),
-                        [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
-                        [@"drivers"] = (j[@"drivers"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
-                        [@"fonts"] = (j[@"fonts"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
-                    };
-                }));
+        private static Dictionary<string, string[]> LoadKunosContent(JObject j) {
+            var layouts = new List<string>();
+            if (j[@"layouts"] is JObject jLayouts) {
+                foreach (var pair in jLayouts) {
+                    if (pair.Value is JArray jLayoutIds) {
+                        layouts.AddRange(jLayoutIds.Select(v => $@"{pair.Key}/{v}"));
+                    }
+                }
+            }
+
+            return new Dictionary<string, string[]> {
+                [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                [@"layouts"] = layouts.ToArray(),
+                [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                [@"drivers"] = (j[@"drivers"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                [@"fonts"] = (j[@"fonts"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+            };
+        }
 
         [NotNull]
         public IReadOnlyList<KunosDlcInformation> DlcInformations => _dlcInformations.RequireValue;

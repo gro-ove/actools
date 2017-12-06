@@ -1556,6 +1556,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\ImportantTips\Recommended Paid Mods From RSS.txt" />
     <Content Include="About\Licenses\CefSharp\CefSharp.txt" />
     <Content Include="About\Licenses\EmbedIO\EmbedIO.txt" />
     <Content Include="About\Licenses\Meta.Vlc\LICENSE" />
