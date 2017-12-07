@@ -4,14 +4,35 @@ using SlimDX;
 
 namespace AcTools.Render.Base.Utils {
     public static partial class MathF {
-        public static readonly float Sqrt2 = (float) Math.Sqrt(2);
-        
+        /// <summary>
+        /// Converts spherical coordinates (elevation and azimuthal angles) to the usual ones.
+        /// </summary>
+        /// <param name="θDeg">Elevation angle.</param>
+        /// <param name="φDeg">Azimuthal angle.</param>
+        /// <returns></returns>
+        public static Vector3 ToVector3Deg(float θDeg, float φDeg) {
+            return ToVector3Rad(θDeg.ToRadians(), φDeg.ToRadians());
+        }
+
+        /// <summary>
+        /// Converts spherical coordinates (elevation and azimuthal angles) to the usual ones.
+        /// </summary>
+        /// <param name="θRad">Elevation angle.</param>
+        /// <param name="φRad">Azimuthal angle.</param>
+        /// <returns></returns>
+        public static Vector3 ToVector3Rad(float θRad, float φRad) {
+            var θ = PI / 2f - θRad;
+            var sinθ = θ.Sin();
+            var cosθ = θ.Cos();
+            var sinφ = φRad.Sin();
+            var cosφ = φRad.Cos();
+            return new Vector3(sinθ * cosφ, cosθ, sinθ * sinφ);
+        }
 
         private static readonly Random RandomObject = new Random();
 
         // ReSharper disable once InconsistentNaming
         public const float PI = (float)Math.PI;
-
         public const float ToRad = (float)Math.PI/180f;
         public const float ToDeg = 180f/(float)Math.PI;
 

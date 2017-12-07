@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
         public int SendIntervalHz {
             get => _sendIntervalHz;
             set {
-                value = value.Clamp(10, 35);
+                value = value.Clamp(1, 120);
                 if (Equals(value, _sendIntervalHz)) return;
                 _sendIntervalHz = value;
                 if (Loaded) {

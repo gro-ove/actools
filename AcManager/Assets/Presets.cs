@@ -13,8 +13,8 @@ namespace AcManager.Assets {
         }
 
 		public static void Initialize() {
-			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"q1ZyzE3KTM0rCc5ITMkvd8lMSystzszPU7IyM9Az0FFKLE5SsjIyALNRVHqWpBYllgBVFitZWRgYoEt7ZKakhmekpuYApdMSc4pT0eTdElNS4TKJxYlKViVFpWBmUq6SlYGeOYhZDmYam9YCAA=="), @"Ambient Shadows", @"Default");
-			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"XY27CoAwDAD/JbNIUHyQTRDR2cE50hQLPsBWHMR/twoOuh3cwR1QTL2R2bUDq2UvjdabNcsMlGKIAbDtgSJ8+FM2TlZ2vrRAOeJf10ZJN4iMXrt1k5+uWAmQ5tHK/eA38rsJCMPsxv3BODkv"), @"Ambient Shadows", @"Open Wheelers");
+			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"Xcq7CoRADEDRf0ktEhRXSCeIaL2FdYbJ4IAPMCMWi/++OoWg3YVzf1BNxsscvgPbZa+9c5v6ZQb6YIoJsBqgDGM/zi7IyuE8FShHfHPrrfSDyHiy41Hl5Q1buYWVgcK6xTQTEKbllXvMvDj+"), @"Ambient Shadows", @"Default");
+			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"XY27CoAwDAD/JbNIUFTIJojo7OAcaYoFH2BbHMR/twoOuh3cwR1QzoORxXUjq3WvjNbemnUByjHGCNgOQAk+/ClbJxu7UFqgFPGvG6OkH0WmoN3m5adrVgKkebJyP/iNwm4Gwri4cX8wzc4L"), @"Ambient Shadows", @"Open Wheelers");
 			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"TY7BDoJADET/Zc/EoEdugjEx8QbRc8EiDWWXdLsHYvx3VwX0OM28eX2Y0w2Bz2TRZCoBE7MP6nKmccmlQk1MOhXOqjg22TZNN+lcFOgj2QL7GS07ahVlpeNSqQhDxBao4KBNt/pqb7JdYiqBRsnZVRNvF/IB+AAD3H+WJX6eqCbBK4LM88eAHAd8GMb31l8pZ7A9qv9qny8="), @"Assists", Controls.ControlsStrings.AssistsPreset_Gamer);
 			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"VY7LCoMwEEX/ZdZSVOgmO7UUCt1F2vVoxxocE0kmCyn999qHQpf3cu6ZecDpRshnYwlUhxwogSKKK9lMoMTHJWvBxrCRuXJWvGNQ+3SX/jiPw/9S96YT8lunF5MWwhFUtq4qjtL2q79oAqg8gdpjK8bZ7UyWwMWEiHzAEe+08mvKP1/Us6crof/pj5F4EYQ4Tm8XqA0qGe1AEr6a5ws="), @"Assists", Controls.ControlsStrings.AssistsPreset_Intermediate);
 			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(@"VY7BDoIwEET/pWdi4MpNMCYm3iB4XnCRDUtL2u2BGP/dYgrEY6fz5u1b3Z4IfCeNKu+BHSbq7MUUTPMeVAItMclSGi3WsMrTUxp7FsZ/shqoF7QHHJYqQZhUnm1UyV664cBaFz4TVVvohIzeNSFryHngC0zwCh6xPvS3V5b+7qgXiw8EGwVXjxwWnJ/mdSyma6lg0COKi+LPFw=="), @"Assists", Controls.ControlsStrings.AssistsPreset_Pro);

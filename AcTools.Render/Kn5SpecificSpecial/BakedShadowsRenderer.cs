@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -17,7 +16,6 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -31,13 +29,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public float SkyBrightnessLevel = 2.5f;
-        public float ΘFrom = -10f;
-        public float ΘTo = 50f;
         public float Gamma = 0.5f;
         public float Ambient = 0.3f;
         public float ShadowBiasCullFront = 0f;
         public float ShadowBiasCullBack = 0.8f;
-        public int Iterations = 500;
         public int Padding = 4;
         public int MapSize = 2048;
         public bool DebugMode = false;
@@ -234,54 +229,20 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferFSumm.TargetView);
         }
 
+        protected override float DrawLight(Vector3 direction) {
+            DrawShadow(direction);
+            AddShadow();
+            return 1f;
+        }
+
         private void Draw(float multipler, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             _effect.FxAmbient.Set(Ambient);
             DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, Color.Transparent);
             DeviceContext.ClearRenderTargetView(_bufferA.TargetView, Color.Transparent);
 
-            var t = Iterations;
-
             // draw
-            var iter = 0f;
-            var sw = Stopwatch.StartNew();
-            for (var k = 0; k < t; k++) {
-                if (sw.ElapsedMilliseconds > 20) {
-                    if (cancellation.IsCancellationRequested) return;
-                    progress?.Report(0.2 + 0.8 * k / t);
-                    sw.Restart();
-                }
-
-                if (DebugMode) {
-                    DrawShadow(Vector3.UnitY, Vector3.UnitZ);
-                } else {
-                    var v3 = default(Vector3);
-                    var vn = default(Vector3);
-                    var length = 0f;
-
-                    var yFrom = (90f - ΘFrom).ToRadians().Cos();
-                    var yTo = (90f - ΘTo).ToRadians().Cos();
-
-                    if (yTo < yFrom) {
-                        throw new Exception("yTo < yFrom");
-                    }
-
-                    do {
-                        var x = MathF.Random(-1f, 1f);
-                        var y = MathF.Random(yFrom < 0f ? -1f : 0f, yTo > 0f ? 1f : 0f);
-                        var z = MathF.Random(-1f, 1f);
-                        if (x.Abs() < 0.01 && z.Abs() < 0.01) continue;
-
-                        v3 = new Vector3(x, y, z);
-                        length = v3.Length();
-                        vn = v3 / length;
-                    } while (length > 1f || vn.Y < yFrom || vn.Y > yTo);
-
-                    DrawShadow(v3);
-                }
-
-                AddShadow();
-                iter++;
-            }
+            var t = DrawLights(progress, cancellation);
+            if (cancellation.IsCancellationRequested) return;
 
             DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
             DeviceContext.Rasterizer.State = null;
@@ -293,7 +254,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.ClearRenderTargetView(_bufferF1.TargetView, Color.Transparent);
             DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
             _effect.FxInputMap.SetResource(_bufferFSumm.View);
-            _effect.FxCount.Set(iter / SkyBrightnessLevel);
+            _effect.FxCount.Set(t / SkyBrightnessLevel);
             _effect.FxMultipler.Set(multipler);
             _effect.FxGamma.Set(Gamma);
             _effect.TechAoResult.DrawAllPasses(DeviceContext, 6);

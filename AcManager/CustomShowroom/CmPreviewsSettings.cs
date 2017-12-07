@@ -285,7 +285,7 @@ namespace AcManager.CustomShowroom {
             /// <returns>Instance of DarkPreviewsOptions.</returns>
             [NotNull]
             public DarkPreviewsOptions ToPreviewsOptions(bool keepChecksum) {
-                var light = GetLightDirection(Lightθ, Lightφ);
+                var light = MathF.ToVector3Deg(Lightθ, Lightφ);
                 return new DarkPreviewsOptions {
                     AmbientDown = AmbientDownColor.ToColor(),
                     AmbientUp = AmbientUpColor.ToColor(),

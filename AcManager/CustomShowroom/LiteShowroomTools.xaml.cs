@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
@@ -77,7 +76,9 @@ namespace AcManager.CustomShowroom {
                 AmbientShadowIterations = Iterations,
                 AmbientShadowHideWheels = HideWheels,
                 AmbientShadowFade = Fade,
-                AmbientShadowAccurate = Accurate,
+                AmbientShadowCorrectLighting = CorrectLighting,
+                AmbientShadowPoissonDistribution = PoissonDistribution,
+                AmbientShadowExtraBlur = ExtraBlur,
                 AmbientShadowBodyMultiplier = BodyMultiplier,
                 AmbientShadowWheelMultiplier = WheelMultiplier,
             }, Load);
@@ -96,7 +97,13 @@ namespace AcManager.CustomShowroom {
             public bool AmbientShadowFade = true;
 
             [JsonProperty("asa")]
-            public bool AmbientShadowAccurate = true;
+            public bool AmbientShadowCorrectLighting = true;
+
+            [JsonProperty("asp")]
+            public bool AmbientShadowPoissonDistribution = true;
+
+            [JsonProperty("asu")]
+            public bool AmbientShadowExtraBlur;
 
             [JsonProperty("asbm")]
             public float AmbientShadowBodyMultiplier = 0.75f;
@@ -124,7 +131,9 @@ namespace AcManager.CustomShowroom {
             Iterations = o.AmbientShadowIterations;
             HideWheels = o.AmbientShadowHideWheels;
             Fade = o.AmbientShadowFade;
-            Accurate = o.AmbientShadowAccurate;
+            CorrectLighting = o.AmbientShadowCorrectLighting;
+            PoissonDistribution = o.AmbientShadowPoissonDistribution;
+            ExtraBlur = o.AmbientShadowExtraBlur;
             BodyMultiplier = o.AmbientShadowBodyMultiplier;
             WheelMultiplier = o.AmbientShadowWheelMultiplier;
         }
@@ -160,7 +169,7 @@ namespace AcManager.CustomShowroom {
         public int Iterations {
             get => _iterations;
             set {
-                value = value.Clamp(400, 40000);
+                value = value.Clamp(10, 40000);
                 if (Equals(value, _iterations)) return;
                 _iterations = value;
                 OnPropertyChanged();
@@ -192,15 +201,37 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private bool _accurate;
+        private bool _correctLighting;
 
-        public bool Accurate {
-            get => _accurate;
+        public bool CorrectLighting {
+            get => _correctLighting;
             set {
-                if (Equals(value, _accurate)) return;
-                _accurate = value;
+                if (Equals(value, _correctLighting)) return;
+                _correctLighting = value;
                 OnPropertyChanged();
                 SaveLater();
+            }
+        }
+
+        private bool _poissonDistribution;
+
+        public bool PoissonDistribution {
+            get => _poissonDistribution;
+            set {
+                if (Equals(value, _poissonDistribution)) return;
+                _poissonDistribution = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _extraBlur;
+
+        public bool ExtraBlur {
+            get => _extraBlur;
+            set {
+                if (Equals(value, _extraBlur)) return;
+                _extraBlur = value;
+                OnPropertyChanged();
             }
         }
 
@@ -323,7 +354,9 @@ namespace AcManager.CustomShowroom {
                             Iterations = Iterations,
                             HideWheels = HideWheels,
                             Fade = Fade,
-                            CorrectLighting = Accurate,
+                            CorrectLighting = CorrectLighting,
+                            PoissonDistribution = PoissonDistribution,
+                            ExtraBlur = ExtraBlur,
                             BodyMultipler = BodyMultiplier,
                             WheelMultipler = WheelMultiplier,
                         }) {
@@ -787,7 +820,7 @@ namespace AcManager.CustomShowroom {
                 ShotFormatHdrExr
             };
 
-            private static readonly Stored.StoredValue LastShot = Stored.Get("customShowroom.lastShot", null);
+            private static readonly Stored.StoredValue LastShot = Stored.Get("customShowroom.lastShot");
 
             private DelegateCommand _shotOpenDirectoryCommand;
 

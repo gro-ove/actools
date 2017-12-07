@@ -136,7 +136,7 @@
         </DockPanel>
         <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">
           <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz" Content="Packets" />
-          <Slider Minimum="10" Maximum="35" Value="{Binding SelectedObject.SendIntervalHz}" TickFrequency="5" TickPlacement="BottomRight" />
+          <Slider Minimum="10" Maximum="60" Value="{Binding SelectedObject.SendIntervalHz}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
         <DockPanel>
           <mui:ValueLabel Value="{Binding SelectedObject.Threads}" Content="Threads" />

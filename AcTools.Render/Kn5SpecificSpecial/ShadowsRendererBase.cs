@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
@@ -72,7 +74,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override void ResizeInner() { }
 
-        public float UpDelta = 0.0f;
+        public int Iterations = 500;
+        public bool PoissonDistribution = true;
+        public float ΘFromDeg = -10f;
+        public float ΘToDeg = 50f;
 
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new DepthMaterialsFactory());
@@ -83,6 +88,105 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             ApplyCarState();
             Scene.UpdateBoundingBox();
         }
+
+        #region Light sources distribution
+        private List<Vector2> _poissonDisk;
+        private static WeakReference<List<Vector2>> _poissonDiskWeak;
+
+        private static void CropPoisson(Vector2[] points, float yFrom, float yTo) {
+            var rangeHeight = (yTo - yFrom).Abs();
+            var bands = Math.Max((float)Math.Floor(2f / rangeHeight), 1f);
+            var bandHeight = 2f / bands;
+
+            for (var i = 0; i < points.Length; i++) {
+                var point = points[i];
+                var bandIndex = Math.Min((int)((point.Y + 1f) / bandHeight), bands - 1);
+                var bandStart = bandIndex * bandHeight - 1f;
+                var yInBand = yFrom + (yTo - yFrom) * (point.Y - bandStart) / bandHeight;
+                points[i].X = (point.X + 2f * bandIndex + 1f) / bands - 1f;
+                points[i].Y = yInBand;
+            }
+        }
+
+        private IEnumerable<Vector3> GetLightsDistributionPoisson(int size, float θFrom, float θTo) {
+            Vector2[] poisson;
+            if (size >= 1000) {
+                if (_poissonDisk == null && _poissonDiskWeak != null && _poissonDiskWeak.TryGetTarget(out var value)) {
+                    _poissonDisk = value;
+                }
+
+                if (_poissonDisk?.Count != size) {
+                    _poissonDisk = UniformPoissonDiskSampler.SampleSquare(size, false);
+                    _poissonDiskWeak = new WeakReference<List<Vector2>>(_poissonDisk);
+                }
+
+                poisson = _poissonDisk.ToArray();
+            } else {
+                poisson = UniformPoissonDiskSampler.SampleSquare(size, false).ToArray();
+            }
+
+            CropPoisson(poisson, (θFrom.ToRadians() + MathF.PI / 2f).Cos(), (θTo.ToRadians() + MathF.PI / 2f).Cos());
+            foreach (var point in poisson) {
+                var θ = point.Y.Clamp(-0.9999f, 0.9999f).Acos() - MathF.PI / 2f;
+                var φ = point.X * MathF.PI;
+                var direction = MathF.ToVector3Rad(θ, φ);
+                yield return direction;
+            }
+        }
+
+        private static IEnumerable<Vector3> GetLightsDistributionRandom(int size, float θFrom, float θTo) {
+            var yFrom = (90f - θFrom).ToRadians().Cos();
+            var yTo = (90f - θTo).ToRadians().Cos();
+
+            if (yTo < yFrom) {
+                throw new Exception("yTo < yFrom");
+            }
+
+            while (size-- > 0) {
+                var vn = default(Vector3);
+                var length = 0f;
+
+                do {
+                    var x = MathF.Random(-1f, 1f);
+                    var y = MathF.Random(yFrom < 0f ? -1f : 0f, yTo > 0f ? 1f : 0f);
+                    var z = MathF.Random(-1f, 1f);
+                    if (x.Abs() < 0.01 && z.Abs() < 0.01) continue;
+
+                    var v3 = new Vector3(x, y, z);
+                    length = v3.Length();
+                    vn = v3 / length;
+                } while (length > 1f || vn.Y < yFrom || vn.Y > yTo);
+                yield return vn;
+            }
+        }
+
+        public IEnumerable<Vector3> GetLightsDistribution() {
+            return PoissonDistribution
+                    ? GetLightsDistributionPoisson(Iterations, ΘFromDeg, ΘToDeg)
+                    : GetLightsDistributionRandom(Iterations, ΘFromDeg, ΘToDeg);
+        }
+        #endregion
+
+        #region Drawing
+        protected abstract float DrawLight(Vector3 direction);
+
+        protected float DrawLights(IProgress<double> progress, CancellationToken cancellation) {
+            var t = Iterations;
+            var iteration = 0;
+            var summaryBrightness = 0f;
+
+            foreach (var vec in GetLightsDistribution()) {
+                if (++iteration % 10 == 9) {
+                    progress?.Report((double)iteration / t);
+                    if (cancellation.IsCancellationRequested) return 0f;
+                }
+
+                summaryBrightness += DrawLight(vec);
+            }
+
+            return summaryBrightness;
+        }
+        #endregion
 
         #region Copy actual car state from existing renderer
         private List<string> _hiddenNodes;
@@ -180,8 +284,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             private readonly Dictionary<uint, Tuple<IRenderableTexture, float>[]> _cache = new Dictionary<uint, Tuple<IRenderableTexture, float>[]>();
 
             Tuple<IRenderableTexture, float> IAlphaTexturesProvider.GetTexture(IDeviceContextHolder contextHolder, uint materialId) {
-                Tuple<IRenderableTexture, float>[] result;
-                if (!_cache.TryGetValue(materialId, out result)) {
+                if (!_cache.TryGetValue(materialId, out var result)) {
                     if (_texturesProvider == null) {
                         _texturesProvider = new Kn5TexturesProvider(_kn5, false);
                     }

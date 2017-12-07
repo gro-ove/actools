@@ -352,9 +352,17 @@
                   <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Fade}" ToolTip="Enable to avoid clipping">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
                   </CheckBox>
-                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Accurate}">
-                    <CheckBox.ToolTip>Enable to improve accuracy (doesn’t affect performance)</CheckBox.ToolTip>
+                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.ExtraBlur}"
+                      ToolTip="Enable for extra smoothness">
+                    <Label Content="Extra blur pass" />
+                  </CheckBox>
+                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.CorrectLighting}"
+                      ToolTip="Enable to improve accuracy (doesn’t affect performance)">
                     <Label Content="Accurate lighting" />
+                  </CheckBox>
+                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.PoissonDistribution}"
+                      ToolTip="Generates smoother shadows, especially if iterations are few">
+                    <Label Content="Poisson distribution" />
                   </CheckBox>
                   <Button Command="{Binding AmbientShadow.UpdateCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
                   <c:UserPresetsControl UserPresetable="{Binding AmbientShadow}" Style="{StaticResource UserPresetsControl.Compact}" Margin="0 4 0 0"

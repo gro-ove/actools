@@ -1562,6 +1562,14 @@
     <Content Include="About\Licenses\Meta.Vlc\LICENSE" />
     <Content Include="About\Licenses\SmartThreadPool\SmartThreadPool.txt" />
     <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
+    <Content Include="Assets\Presets\Ambient Shadows\Default.cmpreset" />
+    <Content Include="Assets\Presets\Ambient Shadows\Open Wheelers.cmpreset" />
+    <Content Include="Assets\Presets\Baked Shadows\Body.cmpreset" />
+    <Content Include="Assets\Presets\Baked Shadows\Rims.cmpreset" />
+    <Content Include="Assets\Presets\Custom Showroom\Default (Fast).cmpreset" />
+    <Content Include="Assets\Presets\Custom Showroom\Default (Nice).cmpreset" />
+    <Content Include="Assets\Presets\Custom Showroom\Industrial.cmpreset" />
+    <Content Include="Assets\Presets\Custom Showroom\Showroom (Day).cmpreset" />
     <None Include="About\Filtering\More About Expressions.txt" />
     <None Include="About\Filtering\Introduction.txt" />
     <None Include="About\Filtering\More About Quotes.txt" />

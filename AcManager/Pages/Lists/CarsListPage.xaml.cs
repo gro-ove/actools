@@ -543,7 +543,8 @@ namespace AcManager.Pages.Lists {
                                 Iterations = _params.Iterations,
                                 HideWheels = _params.HideWheels,
                                 Fade = _params.Fade,
-                                CorrectLighting = _params.Accurate,
+                                CorrectLighting = _params.CorrectLighting,
+                                PoissonDistribution = _params.PoissonDistribution,
                                 BodyMultipler = _params.BodyMultiplier,
                                 WheelMultipler = _params.WheelMultiplier,
                             }) {

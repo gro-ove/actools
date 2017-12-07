@@ -315,8 +315,8 @@ namespace AcManager.CustomShowroom {
 
                 await Task.Run(() => {
                     using (var renderer = new BakedShadowsRenderer(_kn5, car?.AcdData) {
-                        ΘFrom = (float)From,
-                        ΘTo = (float)To,
+                        ΘFromDeg = (float)From,
+                        ΘToDeg = (float)To,
                         Iterations = Iterations,
                         SkyBrightnessLevel = (float)Brightness / 100f,
                         Gamma = (float)Gamma / 100f,

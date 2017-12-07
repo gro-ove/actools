@@ -25,16 +25,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public AmbientShadowRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             UpDelta = 0.1f;
+            Iterations = 2000;
         }
 
         public float DiffusionLevel = 0.35f;
+        public float UpDelta = 0.0f;
         public float SkyBrightnessLevel = 4.0f;
         public float BodyMultipler = 0.8f;
         public float WheelMultipler = 0.69f;
-        public int Iterations = 2000;
         public bool HideWheels = true;
         public bool Fade = true;
-        public bool BlurResult = false;
+        public bool ExtraBlur = true;
         public bool CorrectLighting = true;
 
         public const int BodySize = 512;
@@ -135,7 +136,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private void AddShadow(Vector3 lightDirection, ref float summaryBrightness) {
+        private float AddShadow(Vector3 lightDirection) {
             DeviceContext.OutputMerger.BlendState = _blendState;
             DeviceContext.Rasterizer.State = null;
             DeviceContext.Rasterizer.SetViewports(Viewport);
@@ -154,59 +155,26 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             });
 
             var brightness = CorrectLighting ? lightDirection.Y.Abs() : 1f;
-            summaryBrightness += brightness;
-
             _effect.FxMultipler.Set(brightness);
             _effect.TechAmbientShadow.DrawAllPasses(DeviceContext, 6);
+            return brightness;
+        }
+
+        protected override float DrawLight(Vector3 direction) {
+            DrawShadow(direction);
+            return AddShadow(-direction);
         }
 
         private void Draw(float multipler, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
 
-            var t = Iterations;
-            var iter = 0f;
-
             // draw
-            var progressReport = 0;
-            for (var k = 0; k < t; k++) {
-                if (++progressReport > 10) {
-                    progressReport = 0;
-                    progress?.Report((double)k / t);
-                    if (cancellation.IsCancellationRequested) return;
-                }
+            var yThreshold = 0.95f - DiffusionLevel * 0.95f;
+            ΘFromDeg = (MathF.PI / 2f - yThreshold.Acos()).ToDegrees();
+            ΘToDeg = 90;
 
-                // random distribution
-                Vector3 v3;
-                if (DiffusionLevel == 0) {
-                    v3 = new Vector3(0.0001f, 1f, 0f);
-                } else {
-                    while (true) {
-                        var x = MathF.Random(-1f, 1f);
-                        var y = MathF.Random(0.1f, 1f);
-                        var z = MathF.Random(-1f, 1f);
-                        if (x.Abs() < 0.005 && z.Abs() < 0.005) continue;
-
-                        v3 = new Vector3(x, y, z);
-                        if (v3.LengthSquared() > 1f) continue;
-
-                        v3.Normalize();
-                        if (v3.Y < 0.95f - DiffusionLevel * 0.95) continue;
-
-                        break;
-                    }
-                }
-
-                DrawShadow(v3);
-                AddShadow(-v3, ref iter);
-
-                // to make it symmetrical
-                if (v3.X.Abs() > 0.05f && k + 1 < t) {
-                    v3.X *= -1f;
-                    DrawShadow(v3);
-                    AddShadow(-v3, ref iter);
-                    k++;
-                }
-            }
+            var iter = DrawLights(progress, cancellation);
+            if (cancellation.IsCancellationRequested) return;
 
             DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
             DeviceContext.Rasterizer.State = null;
@@ -216,9 +184,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
             // blurring
-            for (var i = BlurResult ? 2 : 1; i > 0; i--) {
-                _effect.FxMultipler.Set(i > 1 ? 2f : 1f);
-
+            _effect.FxMultipler.Set(1f);
+            for (var i = ExtraBlur ? 2 : 1; i > 0; i--) {
                 DeviceContext.ClearRenderTargetView(_tempBuffer.TargetView, Color.Transparent);
                 DeviceContext.OutputMerger.SetTargets(_tempBuffer.TargetView);
 

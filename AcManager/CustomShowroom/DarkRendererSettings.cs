@@ -1028,20 +1028,8 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected static Vector3 GetLightDirection(float θdeg, float φdeg) {
-            var θ = (90f - θdeg).ToRadians();
-            var φ = φdeg.ToRadians();
-
-            var sinθ = θ.Sin();
-            var cosθ = θ.Cos();
-            var sinφ = φ.Sin();
-            var cosφ = φ.Cos();
-
-            return new Vector3(sinθ * cosφ, cosθ, sinθ * sinφ);
-        }
-
         private void SetLight() {
-            Renderer.Light = GetLightDirection(LightθDeg, LightφDeg);
+            Renderer.Light = MathF.ToVector3Deg(LightθDeg, LightφDeg);
         }
 
         private float _lightθ;
