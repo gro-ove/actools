@@ -233,6 +233,9 @@ namespace AcManager {
             }
 
             var text = e?.ToString() ?? @"?";
+            if (e is COMException && e.StackTrace.Contains("WaitOneNative")) {
+                text = "Unable to ensure app runs in a single instance, might be related to antivirus checks.";
+            }
 
             if (!_initialized) {
                 try {

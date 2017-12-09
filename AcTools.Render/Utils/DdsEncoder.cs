@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using AcTools.Utils;
 using DdsCompress;
 using ImageMagick;
+using JetBrains.Annotations;
 
 namespace AcTools.Render.Utils {
     public static class DdsEncoder {
@@ -82,9 +83,10 @@ namespace AcTools.Render.Utils {
         }
 
         private class CompressProgress : ICompressProgress {
+            [CanBeNull]
             private readonly IProgress<double> _action;
 
-            public CompressProgress(IProgress<double> action){
+            public CompressProgress([CanBeNull] IProgress<double> action){
                 _action = action;
             }
 
@@ -94,9 +96,10 @@ namespace AcTools.Render.Utils {
         }
 
         private class CompressLog : ICompressLog {
+            [CanBeNull]
             private readonly Action<string> _action;
 
-            public CompressLog(Action<string> action){
+            public CompressLog([CanBeNull] Action<string> action){
                 _action = action;
             }
 
@@ -106,7 +109,7 @@ namespace AcTools.Render.Utils {
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void SaveAsDds_Compressor(Stream stream, byte[] imageData, PreferredDdsFormat format, IProgress<double> progress) {
+        private static void SaveAsDds_Compressor(Stream stream, byte[] imageData, PreferredDdsFormat format, [CanBeNull] IProgress<double> progress) {
             using (var input = new MemoryStream(imageData))
             using (var image = (Bitmap)Image.FromStream(input)) {
                 GetCompressor(format, image.Width, image.Height).Process(image.Width, image.Height, CopySafe(image), stream,
@@ -133,7 +136,7 @@ namespace AcTools.Render.Utils {
             }
         }
 
-        public static void SaveAsDds(Stream stream, byte[] imageData, PreferredDdsFormat format, IProgress<double> progress) {
+        public static void SaveAsDds([NotNull] Stream stream, [NotNull] byte[] imageData, PreferredDdsFormat format, [CanBeNull] IProgress<double> progress) {
             try {
                 SaveAsDds_Compressor(stream, imageData, format, progress);
             } catch (Exception e) {
@@ -147,7 +150,7 @@ namespace AcTools.Render.Utils {
             }
         }
 
-        public static void SaveAsDds(string filename, byte[] imageData, PreferredDdsFormat format, IProgress<double> progress) {
+        public static void SaveAsDds([NotNull] string filename, [NotNull] byte[] imageData, PreferredDdsFormat format, [CanBeNull] IProgress<double> progress) {
             using (var temporary = FileUtils.RecycleOriginal(filename)) {
                 try {
                     using (var stream = File.Create(temporary.Filename)) {

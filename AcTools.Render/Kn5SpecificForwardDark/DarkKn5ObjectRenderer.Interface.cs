@@ -12,7 +12,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 for (var i = _lights.Length - 1; i >= 0; i--) {
                     var light = _lights[i];
                     if (light.Enabled) {
-                        light.DrawSprites(Sprite, Camera, new Vector2(ActualWidth, ActualHeight));
+                        light.DrawSprites(DeviceContextHolder, Sprite, Camera, new Vector2(ActualWidth, ActualHeight));
                     }
                 }
             }

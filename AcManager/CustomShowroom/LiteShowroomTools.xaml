@@ -324,13 +324,13 @@
                   </DockPanel>
                   <DockPanel Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding AmbientShadow.BodyMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Body darkness" />
+                        Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Body shadow darkness" />
                     <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False"
                         Value="{Binding AmbientShadow.BodyMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                   </DockPanel>
-                  <DockPanel Margin="0 0 0 4">
+                  <DockPanel Margin="0 0 0 20">
                     <mui:ValueLabel Value="{Binding AmbientShadow.WheelMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Wheels darkness" />
+                        Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Wheels shadow darkness" />
                     <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False"
                         Value="{Binding AmbientShadow.WheelMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                   </DockPanel>
@@ -340,15 +340,21 @@
                   <Slider Minimum="150" Maximum="400" TickFrequency="50" TickPlacement="None" IsSnapToTickEnabled="False"
                       Value="{Binding AmbientShadow.Brightness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
                 </DockPanel>-->
+                  <DockPanel Margin="0 0 0 4" IsEnabled="{Binding AmbientShadow.HideWheels, Converter={StaticResource InvertBooleanConverter}}">
+                    <mui:ValueLabel Value="{Binding AmbientShadow.UpDelta, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                        Postfix=" cm" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Raise wheels for body shadow" />
+                    <Slider Minimum="0" Maximum="0.1" TickFrequency="0.01" TickPlacement="None" IsSnapToTickEnabled="False"
+                        Value="{Binding AmbientShadow.UpDelta, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.001}" />
+                  </DockPanel>
+                  <CheckBox Margin="0 0 0 20" IsChecked="{Binding AmbientShadow.HideWheels}">
+                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
+                  </CheckBox>
                   <DockPanel Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding AmbientShadow.Iterations}" DockPanel.Dock="Top"
                         Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
                     <Slider Minimum="400" Maximum="8000" TickFrequency="760" TickPlacement="None" IsSnapToTickEnabled="False" SmallChange="400"
                         LargeChange="1200" Value="{Binding AmbientShadow.Iterations, Converter={StaticResource SliderRoundConverter}, ConverterParameter=100}" />
                   </DockPanel>
-                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.HideWheels}">
-                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
-                  </CheckBox>
                   <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Fade}" ToolTip="Enable to avoid clipping">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
                   </CheckBox>

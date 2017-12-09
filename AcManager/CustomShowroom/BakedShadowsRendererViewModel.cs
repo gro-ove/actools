@@ -15,6 +15,7 @@ using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificSpecial;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -371,6 +372,12 @@ namespace AcManager.CustomShowroom {
                         SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
                         MaxImageWidth = resultSize.Width,
                         MaxImageHeight = resultSize.Height,
+                        SaveDialogFilterPieces = {
+                            DialogFilterPiece.DdsFiles,
+                            DialogFilterPiece.JpegFiles,
+                            DialogFilterPiece.PngFiles,
+                        },
+                        SaveAction = SaveAction,
                     },
                     ShowInTaskbar = true
                 }.ShowDialog();
@@ -388,6 +395,12 @@ namespace AcManager.CustomShowroom {
                             SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
                             MaxImageWidth = resultSize.Width,
                             MaxImageHeight = resultSize.Height,
+                            SaveDialogFilterPieces = {
+                                DialogFilterPiece.DdsFiles,
+                                DialogFilterPiece.JpegFiles,
+                                DialogFilterPiece.PngFiles,
+                            },
+                            SaveAction = SaveAction,
                         },
                         ShowInTaskbar = true
                     }.ShowDialog();
@@ -399,12 +412,34 @@ namespace AcManager.CustomShowroom {
                 Model = {
                     Saveable = true,
                     SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                    SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
+                    SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                    SaveDialogFilterPieces = {
+                        DialogFilterPiece.DdsFiles,
+                        DialogFilterPiece.JpegFiles,
+                        DialogFilterPiece.PngFiles,
+                    },
+                    SaveAction = SaveAction,
                 },
                 ShowInTaskbar = true,
                 ImageMargin = new Thickness()
             }.ShowDialog();
         }));
+
+        private static void SaveAction(string source, string destination) {
+            var extension = Path.GetExtension(destination)?.ToLowerInvariant();
+            switch (extension) {
+                case ".dds":
+                    DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(source), PreferredDdsFormat.LuminanceTransparency, null);
+                    break;
+                case ".jpg":
+                case ".jpeg":
+                    ImageUtils.Convert(source, destination);
+                    break;
+                default:
+                    File.Copy(source, destination, true);
+                    break;
+            }
+        }
         #endregion
 
         #region Presetable

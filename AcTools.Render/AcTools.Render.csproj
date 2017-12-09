@@ -95,6 +95,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Cameras\AccumulationDofCamera.cs" />
     <Compile Include="Base\Cameras\FpsCamera.cs" />
     <Compile Include="Base\Cameras\FrustrumIntersectionType.cs" />
     <Compile Include="Base\Cameras\Frustum.cs" />

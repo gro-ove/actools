@@ -7,6 +7,7 @@ using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Materials;

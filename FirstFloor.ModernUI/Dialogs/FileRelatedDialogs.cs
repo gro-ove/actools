@@ -11,6 +11,8 @@ namespace FirstFloor.ModernUI.Dialogs {
     public sealed class DialogFilterPiece : Displayable {
         public static readonly DialogFilterPiece AllFiles = new DialogFilterPiece("All Files", "*.*");
         public static readonly DialogFilterPiece DdsFiles = new DialogFilterPiece("DDS Files", "*.dds");
+        public static readonly DialogFilterPiece JpegFiles = new DialogFilterPiece("JPEG Files", "*.jpg", "*.jpeg");
+        public static readonly DialogFilterPiece PngFiles = new DialogFilterPiece("PNG Files", "*.png");
         public static readonly DialogFilterPiece DdsAndTiffFiles = new DialogFilterPiece("DDS & TIFF Files", "*.dds", "*.tif", "*.tiff");
         public static readonly DialogFilterPiece ImageFiles = new DialogFilterPiece("Image Files", "*.dds", "*.tif", "*.tiff", "*.jpg", "*.jpeg", "*.png");
         public static readonly DialogFilterPiece Applications = new DialogFilterPiece("Applications", "*.exe");

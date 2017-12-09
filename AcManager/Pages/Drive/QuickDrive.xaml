@@ -104,7 +104,7 @@
           </Border.Triggers>
         </Border>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" c:CupUi.Object="{Binding SelectedCar}">
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedCar}">
           <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
               Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
         </Button>
@@ -152,7 +152,7 @@
           </Border.Triggers>
         </Border>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
           <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
               Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
         </Button>

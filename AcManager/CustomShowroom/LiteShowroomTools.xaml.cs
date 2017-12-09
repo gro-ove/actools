@@ -79,6 +79,7 @@ namespace AcManager.CustomShowroom {
                 AmbientShadowCorrectLighting = CorrectLighting,
                 AmbientShadowPoissonDistribution = PoissonDistribution,
                 AmbientShadowExtraBlur = ExtraBlur,
+                AmbientShadowUpDelta = UpDelta,
                 AmbientShadowBodyMultiplier = BodyMultiplier,
                 AmbientShadowWheelMultiplier = WheelMultiplier,
             }, Load);
@@ -104,6 +105,9 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("asu")]
             public bool AmbientShadowExtraBlur;
+
+            [JsonProperty("asd")]
+            public float AmbientShadowUpDelta = 0.05f;
 
             [JsonProperty("asbm")]
             public float AmbientShadowBodyMultiplier = 0.75f;
@@ -134,6 +138,7 @@ namespace AcManager.CustomShowroom {
             CorrectLighting = o.AmbientShadowCorrectLighting;
             PoissonDistribution = o.AmbientShadowPoissonDistribution;
             ExtraBlur = o.AmbientShadowExtraBlur;
+            UpDelta = o.AmbientShadowUpDelta;
             BodyMultiplier = o.AmbientShadowBodyMultiplier;
             WheelMultiplier = o.AmbientShadowWheelMultiplier;
         }
@@ -231,6 +236,17 @@ namespace AcManager.CustomShowroom {
             set {
                 if (Equals(value, _extraBlur)) return;
                 _extraBlur = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _upDelta = 0.05f;
+
+        public float UpDelta {
+            get => _upDelta;
+            set {
+                if (Equals(value, _upDelta)) return;
+                _upDelta = value;
                 OnPropertyChanged();
             }
         }
@@ -357,8 +373,9 @@ namespace AcManager.CustomShowroom {
                             CorrectLighting = CorrectLighting,
                             PoissonDistribution = PoissonDistribution,
                             ExtraBlur = ExtraBlur,
-                            BodyMultipler = BodyMultiplier,
-                            WheelMultipler = WheelMultiplier,
+                            UpDelta = UpDelta,
+                            BodyMultiplier = BodyMultiplier,
+                            WheelMultiplier = WheelMultiplier,
                         }) {
                             renderer.CopyStateFrom(_renderer);
                             renderer.Initialize();

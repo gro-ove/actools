@@ -50,7 +50,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                                 .Where(x => x != null)
                                 .MinEntryOrDefault(x => x.Distance)?.Distance;
             if (distance.HasValue) {
-                DofFocusPlane = distance.Value;
+                DofFocusPlane = distance.Value
+                        * Vector3.Dot(Vector3.Normalize(Camera.Look), Vector3.Normalize(ray.Direction * distance.Value));
             }
         }
 

@@ -11,6 +11,7 @@ cbuffer cbPerFrame {
 
 	float gPadding;
 	float2 gShadowSize;
+	float2 gScreenSize;
 	float gFade;
 
 	matrix gShadowViewProj;
@@ -118,7 +119,7 @@ float4 ps_Result(PS_IN pin) : SV_Target {
 	float d = saturate(1.0 - length((float2)1.0 - dd));
 
 	float c = 1 - saturate(tex(uv).x / gCount);
-	float v = gMultipler * c * d;
+	float v = gMultipler * c * d + lerp(0.00196, -0.00196, frac(0.25 + dot(uv, gScreenSize.xy * 0.5)));
 	return float4(v, v, v, 1.0);
 }
 
@@ -265,7 +266,8 @@ technique10 Ao {
 float4 ps_AoResult(PS_IN pin) : SV_Target {
 	float2 uv = pin.Tex;
 	float4 input = tex(uv);
-	float v = saturate(pow(max(input.x / gCount, 0.0), gGamma));
+	float v = saturate(pow(max(input.x / gCount, 0.0), gGamma))
+	    + lerp(0.00196, -0.00196, frac(0.25 + dot(uv, gScreenSize.xy * 0.5)));
 	return float4(v, v, v, input.a);
 }
 

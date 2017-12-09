@@ -545,8 +545,9 @@ namespace AcManager.Pages.Lists {
                                 Fade = _params.Fade,
                                 CorrectLighting = _params.CorrectLighting,
                                 PoissonDistribution = _params.PoissonDistribution,
-                                BodyMultipler = _params.BodyMultiplier,
-                                WheelMultipler = _params.WheelMultiplier,
+                                UpDelta = _params.UpDelta,
+                                BodyMultiplier = _params.BodyMultiplier,
+                                WheelMultiplier = _params.WheelMultiplier,
                             }) {
                                 renderer.Initialize();
                                 renderer.Shot(subProgress, cancellation);

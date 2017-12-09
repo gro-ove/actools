@@ -63,13 +63,13 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private async Task CheckRegistriesAsync() {
-            foreach (var registry in SettingsHolder.Content.CupRegistries.Split(new[] { ';', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries)) {
+            /*foreach (var registry in SettingsHolder.Content.CupRegistries.Split(new[] { ';', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries)) {
                 try {
                     await LoadList(registry);
                 } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t check registry for updates", e);
+                    NonfatalError.NotifyBackground("Can’t check registry for content updates", e);
                 }
-            }
+            }*/
         }
 
         public class CupKey {

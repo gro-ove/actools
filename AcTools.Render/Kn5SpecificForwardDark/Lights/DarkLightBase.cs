@@ -804,7 +804,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         public void Dispose() {
             DisposeOverride();
-            DisposeHelper.Dispose(ref _debugText);
+
+            // Will be disposed by DeviceContextHolder
+            // DisposeHelper.Dispose(ref _debugText);
+
             DisposeHelper.Dispose(ref _movable);
             DisposeHelper.Dispose(ref _dummy);
         }
@@ -912,9 +915,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     CoordinateType.Absolute);
         }
 
-        public void DrawSprites(SpriteRenderer sprite, ICamera camera, Vector2 screenSize) {
+        private class TextBlockRendererHolder : IDisposable {
+            public TextBlockRenderer Value;
+
+            public void Dispose() {
+                Value.Dispose();
+            }
+        }
+
+        public void DrawSprites(IDeviceContextHolder holder, SpriteRenderer sprite, ICamera camera, Vector2 screenSize) {
             if (_debugText == null) {
-                _debugText = new TextBlockRenderer(sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16f);
+                _debugText = holder.TryToGet<TextBlockRendererHolder>()?.Value;
+                if (_debugText == null) {
+                    _debugText = new TextBlockRenderer(sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16f);
+                    holder.Set(new TextBlockRendererHolder { Value = _debugText });
+                }
             }
 
             DrawText($"{DisplayName} ({Tag})", Matrix.Translation(ActualPosition), camera, screenSize,

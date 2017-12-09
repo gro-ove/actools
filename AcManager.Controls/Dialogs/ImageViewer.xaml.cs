@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -35,7 +36,7 @@ namespace AcManager.Controls.Dialogs {
 
             InitializeComponent();
             Buttons = new Button[] { };
-            ((ViewModel)DataContext).PropertyChanged += OnModelPropertyChanged;
+            Model.PropertyChanged += OnModelPropertyChanged;
         }
 
         public HorizontalAlignment HorizontalDetailsAlignment {
@@ -327,6 +328,12 @@ namespace AcManager.Controls.Dialogs {
                 CurrentPosition++;
             }, () => CurrentPosition < _imagesLength - 1));
 
+            [NotNull]
+            public ImageViewerSaveAction SaveAction { get; set; } = (source, destination) => File.Copy(source, destination, true);
+
+            [NotNull]
+            public List<DialogFilterPiece> SaveDialogFilterPieces { get; set; } = new List<DialogFilterPiece>();
+
             private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async () => {
@@ -334,8 +341,13 @@ namespace AcManager.Controls.Dialogs {
                     throw new NotSupportedException();
                 }
 
+                Logging.Debug(SaveDialogFilterPieces.Select(x => x.DisplayName).JoinToString("; "));
+                if (SaveDialogFilterPieces.Count == 0) {
+                    SaveDialogFilterPieces.Add(DialogFilterPiece.PngFiles);
+                }
+
                 var filename = FileRelatedDialogs.Save(new SaveDialogParams {
-                    Filters = { DialogFilterPiece.ImageFiles },
+                    Filters = SaveDialogFilterPieces,
                     Title = SaveableTitle,
                     DetaultExtension = Path.GetExtension(origin),
                     InitialDirectory = SaveDirectory
@@ -343,11 +355,13 @@ namespace AcManager.Controls.Dialogs {
                 if (filename == null) return;
 
                 try {
-                    await Task.Run(() => File.Copy(origin, filename, true));
+                    await Task.Run(() => SaveAction(origin, filename));
                 } catch (Exception ex) {
                     NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }
             }, () => CurrentOriginalImage is string));
         }
     }
+
+    public delegate void ImageViewerSaveAction(string source, string destination);
 }

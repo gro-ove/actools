@@ -257,6 +257,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxCount.Set(t / SkyBrightnessLevel);
             _effect.FxMultipler.Set(multipler);
             _effect.FxGamma.Set(Gamma);
+            _effect.FxScreenSize.Set(new Vector2(Width, Height));
             _effect.TechAoResult.DrawAllPasses(DeviceContext, 6);
 
             for (var i = 0; i < Padding; i++) {

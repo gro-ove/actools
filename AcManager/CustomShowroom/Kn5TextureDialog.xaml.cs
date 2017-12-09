@@ -14,6 +14,7 @@ using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificSpecial;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -186,8 +187,7 @@ namespace AcManager.CustomShowroom {
                             width = FlexibleParser.ParseInt(match.Groups[1].Value);
                             height = FlexibleParser.ParseInt(match.Groups[2].Value);
                         } else {
-                            int value;
-                            if (FlexibleParser.TryParseInt(result, out value)) {
+                            if (FlexibleParser.TryParseInt(result, out var value)) {
                                 width = height = value;
                             } else {
                                 NonfatalError.Notify(ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed,
@@ -219,11 +219,33 @@ namespace AcManager.CustomShowroom {
                     Model = {
                         Saveable = true,
                         SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
+                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                        SaveDialogFilterPieces = {
+                            DialogFilterPiece.PngFiles,
+                            DialogFilterPiece.DdsFiles,
+                            DialogFilterPiece.JpegFiles,
+                        },
+                        SaveAction = SaveAction,
                     },
                     ImageMargin = new Thickness()
                 }.ShowDialog();
             }));
+
+            private static void SaveAction(string source, string destination) {
+                var extension = Path.GetExtension(destination)?.ToLowerInvariant();
+                switch (extension) {
+                    case ".dds":
+                        DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(source), PreferredDdsFormat.RGBA4444, null);
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        ImageUtils.Convert(source, destination);
+                        break;
+                    default:
+                        File.Copy(source, destination, true);
+                        break;
+                }
+            }
 
             private CommandBase _exportCommand;
 

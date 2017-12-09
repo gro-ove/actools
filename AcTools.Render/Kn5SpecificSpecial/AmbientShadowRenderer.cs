@@ -11,6 +11,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -24,15 +25,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 : this(Kn5.FromFile(mainKn5Filename), DataWrapper.FromCarDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
 
         public AmbientShadowRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
-            UpDelta = 0.1f;
             Iterations = 2000;
         }
 
         public float DiffusionLevel = 0.35f;
-        public float UpDelta = 0.0f;
+        public float UpDelta = 0.05f;
         public float SkyBrightnessLevel = 4.0f;
-        public float BodyMultipler = 0.8f;
-        public float WheelMultipler = 0.69f;
+        public float BodyMultiplier = 0.8f;
+        public float WheelMultiplier = 0.69f;
         public bool HideWheels = true;
         public bool Fade = true;
         public bool ExtraBlur = true;
@@ -97,6 +97,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
 
+        private static readonly string[] WheelNodeNames = { "WHEEL", "HUB", "SUSP" };
+        private static readonly string[] WheelNodeCorners = { "LF", "LR", "RF", "RR" };
+
         private void DrawShadow(Vector3 from, Vector3? up = null) {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
@@ -113,16 +116,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 string[] ignored;
 
                 if (HideWheels && !_wheelMode) {
-                    ignored = new[] {
-                        "WHEEL_LF", "WHEEL_LR", "WHEEL_RF", "WHEEL_RR",
-                        "HUB_LF", "HUB_LR", "HUB_RF", "HUB_RR",
-                        "SUSP_LF", "SUSP_LR", "SUSP_RF", "SUSP_RR",
-                        "COCKPIT_HR", "STEER_HR",
-                    };
+                    ignored = WheelNodeNames.SelectMany(x => WheelNodeCorners.Select(y => $"{x}_{y}")).Append("COCKPIT_HR", "STEER_HR").ToArray();
                 } else {
                     ignored = new[] {
                         "COCKPIT_HR", "STEER_HR",
                     };
+                }
+
+                foreach (var wheel in WheelNodeCorners.Select(x => WheelNodeNames.Select(y => Scene.GetDummyByName($"{y}_{x}")).FirstOrDefault(y => y != null)).NonNull()) {
+                    AcToolsLogging.Write("Moved up: " + wheel.Name);
+                    wheel.ParentMatrix = Matrix.Translation(0, UpDelta, 0);
                 }
 
                 _flattenNodes = Flatten(Scene, x =>
@@ -208,6 +211,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxFade.Set(fadeRadius != 0f ? 10f / fadeRadius : 100f);
             _effect.FxPadding.Set(padding / (size + padding * 2f));
             _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z));
+            _effect.FxScreenSize.Set(new Vector2(ActualWidth, ActualHeight));
             _effect.TechResult.DrawAllPasses(DeviceContext, 6);
         }
 
@@ -264,7 +268,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 // body shadow
                 PrepareBuffers(BodySize + BodyPadding * 2, 1024);
                 SetBodyShadowCamera();
-                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.SubrangeDouble(0.01, 0.59), cancellation);
+                Draw(BodyMultiplier, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.SubrangeDouble(0.01, 0.59), cancellation);
                 if (cancellation.IsCancellationRequested) return;
 
                 SaveResultAs(replacement.Filename, BodySize, BodyPadding);
@@ -294,7 +298,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         return Flatten(x.Node).OfType<Kn5RenderableDepthOnlyObject>();
                     }).ToArray();
 
-                    Draw(WheelMultipler, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);
+                    Draw(WheelMultiplier, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);
                     if (cancellation.IsCancellationRequested) return;
 
                     SaveResultAs(replacement.Filename, WheelSize, WheelPadding);

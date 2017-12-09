@@ -207,8 +207,8 @@ namespace AcTools.Render.Base.Objects {
                 var v0 = Vector3.TransformCoordinate(vertices[indices[i * 3]].Position, matrix);
                 var v1 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 1]].Position, matrix);
                 var v2 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 2]].Position, matrix);
-
-                if (!Ray.Intersects(ray, v0, v1, v2, out var distance) || distance >= min) continue;
+                if (Vector3.Dot(Vector3.Cross(v1 - v0, v2 - v0), ray.Direction) <= 0 ||
+                        !Ray.Intersects(ray, v0, v1, v2, out var distance) || distance >= min) continue;
                 min = distance;
                 found = true;
             }

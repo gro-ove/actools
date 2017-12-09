@@ -545,7 +545,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected virtual void PushCamera(bool force = false) {
-            if (!force && !LoadCameraEnabled) return;
+            if (!force && !LoadCameraEnabled && Keyboard.Modifiers != ModifierKeys.Control) return;
             CameraBusy.Do(() => {
                 if (CameraOrbitMode) {
                     Renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());

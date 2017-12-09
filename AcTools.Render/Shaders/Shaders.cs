@@ -1751,7 +1751,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyFloatVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxAlphaRef, FxNormalUvMult;
 		[NotNull]
-		public EffectOnlyVector2Variable FxShadowSize, FxOffset;
+		public EffectOnlyVector2Variable FxShadowSize, FxScreenSize, FxOffset;
 		[NotNull]
 		public EffectOnlyVector3Variable FxLightDir;
 		[NotNull]
@@ -1802,6 +1802,7 @@ namespace AcTools.Render.Shaders {
 			FxAlphaRef = new EffectOnlyFloatVariable(E.GetVariableByName("gAlphaRef"));
 			FxNormalUvMult = new EffectOnlyFloatVariable(E.GetVariableByName("gNormalUvMult"));
 			FxShadowSize = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowSize"));
+			FxScreenSize = new EffectOnlyVector2Variable(E.GetVariableByName("gScreenSize"));
 			FxOffset = new EffectOnlyVector2Variable(E.GetVariableByName("gOffset"));
 			FxLightDir = new EffectOnlyVector3Variable(E.GetVariableByName("gLightDir"));
 			FxSize = new EffectOnlyVector4Variable(E.GetVariableByName("gSize"));

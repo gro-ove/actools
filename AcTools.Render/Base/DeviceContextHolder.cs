@@ -120,6 +120,8 @@ namespace AcTools.Render.Base {
         [NotNull]
         DeviceContext DeviceContext { get; }
 
+        void Set<T>([NotNull] T obj) where T : class;
+
         [NotNull]
         T Get<T>() where T : class;
 

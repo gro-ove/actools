@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
@@ -13,8 +17,13 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer {
+        private static Vector2[] Reorder(List<Vector2> poisson) {
+            return poisson.OrderBy(x => x.LengthSquared()).ToArray();
+            // return poisson.OrderBy(x => x.X + 1f + ((x.Y + 1f) * 200).Round(10)).ToArray();
+        }
+
         private void InitializeAccumulationDof() {
-            _lazyAccumulationDofPoissonDiskSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations).ToArray());
+            _lazyAccumulationDofPoissonDiskSamples = Lazier.Create(() => Reorder(UniformPoissonDiskSampler.SampleCircle(_accumulationDofIterations)));
             _lazyAccumulationDofPoissonSquareSamples = Lazier.Create(() => UniformPoissonDiskSampler.SampleSquare(_accumulationDofIterations, false).ToArray());
         }
 
@@ -102,21 +111,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         protected override bool CanShotWithoutExtraTextures => base.CanShotWithoutExtraTextures && (!UseDof || !UseAccumulationDof);
 
         private CameraBase GetDofAccumulationCamera(CameraBase camera, float apertureMultipler, Vector2 diskOffset, Vector2 squareOffset) {
-            var apertureSize = AccumulationDofApertureSize;
-            var bokeh = camera.Right * diskOffset.X + camera.Up * diskOffset.Y;
-            var positionOffset = apertureSize * apertureMultipler * bokeh;
-
-            var sharpnessCoeffient = 1f; // 0.9f - ((40f - AccumulationDofIterations) / 100f).Saturate();
-            var aaOffset = Matrix.Translation(squareOffset.X / Width * sharpnessCoeffient, squareOffset.Y / Height * sharpnessCoeffient, 0f);
-            var focusDistance = DofFocusPlane;
-
-            var newCamera = new FpsCamera(camera.FovY) {
+            var aaOffset = Matrix.Translation(squareOffset.X / Width, squareOffset.Y / Height, 0f);
+            var newCamera = new AccumulationDofCamera(camera.FovY) {
+                Right = camera.Right,
+                Up = camera.Up,
+                Position = camera.Position,
+                Look = camera.Look,
+                Tilt = camera.Tilt,
+                ApertureOffset = AccumulationDofApertureSize * apertureMultipler * diskOffset,
+                FocusPlane = DofFocusPlane,
                 CutProj = camera.CutProj.HasValue ? aaOffset * camera.CutProj : aaOffset
             };
 
-            var newPosition = camera.Position + positionOffset;
-            var lookAt = camera.Position + camera.Look * focusDistance;
-            newCamera.LookAt(newPosition, lookAt, camera.Tilt);
             newCamera.SetLens(AspectRatio);
             newCamera.UpdateViewMatrix();
             return newCamera;

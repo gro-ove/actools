@@ -45,10 +45,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public DeviceContext DeviceContext => _mainHolder.DeviceContext;
 
+        public void Set<T>(T obj) where T : class {
+            _mainHolder.Set(obj);
+        }
+
         public T Get<T>() where T : class {
             var result = TryToGet<T>();
             if (result == null) throw new Exception($"Entry with type {typeof(T)} not found");
-
             return result;
         }
 

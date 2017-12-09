@@ -256,7 +256,7 @@
                 </MultiBinding>
               </TextBlock.Text>
             </TextBlock>
-            <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" c:CupUi.Object="{Binding SelectedObject}">
+            <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedObject}">
               <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                   Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
             </Button>

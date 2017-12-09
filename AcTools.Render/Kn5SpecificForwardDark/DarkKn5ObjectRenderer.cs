@@ -1017,12 +1017,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _realTimeAccumulationSize++;
 
             if (_realTimeAccumulationFirstStep) {
+                _accumulationDofPoissonPreviousDiskSample = 0;
                 DeviceContext.ClearRenderTargetView(_accumulationTexture.TargetView, default(Color4));
                 DrawSceneToBuffer();
             } else {
-                using (ReplaceCamera(GetDofAccumulationCamera(Camera, (_realTimeAccumulationSize / 50f).Saturate(),
-                        NextAccumulationDofPoissonDiskSample(),
-                        NextAccumulationDofPoissonSquareSample()))) {
+                using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f, NextAccumulationDofPoissonDiskSample(), NextAccumulationDofPoissonSquareSample()))) {
                     DrawSceneToBuffer();
                 }
             }
