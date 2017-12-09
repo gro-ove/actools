@@ -366,9 +366,9 @@
                       ToolTip="Enable to improve accuracy (doesn’t affect performance)">
                     <Label Content="Accurate lighting" />
                   </CheckBox>
-                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.PoissonDistribution}"
+                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.PoissonSampling}"
                       ToolTip="Generates smoother shadows, especially if iterations are few">
-                    <Label Content="Poisson distribution" />
+                    <Label Content="Poisson sampling" />
                   </CheckBox>
                   <Button Command="{Binding AmbientShadow.UpdateCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
                   <c:UserPresetsControl UserPresetable="{Binding AmbientShadow}" Style="{StaticResource UserPresetsControl.Compact}" Margin="0 4 0 0"

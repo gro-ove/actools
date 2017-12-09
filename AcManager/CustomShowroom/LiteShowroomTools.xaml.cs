@@ -77,7 +77,7 @@ namespace AcManager.CustomShowroom {
                 AmbientShadowHideWheels = HideWheels,
                 AmbientShadowFade = Fade,
                 AmbientShadowCorrectLighting = CorrectLighting,
-                AmbientShadowPoissonDistribution = PoissonDistribution,
+                AmbientShadowPoissonSampling = PoissonSampling,
                 AmbientShadowExtraBlur = ExtraBlur,
                 AmbientShadowUpDelta = UpDelta,
                 AmbientShadowBodyMultiplier = BodyMultiplier,
@@ -101,7 +101,7 @@ namespace AcManager.CustomShowroom {
             public bool AmbientShadowCorrectLighting = true;
 
             [JsonProperty("asp")]
-            public bool AmbientShadowPoissonDistribution = true;
+            public bool AmbientShadowPoissonSampling = true;
 
             [JsonProperty("asu")]
             public bool AmbientShadowExtraBlur;
@@ -136,7 +136,7 @@ namespace AcManager.CustomShowroom {
             HideWheels = o.AmbientShadowHideWheels;
             Fade = o.AmbientShadowFade;
             CorrectLighting = o.AmbientShadowCorrectLighting;
-            PoissonDistribution = o.AmbientShadowPoissonDistribution;
+            PoissonSampling = o.AmbientShadowPoissonSampling;
             ExtraBlur = o.AmbientShadowExtraBlur;
             UpDelta = o.AmbientShadowUpDelta;
             BodyMultiplier = o.AmbientShadowBodyMultiplier;
@@ -218,13 +218,13 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private bool _poissonDistribution;
+        private bool _poissonSampling;
 
-        public bool PoissonDistribution {
-            get => _poissonDistribution;
+        public bool PoissonSampling {
+            get => _poissonSampling;
             set {
-                if (Equals(value, _poissonDistribution)) return;
-                _poissonDistribution = value;
+                if (Equals(value, _poissonSampling)) return;
+                _poissonSampling = value;
                 OnPropertyChanged();
             }
         }
@@ -371,7 +371,7 @@ namespace AcManager.CustomShowroom {
                             HideWheels = HideWheels,
                             Fade = Fade,
                             CorrectLighting = CorrectLighting,
-                            PoissonDistribution = PoissonDistribution,
+                            PoissonSampling = PoissonSampling,
                             ExtraBlur = ExtraBlur,
                             UpDelta = UpDelta,
                             BodyMultiplier = BodyMultiplier,

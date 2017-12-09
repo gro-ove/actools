@@ -544,7 +544,7 @@ namespace AcManager.Pages.Lists {
                                 HideWheels = _params.HideWheels,
                                 Fade = _params.Fade,
                                 CorrectLighting = _params.CorrectLighting,
-                                PoissonDistribution = _params.PoissonDistribution,
+                                PoissonSampling = _params.PoissonSampling,
                                 UpDelta = _params.UpDelta,
                                 BodyMultiplier = _params.BodyMultiplier,
                                 WheelMultiplier = _params.WheelMultiplier,

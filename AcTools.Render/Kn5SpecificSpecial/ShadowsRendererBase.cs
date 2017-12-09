@@ -76,7 +76,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void ResizeInner() { }
 
         public int Iterations = 500;
-        public bool PoissonDistribution = true;
+        public bool PoissonSampling = true;
         public float ΘFromDeg = -10f;
         public float ΘToDeg = 50f;
 
@@ -162,7 +162,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public IEnumerable<Vector3> GetLightsDistribution() {
-            return PoissonDistribution
+            return PoissonSampling
                     ? GetLightsDistributionPoisson(Iterations, ΘFromDeg, ΘToDeg)
                     : GetLightsDistributionRandom(Iterations, ΘFromDeg, ΘToDeg);
         }
