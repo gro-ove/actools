@@ -387,7 +387,7 @@ namespace AcManager.CustomShowroom {
             if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
                 var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
                 if (image != null) {
-                    image.Image.SaveAsPng(originalTexture);
+                    image.Image?.SaveAsPng(originalTexture);
                     new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
                         Model = {
                             Saveable = true,

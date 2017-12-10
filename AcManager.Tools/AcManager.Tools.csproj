@@ -231,6 +231,7 @@
     <Compile Include="Filters\Testers\WeatherObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
     <Compile Include="GameProperties\CarCustomDataHelper.cs" />
+    <Compile Include="GameProperties\CarRaceTextures.cs" />
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />

@@ -54,6 +54,7 @@ namespace AcManager.Tools.Objects {
             UpgradeIcon = Path.Combine(Location, @"ui", @"upgrade.png");
             SkinsDirectory = Path.Combine(Location, "skins");
             JsonFilename = Path.Combine(Location, @"ui", @"ui_car.json");
+            CmTexturesFilename = Path.Combine(Location, @"ui", @"cm_textures.json");
         }
 
         public override string DisplayName => Name == null ? Id :
@@ -474,6 +475,7 @@ namespace AcManager.Tools.Objects {
         public string LogoIcon { get; private set; }
         public string BrandBadge { get; private set; }
         public string UpgradeIcon { get; private set; }
+        public string CmTexturesFilename { get; private set; }
         #endregion
 
         #region Loading

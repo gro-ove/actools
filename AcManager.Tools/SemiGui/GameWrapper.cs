@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -15,6 +16,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
@@ -191,6 +193,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
+            properties.SetAdditional(new CarRaceTextures());
         }
 
         private static void StartAsync_PrepareRace(Game.StartProperties properties) {
@@ -320,7 +323,6 @@ namespace AcManager.Tools.SemiGui {
         private static Task<Game.Result> StartAsync(Game.StartProperties properties, GameMode mode) {
             StartAsync_AdjustProperties(properties);
             StartAsync_Prepare(properties);
-            // properties.SetAdditional(new FocusHelper());
 
             if (mode == GameMode.Race) {
                 StartAsync_PrepareRace(properties);

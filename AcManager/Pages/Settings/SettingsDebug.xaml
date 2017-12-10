@@ -8,6 +8,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/ModernProgressRing.Imported.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -20,6 +21,10 @@
           <DockPanel>
             <Label Content="Magick.NET:" />
             <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+          </DockPanel>
+          <DockPanel>
+            <Label Content="Convert outline:" />
+            <Button Command="{Binding ConvertOutlineCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
           </DockPanel>
           <DockPanel>
             <Label Content="DH:" />

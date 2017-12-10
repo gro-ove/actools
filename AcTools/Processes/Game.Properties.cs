@@ -210,7 +210,7 @@ namespace AcTools.Processes {
                 }
 
                 {
-                    // specially for SimRacers.es app
+                    // Specially for SimRacers.es app
                     var section = file["SESSION_0"];
                     section.Set("NAME", "Nothing");
                     section.Set("TYPE", SessionType.Practice);
@@ -467,7 +467,7 @@ namespace AcTools.Processes {
                 // 14:30 → 24
                 // 15:00 → 32
                 // 18:00 → 80
-                // so, linear
+                // So, linear
                 return 16.0 * (seconds - 46800.0) / (50400.0 - 46800.0);
             }
 
@@ -708,16 +708,24 @@ namespace AcTools.Processes {
         public class ReplayProperties {
             public string Filename, Name, TrackId, TrackConfiguration, WeatherId;
 
+            // For internal references
+            [CanBeNull]
+            public string CarId;
+
             internal void Set(IniFile file) {
                 file["REPLAY"].Set("ACTIVE", true);
                 file["REPLAY"].Set("FILENAME", Name);
 
-                // for custom clouds
+                // For custom clouds
                 if (WeatherId != null) {
                     file["WEATHER"].Set("NAME", WeatherId);
                 }
 
-                // another weirdness of Assetto Corsa
+                // For car textures?
+                var section = file["RACE"];
+                section.SetId("MODEL", CarId);
+
+                // Another weirdness of Assetto Corsa
                 file["RACE"].SetId("TRACK", TrackId);
                 file["RACE"].SetId("CONFIG_TRACK", TrackConfiguration);
             }

@@ -304,6 +304,7 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async () => {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Name = SelectedObject.Id,
+                    CarId = SelectedObject.CarId,
                     TrackId = SelectedObject.TrackId,
                     TrackConfiguration = SelectedObject.TrackConfiguration,
                     WeatherId = SelectedObject.WeatherId

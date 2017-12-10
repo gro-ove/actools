@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class BitmapSourceExtension {
@@ -19,12 +20,20 @@ namespace FirstFloor.ModernUI.Helpers {
             return targetFrame;
         }
 
-        public static void SaveAsPng(this BitmapSource bitmap, string filename) {
-            if (bitmap == null) return;
+        public static void SaveAsPng([NotNull] this BitmapSource bitmap, [NotNull] string filename) {
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using (var s = File.Create(filename)) {
                 encoder.Save(s);
+            }
+        }
+
+        public static byte[] ToBytes([NotNull] this BitmapSource bitmap) {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using (var s = new MemoryStream()) {
+                encoder.Save(s);
+                return s.ToArray();
             }
         }
     }

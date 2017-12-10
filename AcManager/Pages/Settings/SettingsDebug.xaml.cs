@@ -11,12 +11,16 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Effects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -118,6 +122,39 @@ namespace AcManager.Pages.Settings {
                     }
                 }
             }));
+
+            private AsyncCommand _convertOutlineCommand;
+
+            public AsyncCommand ConvertOutlineCommand => _convertOutlineCommand ?? (_convertOutlineCommand = new AsyncCommand(async () => {
+                var track = TracksManager.Instance.Default;
+                if (track == null) return;
+
+                var filename = track.OutlineImage.ApartFromLast(".png", StringComparison.OrdinalIgnoreCase) + "_new.png";
+                var size = new Size(CommonAcConsts.TrackOutlineWidth, CommonAcConsts.TrackOutlineHeight);
+
+                var result = new ContentPresenter {
+                    Width = CommonAcConsts.TrackOutlineWidth,
+                    Height = CommonAcConsts.TrackOutlineHeight,
+                    Content = new Image {
+                        Width = CommonAcConsts.TrackOutlineWidth,
+                        Height = CommonAcConsts.TrackOutlineHeight,
+                        Source = BetterImage.LoadBitmapSource(track.OutlineImage).BitmapSource,
+                        Effect = new InvertKeepColorEffect(),
+                    },
+                };
+
+                result.Measure(size);
+                result.Arrange(new Rect(size));
+                result.ApplyTemplate();
+                result.UpdateLayout();
+
+                var bmp = new RenderTargetBitmap(CommonAcConsts.TrackOutlineWidth, CommonAcConsts.TrackOutlineHeight, 96, 96, PixelFormats.Pbgra32);
+                bmp.Render(result);
+                bmp.SaveAsPng(filename);
+                WindowsHelper.ViewFile(filename);
+            }));
+
+            private static readonly Action EmptyDelegate = delegate {};
 
             private static BitmapImage LoadBitmapImage(string filename) {
                 var bi = new BitmapImage();
