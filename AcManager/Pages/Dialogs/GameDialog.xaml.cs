@@ -677,9 +677,11 @@ namespace AcManager.Pages.Dialogs {
 
             private string _errorMessage;
 
+            [CanBeNull]
             public string ErrorMessage {
                 get => _errorMessage;
                 set {
+                    value = value?.ToSentence();
                     if (Equals(value, _errorMessage)) return;
                     _errorMessage = value;
                     OnPropertyChanged();
