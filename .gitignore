@@ -70,6 +70,10 @@ Output/*
 # Output from tests
 AcTools.Tests/test/kn5/*
 
+# WPF shaders
+FirstFloor.ModernUI/Effects/Shaders/run.bat
+FirstFloor.ModernUI/Effects/Shaders/*.sublime-*
+
 # Not ready to release yet
 AcTools.NeuralTyres/*
 AcTools.NeuralTyres.Tests/*
