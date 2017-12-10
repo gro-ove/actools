@@ -26,6 +26,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
@@ -97,7 +98,7 @@ namespace AcManager.Controls.ViewModels {
             public string[] AiLimitations;
 
             public bool? ShuffleCandidates;
-            public int? OpponentsNumber, StartingPosition;
+            public int? VarietyLimitation, OpponentsNumber, StartingPosition;
 
             public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly /* not needed to be saved */;
             public double AiLevelArrangeRandom = 0.1, AiLevel = 95, AiLevelMin = 85;
@@ -133,6 +134,7 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("AiLimitations", AiLimitations);
 
                 w.Write("ShuffleCandidates", ShuffleCandidates);
+                w.Write("VarietyLimitation", VarietyLimitation);
                 w.Write("OpponentsNumber", OpponentsNumber);
                 w.Write("StartingPosition", StartingPosition);
 
@@ -206,6 +208,7 @@ namespace AcManager.Controls.ViewModels {
                     FilterValue = FilterValue,
                     RandomSkinsFilter = RandomSkinsFilter,
                     ShuffleCandidates = ShuffleCandidates,
+                    VarietyLimitation = VarietyLimitation,
                     OpponentsNumber = OpponentsNumber,
                     StartingPosition = StartingPosition,
 
@@ -276,6 +279,7 @@ namespace AcManager.Controls.ViewModels {
                 return data;
             }, data => {
                 ShuffleCandidates = data.ShuffleCandidates ?? true;
+                VarietyLimitation = data.VarietyLimitation ?? 0;
 
                 AiLevel = data.AiLevel;
                 AiLevelMin = data.AiLevelMin;
@@ -401,6 +405,7 @@ namespace AcManager.Controls.ViewModels {
 
         public void Reset() {
             ShuffleCandidates = true;
+            VarietyLimitation = 0;
 
             AiLevel = 95;
             AiLevelMin = 85;
@@ -1012,6 +1017,24 @@ namespace AcManager.Controls.ViewModels {
                 SaveLater();
             }
         }
+
+        private int _varietyLimitation;
+
+        public int VarietyLimitation {
+            get => _varietyLimitation;
+            set {
+                if (Equals(value, _varietyLimitation)) return;
+                _varietyLimitation = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayVarietyLimitation));
+                SaveLater();
+            }
+        }
+
+        public string DisplayVarietyLimitation {
+            get => _varietyLimitation == 0 ? ToolsStrings.AssistState_Off : PluralizingConverter.PluralizeExt(_varietyLimitation, "{0} car");
+            set => VarietyLimitation = value.AsInt();
+        }
         #endregion
 
         #region AI Level
@@ -1398,7 +1421,10 @@ namespace AcManager.Controls.ViewModels {
 
             IEnumerable<RaceGridEntry> final;
             if (Mode.CandidatesMode) {
-                var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => new[] { x }.Repeat(x.CandidatePriority)).ToList();
+                var allowed = VarietyLimitation <= 0 ? null
+                        : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct()).Take(VarietyLimitation).ToList();
+                var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) == true
+                        ? new[] { x }.Repeat(x.CandidatePriority) : new RaceGridEntry[0]).ToList();
 
                 if (ShuffleCandidates) {
                     var shuffled = GoodShuffle.Get(list);
@@ -1454,7 +1480,8 @@ namespace AcManager.Controls.ViewModels {
                     takenNames.Add(name);
                 }
 
-                var nationality = skin?.Country ?? entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
+                var nationality = (SettingsHolder.Drive.QuickDriveUseSkinNames ? skin?.Country : null)
+                        ?? entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
                 var skinId = skin?.Id;
 
                 string displayName;

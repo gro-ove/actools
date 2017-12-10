@@ -85,6 +85,11 @@
                     LabelUnchecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Random}" IsChecked="{Binding ShuffleCandidates}" />
               </DockPanel>
 
+              <DockPanel IsEnabled="{Binding Mode.CandidatesMode}" ToolTip="With this slider, you can limit the maximum number of various cars for AC to load">
+                <mui:ValueLabel Value="{Binding DisplayVarietyLimitation}" Content="Car variety limit" mui:BetterTextBox.Mode="IntegerOrZeroLabel" />
+                <Slider Minimum="0" Maximum="25" Value="{Binding VarietyLimitation}" TickFrequency="5" TickPlacement="BottomRight" />
+              </DockPanel>
+
               <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
               <CheckBox IsChecked="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Margin="0">
                 <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
