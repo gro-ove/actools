@@ -74,6 +74,11 @@ AcTools.Tests/test/kn5/*
 FirstFloor.ModernUI/Effects/Shaders/run.bat
 FirstFloor.ModernUI/Effects/Shaders/*.sublime-*
 
+# Some icon sizes which are not that important
+AcManager/Assets/Icons/Source/*-16.png
+AcManager/Assets/Icons/Source/*-32.png
+AcManager/Assets/Icons/Source/*-256.png
+
 # Not ready to release yet
 AcTools.NeuralTyres/*
 AcTools.NeuralTyres.Tests/*
