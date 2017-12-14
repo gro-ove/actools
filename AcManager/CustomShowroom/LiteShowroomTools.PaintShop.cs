@@ -317,6 +317,7 @@ namespace AcManager.CustomShowroom {
 
                     if (saveAsNew) {
                         Skin = skin;
+                        SaveAsNewSkin = false;
                     }
                 } catch (Exception e) when (e.IsCanceled()) {
                 } catch (Exception e) {

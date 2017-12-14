@@ -14,6 +14,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Animations {
+    // TODO: Properly interpolate quaterninons?
     public static class KnAnimExtension {
         public static KsAnimKeyframe ToKeyFrame(this Matrix matrix) {
             matrix.Decompose(out var scale, out var rotation, out var translation);
@@ -55,18 +56,16 @@ namespace AcTools.Render.Kn5Specific.Animations {
         }
 
         public static void SetMatrices(this KsAnimEntryBase animEntry, Matrix[] matrices, int? fillLength = null) {
-            var v2 = animEntry as KsAnimEntryV2;
-            if (v2 == null) {
-                ((KsAnimEntryV1)animEntry).Matrices = ConvertFramesV1(matrices, fillLength);
-            } else {
+            if (animEntry is KsAnimEntryV2 v2) {
                 v2.KeyFrames = ConvertFramesV2(matrices, fillLength);
+            } else {
+                ((KsAnimEntryV1)animEntry).Matrices = ConvertFramesV1(matrices, fillLength);
             }
         }
 
         [NotNull]
         public static Matrix[] GetMatrices(this KsAnimEntryBase animEntry) {
-            var v2 = animEntry as KsAnimEntryV2;
-            return v2 != null ? ConvertFrames(v2.KeyFrames) : ConvertFrames(((KsAnimEntryV1)animEntry).Matrices);
+            return animEntry is KsAnimEntryV2 v2 ? ConvertFrames(v2.KeyFrames) : ConvertFrames(((KsAnimEntryV1)animEntry).Matrices);
         }
 
         private static Matrix ConvertFrame(KsAnimKeyframe ks) {

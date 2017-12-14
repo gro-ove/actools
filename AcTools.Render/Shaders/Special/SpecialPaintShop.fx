@@ -31,6 +31,7 @@
 	Texture2D gMaskMap;
 	Texture2D gOverlayMap;
 	Texture2D gUnderlayMap;
+	Texture2D gDetailsMap;
 
 	struct ChannelsParams {
 	    float4 Map;
@@ -44,6 +45,7 @@
 		ChannelsParams gMaskParams;
 		ChannelsParams gOverlayParams;
 		ChannelsParams gUnderlayParams;
+		ChannelsParams gDetailsParams;
 	}
 
 	float4 GetSource(SamplerState sam, Texture2D tex, ChannelsParams p, float2 uv) {
@@ -64,6 +66,7 @@
 	float4 GetMaskMap(float2 uv) { return GetSource(gMaskMap, gMaskParams, uv); }
 	float4 GetOverlayMap(float2 uv) { return GetSource(gOverlayMap, gOverlayParams, uv); }
 	float4 GetUnderlayMap(float2 uv) { return GetSource(gUnderlayMap, gUnderlayParams, uv); }
+	float4 GetDetailsMap(float2 uv) { return GetSource(gDetailsMap, gDetailsParams, uv); }
 
 // common functions
 	float Luminance(float3 color) {
@@ -179,6 +182,7 @@
 		float4 pattern = GetInputMap(pin.Tex);
 		float4 ao = GetAoMap(pin.Tex);
 		float4 overlay = GetOverlayMap(pin.Tex);
+		float4 details = gDetailsMap.SampleLevel(samLinear, pin.Tex, 0);
 
 		float3 resultColor = pattern.rgb;
 		resultColor = resultColor * pattern.a + (float3)(1.0 - pattern.a);
@@ -186,7 +190,8 @@
 
 		float4 result = float4(resultColor, pattern.a);
 		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
-		result.a = saturate(result.a + overlay.a);
+		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
+		result.a = saturate(result.a + details.a + overlay.a);
 
         float4 underlay = GetUnderlayMap(pin.Tex);
         result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
@@ -206,18 +211,20 @@
 		float4 pattern = GetInputMap(pin.Tex);
 		float4 ao = GetAoMap(pin.Tex);
 		float4 overlay = GetOverlayMap(pin.Tex);
+		float4 details = gDetailsMap.SampleLevel(samLinear, pin.Tex, 0);
 
-		float3 resultColor = gColors[0].rgb * pattern.r;
-		resultColor += gColors[1].rgb * pattern.g;
-		resultColor += gColors[2].rgb * pattern.b;
+		float3 resultColor = gColors[0].rgb * saturate(pattern.r * 100);
+		resultColor += gColors[1].rgb * saturate(pattern.g * 100);
+		resultColor += gColors[2].rgb * saturate(pattern.b * 100);
 
 		float patternA = pow(abs(pattern.a), 0.5);
-		resultColor = resultColor * patternA + (float3)(1.0 - patternA);
+		resultColor = resultColor * patternA + gColor.rgb * (float3)(1.0 - patternA);
 		resultColor *= ao.rgb;
 
 		float4 result = float4(resultColor, pattern.a);
 		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
-		result.a = saturate(result.a + overlay.a);
+		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
+		result.a = saturate(result.a + details.a + overlay.a);
 
         float4 underlay = GetUnderlayMap(pin.Tex);
         result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));

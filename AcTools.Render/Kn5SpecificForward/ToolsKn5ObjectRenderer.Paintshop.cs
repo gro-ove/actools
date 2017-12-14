@@ -12,6 +12,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -97,42 +98,73 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        public delegate void Step(EffectSpecialPaintShop effect, IReadOnlyList<ShaderResourceView> previousSteps);
+
         [NotNull]
-        private TargetResourceTexture GetTexture([CanBeNull] string textureName, bool hdrMode, Action<EffectSpecialPaintShop> update, Size size) {
+        private TargetResourceTexture GetTextureStep([CanBeNull] string textureName, bool hdrMode, int stepId, Step update,
+                IReadOnlyList<ShaderResourceView> previousSteps, Size size) {
             if (_paintShopTextures == null) {
                 _paintShopTextures = new Dictionary<string, TargetResourceTexture>(10);
             }
 
-            var key = $"{textureName ?? "*"}:{(hdrMode ? "hdr" : "plain")}";
+            var key = $"{textureName ?? "*"}:{(hdrMode ? "hdr" : "plain")}:{stepId}";
             if (!_paintShopTextures.TryGetValue(key, out var tex)) {
                 tex = _paintShopTextures[key] = TargetResourceTexture.Create(hdrMode ? Format.R32G32B32A32_Float : Format.R8G8B8A8_UNorm);
             }
 
             if (size.Height < 0) size.Height = size.Width;
             tex.Resize(DeviceContextHolder, size.Width, size.Height, null);
-            UseEffect(update, tex);
+            UseEffect(e => update(e, previousSteps), tex);
             return tex;
         }
 
-        [CanBeNull]
-        private Dictionary<Size, TargetResourceTexture> _paintShopIndependantFix;
+        [NotNull]
+        private TargetResourceTexture GetTexture([CanBeNull] string textureName, bool hdrMode, IReadOnlyList<Step> update, Size size) {
+            if (update.Count == 1) {
+                return GetTextureStep(textureName, hdrMode, 0, update[0], new ShaderResourceView[0], size);
+            }
+
+            var previous = new List<ShaderResourceView>(update.Count - 1);
+            for (var i = 0; i < update.Count; i++) {
+                var step = update[i];
+                var tex = GetTextureStep(textureName, hdrMode, i, step, previous, size);
+                if (i == update.Count - 1) return tex;
+                previous.Add(tex.View);
+            }
+
+            throw new ArgumentException("Value cannot be an empty collection.", nameof(update));
+        }
 
         [CanBeNull]
-        private TargetResourceTexture CopyToIndependant([CanBeNull] ShaderResourceView b, Size size) {
-            if (b == null || size == default(Size)) return null;
+        private Dictionary<string, TargetResourceTexture> _paintShopIndependantFix;
+
+        [CanBeNull]
+        private TargetResourceTexture GetIndependant(Size size, int independantLayer) {
+            if (size == default(Size)) return null;
 
             if (_paintShopIndependantFix == null) {
-                _paintShopIndependantFix = new Dictionary<Size, TargetResourceTexture>();
+                _paintShopIndependantFix = new Dictionary<string, TargetResourceTexture>();
             }
 
-            if (!_paintShopIndependantFix.TryGetValue(size, out var t)) {
+            var key = $"{size}:{independantLayer}";
+            if (!_paintShopIndependantFix.TryGetValue(key, out var t)) {
                 t = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
                 t.Resize(DeviceContextHolder, size.Width, size.Height, null);
-                DeviceContext.Rasterizer.SetViewports(t.Viewport);
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, b, t.TargetView);
-                _paintShopIndependantFix[size] = t;
+                _paintShopIndependantFix[key] = t;
             }
 
+            return t;
+        }
+
+        [CanBeNull]
+        private TargetResourceTexture CopyToIndependant([CanBeNull] ShaderResourceView b, Size size, int independantLayer) {
+            if (b == null || size == default(Size)) return null;
+
+            var t = GetIndependant(size, independantLayer);
+            if (t == null) return null;
+
+            DeviceContext.Rasterizer.SetViewports(t.Viewport);
+            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, b, t.TargetView);
             return t;
         }
 
@@ -141,7 +173,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 [NotNull] TargetResourceTexture source, [CanBeNull] PaintShopSource mask, [CanBeNull] IPaintShopObject obj) {
             var underlay = obj?.GetTexture(DeviceContextHolder, destination.TextureName)?.Resource;
             var underlaySize = underlay == null ? null : GetSize(underlay);
-            var underlayClone = CopyToIndependant(underlay, underlaySize ?? default(Size));
+            var underlayClone = CopyToIndependant(underlay, underlaySize ?? default(Size), 0);
             var size = new Size(Math.Max(underlaySize?.Width ?? 1, source.Width), Math.Max(underlaySize?.Height ?? 1, source.Height));
 
             using (var maskView = mask == null ? null : mask.UseInput ? GetOriginal(new PaintShopSource(destination.TextureName) {
@@ -199,8 +231,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return new Vector4(source.RedAdjustment.Multiply, source.GreenAdjustment.Multiply, source.BlueAdjustment.Multiply, source.AlphaAdjustment.Multiply);
         }
 
-        private bool OverrideTexture([NotNull] PaintShopDestination destination, [NotNull] Action<EffectSpecialPaintShop> update,
-                Size size) {
+        private bool OverrideTexture([NotNull] PaintShopDestination destination, [NotNull] IReadOnlyList<Step> update, Size size) {
             var car = CarNode;
             if (car == null) return false;
 
@@ -212,8 +243,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             return car.OverrideTexture(DeviceContextHolder, destination.TextureName, tx.View, false);
         }
 
-        private async Task SaveTextureAsync([NotNull] string location, [NotNull] PaintShopDestination destination,
-                [NotNull] Action<EffectSpecialPaintShop> update, Size size) {
+        private async Task SaveTextureAsync([NotNull] string location, [NotNull] PaintShopDestination destination, [NotNull] IReadOnlyList<Step> update,
+                Size size) {
             var tx = GetTexture(null, destination.PreferredFormat.IsHdr(), update, size);
             if (destination.OutputMask != null || destination.AnyChannelAdjusted || destination.AnyChannelMapped) {
                 tx = MaskTexture(destination, tx, destination.OutputMask, CarNode);
@@ -266,17 +297,17 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
 
                 if (source.Color != null) {
-                    using (var texture = DeviceContextHolder.CreateTexture(1, 1, (x, y) => source.Color.Value))
+                    using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.Color.Value))
                     using (var stream = new MemoryStream()) {
-                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Dds, stream);
+                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
                         return stream.ToArray();
                     }
                 }
 
                 if (source.ColorRef != null) {
-                    using (var texture = DeviceContextHolder.CreateTexture(1, 1, (x, y) => source.ColorRef.GetValue() ?? Color.Black))
+                    using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.ColorRef.GetValue() ?? Color.Black))
                     using (var stream = new MemoryStream()) {
-                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Dds, stream);
+                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
                         return stream.ToArray();
                     }
                 }
@@ -404,7 +435,9 @@ namespace AcTools.Render.Kn5SpecificForward {
                 case PaintShopSourceChannel.One:
                     return -1f;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(channel), channel, null);
+                    // TODO: Register error properly!
+                    AcToolsLogging.Write("Invalid value for channel: " + channel);
+                    return -2f;
             }
         }
 
@@ -655,13 +688,13 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             public PaintShopAction GetAction() {
                 try {
-                    Action<EffectSpecialPaintShop> drawAction;
+                    Step preparation = null, draw;
 
                     switch (_value) {
                         case PaintShopOverrideWithTexture p: {
                             // TODO: On save, if source is specified as a byte[], simply copy?
                             var original = Get(p.Source);
-                            drawAction = e => {
+                            draw = (e, previous) => {
                                 original.Set(e.FxInputMap, e.FxInputParams);
                                 e.TechReplacement.DrawAllPasses(_parent.DeviceContext, 6);
                             };
@@ -670,7 +703,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                         case PaintShopOverrideWithColor p: {
                             _maxPreviewSize = p.Size;
-                            drawAction = e => {
+                            draw = (e, previous) => {
                                 e.FxColor.Set(p.Color.ToVector4());
                                 if (p.Flakes > 0d) {
                                     e.FxFlakes.Set((float)p.Flakes);
@@ -694,11 +727,66 @@ namespace AcTools.Render.Kn5SpecificForward {
                                     new Size(_maxPreviewSize, _maxPreviewSize), out var multiplier);
                             _size = size;
 
-                            drawAction = e => {
+                            if (p.Flags?.Count > 0 && p.SkinFlagFilename != null ||
+                                    p.Numbers?.Count > 0 && p.SkinNumber.HasValue ||
+                                    p.Labels?.Count > 0) {
+                                preparation = (e, previous) => {
+                                    var colors = p.Colors;
+
+                                    var flags = p.Flags;
+                                    if (flags?.Count > 0 && p.SkinFlagFilename != null) {
+                                        _parent.DeviceContext.OutputMerger.BlendState = _parent.DeviceContextHolder.States.TransparentBlendState;
+                                        for (var i = 0; i < flags.Count; i++) {
+                                            if (flags[i] != null) {
+                                                _parent.PatternDrawFlag(flags[i], p.SkinFlagFilename, multiplier, size, e);
+                                            }
+                                        }
+                                        _parent.DeviceContext.OutputMerger.BlendState = null;
+                                    }
+
+                                    var patternTextRendererInitialized = false;
+
+                                    void EnsurePatternTextRendererInitialized() {
+                                        if (!patternTextRendererInitialized) {
+                                            patternTextRendererInitialized = true;
+                                            _parent.InitializePatternTextRenderer();
+                                            _parent._patternSprite.RefreshViewport();
+                                        }
+                                    }
+
+                                    var numbers = p.Numbers;
+                                    if (numbers != null && p.SkinNumber.HasValue) {
+                                        for (var i = 0; i < numbers.Count; i++) {
+                                            if (numbers[i] != null) {
+                                                EnsurePatternTextRendererInitialized();
+                                                _parent.PatternDrawText(colors, numbers[i], p.SkinNumber.Value.ToInvariantString(), multiplier);
+                                            }
+                                        }
+                                    }
+
+                                    var labels = p.Labels;
+                                    if (labels != null && p.SkinLabels != null) {
+                                        for (var i = 0; i < labels.Count; i++) {
+                                            if (labels[i] != null && p.SkinLabels.TryGetValue(labels[i].Role, out var value) &&
+                                                    !string.IsNullOrWhiteSpace(value)) {
+                                                EnsurePatternTextRendererInitialized();
+                                                _parent.PatternDrawText(colors, labels[i], value, multiplier);
+                                            }
+                                        }
+                                    }
+
+                                    if (patternTextRendererInitialized) {
+                                        _parent._patternSprite.Flush();
+                                    }
+                                };
+                            }
+
+                            draw = (e, previous) => {
                                 pattern.Set(e.FxInputMap, e.FxInputParams);
                                 ao.Set(e.FxAoMap, e.FxAoParams);
                                 overlay.Set(e.FxOverlayMap, e.FxOverlayParams);
                                 underlay.Set(e.FxUnderlayMap, e.FxUnderlayParams);
+                                e.FxDetailsMap.SetResource(previous.FirstOrDefault());
 
                                 var colors = p.Colors;
                                 if (colors?.Length > 0) {
@@ -707,57 +795,12 @@ namespace AcTools.Render.Kn5SpecificForward {
                                         vColors[i] = colors[i].ToVector4();
                                     }
 
+                                    AcToolsLogging.Write(p.BackgroundColorHint);
+                                    e.FxColor.Set(p.BackgroundColorHint);
                                     e.FxColors.Set(vColors);
                                     e.TechColorfulPattern.DrawAllPasses(_parent.DeviceContext, 6);
                                 } else {
                                     e.TechPattern.DrawAllPasses(_parent.DeviceContext, 6);
-                                }
-
-
-                                var flags = p.Flags;
-                                if (flags?.Count > 0 && p.SkinFlagFilename != null) {
-                                    _parent.DeviceContext.OutputMerger.BlendState = _parent.DeviceContextHolder.States.TransparentBlendState;
-                                    for (var i = 0; i < flags.Count; i++) {
-                                        if (flags[i] != null) {
-                                            _parent.PatternDrawFlag(flags[i], p.SkinFlagFilename, multiplier, size, e);
-                                        }
-                                    }
-                                    _parent.DeviceContext.OutputMerger.BlendState = null;
-                                }
-
-                                var patternTextRendererInitialized = false;
-
-                                void EnsurePatternTextRendererInitialized() {
-                                    if (!patternTextRendererInitialized) {
-                                        patternTextRendererInitialized = true;
-                                        _parent.InitializePatternTextRenderer();
-                                        _parent._patternSprite.RefreshViewport();
-                                    }
-                                }
-
-                                var numbers = p.Numbers;
-                                if (numbers != null && p.SkinNumber.HasValue) {
-                                    for (var i = 0; i < numbers.Count; i++) {
-                                        if (numbers[i] != null) {
-                                            EnsurePatternTextRendererInitialized();
-                                            _parent.PatternDrawText(colors, numbers[i], p.SkinNumber.Value.ToInvariantString(), multiplier);
-                                        }
-                                    }
-                                }
-
-                                var labels = p.Labels;
-                                if (labels != null && p.SkinLabels != null) {
-                                    for (var i = 0; i < labels.Count; i++) {
-                                        if (labels[i] != null && p.SkinLabels.TryGetValue(labels[i].Role, out var value) &&
-                                                !string.IsNullOrWhiteSpace(value)) {
-                                            EnsurePatternTextRendererInitialized();
-                                            _parent.PatternDrawText(colors, labels[i], value, multiplier);
-                                        }
-                                    }
-                                }
-
-                                if (patternTextRendererInitialized) {
-                                    _parent._patternSprite.Flush();
                                 }
                             };
 
@@ -774,7 +817,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                                         PreferredDdsFormat.DXT1 : PreferredDdsFormat.NoCompression;
                             }
 
-                            drawAction = e => {
+                            draw = (e, previous) => {
                                 original.Set(e.FxInputMap, e.FxInputParams);
                                 mask.Set(e.FxMaskMap, e.FxMaskParams);
                                 e.FxUseMask.Set(mask != null);
@@ -793,7 +836,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                             var original = Get(p.Source);
                             var mask = Get(p.Mask);
                             var overlay = Get(p.Overlay);
-                            drawAction = e => {
+                            draw = (e, previous) => {
                                 original.Set(e.FxInputMap, e.FxInputParams);
                                 overlay.Set(e.FxOverlayMap, e.FxOverlayParams);
                                 e.FxAlphaAdjustments.Set(new Vector2(p.Alpha.Add, p.Alpha.Multiply));
@@ -831,11 +874,11 @@ namespace AcTools.Render.Kn5SpecificForward {
                             throw new NotSupportedException($"Not supported: {_value.GetType().Name}");
                     }
 
-                    return
-                            new PaintShopAction(
-                                    new PaintShopDestination(_value.Destination.TextureName, _format, _value.Destination.OutputMask,
-                                            _value.Destination.ForceSize).InheritExtendedPropertiesFrom(_value.Destination), drawAction,
-                                    _size ?? new Size(_maxPreviewSize, _maxPreviewSize), _maxPreviewSize);
+                    return new PaintShopAction(
+                            new PaintShopDestination(_value.Destination.TextureName, _format, _value.Destination.OutputMask,
+                                    _value.Destination.ForceSize).InheritExtendedPropertiesFrom(_value.Destination),
+                            preparation == null ? new[] { draw } : new[] { preparation, draw },
+                            _size ?? new Size(_maxPreviewSize, _maxPreviewSize), _maxPreviewSize);
                 } catch (Exception) {
                     _disposeLater.DisposeEverything();
                     throw;
@@ -852,13 +895,21 @@ namespace AcTools.Render.Kn5SpecificForward {
             public readonly PaintShopDestination Destination;
 
             [NotNull]
-            public readonly Action<EffectSpecialPaintShop> DrawAction;
+            public readonly IReadOnlyList<Step> DrawAction;
 
             public readonly Size Size;
             public readonly int? MaxPreviewSize;
 
             public PaintShopAction([NotNull] PaintShopDestination destination,
-                    [NotNull] Action<EffectSpecialPaintShop> drawAction, Size size, int? maxPreviewSize = null) {
+                    [NotNull] Step drawAction, Size size, int? maxPreviewSize = null) {
+                Destination = destination;
+                DrawAction = new[]{ drawAction };
+                Size = size;
+                MaxPreviewSize = maxPreviewSize;
+            }
+
+            public PaintShopAction([NotNull] PaintShopDestination destination,
+                    [NotNull] IReadOnlyList<Step> drawAction, Size size, int? maxPreviewSize = null) {
                 Destination = destination;
                 DrawAction = drawAction;
                 Size = size;

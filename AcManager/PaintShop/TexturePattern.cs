@@ -6,6 +6,7 @@ using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
@@ -40,8 +41,7 @@ namespace AcManager.PaintShop {
                 if (Equals(value, _currentPattern)) return;
                 _currentPattern = value;
                 OnPropertyChanged();
-                UpdateIsNumberActive();
-                PatternAspect?.SetDirty();
+                OnCurrentPatternChanged();
             }
         }
 
@@ -59,7 +59,12 @@ namespace AcManager.PaintShop {
             return this;
         }
 
-        private void OnPatternChanged(object sender, PropertyChangedEventArgs e) {
+        protected virtual void OnCurrentPatternChanged() {
+            UpdateIsNumberActive();
+            PatternAspect?.SetDirty();
+        }
+
+        protected virtual void OnPatternChanged(object sender, PropertyChangedEventArgs e) {
             PatternAspect?.SetDirty();
             if (e.PropertyName == nameof(CarPaintPattern.ActualColors)) {
                 RaiseColorChanged(null);
@@ -83,6 +88,11 @@ namespace AcManager.PaintShop {
             }
         }
 
+        [Pure]
+        protected virtual Color GetBackgroundHintColor() {
+            return Colors.Transparent;
+        }
+
         protected virtual void OnPatternEnabledChanged() { }
 
         [CanBeNull]
@@ -97,6 +107,7 @@ namespace AcManager.PaintShop {
                             Overlay = CurrentPattern.Overlay ?? PatternOverlay,
                             Underlay = CurrentPattern.Underlay ?? PatternUnderlay,
                             Colors = CurrentPattern.Colors.DrawingColors,
+                            BackgroundColorHint = GetBackgroundHintColor().ToColor(),
                             Numbers = CurrentPattern.Numbers,
                             Flags = CurrentPattern.Flags,
                             Labels = CurrentPattern.Labels,

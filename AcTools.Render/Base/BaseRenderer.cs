@@ -22,6 +22,7 @@ using Resource = SlimDX.Direct3D11.Resource;
 
 namespace AcTools.Render.Base {
     public abstract class BaseRenderer : IDisposable, INotifyPropertyChanged {
+        public static bool OptionDebugResources = false;
         public static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
 
         private DeviceContextHolder _deviceContextHolder;
@@ -157,8 +158,8 @@ namespace AcTools.Render.Base {
 
         protected BaseRenderer() {
 #if DEBUG
-            Configuration.EnableObjectTracking = true;
-            Configuration.DetectDoubleDispose = true;
+            Configuration.EnableObjectTracking = OptionDebugResources;
+            Configuration.DetectDoubleDispose = OptionDebugResources;
 #else
             Configuration.EnableObjectTracking = false;
             Configuration.DetectDoubleDispose = false;

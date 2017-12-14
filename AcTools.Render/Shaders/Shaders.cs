@@ -1583,7 +1583,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyMatrixVariable FxTransform;
 		[NotNull]
-		public EffectOnlyResourceVariable FxNoiseMap, FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap, FxUnderlayMap;
+		public EffectOnlyResourceVariable FxNoiseMap, FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap, FxUnderlayMap, FxDetailsMap;
 		[NotNull]
 		public EffectOnlyFloatVariable FxNoiseMultipler, FxFlakes;
 		[NotNull]
@@ -1604,6 +1604,8 @@ namespace AcTools.Render.Shaders {
 		public EffectStructChannelsParamsVariable FxOverlayParams;
 		[NotNull]
 		public EffectStructChannelsParamsVariable FxUnderlayParams;
+		[NotNull]
+		public EffectStructChannelsParamsVariable FxDetailsParams;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
@@ -1638,6 +1640,7 @@ namespace AcTools.Render.Shaders {
 			FxMaskMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMaskMap"));
 			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap"));
 			FxUnderlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gUnderlayMap"));
+			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap"));
 			FxNoiseMultipler = new EffectOnlyFloatVariable(E.GetVariableByName("gNoiseMultipler"));
 			FxFlakes = new EffectOnlyFloatVariable(E.GetVariableByName("gFlakes"));
 			FxUseMask = new EffectOnlyBoolVariable(E.GetVariableByName("gUseMask"));
@@ -1650,6 +1653,7 @@ namespace AcTools.Render.Shaders {
 			FxMaskParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gMaskParams"));
 			FxOverlayParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gOverlayParams"));
 			FxUnderlayParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gUnderlayParams"));
+			FxDetailsParams = new EffectStructChannelsParamsVariable(E.GetVariableByName("gDetailsParams"));
 		}
 
         public void Dispose() {

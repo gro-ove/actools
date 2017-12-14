@@ -76,6 +76,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public Color[] Colors;
 
         public int? SkinNumber;
+        public Color BackgroundColorHint;
 
         [CanBeNull]
         public IReadOnlyList<PaintShopPatternNumber> Numbers;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
@@ -38,6 +39,10 @@ namespace AcManager.PaintShop {
         public bool SupportsFlakes { get; private set; }
         public bool ColorAvailable { get; private set; }
         public Color DefaultColor { get; private set; }
+
+        protected override Color GetBackgroundHintColor() {
+            return Color;
+        }
 
         private bool _flakesAllowed;
 
@@ -110,6 +115,7 @@ namespace AcManager.PaintShop {
                 OnPropertyChanged();
                 RaiseColorChanged(0);
                 DetailsAspect?.SetDirty();
+                PatternAspect?.SetDirty();
             }
         }
 
@@ -134,13 +140,6 @@ namespace AcManager.PaintShop {
         [CanBeNull]
         protected PaintableItemAspect DetailsAspect { get; private set; }
 
-        protected override void OnPatternEnabledChanged() {
-            base.OnPatternEnabledChanged();
-            if (Equals(DetailsTexture, PatternTexture)) {
-                DetailsAspect?.SetDirty();
-            }
-        }
-
         protected override void Initialize() {
             if (DetailsTexture != null) {
                 DetailsAspect = RegisterAspect(DetailsTexture, GetDetailsOverride)
@@ -151,12 +150,30 @@ namespace AcManager.PaintShop {
             base.Initialize();
         }
 
+        protected override void OnCurrentPatternChanged() {
+            base.OnCurrentPatternChanged();
+            DetailsAspect?.SetDirty();
+        }
+
+        protected override void OnPatternEnabledChanged() {
+            base.OnPatternEnabledChanged();
+            DetailsAspect?.SetDirty();
+        }
+
+        protected override void OnPatternChanged(object sender, PropertyChangedEventArgs e) {
+            base.OnPatternChanged(sender, e);
+            DetailsAspect?.SetDirty();
+        }
+
         private PaintShopOverrideBase GetDetailsOverride(PaintShopDestination name) {
+            var color = (PatternAspect?.IsEnabled == true && CurrentPattern?.Colors.DrawingColors.Length > 0
+                    ? Colors.White : ColorAvailable ? Color : DefaultColor).ToColor();
+
             var value = ColorReplacementValue.Value;
             if (value != null) {
                 if (value.Colored) {
                     return new PaintShopOverrideTint {
-                        Colors = new[] { Color.ToColor() },
+                        Colors = new[] { color },
                         Alpha = ValueAdjustment.Same,
                         Source = value.Source
                     };
@@ -167,7 +184,6 @@ namespace AcManager.PaintShop {
                 };
             }
 
-            var color = ColorAvailable ? Color.ToColor() : DefaultColor.ToColor();
             if (SupportsFlakes && Flakes > 0d) {
                 return new PaintShopOverrideWithColor {
                     Color = color,
