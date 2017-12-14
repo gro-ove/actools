@@ -22,6 +22,7 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -168,7 +169,7 @@ namespace AcManager.Tools.Objects {
                 } else {
                     _acdData.Refresh(null);
                 }
-            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.Affects(filename, Path.Combine(Location, "data"))) {
+            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.Affects(Path.Combine(Location, "data"), filename)) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));

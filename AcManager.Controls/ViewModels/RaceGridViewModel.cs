@@ -826,8 +826,7 @@ namespace AcManager.Controls.ViewModels {
                 return new RaceGridEntry[0];
             }
 
-            var candidatesMode = mode as CandidatesGridMode;
-            if (candidatesMode != null) {
+            if (mode is CandidatesGridMode candidatesMode) {
                 return await Task.Run(() => {
                     var carsEnumerable = (IEnumerable<CarObject>)CarsManager.Instance.EnabledOnly.ToList();
 
@@ -1350,107 +1349,13 @@ namespace AcManager.Controls.ViewModels {
                 return new Game.AiCar[0];
             }
 
-            var skinsFilter = string.IsNullOrWhiteSpace(RandomSkinsFilter) ? null : Filter.Create(CarSkinObjectTester.Instance, RandomSkinsFilter);
-            var skins = new Dictionary<string, GoodShuffle<CarSkinObject>>();
-            foreach (var car in FilteredView.OfType<RaceGridEntry>().Where(x => x.CarSkin == null).Select(x => x.Car).Distinct()) {
-                await car.SkinsManager.EnsureLoadedAsync();
-                if (cancellation.IsCancellationRequested) return null;
+            var skins = await GenerateGameEntries_Skins(cancellation);
+            if (cancellation.IsCancellationRequested) return null;
 
-                skins[car.Id] = GoodShuffle.Get(skinsFilter == null ? car.EnabledOnlySkins : car.EnabledOnlySkins.Where(skinsFilter.Test));
-                if (skins[car.Id].Size == 0) {
-                    throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
-                }
-            }
-
-            NameNationality[] nameNationalities;
-            if (opponentsNumber == 7 && OptionNfsPorscheNames) {
-                nameNationalities = new[] {
-                    new NameNationality { Name = "Dylan", Nationality = "Wales" },
-                    new NameNationality { Name = "Parise", Nationality = "Italy" },
-                    new NameNationality { Name = "Steele", Nationality = "United States" },
-                    new NameNationality { Name = "Wingnut", Nationality = "England" },
-                    new NameNationality { Name = "Leadfoot", Nationality = "Australia" },
-                    new NameNationality { Name = "Amazon", Nationality = "United States" },
-                    new NameNationality { Name = "Backlash", Nationality = "United States" }
-                };
-            } else if (DataProvider.Instance.NationalitiesAndNames.Any()) {
-                nameNationalities = GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray();
-            } else {
-                nameNationalities = null;
-            }
-
-            List<double> aiLevels;
-            if (AiLevelFixed) {
-                aiLevels = null;
-            } else {
-                var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                    select AiLevelMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiLevel - AiLevelMin)).RoundToInt();
-                if (AiLevelArrangeReverse) {
-                    aiLevelsInner = aiLevelsInner.Reverse();
-                }
-
-                if (Equals(AiLevelArrangeRandom, 1d)) {
-                    aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
-                } else if (AiLevelArrangeRandom > 0d) {
-                    aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom);
-                }
-
-                aiLevels = aiLevelsInner.Take(opponentsNumber).ToList();
-                Logging.Debug("AI levels: " + aiLevels.Select(x => $@"{x}%").JoinToString(@", "));
-            }
-
-            List<double> aiAggressions;
-            if (AiAggressionFixed) {
-                aiAggressions = null;
-            } else {
-                var aiAggressionsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                    select AiAggressionMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiAggression - AiAggressionMin)).RoundToInt();
-                if (AiAggressionArrangeReverse) {
-                    aiAggressionsInner = aiAggressionsInner.Reverse();
-                }
-
-                if (Equals(AiAggressionArrangeRandom, 1d)) {
-                    aiAggressionsInner = GoodShuffle.Get(aiAggressionsInner);
-                } else if (AiAggressionArrangeRandom > 0d) {
-                    aiAggressionsInner = LimitedShuffle.Get(aiAggressionsInner, AiAggressionArrangeRandom);
-                }
-
-                aiAggressions = aiAggressionsInner.Take(opponentsNumber).ToList();
-                Logging.Debug("AI aggressions: " + aiAggressions.Select(x => $@"{x}%").JoinToString(@", "));
-            }
-
-            IEnumerable<RaceGridEntry> final;
-            if (Mode.CandidatesMode) {
-                var allowed = VarietyLimitation <= 0 ? null
-                        : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct()).Take(VarietyLimitation).ToList();
-                var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) == true
-                        ? new[] { x }.Repeat(x.CandidatePriority) : new RaceGridEntry[0]).ToList();
-
-                if (ShuffleCandidates) {
-                    var shuffled = GoodShuffle.Get(list);
-
-                    if (_playerCar != null) {
-                        var same = list.FirstOrDefault(x => x.Car == _playerCar);
-                        if (same != null) {
-                            shuffled.IgnoreOnce(same);
-                        }
-                    }
-
-                    final = shuffled.Take(opponentsNumber);
-                } else {
-                    var skip = _playerCar;
-                    final = LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
-                        if (x.Car == skip) {
-                            skip = null;
-                            return false;
-                        }
-
-                        return true;
-                    }).Take(opponentsNumber);
-                }
-            } else {
-                final = NonfilteredList.Where(x => !x.SpecialEntry);
-            }
+            var nameNationalities = GenerateGameEntries_NameNationalities(opponentsNumber);
+            var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber);
+            var aiAggressions = GenerateGameEntries_AiAggressions(opponentsNumber);
+            var final = GenerateGameEntries_FinalStep(opponentsNumber);
 
             if (_playerCar != null) {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
@@ -1461,11 +1366,7 @@ namespace AcManager.Controls.ViewModels {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
                 var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
-                var skin = entry.CarSkin;
-                if (skin == null) {
-                    skin = skins.GetValueOrDefault(entry.Car.Id)?.Next;
-                }
-
+                var skin = entry.CarSkin ?? skins.GetValueOrDefault(entry.Car.Id)?.Next;
                 var name = entry.Name;
                 if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames) {
                     var skinDriverNames = skin?.DriverName?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
@@ -1525,6 +1426,108 @@ namespace AcManager.Controls.ViewModels {
                     SkinId = skinId
                 };
             }).ToList();
+        }
+
+        [NotNull]
+        private async Task<Dictionary<string, GoodShuffle<CarSkinObject>>> GenerateGameEntries_Skins(CancellationToken cancellation) {
+            var skinsFilter = string.IsNullOrWhiteSpace(RandomSkinsFilter) ? null : Filter.Create(CarSkinObjectTester.Instance, RandomSkinsFilter);
+            var skins = new Dictionary<string, GoodShuffle<CarSkinObject>>();
+            foreach (var car in FilteredView.OfType<RaceGridEntry>().Where(x => x.CarSkin == null).Select(x => x.Car).Distinct()) {
+                await car.SkinsManager.EnsureLoadedAsync();
+                if (cancellation.IsCancellationRequested) break;
+
+                skins[car.Id] = GoodShuffle.Get(skinsFilter == null ? car.EnabledOnlySkins : car.EnabledOnlySkins.Where(skinsFilter.Test));
+                if (skins[car.Id].Size == 0) {
+                    throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
+                }
+            }
+            return skins;
+        }
+
+        [CanBeNull]
+        private static NameNationality[] GenerateGameEntries_NameNationalities(int opponentsNumber) {
+            if (opponentsNumber == 7 && OptionNfsPorscheNames) {
+                return new[] {
+                    new NameNationality { Name = "Dylan", Nationality = "Wales" },
+                    new NameNationality { Name = "Parise", Nationality = "Italy" },
+                    new NameNationality { Name = "Steele", Nationality = "United States" },
+                    new NameNationality { Name = "Wingnut", Nationality = "England" },
+                    new NameNationality { Name = "Leadfoot", Nationality = "Australia" },
+                    new NameNationality { Name = "Amazon", Nationality = "United States" },
+                    new NameNationality { Name = "Backlash", Nationality = "United States" }
+                };
+            }
+
+            return DataProvider.Instance.NationalitiesAndNames.Any()
+                    ? GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray()
+                    : null;
+        }
+
+        [CanBeNull]
+        private List<double> GenerateGameEntries_AiLevels(int opponentsNumber) {
+            if (AiLevelFixed) return null;
+
+            var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
+                                select AiLevelMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiLevel - AiLevelMin)).RoundToInt();
+            if (AiLevelArrangeReverse) {
+                aiLevelsInner = aiLevelsInner.Reverse();
+            }
+
+            if (Equals(AiLevelArrangeRandom, 1d)) {
+                aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
+            } else if (AiLevelArrangeRandom > 0d) {
+                aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom);
+            }
+
+            return aiLevelsInner.Take(opponentsNumber).ToList();
+        }
+
+        [CanBeNull]
+        private List<double> GenerateGameEntries_AiAggressions(int opponentsNumber) {
+            if (AiAggressionFixed) return null;
+
+            var aiAggressionsInner = from i in Enumerable.Range(0, opponentsNumber)
+                                     select AiAggressionMin
+                                             + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiAggression - AiAggressionMin)).RoundToInt();
+            if (AiAggressionArrangeReverse) {
+                aiAggressionsInner = aiAggressionsInner.Reverse();
+            }
+
+            if (Equals(AiAggressionArrangeRandom, 1d)) {
+                aiAggressionsInner = GoodShuffle.Get(aiAggressionsInner);
+            } else if (AiAggressionArrangeRandom > 0d) {
+                aiAggressionsInner = LimitedShuffle.Get(aiAggressionsInner, AiAggressionArrangeRandom);
+            }
+
+            return aiAggressionsInner.Take(opponentsNumber).ToList();
+        }
+
+        [NotNull]
+        private IEnumerable<RaceGridEntry> GenerateGameEntries_FinalStep(int opponentsNumber) {
+            if (!Mode.CandidatesMode) return NonfilteredList.Where(x => !x.SpecialEntry);
+
+            var allowed = VarietyLimitation <= 0 ? null
+                    : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct()).Take(VarietyLimitation.Clamp(1, 1000)).ToList();
+            var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) == true
+                    ? new[] { x }.Repeat(x.CandidatePriority) : new RaceGridEntry[0]).ToList();
+
+            if (!ShuffleCandidates) {
+                var skip = _playerCar;
+                return LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
+                    if (x.Car != skip) return true;
+                    skip = null;
+                    return false;
+                }).Take(opponentsNumber);
+            }
+
+            var shuffled = GoodShuffle.Get(list);
+            if (_playerCar != null) {
+                var same = list.FirstOrDefault(x => x.Car == _playerCar);
+                if (same != null) {
+                    shuffled.IgnoreOnce(same);
+                }
+            }
+            return shuffled.Take(opponentsNumber);
         }
         #endregion
     }

@@ -141,9 +141,10 @@ namespace AcManager.Pages.Selected {
             FilterRange(key, value / 1e3, range, relative, roundTo, " km");
         }
 
-        protected void FilterRange([Localizable(false)] string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+        protected void FilterRange([Localizable(false)] string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0,
+                string postfix = "") {
             if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out var actual)) {
-                FilterRange(key, actual, range, relative, roundTo);
+                FilterRange(key, actual, range, relative, roundTo, postfix);
             } else {
                 NewFilterTab($@"{key}-");
             }

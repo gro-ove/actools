@@ -82,8 +82,12 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             OnSizeChanged(null, null);
 
+            if (_selectNextCarSkinId != null && _selectNextCar != null) {
+                _selectNextCar.SelectedSkin = _selectNextCar.EnabledOnlySkins.GetByIdOrDefault(_selectNextCarSkinId) ?? _selectNextCar.SelectedSkin;
+            }
+
             DataContext = new ViewModel(_selectNextSerializedPreset, true,
-                    _selectNextCar, _selectNextCarSkinId,
+                    _selectNextCar, null, //_selectNextCarSkinId,
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
                     weatherId: _selectNextWeather?.Id,
                     mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid);
@@ -444,13 +448,14 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private readonly string _carSetupId, _weatherId;
+            private readonly string _carSkinId, _carSetupId, _weatherId;
             private readonly int? _forceTime;
 
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null) {
                 _uiMode = uiMode;
+                _carSkinId = carSkinId;
                 _carSetupId = carSetupId;
                 _weatherId = weatherId;
                 // _serializedRaceGrid = serializedRaceGrid;
@@ -770,7 +775,7 @@ namespace AcManager.Pages.Drive {
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
                         CarId = selectedCar.Id,
-                        CarSkinId = selectedCar.SelectedSkin?.Id,
+                        CarSkinId = _carSkinId ?? selectedCar.SelectedSkin?.Id,
                         CarSetupId = _carSetupId,
                         TrackId = SelectedTrack.Id,
                         TrackConfigurationId = SelectedTrack.LayoutId

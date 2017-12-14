@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
@@ -61,9 +62,9 @@ namespace AcManager.Tools.GameProperties {
                 Dispose();
             }
 
-            private void OnKeyUp(object sender, KeyEventArgs e) {
+            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
                 try {
-                    if (e.KeyCode == Keys.Escape && !e.Control && !e.Shift && !e.Alt) {
+                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
                         Logging.Write("Escape was pressed, terminating loading…");
                         _sharedCancellationTokenSource?.Cancel();
                     }

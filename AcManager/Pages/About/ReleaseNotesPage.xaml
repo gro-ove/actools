@@ -42,7 +42,7 @@
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <!-- seperator -->
+      <!-- Separator -->
       <mui:ModernTabSplitter Grid.Column="1" SaveKey="ReleaseNotes" />
 
       <!-- content -->

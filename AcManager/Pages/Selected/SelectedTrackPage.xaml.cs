@@ -181,7 +181,7 @@ namespace AcManager.Pages.Selected {
                         break;
 
                     case "width":
-                        FilterRange("width", SelectedTrackConfiguration.SpecsWidth);
+                        FilterRange("width", SelectedTrackConfiguration.SpecsWidth, postfix: "m");
                         break;
 
                     case "pits":

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Windows.Input;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
@@ -21,9 +22,9 @@ namespace AcManager.Tools.GameProperties {
                 }
             }
 
-            private void OnKey(object sender, KeyEventArgs e) {
+            private static void OnKey(object sender, VirtualKeyCodeEventArgs e) {
                 try {
-                    if (e.KeyCode == Keys.Escape && !e.Control && !e.Shift && !e.Alt && AcSharedMemory.Instance.IsPaused &&
+                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None && AcSharedMemory.Instance.IsPaused &&
                             (DateTime.Now - AcSharedMemory.Instance.PauseTime).TotalSeconds > 0.15) {
                         AcMousePretender.ClickContinueButton();
                     }
