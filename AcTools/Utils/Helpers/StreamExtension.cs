@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -90,7 +91,7 @@ namespace AcTools.Utils.Helpers {
             return totalRead;
         }
 
-        public static async Task CopyToAsync(this Stream input, Stream output, long bytes, int bufferSize = 81920) {
+        /*public static async Task CopyToAsync(this Stream input, Stream output, long bytes, int bufferSize = 81920) {
             var buffer = new byte[bufferSize];
 
             for (var i = 0; i < 3 && bytes > 0; i++) {
@@ -107,6 +108,59 @@ namespace AcTools.Utils.Helpers {
 
             if (bytes > 0) {
                 throw new EndOfStreamException($"Unable to read all bytes required, {bytes} left");
+            }
+        }*/
+
+        public static async Task CopyToAsync(this Stream input, long bytes, Stream output, int attempts = 1, int bufferSize = 81920,
+                IProgress<long> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+            var buffer = new byte[bufferSize];
+            var totalPassed = 0L;
+
+            for (var i = 0; i < attempts && bytes > 0; i++) {
+                if (i > 0) {
+                    await Task.Delay(50, cancellation);
+                    cancellation.ThrowIfCancellationRequested();
+                }
+
+                int read;
+                while (bytes > 0 && (read = await input.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytes)).ConfigureAwait(false)) > 0) {
+                    cancellation.ThrowIfCancellationRequested();
+
+                    await output.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                    cancellation.ThrowIfCancellationRequested();
+
+                    bytes -= read;
+                    totalPassed += read;
+                    progress?.Report(totalPassed);
+                }
+            }
+
+            if (bytes > 0) {
+                throw new EndOfStreamException($"Unable to read all bytes required, {bytes} left");
+            }
+        }
+
+        public static async Task CopyToAsync(this Stream input, Stream output, int attempts = 1, int bufferSize = 81920,
+                IProgress<long> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+            var buffer = new byte[bufferSize];
+            var totalPassed = 0L;
+
+            for (var i = 0; i < attempts; i++) {
+                if (i > 0) {
+                    await Task.Delay(50, cancellation);
+                    cancellation.ThrowIfCancellationRequested();
+                }
+
+                int read;
+                while ((read = await input.ReadAsync(buffer, 0, buffer.Length, cancellation).ConfigureAwait(false)) > 0) {
+                    cancellation.ThrowIfCancellationRequested();
+
+                    await output.WriteAsync(buffer, 0, read, cancellation);
+                    cancellation.ThrowIfCancellationRequested();
+
+                    totalPassed += read;
+                    progress?.Report(totalPassed);
+                }
             }
         }
     }

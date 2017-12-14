@@ -7,23 +7,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
-    public class FlexibleLoaderMetaInformation {
-        public FlexibleLoaderMetaInformation(long totalSize, string fileName, string version) {
-            TotalSize = totalSize;
-            FileName = fileName;
-            Version = version;
-        }
-
-        public long TotalSize { get; }
-        public string FileName { get; }
-        public string Version { get; }
-    }
-
     public interface ICmRequestHandler {
         bool Test([NotNull] string request);
 
@@ -64,6 +54,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             return new DirectLoader(uri);
         }
 
+        /*
         private static string GetTemporaryName(string argument) {
             using (var sha1 = new SHA1Managed()) {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(argument));
@@ -73,13 +64,9 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         [ItemNotNull]
         public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
-                string directory = null, IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var fixedDirectory = directory != null;
-            if (!fixedDirectory) {
-                directory = SettingsHolder.Content.TemporaryFilesLocationValue;
-            }
-
+            var directory = SettingsHolder.Content.TemporaryFilesLocationValue;
             if (useCachedIfAny) {
                 var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
                 var destination = Path.Combine(directory, fileName);
@@ -99,7 +86,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 string destination;
                 if (name != null) {
                     destination = Path.Combine(directory, name);
-                    if (!fixedDirectory && File.Exists(destination)) {
+                    if (File.Exists(destination)) {
                         destination = FileUtils.GetTempFileNameFixed(directory, name);
                     }
                 } else {
@@ -112,7 +99,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
                 return destination;
             }
-        }
+        }*/
 
         private static IWebProxy _proxy;
 
@@ -137,11 +124,14 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        public static async Task LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<string> LoadAsyncTo(string argument, FlexibleLoaderDestinationCallback destinationCallback,
+                IProgress<AsyncProgressEntry> progress = null,
                 Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
-                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
+                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10)))
+                using (var localCancellationToken = new CancellationTokenSource())
+                using (var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(localCancellationToken.Token, cancellation)) {
                     var client = order.Victim;
 
                     if (_proxy != null) {
@@ -150,52 +140,51 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                     progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                    cancellation.ThrowIfCancellationRequested();
-                    cancellation.Register(client.CancelAsync);
+                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
+                    linkedCancellationSource.Token.Register(client.CancelAsync);
 
-                    if (!await loader.PrepareAsync(client, cancellation)) {
+                    if (!await loader.PrepareAsync(client, linkedCancellationSource.Token)) {
                         throw new InformativeException("Can’t load file", "Loader preparation failed.");
                     }
 
-                    cancellation.ThrowIfCancellationRequested();
-                    metaInformationCallback?.Invoke(new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version));
+                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
+                    metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
 
                     var s = Stopwatch.StartNew();
                     if (loader.UsesClientToDownload) {
                         client.DownloadProgressChanged += (sender, args) => {
-                            if (s.Elapsed.TotalMilliseconds > 20) {
-                                order.Delay();
-                                s.Restart();
-                            } else {
-                                return;
-                            }
-
-                            var total = args.TotalBytesToReceive;
-                            if (total == -1 && loader.TotalSize != -1) {
-                                total = Math.Max(loader.TotalSize, args.BytesReceived);
-                            }
-
-                            progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
+                            if (s.Elapsed.TotalMilliseconds < 20) return;
+                            order.Delay();
+                            s.Restart();
+                            progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
+                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive));
                         };
                     }
 
-                    await loader.DownloadAsync(client, destination, loader.UsesClientToDownload ? null : new Progress<double>(p => {
-                        if (s.Elapsed.TotalMilliseconds > 20) {
-                            order.Delay();
-                            s.Restart();
-                        } else {
-                            return;
-                        }
+                    var loaded = await loader.DownloadAsync(client, destinationCallback, loader.UsesClientToDownload ? null : new Progress<long>(p => {
+#if DEBUG
+                        /*Logging.Debug(p);
+                        if (p > 30000) {
+                            localCancellationToken.Cancel();
+                        }*/
+#endif
 
-                        var total = loader.TotalSize;
-                        progress?.Report(total == -1 ?
-                                new AsyncProgressEntry("Loading…", p) :
-                                AsyncProgressEntry.CreateDownloading((long)(p * total), total));
-                    }), cancellation);
-                    cancellation.ThrowIfCancellationRequested();
+                        if (s.Elapsed.TotalMilliseconds < 20) return;
+                        order.Delay();
+                        s.Restart();
+                        progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value)
+                                : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
+                    }), linkedCancellationSource.Token);
+                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
+                    Logging.Write("Loaded: " + loaded);
+                    return loaded;
                 }
-            } catch (Exception) when (cancellation.IsCancellationRequested) {
+            } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCanceled()) {
+                Logging.Warning("Cancelled");
                 throw new OperationCanceledException();
+            } catch (Exception e) {
+                Logging.Warning(e);
+                throw;
             }
         }
     }

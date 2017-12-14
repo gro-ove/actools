@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
@@ -30,7 +33,7 @@ namespace AcManager.Tools.Helpers {
                 }
 
                 public CookieHolder() {
-                    _value = Lazier.Create(() => _values.Select(x => $"{x.Key}={x.Value}").JoinToString(';'));
+                    _value = Lazier.Create(() => _values.Select(x => $@"{x.Key}={x.Value}").JoinToString(';'));
                 }
 
                 private readonly Lazier<string> _value;
@@ -104,6 +107,17 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => _autoRedirect = oldValue);
         }
 
+        private Tuple<long, long> _range;
+
+        [CanBeNull]
+        public Tuple<long, long> CurrentRangeToLoad => _range;
+
+        public IDisposable SetRange(Tuple<long, long> value) {
+            var oldValue = _range;
+            _range = value;
+            return new ActionAsDisposable(() => _range = oldValue);
+        }
+
         private bool _debugMode;
 
         public IDisposable SetDebugMode(bool value) {
@@ -131,6 +145,22 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => Headers[HttpRequestHeader.UserAgent] = oldValue);
         }
 
+        [CanBeNull]
+        public new WebHeaderCollection ResponseHeaders => base.ResponseHeaders;
+
+        public void LogResponseHeaders([CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            Logging.Debug(ResponseHeaders?.AllKeys.Select(x => $"{x}: {ResponseHeaders[x]}").JoinToString('\n') ?? "No response headers set", m, p, l);
+        }
+
+        public async Task<long?> GetContentSize(string url) {
+            using (SetMethod("HEAD"))
+            using (SetAutoRedirect(false)) {
+                await DownloadStringTaskAsync(url);
+                return ResponseHeaders != null && long.TryParse(ResponseHeaders[HttpResponseHeader.ContentLength],
+                        NumberStyles.Any, CultureInfo.InvariantCulture, out var length) ? length : (long?)null;
+            }
+        }
+
         private WebRequest _lastRequest;
 
         protected override WebRequest GetWebRequest(Uri address) {
@@ -138,20 +168,6 @@ namespace AcManager.Tools.Helpers {
 
             var request = base.GetWebRequest(address);
             if (request is HttpWebRequest webRequest) {
-                /*webRequest.CookieContainer = _container;
-
-                if (_cookies != null && string.Equals(address.Host, _cookiesHost, StringComparison.OrdinalIgnoreCase)) {
-                    // This isn’t exactly safe or even compatible, but it looks like there is something wrong
-                    // with CookieContainer. Anyway, until I check host, nothing really bad could happen, right? Right?
-                    webRequest.CookieContainer.Add(address, _cookies);
-                }
-
-                if (_debugMode) {
-                    Logging.Debug("Previous cookies host; current host: " + _cookiesHost + "; " + address.Host);
-                    Logging.Debug("Restore cookies:\n" + _cookies?.OfType<object>().JoinToString('\n'));
-                    Logging.Debug("Cookies:\n" + webRequest.CookieContainer.GetCookies(address).OfType<object>().JoinToString('\n'));
-                }*/
-
                 var cookie = _container[address];
                 if (cookie != null) {
                     ((HttpWebRequest)request).Headers.Set("Cookie", cookie);
@@ -175,6 +191,14 @@ namespace AcManager.Tools.Helpers {
 
                 if (!string.IsNullOrEmpty(_method)) {
                     webRequest.Method = _method;
+                }
+
+                if (_range != null && _range.Item1 >= 0) {
+                    if (_range.Item2 < 0) {
+                        ((HttpWebRequest)request).AddRange(_range.Item1);
+                    } else {
+                        ((HttpWebRequest)request).AddRange(_range.Item1, _range.Item2);
+                    }
                 }
 
                 if (_debugMode) {
@@ -288,6 +312,7 @@ namespace AcManager.Tools.Helpers {
                             case HttpStatusCode.MovedPermanently:
                             case HttpStatusCode.RedirectKeepVerb:
                             case HttpStatusCode.RedirectMethod:
+                                if (w.ResponseHeaders == null) return newUrl;
                                 newUrl = w.ResponseHeaders["Location"];
                                 if (newUrl == null) return url;
                                 if (newUrl.IndexOf(@"://", StringComparison.Ordinal) == -1) {

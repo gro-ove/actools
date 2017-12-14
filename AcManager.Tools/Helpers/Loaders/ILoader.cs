@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public interface ILoader {
-        long TotalSize { get; }
+        long? TotalSize { get; }
 
         [CanBeNull]
         string FileName { get; }
@@ -15,9 +15,10 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         bool UsesClientToDownload { get; }
 
-        Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation);
+        Task<bool> PrepareAsync([NotNull] CookieAwareWebClient client, CancellationToken cancellation);
 
-        Task DownloadAsync(CookieAwareWebClient client, string destination, IProgress<double> progress, CancellationToken cancellation);
+        Task<string> DownloadAsync([NotNull] CookieAwareWebClient client, [NotNull] FlexibleLoaderDestinationCallback destinationCallback,
+                [CanBeNull] IProgress<long> progress, CancellationToken cancellation);
 
         Task<string> GetDownloadLink(CancellationToken cancellation);
     }

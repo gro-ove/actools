@@ -86,13 +86,14 @@ namespace AcManager.Tools.Helpers.Loaders {
             return true;
         }
 
-        public override async Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {
+        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback,
+                IProgress<long> progress, CancellationToken cancellation) {
             if (OptionFailImmediately) {
                 throw new NotSupportedException();
             }
 
             using (client.SetProxy(SettingsHolder.Content.RdProxy)) {
-                await client.DownloadFileTaskAsync(Url, destination);
+                return await base.DownloadAsyncInner(client, destinationCallback, progress, cancellation);
             }
         }
     }

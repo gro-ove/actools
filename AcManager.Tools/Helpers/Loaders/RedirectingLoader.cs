@@ -14,9 +14,9 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         protected abstract Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation);
 
-        protected long? OverrideTotalSize;
-        protected string OverrideFileName;
-        protected string OverrideVersion;
+        protected long? OverrideTotalSize { get; set; }
+        protected string OverrideFileName { get; set; }
+        protected string OverrideVersion { get; set; }
 
         public async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             var url = await GetRedirect(_url, client, cancellation);
@@ -30,13 +30,14 @@ namespace AcManager.Tools.Helpers.Loaders {
             return await _innerLoader.PrepareAsync(client, cancellation);
         }
 
-        public long TotalSize => OverrideTotalSize ?? _innerLoader?.TotalSize ?? -1L;
+        public long? TotalSize => OverrideTotalSize ?? _innerLoader?.TotalSize;
         public string FileName => OverrideFileName ?? _innerLoader?.FileName;
         public string Version => OverrideVersion ?? _innerLoader?.Version;
         public bool UsesClientToDownload => _innerLoader?.UsesClientToDownload ?? true;
 
-        public Task DownloadAsync(CookieAwareWebClient client, string destination, IProgress<double> progress, CancellationToken cancellation) {
-            return _innerLoader.DownloadAsync(client, destination, progress, cancellation);
+        public Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress,
+                CancellationToken cancellation) {
+            return _innerLoader.DownloadAsync(client, destinationCallback, progress, cancellation);
         }
 
         public Task<string> GetDownloadLink(CancellationToken cancellation) {

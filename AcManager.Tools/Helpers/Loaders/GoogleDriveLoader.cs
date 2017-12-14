@@ -26,43 +26,41 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public GoogleDriveLoader(string url) : base(PrepareUrl(url)) {}
 
+        protected override bool HeadRequestSupported => false;
+
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             Logging.Debug(Url);
             if (!Url.Contains("://drive.google.com/uc?", StringComparison.OrdinalIgnoreCase)) return true;
 
             // First of all, let’s see if there is an HTML-file under that link
-            Logging.Debug("HEAD request is coming…");
-            try {
-                using (client.SetMethod("HEAD"))
-                using (client.SetAutoRedirect(false)) {
-                    await client.DownloadStringTaskAsync(Url);
-                    Logging.Debug("Done");
+            Logging.Debug("GET request is coming…");
+            string webPageContent;
+
+            using (client.SetAutoRedirect(false))
+            using (var stream = await client.OpenReadTaskAsync(Url)) {
+                if (cancellation.IsCancellationRequested) return false;
+
+                // If file is freely available to download, server should redirect user to downloading
+                var location = client.ResponseHeaders?.Get("Location");
+                if (location != null) {
+                    Url = location;
+                    FileName = new Uri(Url, UriKind.RelativeOrAbsolute).GetQueryParam("id");
+                    Logging.Debug("Download URL is ready: " + location);
+                    client.LogResponseHeaders();
+                    return true;
                 }
-            } catch (Exception e) {
-                Logging.Warning(e);
+
+                Logging.Debug("Content-Type: " + client.ResponseHeaders?.Get("Content-Type"));
+                if (client.ResponseHeaders?.Get("Content-Type").Contains("text/html", StringComparison.OrdinalIgnoreCase) == false) return true;
+
+                // Looks like it’s a webpage, now we need to download and parse it
+                webPageContent = (await stream.ReadAsBytesAsync()).ToUtf8String();
+                if (cancellation.IsCancellationRequested) return false;
+
+                Logging.Debug("…done");
             }
 
-            // If file is freely available to download, server should redirect user to downloading
-            var location = client.ResponseHeaders?.Get("Location");
-            if (location != null) {
-                Url = location;
-                Logging.Debug("Download URL is ready: " + location);
-                return true;
-            }
-
-            Logging.Debug("Loading page…");
-
-            string downloadPage;
-            using (client.SetDebugMode(OptionDebugMode)) {
-                downloadPage = await client.DownloadStringTaskAsync(Url);
-            }
-
-            if (cancellation.IsCancellationRequested) return false;
-
-            Logging.Debug("Content-Type: " + client.ResponseHeaders?.Get("Content-Type"));
-            if (client.ResponseHeaders?.Get("Content-Type").Contains("text/html", StringComparison.OrdinalIgnoreCase) == false) return true;
-
-            var match = Regex.Match(downloadPage, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(webPageContent, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
             if (!match.Success) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
                 return false;
@@ -71,11 +69,12 @@ namespace AcManager.Tools.Helpers.Loaders {
             Url = "https://drive.google.com" + HttpUtility.HtmlDecode(match.Groups[1].Value);
             Logging.Write("Google Drive download link: " + Url);
 
-            var fileNameMatch = Regex.Match(downloadPage, @"/<span class=""uc-name-size""><a[^>]*>([^<]+)");
+            var fileNameMatch = Regex.Match(webPageContent, @"/<span class=""uc-name-size""><a[^>]*>([^<]+)");
+            Logging.Debug("File name: " + fileNameMatch);
             FileName = fileNameMatch.Success ? fileNameMatch.Groups[1].Value : null;
 
             try {
-                var totalSizeMatch = Regex.Match(downloadPage, @"</a> \((\d+(?:\.\d+)?)([KMGT])\)</span> ");
+                var totalSizeMatch = Regex.Match(webPageContent, @"</a> \((\d+(?:\.\d+)?)([KMGT])\)</span> ");
                 if (totalSizeMatch.Success) {
                     var value = double.Parse(totalSizeMatch.Groups[1].Value, CultureInfo.InvariantCulture);
                     var unit = totalSizeMatch.Groups[2].Value;
@@ -129,10 +128,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             return true;
         }
 
-        public override async Task DownloadAsync(CookieAwareWebClient client, string destination, CancellationToken cancellation) {
+        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback,
+                IProgress<long> progress, CancellationToken cancellation) {
             using (client.SetDebugMode(OptionDebugMode))
             using (client.SetAutoRedirect(!OptionManualRedirect)) {
-                await base.DownloadAsync(client, destination, cancellation);
+                return await base.DownloadAsyncInner(client, destinationCallback, progress, cancellation);
             }
         }
     }

@@ -338,20 +338,18 @@ namespace AcManager.Tools.ContentInstallation {
             WindowsHelper.ViewFile(LoadedFilename);
         }, () => LoadedFilename != null && File.Exists(LoadedFilename)));
 
-        private string GetLoaderDestination() {
-            var directory = SettingsHolder.Content.TemporaryFilesLocationValue;
+        private static string GetFileNameFromUrl(string url) {
             var fileName = FileUtils.EnsureFileNameIsValid(
-                    Source.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
+                    url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
 
             if (string.IsNullOrWhiteSpace(fileName)) {
-                fileName = FileUtils.EnsureFileNameIsValid(Source).Trim();
+                fileName = FileUtils.EnsureFileNameIsValid(url).Trim();
                 if (string.IsNullOrWhiteSpace(fileName)) {
                     fileName = "download";
                 }
             }
 
-            fileName = Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
-            return FileUtils.EnsureUnique(true, Path.Combine(directory, fileName));
+            return Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
         }
 
         private bool _keepLoaded;
@@ -423,10 +421,11 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         try {
-                            LoadedFilename = GetLoaderDestination();
+                            // LoadedFilename = GetLoaderDestination();
                             // await Task.Delay(1);
-                            await FlexibleLoader.LoadAsyncTo(Source,
-                                    LoadedFilename,
+                            LoadedFilename = await FlexibleLoader.LoadAsyncTo(Source,
+                                    (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
+                                            information.FileName ?? GetFileNameFromUrl(url)), true),
                                     metaInformationCallback: information => {
                                         if (information.FileName != null && information.FileName != Path.GetFileName(Source)) {
                                             FileName = information.FileName;

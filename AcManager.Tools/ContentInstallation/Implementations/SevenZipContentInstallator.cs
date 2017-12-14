@@ -407,7 +407,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         progress?.Report(Path.GetFileName(entry.Item4), i, filtered.Count);
 
                         using (var write = File.Create(entry.Item4)) {
-                            await s.CopyToAsync(write, entry.Item3);
+                            await s.CopyToAsync(entry.Item3, write, 30);
                             if (cancellation.IsCancellationRequested) return;
                         }
 

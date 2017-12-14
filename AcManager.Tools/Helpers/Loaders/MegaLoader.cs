@@ -16,10 +16,8 @@ namespace AcManager.Tools.Helpers.Loaders {
             _uri = new Uri(url);
         }
 
-        public long TotalSize { get; private set; }
-
+        public long? TotalSize { get; private set; }
         public string FileName { get; private set; }
-
         public string Version => null;
 
         public async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
@@ -34,12 +32,20 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public bool UsesClientToDownload => false;
 
-        public Task DownloadAsync(CookieAwareWebClient client, string destination, IProgress<double> progress, CancellationToken cancellation) {
-            if (File.Exists(destination)) {
-                File.Delete(destination);
+        public async Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress,
+                CancellationToken cancellation) {
+            // TODO: Resume download?
+            var d = destinationCallback(_uri.OriginalString, FlexibleLoaderMetaInformation.FromLoader(this));
+            if (File.Exists(d.Filename)) {
+                if (d.CanResumeDownload && new FileInfo(d.Filename).Length == TotalSize) {
+                    return d.Filename;
+                }
+
+                File.Delete(d.Filename);
             }
 
-            return _client.DownloadFileAsync(_uri, destination, new Progress<double>(x => progress?.Report(x / 100d)), cancellation);
+            await _client.DownloadFileAsync(_uri, d.Filename, new Progress<double>(x => progress?.Report((long)(TotalSize ?? 0 * x / 100))), cancellation);
+            return d.Filename;
         }
 
         public Task<string> GetDownloadLink(CancellationToken cancellation) {
