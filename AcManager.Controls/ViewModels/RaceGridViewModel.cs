@@ -1508,7 +1508,7 @@ namespace AcManager.Controls.ViewModels {
 
             var allowed = VarietyLimitation <= 0 ? null
                     : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct()).Take(VarietyLimitation.Clamp(1, 1000)).ToList();
-            var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) == true
+            var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) != false
                     ? new[] { x }.Repeat(x.CandidatePriority) : new RaceGridEntry[0]).ToList();
 
             if (!ShuffleCandidates) {

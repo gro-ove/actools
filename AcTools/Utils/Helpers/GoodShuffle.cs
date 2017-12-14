@@ -55,7 +55,7 @@ namespace AcTools.Utils.Helpers {
         public LimitedShuffle(IList<T> list, double randomization) : base(list) {
             _randomization = randomization;
         }
-        
+
         private static void Shuffle(int[] buffer, int limit) {
             for (var i = 0; i < buffer.Length; i++) {
                 buffer[i] = i;
@@ -110,7 +110,7 @@ namespace AcTools.Utils.Helpers {
             for (var i = 0; i < size; i++) {
                 mt[i] = -1;
             }
-            
+
             for (var i = 0; i < size; i++) {
                 TryKuhn(new bool[size], g, mt, i);
             }
@@ -147,7 +147,7 @@ namespace AcTools.Utils.Helpers {
                     for (var i = 0; i < buffer.Length; i++) {
                         var delta = Math.Abs(i - buffer[i]);
                         if (delta > offset) {
-                            goto next;
+                            goto NextIteration;
                         }
                     }
 
@@ -156,7 +156,8 @@ namespace AcTools.Utils.Helpers {
                     }
 
                     return;
-                    next: continue;
+                    NextIteration:
+                    { }
                 }
 
                 Debug.WriteLine("Out! " + string.Join(",", buffer));
@@ -177,6 +178,10 @@ namespace AcTools.Utils.Helpers {
         public int Limit { get; private set; }
 
         internal BaseShuffle(IList<T> list) {
+            if (list.Count == 0) {
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(list));
+            }
+
             _list = list;
             Limit = _list.Count * 1000;
             Size = _list.Count;
@@ -205,7 +210,7 @@ namespace AcTools.Utils.Helpers {
                 Shuffle();
             }
         }
-        
+
         public T GetNext() {
             if (_list.Count == 0) return default(T);
 
@@ -217,7 +222,7 @@ namespace AcTools.Utils.Helpers {
                     _ignoreItem = false;
                     continue;
                 }
-                
+
                 return item;
             }
         }
@@ -225,7 +230,7 @@ namespace AcTools.Utils.Helpers {
         public void RemoveLimit() {
             Limit = int.MaxValue;
         }
-        
+
         public T Next => GetNext();
 
         public IEnumerator<T> GetEnumerator() {
