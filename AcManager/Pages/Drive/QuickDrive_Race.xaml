@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
-    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance drive:QuickDrive_Race+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -52,8 +52,8 @@
             From="{Binding RaceGridViewModel.AiLevelMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
             To="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" SmallChange="5" LargeChange="5"
             BindingMode="FromToFixed" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}"
-            mui:FancyHintsService.HorizontalContentAlignment="Center" mui:FancyHintsService.VerticalContentAlignment="Bottom" mui:FancyHintsService.TriggerOnLoad="True"
-            mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
+            mui:FancyHintsService.HorizontalContentAlignment="Center" mui:FancyHintsService.VerticalContentAlignment="Bottom"
+            mui:FancyHintsService.TriggerOnLoad="True" mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
         <mui:ContextMenuButton DockPanel.Dock="Right"
             Visibility="{Binding RaceGridViewModel.AiLevelFixed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
           <c:ModernPopup Padding="8">
@@ -159,7 +159,8 @@
             </TextBlock.Text>
           </TextBlock>
         </StackPanel.ToolTip>
-        <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" mui:BetterTextBox.Mode="IntegerOrZeroLabel">
+        <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0"
+            mui:BetterTextBox.Maximum="{Binding RaceGridViewModel.StartingPositionLimit}" mui:BetterTextBox.Converter="{Binding StartingPositionInputConverter}">
           <mui:ValueLabel.Value>
             <MultiBinding Converter="{x:Static drive:QuickDrive_Race.StartingPositionConverter}">
               <Binding Path="RaceGridViewModel.StartingPositionLimited" Mode="TwoWay" />

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
@@ -54,11 +55,10 @@ namespace AcManager.Pages.Dialogs {
                 new InputBinding(ToggleFavouriteCommand, new KeyGesture(Key.B, ModifierKeys.Control))
             });
             InitializeComponent();
+            Buttons = new Control[0];
 
             Model.PropertyChanged += OnModelPropertyChanged;
             BackgroundImage0.Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
-
-            Buttons = new[] { OkButton, CancelButton };
         }
 
         private DelegateCommand _toggleFavouriteCommand;

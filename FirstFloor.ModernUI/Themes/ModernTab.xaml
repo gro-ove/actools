@@ -188,7 +188,7 @@
                     </ListBox.ItemTemplate>
                   </ListBox>
 
-                  <!-- seperator -->
+                  <!-- Separator -->
                   <c:ModernTabSplitter Grid.Column="1" />
 
                   <!-- content -->

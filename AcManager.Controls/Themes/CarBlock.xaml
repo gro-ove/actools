@@ -19,7 +19,7 @@
           <!-- Data section -->
           <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}"
               DataContext="{Binding Car, RelativeSource={RelativeSource TemplatedParent}}" Margin="0 8 -8 0" HorizontalScrollBarVisibility="Disabled"
-              VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0">
+              VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0" Background="{TemplateBinding Background}">
             <DockPanel>
               <!-- Tags -->
               <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
@@ -122,7 +122,7 @@
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="{x:Type c:CarBlock}">
-              <DockPanel>
+              <DockPanel Background="{TemplateBinding Background}">
                 <mui:Cell DockPanel.Dock="Top" MaxWidth="1022">
                   <mui:BetterImage x:Name="PART_PreviewImage" Filename="{Binding SelectedSkin.PreviewImage, RelativeSource={RelativeSource TemplatedParent}}"
                       Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"

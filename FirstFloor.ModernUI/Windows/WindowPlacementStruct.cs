@@ -26,6 +26,13 @@ namespace FirstFloor.ModernUI.Windows {
                 Right = right;
                 Bottom = bottom;
             }
+
+            public int Width => Right - Left;
+            public int Height => Bottom - Top;
+
+            public override string ToString() {
+                return $"(Left={Left}, Top={Top}, Width={Width}, Height={Height})";
+            }
         }
 
         // POINT structure required by WINDOWPLACEMENT structure
@@ -38,6 +45,10 @@ namespace FirstFloor.ModernUI.Windows {
                 X = x;
                 Y = y;
             }
+
+            public override string ToString() {
+                return $"({X}, {Y})";
+            }
         }
 
         // WINDOWPLACEMENT stores the position, size, and state of a window
@@ -49,6 +60,12 @@ namespace FirstFloor.ModernUI.Windows {
             public WindowPlacementPoint minPosition;
             public WindowPlacementPoint maxPosition;
             public WindowPlacementRect normalPosition;
+
+            public WindowPlacementRect Rect => normalPosition;
+
+            public override string ToString() {
+                return $"Normal placement: {normalPosition}";
+            }
         }
 
         private static readonly Encoding Encoding = new UTF8Encoding();
@@ -86,7 +103,12 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
-        public static string GetPlacement(IntPtr windowHandle) {
+        private static WindowPlacementRect GetPlacementRect(IntPtr windowHandle) {
+            GetWindowPlacement(windowHandle, out var placement);
+            return placement.Rect;
+        }
+
+        private static string GetPlacement(IntPtr windowHandle) {
             GetWindowPlacement(windowHandle, out var placement);
             using (var memoryStream = new MemoryStream()) {
                 using (var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8)) {
@@ -106,21 +128,42 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public static bool IsWindowOnAnyScreen(this Window window, bool autoAdjustWindow = true) {
-            var width = (int)window.ActualWidth;
-            var height = (int)window.ActualHeight;
-            var screen = Screen.FromHandle(new WindowInteropHelper(window).Handle);
+            var handle = new WindowInteropHelper(window).Handle;
+            var placement = GetPlacementRect(handle);
+            var screen = Screen.FromHandle(handle);
+            var width = placement.Width;
+            var height = placement.Height;
+            var left = placement.Left;
+            var top = placement.Top;
+            Logging.Debug($"Screen: {screen}, window: {placement}");
 
-            var leftTest = window.Left >= screen.WorkingArea.Left;
-            var topTest = window.Top >= screen.WorkingArea.Top;
-            var bottomTest = window.Top + height <= screen.WorkingArea.Bottom;
-            var rightTest = window.Left + width <= screen.WorkingArea.Right;
+            var leftTest = left >= screen.Bounds.Left;
+            var topTest = top >= screen.Bounds.Top;
+            var bottomTest = top + height <= screen.Bounds.Bottom;
+            var rightTest = left + width <= screen.Bounds.Right;
             if (leftTest && topTest && bottomTest && rightTest) return true;
+            Logging.Debug($"Test: {leftTest}, {topTest}, {bottomTest}, {rightTest}");
 
             if (autoAdjustWindow) {
-                if (!leftTest) window.Left = window.Left - (window.Left - screen.WorkingArea.Left);
-                if (!topTest) window.Top = window.Top - (window.Top - screen.WorkingArea.Top);
-                if (!bottomTest) window.Top = window.Top - (window.Top + height - screen.WorkingArea.Bottom);
-                if (!rightTest) window.Left = window.Left - (window.Left + width - screen.WorkingArea.Right);
+                if (!leftTest){
+                    Logging.Debug($"Auto-adjust left: {screen.Bounds.Left}");
+                    window.Left = screen.Bounds.Left;
+                }
+
+                if (!topTest){
+                    Logging.Debug($"Auto-adjust top: {screen.Bounds.Top}");
+                    window.Top = screen.Bounds.Top;
+                }
+
+                if (!bottomTest){
+                    Logging.Debug($"Auto-adjust bottom: {screen.Bounds.Bottom - height}");
+                    window.Top = screen.Bounds.Bottom - height;
+                }
+
+                if (!rightTest){
+                    Logging.Debug($"Auto-adjust right: {screen.Bounds.Right - width}");
+                    window.Left = screen.Bounds.Right - width;
+                }
             }
 
             return false;

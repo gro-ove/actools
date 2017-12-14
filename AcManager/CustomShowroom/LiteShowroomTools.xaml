@@ -4,7 +4,7 @@
     xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:utils="clr-namespace:AcTools.Utils;assembly=AcTools"
     mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False"
     Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250"
-    LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
+    LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Padding="24">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
   </mui:ModernDialog.Resources>
 
   <mui:Cell>
-    <mui:SpacingStackPanel Margin="-4 -28 -4 0" Spacing="8" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1"
+    <mui:SpacingStackPanel Margin="-4 -16 -4 0" Spacing="8" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1"
         WindowChrome.IsHitTestVisibleInChrome="True">
       <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}" Command="{Binding SelectModeCommand}"
           CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" ToolTip="Visual settings"
@@ -36,7 +36,7 @@
           CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}" ToolTip="Several cars" />
     </mui:SpacingStackPanel>
 
-    <DockPanel Margin="-4 4 -4 -20">
+    <DockPanel Margin="-4 16 -4 -20">
       <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
           Style="{StaticResource UserPresetsControl.Compact.Share}" Margin="0 20 0 0" Width="208" />
 

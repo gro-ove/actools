@@ -194,6 +194,7 @@
     <Compile Include="Windows\Controls\BorderyViewbox.cs" />
     <Compile Include="Windows\Controls\ThumbExt.cs" />
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
+    <Compile Include="Windows\Controls\VirtualizingTilePanel2.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\BindableConverterConverter.cs" />
     <Compile Include="Windows\Converters\BrushOpacityConverter.cs" />

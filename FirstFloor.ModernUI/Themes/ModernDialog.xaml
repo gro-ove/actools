@@ -63,7 +63,7 @@
 
                     <DockPanel Panel.ZIndex="1">
                       <!-- title -->
-                      <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="24 24 24 0">
+                      <StackPanel x:Name="PART_Title" DockPanel.Dock="Top" Orientation="Horizontal" Margin="24 24 24 0">
                         <c:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly" Filename="{TemplateBinding IconSource}"
                             Visibility="{TemplateBinding IconSource, Converter={StaticResource ExistToVisibilityConverter}}" />
                         <TextBlock Text="{TemplateBinding Title}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
@@ -126,6 +126,14 @@
                 <Condition Property="WindowState" Value="Normal" />
               </MultiTrigger.Conditions>
               <Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="ShowTitle" Value="False" />
+                <Condition Property="ShowTopBlob" Value="False" />
+                <Condition Property="IconSource" Value="{x:Null}" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="PART_Title" Property="Visibility" Value="Collapsed" />
             </MultiTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

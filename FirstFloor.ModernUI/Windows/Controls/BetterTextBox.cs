@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -34,6 +36,53 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         IntegerOrZeroLabel,
         [Obsolete]
         IntegerOrMinusOneLabel,
+    }
+
+    public interface INumberInputConverter {
+        double? TryToParse([NotNull] string value);
+
+        [CanBeNull]
+        string BackToString(double value);
+    }
+
+    public class NumberInputConverter : INumberInputConverter, IValueConverter, IMultiValueConverter {
+        public static INumberInputConverter Default { get; } = new NumberInputConverter(null, null);
+
+        [CanBeNull]
+        private readonly Func<string, double?> _parse;
+
+        [CanBeNull]
+        private readonly Func<double, string> _backToString;
+
+        public NumberInputConverter([CanBeNull] Func<string, double?> parse, [CanBeNull] Func<double, string> backToString) {
+            _parse = parse;
+            _backToString = backToString;
+        }
+
+        public double? TryToParse(string value) {
+            return _parse != null ? _parse.Invoke(value)
+                    : BetterTextBox.FlexibleParser.TryParseDouble(value, out var parsed) ? parsed : (double?)null;
+        }
+
+        public string BackToString(double value) {
+            return _backToString?.Invoke(value) ?? value.ToString(CultureInfo.CurrentUICulture);
+        }
+
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return BackToString(value.AsDouble());
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            return TryToParse(value?.ToString() ?? "") ?? 0;
+        }
+
+        object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            return BackToString(values.FirstOrDefault().AsDouble());
+        }
+
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            return new object[]{ TryToParse(value?.ToString() ?? "") ?? 0 };
+        }
     }
 
     public class BetterComboBox : ComboBox {
@@ -123,8 +172,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public NullPrefixedCollection(IEnumerable collection)
                     // ReSharper disable once PossibleMultipleEnumeration
                     : base(new[] { NullValue }.Concat(collection.OfType<object>())) {
-                var o = collection as INotifyCollectionChanged;
-                if (o != null) {
+                if (collection is INotifyCollectionChanged o) {
                     // ReSharper disable once PossibleMultipleEnumeration
                     _collection = collection;
                     WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.AddHandler(o, nameof(o.CollectionChanged),
@@ -270,6 +318,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public static INumberInputConverter GetConverter(DependencyObject obj) {
+            return (INumberInputConverter)obj.GetValue(ConverterProperty);
+        }
+
+        public static void SetConverter(DependencyObject obj, INumberInputConverter value) {
+            obj.SetValue(ConverterProperty, value);
+        }
+
+        public static readonly DependencyProperty ConverterProperty = DependencyProperty.RegisterAttached("Converter", typeof(INumberInputConverter),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
+
+
         public static SpecialMode GetMode(DependencyObject obj) {
             return obj.GetValue(ModeProperty) as SpecialMode? ?? default(SpecialMode);
         }
@@ -356,12 +416,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         internal string ProcessText(string text, double delta) {
             var mode = GetMode(this);
+            var converter = GetConverter(this) ?? NumberInputConverter.Default;
             var minValue = GetMinimum(this);
             var maxValue = GetMaximum(this);
 
             switch (mode) {
                 case SpecialMode.Number: {
-                    if (!FlexibleParser.TryParseDouble(text, out var value)) return null;
+                    var valueNullable = converter.TryToParse(text);
+                    if (!valueNullable.HasValue) return null;
+                    var value = valueNullable.Value;
 
                     if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
                         delta *= 0.1;
@@ -377,14 +440,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     value += delta;
                     value = Math.Max(Math.Min(value, maxValue), minValue);
-                    return FlexibleParser.ReplaceDouble(text, value);
+                    return converter.BackToString(value) ?? FlexibleParser.ReplaceDouble(text, value);
                 }
 
                 case SpecialMode.Integer:
 #pragma warning disable 612
                 case SpecialMode.Positive: {
 #pragma warning restore 612
-                    if (!FlexibleParser.TryParseInt(text, out var value)) return null;
+                    var valueNullable = converter.TryToParse(text);
+                    if (!valueNullable.HasValue) return null;
+                    var value = Math.Round(valueNullable.Value);
 
                     if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
                         delta *= 10.0;
@@ -400,7 +465,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #pragma warning restore 612
                         value = 1;
                     }
-                    return FlexibleParser.ReplaceDouble(text, value);
+
+                    return converter.BackToString(value) ?? FlexibleParser.ReplaceDouble(text, value);
                 }
 
                 case SpecialMode.IntegerOrLabel:
@@ -408,11 +474,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 case SpecialMode.IntegerOrMinusOneLabel:
                 case SpecialMode.IntegerOrZeroLabel: {
 #pragma warning restore 612
-                    var skip = !FlexibleParser.TryParseInt(text, out var value);
-
-                    if (skip) {
-                        value = GetLabelValue();
-                    }
+                    var valueNullable = converter.TryToParse(text);
+                    var skip = !valueNullable.HasValue;
+                    var value = valueNullable ?? GetLabelValue();
 
                     if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
                         delta *= 10.0;
@@ -423,13 +487,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
 
                     value = (int)Math.Max(Math.Min((int)(value + delta), maxValue), minValue);
-
-                    var label = GetModeLabel(this);
-                    if (value == GetLabelValue() && label != null) {
-                        return label;
-                    }
-
-                    return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
+                    return converter.BackToString(value) ?? (value == GetLabelValue() && GetModeLabel(this) != null ? GetModeLabel(this)
+                            : skip ? converter.BackToString(value) : FlexibleParser.ReplaceDouble(text, value));
                 }
 
                 case SpecialMode.Time: {
@@ -516,7 +575,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         // sorry about it, but I don’t think I can handle another library only for number parsing
-        private static class FlexibleParser {
+        internal static class FlexibleParser {
             private static Regex _parseDouble, _parseInt;
 
             public static bool TryParseDouble(string s, out double value) {

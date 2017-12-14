@@ -594,7 +594,8 @@
         <DataTemplate DataType="{x:Type t:CarObject}">
           <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
-            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MaxWidth="200" Stretch="UniformToFill" Margin="-8 -10 -8 0" />
+            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="200" Stretch="UniformToFill"
+                Margin="-8 -10 -8 0" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <mui:BetterImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Filename="{Binding BrandBadge}" />
               <TextBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left"

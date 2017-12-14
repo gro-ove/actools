@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AcManager.Controls;
@@ -195,8 +196,7 @@ namespace AcManager.Pages.Dialogs {
                 new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control))
             });
             InitializeComponent();
-
-            Buttons = new [] { OkButton, CancelButton };
+            Buttons = new Control[0];
 
             if (defaultFilter != null) {
                 Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;

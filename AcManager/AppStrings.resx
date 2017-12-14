@@ -3255,7 +3255,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Report an issue</value>
   </data>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</value>
+    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url="https://trello.com/c/w5xT6ssZ/49-contacts"]contact us[/url].</value>
   </data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>Contact us:</value>

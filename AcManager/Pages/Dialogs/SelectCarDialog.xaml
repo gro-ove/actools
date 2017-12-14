@@ -2,9 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    d:DataContext="{d:DesignInstance di:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200"
-    MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS" WindowStartupLocation="Manual" ShowTopBlob="False">
+    Title="{Binding SelectedCar.DisplayName}" Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance di:SelectCarDialog}"
+    SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200" ShowTitle="False" MinWidth="745" MinHeight="540"
+    Height="640" LocationAndSizeKey="SelectCarDialog_LS" WindowStartupLocation="Manual" ShowTopBlob="False" Padding="24" ButtonsMargin="0">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -87,7 +87,6 @@
       </Style>
 
       <DataTemplate x:Key="TunableVersions.ItemTemplate" DataType="{x:Type t:CarObject}">
-        <!--<Button x:Name="PART_Button" Style="{StaticResource BaseButtonStyle.Nothing}">-->
         <mui:Cell>
           <Ellipse Width="54" Height="54" StrokeThickness="0" Fill="{DynamicResource CarIconBackground}" x:Name="PART_Bg" />
           <mui:BetterImage Width="64" Height="64" Margin="-6 -5 -4 -5" ToolTip="{Binding DisplayName}" x:Name="UpgradeIconImage"
@@ -102,7 +101,7 @@
           </mui:BetterImage>
           <Ellipse Width="54" Height="54" StrokeThickness="2" x:Name="PART_Ellipse" Stroke="{DynamicResource ModernButtonBorder}" />
         </mui:Cell>
-        <!--</Button>-->
+
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding IsChild}" Value="True">
             <Setter TargetName="UpgradeIconImage" Property="Filename" Value="{Binding UpgradeIcon}" />
@@ -141,52 +140,58 @@
       <ColumnDefinition Width="320" MinWidth="180" />
     </Grid.ColumnDefinitions>
 
-    <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True"
-        Margin="0 0 0 -42">
-      <mui:SpacingStackPanel Orientation="Horizontal" Margin="12" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-          DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" d:DataContext="{d:DesignInstance di:SelectCarDialog}">
-        <ComboBox Width="54" Height="54" ItemsSource="{Binding TunableVersions}" Style="{StaticResource TunableVersions.ComboBox}"
-            Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" SelectedItem="{Binding SelectedTunableVersion}"
-            ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
-        <!--<Button Margin="8 0 0 0" Command="{Binding ManageSetupsCommand}" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
-                Style="{StaticResource CarBlockButton}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}">
-            <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" Source="/Assets/Img/CarSetups.png" />
-        </Button>-->
-        <mui:ModernButton IconData="{StaticResource CarSetupIconData}" EllipseDiameter="52" EllipseStrokeThickness="2" IconWidth="28" IconHeight="28"
-            Command="{Binding ManageSetupsCommand}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}" />
-      </mui:SpacingStackPanel>
-    </c:CarBlock>
+    <DockPanel>
+      <DockPanel Dock="Top" Margin="0 0 0 20">
+        <c:FavouriteButton DockPanel.Dock="Right" VerticalAlignment="Center" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 0 8 0" />
+        <mui:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly" Filename="{Binding SelectedCar.BrandBadge}" />
+        <TextBlock Text="{Binding SelectedCar.DisplayName}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
+            TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
+      </DockPanel>
 
-    <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 -42 20 0" />
+      <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True">
+        <mui:SpacingStackPanel Orientation="Horizontal" Margin="12" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" d:DataContext="{d:DesignInstance di:SelectCarDialog}">
+          <ComboBox Width="54" Height="54" ItemsSource="{Binding TunableVersions}" Style="{StaticResource TunableVersions.ComboBox}"
+              Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" SelectedItem="{Binding SelectedTunableVersion}"
+              ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
+          <mui:ModernButton IconData="{StaticResource CarSetupIconData}" EllipseDiameter="52" EllipseStrokeThickness="2" IconWidth="28" IconHeight="28"
+              Command="{Binding ManageSetupsCommand}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}" />
+        </mui:SpacingStackPanel>
+      </c:CarBlock>
+    </DockPanel>
 
-    <!-- Seperator -->
+    <!-- Separator -->
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarSelectionDialog" InitialWidth="320" AdjustRightColumn="True" Foreground="Transparent"
         DragDelta="OnSeparatorDrag" Panel.ZIndex="-1" />
     <Border Grid.Column="1" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.CarDialogThumbinalMode}, Mode=OneTime}"
         VerticalAlignment="Center" />
 
-    <AdornerDecorator Grid.Column="2" Margin="0 -44 0 0">
-      <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml" FrameNavigated="OnTabsNavigated"
-          mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
-        <mui:ModernTab.LinksListBoxTemplate>
-          <ControlTemplate>
-            <DockPanel>
-              <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
+    <DockPanel Grid.Column="2">
+      <StackPanel DockPanel.Dock="Bottom" Margin="0 20 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
+        <ContentPresenter Content="{Binding OkButton}" />
+        <ContentPresenter Content="{Binding CancelButton}" />
+      </StackPanel>
+
+      <AdornerDecorator>
+        <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
+            mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
+          <mui:ModernTab.LinksListBoxTemplate>
+            <ControlTemplate>
               <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
-            </DockPanel>
-          </ControlTemplate>
-        </mui:ModernTab.LinksListBoxTemplate>
-        <mui:ModernTab.Links>
-          <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
-          <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
-          <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories.xaml" />
-          <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/CarDlcs.xaml" />
-          <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
-          <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/CarRatings.xaml" />
-          <!-- ReSharper disable once Xaml.PathError -->
-          <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
-        </mui:ModernTab.Links>
-      </mui:ModernTab>
-    </AdornerDecorator>
+            </ControlTemplate>
+          </mui:ModernTab.LinksListBoxTemplate>
+          <mui:ModernTab.Links>
+            <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
+            <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
+            <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories.xaml" />
+            <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/CarDlcs.xaml" />
+            <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
+            <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/CarRatings.xaml" />
+            <!-- ReSharper disable once Xaml.PathError -->
+            <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
+          </mui:ModernTab.Links>
+        </mui:ModernTab>
+      </AdornerDecorator>
+    </DockPanel>
   </Grid>
 </mui:ModernDialog>

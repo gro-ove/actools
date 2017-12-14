@@ -46,7 +46,6 @@ namespace AcManager.Pages.Drive {
             ActualModel.Unload();
         }
 
-
         public QuickDriveModeViewModel Model {
             get => (QuickDriveModeViewModel)DataContext;
             set => DataContext = value;
@@ -266,6 +265,12 @@ namespace AcManager.Pages.Drive {
                 } else {
                     Saveable.Reset();
                 }
+
+                StartingPositionInputConverter = new NumberInputConverter(
+                        s => string.Equals(s, AppStrings.Drive_Ordinal_Random, StringComparison.OrdinalIgnoreCase)
+                                ? 0 : string.Equals(s, AppStrings.Drive_Ordinal_Last, StringComparison.OrdinalIgnoreCase)
+                                        ? RaceGridViewModel.StartingPositionLimit : FlexibleParser.TryParseInt(s),
+                        d => GetDisplayPosition(d.RoundToInt().Clamp(0, RaceGridViewModel.StartingPositionLimit), RaceGridViewModel.StartingPositionLimit));
             }
 
             private void RaceGridViewModel_Changed(object sender, EventArgs e) {
@@ -384,6 +389,8 @@ namespace AcManager.Pages.Drive {
             public void SetRaceGridData(string serializedRaceGrid) {
                 RaceGridViewModel?.ImportFromPresetData(serializedRaceGrid);
             }
+
+            public NumberInputConverter StartingPositionInputConverter { get; }
         }
 
         public static string GetDisplayPosition(int startingPosition, int limit) {
@@ -397,7 +404,10 @@ namespace AcManager.Pages.Drive {
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-                return new object[] { FlexibleParser.TryParseInt(value?.ToString()) ?? 0, 0 };
+                var s = value?.ToString();
+                return new object[] { string.Equals(s, AppStrings.Drive_Ordinal_Random, StringComparison.OrdinalIgnoreCase)
+                        ? 0 : string.Equals(s, AppStrings.Drive_Ordinal_Last, StringComparison.OrdinalIgnoreCase)
+                                ? 99999 : FlexibleParser.TryParseInt(s) ?? 0, 0 };
             }
         }
 
