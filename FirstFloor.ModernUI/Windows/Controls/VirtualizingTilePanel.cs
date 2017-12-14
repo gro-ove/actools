@@ -8,6 +8,7 @@ using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    // TODO: Learn to write virtualizing panels and make a proper one as a replacement for VirtualizingTilePanel and VirtualizingTilePanel2
     public class VirtualizingTilePanel : VirtualizingPanel, IScrollInfo {
         private const double ScrollLineAmount = 16.0;
 
