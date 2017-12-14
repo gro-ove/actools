@@ -8,7 +8,8 @@ using System.Windows.Forms;
 
 namespace AcTools.Windows.Input {
     public class KeyboardListener : IDisposable {
-        public event KeyEventHandler KeyUp, KeyDown;
+        public event EventHandler<VirtualKeyCodeEventArgs> PreviewKeyUp, PreviewKeyDown;
+        public event EventHandler<VirtualKeyCodeEventArgs> KeyUp, KeyDown;
 
         public KeyboardListener(bool subscribe = true) {
             if (subscribe) {
@@ -17,14 +18,20 @@ namespace AcTools.Windows.Input {
         }
 
         protected virtual bool RaiseKeyUp(int virtualKeyCode) {
-            var e = new KeyEventArgs((Keys)virtualKeyCode);
-            KeyUp?.Invoke(this, e);
+            var e = new VirtualKeyCodeEventArgs(virtualKeyCode);
+            PreviewKeyUp?.Invoke(this, e);
+            if (!e.Handled && !e.SkipMainEvent) {
+                KeyUp?.Invoke(this, e);
+            }
             return e.Handled;
         }
 
         protected virtual bool RaiseKeyDown(int virtualKeyCode) {
-            var e = new KeyEventArgs((Keys)virtualKeyCode);
-            KeyDown?.Invoke(this, e);
+            var e = new VirtualKeyCodeEventArgs(virtualKeyCode);
+            PreviewKeyDown?.Invoke(this, e);
+            if (!e.Handled && !e.SkipMainEvent) {
+                KeyDown?.Invoke(this, e);
+            }
             return e.Handled;
         }
 
@@ -41,8 +48,9 @@ namespace AcTools.Windows.Input {
         }
 
         #region Static part
-        private static readonly List<KeyboardListener> Subscribed;
+        public static readonly int AppEventFlag = Math.Abs("typo4".GetHashCode());
 
+        private static readonly List<KeyboardListener> Subscribed;
         private static int _hookHandle;
         private static User32.HookProc _hookProc;
 
@@ -50,23 +58,31 @@ namespace AcTools.Windows.Input {
             Subscribed = new List<KeyboardListener>(1);
         }
 
+        private static readonly int PacketKey = (int)Keys.Packet;
+
         private static int KeyboardHookProc(int nCode, int wParam, IntPtr lParam) {
             if (nCode >= 0) {
                 var khs = (User32.KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(User32.KeyboardHookStruct));
-                switch (wParam) {
-                    case User32.WM_KEYDOWN:
-                    case User32.WM_SYSKEYDOWN:
-                        if (Subscribed.Any(x => x.RaiseKeyDown(khs.VirtualKeyCode))) {
-                            return -1;
-                        }
-                        break;
+                if (khs.ExtraInfo != AppEventFlag && khs.VirtualKeyCode != PacketKey) {
+                    switch (wParam) {
+                        case User32.WM_KEYDOWN:
+                        case User32.WM_SYSKEYDOWN:
+                            for (var i = Subscribed.Count - 1; i >= 0; i--) {
+                                if (Subscribed[i].RaiseKeyDown(khs.VirtualKeyCode)) {
+                                    return -1;
+                                }
+                            }
+                            break;
 
-                    case User32.WM_KEYUP:
-                    case User32.WM_SYSKEYUP:
-                        if (Subscribed.Any(x => x.RaiseKeyUp(khs.VirtualKeyCode))) {
-                            return -1;
-                        }
-                        break;
+                        case User32.WM_KEYUP:
+                        case User32.WM_SYSKEYUP:
+                            for (var i = Subscribed.Count - 1; i >= 0; i--) {
+                                if (Subscribed[i].RaiseKeyUp(khs.VirtualKeyCode)) {
+                                    return -1;
+                                }
+                            }
+                            break;
+                    }
                 }
             }
 
@@ -79,13 +95,13 @@ namespace AcTools.Windows.Input {
             Subscribed.Add(instance);
             if (_hookHandle == 0) {
                 // ReSharper disable once RedundantDelegateCreation
+                // Have to create that delegate to avoid it being sweeped by GC, I guess.
                 _hookProc = new User32.HookProc(KeyboardHookProc);
-
-                // var id = Kernel32.LoadLibrary("User32");
-                var id = Kernel32.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
-                var result = User32.SetWindowsHookEx(User32.WH_KEYBOARD_LL, _hookProc, id, 0);
-                _hookHandle = result;
-                if (result == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
+                _hookHandle = User32.SetWindowsHookEx(User32.WH_KEYBOARD_LL, _hookProc,
+                        Kernel32.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName), 0);
+                if (_hookHandle == 0) {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
             }
         }
 
@@ -94,8 +110,21 @@ namespace AcTools.Windows.Input {
                 var result = User32.UnhookWindowsHookEx(_hookHandle);
                 _hookHandle = 0;
                 _hookProc = null;
-                if (result == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+                if (result == 0) {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
             }
+        }
+        #endregion
+
+        #region Ignore events sent by app
+        public static void IgnoreNextKeyDown(byte virtualKeyCode) {
+
+        }
+
+        public static void IgnoreNextKeyUp(byte virtualKeyCode) {
+
         }
         #endregion
     }

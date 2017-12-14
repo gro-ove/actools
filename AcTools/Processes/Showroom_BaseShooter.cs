@@ -67,8 +67,8 @@ namespace AcTools.Processes {
                 Directory.CreateDirectory(OutputDirectory);
             }
 
-            private void OnKeyUp(object sender, KeyEventArgs e) {
-                if (e.KeyCode == Keys.Escape) {
+            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
+                if (e.Key == Keys.Escape) {
                     Terminate();
                 }
             }
@@ -84,7 +84,7 @@ namespace AcTools.Processes {
                     unfiltered = unfiltered.Where(x => skinIdsLower.Contains(Path.GetFileName(x)?.ToLowerInvariant()));
                     return unfiltered;
                 }
-            } 
+            }
 
             public abstract void ShotAll();
 
@@ -107,6 +107,6 @@ namespace AcTools.Processes {
                     Shot(skinId);
                 }
             }
-        } 
+        }
     }
 }

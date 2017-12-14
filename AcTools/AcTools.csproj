@@ -229,7 +229,6 @@
     <Compile Include="Windows\Input\InputSimulator.cs" />
     <Compile Include="Windows\Input\KeyboardListener.cs" />
     <Compile Include="Windows\Input\KeyboardManager.cs" />
-    <Compile Include="Windows\Input\KeyboardSilencer.cs" />
     <Compile Include="Windows\Input\KeyboardSimulator.cs" />
     <Compile Include="Windows\Input\MouseButton.cs" />
     <Compile Include="Windows\Input\MouseSimulator.cs" />
@@ -244,6 +243,7 @@
     <Compile Include="Windows\Input\Native\NativeMethods.cs" />
     <Compile Include="Windows\Input\Native\VirtualKeyCode.cs" />
     <Compile Include="Windows\Input\Native\XButton.cs" />
+    <Compile Include="Windows\Input\VirtualKeyCodeEventArgs.cs" />
     <Compile Include="Windows\Input\WindowsInputDeviceStateAdaptor.cs" />
     <Compile Include="Windows\Input\WindowsInputMessageDispatcher.cs" />
     <Compile Include="Utils\JunctionPoint.cs" />
