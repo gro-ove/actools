@@ -84,7 +84,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 s = $"[{p}:{l}] {m}()";
             } else {
                 s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
-                if (m != null && (s.Length == 0 || s[0] != '[' || s.Length > 1 && s[1] == '[')) {
+                if (m != null && (s.Length == 0 || s[0] != '[' || s.Length > 1 && !char.IsLetter(s[1]))) {
                     s = $"[{p}:{l}] {m}(): {s}";
                 }
             }
