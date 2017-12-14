@@ -50,21 +50,23 @@ namespace FirstFloor.ModernUI.Windows {
         private static void ShowFallback(string title, string message, [NotNull] Uri icon, Action click) {
             try {
                 var text = title + Environment.NewLine + message;
-                using (var notifyIcon = new NotifyIcon {
-                    Icon = AppIconService.GetAppIcon(),
-                    Text = text.Length > 63 ? text.Substring(0, 63) : text
-                }) {
-                    notifyIcon.Visible = true;
+                var notifyIcon = new NotifyIcon {
+                    Icon = AppIconService.GetTrayIcon(),
+                    Text = text.Length > 63 ? text.Substring(0, 63) : text,
+                    Visible = true
+                };
 
-                    if (click != null) {
-                        notifyIcon.BalloonTipClicked += (sender, args) => {
-                            click.InvokeInMainThreadAsync();
-                        };
-                    }
-
-                    notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);
-                    notifyIcon.Visible = false;
+                if (click != null) {
+                    notifyIcon.BalloonTipClicked += (sender, args) => {
+                        click.InvokeInMainThreadAsync();
+                    };
                 }
+
+                notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);
+                notifyIcon.BalloonTipClosed += (sender, args) => {
+                    notifyIcon.Visible = false;
+                    notifyIcon.Dispose();
+                };
             } catch (Exception e) {
                 Logging.Error(e);
             }

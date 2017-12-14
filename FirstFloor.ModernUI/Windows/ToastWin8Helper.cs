@@ -12,11 +12,11 @@ namespace FirstFloor.ModernUI.Windows {
         private static ToastNotifier _toastNotifier;
 
         public static void ShowToast(string title, string message, [NotNull] Uri icon, Action click) {
-            var tempIcon = Path.Combine(Path.GetTempPath(), $"tmp_icon_{AppShortcut.AppUserModelId}.png");
-            if (!File.Exists(tempIcon)) {
+            var tempIcon = new FileInfo(Path.Combine(Path.GetTempPath(), $"tmp_icon_{AppShortcut.AppUserModelId}.png"));
+            if (!tempIcon.Exists || DateTime.Now - tempIcon.LastWriteTime > TimeSpan.FromDays(7)) {
                 using (var iconStream = Application.GetResourceStream(icon)?.Stream) {
                     if (iconStream != null) {
-                        using (var file = new FileStream(tempIcon, FileMode.Create)) {
+                        using (var file = new FileStream(tempIcon.FullName, FileMode.Create)) {
                             iconStream.CopyTo(file);
                         }
                     }
@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Windows {
             content.LoadXml($@"<toast>
     <visual>
         <binding template=""ToastImageAndText02"">
-            <image id=""1"" src=""file://{tempIcon}""/>
+            <image id=""1"" src=""file://{tempIcon.FullName}""/>
             <text id=""1"">{title}</text>
             <text id=""2"">{message}</text>
         </binding>
