@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -99,6 +100,21 @@ namespace AcManager.Tools.Objects {
 
         [NotNull]
         public abstract TrackObject MainTrackObject { get; }
+
+        // Tricky part: some JSON files might be already loaded and parsed while trying to figure out which layout is
+        // more appropriate to use as a default one.
+        protected static readonly Dictionary<string, JObject> RecentlyParsed = new Dictionary<string, JObject>();
+
+        protected override bool LoadJsonOrThrow() {
+            if (!RecentlyParsed.TryGetValue(JsonFilename, out var jObject)) {
+                return base.LoadJsonOrThrow();
+            }
+
+            RecentlyParsed.Remove(JsonFilename);
+            JsonObject = jObject;
+            LoadData(jObject);
+            return true;
+        }
 
         [CanBeNull]
         public abstract string LayoutId { get; }

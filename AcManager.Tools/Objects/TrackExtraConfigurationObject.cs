@@ -26,7 +26,7 @@ namespace AcManager.Tools.Objects {
         public override TrackObject MainTrackObject { get; }
 
         public override string Name {
-            get { return base.Name; }
+            get => base.Name;
             protected set {
                 if (Equals(value, base.Name)) return;
                 base.Name = value;
@@ -35,8 +35,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string LayoutName {
-            get { return NameEditable; }
-            set { NameEditable = value; }
+            get => NameEditable;
+            set => NameEditable = value;
         }
 
         public sealed override string IdWithLayout { get; }
@@ -49,13 +49,9 @@ namespace AcManager.Tools.Objects {
         }
 
         public override ICommand ToggleCommand => MainTrackObject.ToggleCommand;
-
         public override ICommand DeleteCommand => MainTrackObject.DeleteCommand;
-
         public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
-
         public override DelegateCommand SaveCommand => MainTrackObject.SaveCommand;
-
         public override string LayoutDataDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
     }
 }

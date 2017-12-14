@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     public partial class TrackObject : TrackObjectBase {
@@ -69,7 +74,7 @@ namespace AcManager.Tools.Objects {
             get {
                 if (!MultiLayoutMode) return this;
                 if (_selectedLayout == null) {
-                    var layoutId = LimitedStorage.Get(LimitedSpace.SelectedSkin, Id);
+                    var layoutId = LimitedStorage.Get(LimitedSpace.SelectedLayout, Id);
                     _selectedLayout = layoutId == null ? this : (GetLayoutByLayoutId(layoutId) ?? this);
                 }
                 return _selectedLayout;
@@ -80,9 +85,9 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged();
 
                 if (value == this) {
-                    LimitedStorage.Remove(LimitedSpace.SelectedSkin, Id);
+                    LimitedStorage.Remove(LimitedSpace.SelectedLayout, Id);
                 } else {
-                    LimitedStorage.Set(LimitedSpace.SelectedSkin, Id, value.LayoutId);
+                    LimitedStorage.Set(LimitedSpace.SelectedLayout, Id, value.LayoutId);
                 }
             }
         }
@@ -125,11 +130,112 @@ namespace AcManager.Tools.Objects {
                 };
             }
 
+            var main = additional.Count > 1 ? GetKunosMainLayout(Id, additional) : additional[0];
+            additional.Remove(main);
+
             return new LayoutsInformation {
-                MainLayout = additional[0],
-                AdditionalLayouts = additional.Skip(1).ToList(),
+                MainLayout = main,
+                AdditionalLayouts = additional,
                 SimpleMainLayout = false
             };
+        }
+
+        [CanBeNull]
+        private static JObject GetLayoutData(string uiDirectory) {
+            var filename = Path.Combine(uiDirectory, "ui_track.json");
+
+            bool loaded;
+            JObject value;
+            lock (RecentlyParsed) {
+                loaded = RecentlyParsed.TryGetValue(filename, out value);
+            }
+
+            if (!loaded) {
+                try {
+                    value = JsonExtension.Parse(FileUtils.ReadAllText(filename));
+                    lock (RecentlyParsed) {
+                        RecentlyParsed[filename] = value;
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e.Message);
+                    return null;
+                }
+            }
+
+            return value;
+        }
+
+        private static readonly Regex NonDefaultLayout = new Regex("downhill|drift|fall|freeroam|grid|mini|no ?chicane|osrw|oval|rev(?:\b|erse)?",
+                RegexOptions.Compiled);
+
+        private static readonly Regex PreferredLayout = new Regex("circuit|international|full|gp|grand?|hill ?climb|standar[dt]?|uphill",
+                RegexOptions.Compiled);
+
+        private static int GetWeight(Match m) {
+            if (m.Value == "full" || m.Value == "drift") return 10;
+            if (m.Value == "international" || m.Value == "circuit") return 2;
+            return m.Length;
+        }
+
+        private static double _layoutElapsedMilliseconds;
+        private static int _layoutIterations;
+
+        [CanBeNull]
+        private static string GetPreferredMainLayout(string trackId, IEnumerable<string> uiDirectories) {
+            var s = Stopwatch.StartNew();
+            // var b = new StringBuilder(trackId);
+
+            try {
+                string preferredLayout = null;
+                var preferredLayoutPriority = double.MinValue;
+
+                trackId = trackId.ToLowerInvariant();
+                foreach (var layout in uiDirectories) {
+                    var layoutId = Path.GetFileName(layout)?.ToLowerInvariant();
+                    if (layoutId == null) continue;
+
+                    var data = GetLayoutData(layout);
+                    var name = (data?.GetStringValueOnly("name") ?? layoutId).ToLowerInvariant();
+                    var distance = name.ComputeLevenshteinDistance(trackId);
+
+                    double priority = (100 - distance * 10).Clamp(0, 100) - name.Length;
+                    priority -= NonDefaultLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
+                    priority += PreferredLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
+                    priority -= NonDefaultLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
+                    priority += PreferredLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
+
+                    // b.Append($"\n{layoutId}: {name}, distance={distance}, priority={priority}");
+                    if (preferredLayoutPriority < priority) {
+                        preferredLayoutPriority = priority;
+                        preferredLayout = layout;
+                    }
+                }
+
+                // Logging.Debug(b.ToString());
+                return preferredLayout;
+            } finally {
+                _layoutElapsedMilliseconds += s.Elapsed.TotalMilliseconds;
+                if (++_layoutIterations % 20 == 0) {
+                    Logging.Debug($"Avg. time: {_layoutElapsedMilliseconds / _layoutIterations:F2} ms");
+                }
+            }
+        }
+
+        [NotNull]
+        private static string GetKunosMainLayout(string trackId, List<string> uiDirectories) {
+            var kunosTracks = DataProvider.Instance.GetKunosContentIds(@"tracks");
+            if (kunosTracks != null && Array.IndexOf(kunosTracks, trackId) != -1) {
+                var layouts = DataProvider.Instance.GetKunosContentIds(@"layouts");
+                if (layouts != null) {
+                    var kunosLayout = GetPreferredMainLayout(trackId,
+                            uiDirectories.Where(x => Array.IndexOf(layouts, $@"{trackId}/{Path.GetFileName(x)}") != -1));
+                    if (kunosLayout != null) {
+                        return kunosLayout;
+                    }
+                }
+            }
+
+            return GetPreferredMainLayout(trackId, uiDirectories) ?? uiDirectories[0];
         }
 
         private bool IsMultiLayoutsChanged() {

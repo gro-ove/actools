@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
@@ -25,12 +26,16 @@ namespace AcManager.Tools.Filters.Testers {
         }
 
         public bool Test(TrackObject obj, string key, ITestEntry value) {
+            var multiLayouts = obj.MultiLayouts;
+
             switch (key) {
                 case "layouts":
-                    return value.Test(obj.MultiLayouts?.Count ?? 1);
+                    return value.Test(multiLayouts?.Count ?? 1);
             }
 
-            return TrackObjectBaseTester.Instance.Test(obj, key, value);
+            return multiLayouts?.Count > 1
+                    ? multiLayouts.Any(x => TrackObjectBaseTester.Instance.Test(x, key, value))
+                    : TrackObjectBaseTester.Instance.Test(obj, key, value);
         }
 
         public IEnumerable<KeywordDescription> GetDescriptions() {
