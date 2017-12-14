@@ -17,10 +17,6 @@ namespace AcManager.Tools.Helpers.Loaders {
         [CanBeNull]
         public string Version { get; set; }
 
-        public string GetFootprint() {
-            return $"filename={FileName}, size={TotalSize}".ToCutBase64();
-        }
-
         public static FlexibleLoaderMetaInformation FromLoader(ILoader loader) {
             return new FlexibleLoaderMetaInformation(loader.TotalSize, loader.FileName, loader.Version);
         }

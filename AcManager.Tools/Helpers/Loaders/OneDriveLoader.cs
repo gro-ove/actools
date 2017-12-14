@@ -11,6 +11,9 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public OneDriveLoader(string url) : base(url) {}
 
+        protected override bool? ResumeSupported => true;
+        protected override bool HeadRequestSupported => false;
+
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             Logging.Debug(Url);
 

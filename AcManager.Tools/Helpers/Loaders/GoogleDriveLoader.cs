@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class GoogleDriveLoader : DirectLoader {
@@ -26,7 +28,12 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public GoogleDriveLoader(string url) : base(PrepareUrl(url)) {}
 
+        protected override bool? ResumeSupported => true;
         protected override bool HeadRequestSupported => false;
+
+        public override string GetFootprint(FlexibleLoaderMetaInformation information, [CanBeNull] WebHeaderCollection headers) {
+            return $"filename={information.FileName}, size={information.TotalSize}, checksum={headers?["X-Goog-Hash"]}".ToCutBase64();
+        }
 
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
             Logging.Debug(Url);

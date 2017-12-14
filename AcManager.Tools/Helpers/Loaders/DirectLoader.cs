@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class DirectLoader : ILoader {
+        public int BufferSize { get; set; } = 65536;
+
         private readonly string _keyDestination;
         private readonly string _keyPartiallyLoadedFilename;
         private readonly string _keyFootprint;
@@ -116,7 +118,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public bool UsesClientToDownload => false;
-        protected virtual bool? ResumeSupported => false;
+        protected virtual bool? ResumeSupported => null;
         protected virtual bool HeadRequestSupported => true;
 
         protected virtual Task<string> DownloadAsyncInner([NotNull] CookieAwareWebClient client,
@@ -134,6 +136,33 @@ namespace AcManager.Tools.Helpers.Loaders {
             var filename = FileUtils.EnsureUnique(true, destination.Filename);
             await client.DownloadFileTaskAsync(Url, filename).ConfigureAwait(false);
             return filename;
+        }
+
+        public virtual string GetFootprint(FlexibleLoaderMetaInformation information, [CanBeNull] WebHeaderCollection headers) {
+            return $"filename={information.FileName}, size={information.TotalSize}".ToCutBase64();
+        }
+
+        private static bool CouldBeBeginningOfAFile(byte[] bytes) {
+            // RAR archive v5.0+
+            if (bytes.StartsWith(new byte[] { (byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x01, 0x00 })) return true;
+
+            // RAR archive v1.5+
+            if (bytes.StartsWith(new byte[] { (byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x00 })) return true;
+
+            // RAR archive v1.5+
+            if (bytes.StartsWith(new byte[] { (byte)'7', (byte)'z', 0xBC, 0xAF, 0x27, 0x1C })) return true;
+
+            // GZIP
+            // if (bytes.StartsWith(new byte[] { 0x1F, 0x8B })) return true;
+
+            // ZIP
+            if (bytes.StartsWith(new byte[] { 0x50, 0x4B, 0x03, 0x04 })) return true;
+
+            // TAR archive
+            if (bytes.StartsWith(new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 })
+                    || bytes.StartsWith(new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00 })) return true;
+
+            return false;
         }
 
         private async Task<string> DownloadResumeSupportAsync([NotNull] CookieAwareWebClient client, [NotNull] FlexibleLoaderDestinationCallback destinationCallback,
@@ -156,24 +185,34 @@ namespace AcManager.Tools.Helpers.Loaders {
                 var information = FlexibleLoaderMetaInformation.FromLoader(this);
 
                 // Opening stream to read…
-                remoteData = await client.OpenReadTaskAsync(Url);
+                var headRequest = HeadRequestSupported && resumeDestination != null;
+                using (headRequest ? client.SetMethod("HEAD") : null) {
+                    Logging.Warning($"Initial request: {(headRequest ? "HEAD" : "GET")}");
+                    remoteData = await client.OpenReadTaskAsync(Url);
+                }
+
                 cancellation.ThrowIfCancellationRequested();
 
                 // Maybe we’ll be lucky enough to load the most accurate data
                 if (client.ResponseHeaders != null) {
                     if (long.TryParse(client.ResponseHeaders[HttpResponseHeader.ContentLength],
                             NumberStyles.Any, CultureInfo.InvariantCulture, out var length)) {
-                        information.TotalSize = length;
+                        TotalSize = information.TotalSize = length;
                     }
 
                     if (TryGetFileName(client.ResponseHeaders, out var fileName)) {
-                        information.FileName = fileName;
+                        FileName = information.FileName = fileName;
                     }
 
-                    if (resumeSupported == null && client.ResponseHeaders[HttpResponseHeader.AcceptRanges].Contains("bytes")) {
-                        // We could check for “Accept-Ranges: none” here, but, for example, Google Drive
-                        // responds with “none” and yet allows to download file partially.
-                        resumeSupported = true;
+                    // For example, Google Drive responds with “none” and yet allows to download file partially,
+                    // so this header will only be checked if value is not defined.
+                    if (resumeSupported == null) {
+                        var accept = client.ResponseHeaders[HttpResponseHeader.AcceptRanges];
+                        if (accept.Contains("bytes")) {
+                            resumeSupported = true;
+                        } else if (accept.Contains("none")) {
+                            resumeSupported = false;
+                        }
                     }
 
                     client.LogResponseHeaders();
@@ -188,7 +227,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 // Does it still exist
                 if (partiallyLoaded?.Exists != true) {
-                    Logging.Warning("Partially downloaded file does not exist");
+                    Logging.Warning($"Partially downloaded file “{partiallyLoaded?.FullName}” does not exist");
                     partiallyLoaded = null;
                 }
 
@@ -199,7 +238,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
                 // Looks like file is partially downloaded, but let’s ensure link still leads to the same content
-                actualFootprint = information.GetFootprint();
+                actualFootprint = GetFootprint(information, client.ResponseHeaders);
                 if (partiallyLoaded != null && resumePreviousFootprint != actualFootprint) {
                     Logging.Warning($"Footprints don’t match: {resumePreviousFootprint}≠{actualFootprint}");
                     partiallyLoaded = null;
@@ -214,8 +253,6 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
                 // TODO: Check that header?
-                // TODO: Use proper HEAD request?
-                // TODO: Check for array-related bytes
 
                 // Where to write?
                 filename = partiallyLoaded?.FullName ?? FileUtils.EnsureUnique(true, destination.Filename);
@@ -226,33 +263,56 @@ namespace AcManager.Tools.Helpers.Loaders {
                 // Open write stream
                 if (partiallyLoaded != null) {
                     var rangeFrom = partiallyLoaded.Length;
-                    using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write))
                     using (client.SetRange(new Tuple<long, long>(rangeFrom, -1))) {
                         Logging.Warning($"Trying to resume download from {rangeFrom} bytes…");
 
                         remoteData.Dispose();
                         remoteData = await client.OpenReadTaskAsync(Url);
+                        cancellation.ThrowIfCancellationRequested();
+                        client.LogResponseHeaders();
 
                         // It’s unknown if resume is supported or not at this point
                         if (resumeSupported == null) {
                             var bytes = new byte[16];
                             var firstBytes = await remoteData.ReadAsync(bytes, 0, bytes.Length);
-                            rangeFrom += 16;
+                            cancellation.ThrowIfCancellationRequested();
+
+                            if (CouldBeBeginningOfAFile(bytes)) {
+                                using (var file = File.OpenWrite(filename)) {
+                                    Logging.Warning("File beginning found, restart download");
+                                    file.Write(bytes, 0, firstBytes);
+                                    await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: progress, cancellation: cancellation);
+                                    cancellation.ThrowIfCancellationRequested();
+                                }
+
+                                Logging.Write("Download finished");
+                                return filename;
+                            }
+
+                            rangeFrom += firstBytes;
                         }
 
-                        client.LogResponseHeaders();
-                        await remoteData.CopyToAsync(file, bufferSize: 65536, progress: new Progress<long>(v => {
-                            progress?.Report(v + rangeFrom);
-                        }), cancellation: cancellation);
+                        using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write)) {
+                            await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: new Progress<long>(v => {
+                                progress?.Report(v + rangeFrom);
+                            }), cancellation: cancellation);
+                            cancellation.ThrowIfCancellationRequested();
+                        }
                     }
                 } else {
+                    if (headRequest) {
+                        Logging.Warning($"Re-open request to be GET");
+                        remoteData.Dispose();
+                        remoteData = await client.OpenReadTaskAsync(Url);
+                    }
+
                     using (var file = File.OpenWrite(filename)) {
                         Logging.Debug("Downloading the whole file…");
-                        await remoteData.CopyToAsync(file, bufferSize: 65536, progress: progress, cancellation: cancellation);
+                        await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: progress, cancellation: cancellation);
+                        cancellation.ThrowIfCancellationRequested();
                     }
                 }
 
-                cancellation.ThrowIfCancellationRequested();
                 Logging.Write("Download finished");
                 return filename;
             } catch (Exception e) when (e is WebException || e.IsCanceled()) {
