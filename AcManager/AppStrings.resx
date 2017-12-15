@@ -766,7 +766,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>App key:</value>
   </data>
   <data name="Settings_General_WindowsShortcut" xml:space="preserve">
-    <value>Start Menu shortcut (for modern notifications)</value>
+    <value>Start Menu shortcut (for modern notifications, recommended)</value>
   </data>
   <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
     <value>Create Start Menu shortcut; required for showing proper notifications in Windows 8, 8.1 and 10</value>

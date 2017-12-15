@@ -53,7 +53,7 @@
       <TextBlock Text="Add a shortcut to Start Menu?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
       <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
       <StackPanel Margin="20 8 0 0" Orientation="Horizontal">
-        <Button Content="Create" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
+        <Button Content="Create (Recommended)" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
         <Button Content="Delete" Command="{x:Static mui:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
       </StackPanel>
     </StackPanel>

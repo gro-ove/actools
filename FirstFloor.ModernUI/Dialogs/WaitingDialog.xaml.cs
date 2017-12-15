@@ -114,7 +114,6 @@ namespace FirstFloor.ModernUI.Dialogs {
 
             DataContext = this;
             InitializeComponent();
-            Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 0);
             Buttons = new Button[] { };
 
             if (reportValue != null) {

@@ -249,7 +249,7 @@ namespace AcManager {
             InitializePresets();
 
             SharingHelper.Initialize();
-            SharingUiHelper.Initialize();
+            SharingUiHelper.Initialize(new Win10SharingUiHelper());
 
             {
                 var addonsDir = FilesStorage.Instance.GetFilename("Addons");

@@ -2,14 +2,18 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -19,17 +23,21 @@ using JetBrains.Annotations;
 using Clipboard = System.Windows.Clipboard;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
-#if WIN10_SHARE
-using Windows.ApplicationModel.DataTransfer;
-#endif
-
 namespace AcManager.Controls.Helpers {
+    public interface ICustomSharingUiHelper {
+        bool ShowShared(string type, string link);
+    }
+
     public class SharingUiHelper {
         public static SharingUiHelper Instance { get; private set; }
 
-        public static void Initialize() {
+        [CanBeNull]
+        private static ICustomSharingUiHelper _custom;
+
+        public static void Initialize([CanBeNull] ICustomSharingUiHelper custom) {
             Debug.Assert(Instance == null);
             Instance = new SharingUiHelper();
+            _custom = custom;
         }
 
         private CommandBase _removeCommand;
@@ -51,7 +59,8 @@ namespace AcManager.Controls.Helpers {
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName) {
-                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None, maxLength: 60);
+                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None,
+                            maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
                         contentName = null;
@@ -60,7 +69,9 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds) {
-                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", ToolsStrings.Common_None, maxLength: 200)?.Trim();
+                    id =
+                            Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", ToolsStrings.Common_None,
+                                    maxLength: 200)?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;
@@ -85,7 +96,8 @@ namespace AcManager.Controls.Helpers {
                 ShowShared(type, link);
                 await Task.Delay(2000);
             } catch (Exception e) {
-                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ToolsStrings.Common_CannotDownloadFile_Commentary, e);
+                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ToolsStrings.Common_CannotDownloadFile_Commentary,
+                        e);
             } finally {
                 _sharingInProcess = false;
             }
@@ -96,6 +108,8 @@ namespace AcManager.Controls.Helpers {
         }
 
         public static void ShowShared(string type, string link) {
+            if (_custom?.ShowShared(type, link) == true) return;
+
             if (SettingsHolder.Sharing.CopyLinkToClipboard) {
                 Clipboard.SetText(link);
             }
@@ -104,24 +118,6 @@ namespace AcManager.Controls.Helpers {
                     SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative, () => {
                         Process.Start(link + "#noauto");
                     });
-
-#if WIN10_SHARE
-            try {
-                var dataTransferManager = DataTransferManager.GetForCurrentView();
-                dataTransferManager.DataRequested += OnDataRequested;
-                DataTransferManager.ShowShareUI();
-            } catch (Exception e) {
-                Logging.Warning("DataTransferManager exception: " + e);
-            }
-#endif
         }
-
-#if WIN10_SHARE
-        private static void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args) {
-            args.Request.Data.Properties.Title = "Code Samples";
-            args.Request.Data.Properties.Description = "Here are some great code samples for Windows Phone.";
-            args.Request.Data.SetWebLink(new Uri("http://code.msdn.com/wpapps"));
-        }       }
-#endif
     }
 }
