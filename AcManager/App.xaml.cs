@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.AcSound;
@@ -102,6 +103,10 @@ namespace AcManager {
 
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
+
+            if (AppArguments.GetBool(AppFlag.SoftwareRendering)) {
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            }
 
             AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
             new App().Run();

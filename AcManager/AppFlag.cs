@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Use software rendering for UI, which might cause everything down. Use it if you have
+        /// an issue with some overlay-showing apps, such as RivaTuner. But only as a last resort,
+        /// for RivaTuner it’s better to simply add app to exceptions.
+        /// </summary>
+        SoftwareRendering,
+
+        /// <summary>
         /// Encoding JPEG quality. Doesn’t have a lot of effect without Magick.NET plugin, because
         /// frankly Windows’ encoder is a piece of junk. Default value: 98.
         /// Example: --jpeg-quality=99.
