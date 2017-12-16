@@ -125,7 +125,8 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public static async Task<string> LoadAsyncTo(string argument, FlexibleLoaderDestinationCallback destinationCallback,
-                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                Func<bool> pauseCallback = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
@@ -178,6 +179,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                         progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value)
                                 : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
                     }), cancellation);
+
                     cancellation.ThrowIfCancellationRequested();
                     Logging.Write("Loaded: " + loaded);
                     return loaded;
