@@ -125,13 +125,11 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public static async Task<string> LoadAsyncTo(string argument, FlexibleLoaderDestinationCallback destinationCallback,
-                IProgress<AsyncProgressEntry> progress = null,
-                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null, CancellationToken cancellation = default(CancellationToken)) {
+                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
-                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10)))
-                using (var localCancellationToken = new CancellationTokenSource())
-                using (var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(localCancellationToken.Token, cancellation)) {
+                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                     var client = order.Victim;
 
                     if (_proxy != null) {
@@ -140,19 +138,26 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                     progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
-                    linkedCancellationSource.Token.Register(client.CancelAsync);
+                    cancellation.ThrowIfCancellationRequested();
+                    cancellation.Register(client.CancelAsync);
 
-                    if (!await loader.PrepareAsync(client, linkedCancellationSource.Token)) {
+                    if (!await loader.PrepareAsync(client, cancellation)) {
                         throw new InformativeException("Can’t load file", "Loader preparation failed.");
                     }
 
-                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
+                    cancellation.ThrowIfCancellationRequested();
                     metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+
+                    var initialProgressCallback = true;
 
                     var s = Stopwatch.StartNew();
                     if (loader.UsesClientToDownload) {
                         client.DownloadProgressChanged += (sender, args) => {
+                            if (initialProgressCallback) {
+                                metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                initialProgressCallback = false;
+                            }
+
                             if (s.Elapsed.TotalMilliseconds < 20) return;
                             order.Delay();
                             s.Restart();
@@ -162,20 +167,18 @@ namespace AcManager.Tools.Helpers.Loaders {
                     }
 
                     var loaded = await loader.DownloadAsync(client, destinationCallback, loader.UsesClientToDownload ? null : new Progress<long>(p => {
-#if DEBUG
-                        /*Logging.Debug(p);
-                        if (p > 30000) {
-                            localCancellationToken.Cancel();
-                        }*/
-#endif
+                        if (initialProgressCallback) {
+                            metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                            initialProgressCallback = false;
+                        }
 
                         if (s.Elapsed.TotalMilliseconds < 20) return;
                         order.Delay();
                         s.Restart();
                         progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value)
                                 : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
-                    }), linkedCancellationSource.Token);
-                    linkedCancellationSource.Token.ThrowIfCancellationRequested();
+                    }), cancellation);
+                    cancellation.ThrowIfCancellationRequested();
                     Logging.Write("Loaded: " + loaded);
                     return loaded;
                 }

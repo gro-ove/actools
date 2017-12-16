@@ -52,13 +52,9 @@ namespace AcManager.Pages.ContentTools {
             ItemsToUpdate = new BetterObservableCollection<ICupSupportedObject>(list);
             SelectedItem = list.FirstOrDefault();
             return list.Count > 0;
-
-            // throw new NotImplementedException();
         }
 
-        protected override void InitializeOverride(Uri uri) {
-            // throw new NotImplementedException();
-        }
+        protected override void InitializeOverride(Uri uri) {}
 
         private BetterObservableCollection<ICupSupportedObject> _itemsToUpdate;
 
@@ -81,35 +77,5 @@ namespace AcManager.Pages.ContentTools {
                 OnPropertyChanged();
             }
         }
-
-        #region As a separate tool
-        private static WeakReference<ModernDialog> _analyzerDialog;
-
-        public static void Run() {
-            if (_analyzerDialog != null && _analyzerDialog.TryGetTarget(out ModernDialog dialog)) {
-                dialog.Close();
-            }
-
-            dialog = new ModernDialog {
-                ShowTitle = false,
-                Title = "Content Updates",
-                SizeToContent = SizeToContent.Manual,
-                ResizeMode = ResizeMode.CanResizeWithGrip,
-                LocationAndSizeKey = @"lsContentUpdates",
-                MinWidth = 800,
-                MinHeight = 480,
-                Width = 800,
-                Height = 640,
-                MaxWidth = 99999,
-                MaxHeight = 99999,
-                Content = new ModernFrame {
-                    Source = UriExtension.Create("/Pages/ContentTools/CupList.xaml")
-                }
-            };
-
-            dialog.Show();
-            _analyzerDialog = new WeakReference<ModernDialog>(dialog);
-        }
-        #endregion
     }
 }

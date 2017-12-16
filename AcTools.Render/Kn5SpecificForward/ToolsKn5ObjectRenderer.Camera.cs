@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils;
 using SlimDX;
@@ -45,17 +47,24 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public void AlignCar() {
             if (Camera is FpsCamera camera) {
-                var offset = MainSlot.CarCenter;
-                camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
-                camera.SetLens(AspectRatio);
+                var boundingBox = MainSlot.CarNode?.GetAllChildren().OfType<Kn5RenderableObject>().Where(x => x.Name?.StartsWith("CINTURE_ON") != true)
+                                          .Aggregate(new BoundingBox(), (a, b) => {
+                                              b.BoundingBox?.ExtendBoundingBox(ref a);
+                                              return a;
+                                          });
+                if (boundingBox.HasValue) {
+                    var offset = boundingBox.Value.GetCenter();
+                    camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
+                    camera.SetLens(AspectRatio);
 
-                offset.Y = 0;
-                _showroomOffset = offset;
-                if (ShowroomNode != null) {
-                    ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+                    offset.Y = 0;
+                    _showroomOffset = offset;
+                    if (ShowroomNode != null) {
+                        ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+                    }
+
+                    IsDirty = true;
                 }
-
-                IsDirty = true;
             }
         }
 
