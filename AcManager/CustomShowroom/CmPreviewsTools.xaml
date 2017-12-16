@@ -49,7 +49,7 @@
         LinksHorizontalAlignment="Stretch" DataContext="{Binding Settings}" Margin="0 0 0 0">
       <mui:ModernTab.LinksListBoxTemplate>
         <ControlTemplate>
-          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" WindowChrome.IsHitTestVisibleInChrome="True" />
         </ControlTemplate>
       </mui:ModernTab.LinksListBoxTemplate>
       <mui:ModernTab.Links>
