@@ -105,7 +105,8 @@ namespace AcManager.Tools {
                 if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
                     AllowExecutables = true
                 })).WhenAll()).All(x => !x)) {
-                    await Task.Delay(ContentInstallationManager.OptionBiggestDelay);
+                    // TODO
+                    await Task.Delay(2000);
                 }
             }
 

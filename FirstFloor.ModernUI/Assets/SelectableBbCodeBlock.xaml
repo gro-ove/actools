@@ -26,7 +26,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type TextBoxBase}">
-          <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+          <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Padding="0"
+              Margin="-4 0" />
           <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="True">
               <Setter Property="Foreground" Value="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource AncestorType=FrameworkElement}}" />

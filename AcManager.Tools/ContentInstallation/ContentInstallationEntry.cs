@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.ContentInstallation.Installators;
@@ -29,6 +30,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry : NotifyPropertyChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
+        public DateTime AddedDateTime { get; }
+
         [NotNull]
         public string Source { get; }
 
@@ -44,6 +47,8 @@ namespace AcManager.Tools.ContentInstallation {
         private readonly ContentInstallationParams _installationParams;
 
         internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
+            AddedDateTime = DateTime.Now;
+
             Source = source;
             _installationParams = installationParams ?? ContentInstallationParams.Default;
             DisplayName = _installationParams.DisplayName;
@@ -261,11 +266,24 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
+        #region System icon
+        private ImageSource _fileIcon;
+
+        public ImageSource FileIcon {
+            get => _fileIcon;
+            set {
+                if (Equals(value, _fileIcon)) return;
+                _fileIcon = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #region Some details
         private string _displayName;
 
         public string DisplayName {
-            get => _displayName;
+            get => _displayName ?? FileName;
             set {
                 if (Equals(value, _displayName)) return;
                 _displayName = value;
@@ -299,6 +317,15 @@ namespace AcManager.Tools.ContentInstallation {
                 if (Equals(value, _fileName)) return;
                 _fileName = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayName));
+                OnPropertyChanged(nameof(DisplayNameWithUrl));
+
+                try {
+                    FileIcon = IconManager.FindIconForFilename(value, true);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    FileIcon = null;
+                }
             }
         }
 
@@ -427,7 +454,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     metaInformationCallback: information => {
-                                        if (information.FileName != null && information.FileName != Path.GetFileName(Source)) {
+                                        if (information.FileName != null) {
                                             FileName = information.FileName;
                                         }
 

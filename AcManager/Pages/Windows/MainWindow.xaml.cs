@@ -481,9 +481,9 @@ namespace AcManager.Pages.Windows {
                     }
                 }
 
-                var loading = ContentInstallationManager.Instance.Queue.Count(x => x.State != ContentInstallationEntryState.Finished);
+                var loading = ContentInstallationManager.Instance.DownloadList.Count(x => x.State != ContentInstallationEntryState.Finished);
                 if (loading > 0 && ModernDialog.ShowMessage(
-                        "If you’ll close app, installation queue will be cancelled. Are you sure?",
+                        "If you’ll close app, installation will be terminated. Are you sure?",
                         "Something is being installed", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     e.Cancel = true;
                     return;

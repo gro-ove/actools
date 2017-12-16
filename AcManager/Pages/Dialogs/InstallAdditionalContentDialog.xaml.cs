@@ -34,7 +34,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static void Initialize() {
             ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
-            ContentInstallationManager.Instance.Queue.CollectionChanged += OnQueueChanged;
+            ContentInstallationManager.Instance.DownloadList.CollectionChanged += OnQueueChanged;
         }
 
         private static readonly Busy TaskAddedBusy = new Busy();
@@ -46,7 +46,7 @@ namespace AcManager.Pages.Dialogs {
 
         private static void OnQueueChanged(object o, NotifyCollectionChangedEventArgs a) {
             QueueChangedBusy.DoDelay(() => {
-                if (ContentInstallationManager.Instance.Queue.Count == 0 && _dialog?.IsActive != true) {
+                if (ContentInstallationManager.Instance.DownloadList.Count == 0 && _dialog?.IsActive != true) {
                     CloseInstallDialog();
                 }
             }, 100);
@@ -79,6 +79,8 @@ namespace AcManager.Pages.Dialogs {
 
         private static bool IsAlone => Application.Current?.Windows.OfType<MainWindow>().FirstOrDefault()?.IsVisible != true;
 
+        public BetterListCollectionView DownloadListView { get; }
+
         private InstallAdditionalContentDialog() {
             UpdateSevenZipPluginMissing();
             PluginsManager.Instance.PluginEnabled += OnPlugin;
@@ -87,6 +89,9 @@ namespace AcManager.Pages.Dialogs {
                 PluginsManager.Instance.PluginEnabled -= OnPlugin;
                 PluginsManager.Instance.PluginDisabled -= OnPlugin;
             });
+
+            DownloadListView = new BetterListCollectionView(ContentInstallationManager.Instance.DownloadList);
+            DownloadListView.SortDescriptions.Add(new SortDescription(nameof(ContentInstallationEntry.AddedDateTime), ListSortDirection.Descending));
 
             PluginsManager.Instance.UpdateIfObsolete().Forget();
             RecommendedListView = new BetterListCollectionView(PluginsManager.Instance.List);
@@ -100,12 +105,12 @@ namespace AcManager.Pages.Dialogs {
             });
             Buttons = new[] { IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None) };
 
-            if (ContentInstallationManager.Instance.Queue.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
+            if (ContentInstallationManager.Instance.DownloadList.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
                 SevenZipWarning.Visibility = Visibility.Visible;
             } else {
-                ContentInstallationManager.Instance.Queue.ItemPropertyChanged += OnItemPropertyChanged;
+                ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
                 this.OnActualUnload(() => {
-                    ContentInstallationManager.Instance.Queue.ItemPropertyChanged -= OnItemPropertyChanged;
+                    ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged -= OnItemPropertyChanged;
                 });
             }
         }
@@ -129,7 +134,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
 
                 if (oldValue == true && value == false) {
-                    foreach (var entry in ContentInstallationManager.Instance.Queue.Where(x => x.SevenZipInstallatorWouldNotHurt &&
+                    foreach (var entry in ContentInstallationManager.Instance.DownloadList.Where(x => x.SevenZipInstallatorWouldNotHurt &&
                             x.CancelCommand.IsAbleToExecute && x.State == ContentInstallationEntryState.WaitingForConfirmation)) {
                         ContentInstallationManager.Instance.InstallAsync(entry.Source).ContinueWith(async v => {
                             if (!v.Result) {

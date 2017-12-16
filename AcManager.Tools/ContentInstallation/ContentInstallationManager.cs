@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -12,65 +13,56 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
-        public static TimeSpan OptionSuccessDelay = TimeSpan.FromSeconds(3);
-        public static TimeSpan OptionCancelledDelay = TimeSpan.FromSeconds(0);
-        public static TimeSpan OptionBiggestDelay = TimeSpan.FromSeconds(15);
-
         public static ContentInstallationManager Instance { get; } = new ContentInstallationManager();
         public static IPluginsNavigator PluginsNavigator { get; set; }
 
         private ContentInstallationManager() {
-            Queue = new ChangeableObservableCollection<ContentInstallationEntry>();
+            DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
         }
 
-        public ChangeableObservableCollection<ContentInstallationEntry> Queue { get; }
+        public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
 
-        private bool _busyDoingSomething;
+        private bool _isBusyDoingSomething;
 
-        public bool BusyDoingSomething {
-            get => _busyDoingSomething;
+        public bool IsBusyDoingSomething {
+            get => _isBusyDoingSomething;
             set {
-                if (Equals(value, _busyDoingSomething)) return;
-                _busyDoingSomething = value;
+                if (Equals(value, _isBusyDoingSomething)) return;
+                _isBusyDoingSomething = value;
                 OnPropertyChanged();
             }
         }
 
         public void UpdateBusyDoingSomething() {
-            BusyDoingSomething = Queue.Aggregate(false,
+            IsBusyDoingSomething = DownloadList.Aggregate(false,
                     (current, entry) => current | (entry.State == ContentInstallationEntryState.Loading));
         }
 
-        private readonly Dictionary<string, Task<bool>> _tasks = new Dictionary<string, Task<bool>>();
-
-        private async Task<bool> InstallAsyncInternal([NotNull] string source, ContentInstallationParams installationParams) {
-            var entry = new ContentInstallationEntry(source, installationParams);
-            ActionExtension.InvokeInMainThread(() => Queue.Add(entry));
-            var result = await entry.RunAsync();
-            ActionExtension.InvokeInMainThread(() => RemoveLater(entry));
-            await Task.Delay(1);
-            _tasks.Remove(source);
-            return result;
-        }
-
         public void Cancel() {
-            foreach (var entry in Queue.ToList()) {
+            foreach (var entry in DownloadList.ToList()) {
                 entry.CancelCommand.Execute();
             }
         }
 
         public event EventHandler TaskAdded;
 
+        private readonly TaskCache _taskCache = new TaskCache();
+
         public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            TaskAdded?.Invoke(this, EventArgs.Empty);
-            return _tasks.TryGetValue(source, out Task<bool> task) ? task : (_tasks[source] = InstallAsyncInternal(source, installationParams));
+            return _taskCache.Get(() => ActionExtension.InvokeInMainThread(() => {
+                var entry = new ContentInstallationEntry(source, installationParams);
+                TaskAdded?.Invoke(this, EventArgs.Empty);
+                DownloadList.Add(entry);
+                return entry.RunAsync();
+            }), source);
         }
 
+        /*
         private void Remove(ContentInstallationEntry entry) {
             entry.Dispose();
-            ActionExtension.InvokeInMainThread(() => Queue.Remove(entry));
+            ActionExtension.InvokeInMainThread(() => DownloadList.Remove(entry));
         }
 
         private async void RemoveLater(ContentInstallationEntry entry) {
@@ -87,7 +79,7 @@ namespace AcManager.Tools.ContentInstallation {
                     }
                 };
             }
-        }
+        }*/
 
         public static bool IsRemoteSource(string source) {
             return source.StartsWith(@"http:", StringComparison.OrdinalIgnoreCase) ||
@@ -97,6 +89,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         [ItemCanBeNull]
         public static async Task<string> IsRemoteSourceFlexible(string url) {
+            // TODO: Fix, change HEAD to GET?
             if (!Regex.IsMatch(url, @"^(?:[\w-]+\.)*[\w-]+\.[\w-]+/.+$")) return null;
 
             try {

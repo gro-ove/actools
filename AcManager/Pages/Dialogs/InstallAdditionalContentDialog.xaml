@@ -226,12 +226,29 @@
       </c:MessageBlock>
     </mui:BooleanSwitch>
 
-    <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding Queue}"
-        DataContext="{x:Static t:ContentInstallationManager.Instance}" mui:FancyScrollHelper.Outside="True" Margin="0 0 -8 0" Padding="0 0 8 0">
+    <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding DownloadListView}" mui:FancyScrollHelper.Outside="True"
+        Margin="0 0 -8 0" Padding="0 0 8 0">
       <ItemsControl.ItemTemplate>
-        <DataTemplate>
+        <DataTemplate DataType="t:ContentInstallationEntry">
           <DockPanel Margin="0 0 0 32">
-            <DockPanel DockPanel.Dock="Top">
+            <Image Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
+            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+            <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" DockPanel.Dock="Top" />
+
+            <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
+              <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" Margin="0 12 0 8"
+                  Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  DockPanel.Dock="Top" />
+              <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
+                  Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 0 0 8"
+                  DockPanel.Dock="Top" />
+              <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4">
+                <Button Content="Pause" />
+                <Button Content="Cancel" />
+              </mui:SpacingStackPanel>
+            </DockPanel>
+
+            <!--<DockPanel DockPanel.Dock="Top">
               <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
                   Command="{Binding CancelCommand}" ToolTip="Cancel installing"
                   Visibility="{Binding CancelCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
@@ -282,7 +299,7 @@
             </DockPanel>
 
             <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-              <!-- Loading thing -->
+              ~1~ Loading thing @1@
               <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
                 <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}"
                     DockPanel.Dock="Top" Height="4"
@@ -291,7 +308,7 @@
                     Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
               </DockPanel>
 
-              <!-- Finished -->
+              ~1~ Finished @1@
               <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}">
                 <mui:ReferenceSwitch Value="{Binding Failed}">
                   <mui:ReferenceSwitch.Null>
@@ -315,7 +332,7 @@
                 </mui:ReferenceSwitch>
               </DockPanel>
 
-              <!-- Password input -->
+              ~1~ Password input @1@
               <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
                 <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
                 <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
@@ -324,7 +341,7 @@
                 <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
               </mui:SpacingStackPanel>
 
-              <!-- Waiting for confirmation -->
+              ~1~ Waiting for confirmation @1@
               <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
                 <mui:Switch Value="{Binding Entries.Length}">
                   <StackPanel mui:Switch.When="0">
@@ -369,7 +386,7 @@
 
                 <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
               </StackPanel>
-            </mui:Switch>
+            </mui:Switch>-->
 
           </DockPanel>
         </DataTemplate>
