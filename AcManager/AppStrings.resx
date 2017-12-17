@@ -416,7 +416,7 @@ Author: [b]{3}[/b]</value>
     <value>Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn't have to replace AssettoCorsa.exe, and it's great! Would you like to switch to a new Official Starter?</value>
   </data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
-    <value>Can’t process argument</value>
+    <value>Can’t process argument: “{0}”</value>
   </data>
   <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
     <value>Make sure it’s in valid format.</value>
