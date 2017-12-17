@@ -14,6 +14,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         string Version { get; }
 
         bool UsesClientToDownload { get; }
+        bool CanPause { get; }
 
         Task<bool> PrepareAsync([NotNull] CookieAwareWebClient client, CancellationToken cancellation);
 

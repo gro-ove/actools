@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,7 +31,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
-    public partial class ContentInstallationEntry : NotifyPropertyChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
+    public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
         public DateTime AddedDateTime { get; }
 
         [NotNull]
@@ -202,6 +204,17 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged();
             }
         }
+
+        public override IEnumerable GetErrors(string propertyName) {
+            switch (propertyName) {
+                case nameof(InputPassword):
+                    return PasswordIsInvalid ? new[]{ "Password is invalid" } : null;
+                default:
+                    return null;
+            }
+        }
+
+        public override bool HasErrors => PasswordIsInvalid;
 
         private event EventHandler PasswordEnter;
 
@@ -379,6 +392,31 @@ namespace AcManager.Tools.ContentInstallation {
             return Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
         }
 
+        private bool _canPause;
+
+        public bool CanPause {
+            get => _canPause;
+            set {
+                if (Equals(value, _canPause)) return;
+                _canPause = value;
+                OnPropertyChanged();
+                if (!value) {
+                    IsPaused = false;
+                }
+            }
+        }
+
+        private bool _isPaused;
+
+        public bool IsPaused {
+            get => _isPaused;
+            set {
+                if (Equals(value, _isPaused)) return;
+                _isPaused = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _keepLoaded;
 
         public bool KeepLoaded {
@@ -453,26 +491,24 @@ namespace AcManager.Tools.ContentInstallation {
                             LoadedFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
-                                    metaInformationCallback: information => {
-                                        if (information.FileName != null) {
-                                            FileName = information.FileName;
-                                        }
-
-                                        if (Version == null) {
-                                            Version = information.Version;
-                                        }
+                                    information => {
+                                        CanPause = information.CanPause;
+                                        FileName = information.FileName ?? information.FileName;
+                                        Version = information.Version ?? information.Version;
                                     },
-                                    progress: new Progress<AsyncProgressEntry>(v => {
+                                    () => IsPaused,
+                                    new Progress<AsyncProgressEntry>(v => {
                                         var msg = string.IsNullOrWhiteSpace(v.Message) ? "Downloading…" : $"Downloading ({v.Message.ToSentenceMember()})…";
                                         if (v.Progress == 0d || v.Progress == null) {
                                             progress.Report(AsyncProgressEntry.FromStringIndetermitate(msg));
                                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);
                                         } else {
-                                            progress.Report(msg, v.Progress * 0.9999);
+                                            progress.Report(new AsyncProgressEntry(msg, v.Progress * 0.9999));
                                             _taskbar?.Set(TaskbarState.Normal, v.Progress ?? 0d);
                                         }
                                     }),
-                                    cancellation: cancellation.Token);
+                                    cancellation.Token);
+                            CanPause = false;
                             localFilename = LoadedFilename;
                             if (CheckCancellation()) return false;
                         } catch (Exception e) when (e.IsCanceled()) {
@@ -496,6 +532,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
                     } else {
                         localFilename = Source;
+                        FileName = Path.GetFileName(Source);
                     }
 
                     if (_installationParams.Checksum != null) {

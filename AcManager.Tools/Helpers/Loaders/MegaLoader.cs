@@ -31,9 +31,10 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public bool UsesClientToDownload => false;
+        public bool CanPause => false;
 
-        public async Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress,
-                CancellationToken cancellation) {
+        public async Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, Func<bool> pauseCallback,
+                IProgress<long> progress, CancellationToken cancellation) {
             // TODO: Resume download?
             var d = destinationCallback(_uri.OriginalString, FlexibleLoaderMetaInformation.FromLoader(this));
             if (File.Exists(d.Filename)) {

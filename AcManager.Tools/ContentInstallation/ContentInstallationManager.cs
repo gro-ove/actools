@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -51,6 +52,7 @@ namespace AcManager.Tools.ContentInstallation {
         public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
+            Logging.Debug(source);
             return _taskCache.Get(() => ActionExtension.InvokeInMainThread(() => {
                 var entry = new ContentInstallationEntry(source, installationParams);
                 TaskAdded?.Invoke(this, EventArgs.Empty);
@@ -109,9 +111,10 @@ namespace AcManager.Tools.ContentInstallation {
         public static bool IsAdditionalContent(string filename) {
             // TODO: or PP-filter, or …?
             try {
-                return FileUtils.IsDirectory(filename) ||
+                return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename) ||
                         !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.Affects(AcPaths.GetReplaysDirectory(), filename);
-            } catch (Exception) {
+            } catch (Exception e) {
+                Logging.Warning(e);
                 return false;
             }
         }

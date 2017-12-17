@@ -1,16 +1,42 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Dialogs {
+    public class AsyncProgressBytesStopwatch {
+        public long StartBytes;
+        public Stopwatch Stopwatch = Stopwatch.StartNew();
+
+        private double _averageSpeed;
+
+        public string GetBytesProgressInTime(long processed, long total) {
+            var elapsed = Stopwatch.Elapsed.TotalSeconds;
+            var speed = (processed - StartBytes) / elapsed;
+            if (speed < 30) {
+                return "paused";
+            }
+
+            if (elapsed > 0.5d && processed - StartBytes > 128) {
+                Stopwatch.Restart();
+                StartBytes = processed;
+            }
+
+            _averageSpeed += (speed - _averageSpeed) * Math.Min(1d, elapsed * Math.Max(1d, _averageSpeed / (speed + 0.001) - 1));
+
+            var displaySpeed = $"{((long)_averageSpeed).ToReadableSize(1)}/s";
+            if (total == -1) return displaySpeed;
+
+            var left = total - processed;
+            var leftTime = TimeSpan.FromSeconds(left / _averageSpeed);
+            return $"{displaySpeed}, {leftTime.ToReadableTime()} left";
+        }
+    }
+
     // TODO: SORT THIS SHIT OUT! ALL THAT 0.0001–0.9999 IS VERY IDIOTIC.
     public struct AsyncProgressEntry : INotifyPropertyChanged {
-        public string Message { get; }
-
-        public double? Progress { get; }
-
         public static readonly AsyncProgressEntry Indetermitate = new AsyncProgressEntry("", 0d);
         public static readonly AsyncProgressEntry Ready = new AsyncProgressEntry("", 1d);
         public static readonly AsyncProgressEntry Finished = new AsyncProgressEntry(null, null);
@@ -29,24 +55,33 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public AsyncProgressEntry(string message, int value, int total) {
             Message = message;
-
             const double x = 0.000001;
             Progress = (double)value / total * (1d - 2d * x) + x;
         }
 
-        public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes) {
-            return totalBytes == -1
-                    ? new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, receivedBytes.ToReadableSize(1)), null)
-                    : new AsyncProgressEntry(
-                            string.Format(UiStrings.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
-                            (double)receivedBytes / totalBytes);
+        public string Message { get; }
+        public double? Progress { get; }
+
+        public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes, [CanBeNull] AsyncProgressBytesStopwatch stopwatch) {
+            var message = totalBytes == -1
+                    ? string.Format(UiStrings.Progress_Downloading, receivedBytes.ToReadableSize(1))
+                    : string.Format(UiStrings.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1));
+            if (stopwatch != null) {
+                message += ", " + stopwatch.GetBytesProgressInTime(receivedBytes, totalBytes);
+            }
+
+            return totalBytes == -1 ? new AsyncProgressEntry(message, null) : new AsyncProgressEntry(message, (double)receivedBytes / totalBytes);
         }
 
-        public static AsyncProgressEntry CreateUploading(long sentBytes, long totalBytes) {
-            return totalBytes == -1
-                    ? new AsyncProgressEntry(string.Format(UiStrings.Progress_Uploading, sentBytes.ToReadableSize(1)), null)
-                    : new AsyncProgressEntry(string.Format(UiStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
-                            (double)sentBytes / totalBytes);
+        public static AsyncProgressEntry CreateUploading(long sentBytes, long totalBytes, [CanBeNull] AsyncProgressBytesStopwatch stopwatch) {
+            var message = totalBytes == -1
+                    ? string.Format(UiStrings.Progress_Uploading, sentBytes.ToReadableSize(1))
+                    : string.Format(UiStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1));
+            if (stopwatch != null) {
+                message += ", " + stopwatch.GetBytesProgressInTime(sentBytes, totalBytes);
+            }
+
+            return totalBytes == -1 ? new AsyncProgressEntry(message, null) : new AsyncProgressEntry(message, (double)sentBytes / totalBytes);
         }
 
         public override string ToString() {
@@ -57,9 +92,6 @@ namespace FirstFloor.ModernUI.Dialogs {
             add { }
             remove { }
         }
-
-        [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {}
 
         public static IProgress<AsyncProgressEntry> Split(ref IProgress<AsyncProgressEntry> progress, double splitPoint) {
             var result = progress.Subrange(0.0001, splitPoint - 0.0001);

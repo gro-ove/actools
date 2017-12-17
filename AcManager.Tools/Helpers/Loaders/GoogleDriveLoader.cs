@@ -136,10 +136,10 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback,
-                IProgress<long> progress, CancellationToken cancellation) {
+                Func<bool> pauseCallback, IProgress<long> progress, CancellationToken cancellation) {
             using (client.SetDebugMode(OptionDebugMode))
             using (client.SetAutoRedirect(!OptionManualRedirect)) {
-                return await base.DownloadAsyncInner(client, destinationCallback, progress, cancellation);
+                return await base.DownloadAsyncInner(client, destinationCallback, pauseCallback, progress, cancellation);
             }
         }
     }

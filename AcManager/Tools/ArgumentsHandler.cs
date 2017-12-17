@@ -95,14 +95,13 @@ namespace AcManager.Tools {
 
             _previousArguments = list;
 
-            var remote = (await list.Select(async x => Tuple.Create(x,
+            var contentToInstall = (await list.Select(async x => Tuple.Create(x,
                     ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
                             await ContentInstallationManager.IsRemoteSourceFlexible(x))
                     ).WhenAll()).Where(x => x.Item2 != null).ToList();
-
-            if (remote.Any()) {
-                list = list.ApartFrom(remote.Select(x => x.Item1)).ToList();
-                if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
+            if (contentToInstall.Any()) {
+                list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
+                if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
                     AllowExecutables = true
                 })).WhenAll()).All(x => !x)) {
                     // TODO
@@ -119,7 +118,7 @@ namespace AcManager.Tools {
                 }
 
                 if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify(AppStrings.Main_CannotProcessArgument, AppStrings.Main_CannotProcessArgument_Commentary);
+                    NonfatalError.Notify(string.Format(AppStrings.Main_CannotProcessArgument, arg), AppStrings.Main_CannotProcessArgument_Commentary);
                 }
 
                 if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
@@ -148,11 +147,11 @@ namespace AcManager.Tools {
                 return await ProcessInstallableContent(argument);
             }*/
 
-            try {
+            /*try {
                 if (!FileUtils.Exists(argument)) return ArgumentHandleResult.FailedShow;
             } catch (Exception) {
                 return ArgumentHandleResult.FailedShow;
-            }
+            }*/
 
             return await ProcessInputFile(argument);
         }
@@ -171,11 +170,11 @@ namespace AcManager.Tools {
                 return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);
                     return new FlexibleLoaderDestination(filename, true);
-                }, waiting, information => {
+                }, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
-                }, waiting.CancellationToken);
+                }, null, waiting, waiting.CancellationToken);
             }
         }
 
@@ -187,11 +186,11 @@ namespace AcManager.Tools {
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         private static async Task LoadRemoveFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), waiting, information => {
+                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
-                }, waiting.CancellationToken);
+                }, null, waiting, waiting.CancellationToken);
             }
         }
 

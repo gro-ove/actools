@@ -35,9 +35,11 @@ namespace AcManager.Tools.Helpers.Loaders {
         public string Version => OverrideVersion ?? _innerLoader?.Version;
         public bool UsesClientToDownload => _innerLoader?.UsesClientToDownload ?? true;
 
-        public Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress,
+        public bool CanPause => _innerLoader?.CanPause ?? false;
+
+        public Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, Func<bool> pauseCallback, IProgress<long> progress,
                 CancellationToken cancellation) {
-            return _innerLoader.DownloadAsync(client, destinationCallback, progress, cancellation);
+            return _innerLoader.DownloadAsync(client, destinationCallback, pauseCallback, progress, cancellation);
         }
 
         public Task<string> GetDownloadLink(CancellationToken cancellation) {
