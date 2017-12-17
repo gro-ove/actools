@@ -165,7 +165,7 @@ simplest_PS_IN vs_simplest(simplest_VS_IN vin) {
 }
 
 float4 ps_simplest(simplest_PS_IN pin) : SV_Target{
-	clip(gAlphaMap.Sample(samAnisotropic, pin.Tex).a - gAlphaRef);
+	clip(gAlphaMap.Sample(samAnisotropic, pin.Tex).a - gAlphaRef - 0.0001);
 	return float4(1.0, 1.0, 1.0, 1.0);
 }
 
