@@ -177,13 +177,13 @@
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
                       Padding="4 0" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
-                  <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+                  <mui:BetterTextBox Text="{Binding Renderer.SelectedName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
                       Margin="4 0 0 0" Padding="4 0" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                  <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+                  <mui:BetterTextBox Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
@@ -197,7 +197,7 @@
                           <Label VerticalAlignment="Center" Width="90">
                             <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
                           </Label>
-                          <TextBlock Text="{Binding TextureName}" Margin="0 0 4 0" />
+                          <mui:BetterTextBox Text="{Binding TextureName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
                         </DockPanel>
                       </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -358,8 +358,7 @@
                   <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.Fade}" ToolTip="Enable to avoid clipping">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
                   </CheckBox>
-                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.ExtraBlur}"
-                      ToolTip="Enable for extra smoothness">
+                  <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.ExtraBlur}" ToolTip="Enable for extra smoothness">
                     <Label Content="Extra blur pass" />
                   </CheckBox>
                   <CheckBox Margin="0 0 0 4" IsChecked="{Binding AmbientShadow.CorrectLighting}"
