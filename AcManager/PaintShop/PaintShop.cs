@@ -284,6 +284,25 @@ namespace AcManager.PaintShop {
         }
 
         [CanBeNull]
+        private static Tuple<PaintShopPatternDecal, Dictionary<string, PaintShopSource>> GetDecal(JToken j, ReferenceSolver refSolver) {
+            if (j is JObject o) {
+                var candidates = GetNameSourcePairs(o, KeyCandidates, refSolver);
+                return Tuple.Create(new PaintShopPatternDecal(
+                        o.GetDoubleValueOnly(KeySize, 200d),
+                        o.GetDoubleValueOnly(KeyLeft, 200d),
+                        o.GetDoubleValueOnly(KeyTop, 200d),
+                        o.GetDoubleValueOnly(KeyAngle, 200d),
+                        o.GetDoubleValueOnly(KeyAspectMultiplier, 1d),
+                        GetPatternColorReference(o[KeyColor], refSolver)) {
+                            Source = candidates.FirstOrDefault().Value
+                        },
+                        candidates);
+            }
+
+            return null;
+        }
+
+        [CanBeNull]
         private static PaintShopSource GetSource([CanBeNull] JToken j, [NotNull] ReferenceSolver refSolver, [CanBeNull] PaintShopSourceParams baseParams) {
             if (j == null) return null;
 
@@ -402,6 +421,7 @@ namespace AcManager.PaintShop {
         private const string KeyBase = "base";
         private const string KeyForcePattern = "forcePattern";
         private const string KeyForce = "force";
+        private const string KeyBackgroundColorHint = "backgroundColorHint";
         private const string KeyPatternBase = "patternBase";
         private const string KeyPatternOverlay = "patternOverlay";
         private const string KeyPatternUnderlay = "patternUnderlay";
@@ -413,6 +433,7 @@ namespace AcManager.PaintShop {
         private const string KeyNumbers = "numbers";
         private const string KeyFlags = "flags";
         private const string KeyLabels = "labels";
+        private const string KeyDecals = "decals";
         private const string KeySource = "source";
         private const string KeyMask = "mask";
         private const string KeyPath = "path";
@@ -434,6 +455,20 @@ namespace AcManager.PaintShop {
 
         [NotNull]
         private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JToken t, [NotNull] ReferenceSolver refSolver, PaintShopSourceParams sourceParams) {
+            if (t?.Type == JTokenType.String) {
+                var mask = ((string)t).ApartFromFirst("./");
+                if (mask.EndsWith("/")) {
+                    mask += "*";
+                }
+
+                return refSolver.GetKeys(mask).Select(x => new {
+                    Key = Path.GetFileNameWithoutExtension(x),
+                    Source = GetSource("./" + x, refSolver, sourceParams)
+                }).Where(x => x.Source != null).ToDictionary(
+                        x => x.Key,
+                        x => x.Source);
+            }
+
             return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
                 Source = GetSource(x.Value, refSolver, sourceParams)
@@ -678,9 +713,11 @@ namespace AcManager.PaintShop {
                     new[] { GetFlag(obj[KeyFlags]) };
             var labels = (obj[KeyLabels] as JArray)?.OfType<JObject>().Select(x => GetLabel(x, refSolver)) ??
                     new[] { GetLabel(obj[KeyLabels], refSolver) };
+            var decals = (obj[KeyDecals] as JArray)?.OfType<JObject>().Select(x => GetDecal(x, refSolver)) ??
+                    new[] { GetDecal(obj[KeyDecals], refSolver) };
 
             return new CarPaintPattern(name, pattern, overlay, underlay, GetSize(obj[KeySize]) ?? size, GetColors(obj, null),
-                    numbers, flags, labels) {
+                    numbers, flags, labels, decals) {
                         LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
                         LiveryColorIds = GetLiveryColorIds(obj)
                     };
@@ -695,7 +732,8 @@ namespace AcManager.PaintShop {
                     var sourceParams = GetSourceParams(e);
                     var size = GetSize(e[KeyPatternSize]) ?? GetSize(e[KeySize]);
                     result = new TexturePattern {
-                        LiveryColorIds = GetLiveryColorIds(e)
+                        LiveryColorIds = GetLiveryColorIds(e),
+                        BackgroundColorHint = GetColor(e[KeyBackgroundColorHint])
                     }.SetPatterns(
                             GetDestination(e[KeyPatternTexture] ?? e[KeyTexture], refSolver, e[KeyPatternTexture] != null ? KeyPatternTexture : KeyTexture),
                             GetSource(e[KeyPatternBase], refSolver, sourceParams) ?? GetSource(e[KeyPatternTexture], refSolver, sourceParams) ??
@@ -853,7 +891,7 @@ namespace AcManager.PaintShop {
             using (var zip = ZipFile.OpenRead(downloadedData))
             using (refSolver.SetDataProvider(zip)) {
                 var manifest = zip.GetEntry("Manifest.json").Open().ReadAsStringAndDispose();
-                var jObj = JObject.Parse(manifest);
+                var jObj = JsonExtension.UnwrapReferences(JObject.Parse(manifest));
                 if (jObj.GetStringValueOnly("id") != carId) {
                     throw new Exception($"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");
                 }
@@ -874,7 +912,7 @@ namespace AcManager.PaintShop {
             var candidate = car == null ? null : Path.Combine(car.Location, "ui", "cm_paintshop.json");
             if (car != null && File.Exists(candidate)) {
                 try {
-                    var t = JToken.Parse(File.ReadAllText(candidate));
+                    var t = JsonExtension.UnwrapReferences(JToken.Parse(File.ReadAllText(candidate)));
                     var j = (t as JObject)?.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray ?? t as JArray;
                     if (j != null) {
                         return GetJArrayPaintableItems(j, kn5, previousIds, candidate);
@@ -885,7 +923,7 @@ namespace AcManager.PaintShop {
             } else {
                 foreach (var filename in FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PaintShop).Select(x => x.Filename)) {
                     try {
-                        var j = JObject.Parse(File.ReadAllText(filename));
+                        var j = JsonExtension.UnwrapReferences(JObject.Parse(File.ReadAllText(filename)));
                         if (j.GetValue(carId, StringComparison.OrdinalIgnoreCase) is JArray d) {
                             return GetJArrayPaintableItems(d, kn5, previousIds, filename);
                         }

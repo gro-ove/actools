@@ -92,6 +92,9 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public IReadOnlyList<PaintShopPatternLabel> Labels;
+
+        [CanBeNull]
+        public IReadOnlyList<PaintShopPatternDecal> Decals;
     }
 
     public class PaintShopOverrideMaps : PaintShopOverrideBase {

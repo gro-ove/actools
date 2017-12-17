@@ -22,6 +22,11 @@ namespace AcManager.PaintShop {
                 if (Equals(value, _value)) return;
                 _value = value;
                 OnPropertyChanged();
+
+                foreach (var a in Aspects) {
+                    a.IsEnabled = value.Value != null;
+                    a.SetDirty();
+                }
             }
         }
 

@@ -81,6 +81,70 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        /* Example:
+            [
+                { ""$:references"": true, ""refkey2"": [ 8, 9, ""$:refkey"" ] },
+                { ""$:references"": { ""refkey"": [ ""hahaha"" ] }, ""l"": [ 5, ""$:refkey2"" ] },
+                { ""$:references"": { ""refkey"": [ 1, 2 ] }, ""s"": ""value"", ""l"": [ 5, ""$:refkey2"" ], ""o"": { ""k"": ""v"", ""ref"": ""$:refkey"" } },
+            ]
+
+           Unwraps to:
+            [
+                { "l": [ 5, [ 8, 9, [ "hahaha" ] ] ] },
+                { "s": "value", "l": [ 5, [ 8, 9, [ 1, 2 ] ] ], "o": { "k": "v", "ref": [ 1, 2 ] } }
+            ]
+
+           TODO: Add proper documentation?
+         */
+        public static T UnwrapReferences<T>(T token) where T : JToken {
+            return UnwrapReferences(token, s => null, out var u) ? (T)u : token;
+        }
+
+        private static bool UnwrapReferences(JToken token, Func<string, JToken> refCallback, out JToken unwrapped) {
+            const string refKey = "$:references";
+            var refCallbackLocal = refCallback;
+            switch (token){
+                case JObject o:
+                    if (o[refKey] is JObject or){
+                        o.Remove(refKey);
+                        refCallbackLocal = k => or[k] ?? refCallback(k);
+                    }
+
+                    var keys = o.OfType<JProperty>().Select(x => x.Name).ToList();
+                    foreach (var key in keys){
+                        if (UnwrapReferences(o[key], refCallbackLocal, out var u)){
+                            o[key] = u;
+                        }
+                    }
+                    break;
+                case JArray o:
+                    if (o.Count > 0 && o[0] is JObject ar && ar[refKey]?.Type == JTokenType.Boolean && (bool)ar[refKey]){
+                        o.Remove(ar);
+                        refCallbackLocal = k => ar[k] ?? refCallback(k);
+                    }
+
+                    for (var i = 0; i < o.Count; i++){
+                        if (UnwrapReferences(o[i], refCallbackLocal, out var u)){
+                            o[i] = u;
+                        }
+                    }
+                    break;
+                case JToken s when s.Type == JTokenType.String:
+                    var sv = s.ToString();
+                    if (sv.StartsWith("$:")) {
+                        var rf = refCallback(sv.Substring(2))?.DeepClone();
+                        if (rf != null){
+                            unwrapped = UnwrapReferences(rf, refCallback, out var ur) ? ur : rf;
+                            return true;
+                        }
+                    }
+                    break;
+            }
+
+            unwrapped = token;
+            return false;
+        }
+
         public static string GetStringValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
@@ -97,8 +161,7 @@ namespace AcTools.Utils.Helpers {
             var result = value.ToString();
             if (string.IsNullOrEmpty(result)) return null;
 
-            double val;
-            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (int?)null : (int)val;
+            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var val) ? (int?)null : (int)val;
         }
 
         public static int GetIntValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, int defaultValue) {
@@ -113,8 +176,7 @@ namespace AcTools.Utils.Helpers {
             var result = value.ToString();
             if (string.IsNullOrEmpty(result)) return null;
 
-            double val;
-            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (double?)null : (double)val;
+            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var val) ? (double?)null : val;
         }
 
         public static double GetDoubleValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, double defaultValue) {
@@ -133,8 +195,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static GeoTagsEntry GetGeoTagsValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key] as JArray;
-            if (value == null || value.Count != 2) return null;
+            if (!(obj[key] is JArray value) || value.Count != 2) return null;
             var lat = value[0];
             var lon = value[1];
             if (lat == null || lat.Type != JTokenType.String ||
@@ -211,7 +272,7 @@ namespace AcTools.Utils.Helpers {
                                          .Where(x => x.Length > 0 && x != "[" && x != "]")
                                          .Partition(2)
                                          .Where(x => x.Length == 2)
-                                         .Select(x => new JArray(x.Cast<object>().ToArray()))
+                                         .Select(x => new JArray(x.ToArray<object>()))
                                          .Cast<object>().ToArray());
                             break;
 
@@ -221,8 +282,7 @@ namespace AcTools.Utils.Helpers {
                 }
 
                 if (field.ParentName != null) {
-                    var obj = result[field.ParentName] as JObject;
-                    if (obj == null) {
+                    if (!(result[field.ParentName] is JObject obj)) {
                         result[field.ParentName] = obj = new JObject();
                     }
 
@@ -232,11 +292,9 @@ namespace AcTools.Utils.Helpers {
                 }
             }
 
-            JToken temp;
-            foreach (var field in scheme.Fields.Where(x => x.Type == JObjectRestorationScheme.FieldType.NonNullString && !result.TryGetValue(x.Name, out temp))) {
+            foreach (var field in scheme.Fields.Where(x => x.Type == JObjectRestorationScheme.FieldType.NonNullString && !result.TryGetValue(x.Name, out _))) {
                 if (field.ParentName != null) {
-                    var obj = result[field.ParentName] as JObject;
-                    if (obj == null) {
+                    if (!(result[field.ParentName] is JObject obj)) {
                         result[field.ParentName] = obj = new JObject();
                     }
 

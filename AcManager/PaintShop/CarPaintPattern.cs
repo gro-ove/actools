@@ -5,20 +5,44 @@ using System.Drawing;
 using System.Linq;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Color = System.Windows.Media.Color;
 
 namespace AcManager.PaintShop {
+    public class CarPaintPatternDecals : NotifyPropertyChanged {
+        public PaintShopPatternDecal Decal { get; }
+        public Dictionary<string, PaintShopSource> Candidates { get; }
+
+        public CarPaintPatternDecals(PaintShopPatternDecal decal, Dictionary<string, PaintShopSource> candidates) {
+            Decal = decal;
+            Candidates = candidates;
+            Selected = candidates.FirstOrDefault();
+        }
+
+        private KeyValuePair<string, PaintShopSource> _selected;
+
+        public KeyValuePair<string, PaintShopSource> Selected {
+            get => _selected;
+            set {
+                if (Equals(value, _selected)) return;
+                _selected = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public sealed class CarPaintPattern : Displayable {
         public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, null, null,
-                new CarPaintColors(), null, null, null);
+                new CarPaintColors(), null, null, null, null);
 
         public CarPaintPattern(string name, [CanBeNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
                 [CanBeNull] Size? size, CarPaintColors colors,
                 [CanBeNull] IEnumerable<PaintShopPatternNumber> numbers,
                 [CanBeNull] IEnumerable<PaintShopPatternFlag> flags,
-                [CanBeNull] IEnumerable<PaintShopPatternLabel> labels) {
+                [CanBeNull] IEnumerable<PaintShopPatternLabel> labels,
+                [CanBeNull] IEnumerable<Tuple<PaintShopPatternDecal, Dictionary<string, PaintShopSource>>> decals) {
             DisplayName = name;
             Source = source;
             Overlay = overlay;
@@ -28,9 +52,19 @@ namespace AcManager.PaintShop {
             Numbers = numbers?.NonNull().ToList() ?? new List<PaintShopPatternNumber>(0);
             Flags = flags?.NonNull().ToList() ?? new List<PaintShopPatternFlag>(0);
             Labels = labels?.NonNull().ToList() ?? new List<PaintShopPatternLabel>(0);
+            DecalsWithCandidates = decals?.NonNull().Select(x => new CarPaintPatternDecals(x.Item1, x.Item2)).ToList() ?? new List<CarPaintPatternDecals>(0);
+            Decals = DecalsWithCandidates.Select(x => x.Decal).ToList();
+
+            Logging.Debug($"{name}: {Colors.Colors.Length} colors, {Numbers.Count} numbers, {Flags.Count} flags, {Labels.Count} labels, {Decals.Count} decals");
+
             colors.PropertyChanged += OnColorsChanged;
 
-            foreach (var colorRef in Numbers.Concat(Labels).Select(x => x.ColorRef).Where(x => x.IsReference)) {
+            foreach (var decal in DecalsWithCandidates) {
+                decal.PropertyChanged += OnDecalPropertyChanged;
+            }
+
+            foreach (var colorRef in Numbers.Concat(Labels).Select(x => x.ColorRef)
+                                            .Concat(Decals.Select(x => x.ColorRef)).Where(x => x.IsReference)) {
                 colorRef.Updated += OnLabelColorRefUpdated;
             }
         }
@@ -38,7 +72,23 @@ namespace AcManager.PaintShop {
         /// <summary>
         /// Only for OnPropertyChanged(nameof(LabelColors)) bit.
         /// </summary>
-        public IEnumerable<System.Drawing.Color> LabelColors => Numbers.Concat(Labels).Select(x => x.ColorRef).Select(x => x.GetValue(null));
+        public IEnumerable<System.Drawing.Color> LabelColors => Numbers.Concat(Labels).Select(x => x.ColorRef)
+                                                                       .Concat(Decals.Select(x => x.ColorRef)).Select(x => x.GetValue(null));
+
+        /// <summary>
+        /// Only for OnPropertyChanged(nameof(DecalSources)) bit.
+        /// </summary>
+        public IEnumerable<PaintShopSource> DecalSources => Decals.Select(x => x.Source);
+
+        private void OnDecalPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(CarPaintPatternDecals.Selected)) {
+                if (sender is CarPaintPatternDecals d) {
+                    d.Decal.Source = d.Selected.Value;
+                }
+
+                OnPropertyChanged(nameof(DecalSources));
+            }
+        }
 
         private void OnLabelColorRefUpdated(object sender, EventArgs e) {
             OnPropertyChanged(nameof(LabelColors));
@@ -75,6 +125,12 @@ namespace AcManager.PaintShop {
 
         [NotNull]
         public List<PaintShopPatternLabel> Labels { get; }
+
+        [NotNull]
+        public List<PaintShopPatternDecal> Decals { get; }
+
+        [NotNull]
+        public List<CarPaintPatternDecals> DecalsWithCandidates { get; }
 
         public bool HasNumbers => Numbers.Count > 0;
         public bool HasFlags => Flags.Count > 0;

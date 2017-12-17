@@ -40,7 +40,7 @@ namespace AcManager.PaintShop {
         public bool ColorAvailable { get; private set; }
         public Color DefaultColor { get; private set; }
 
-        protected override Color GetBackgroundHintColor() {
+        protected override Color GetBackgroundColorHint() {
             return Color;
         }
 
