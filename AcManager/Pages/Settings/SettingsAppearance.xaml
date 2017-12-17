@@ -110,7 +110,7 @@
       </StackPanel>
       <StackPanel set:Search.Keywords="appearance;ui" set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" Style="{StaticResource SettingsPanel}">
 
-        <!--bg-->
+        <!-- Background -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Background:" />
 
         <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
@@ -150,7 +150,7 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <!--interface-->
+        <!-- Interface -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
 
         <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
@@ -161,6 +161,17 @@
             ToolTip="If disabled, hold Ctrl while opening skins or setups to open them in a new window anyway">
           <Label Content="Open skins and setups lists in new window" />
         </CheckBox>
+
+        <!-- System -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="System:" />
+
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
+          <Button Visibility="{Binding SoftwareRenderingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" />
+          <CheckBox IsChecked="{Binding SoftwareRendering}">
+            <Label Content="Disable hardware acceleration for UI" />
+          </CheckBox>
+        </DockPanel>
       </StackPanel>
 
     </mui:SpacingUniformGrid>

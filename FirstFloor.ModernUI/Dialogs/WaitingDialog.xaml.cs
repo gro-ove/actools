@@ -154,7 +154,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                     return Dispatcher.Invoke(() => {
                         _cancellationTokenSource = new CancellationTokenSource();
                         Buttons = new[] { CreateCloseDialogButton(CancellationText, false, true, MessageBoxResult.Cancel) };
-                        Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 20);
+                        Padding = new Thickness(24, 20, 24, 20);
                         Closing += WaitingDialog_Closing;
                         return _cancellationTokenSource.Token;
                     });

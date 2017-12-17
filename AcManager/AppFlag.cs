@@ -19,6 +19,12 @@ namespace AcManager {
         JpegQuality,
 
         /// <summary>
+        /// Use modern look for Windows Forms components. Enabled by default.
+        /// Example: --visual-styles=no.
+        /// </summary>
+        VisualStyles,
+
+        /// <summary>
         /// Manually load ReShade’s dxgi.dll if found. Possible values: on/off/kn5only. With “kn5only”,
         /// CM will load it only if KN5-file to view was passed in arguments as well. Be careful!
         /// ReShade can mess up WPF windows!

@@ -55,9 +55,10 @@ namespace AcManager.PaintShop {
         }
 
         private class MissingValueException : Exception {
+            [NotNull]
             public string Key { get; }
 
-            public MissingValueException(string key, string message = null) : base(message ?? $"Value required: “{key}”") {
+            public MissingValueException([NotNull] string key, [CanBeNull] string message) : base(message ?? $"Value required: “{key}”") {
                 Key = key;
             }
         }
@@ -66,7 +67,7 @@ namespace AcManager.PaintShop {
         private static string RequireString(JObject j, string key) {
             var s = j.GetStringValueOnly(key);
             if (s == null) {
-                throw new MissingValueException(key);
+                throw new MissingValueException(key, null);
             }
             return s;
         }
@@ -174,7 +175,7 @@ namespace AcManager.PaintShop {
             var s = t.ToString();
 
             if (s.StartsWith("@ref:") || s.StartsWith("#ref:")) {
-                var p = s.Split(new[]{ ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var p = s.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 switch (p.Length) {
                     case 3:
                         return new PaintShopPatternColorReference(refSolver.GetColorReference(p[1], p[2].AsInt(0)));
@@ -314,7 +315,7 @@ namespace AcManager.PaintShop {
             string c = null;
 
             if (s.StartsWith("@ref:") || s.StartsWith("#ref:")) {
-                var p = s.Split(new[]{ ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var p = s.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 switch (p.Length) {
                     case 2:
                         return new PaintShopSource(refSolver.GetTextureReference(p[1]));
@@ -450,7 +451,7 @@ namespace AcManager.PaintShop {
 
             if (t.Type == JTokenType.Array) {
                 return t.NonNull().Select(x => new {
-                    Texture = GetDestination(x[KeyTexture], refSolver),
+                    Texture = GetDestination(x[KeyTexture], refSolver, KeyTexture),
                     Source = GetSource(x, refSolver, sourceParams),
                 }).Where(x => x.Source != null).ToDictionary(
                         x => x.Texture,
@@ -491,7 +492,8 @@ namespace AcManager.PaintShop {
         /// Load entries from pairs table: result texture name → replacement.
         /// </summary>
         [NotNull]
-        private static Dictionary<PaintShopDestination, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key, [NotNull] ReferenceSolver refSolver) {
+        private static Dictionary<PaintShopDestination, PaintShopSource> GetTextureFileNameSourcePairs(JObject e, string key,
+                [NotNull] ReferenceSolver refSolver) {
             return GetTextureFileNameSourcePairs(e[key], refSolver, GetSourceParams(e));
         }
 
@@ -527,8 +529,8 @@ namespace AcManager.PaintShop {
             return new PaintShopDestination(key);
         }
 
-        private static PaintShopDestination GetDestination(JToken token, [NotNull] ReferenceSolver refSolver) {
-            if (token == null) throw new Exception("Texture name is missing");
+        private static PaintShopDestination GetDestination(JToken token, [NotNull] ReferenceSolver refSolver, [NotNull] string textureKey) {
+            if (token == null) throw new MissingValueException(textureKey, "Texture name is missing");
 
             if (token.Type == JTokenType.Object) {
                 var j = (JObject)token;
@@ -559,7 +561,7 @@ namespace AcManager.PaintShop {
 
             if (pairs == null) {
                 return new Dictionary<PaintShopDestination, TintedEntry> {
-                    [GetDestination(e[KeyTexture], refSolver)] = new TintedEntry(
+                    [GetDestination(e[KeyTexture], refSolver, KeyTexture)] = new TintedEntry(
                             e.GetBoolValueOnly(KeyTintBase) == true || sourceParams.RequiresPreparation ?
                                     PaintShopSource.InputSource.SetFrom(sourceParams) :
                                     PaintShopSource.Transparent.SetFrom(sourceParams), null, null)
@@ -568,7 +570,7 @@ namespace AcManager.PaintShop {
 
             if (pairs.Type == JTokenType.Array) {
                 return pairs.NonNull().Select(x => new {
-                    Texture = GetDestination(x[KeyTexture], refSolver),
+                    Texture = GetDestination(x[KeyTexture], refSolver, KeyTexture),
                     Source = GetSource(x[KeySource], refSolver, sourceParams),
                     Mask = GetSource(x[KeyMask], refSolver, null),
                     Overlay = GetSource(x[KeyOverlay], refSolver, null),
@@ -592,8 +594,8 @@ namespace AcManager.PaintShop {
         /// </summary>
         [NotNull]
         private static PaintShopDestination[] GetTextures([NotNull] JObject e, [NotNull] ReferenceSolver refSolver) {
-            return e[KeyTextures]?.Select(x => GetDestination(x, refSolver)).ToArray() ??
-                    new[] { GetDestination(e[KeyTexture], refSolver) };
+            return e[KeyTextures]?.Select((x, i) => GetDestination(x, refSolver, $@"{KeyTextures}/{i}")).ToArray() ??
+                    new[] { GetDestination(e[KeyTexture], refSolver, KeyTexture) };
         }
 
         private static Dictionary<string, Color> GetAllowedColors(JObject e, string key) {
@@ -679,9 +681,9 @@ namespace AcManager.PaintShop {
 
             return new CarPaintPattern(name, pattern, overlay, underlay, GetSize(obj[KeySize]) ?? size, GetColors(obj, null),
                     numbers, flags, labels) {
-                LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
-                LiveryColorIds = GetLiveryColorIds(obj)
-            };
+                        LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
+                        LiveryColorIds = GetLiveryColorIds(obj)
+                    };
         }
 
         [CanBeNull]
@@ -694,7 +696,8 @@ namespace AcManager.PaintShop {
                     var size = GetSize(e[KeyPatternSize]) ?? GetSize(e[KeySize]);
                     result = new TexturePattern {
                         LiveryColorIds = GetLiveryColorIds(e)
-                    }.SetPatterns(GetDestination(e[KeyPatternTexture] ?? e[KeyTexture], refSolver),
+                    }.SetPatterns(
+                            GetDestination(e[KeyPatternTexture] ?? e[KeyTexture], refSolver, e[KeyPatternTexture] != null ? KeyPatternTexture : KeyTexture),
                             GetSource(e[KeyPatternBase], refSolver, sourceParams) ?? GetSource(e[KeyPatternTexture], refSolver, sourceParams) ??
                                     GetSource(e[KeyBase], refSolver, sourceParams) ?? GetSource(e[KeyTexture], refSolver, sourceParams),
                             GetSource(e[KeyPatternOverlay], refSolver, null), GetSource(e[KeyPatternUnderlay], refSolver, null),
@@ -709,13 +712,13 @@ namespace AcManager.PaintShop {
                         var mapsSource = GetSource(e[KeyMapsDefaultTexture], refSolver, mapsSourceParams) ??
                                 PaintShopSource.InputSource.SetFrom(mapsSourceParams);
                         var mapsMask = GetSource(e[KeyMapsMaskTexture], refSolver, null);
-                        carPaint = new ComplexCarPaint(GetDestination(maps, refSolver), mapsSource, mapsMask);
+                        carPaint = new ComplexCarPaint(GetDestination(maps, refSolver, KeyMapsTexture), mapsSource, mapsMask);
                     } else {
                         carPaint = new CarPaint();
                     }
 
                     carPaint.SetDetailsParams(
-                            GetDestination(e[KeyTexture], refSolver),
+                            GetDestination(e[KeyTexture], refSolver, KeyTexture),
                             e.GetBoolValueOnly(KeyFlakesAvailable) ?? true,
                             e.GetIntValueOnly(KeyFlakesSize) ?? 512,
                             e.GetBoolValueOnly(KeyColorAvailable) ?? true,
@@ -731,8 +734,8 @@ namespace AcManager.PaintShop {
                         var patternUnderlay = GetSource(e[KeyPatternUnderlay], refSolver, null);
                         var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, refSolver, patternSize)).NonNull();
                         if (patternBase != null && patterns != null) {
-                            carPaint.SetPatterns(GetDestination(paintPatternTexture, refSolver), patternBase, patternOverlay, patternUnderlay, patterns,
-                                    e.GetBoolValueOnly(KeyForcePattern) ?? false);
+                            carPaint.SetPatterns(GetDestination(paintPatternTexture, refSolver, KeyPatternTexture), patternBase, patternOverlay, patternUnderlay,
+                                    patterns, e.GetBoolValueOnly(KeyForcePattern) ?? false);
                         }
                     }
 

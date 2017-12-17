@@ -180,10 +180,12 @@ namespace AcManager.Tools.Helpers {
             Process.Start(contentUserDir);
         }
 
+        [NotNull]
         public string GetTemporaryFilename([Localizable(false)] params string[] filename) {
             return GetFilename(filename.Prepend("Temporary").ToArray());
         }
 
+        [NotNull]
         public string GetTemporaryDirectory([Localizable(false)] params string[] filename) {
             return GetDirectory(filename.Prepend("Temporary").ToArray());
         }

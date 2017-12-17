@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using AcManager.Tools.Data;
@@ -31,6 +32,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyBackgroundImage = "appearance_backgroundImage";
         public const string KeyBackgroundOpacity = "appearance_backgroundImageOpacity";
         public const string KeyBackgroundStretch = "appearance_backgroundImageStretch";
+        public const string KeySoftwareRendering = "appearance_softwareRendering";
         public const string KeyBitmapScaling = "appearance_bitmapScaling";
         public const string KeyPopupToolBars = "appearance_popupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
@@ -174,6 +176,7 @@ namespace AcManager.Controls.Presentation {
                 LargerTitleLinks = ValuesStorage.GetBool(KeyLargerTitleLinks);
                 BoldTitleLinks = ValuesStorage.GetBool(KeyBoldTitleLinks);
                 BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
+                SoftwareRenderingMode = ValuesStorage.GetBool(KeySoftwareRendering);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
                 PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
@@ -302,6 +305,25 @@ namespace AcManager.Controls.Presentation {
                 _bitmapScalingMode = value;
                 OnPropertyChanged();
                 ValuesStorage.SetEnum(KeyBitmapScaling, value);
+            }
+        }
+        #endregion
+
+        #region Software rendering
+        private bool _softwareRenderingMode;
+
+        public bool SoftwareRenderingMode {
+            get => _softwareRenderingMode;
+            set {
+                if (_loading) {
+                    _softwareRenderingMode = value;
+                    return;
+                }
+
+                if (Equals(value, _softwareRenderingMode)) return;
+                _softwareRenderingMode = value;
+                OnPropertyChanged();
+                ValuesStorage.SetEnum(KeySoftwareRendering, value);
             }
         }
         #endregion

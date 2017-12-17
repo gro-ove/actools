@@ -15,6 +15,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 using Microsoft.Win32;
+using SlimDX.DirectWrite;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsAppearance {
@@ -33,6 +34,7 @@ namespace AcManager.Pages.Settings {
 
         public class ViewModel : NotifyPropertyChanged {
             private static BitmapScalingMode? _originalScalingMode;
+            private static bool? _originalSoftwareRendering;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
@@ -40,11 +42,16 @@ namespace AcManager.Pages.Settings {
 
             internal ViewModel() {
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
+                SoftwareRendering = AppAppearanceManager.SoftwareRenderingMode;
                 TextFormatting = AppAppearanceManager.IdealFormattingMode == null ? TextFormattings[0] :
                         AppAppearanceManager.IdealFormattingMode.Value ? TextFormattings[2] : TextFormattings[1];
 
                 if (!_originalScalingMode.HasValue) {
                     _originalScalingMode = BitmapScaling.Value;
+                }
+
+                if (!_originalSoftwareRendering.HasValue) {
+                    _originalSoftwareRendering = SoftwareRendering;
                 }
             }
 
@@ -88,6 +95,33 @@ namespace AcManager.Pages.Settings {
                 new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Normal, Value = BitmapScalingMode.LowQuality },
                 new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_High, Value = BitmapScalingMode.HighQuality }
             };
+
+            private bool _softwareRenderingRestartRequired;
+
+            public bool SoftwareRenderingRestartRequired {
+                get => _softwareRenderingRestartRequired;
+                set {
+                    if (Equals(value, _softwareRenderingRestartRequired)) return;
+                    _softwareRenderingRestartRequired = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _softwareRendering;
+
+            public bool SoftwareRendering {
+                get => _softwareRendering;
+                set {
+                    if (Equals(value, _softwareRendering)) return;
+                    _softwareRendering = value;
+                    OnPropertyChanged();
+
+                    if (_originalScalingMode.HasValue) {
+                        AppAppearanceManager.SoftwareRenderingMode = value;
+                        SoftwareRenderingRestartRequired = value != _originalSoftwareRendering;
+                    }
+                }
+            }
 
             private Displayable _textFormatting;
 
