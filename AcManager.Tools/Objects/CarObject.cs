@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -58,9 +59,24 @@ namespace AcManager.Tools.Objects {
             CmTexturesFilename = Path.Combine(Location, @"ui", @"cm_textures.json");
         }
 
-        public override string DisplayName => Name == null ? Id :
-                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !Name.EndsWith(Year?.ToInvariantString()) &&
-                        !AcStringValues.GetYearFromName(Name).HasValue ? $@"{Name} '{Year % 100:D2}" : Name;
+        public override string DisplayName {
+            get {
+                var name = Name;
+                if (name == null) return Id;
+
+                var yearValue = Year ?? 0;
+                if (yearValue > 1900 && SettingsHolder.Content.CarsYearPostfix) {
+                    var year = yearValue.ToString();
+                    var index = name.Length - year.Length - 1;
+                    if ((!name.EndsWith(year) || index > 0 && char.IsLetterOrDigit(name[index]))
+                            && !AcStringValues.GetYearFromName(name).HasValue) {
+                        return $@"{name} '{yearValue % 100:D2}";
+                    }
+                }
+
+                return name;
+            }
+        }
 
         public override int? Year {
             get => base.Year;
