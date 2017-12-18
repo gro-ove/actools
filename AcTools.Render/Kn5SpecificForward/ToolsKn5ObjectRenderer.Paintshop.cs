@@ -441,6 +441,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private static readonly EffectSpecialPaintShop.ChannelsParams DefaultChannelParams = new EffectSpecialPaintShop.ChannelsParams {
+            Map = new Vector4(0, 1, 2, 3),
+            Add = Vector4.Zero,
+            Multiply = new Vector4(1)
+        };
+
         private EffectSpecialPaintShop.ChannelsParams GetChannelsParams(PaintShopSource source) {
             return new EffectSpecialPaintShop.ChannelsParams {
                 Map = GetChannelsAssignments(source),
@@ -579,23 +585,28 @@ namespace AcTools.Render.Kn5SpecificForward {
                     p.GetTextAlignment(), (float)(p.Size * multiplier), p.ColorRef.GetValue(c));
         }
 
-        private Dictionary<string, ShaderResourceView> _paintShopFlags = new Dictionary<string, ShaderResourceView>();
+        private Dictionary<string, SourceReady> _paintShopFlags = new Dictionary<string, SourceReady>();
 
-        private ShaderResourceView GetFlagTexture([NotNull] string filename) {
-            if (!_paintShopFlags.TryGetValue(filename, out var view)) {
-                view = ShaderResourceView.FromFile(Device, filename);
-                _paintShopFlags[filename] = view;
+        private SourceReady GetFlagTexture([NotNull] string filename) {
+            if (!_paintShopFlags.TryGetValue(filename, out var ready)) {
+                var view = ShaderResourceView.FromFile(Device, filename);
+                _paintShopFlags[filename] = ready = new SourceReady(view, DefaultChannelParams, GetSize(view) ?? new Size(100, 100), true);
             }
 
-            return view;
+            return ready;
         }
 
-        private void PatternDrawFlag(PaintShopPatternFlag p, [NotNull] string f, double multiplier, Size size, EffectSpecialPaintShop e) {
-            var texture = GetFlagTexture(f);
-            var textureSize = GetSize(texture);
+        private void PatternDrawDecal(PaintShopPatternFlag p, [CanBeNull] SourceReady source, double multiplier, Size size, Color color,
+                EffectSpecialPaintShop e) {
+            if (source == null) {
+                AcToolsLogging.Write("Source not found: " + p);
+                return;
+            }
+
+            var textureSize = source.Size;
             var pos = new Vector2((float)(p.Left * multiplier), (float)(p.Top * multiplier));
             var width = (float)(p.Size * multiplier);
-            var aspect = ((float?)textureSize?.Height / textureSize?.Width ?? 170f / 256f) * (float)p.AspectMultiplier;
+            var aspect = (float)p.AspectMultiplier * textureSize.Height / textureSize.Width;
             var height = width;
             var angle = ((float)p.Angle).ToRadians();
             var scale = new Vector2(size.Width / width, size.Height / height);
@@ -603,8 +614,13 @@ namespace AcTools.Render.Kn5SpecificForward {
             e.FxTransform.SetMatrix(Matrix.Transformation2D(new Vector2(0.5f), 0f, scale, new Vector2(0.5f), 0f, translate) *
                     Matrix.AffineTransformation2D(1f, new Vector2(0.5f, 0.5f), angle, Vector2.Zero) *
                     Matrix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(1f, 1f / aspect), Vector2.Zero, 0f, Vector2.Zero));
-            e.FxInputMap.SetResource(texture);
+            e.FxColor.Set(new Color4(color));
+            source.Set(e.FxInputMap, e.FxInputParams);
             e.TechPiece.DrawAllPasses(DeviceContext, 6);
+        }
+
+        private void PatternDrawFlag(PaintShopPatternFlag p, [NotNull] string f, double multiplier, Size size, EffectSpecialPaintShop e) {
+            PatternDrawDecal(p, GetFlagTexture(f), multiplier, size, Color.White, e);
         }
 
         private class PaintShopActionPreparation : IDisposable {
@@ -739,6 +755,18 @@ namespace AcTools.Render.Kn5SpecificForward {
                                         for (var i = 0; i < flags.Count; i++) {
                                             if (flags[i] != null) {
                                                 _parent.PatternDrawFlag(flags[i], p.SkinFlagFilename, multiplier, size, e);
+                                            }
+                                        }
+                                        _parent.DeviceContext.OutputMerger.BlendState = null;
+                                    }
+
+                                    var decals = p.Decals;
+                                    if (decals?.Count > 0) {
+                                        _parent.DeviceContext.OutputMerger.BlendState = _parent.DeviceContextHolder.States.TransparentBlendState;
+                                        for (var i = 0; i < decals.Count; i++) {
+                                            var d = decals[i];
+                                            if (d != null) {
+                                                _parent.PatternDrawDecal(d, Get(d.Source), multiplier, size, d.ColorRef.GetValue(colors), e);
                                             }
                                         }
                                         _parent.DeviceContext.OutputMerger.BlendState = null;

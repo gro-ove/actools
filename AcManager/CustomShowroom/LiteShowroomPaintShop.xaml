@@ -178,7 +178,7 @@
                   DisplayMemberPath="DisplayName"
                   Visibility="{Binding Patterns.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}" />
               <ItemsControl ItemsSource="{Binding CurrentPattern.Colors.Colors}"
-                  Visibility="{Binding CurrentPattern.Colors, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 4 0 0">
+                  Visibility="{Binding CurrentPattern.Colors.Colors.Length, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 4 0 0">
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
                     <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
@@ -187,6 +187,20 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <mui:ColorPicker Color="{Binding Value}" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <ItemsControl ItemsSource="{Binding CurrentPattern.DecalsWithCandidates}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
+                  Visibility="{Binding CurrentPattern.DecalsWithCandidates.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <mui:BetterComboBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding Selected}" DisplayMemberPath="Key" IsEditable="False" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -237,6 +251,20 @@
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <ItemsControl ItemsSource="{Binding CurrentPattern.DecalsWithCandidates}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
+                    Visibility="{Binding CurrentPattern.DecalsWithCandidates.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <mui:BetterComboBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding Selected}" DisplayMemberPath="Key" IsEditable="False" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
               </StackPanel>
             </StackPanel>
           </StackPanel>
@@ -282,6 +310,20 @@
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <mui:ColorPicker Color="{Binding Value}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <ItemsControl ItemsSource="{Binding CurrentPattern.DecalsWithCandidates}" IsEnabled="{Binding PatternEnabled}" Margin="0 4 0 0"
+                    Visibility="{Binding CurrentPattern.DecalsWithCandidates.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <mui:BetterComboBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding Selected}" DisplayMemberPath="Key" IsEditable="False" />
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>

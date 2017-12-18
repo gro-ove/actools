@@ -125,7 +125,7 @@
 	}
 
 	float4 ps_Piece(PS_IN pin) : SV_Target {
-		return gInputMap.SampleLevel(samPiece, pin.Tex, 0);
+		return GetSource(samPiece, gInputMap, gInputParams, pin.Tex) * gColor;
 	}
 
 	technique10 Piece {
@@ -193,6 +193,9 @@
 		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
 		result.a = saturate(result.a + details.a + overlay.a);
 
+		float patternA = pow(abs(result.a), 0.5);
+		result.rgb = result.rgb * patternA + gColor.rgb * (float3)(1.0 - patternA);
+
         float4 underlay = GetUnderlayMap(pin.Tex);
         result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
 		result.a = saturate(underlay.a + result.a);
@@ -216,15 +219,15 @@
 		float3 resultColor = gColors[0].rgb * saturate(pattern.r * 100);
 		resultColor += gColors[1].rgb * saturate(pattern.g * 100);
 		resultColor += gColors[2].rgb * saturate(pattern.b * 100);
-
-		float patternA = pow(abs(pattern.a), 0.5);
-		resultColor = resultColor * patternA + gColor.rgb * (float3)(1.0 - patternA);
 		resultColor *= ao.rgb;
 
 		float4 result = float4(resultColor, pattern.a);
 		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
 		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
 		result.a = saturate(result.a + details.a + overlay.a);
+
+		float patternA = pow(abs(result.a), 0.5);
+		result.rgb = result.rgb * patternA + gColor.rgb * (float3)(1.0 - patternA);
 
         float4 underlay = GetUnderlayMap(pin.Tex);
         result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));

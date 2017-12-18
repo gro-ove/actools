@@ -45,27 +45,34 @@ namespace AcTools.Render.Kn5SpecificForward {
             _cameraIgnoreNext = true;
         }
 
-        public void AlignCar() {
+        private void AlignCar(Vector3 carCenter) {
             if (Camera is FpsCamera camera) {
-                var boundingBox = MainSlot.CarNode?.GetAllChildren().OfType<Kn5RenderableObject>().Where(x => x.Name?.StartsWith("CINTURE_ON") != true)
-                                          .Aggregate(new BoundingBox(), (a, b) => {
-                                              b.BoundingBox?.ExtendBoundingBox(ref a);
-                                              return a;
-                                          });
-                if (boundingBox.HasValue) {
-                    var offset = boundingBox.Value.GetCenter();
-                    camera.LookAt(camera.Position + offset, _cameraTo += offset, camera.Tilt);
-                    camera.SetLens(AspectRatio);
+                carCenter.Y = 0;
 
-                    offset.Y = 0;
-                    _showroomOffset = offset;
-                    if (ShowroomNode != null) {
-                        ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
-                    }
+                camera.LookAt(camera.Position + carCenter, _cameraTo += carCenter, camera.Tilt);
+                camera.SetLens(AspectRatio);
 
-                    IsDirty = true;
+                _showroomOffset = carCenter;
+                if (ShowroomNode != null) {
+                    ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
                 }
+
+                IsDirty = true;
             }
+        }
+
+        private static bool IsAlignableNode(IRenderableObject obj) {
+            // I’d like to use this opportunity to say hello to Virtual Simulazioni and their McLaren-Mercedes MP4/13 😅
+            return obj.Name?.StartsWith("CINTURE_OFF") != true;
+        }
+
+        public void AlignCar() {
+            var boundingBox = MainSlot.CarNode?.GetAllChildren().OfType<Kn5RenderableObject>().Where(IsAlignableNode)
+                                      .Aggregate(new BoundingBox(), (a, b) => {
+                                          b.BoundingBox?.ExtendBoundingBox(ref a);
+                                          return a;
+                                      });
+            AlignCar(boundingBox?.GetCenter() ?? MainSlot.CarCenter);
         }
 
         private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(Kn5RenderableObject obj, Matrix matrix, ref Vector3 min, ref Vector3 max) {
@@ -109,6 +116,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                         GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(li, matrix, ref min, ref max);
                         break;
                     case Kn5RenderableObject ro:
+                        if (!IsAlignableNode(ro)) continue;
                         GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(ro, matrix, ref min, ref max);
                         break;
                 }

@@ -268,6 +268,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _hidden.Add(selected);
             }
 
+            IsDirty = true;
             SetShadowsDirty();
             SetReflectionCubemapDirty();
         }
@@ -279,6 +280,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
             _hidden.Clear();
 
+            IsDirty = true;
             SetShadowsDirty();
             SetReflectionCubemapDirty();
         }

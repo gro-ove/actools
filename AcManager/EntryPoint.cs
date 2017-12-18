@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,9 +87,13 @@ namespace AcManager {
                 ApplicationDataDirectory = Path.GetFullPath(data);
             } else {
                 var exe = Assembly.GetEntryAssembly().Location;
-                ApplicationDataDirectory = Path.GetFileName(exe)?.IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
+                ApplicationDataDirectory = Path.GetFileName(exe).IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
                         ? Path.Combine(Path.GetDirectoryName(exe) ?? Path.GetFullPath("."), "Data")
                         : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager");
+            }
+
+            if (AppArguments.GetBool(AppFlag.VisualStyles, true)) {
+                System.Windows.Forms.Application.EnableVisualStyles();
             }
 
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
@@ -188,6 +194,7 @@ namespace AcManager {
 #endif
         }
 
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args) {
             var e = args.Exception as Exception;
             var app = System.Windows.Application.Current;
@@ -225,7 +232,7 @@ namespace AcManager {
             DpiAwareWindow.OnFatalError(e);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void UnhandledExceptionHandler(Exception e) {
             if (e is InvalidOperationException && e.Message.Contains("Visibility") && e.Message.Contains("WindowInteropHelper.EnsureHandle")) {
                 Logging.Error(e.ToString());
@@ -255,23 +262,27 @@ namespace AcManager {
                 }
             }
 
-            try {
-                UnhandledExceptionFancyHandler(e);
-                return;
-            } catch (Exception ex) {
-                LogError(ex.Message);
-
+            if (e is AccessViolationException) {
+                MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else {
                 try {
-                    MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } catch (Exception) {
-                    // ignored
+                    UnhandledExceptionFancyHandler(e);
+                    return;
+                } catch (Exception ex) {
+                    LogError(ex.Message);
+
+                    try {
+                        MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } catch (Exception) {
+                        // ignored
+                    }
                 }
             }
 
             Environment.Exit(1);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
             var e = args.ExceptionObject as Exception;
             var app = System.Windows.Application.Current;

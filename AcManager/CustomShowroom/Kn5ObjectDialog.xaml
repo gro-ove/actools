@@ -1,9 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5ObjectDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls"
-    mc:Ignorable="d" Title="Car Texture" d:DataContext="{d:DesignInstance customShowroom:Kn5ObjectDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    WindowStartupLocation="CenterScreen" MaxWidth="999" Topmost="False">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" Title="Car Texture"
+    d:DataContext="{d:DesignInstance customShowroom:Kn5ObjectDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
+    MaxWidth="999" Topmost="False">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -24,33 +24,33 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <TextBlock Text="{Binding ObjectName}" Style="{StaticResource Heading2}" Grid.Row="0" Margin="0 0 0 12" />
+    <mui:BetterTextBox Text="{Binding ObjectName, Mode=OneWay}" Style="{StaticResource Borderless.Heading2}" Grid.Row="0" Margin="0 0 0 12" IsReadOnly="True" />
 
     <Grid Grid.Row="1">
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Path:" />
-          <mui:PlaceholderTextBlock Text="{Binding ObjectPath}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding ObjectPath, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Material:" />
-          <mui:PlaceholderTextBlock Text="{Binding Material.Name}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding Material.Name, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Shader:" />
-          <mui:PlaceholderTextBlock Text="{Binding Material.ShaderName}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding Material.ShaderName, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Main texture:" />
-          <mui:PlaceholderTextBlock Text="{Binding TextureDimensions}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding TextureDimensions, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Triangles:" />
-          <mui:PlaceholderTextBlock Text="{Binding TrianglesCount}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding TrianglesCount, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Vertices:" />
-          <mui:PlaceholderTextBlock Text="{Binding VerticesCount}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding VerticesCount, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
 
         <uc:BakedShadowsSettings Margin="0 20 0 0" DataContext="{Binding BakedShadows}"

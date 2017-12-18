@@ -88,9 +88,11 @@ namespace AcManager.PaintShop {
             }
         }
 
+        public Color BackgroundColorHint { get; set; } = Colors.Transparent;
+
         [Pure]
-        protected virtual Color GetBackgroundHintColor() {
-            return Colors.Transparent;
+        protected virtual Color GetBackgroundColorHint() {
+            return BackgroundColorHint;
         }
 
         protected virtual void OnPatternEnabledChanged() { }
@@ -107,10 +109,11 @@ namespace AcManager.PaintShop {
                             Overlay = CurrentPattern.Overlay ?? PatternOverlay,
                             Underlay = CurrentPattern.Underlay ?? PatternUnderlay,
                             Colors = CurrentPattern.Colors.DrawingColors,
-                            BackgroundColorHint = GetBackgroundHintColor().ToColor(),
+                            BackgroundColorHint = GetBackgroundColorHint().ToColor(),
                             Numbers = CurrentPattern.Numbers,
                             Flags = CurrentPattern.Flags,
                             Labels = CurrentPattern.Labels,
+                            Decals = CurrentPattern.Decals,
                             SkinNumber = _patternNumber,
                             SkinFlagFilename = _patternFlagTexture,
                             SkinLabels = _patternLabels,

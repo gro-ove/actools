@@ -8,6 +8,8 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using StringBasedFilter.TestEntries;
+using StringBasedFilter.Utils;
 
 namespace AcManager.PaintShop {
     public static partial class PaintShop {
@@ -20,29 +22,63 @@ namespace AcManager.PaintShop {
             private bool _dataArchiveRead;
 
             [CanBeNull]
+            private ZipArchive GetDataArchive() {
+                if (_jsonFilename != null && !_dataArchiveRead) {
+                    _dataArchiveRead = true;
+
+                    var archive = _jsonFilename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip";
+                    if (File.Exists(archive)) {
+                        try {
+                            _dataArchive = ZipFile.OpenRead(archive);
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t read Paint Shop resouces", e);
+                        }
+                    }
+                }
+
+                return _dataArchive;
+            }
+
+            [CanBeNull]
             public byte[] GetData([NotNull] string key) {
                 if (_jsonFilename != null) {
                     var unpackedFilename = Path.Combine(_jsonFilename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase), key);
                     if (File.Exists(unpackedFilename)) {
                         return File.ReadAllBytes(unpackedFilename);
                     }
-
-                    if (!_dataArchiveRead) {
-                        _dataArchiveRead = true;
-
-                        var archive = _jsonFilename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip";
-                        if (File.Exists(archive)) {
-                            try {
-                                _dataArchive = ZipFile.OpenRead(archive);
-                            } catch (Exception e) {
-                                NonfatalError.Notify("Can’t read Paint Shop resouces", e);
-                            }
-                        }
-                    }
                 }
 
-                return _dataArchive?.Entries.FirstOrDefault(x => string.Equals(x.FullName, key, StringComparison.OrdinalIgnoreCase))?
-                                    .Open().ReadAsBytesAndDispose();
+                return GetDataArchive()?.Entries.FirstOrDefault(x => string.Equals(x.FullName, key, StringComparison.OrdinalIgnoreCase))?
+                                        .Open().ReadAsBytesAndDispose();
+            }
+
+            [CanBeNull]
+            private string[] _dataList;
+
+            [NotNull]
+            public IEnumerable<string> GetKeys(string glob) {
+                if (_jsonFilename == null) return new string[0];
+
+                if (_dataList == null) {
+                    var directory = _jsonFilename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase);
+                    var dataList = new List<string>();
+                    if (Directory.Exists(directory)) {
+                        dataList.AddRange(Directory.GetFiles(directory, "*", SearchOption.AllDirectories));
+                        for (var i = 0; i < dataList.Count; i++) {
+                            dataList[i] = FileUtils.GetRelativePath(dataList[i], directory).Replace('\\', '/');
+                        }
+
+                        var fromArchive = GetDataArchive()?.Entries.Select(x => x.FullName);
+                        if (fromArchive != null) {
+                            dataList.AddRange(fromArchive);
+                        }
+                    }
+
+                    _dataList = dataList.ToArray();
+                }
+
+                var regex = RegexFromQuery.Create(glob, StringMatchMode.CompleteMatch);
+                return _dataList.Where(x => regex.IsMatch(x));
             }
 
             public IDisposable SetDataProvider(string jsonFilename) {

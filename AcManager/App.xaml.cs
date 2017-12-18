@@ -34,7 +34,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
-using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -70,12 +69,22 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
     public partial class App : IDisposable {
+        /// <summary>
+        /// It’s incredible how I fail to implement something that simple.
+        /// TODO: Find a way to reproduce that RivaTuner crash here and figure out why that flag doesn’t help.
+        /// </summary>
+        public static bool OptionUseTryingToRunFlag = false;
+
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
+
+        [CanBeNull]
+        private static string _tryingToRunFlag;
 
         public static void CreateAndRun() {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
@@ -104,12 +113,38 @@ namespace AcManager {
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
 
-            if (AppArguments.GetBool(AppFlag.SoftwareRendering)) {
-                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            if (OptionUseTryingToRunFlag) {
+                SetTryingToRunFlag();
+            }
+
+            if (AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.GetBool(AppAppearanceManager.KeySoftwareRendering)) {
+                SwitchToSoftwareRendering();
             }
 
             AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
             new App().Run();
+        }
+
+        private static void SetTryingToRunFlag() {
+            _tryingToRunFlag = FilesStorage.Instance.GetTemporaryFilename("Trying to run.flag");
+            if (!File.Exists(_tryingToRunFlag)) {
+                try {
+                    File.WriteAllBytes(_tryingToRunFlag, new byte[0]);
+                } catch {
+                    // ignored
+                }
+            } else if (new CustomMessageBox(
+                    @"Looks like CM failed to start last time, it could be related to third-party apps such as RivaTuner messing with UI rendering. If this is the case, please, add Content Manager to exceptions.
+
+As an alternative solution, you can switch to software UI rendering, but it will slow app down.", "Potential Compatibility Issue",
+                    "Switch To Software Rendering", "Use Hardware-Accelerated Rendering").ShowDialog() == System.Windows.Forms.DialogResult.Yes) {
+                ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
+            }
+        }
+
+        private static void SwitchToSoftwareRendering() {
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(24));
         }
 
         private AppHibernator _hibernator;
@@ -415,7 +450,7 @@ namespace AcManager {
 
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            new AppUi(this).Run();
+            new AppUi(this, _tryingToRunFlag).Run();
         }
 
         private class CarSetupsView : ICarSetupsView {
@@ -454,7 +489,6 @@ namespace AcManager {
                 ToolTipService.BetweenShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(500));
                 ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
-                Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(60));
             } catch (Exception e) {
                 Logging.Error(e);
             }

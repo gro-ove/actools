@@ -205,6 +205,7 @@
     <Compile Include="Kn5SpecificForward\PaintShopAlignment.cs" />
     <Compile Include="Kn5SpecificForward\PaintShopFontSource.cs" />
     <Compile Include="Kn5SpecificForward\PaintShopPatternColorReference.cs" />
+    <Compile Include="Kn5SpecificForward\PaintShopPatternDecal.cs" />
     <Compile Include="Kn5SpecificForward\PaintShopPatternFlag.cs" />
     <Compile Include="Kn5SpecificForward\PaintShopPatternLabel.cs" />
     <Compile Include="Kn5SpecificForward\PaintShopPatternNumber.cs" />
