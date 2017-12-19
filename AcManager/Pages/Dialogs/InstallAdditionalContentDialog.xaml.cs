@@ -169,10 +169,27 @@ namespace AcManager.Pages.Dialogs {
             ArgumentsHandler.OnDragEnter(sender, e);
         }
 
+        private void OnPasswordBoxKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+                (((FrameworkElement)sender).DataContext as ContentInstallationEntry)?.ApplyPasswordCommand.Execute();
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+            }
+        }
+
+        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {
+            ItemsListBox.SelectedItem = ((FrameworkElement)sender).DataContext as ContentInstallationEntry;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

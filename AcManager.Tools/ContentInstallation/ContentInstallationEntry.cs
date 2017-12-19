@@ -190,6 +190,7 @@ namespace AcManager.Tools.ContentInstallation {
                 _passwordIsInvalid = value;
                 _invalidPassword = _inputPassword;
                 OnPropertyChanged();
+                OnErrorsChanged(nameof(InputPassword));
             }
         }
 
@@ -522,12 +523,12 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         } catch (InformativeException e) {
                             Logging.Warning(e);
-                            Failed = $"Can’t download file: {e.Message.ToSentenceMember()}";
+                            Failed = e.Message;
                             FailedCommentary = e.SolutionCommentary;
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);
-                            Failed = $"Can’t download file: {e.Message.ToSentenceMember()}";
+                            Failed = e.Message;
                             return false;
                         }
                     } else {
@@ -579,11 +580,19 @@ namespace AcManager.Tools.ContentInstallation {
                                 var password = await WaitForPassword();
                                 if (CheckCancellation()) return false;
 
-                                progress.Report(AsyncProgressEntry.FromStringIndetermitate("Checking password…"));
-                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-
-                                await installator.TrySetPasswordAsync(password, cancellation.Token);
-                                if (CheckCancellation()) return false;
+                                bool[] setProgress = { true };
+                                try {
+                                    Task.Delay(100).ContinueWith(t => {
+                                        if (setProgress[0]) {
+                                            _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                                            progress.Report(AsyncProgressEntry.FromStringIndetermitate("Checking password…"));
+                                        }
+                                    }).Forget();
+                                    await installator.TrySetPasswordAsync(password, cancellation.Token);
+                                    if (CheckCancellation()) return false;
+                                } finally {
+                                    setProgress[0] = false;
+                                }
 
                                 if (installator.IsNotSupported) {
                                     Failed = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
@@ -694,9 +703,14 @@ namespace AcManager.Tools.ContentInstallation {
                     } catch (Exception e) when (e.IsCanceled()) {
                         Cancel();
                         return false;
-                    } catch (Exception e) {
-                        Failed = "Can’t find content: " + e.Message.ToSentenceMember();
+                    } catch (FileNotFoundException e) {
                         Logging.Warning(e);
+                        Failed = e.Message;
+                        FailedCommentary = "Make sure file exists and available.";
+                        return false;
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                        Failed = e.Message;
                         return false;
                     }
                 }

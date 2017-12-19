@@ -7,7 +7,7 @@
     Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
     SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}"
     ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch"
-    Closed="OnClosed">
+    Closed="OnClosed" KeyDown="OnKeyDown">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -233,61 +233,130 @@
       </c:MessageBlock>
     </mui:BooleanSwitch>
 
-    <AdornerDecorator>
+    <ListBox x:Name="ItemsListBox" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" mui:FancyScrollHelper.Outside="True"
+        Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="t:ContentInstallationEntry">
+          <DockPanel Height="110" Margin="20" PreviewMouseLeftButtonDown="OnItemMouseDown">
+            <Image Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
+            <DockPanel Dock="Top" HorizontalAlignment="Left">
+              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Left" />
+              <!--<TextBlock Text="{Binding State, Converter={StaticResource EnumToUpperCaseDescriptionConverter}}" Style="{StaticResource Label}" Margin="20 2 0 -2" />-->
+            </DockPanel>
+            <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" DockPanel.Dock="Top" />
 
-      <ListBox Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" mui:FancyScrollHelper.Outside="True" Margin="-24 0 -24 0"
-          Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
-        <ListBox.ItemTemplate>
-          <DataTemplate DataType="t:ContentInstallationEntry">
-            <DockPanel Height="110" Margin="0 8">
-              <Image Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="20 0 20 0" />
-              <DockPanel Dock="Top" HorizontalAlignment="Left">
-                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Left" />
-                <!--<TextBlock Text="{Binding State, Converter={StaticResource EnumToUpperCaseDescriptionConverter}}" Style="{StaticResource Label}" Margin="20 2 0 -2" />-->
+            <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
+              <!-- Finished -->
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Margin="0 12 0 0">
+                <mui:ReferenceSwitch Value="{Binding Failed}">
+                  <mui:ReferenceSwitch.Null>
+                    <DockPanel>
+                      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0">
+                        <Button DockPanel.Dock="Bottom" Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button Content="Scan Again" /><!-- TODO -->
+                      </mui:SpacingUniformGrid>
+                      <Path Data="{StaticResource CheckIconData}" Width="16" Height="16" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                          Margin="0 0 8 0" VerticalAlignment="Center" />
+                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
+                    </DockPanel>
+                  </mui:ReferenceSwitch.Null>
+                  <mui:ReferenceSwitch.NonNull>
+                    <DockPanel>
+                      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0" HorizontalAlignment="Left">
+                        <Button DockPanel.Dock="Bottom" Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button Content="Retry" MinWidth="88" /><!-- TODO -->
+                      </mui:SpacingUniformGrid>
+
+                      <DockPanel Background="Transparent">
+                        <DockPanel.ToolTip>
+                          <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                            <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
+                          </ToolTip>
+                        </DockPanel.ToolTip>
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
+                            Stretch="Uniform" Margin="0 0 8 0" VerticalAlignment="Center" />
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" DockPanel.Dock="Top" />
+                      </DockPanel>
+                    </DockPanel>
+                  </mui:ReferenceSwitch.NonNull>
+                </mui:ReferenceSwitch>
               </DockPanel>
-              <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" DockPanel.Dock="Top" />
 
-              <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-                <!-- Loading thing -->
-                <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
-                  <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" Margin="0 0 0 8"
-                      Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}"
-                      DockPanel.Dock="Top" />
-                  <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
-                      Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                      Margin="0 0 0 8" DockPanel.Dock="Top" />
-                  <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4">
-                    <mui:LabeledToggleButton LabelUnchecked="Pause" LabelChecked="Resume" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
-                        HighlightChecked="True" />
-                    <Button Content="Cancel" />
-                  </mui:SpacingStackPanel>
-                </DockPanel>
+              <!-- Loading thing -->
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
+                <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" Margin="0 0 0 8"
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}"
+                    DockPanel.Dock="Top" />
+                <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                    Margin="0 0 0 8" DockPanel.Dock="Top" />
+                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
+                  <mui:LabeledToggleButton LabelUnchecked="Pause" LabelChecked="Resume" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
+                      HighlightChecked="True" />
+                  <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                </mui:SpacingUniformGrid>
+              </DockPanel>
 
-                <!-- Password input -->
-                <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center" HorizontalAlignment="Left">
-                  <Button Command="{Binding ApplyPasswordCommand}" Content="OK" DockPanel.Dock="Right" Margin="8 0 0 0" />
-                  <Label Content="Password:" Padding="0 4 12 0" Target="{Binding ElementName=PasswordBox}" Background="Transparent" />
-                  <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
-                      Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" />
+              <!-- Password input -->
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                  Margin="0 12 0 0">
+                <Button Command="{Binding ApplyPasswordCommand}" Content="OK" DockPanel.Dock="Bottom" Margin="0 8 0 0"
+                    IsEnabled="{Binding PasswordIsInvalid, Converter={StaticResource InvertBooleanConverter}}" HorizontalAlignment="Left" MinWidth="88" />
+                <TextBlock Text="Password:" Padding="0 0 12 0" Background="Transparent" />
+                <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
+                    Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" Padding="4 0" PreviewKeyDown="OnPasswordBoxKeyDown" />
+              </DockPanel>
 
-                <!-- TODO: ENTER TO APPLY PASSWORD
-                  TODO: ENTER SHOULDN’T CLOSE DIALOG-->
+              <!-- Waiting for confirmation -->
+              <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
+                <mui:Switch Value="{Binding Entries.Length}">
+                  <StackPanel mui:Switch.When="0">
+                    <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
+                  </StackPanel>
 
-                  <!--<TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
-                <TextBlock Text="Password is invalid" Style="{StaticResource Label.Padding}" Foreground="{DynamicResource Error}"
-                    Visibility="{Binding PasswordIsInvalid, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
-                </DockPanel>
+                  <DockPanel>
+                    <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
+                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <DockPanel>
+                            <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                          </DockPanel>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
+                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
 
-                <!--<mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
-                <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
-                <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
-                <TextBlock Text="Password is invalid" Style="{StaticResource Label.Padding}" Foreground="{DynamicResource Error}"
-                    Visibility="{Binding PasswordIsInvalid, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
-              </mui:SpacingStackPanel>-->
-              </mui:Switch>
+                    <ItemsControl ItemsSource="{Binding Entries}">
+                      <ItemsControl.ItemTemplateSelector>
+                        <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
+                            TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
+                      </ItemsControl.ItemTemplateSelector>
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
-              <!--<DockPanel DockPanel.Dock="Top">
+                  </DockPanel>
+                </mui:Switch>
+
+                <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
+              </StackPanel>
+            </mui:Switch>
+
+            <!--<DockPanel DockPanel.Dock="Top">
               <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
                   Command="{Binding CancelCommand}" ToolTip="Cancel installing"
                   Visibility="{Binding CancelCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
@@ -380,59 +449,12 @@
                 <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
               </mui:SpacingStackPanel>
 
-              ~1~ Waiting for confirmation @1@
-              <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
-                <mui:Switch Value="{Binding Entries.Length}">
-                  <StackPanel mui:Switch.When="0">
-                    <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
-                  </StackPanel>
-
-                  <DockPanel>
-                    <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
-                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Spacing="8" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <DockPanel>
-                            <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
-                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
-                          </DockPanel>
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
-                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
-
-                    <ItemsControl ItemsSource="{Binding Entries}">
-                      <ItemsControl.ItemTemplateSelector>
-                        <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
-                            TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
-                      </ItemsControl.ItemTemplateSelector>
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Spacing="8" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-
-                  </DockPanel>
-                </mui:Switch>
-
-                <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
-              </StackPanel>
             </mui:Switch>-->
 
-            </DockPanel>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-
-    </AdornerDecorator>
+          </DockPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
 
   </DockPanel>
 </mui:ModernDialog>
