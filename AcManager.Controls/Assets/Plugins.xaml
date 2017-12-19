@@ -164,11 +164,11 @@
 
       <mui:Switch Value="{Binding InstallationInProgress}" Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button mui:Switch.When="True" Command="{Binding CancellationCommand}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-            Padding="2 1 2 3">
+            Padding="1">
           <mui:Cell>
-            <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding DownloadProgress}" IsIndeterminate="{Binding DownloadProgressIndeterminate}"
-                VerticalAlignment="Bottom" Margin="0" DockPanel.Dock="Bottom" />
-            <TextBlock Text="Cancel" TextAlignment="Center" VerticalAlignment="Center" Margin="2" />
+            <ProgressBar Height="2" Minimum="0" Maximum="1" Value="{Binding DownloadProgress}" IsIndeterminate="{Binding DownloadProgressIndeterminate}"
+                VerticalAlignment="Bottom" />
+            <TextBlock Text="Cancel" TextAlignment="Center" VerticalAlignment="Center" Margin="4 -1 4 2" />
           </mui:Cell>
         </Button>
 

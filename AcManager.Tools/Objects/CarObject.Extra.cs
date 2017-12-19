@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -98,28 +99,32 @@ namespace AcManager.Tools.Objects {
         }
 
         private void SetTrackOutlineTexture([CanBeNull] string filename, [NotNull] string textureName, [CanBeNull] string textureEffect) {
-            var data = Lazier.Create(() => {
-                return filename == null || !File.Exists(filename) ? null : ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
-            });
+            try {
+                var data = Lazier.Create(() => {
+                    return filename == null || !File.Exists(filename) ? null : ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
+                });
 
-            string alreadySaved = null;
-            foreach (var skinObject in EnabledOnlySkins) {
-                var location = Path.Combine(skinObject.Location, textureName);
+                string alreadySaved = null;
+                foreach (var skinObject in EnabledOnlySkins.ToList()) {
+                    var location = Path.Combine(skinObject.Location, textureName);
 
-                if (data.Value != null) {
-                    if (alreadySaved != null) {
-                        FileUtils.HardLinkOrCopy(alreadySaved, location, true);
-                    } else {
-                        try {
-                            File.WriteAllBytes(location, data.Value);
-                            alreadySaved = location;
-                        } catch (Exception e) {
-                            Logging.Error(e);
+                    if (data.Value != null) {
+                        if (alreadySaved != null) {
+                            FileUtils.HardLinkOrCopy(alreadySaved, location, true);
+                        } else {
+                            try {
+                                File.WriteAllBytes(location, data.Value);
+                                alreadySaved = location;
+                            } catch (Exception e) {
+                                Logging.Error(e);
+                            }
                         }
+                    } else {
+                        FileUtils.TryToDelete(location);
                     }
-                } else {
-                    FileUtils.TryToDelete(location);
                 }
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t set track outline texture", e);
             }
         }
 
