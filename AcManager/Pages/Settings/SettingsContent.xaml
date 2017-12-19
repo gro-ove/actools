@@ -128,7 +128,7 @@
         </DockPanel>
 
         <CheckBox set:Search.Keywords="cars;specs" IsChecked="{Binding Holder.CarsProperPwRatio}">
-          <CheckBox.ToolTip>This way, the more ratio is is better! As it should</CheckBox.ToolTip>
+          <CheckBox.ToolTip>This way, the more ratio is is better! As it should be</CheckBox.ToolTip>
           <Label Content="Inverse P/W ratio to horsepowers per kilogram" />
         </CheckBox>
 

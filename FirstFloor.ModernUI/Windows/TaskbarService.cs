@@ -88,8 +88,10 @@ namespace FirstFloor.ModernUI.Windows {
         private static Lazy<TaskbarProgress> _lazyProgress = new Lazy<TaskbarProgress>(ValueFactory);
 
         private static TaskbarProgress ValueFactory() {
-            var window = Application.Current?.MainWindow;
-            return window == null ? null : new TaskbarProgress(window);
+            return ActionExtension.InvokeInMainThread(() => {
+                var window = Application.Current?.MainWindow;
+                return window == null ? null : new TaskbarProgress(window);
+            });
         }
 
         static TaskbarService() {
