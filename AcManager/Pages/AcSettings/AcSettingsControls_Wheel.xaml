@@ -5,7 +5,7 @@
   <mui:ModernTab Layout="Tab" SelectedSource="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" SaveKey="__AcSettingsControls_Wheel.SelectedPage"
       Margin="0 16 0 0">
     <mui:ModernTab.Links>
-      <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Axles}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" />
+      <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Axis}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Buttons}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Buttons.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_ForceFeedback}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_ForceFeedback.xaml" />
     </mui:ModernTab.Links>

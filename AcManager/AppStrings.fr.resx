@@ -1727,7 +1727,7 @@ Auteur : [b]{3}[/b]</value>
   <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
     <value>M'avertir à propos de modifications non sauvegardées</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Axes</value>
   </data>
   <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">

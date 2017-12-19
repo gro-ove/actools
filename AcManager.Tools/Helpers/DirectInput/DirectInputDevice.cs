@@ -95,7 +95,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public DirectInputAxle GetAxle(int id) {
-            return Axles.ElementAtOrDefault(id);
+            return Axis.ElementAtOrDefault(id);
         }
 
         public DirectInputButton GetButton(int id) {
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public DirectInputButton[] Buttons { get; } 
 
-        public DirectInputAxle[] Axles { get; } 
+        public DirectInputAxle[] Axis { get; } 
 
         private Joystick _joystick;
         private readonly int _buttonsCount;
@@ -157,7 +157,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
             _buttonsCount = capabilities.ButtonCount;
 
             Buttons = Enumerable.Range(0, _buttonsCount).Select(x => new DirectInputButton(this, x)).ToArray();
-            Axles = Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)).ToArray();
+            Axis = Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)).ToArray();
         }
 
         [CanBeNull]
@@ -190,16 +190,16 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     Buttons[i].Value = i < buttons.Length && buttons[i];
                 }
 
-                Axles[0].Value = state.X / 65535d;
-                Axles[1].Value = state.Y / 65535d;
-                Axles[2].Value = state.Z / 65535d;
-                Axles[3].Value = state.RotationX / 65535d;
-                Axles[4].Value = state.RotationY / 65535d;
-                Axles[5].Value = state.RotationZ / 65535d;
+                Axis[0].Value = state.X / 65535d;
+                Axis[1].Value = state.Y / 65535d;
+                Axis[2].Value = state.Z / 65535d;
+                Axis[3].Value = state.RotationX / 65535d;
+                Axis[4].Value = state.RotationY / 65535d;
+                Axis[5].Value = state.RotationZ / 65535d;
 
                 var sliders = state.GetSliders();
-                Axles[6].Value = sliders.Length > 0 ? sliders[0] / 65535d : 0d;
-                Axles[7].Value = sliders.Length > 1 ? sliders[1] / 65535d : 0d;
+                Axis[6].Value = sliders.Length > 0 ? sliders[0] / 65535d : 0d;
+                Axis[7].Value = sliders.Length > 1 ? sliders[1] / 65535d : 0d;
             } catch (DirectInputException e) when(e.Message.Contains(@"DIERR_UNPLUGGED")) {
                 Unplugged = true;
             } catch (DirectInputException e) {

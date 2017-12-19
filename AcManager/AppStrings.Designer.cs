@@ -3019,11 +3019,11 @@ namespace AcManager {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Axles.
+        ///   Looks up a localized string similar to Axis.
         /// </summary>
-        public static string Controls_Axles {
+        public static string Controls_Axis {
             get {
-                return ResourceManager.GetString("Controls_Axles", resourceCulture);
+                return ResourceManager.GetString("Controls_Axis", resourceCulture);
             }
         }
 

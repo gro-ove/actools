@@ -2323,7 +2323,7 @@ Dimensioni massime (raccomandate): {0} MB</value>
   <data name="Controls_UseMouseButtons" xml:space="preserve">
     <value>Usa I tasti del mouse per accelleratoe e freno</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Assi</value>
   </data>
   <data name="Controls_Buttons" xml:space="preserve">

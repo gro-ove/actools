@@ -2957,8 +2957,8 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
   <data name="Controls_AdditionalBindings" xml:space="preserve">
     <value>Additional bindings:</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
-    <value>Axles</value>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>Axis</value>
   </data>
   <data name="Controls_Buttons" xml:space="preserve">
     <value>Buttons</value>
