@@ -16,7 +16,7 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding RandomShape}">
+          <CheckBox IsChecked="{Binding RandomShape}">
             <Label Content="Random shape" />
           </CheckBox>
           <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
@@ -36,16 +36,16 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
         <mui:SpacingUniformGrid Columns="2" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CmForFlag}">
+          <CheckBox IsChecked="{Binding CmForFlag}">
             <Label Content="Add “cm_skin_for.json” to make sure CM will know where to install this skin" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CmPaintShopValues}">
+          <CheckBox IsChecked="{Binding CmPaintShopValues}">
             <Label Content="Keep “cm_skin.json” with Paint Shop values if found" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+          <CheckBox IsChecked="{Binding PackSeparately}">
             <Label Content="Pack separately" />
           </CheckBox>
-          <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+          <!--<CheckBox IsChecked="{Binding SortTags}">
             <Label Content="Sort tags" />
           </CheckBox>-->
         </mui:SpacingUniformGrid>
@@ -62,13 +62,13 @@
           <mui:BetterTextBox Text="{Binding Prefix}" />
         </DockPanel>
         <mui:SpacingUniformGrid Columns="2" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PostfixMode}">
+          <CheckBox IsChecked="{Binding PostfixMode}">
             <Label Content="Add as postfix" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SkipExisting}">
+          <CheckBox IsChecked="{Binding SkipExisting}">
             <Label Content="Skip if already added" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding KeepSpace}">
+          <CheckBox IsChecked="{Binding KeepSpace}">
             <Label Content="Make sure there is a space between" />
           </CheckBox>
         </mui:SpacingUniformGrid>

@@ -17,7 +17,7 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding AsGeneric}">
+          <CheckBox IsChecked="{Binding AsGeneric}">
             <Label Content="As generic setup" />
           </CheckBox>
           <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">

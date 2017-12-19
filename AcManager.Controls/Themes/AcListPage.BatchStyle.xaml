@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
@@ -42,20 +42,5 @@
   <SolidColorBrush x:Key="SliderTickDisabled" Color="#919191" />
 
   <SolidColorBrush x:Key="WindowText" Color="White" />
-
-  <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
-    <Style.Triggers>
-      <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="White" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
-  <Style x:Key="CheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-    <Style.Triggers>
-      <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="White" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
+  <SolidColorBrush x:Key="FocusBorder" Color="White" />
 </ResourceDictionary>

@@ -167,7 +167,7 @@
             <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
           </Trigger>
           <Trigger Property="IsFocused" Value="True">
-            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource Accent}" />
+            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
           </Trigger>
         </ControlTemplate.Triggers>
       </ControlTemplate>

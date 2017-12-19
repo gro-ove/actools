@@ -355,10 +355,10 @@
               <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextHover}" />
             </MultiTrigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

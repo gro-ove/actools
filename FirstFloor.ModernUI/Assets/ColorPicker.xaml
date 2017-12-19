@@ -54,12 +54,12 @@
             <Trigger Property="IsFocused" Value="True">
               <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
               <Setter TargetName="Outline" Property="Order" Value="5" />
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
               <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
               <Setter TargetName="Outline" Property="Order" Value="5" />
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -116,12 +116,12 @@
             <Trigger Property="IsFocused" Value="True">
               <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
               <Setter TargetName="Outline" Property="Order" Value="5" />
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
               <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
               <Setter TargetName="Outline" Property="Order" Value="5" />
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

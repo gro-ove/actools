@@ -38,7 +38,7 @@
               <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
               <Setter TargetName="ExpandPath" Property="RenderTransform">

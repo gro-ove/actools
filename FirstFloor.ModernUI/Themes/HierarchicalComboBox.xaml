@@ -78,7 +78,7 @@
                 <Condition Property="IsFocused" Value="True" />
                 <Condition Property="IsSubmenuOpen" Value="False" />
               </MultiTrigger.Conditions>
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" TargetName="PART_Button" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" TargetName="PART_Button" />
             </MultiTrigger>
             <Trigger Property="IsSubmenuOpen" Value="True">
               <Setter Property="TextBlock.Foreground" Value="{DynamicResource InputTextHover}" TargetName="PART_Text" />
@@ -280,12 +280,12 @@
         <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
       </Trigger>
       <Trigger Property="IsFocused" SourceName="PART_MenuItem" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
       </Trigger>
       <Trigger Property="IsSubmenuOpen" SourceName="PART_MenuItem" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
       </Trigger>

@@ -16,13 +16,13 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
         <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="4" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackData}">
+          <CheckBox IsChecked="{Binding PackData}">
             <Label Content="Encrypt data" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding IncludeTemplates}">
+          <CheckBox IsChecked="{Binding IncludeTemplates}">
             <Label Content="Include “templates” directory" ToolTip="Simply put all templates to “templates” directory" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+          <CheckBox IsChecked="{Binding PackSeparately}">
             <Label Content="Pack separately" />
           </CheckBox>
         </mui:SpacingUniformGrid>
@@ -35,22 +35,22 @@
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
         <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding UpdateBrandBadge}">
+          <CheckBox IsChecked="{Binding UpdateBrandBadge}">
             <Label Content="Update brand badge" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SearchInTags}">
+          <CheckBox IsChecked="{Binding SearchInTags}">
             <Label Content="Search brand name in tags" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SearchInTheMiddle}">
+          <CheckBox IsChecked="{Binding SearchInTheMiddle}">
             <Label Content="Search brand name in the middle of cars’ names" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding UpdateName}">
+          <CheckBox IsChecked="{Binding UpdateName}">
             <Label Content="Put brand name to the begin of car’s name" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding FixNamesWithoutBrands}">
+          <CheckBox IsChecked="{Binding FixNamesWithoutBrands}">
             <Label Content="Ensure brand is in the beginning of car’s name" />
           </CheckBox>
-          <!--<CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+          <!--<CheckBox IsChecked="{Binding SortTags}">
             <Label Content="Sort tags" />
           </CheckBox>-->
         </mui:SpacingUniformGrid>
@@ -63,14 +63,14 @@
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
         <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="4" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding ScaleToMaxValues}">
+          <CheckBox IsChecked="{Binding ScaleToMaxValues}">
             <Label Content="Scale curves to Torque and BHP values" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding UpdateMaxValues}"
+          <CheckBox IsChecked="{Binding UpdateMaxValues}"
               IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
             <Label Content="Update Torque and BHP values" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding RebuildFromData}">
+          <CheckBox IsChecked="{Binding RebuildFromData}">
             <Label Content="Rebuild curves from data" />
           </CheckBox>
         </mui:SpacingUniformGrid>
@@ -90,7 +90,7 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding UpdateAll}">
+        <CheckBox IsChecked="{Binding UpdateAll}">
           <Label Content="Update all values (keep in mind that algorithm is not very accurate)" />
         </CheckBox>
       </mui:SpacingStackPanel>
@@ -101,10 +101,10 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding DifferentOnly}">
+        <CheckBox IsChecked="{Binding DifferentOnly}">
           <Label Content="Only if size or last modification date is different" />
         </CheckBox>
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PreferHardlinks}">
+        <CheckBox IsChecked="{Binding PreferHardlinks}">
           <Label>
             <TextBlock>
               <Run Text="Try to use hard links" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
@@ -121,10 +121,10 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+        <CheckBox IsChecked="{Binding SortTags}">
           <Label Content="Sort tags" />
         </CheckBox>
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CleanUpTags}">
+        <CheckBox IsChecked="{Binding CleanUpTags}">
           <Label Content="Clean up misplaced tags" />
         </CheckBox>
       </mui:SpacingStackPanel>

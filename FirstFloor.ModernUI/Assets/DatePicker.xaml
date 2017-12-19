@@ -65,10 +65,10 @@
                             <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                            <Setter TargetName="LayoutRoot" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                            <Setter TargetName="LayoutRoot" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>

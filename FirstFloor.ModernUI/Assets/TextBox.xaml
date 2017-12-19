@@ -134,7 +134,7 @@
               <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
             </MultiTrigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
