@@ -93,41 +93,45 @@ namespace AcManager.Tools {
             if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
             if (list.Count == 0) return ShowMainWindow.Immediately;
 
-            _previousArguments = list;
+            try {
+                // Why it’s here?
+                _previousArguments = list;
 
-            var contentToInstall = (await list.Select(async x => Tuple.Create(x,
-                    ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
-                            await ContentInstallationManager.IsRemoteSourceFlexible(x))
-                    ).WhenAll()).Where(x => x.Item2 != null).ToList();
-            if (contentToInstall.Any()) {
-                list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
-                if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
-                    AllowExecutables = true
-                })).WhenAll()).All(x => !x)) {
-                    // TODO
-                    await Task.Delay(2000);
+                var contentToInstall = (await list.Where(x => !IsCustomUriScheme(x)).Select(async x => Tuple.Create(x,
+                        ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
+                                await ContentInstallationManager.IsRemoteSourceFlexible(x))
+                        ).WhenAll()).Where(x => x.Item2 != null).ToList();
+                if (contentToInstall.Any()) {
+                    list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
+                    if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
+                        AllowExecutables = true
+                    })).WhenAll()).All(x => !x)) {
+                        // TODO
+                        await Task.Delay(2000);
+                    }
                 }
+
+                var showMainWindow = false;
+                foreach (var arg in list) {
+                    var result = await ProcessArgument(arg);
+
+                    if (extraDelay != TimeSpan.Zero) {
+                        await Task.Delay(extraDelay);
+                    }
+
+                    if (result == ArgumentHandleResult.FailedShow) {
+                        NonfatalError.Notify(string.Format(AppStrings.Main_CannotProcessArgument, arg), AppStrings.Main_CannotProcessArgument_Commentary);
+                    }
+
+                    if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
+                        showMainWindow = true;
+                    }
+                }
+
+                return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
+            } finally {
+                _previousArguments = null;
             }
-
-            var showMainWindow = false;
-            foreach (var arg in list) {
-                var result = await ProcessArgument(arg);
-
-                if (extraDelay != TimeSpan.Zero) {
-                    await Task.Delay(extraDelay);
-                }
-
-                if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify(string.Format(AppStrings.Main_CannotProcessArgument, arg), AppStrings.Main_CannotProcessArgument_Commentary);
-                }
-
-                if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
-                    showMainWindow = true;
-                }
-            }
-
-            _previousArguments = null;
-            return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
         }
 
         public static bool IsCustomUriScheme(string argument) {

@@ -554,7 +554,8 @@ namespace AcManager.Tools.ContentInstallation {
                         using (var installator = await FromFile(localFilename, _installationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
-                            if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator) {
+                            if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator
+                                    || installator is SevenZipContentInstallator /* to check for 7-Zip updates */) {
                                 SevenZipInstallatorWouldNotHurt = true;
                             }
 

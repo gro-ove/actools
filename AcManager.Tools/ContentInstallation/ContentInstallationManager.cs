@@ -111,6 +111,7 @@ namespace AcManager.Tools.ContentInstallation {
         public static bool IsAdditionalContent(string filename) {
             // TODO: or PP-filter, or …?
             try {
+                if (!FileUtils.ArePathsEqual(FileUtils.EnsureFilenameIsValid(filename), filename)) return false;
                 return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename) ||
                         !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.Affects(AcPaths.GetReplaysDirectory(), filename);
             } catch (Exception e) {

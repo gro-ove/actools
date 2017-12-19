@@ -107,6 +107,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (ContentInstallationManager.Instance.DownloadList.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
                 SevenZipWarning.Visibility = Visibility.Visible;
+                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
             } else {
                 ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
                 this.OnActualUnload(() => {
@@ -118,6 +119,7 @@ namespace AcManager.Pages.Dialogs {
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ContentInstallationEntry.SevenZipInstallatorWouldNotHurt)) {
                 SevenZipWarning.Visibility = Visibility.Visible;
+                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
             }
         }
 
@@ -149,8 +151,21 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        private bool _isSevenZipPluginObsolete;
+
+        public bool IsSevenZipPluginObsolete {
+            get => _isSevenZipPluginObsolete;
+            set {
+                if (Equals(value, _isSevenZipPluginObsolete)) return;
+                _isSevenZipPluginObsolete = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void UpdateSevenZipPluginMissing() {
             IsSevenZipPluginMissing = !PluginsManager.Instance.IsPluginEnabled(SevenZipContentInstallator.PluginId);
+            IsSevenZipPluginObsolete = PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.Version.IsVersionOlderThan(
+                    SevenZipContentInstallator.MinimalRecommendedVersion) == true;
         }
 
         private void OnPlugin(object o, AppAddonEventHandlerArgs e) {
