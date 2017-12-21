@@ -250,77 +250,82 @@
         Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="t:ContentInstallationEntry">
-          <DockPanel Height="110" Margin="20" PreviewMouseLeftButtonDown="OnItemMouseDown">
-            <Image Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
-            <DockPanel Dock="Top" HorizontalAlignment="Left">
-              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Left" />
-              <!--<TextBlock Text="{Binding State, Converter={StaticResource EnumToUpperCaseDescriptionConverter}}" Style="{StaticResource Label}" Margin="20 2 0 -2" />-->
+          <DockPanel Height="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown">
+            <Image x:Name="PART_Icon" Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
+            <DockPanel Dock="Top" HorizontalAlignment="Left" x:Name="PART_DisplayHeader">
+              <DockPanel.ToolTip>
+                <TextBlock Style="{StaticResource Small}" Text="{Binding DisplaySource}" />
+              </DockPanel.ToolTip>
+              <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Left" />
+              <TextBlock x:Name="PART_DisplayStatus" Style="{StaticResource Label}" Margin="24 1 0 -1"
+                  Text="{Binding Tag, Converter={StaticResource ToUpperConverter}, RelativeSource={RelativeSource Self}}" />
             </DockPanel>
-            <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" DockPanel.Dock="Top" />
 
-            <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-              <!-- Finished -->
-              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Margin="0 12 0 0">
-                <mui:ReferenceSwitch Value="{Binding Failed}">
-                  <mui:ReferenceSwitch.Null>
-                    <DockPanel>
-                      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0">
-                        <Button DockPanel.Dock="Bottom" Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
-                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Button Content="Scan Again" /><!-- TODO -->
-                      </mui:SpacingUniformGrid>
-                      <Path Data="{StaticResource CheckIconData}" Width="16" Height="16" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                          Margin="0 0 8 0" VerticalAlignment="Center" />
-                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
-                    </DockPanel>
-                  </mui:ReferenceSwitch.Null>
-                  <mui:ReferenceSwitch.NonNull>
-                    <DockPanel>
-                      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0" HorizontalAlignment="Left">
-                        <Button DockPanel.Dock="Bottom" Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
-                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Button Content="Retry" MinWidth="88" /><!-- TODO -->
-                      </mui:SpacingUniformGrid>
-
-                      <DockPanel Background="Transparent">
-                        <DockPanel.ToolTip>
-                          <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                            <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
-                          </ToolTip>
-                        </DockPanel.ToolTip>
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
-                            Stretch="Uniform" Margin="0 0 8 0" VerticalAlignment="Center" />
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" DockPanel.Dock="Top" />
-                      </DockPanel>
-                    </DockPanel>
-                  </mui:ReferenceSwitch.NonNull>
-                </mui:ReferenceSwitch>
-              </DockPanel>
-
+            <mui:Switch Value="{Binding State}" Margin="0 4 0 0">
               <!-- Loading thing -->
-              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
-                <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" Margin="0 0 0 8"
-                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}"
-                    DockPanel.Dock="Top" />
+              <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}" Spacing="4">
+                <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}"
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
                 <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
-                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                    Margin="0 0 0 8" DockPanel.Dock="Top" />
+                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
                   <mui:LabeledToggleButton LabelUnchecked="Pause" LabelChecked="Resume" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
                       HighlightChecked="True" />
                   <Button Content="Cancel" Command="{Binding CancelCommand}" />
                 </mui:SpacingUniformGrid>
-              </DockPanel>
+              </mui:SpacingStackPanel>
 
               <!-- Password input -->
-              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center" HorizontalAlignment="Left"
-                  Margin="0 12 0 0">
-                <Button Command="{Binding ApplyPasswordCommand}" Content="OK" DockPanel.Dock="Bottom" Margin="0 8 0 0"
-                    IsEnabled="{Binding PasswordIsInvalid, Converter={StaticResource InvertBooleanConverter}}" HorizontalAlignment="Left" MinWidth="88" />
-                <TextBlock Text="Password:" Padding="0 0 12 0" Background="Transparent" />
-                <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
-                    Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" Padding="4 0" PreviewKeyDown="OnPasswordBoxKeyDown" />
-              </DockPanel>
+              <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center"
+                  HorizontalAlignment="Left" Margin="0 2 0 0" Spacing="6">
+                <DockPanel>
+                  <TextBlock Text="Password:" Padding="0 0 12 0" Background="Transparent" />
+                  <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
+                      Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" Padding="4 0" PreviewKeyDown="OnPasswordBoxKeyDown" />
+                </DockPanel>
+                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
+                  <Button Command="{Binding ApplyPasswordCommand}" Content="OK"
+                      IsEnabled="{Binding PasswordIsInvalid, Converter={StaticResource InvertBooleanConverter}}" HorizontalAlignment="Left" MinWidth="88" />
+                  <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                </mui:SpacingUniformGrid>
+              </mui:SpacingStackPanel>
+
+              <!-- Finished -->
+              <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}" Margin="0 2 0 0">
+                <mui:ReferenceSwitch.Null>
+                  <mui:SpacingStackPanel Spacing="6">
+                    <DockPanel>
+                      <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                          Margin="0 1 4 -1" VerticalAlignment="Center" />
+                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
+                    </DockPanel>
+                    <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
+                      <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                          Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <Button Content="Scan Again" /><!-- TODO -->
+                    </mui:SpacingUniformGrid>
+                  </mui:SpacingStackPanel>
+                </mui:ReferenceSwitch.Null>
+                <mui:ReferenceSwitch.NonNull>
+                  <mui:SpacingStackPanel Spacing="6">
+                    <DockPanel Background="Transparent"  x:Name="PART_ErrorMessage">
+                      <DockPanel.ToolTip>
+                        <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                          <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
+                        </ToolTip>
+                      </DockPanel.ToolTip>
+                      <Path x:Name="PART_ErrorIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                          Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                      <TextBlock TextWrapping="Wrap" Text="{Binding FailedMessage}" DockPanel.Dock="Top" />
+                    </DockPanel>
+                    <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
+                      <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                          Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <Button Content="Retry" MinWidth="88" /><!-- TODO -->
+                    </mui:SpacingUniformGrid>
+                  </mui:SpacingStackPanel>
+                </mui:ReferenceSwitch.NonNull>
+              </mui:ReferenceSwitch>
 
               <!-- Waiting for confirmation -->
               <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
@@ -465,6 +470,26 @@
             </mui:Switch>-->
 
           </DockPanel>
+          <DataTemplate.Triggers>
+            <!--<DataTrigger Binding="{Binding State}" Value="{x:Static t:ContentInstallationEntryState.PasswordRequired}">
+              <Setter TargetName="PART_DisplayStatus" Property="Text" Value="Password required" />
+            </DataTrigger>-->
+            <DataTrigger Binding="{Binding IsFailed}" Value="True">
+              <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Failed" />
+              <Setter TargetName="PART_Icon" Property="Effect">
+                <Setter.Value>
+                  <mui:GrayscaleEffect SaturationFactor="0" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Cancelled}" Value="True">
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Cancelled" />
+              <Setter TargetName="PART_ErrorIcon" Property="Visibility" Value="Collapsed" />
+              <!--<Setter TargetName="PART_ErrorMessage" Property="Visibility" Value="Hidden" />-->
+            </DataTrigger>
+          </DataTemplate.Triggers>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>

@@ -84,6 +84,7 @@ namespace AcManager.Tools.ContentInstallation {
                 _progress = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
+                OnPropertyChanged(nameof(IsFailed));
 
                 if (value.IsReady) {
                     ContentInstallationManager.Instance.UpdateBusyDoingSomething();
@@ -109,24 +110,27 @@ namespace AcManager.Tools.ContentInstallation {
         public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(() => {
             UserCancelled = true;
             Cancel();
-        }, () => _cancellationTokenSource != null || Failed != null && !Cancelled));
+        }, () => _cancellationTokenSource != null || FailedMessage != null && !Cancelled));
 
         private void Cancel() {
             Cancelled = true;
-            Failed = "Cancelled";
+            FailedMessage = ContentInstallationManager.IsRemoteSource(Source) ? "Download cancelled" : "Installation cancelled";
             _cancellationTokenSource?.Cancel();
             DisposeHelper.Dispose(ref _taskbar);
         }
 
-        private string _failed;
+        public bool IsFailed => State == ContentInstallationEntryState.Finished && FailedMessage != null;
 
-        public string Failed {
-            get => _failed;
+        private string _failedMessage;
+
+        public string FailedMessage {
+            get => _failedMessage;
             set {
                 value = value.ToSentence();
-                if (Equals(value, _failed)) return;
-                _failed = value;
+                if (Equals(value, _failedMessage)) return;
+                _failedMessage = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsFailed));
                 _cancelCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -368,6 +372,18 @@ namespace AcManager.Tools.ContentInstallation {
                 if (Equals(value, _loadedFilename)) return;
                 _loadedFilename = value;
                 OnPropertyChanged();
+                LocalFilename = value;
+            }
+        }
+
+        private string _localFilename;
+
+        public string LocalFilename {
+            get => _localFilename;
+            set {
+                if (Equals(value, _localFilename)) return;
+                _localFilename = value;
+                OnPropertyChanged();
                 _viewInExplorerCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -376,8 +392,8 @@ namespace AcManager.Tools.ContentInstallation {
 
         public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
             KeepLoaded = true;
-            WindowsHelper.ViewFile(LoadedFilename);
-        }, () => LoadedFilename != null && File.Exists(LoadedFilename)));
+            WindowsHelper.ViewFile(LocalFilename);
+        }, () => LocalFilename != null && File.Exists(LocalFilename)));
 
         private static string GetFileNameFromUrl(string url) {
             var fileName = FileUtils.EnsureFileNameIsValid(
@@ -479,8 +495,6 @@ namespace AcManager.Tools.ContentInstallation {
                         return false;
                     }
 
-                    string localFilename;
-
                     // Load remote file if it is remote
                     if (ContentInstallationManager.IsRemoteSource(Source)) {
                         progress.Report(AsyncProgressEntry.FromStringIndetermitate("Downloading…"));
@@ -510,37 +524,36 @@ namespace AcManager.Tools.ContentInstallation {
                                     }),
                                     cancellation.Token);
                             CanPause = false;
-                            localFilename = LoadedFilename;
                             if (CheckCancellation()) return false;
                         } catch (Exception e) when (e.IsCanceled()) {
                             CheckCancellation(true);
                             return false;
                         } catch (WebException e) when (e.Response is HttpWebResponse) {
-                            Failed = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
+                            FailedMessage = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);
                             return false;
                         } catch (InformativeException e) {
                             Logging.Warning(e);
-                            Failed = e.Message;
+                            FailedMessage = e.Message;
                             FailedCommentary = e.SolutionCommentary;
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);
-                            Failed = e.Message;
+                            FailedMessage = e.Message;
                             return false;
                         }
                     } else {
-                        localFilename = Source;
+                        LocalFilename = Source;
                         FileName = Path.GetFileName(Source);
                     }
 
                     if (_installationParams.Checksum != null) {
-                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var fs = new FileStream(LocalFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
                         using (var sha1 = new SHA1Managed()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), _installationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
-                                Failed = "Checksum failed";
+                                FailedMessage = "Checksum failed";
                                 return false;
                             }
                         }
@@ -551,7 +564,7 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         // Scan for content
-                        using (var installator = await FromFile(localFilename, _installationParams, cancellation.Token)) {
+                        using (var installator = await FromFile(LocalFilename, _installationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
                             if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator
@@ -560,7 +573,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             if (installator.IsNotSupported) {
-                                Failed = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
+                                FailedMessage = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
 
                                 if (!_sevenZipWarning && installator is SharpCompressContentInstallator &&
                                         PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsInstalled != true) {
@@ -596,7 +609,7 @@ namespace AcManager.Tools.ContentInstallation {
                                 }
 
                                 if (installator.IsNotSupported) {
-                                    Failed = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
+                                    FailedMessage = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
                                     return false;
                                 }
 
@@ -608,7 +621,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     progress.Subrange(0.001, 0.999, "Searching for content ({0})…"), cancellation.Token);
 
                             if (installator.IsNotSupported) {
-                                Failed = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
+                                FailedMessage = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
                                 return false;
                             }
 
@@ -618,7 +631,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             if (entries.Count == 0) {
-                                Failed = "Nothing to install";
+                                FailedMessage = "Nothing to install";
                                 return false;
                             }
 
@@ -706,12 +719,12 @@ namespace AcManager.Tools.ContentInstallation {
                         return false;
                     } catch (FileNotFoundException e) {
                         Logging.Warning(e);
-                        Failed = e.Message;
+                        FailedMessage = e.Message;
                         FailedCommentary = "Make sure file exists and available.";
                         return false;
                     } catch (Exception e) {
                         Logging.Warning(e);
-                        Failed = e.Message;
+                        FailedMessage = e.Message;
                         return false;
                     }
                 }
