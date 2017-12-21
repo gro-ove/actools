@@ -40,11 +40,6 @@ namespace AcManager.Tools.Helpers {
             return value < 1000 ? value < 18 ? 2000 + value : 1900 + value : value;
         }
 
-        public static bool NameContainsYear([NotNull] string name, int? year = null) {
-            var value = GetYearFromName(name);
-            return value.HasValue && (!year.HasValue || value.Value == year.Value);
-        }
-
         [NotNull]
         public static string NameReplaceYear([NotNull] string name, int year) {
             return NameYearRegex.Replace(name, $" '{year % 100:D2}", 1);
