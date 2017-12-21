@@ -64,6 +64,10 @@ namespace AcManager.Tools.Objects {
                 var name = Name;
                 if (name == null) return Id;
 
+                if (SettingsHolder.Content.CarsDisplayNameCleanUp) {
+                    name = name.Replace("™", "");
+                }
+
                 var yearValue = Year ?? 0;
                 if (yearValue > 1900 && SettingsHolder.Content.CarsYearPostfix) {
                     var year = yearValue.ToString();

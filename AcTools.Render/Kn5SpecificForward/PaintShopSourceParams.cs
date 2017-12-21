@@ -1,8 +1,9 @@
 namespace AcTools.Render.Kn5SpecificForward {
     public class PaintShopSourceParams {
         public bool Desaturate;
+        public bool DesaturateMax;
         public bool NormalizeMax;
-        public bool RequiresPreparation => Desaturate || NormalizeMax;
+        public bool RequiresPreparation => Desaturate || DesaturateMax || NormalizeMax;
 
         public ValueAdjustment RedAdjustment = ValueAdjustment.Same,
                 GreenAdjustment = ValueAdjustment.Same,
@@ -21,7 +22,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public override string ToString() {
-            return $"(desat={Desaturate}, norm={NormalizeMax}, ra={RedAdjustment}, ga={GreenAdjustment}, ba={BlueAdjustment}, aa={AlphaAdjustment})";
+            return $"(desat={Desaturate}, desat (m.)={DesaturateMax}, norm={NormalizeMax}, ra={RedAdjustment}, ga={GreenAdjustment}, ba={BlueAdjustment}, aa={AlphaAdjustment})";
         }
     }
 }

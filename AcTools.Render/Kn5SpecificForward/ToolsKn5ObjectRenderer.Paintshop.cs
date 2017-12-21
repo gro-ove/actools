@@ -200,7 +200,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                     e.FxUnderlayMap.SetResource(underlayClone?.View);
                     e.FxUseMask.Set(maskView != null);
                     maskView.Set(e.FxMaskMap, e.FxMaskParams);
-                    e.TechMask.DrawAllPasses(DeviceContext, 6);
+                    e.TechMaskThreshold.DrawAllPasses(DeviceContext, 6);
                 }, tex);
 
                 return tex;
@@ -502,12 +502,16 @@ namespace AcTools.Render.Kn5SpecificForward {
                     original = GetShaderResourceView(source, maxSize, out size, out cached);
                 }
 
+                if (source.DesaturateMax) {
+                    original = Prepare(original, view => DesaturateMax(view, size), ref cached);
+                }
+
                 if (source.Desaturate) {
                     original = Prepare(original, view => Desaturate(view, size), ref cached);
                 }
 
                 if (source.NormalizeMax) {
-                    original = Prepare(original, view => Normalize(view, size), ref cached);
+                    original = Prepare(original, view => NormalizeMax(view, size), ref cached);
                 }
 
                 original = Prepare(original, preparation, ref cached);

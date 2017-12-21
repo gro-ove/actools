@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -38,8 +39,8 @@ namespace AcManager.Pages.Dialogs {
         private static GoodShuffle<string> _progressStyles;
 
         private ViewModel Model => (ViewModel)DataContext;
-
         private readonly CancellationTokenSource _cancellationSource;
+        private readonly bool _resultsViewMode;
 
         public GameDialog() {
             DataContext = new ViewModel();
@@ -54,35 +55,20 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            /*var rhmSettingsButton = new Button {
-                Content = "RHM Settings",
-                Command = RhmService.Instance.ShowSettingsCommand,
-                MinHeight = 21,
-                MinWidth = 65,
-                Margin = new Thickness(4, 0, 0, 0)
-            };
-
-            rhmSettingsButton.SetBinding(VisibilityProperty, new Binding {
-                Source = RhmService.Instance,
-                Path = new PropertyPath(nameof(RhmService.Active)),
-                Converter = new FirstFloor.ModernUI.Windows.Converters.BooleanToVisibilityConverter()
-            });*/
-
             Buttons = new[] {
-                // rhmSettingsButton,
                 CancelButton
             };
         }
 
         public GameDialog(Game.Result readyResult) {
+            _resultsViewMode = true;
             DataContext = new ViewModel();
             InitializeComponent();
-            ((IGameUi)this).OnResult(readyResult, null);
+            OnResult(readyResult, null);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            var effect = ProgressRing.Effect as DropShadowEffect;
-            if (effect != null) {
+            if (ProgressRing.Effect is DropShadowEffect effect) {
                 effect.BlurRadius *= ProgressRing.DensityMultiplier;
             }
         }
@@ -107,7 +93,7 @@ namespace AcManager.Pages.Dialogs {
         private Game.StartProperties _properties;
         private GameMode _mode;
 
-        void IGameUi.Show(Game.StartProperties properties, GameMode mode) {
+        public void Show(Game.StartProperties properties, GameMode mode) {
             _properties = properties;
             _mode = mode;
 
@@ -115,11 +101,11 @@ namespace AcManager.Pages.Dialogs {
             Model.WaitingStatus = AppStrings.Race_Initializing;
         }
 
-        void IGameUi.OnProgress(string progress) {
+        public void OnProgress(string progress) {
             Model.WaitingStatus = progress;
         }
 
-        void IGameUi.OnProgress(Game.ProgressState progress) {
+        public void OnProgress(Game.ProgressState progress) {
             switch (progress) {
                 case Game.ProgressState.Preparing:
                     Model.WaitingStatus = AppStrings.Race_Preparing;
@@ -164,7 +150,7 @@ namespace AcManager.Pages.Dialogs {
                 return new TimeAttackFinishedData {
                     Points = timeAttack.Points,
                     Laps = result.Sessions?.Sum(x => x.LapsTotalPerCar?.FirstOrDefault() ?? 0) ?? 0,
-                    BestLapTime = bestLapTime == TimeSpan.Zero ? (TimeSpan?)null : bestLapTime,
+                    BestLapTime = bestLapTime == TimeSpan.Zero ? null : bestLapTime,
                     TakenPlace = takenPlace
                 };
             }
@@ -491,13 +477,23 @@ namespace AcManager.Pages.Dialogs {
             public DragFinishedData() : base(ToolsStrings.Session_Drag) {}
         }
 
-        void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
-            if (result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
-                    && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults
-                    || _properties?.GetAdditional<WhatsGoingOn>() == null
-                            && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null)) {
-                Close();
-                Application.Current?.MainWindow?.Activate();
+        public void OnResult(Game.Result result, ReplayHelper replayHelper) {
+            var practiceMode = SettingsHolder.Drive.SkipPracticeResults
+                    && !_resultsViewMode // If we got here before dialog is opened, user wants to see results anyway
+                    && result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
+                    && result.Sessions[0].Type == Game.SessionType.Practice;
+            var isNoResultsMode = _properties?.GetAdditional<WhatsGoingOn>() == null
+                    && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null);
+
+            if (practiceMode || isNoResultsMode) {
+                if (IsLoaded) {
+                    Close();
+                    Application.Current?.MainWindow?.Activate();
+                } else {
+                    Model.CurrentState = ViewModel.State.Error;
+                    Model.ErrorMessage = "Nothing to display";
+                    Buttons = new[] { CloseButton };
+                }
                 return;
             }
 
@@ -619,7 +615,7 @@ namespace AcManager.Pages.Dialogs {
             };
         }
 
-        void IGameUi.OnError(Exception exception) {
+        public void OnError(Exception exception) {
             Model.CurrentState = ViewModel.State.Error;
             Model.ErrorMessage = exception?.Message ?? ToolsStrings.Common_UndefinedError;
             Buttons = new[] { CloseButton };

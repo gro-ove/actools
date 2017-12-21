@@ -162,7 +162,7 @@ namespace AcManager.Tools.Profile {
                 get {
                     if (!_parsed) {
                         _parsed = true;
-                        _parsedData = SessionStats.TryDeserialize(_serialized);
+                        _parsedData = SessionStats.TryToDeserialize(_serialized);
                     }
 
                     return _parsedData;

@@ -8,6 +8,23 @@ namespace StringBasedFilter.Utils {
             return c == '*' || c == '?';
         }
 
+        public static bool IsQuery(string s) {
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
+
+                if (c == '\\') {
+                    i++;
+                    continue;
+                }
+
+                if (IsQuerySymbol(c)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static bool IsRegexMetachar(char c) {
             return c >= 9 && c <= 10 || c >= 12 && c <= 13 || c == 32 || c >= 35 && c <= 36 || c >= 40 && c <= 43 || c == 46 || c == 63 || c >= 91 && c <= 92 ||
                     c == 94 || c >= 123 && c <= 124;
@@ -71,6 +88,10 @@ namespace StringBasedFilter.Utils {
 
         public static Regex Create(string query, StringMatchMode mode) {
             return new Regex(PrepareQuery(query, mode), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        }
+
+        public static Regex Create(string query, StringMatchMode mode, bool ignoreCase) {
+            return new Regex(PrepareQuery(query, mode), ignoreCase ? RegexOptions.Compiled | RegexOptions.IgnoreCase : RegexOptions.Compiled);
         }
     }
 }

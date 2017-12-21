@@ -346,7 +346,7 @@ namespace AcManager.Tools.Objects {
                 if (obj.Skip(1).Any(x => x?.Substring(0, i) != result)) continue;
 
                 result = result.Trim();
-                if (result.Length > 2 && result.EndsWith(@"-") || result.EndsWith(@"—")) {
+                if (result.Length > 2 && (result.EndsWith(@"-") || result.EndsWith(@"—") || result.EndsWith(@"/"))) {
                     result = result.Substring(0, result.Length - 1).Trim();
                 }
                 return result;

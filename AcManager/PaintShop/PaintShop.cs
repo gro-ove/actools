@@ -146,14 +146,16 @@ namespace AcManager.PaintShop {
         private static PaintShopSourceParams GetSourceParams([NotNull] JObject jObj) {
             return GetAdjustments(new PaintShopSourceParams {
                 NormalizeMax = jObj.GetBoolValueOnly(KeyAutoLevel) ?? false,
-                Desaturate = jObj.GetBoolValueOnly(KeyDesaturate) ?? false
+                Desaturate = jObj.GetBoolValueOnly(KeyDesaturate) ?? false,
+                DesaturateMax = jObj.GetBoolValueOnly(KeyDesaturateMax) ?? false,
             }, jObj["adjust"] ?? jObj["adjustment"]);
         }
 
         private static PaintShopSourceParams GetMapsSourceParams(JObject jObj) {
             return GetAdjustments(new PaintShopSourceParams {
                 NormalizeMax = jObj.GetBoolValueOnly(KeyMapsAutoLevel) ?? false,
-                Desaturate = jObj.GetBoolValueOnly(KeyMapsDesaturate) ?? false
+                Desaturate = jObj.GetBoolValueOnly(KeyMapsDesaturate) ?? false,
+                DesaturateMax = jObj.GetBoolValueOnly(KeyMapsDesaturateMax) ?? false
             }, jObj["mapsAdjust"] ?? jObj["mapsAdjustment"]);
         }
 
@@ -439,8 +441,10 @@ namespace AcManager.PaintShop {
         private const string KeyPath = "path";
         private const string KeyAutoLevel = "autoLevel";
         private const string KeyDesaturate = "desaturate";
+        private const string KeyDesaturateMax = "desaturateMax";
         private const string KeyMapsAutoLevel = "mapsAutoLevel";
         private const string KeyMapsDesaturate = "mapsDesaturate";
+        private const string KeyMapsDesaturateMax = "mapsDesaturateMax";
         private const string KeyAllowed = "allowed";
         private const string KeyAllowedColors = "allowedColors";
         private const string KeyFlakesSize = "flakesSize";

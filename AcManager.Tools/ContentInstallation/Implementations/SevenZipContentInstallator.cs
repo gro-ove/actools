@@ -406,7 +406,18 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         FileUtils.EnsureFileDirectoryExists(entry.Item4);
                         progress?.Report(Path.GetFileName(entry.Item4), i, filtered.Count);
 
-                        using (var write = File.Create(entry.Item4)) {
+                        Stream stream = null;
+                        for (var j = 0; j < 3 && stream == null; j++) {
+                            try {
+                                stream = File.Create(entry.Item4);
+                                break;
+                            } catch (IOException e) {
+                                Logging.Warning(e);
+                                await Task.Delay(300);
+                            }
+                        }
+
+                        using (var write = stream ?? new MemoryStream()) {
                             await s.CopyToAsync(entry.Item3, write, 30);
                             if (cancellation.IsCancellationRequested) return;
                         }

@@ -244,6 +244,26 @@
 	}
 
 // mask
+	float4 ps_MaskThreshold(PS_IN pin) : SV_Target {
+	    // return gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
+
+	    float4 overlay = GetInputMap(pin.Tex);
+	    if (!gUseMask) return overlay;
+
+	    float mask = GetMaskMap(pin.Tex).r;
+	    if (mask >= 0.5) return overlay;
+
+	    return gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
+	}
+
+	technique10 MaskThreshold {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_MaskThreshold()));
+		}
+	}
+
 	float4 ps_Mask(PS_IN pin) : SV_Target {
 	    // return gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
 
@@ -256,10 +276,7 @@
 	    float4 underlay = gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0);
 	    if (mask <= 0.0) return underlay;
 
-	    return lerp(
-	        gUnderlayMap.SampleLevel(samLinear, pin.Tex, 0),
-	        GetInputMap(pin.Tex),
-	        GetMaskMap(pin.Tex).r);
+	    return lerp(underlay, overlay, mask);
 	}
 
 	technique10 Mask {
@@ -411,7 +428,7 @@
 		float4 limits = gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
 		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
 
-		float3 color = (input.rgb - (float3)limits.y) / max(limits.x - limits.y, 0.0001);
+		float3 color = (input.rgb - limits.yyy) / max(limits.x - limits.y, 0.0001);
 		return saturate(float4(color, input.a));
 	}
 
@@ -420,6 +437,20 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_NormalizeLimits()));
+		}
+	}
+
+	float4 ps_NormalizeMaxLimits(PS_IN pin) : SV_Target {
+		float4 limits = gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
+		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return saturate(float4(input.rgb / (limits.x + 0.0001), input.a));
+	}
+
+	technique10 NormalizeMaxLimits {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_NormalizeMaxLimits()));
 		}
 	}
 
@@ -433,5 +464,18 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_Desaturate()));
+		}
+	}
+
+	float4 ps_DesaturateMax(PS_IN pin) : SV_Target {
+		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return float4((float3)max(input.r, max(input.g, input.b)), input.a);
+	}
+
+	technique10 DesaturateMax {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_DesaturateMax()));
 		}
 	}

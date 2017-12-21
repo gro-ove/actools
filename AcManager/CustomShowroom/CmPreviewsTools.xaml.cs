@@ -580,7 +580,10 @@ namespace AcManager.CustomShowroom {
                 var remainingItems = $"About {left} {PluralizingConverter.Pluralize(left, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}";
 
                 return new[] {
-                    $"Car: {car?.DisplayName}", $"Skin: {skin?.DisplayName ?? "?"}", $"Speed: {speed:F2} {PluralizingConverter.Pluralize(10, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}/{"min"}", $"Time remaining: {remainingTime}", $"Items remaining: {remainingItems}",
+                    $"Car: {car?.DisplayName}", $"Skin: {skin?.DisplayName ?? "?"}",
+                    $"Speed: {speed:F2} {PluralizingConverter.Pluralize(10, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}/{"min"}",
+                    $"Time remaining: {remainingTime}",
+                    $"Items remaining: {remainingItems}",
                     _recyclingWarning ? "[i]Recycling seems to take too long? If so, it can always be disabled in Settings.[/i]" : null
                 }.NonNull();
             }

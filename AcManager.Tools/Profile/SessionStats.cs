@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -139,8 +141,22 @@ namespace AcManager.Tools.Profile {
                 return s.ToString();
             }
 
+            private static string FixTrackId(string trackId) {
+                var separator = trackId.IndexOf('/');
+                if (separator > 0 && trackId.Length - separator == AcSharedConsts.LayoutIdSize + 1) {
+                    var track = TracksManager.Instance.GetById(trackId.Substring(0, separator));
+                    if (track != null) {
+                        var layoutId = trackId.Substring(separator + 1);
+                        return track.MultiLayouts?.FirstOrDefault(x =>
+                                    x.LayoutId?.StartsWith(layoutId, StringComparison.InvariantCultureIgnoreCase) == true)?.IdWithLayout ?? trackId;
+                    }
+                }
+
+                return trackId;
+            }
+
             [NotNull]
-            public static SessionStats Deserialize(string data) {
+            private static SessionStats Deserialize(string data) {
                 try {
                     using (var textReader = new StringReader(data)) {
                         var reader = new JsonTextReader(textReader);
@@ -161,7 +177,7 @@ namespace AcManager.Tools.Profile {
                                             r.CarId = reader.Value.ToString();
                                             break;
                                         case nameof(TrackId):
-                                            r.TrackId = reader.Value.ToString();
+                                            r.TrackId = FixTrackId(reader.Value.ToString());
                                             break;
                                         case nameof(Time):
                                             r.Time = TimeSpan.Parse(reader.Value.ToString());
@@ -256,7 +272,7 @@ namespace AcManager.Tools.Profile {
             }
 
             [CanBeNull]
-            public static SessionStats TryDeserialize(string data) {
+            public static SessionStats TryToDeserialize(string data) {
                 try {
                     return Deserialize(data);
                 } catch (Exception e) {

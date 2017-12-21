@@ -1690,6 +1690,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _carsDisplayNameCleanUp;
+
+            public bool CarsDisplayNameCleanUp {
+                get => _carsDisplayNameCleanUp
+                        ?? (_carsDisplayNameCleanUp = ValuesStorage.GetBool("Settings.ContentSettings.CarsDisplayNameCleanUp", true)).Value;
+                set {
+                    if (Equals(value, _carsDisplayNameCleanUp)) return;
+                    _carsDisplayNameCleanUp = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsDisplayNameCleanUp", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {

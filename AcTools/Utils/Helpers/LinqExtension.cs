@@ -574,6 +574,13 @@ namespace AcTools.Utils.Helpers {
             return source.Where(i => i != null);
         }
 
+        [NotNull, ItemNotNull, Pure]
+        public static IEnumerable<TResult> NonNull<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn)
+                where TResult : class {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.Select(fn).Where(i => i != null);
+        }
+
         [Pure]
         public static IEnumerable<int> RangeFrom(int from = 0) {
             for (var i = from; i < int.MaxValue; i++) {

@@ -295,6 +295,10 @@ namespace FirstFloor.ModernUI.Helpers {
             SaveData(GetData());
         }
 
+        public void ForceSave() {
+            SaveData(GetData());
+        }
+
         private async Task SaveAsync() {
             if (_filename == null) return;
             var sw = Stopwatch.StartNew();

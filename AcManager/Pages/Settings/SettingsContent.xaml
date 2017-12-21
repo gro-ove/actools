@@ -117,6 +117,14 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_AddYearPostfix}" />
         </CheckBox>
 
+        <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}" mui:NewMarkService.New="True">
+          <CheckBox.ToolTip>
+            <TextBlock MaxWidth="400"
+                Text="Don’t forget: names of cars will remain protected under trademark laws even when this option is enabled! Please, don’t manufacture cars with the same names. You’ve been warned." TextWrapping="Wrap" />
+          </CheckBox.ToolTip>
+          <Label Content="Hide symbols like ™ from car names" />
+        </CheckBox>
+
         <CheckBox set:Search.Keywords="cars" IsChecked="{Binding Holder.CarsFixSpecs}">
           <Label Content="Fix missing spaces in specs in Drive section" />
         </CheckBox>
@@ -143,7 +151,8 @@
           <Label Content="Display steer lock" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}" ToolTip="Old layout for Content/Cars page, with vertical list of skins">
+        <CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}"
+            ToolTip="Old layout for Content/Cars page, with vertical list of skins">
           <Label Content="Old layout" />
         </CheckBox>
 

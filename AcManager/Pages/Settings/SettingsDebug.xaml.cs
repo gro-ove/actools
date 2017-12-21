@@ -26,6 +26,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.Settings {
     [Localizable(false)]
@@ -82,6 +83,22 @@ namespace AcManager.Pages.Settings {
                     }));
                 }
             }
+
+            private DelegateCommand _decompressValuesCommand;
+
+            public DelegateCommand DecompressValuesCommand => _decompressValuesCommand ?? (_decompressValuesCommand = new DelegateCommand(() => {
+                var dialog = new OpenFileDialog {
+                    Filter = "Storages (*.data)|*.data|All files (*.*)|*.*",
+                    Title = "Pick Storage To Resave"
+                };
+
+                if (dialog.ShowDialog() == true) {
+                    var copy = FileUtils.EnsureUnique(dialog.FileName);
+                    File.Copy(dialog.FileName, copy);
+                    new Storage(copy, disableCompression: true).ForceSave();
+                    WindowsHelper.ViewFile(copy);
+                }
+            }));
 
             private AsyncCommand _asyncBaseCommand;
 
