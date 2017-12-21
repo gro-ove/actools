@@ -11,10 +11,10 @@
       </DataTemplate.Resources>
       <mui:SpacingStackPanel Spacing="4">
         <mui:SpacingUniformGrid Columns="1" VerticalSpacing="4" HorizontalSpacing="20" HorizontalAlignment="Left">
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding JsgmeCompatible}">
+          <CheckBox IsChecked="{Binding JsgmeCompatible}">
             <Label Content="JSGME compatible" ToolTip="Allows to install track skins for users without CM" />
           </CheckBox>
-          <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}">
+          <CheckBox IsChecked="{Binding PackSeparately}">
             <Label Content="Pack separately" />
           </CheckBox>
         </mui:SpacingUniformGrid>

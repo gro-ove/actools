@@ -164,7 +164,7 @@
                   </Rectangle.Effect>
                 </Rectangle>
                 <Slider x:Name="PART_Slider" Style="{StaticResource ColorPickerSlider}" Minimum="0" Maximum="359"
-                    Value="{Binding Hue, RelativeSource={RelativeSource TemplatedParent}}" />
+                    Value="{Binding Hue, RelativeSource={RelativeSource TemplatedParent}}" IsMoveToPointEnabled="True" />
               </c:Cell>
 
               <Grid>
@@ -218,13 +218,19 @@
                 <c:ValueLabel Grid.Column="1" Grid.Row="3" Content="B" Postfix="%"
                     Value="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}" />
 
-                <Slider Grid.Column="2" Grid.Row="4" Minimum="0" Maximum="255" Value="{Binding Red, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Slider Grid.Column="2" Grid.Row="5" Minimum="0" Maximum="255" Value="{Binding Green, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Slider Grid.Column="2" Grid.Row="6" Minimum="0" Maximum="255" Value="{Binding Blue, RelativeSource={RelativeSource TemplatedParent}}" />
+                <Slider Grid.Column="2" Grid.Row="4" Minimum="0" Maximum="255" Value="{Binding Red, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
+                <Slider Grid.Column="2" Grid.Row="5" Minimum="0" Maximum="255" Value="{Binding Green, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
+                <Slider Grid.Column="2" Grid.Row="6" Minimum="0" Maximum="255" Value="{Binding Blue, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
 
-                <Slider Grid.Column="2" Grid.Row="1" Minimum="0" Maximum="359" Value="{Binding Hue, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Slider Grid.Column="2" Grid.Row="2" Minimum="0" Maximum="100" Value="{Binding Saturation, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Slider Grid.Column="2" Grid.Row="3" Minimum="0" Maximum="100" Value="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}" />
+                <Slider Grid.Column="2" Grid.Row="1" Minimum="0" Maximum="359" Value="{Binding Hue, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
+                <Slider Grid.Column="2" Grid.Row="2" Minimum="0" Maximum="100" Value="{Binding Saturation, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
+                <Slider Grid.Column="2" Grid.Row="3" Minimum="0" Maximum="100" Value="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}"
+                    IsMoveToPointEnabled="True" />
               </Grid>
             </StackPanel>
           </Border>
@@ -355,10 +361,10 @@
               <Setter TargetName="PART_TextBox" Property="Foreground" Value="{DynamicResource InputTextHover}" />
             </MultiTrigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="PART_TextBox" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

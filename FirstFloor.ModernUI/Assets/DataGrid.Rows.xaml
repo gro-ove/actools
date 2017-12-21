@@ -143,7 +143,7 @@
               </Grid.RowDefinitions>
               <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
               <c:BooleanSwitch x:Name="PART_ExpandSwitch" Grid.Column="1" Grid.Row="1">
-                <Border x:Name="PART_ExpandSite" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ClipToBounds="True">
+                <Border SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ClipToBounds="True">
                   <Border.LayoutTransform>
                     <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
                   </Border.LayoutTransform>
@@ -166,11 +166,11 @@
                     </DiscreteObjectKeyFrame.Value>
                   </DiscreteObjectKeyFrame>
                 </ObjectAnimationUsingKeyFrames>
-                <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="ScaleYDown" TargetProperty="(ScaleTransform.ScaleY)">
-                <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
-                <ObjectAnimationUsingKeyFrames BeginTime="0:0:22" Storyboard.TargetName="PART_ExpandSwitch" Storyboard.TargetProperty="Value">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.22" Storyboard.TargetName="PART_ExpandSwitch" Storyboard.TargetProperty="Value">
                   <DiscreteObjectKeyFrame KeyTime="0:0:0">
                     <DiscreteObjectKeyFrame.Value>
                       <system:Boolean>False</system:Boolean>

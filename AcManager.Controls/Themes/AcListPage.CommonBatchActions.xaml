@@ -12,10 +12,10 @@
         <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
       </DockPanel>
       <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding CleanUp}">
+        <CheckBox IsChecked="{Binding CleanUp}">
           <Label Content="Clean up tags" />
         </CheckBox>
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding SortTags}">
+        <CheckBox IsChecked="{Binding SortTags}">
           <Label Content="Sort tags" />
         </CheckBox>
       </mui:SpacingUniformGrid>
@@ -28,7 +28,7 @@
     </DataTemplate.Resources>
     <mui:SpacingStackPanel Spacing="4">
       <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding RemoveRating}">
+        <CheckBox IsChecked="{Binding RemoveRating}">
           <Label Content="Remove rating" />
         </CheckBox>
       </mui:SpacingUniformGrid>
@@ -50,7 +50,7 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
       <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="8" HorizontalAlignment="Left">
-        <CheckBox Style="{StaticResource CheckBox}" IsChecked="{Binding PackSeparately}"
+        <CheckBox IsChecked="{Binding PackSeparately}"
             d:DataContext="{d:DesignInstance ac:CommonBatchActions+BatchAction_Pack}">
           <Label Content="Pack separately" />
         </CheckBox>

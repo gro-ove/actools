@@ -63,23 +63,6 @@ namespace StringBasedFilter.Parsing {
             _testEntry = testEntry;
         }
 
-        private static bool IsQueryMode(string value) {
-            for (var i = 0; i < value.Length; i++) {
-                var c = value[i];
-
-                if (c == '\\') {
-                    i++;
-                    continue;
-                }
-
-                if (RegexFromQuery.IsQuerySymbol(c)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         private static ITestEntry CreateTestEntry(string value, RegexFactory regexFactory, StringMatchMode mode) {
             if (value.Length > 1) {
                 if (value[0] == '"' && value[value.Length - 1] == '"') {
@@ -100,7 +83,7 @@ namespace StringBasedFilter.Parsing {
                 }
             }
 
-            if (IsQueryMode(value)) {
+            if (RegexFromQuery.IsQuery(value)) {
                 return new RegexTestEntry(regexFactory(value, mode));
             }
 

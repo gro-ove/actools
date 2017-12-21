@@ -53,7 +53,7 @@
                   <Setter Property="Foreground" Value="{DynamicResource FancyHintButtonTextPressed}" />
                 </Trigger>
                 <Trigger Property="IsFocused" Value="True">
-                  <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+                  <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
                 </Trigger>
               </Style.Triggers>
             </Style>

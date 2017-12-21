@@ -23,6 +23,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
@@ -274,7 +275,7 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
-        private void OnListBoxMouseDown(object sender, MouseButtonEventArgs e) {
+        /*private void OnListBoxMouseDown(object sender, MouseButtonEventArgs e) {
             var listBox = (ListBox)sender;
             listBox.SelectionMode = Keyboard.Modifiers == ModifierKeys.None ? SelectionMode.Multiple : SelectionMode.Extended;
         }
@@ -283,34 +284,33 @@ namespace AcManager.Pages.ContentTools {
             var listBox = (ListBox)sender;
             await Task.Delay(1);
             listBox.SelectionMode = SelectionMode.Extended;
-        }
+        }*/
 
         private void OnCarsListCheckboxClick(object sender, RoutedEventArgs e) {
             e.Handled = true;
 
-            var item = ((FrameworkElement)sender).DataContext as CarObjectEntry;
-            if (item == null) return;
+            if (((FrameworkElement)sender).DataContext is CarObjectEntry item) {
+                var isSelected = item.IsSelected != true;
 
-            var isSelected = item.IsSelected != true;
+                try {
+                    if (Keyboard.Modifiers == ModifierKeys.Shift && SelectedEntry != item) {
+                        var itemIndex = Entries.IndexOf(item);
+                        var focusedIndex = Entries.IndexOf(SelectedEntry);
 
-            try {
-                if (Keyboard.Modifiers == ModifierKeys.Shift && SelectedEntry != item) {
-                    var itemIndex = Entries.IndexOf(item);
-                    var focusedIndex = Entries.IndexOf(SelectedEntry);
-
-                    if (itemIndex != -1 && focusedIndex != -1) {
-                        foreach (var entry in Entries.Skip(Math.Min(itemIndex, focusedIndex))
-                                                     .Take((itemIndex - focusedIndex).Abs())
-                                                     .Where(FilterTest)) {
-                            entry.IsSelected = isSelected;
+                        if (itemIndex != -1 && focusedIndex != -1) {
+                            foreach (var entry in Entries.Skip(Math.Min(itemIndex, focusedIndex))
+                                                         .Take((itemIndex - focusedIndex).Abs())
+                                                         .Where(FilterTest)) {
+                                entry.IsSelected = isSelected;
+                            }
+                            return;
                         }
-                        return;
                     }
-                }
 
-                item.IsSelected = isSelected;
-            } finally {
-                SelectedEntry = item;
+                    item.IsSelected = isSelected;
+                } finally {
+                    SelectedEntry = item;
+                }
             }
         }
 
@@ -331,7 +331,7 @@ namespace AcManager.Pages.ContentTools {
             e.Handled = true;
         }
 
-        private void OnSkinsListKeyDown(object sender, KeyEventArgs e) {
+        /*private void OnSkinsListKeyDown(object sender, KeyEventArgs e) {
             if (Keyboard.Modifiers != ModifierKeys.Control || SelectedEntry == null) return;
 
             switch (e.Key) {
@@ -346,18 +346,17 @@ namespace AcManager.Pages.ContentTools {
             }
 
             e.Handled = true;
-        }
+        }*/
 
         private void OnCarsListBoxItemClick(object sender, MouseButtonEventArgs e) {
-            var item = ((FrameworkElement)sender).DataContext as CarObjectEntry;
-            if (item == null) return;
+            if (((FrameworkElement)sender).DataContext is CarObjectEntry item) {
+                SelectedEntry = item;
+                if (Keyboard.Modifiers == ModifierKeys.Control) {
+                    item.IsSelected = item.IsSelected != true;
+                }
 
-            SelectedEntry = item;
-            if (Keyboard.Modifiers == ModifierKeys.Control) {
-                item.IsSelected = item.IsSelected != true;
+                e.Handled = true;
             }
-
-            e.Handled = true;
         }
         #endregion
 
@@ -415,7 +414,7 @@ namespace AcManager.Pages.ContentTools {
             var comment = ExifComment.Read(previewFilename);
             if (comment == null) return null;
 
-            var match = Regex.Match(comment, @"checksum\w*:\s*(\w+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(comment, @"checksum\w*:\s*([\w/+]+)", RegexOptions.IgnoreCase);
             return match.Success ? match.Groups[1].Value : null;
         }
 
@@ -427,6 +426,8 @@ namespace AcManager.Pages.ContentTools {
 
                 await Task.Run(() => {
                     var checksum = CmPreviewsTools.GetChecksum(presetFilename);
+                    Logging.Debug($"Checksum: {checksum}");
+
                     for (var i = 0; i < list.Count; i++) {
                         if (cancellation.IsCancellationRequested) return;
 

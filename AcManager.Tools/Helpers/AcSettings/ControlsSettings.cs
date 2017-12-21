@@ -228,8 +228,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         device.Buttons[i].PropertyChanged -= DeviceButtonEventHandler;
                     }
 
-                    for (var i = 0; i < device.Axles.Length; i++) {
-                        device.Axles[i].PropertyChanged -= DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Axis.Length; i++) {
+                        device.Axis[i].PropertyChanged -= DeviceAxleEventHandler;
                     }
 
                     device.Dispose();
@@ -245,8 +245,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         device.Buttons[i].PropertyChanged += DeviceButtonEventHandler;
                     }
 
-                    for (var i = 0; i < device.Axles.Length; i++) {
-                        device.Axles[i].PropertyChanged += DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Axis.Length; i++) {
+                        device.Axis[i].PropertyChanged += DeviceAxleEventHandler;
                     }
                 }
             } finally {

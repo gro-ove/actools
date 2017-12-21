@@ -206,23 +206,24 @@
                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>
 
-              <mui:Cell x:Name="PART_BatchMenuTransform" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Bottom" Height="89.000"
+              <mui:Cell x:Name="PART_BatchMenuTransform" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Bottom" Height="95.000"
                   Background="{DynamicResource Accent}" TextBlock.Foreground="White" Margin="0 0 -4 0">
                 <FrameworkElement.RenderTransform>
-                  <TranslateTransform Y="89.000" />
+                  <TranslateTransform Y="95.000" />
                 </FrameworkElement.RenderTransform>
 
                 <Border x:Name="PART_BatchBlock" Panel.ZIndex="2" Padding="8" Background="{DynamicResource Accent}">
                   <mui:SpacingStackPanel VerticalAlignment="Top" Spacing="8">
-                    <mui:HierarchicalComboBox x:Name="PART_BatchActions" Style="{StaticResource HierarchicalComboBox.Borderless.White}" BorderBrush="White" />
+                    <FrameworkElement.Resources>
+                      <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
+                    </FrameworkElement.Resources>
+
+                    <mui:HierarchicalComboBox x:Name="PART_BatchActions" BorderBrush="#44ffffff" />
                     <TextBlock DataContext="{Binding SelectedBatchAction.Description, RelativeSource={RelativeSource TemplatedParent}}" Text="{Binding}"
                         Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Style="{StaticResource Small}"
                         TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <Grid x:Name="PART_BatchBlock_ButtonsGrid" Height="27">
-                      <FrameworkElement.Resources>
-                        <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
-                      </FrameworkElement.Resources>
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="8" />
@@ -269,9 +270,9 @@
                 TopSource="{x:Null}" />
 
             <!-- Batch params -->
-            <Border Grid.Column="2" x:Name="PART_BatchActionParams_Wrapper" Panel.ZIndex="2" Margin="-9 0 0 0" VerticalAlignment="Bottom" Height="89.000">
+            <Border Grid.Column="2" x:Name="PART_BatchActionParams_Wrapper" Panel.ZIndex="2" Margin="-9 0 0 0" VerticalAlignment="Bottom" Height="95.000">
               <FrameworkElement.RenderTransform>
-                <TranslateTransform Y="89.000" />
+                <TranslateTransform Y="95.000" />
               </FrameworkElement.RenderTransform>
               <Border x:Name="PART_BatchActionParams" Background="{DynamicResource Accent}" Padding="8">
                 <FrameworkElement.RenderTransform>
@@ -319,9 +320,9 @@
               <Trigger.ExitActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Duration="0:0:0.22" To="89.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchMenuTransform"
+                    <DoubleAnimation Duration="0:0:0.22" To="95.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchMenuTransform"
                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
-                    <DoubleAnimation Duration="0:0:0.22" To="89.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchActionParams_Wrapper"
+                    <DoubleAnimation Duration="0:0:0.22" To="95.000" FillBehavior="Stop" Storyboard.TargetName="PART_BatchActionParams_Wrapper"
                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" EasingFunction="{StaticResource AccelerationEase}" />
                     <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetName="ItemsList" Storyboard.TargetProperty="(ListBox.Padding)">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0.0">

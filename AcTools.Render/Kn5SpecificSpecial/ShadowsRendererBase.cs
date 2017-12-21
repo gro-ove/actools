@@ -290,19 +290,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         _texturesProvider = new Kn5TexturesProvider(_kn5, false);
                     }
 
-                    result = new Tuple<IRenderableTexture, float>[1];
+                    result = new Tuple<IRenderableTexture, float>[] { null };
 
                     var material = _kn5.GetMaterial(materialId);
                     if (material != null && (material.BlendMode != Kn5MaterialBlendMode.Opaque || material.AlphaTested)) {
-                        var normalsAlpha = material.ShaderName == "ksPerPixelNM" || material.ShaderName == "ksPerPixelNM_UV2" ||
-                                material.ShaderName.Contains("_AT") || material.ShaderName == "ksSkinnedMesh";
-                        var textureName = material.GetMappingByName(normalsAlpha ? "txNormal" : "txDiffuse")?.Texture;
-                        var alphaRef = material.GetPropertyValueAByName("ksAlphaRef");
-                        if (textureName != null && !material.ShaderName.Contains("damage")) {
-                            var texture = _texturesProvider.GetTexture(contextHolder, textureName);
-                            result = new[] { Tuple.Create(texture, alphaRef) };
-                        } else {
-                            result = new Tuple<IRenderableTexture, float>[] { null };
+                        var shader = material.ShaderName;
+                        var normalsAlpha = shader == "ksPerPixelNM" || shader == "ksPerPixelNM_UV2" || shader.Contains("_AT") || shader == "ksSkinnedMesh";
+                        if (normalsAlpha || !shader.Contains("MultiMap") && shader != "ksTyres" && shader != "ksBrakeDisc") {
+                            var textureName = material.GetMappingByName(normalsAlpha ? "txNormal" : "txDiffuse")?.Texture;
+                            var alphaRef = material.GetPropertyValueAByName("ksAlphaRef");
+                            if (textureName != null && !shader.Contains("damage")) {
+                                result = new[] { Tuple.Create(_texturesProvider.GetTexture(contextHolder, textureName), alphaRef) };
+                            }
                         }
                     }
 

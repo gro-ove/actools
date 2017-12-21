@@ -1578,7 +1578,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechPiece, TechFill, TechFlakes, TechPattern, TechColorfulPattern, TechMask, TechReplacement, TechMaps, TechTint, TechTintMask, TechCombineChannels, TechFindLimitsFirstStep, TechFindLimits, TechNormalizeLimits, TechDesaturate;
+		public EffectReadyTechnique TechPiece, TechFill, TechFlakes, TechPattern, TechColorfulPattern, TechMaskThreshold, TechMask, TechReplacement, TechMaps, TechTint, TechTintMask, TechCombineChannels, TechFindLimitsFirstStep, TechFindLimits, TechNormalizeLimits, TechNormalizeMaxLimits, TechDesaturate, TechDesaturateMax;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxTransform;
@@ -1616,6 +1616,7 @@ namespace AcTools.Render.Shaders {
 			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
 			TechPattern = new EffectReadyTechnique(E.GetTechniqueByName("Pattern"));
 			TechColorfulPattern = new EffectReadyTechnique(E.GetTechniqueByName("ColorfulPattern"));
+			TechMaskThreshold = new EffectReadyTechnique(E.GetTechniqueByName("MaskThreshold"));
 			TechMask = new EffectReadyTechnique(E.GetTechniqueByName("Mask"));
 			TechReplacement = new EffectReadyTechnique(E.GetTechniqueByName("Replacement"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
@@ -1625,7 +1626,9 @@ namespace AcTools.Render.Shaders {
 			TechFindLimitsFirstStep = new EffectReadyTechnique(E.GetTechniqueByName("FindLimitsFirstStep"));
 			TechFindLimits = new EffectReadyTechnique(E.GetTechniqueByName("FindLimits"));
 			TechNormalizeLimits = new EffectReadyTechnique(E.GetTechniqueByName("NormalizeLimits"));
+			TechNormalizeMaxLimits = new EffectReadyTechnique(E.GetTechniqueByName("NormalizeMaxLimits"));
 			TechDesaturate = new EffectReadyTechnique(E.GetTechniqueByName("Desaturate"));
+			TechDesaturateMax = new EffectReadyTechnique(E.GetTechniqueByName("DesaturateMax"));
 
 			for (var i = 0; i < TechPiece.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechPiece.GetPassByIndex(i).Description.Signature;

@@ -67,6 +67,7 @@
   <SolidColorBrush x:Key="WindowHeaderGradient" Color="Transparent" />
   <SolidColorBrush x:Key="WindowText" Color="#C1C1C1" />
   <SolidColorBrush x:Key="WindowTextReadOnly" Color="#717171" />
+  <SolidColorBrush x:Key="FocusBorder" Color="{DynamicResource AccentColor}" />
 
   <!-- Specific background if needed -->
   <x:Null x:Key="WindowBackgroundContentBrush" />

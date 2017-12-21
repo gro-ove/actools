@@ -30,7 +30,7 @@
                             <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextPressed}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

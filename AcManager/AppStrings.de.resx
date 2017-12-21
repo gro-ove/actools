@@ -829,7 +829,7 @@ Autor: [b]{3}[/b]</value>
   <data name="Controls_UseMouseButtons" xml:space="preserve">
     <value>Maustasten für Gas und Bremse nutzen</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Achsen</value>
   </data>
   <data name="Controls_Buttons" xml:space="preserve">

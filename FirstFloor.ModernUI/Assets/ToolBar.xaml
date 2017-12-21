@@ -41,7 +41,7 @@
               <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -325,7 +325,7 @@
               <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -410,7 +410,7 @@
                   <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
                 </Trigger>
                 <Trigger Property="IsFocused" Value="True">
-                  <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                  <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
                 </Trigger>
               </ControlTemplate.Triggers>
             </ControlTemplate>

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Installators {
@@ -22,8 +23,12 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             _directory = directory;
         }
 
+        private static bool IsToIgnore(string filename) {
+            return string.Equals(Path.GetFileName(filename), "Thumbs.db", StringComparison.OrdinalIgnoreCase);
+        }
+
         public string File(IFileInfo info) {
-            return _file?.Invoke(info);
+            return IsToIgnore(info.Key) ? null : _file?.Invoke(info);
         }
 
         public string Directory(IDirectoryInfo info) {

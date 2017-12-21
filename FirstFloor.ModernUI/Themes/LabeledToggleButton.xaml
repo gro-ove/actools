@@ -95,7 +95,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
         </Style.Triggers>
     </Style>

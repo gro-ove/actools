@@ -157,6 +157,9 @@ namespace AcManager.ContentRepair {
                                 var filename = Path.Combine(AcRootDirectory.Instance.Value, model.Groups[1].Value);
                                 fix = c => FixMissingKsSkyBoxShader(filename, c);
                             }
+                        } else {
+                            // If more shaders will be removed in the future, extend
+                            return null;
                         }
 
                         return new WhatsGoingOn(WhatsGoingOnType.ShaderIsMissing, match.Groups[1].Value) {

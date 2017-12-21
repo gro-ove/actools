@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Use modern sharing. Experimental.
+        /// Example: --modern-sharing.
+        /// </summary>
+        ModernSharing,
+
+        /// <summary>
         /// Use software rendering for UI, which might cause everything down. Use it if you have
         /// an issue with some overlay-showing apps, such as RivaTuner. But only as a last resort,
         /// for RivaTuner it’s better to simply add app to exceptions.

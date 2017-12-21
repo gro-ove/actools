@@ -111,10 +111,10 @@
         <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
       <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
       <Trigger Property="IsGrouping" Value="True">
         <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
@@ -205,7 +205,7 @@
               <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-              <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
             </Trigger>
             <Trigger Property="IsGrouping" Value="True">
               <Setter Property="ScrollViewer.CanContentScroll" Value="False" />

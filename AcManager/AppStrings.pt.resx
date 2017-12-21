@@ -244,7 +244,7 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
     <value>Salvar repetições automaticamente</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Eixos</value>
   </data>
   <data name="RaceResult_BestCombo" xml:space="preserve">

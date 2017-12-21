@@ -46,7 +46,7 @@
         <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -81,7 +81,7 @@
         <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -123,7 +123,7 @@
       <Trigger Property="IsFocused" Value="True">
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -243,7 +243,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -291,11 +291,11 @@
         <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="PART_EditableTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_EditableTextBox}" />
       </Trigger>
       <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -350,7 +350,7 @@
         <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
       </Trigger>
@@ -408,13 +408,13 @@
         <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
       </Trigger>
       <Trigger Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
         <Setter TargetName="PART_EditableTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_EditableTextBox}" />
       </Trigger>
       <Trigger SourceName="PART_EditableTextBox" Property="IsFocused" Value="True">
-        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
         <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
         <Setter TargetName="Outline" Property="Order" Value="5" />
       </Trigger>

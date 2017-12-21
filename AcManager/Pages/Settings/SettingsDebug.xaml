@@ -31,6 +31,10 @@
             <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
           </DockPanel>
           <DockPanel>
+            <Label Content="Decompress values:" />
+            <Button Command="{Binding DecompressValuesCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+          </DockPanel>
+          <DockPanel>
             <Label Content="Test:" />
             <Button Command="{Binding TestCommand}" Content="Test" />
           </DockPanel>

@@ -411,6 +411,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             newCar.LeftDoorOpen = oldCar?.LeftDoorOpen ?? false;
             newCar.RightDoorOpen = oldCar?.RightDoorOpen ?? false;
             newCar.SteerDeg = oldCar?.SteerDeg ?? 0f;
+            newCar.IsDriverVisible = oldCar?.IsDriverVisible ?? false;
 
             if (oldCar != null) {
                 oldCar.CamerasChanged -= OnCamerasChanged;

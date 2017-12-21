@@ -867,7 +867,7 @@
   <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
     <value>Спасибо за помощь!</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Оси</value>
   </data>
   <data name="Controls_Buttons" xml:space="preserve">

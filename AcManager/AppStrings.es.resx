@@ -2552,7 +2552,7 @@ Accepted values are from -1 to 1.</value>
   <data name="Controls_AdditionalBindings" xml:space="preserve">
     <value>Enlaces adicionales</value>
   </data>
-  <data name="Controls_Axles" xml:space="preserve">
+  <data name="Controls_Axis" xml:space="preserve">
     <value>Ejes</value>
   <alternative>Angulos</alternative></data>
   <data name="Controls_Buttons" xml:space="preserve">

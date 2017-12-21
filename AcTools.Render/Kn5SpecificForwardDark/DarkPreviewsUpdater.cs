@@ -224,6 +224,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ PcssLightScale.GetHashCode();
                 hashCode = (hashCode * 397) ^ AoOpacity.GetHashCode();
                 hashCode = (hashCode * 397) ^ AoRadius.GetHashCode();
+                if (SerializedLights != null) hashCode = (hashCode * 397) ^ SerializedLights.GetHashCode();
 
                 if (UseDof) {
                     hashCode = (hashCode * 397) ^ 70094303;
@@ -414,7 +415,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.AccumulationDofApertureSize = (float)options.AccumulationDofApertureSize;
 
             // Lights
-            AcToolsLogging.Write(options.SerializedLights);
             renderer.DeserializeLights(DarkLightTag.Extra, JArray.Parse(options.SerializedLights ?? @"[]").OfType<JObject>());
             renderer.TryToGuessCarLights = options.TryToGuessCarLights;
             renderer.LoadCarLights = options.LoadCarLights;

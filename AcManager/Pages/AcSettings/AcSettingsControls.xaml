@@ -67,7 +67,7 @@
 
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
 
-                <ItemsControl ItemsSource="{Binding Axles}" Margin="0 8 0 0">
+                <ItemsControl ItemsSource="{Binding Axis}" Margin="0 8 0 0">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type t:DirectInputAxle}">
                       <Grid Height="8" Margin="0 2 0 2">

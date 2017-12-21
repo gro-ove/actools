@@ -62,7 +62,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return result;
         }
 
-        private ShaderResourceView Normalize(ShaderResourceView view, Size size) {
+        private ShaderResourceView NormalizeMax(ShaderResourceView view, Size size) {
             var max = Math.Max(size.Width, size.Height);
             if (max == 1) {
                 using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
@@ -70,7 +70,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                     UseEffect(e => {
                         e.FxInputMap.SetResource(view);
                         e.FxOverlayMap.SetResource(view);
-                        e.TechNormalizeLimits.DrawAllPasses(DeviceContext, 6);
+                        e.TechNormalizeMaxLimits.DrawAllPasses(DeviceContext, 6);
                     }, temporary);
 
                     temporary.KeepView = true;
@@ -85,7 +85,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 UseEffect(e => {
                     e.FxInputMap.SetResource(view);
                     e.FxOverlayMap.SetResource(maxColor.View);
-                    e.TechNormalizeLimits.DrawAllPasses(DeviceContext, 6);
+                    e.TechNormalizeMaxLimits.DrawAllPasses(DeviceContext, 6);
                 }, temporary);
 
                 temporary.KeepView = true;
@@ -99,6 +99,18 @@ namespace AcTools.Render.Kn5SpecificForward {
                 UseEffect(e => {
                     e.FxInputMap.SetResource(view);
                     e.TechDesaturate.DrawAllPasses(DeviceContext, 6);
+                }, temporary);
+                temporary.KeepView = true;
+                return temporary.View;
+            }
+        }
+
+        private ShaderResourceView DesaturateMax(ShaderResourceView view, Size size) {
+            using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                temporary.Resize(DeviceContextHolder, size.Width, size.Height, null);
+                UseEffect(e => {
+                    e.FxInputMap.SetResource(view);
+                    e.TechDesaturateMax.DrawAllPasses(DeviceContext, 6);
                 }, temporary);
                 temporary.KeepView = true;
                 return temporary.View;
