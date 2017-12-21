@@ -289,7 +289,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             InitializePresets();
 
             SharingHelper.Initialize();
-            SharingUiHelper.Initialize(new Win10SharingUiHelper());
+            SharingUiHelper.Initialize(AppArguments.GetBool(AppFlag.ModernSharing) ? new Win10SharingUiHelper() : null);
 
             {
                 var addonsDir = FilesStorage.Instance.GetFilename("Addons");
