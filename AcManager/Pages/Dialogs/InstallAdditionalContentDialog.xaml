@@ -250,7 +250,7 @@
         Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="t:ContentInstallationEntry">
-          <DockPanel Height="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown">
+          <DockPanel Height="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown" Background="DimGray">
             <Image x:Name="PART_Icon" Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
             <DockPanel Dock="Top" HorizontalAlignment="Left" x:Name="PART_DisplayHeader">
               <DockPanel.ToolTip>
@@ -291,13 +291,13 @@
               </mui:SpacingStackPanel>
 
               <!-- Finished -->
-              <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}" Margin="0 2 0 0">
+              <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}" Margin="0 4 0 0">
                 <mui:ReferenceSwitch.Null>
-                  <mui:SpacingStackPanel Spacing="6">
+                  <mui:SpacingStackPanel Spacing="8">
                     <DockPanel>
                       <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
                           Margin="0 1 4 -1" VerticalAlignment="Center" />
-                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
+                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" Style="{StaticResource Small}" />
                     </DockPanel>
                     <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
                       <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
@@ -307,8 +307,8 @@
                   </mui:SpacingStackPanel>
                 </mui:ReferenceSwitch.Null>
                 <mui:ReferenceSwitch.NonNull>
-                  <mui:SpacingStackPanel Spacing="6">
-                    <DockPanel Background="Transparent"  x:Name="PART_ErrorMessage">
+                  <mui:SpacingStackPanel Spacing="8">
+                    <DockPanel Background="Transparent" x:Name="PART_ErrorMessage">
                       <DockPanel.ToolTip>
                         <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                           <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
@@ -316,7 +316,7 @@
                       </DockPanel.ToolTip>
                       <Path x:Name="PART_ErrorIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
                           Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
-                      <TextBlock TextWrapping="Wrap" Text="{Binding FailedMessage}" DockPanel.Dock="Top" />
+                      <TextBlock TextWrapping="Wrap" Text="{Binding FailedMessage}" Style="{StaticResource Small}" DockPanel.Dock="Top" />
                     </DockPanel>
                     <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
                       <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
