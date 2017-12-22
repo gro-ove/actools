@@ -49,8 +49,14 @@ namespace AcManager.Pages.Drive {
             private static OnlineQuickFilter[] _filters;
 
             private static OnlineQuickFilter[] ReadFilters() {
-                var file = FilesStorage.Instance.GetContentFile(ContentCategory.OnlineFilters, "Quick Filters.json");
-                return file.Exists ? JsonConvert.DeserializeObject<OnlineQuickFilter[]>(File.ReadAllText(file.Filename)) : new OnlineQuickFilter[0];
+                return FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.OnlineFilters).Select(x => x.Filename).SelectMany(x => {
+                    try {
+                        return JsonConvert.DeserializeObject<OnlineQuickFilter[]>(File.ReadAllText(x));
+                    } catch (Exception e) {
+                        Logging.Warning($"Cannot load file {Path.GetFileName(x)}: {e}");
+                        return new OnlineQuickFilter[0];
+                    }
+                }).ToArray();
             }
 
             private static OnlineQuickFilter[] Load() {
