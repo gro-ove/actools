@@ -55,6 +55,7 @@ using AcTools.AcdEncryption;
 using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
+using AcTools.Kn5File;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -203,6 +204,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             AppArguments.Set(AppFlag.RdLoaderAllowed, ref RaceDepartmentLoader.OptionAllowed);
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
             AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
+            AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
             LimitedSpace.Initialize();
@@ -237,6 +239,9 @@ As an alternative solution, you can switch to software UI rendering, but it will
             AcToolsLogging.Logger = (s, m, p, l) => Logging.Write($"{s} (AcTools)", m, p, l);
             AcToolsLogging.NonFatalErrorHandler = (s, c, e) => NonfatalError.Notify(s, c, e);
 
+            AppArguments.Set(AppFlag.ControlsDebugMode, ref ControlsSettings.OptionDebugControlles);
+            AppArguments.Set(AppFlag.ControlsRescanPeriod, ref ControlsSettings.OptionRescanPeriod);
+            AppArguments.Set(AppFlag.ControlsUpdatePeriod, ref ControlsSettings.OptionUpdatePeriod);
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);

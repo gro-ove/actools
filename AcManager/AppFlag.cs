@@ -5,6 +5,39 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Period for reading controllers values, such as pressed buttons or changed values
+        /// of axes. Default value: 16 ms.
+        /// Example: --controls-update-period=00:00.050.
+        /// </summary>
+        [FlagDefaultValue("00:00.016")]
+        ControlsUpdatePeriod,
+
+        /// <summary>
+        /// Period for checking if connected controllers were changed. Default value: 1 second.
+        /// Example: --controls-rescan-period=00:01.
+        /// </summary>
+        [FlagDefaultValue("00:01")]
+        ControlsRescanPeriod,
+
+        /// <summary>
+        /// More logging for controls settings.
+        /// Example: --controls-debug-mode.
+        /// </summary>
+        ControlsDebugMode,
+
+        /// <summary>
+        /// Filter for ignoring specific in-game controls.
+        /// Example: --ignore-controls=g27.
+        /// </summary>
+        IgnoreControls,
+
+        /// <summary>
+        /// For internal use. Enabled by default.
+        /// Example: --fbx-multi-material=no.
+        /// </summary>
+        FbxMultiMaterial,
+
+        /// <summary>
         /// Use modern sharing. Experimental.
         /// Example: --modern-sharing.
         /// </summary>
@@ -172,12 +205,6 @@ namespace AcManager {
         /// Example: --keep-ini-comments.
         /// </summary>
         KeepIniComments,
-
-        /// <summary>
-        /// Filter for ignoring specific in-game controls.
-        /// Example: --ignore-controls=g27.
-        /// </summary>
-        IgnoreControls,
 
         /// <summary>
         /// How much RAM memory will be allocated for caching loaded from disk images, 10 MB

@@ -427,10 +427,14 @@ namespace AcManager.PaintShop {
         private const string KeyPatternBase = "patternBase";
         private const string KeyPatternOverlay = "patternOverlay";
         private const string KeyPatternUnderlay = "patternUnderlay";
+        private const string KeyPatternOverlayWithoutAo = "patternOverlayWithoutAo";
+        private const string KeyPatternUnderlayWithoutAo = "patternUnderlayWithoutAo";
         private const string KeyPatternTexture = "patternTexture";
         private const string KeyPatternSize = "patternSize";
         private const string KeyOverlay = "overlay";
         private const string KeyUnderlay = "underlay";
+        private const string KeyOverlayWithoutAo = "overlayWithoutAo";
+        private const string KeyUnderlayWithoutAo = "underlayWithoutAo";
         private const string KeyPatterns = "patterns";
         private const string KeyNumbers = "numbers";
         private const string KeyFlags = "flags";
@@ -720,7 +724,9 @@ namespace AcManager.PaintShop {
             var decals = (obj[KeyDecals] as JArray)?.OfType<JObject>().Select(x => GetDecal(x, refSolver)) ??
                     new[] { GetDecal(obj[KeyDecals], refSolver) };
 
-            return new CarPaintPattern(name, pattern, overlay, underlay, GetSize(obj[KeySize]) ?? size, GetColors(obj, null),
+            return new CarPaintPattern(name, pattern, overlay, underlay,
+                    obj.GetBoolValueOnly(KeyOverlayWithoutAo), obj.GetBoolValueOnly(KeyUnderlayWithoutAo),
+                    GetSize(obj[KeySize]) ?? size, GetColors(obj, null),
                     numbers, flags, labels, decals) {
                         LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
                         LiveryColorIds = GetLiveryColorIds(obj)
@@ -743,6 +749,7 @@ namespace AcManager.PaintShop {
                             GetSource(e[KeyPatternBase], refSolver, sourceParams) ?? GetSource(e[KeyPatternTexture], refSolver, sourceParams) ??
                                     GetSource(e[KeyBase], refSolver, sourceParams) ?? GetSource(e[KeyTexture], refSolver, sourceParams),
                             GetSource(e[KeyPatternOverlay], refSolver, null), GetSource(e[KeyPatternUnderlay], refSolver, null),
+                            e.GetBoolValueOnly(KeyPatternOverlayWithoutAo) ?? false, e.GetBoolValueOnly(KeyPatternUnderlayWithoutAo) ?? false,
                             e[KeyPatterns].OfType<JObject>().Select(x => GetPattern(x, refSolver, size)).NonNull(),
                             e.GetBoolValueOnly(KeyForce) ?? true);
                     break;
@@ -777,6 +784,7 @@ namespace AcManager.PaintShop {
                         var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, refSolver, patternSize)).NonNull();
                         if (patternBase != null && patterns != null) {
                             carPaint.SetPatterns(GetDestination(paintPatternTexture, refSolver, KeyPatternTexture), patternBase, patternOverlay, patternUnderlay,
+                                    e.GetBoolValueOnly(KeyPatternOverlayWithoutAo) ?? false, e.GetBoolValueOnly(KeyPatternUnderlayWithoutAo) ?? false,
                                     patterns, e.GetBoolValueOnly(KeyForcePattern) ?? false);
                         }
                     }

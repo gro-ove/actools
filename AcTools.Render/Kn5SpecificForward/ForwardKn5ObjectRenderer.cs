@@ -113,6 +113,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
             _showroomKn5Filename = showroomKn5Filename;
+            CurrentShowroomKn5 = showroomKn5Filename;
 
             _mainSlot = new CarSlot(this, car, 0);
             _carSlots = new[] { MainSlot };
@@ -278,7 +279,9 @@ namespace AcTools.Render.Kn5SpecificForward {
             return showroomKn5 != null ? Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity, AllowSkinnedObjects) : null;
         }
 
-        public void SetShowroom(string showroomKn5) {
+        public string CurrentShowroomKn5 { get; private set; }
+
+        public void SetShowroom([CanBeNull] string showroomKn5) {
             try {
                 if (ShowroomNode != null) {
                     ShowroomNode.Dispose();
@@ -287,12 +290,14 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
 
                 var node = LoadShowroom(showroomKn5);
+                CurrentShowroomKn5 = showroomKn5;
                 ShowroomNode = node;
 
                 if (node != null) {
                     Scene.Insert(0, node);
                 }
             } catch (Exception e) {
+                CurrentShowroomKn5 = null;
                 AcToolsLogging.NonFatalErrorNotify("Can’t load showroom", null, e);
             } finally {
                 Scene.UpdateBoundingBox();

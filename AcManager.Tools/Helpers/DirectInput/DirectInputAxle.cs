@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private double _roundedValue;
 
         public double RoundedValue {
-            get { return _roundedValue; }
+            get => _roundedValue;
             set {
                 if (Equals(value, _roundedValue)) return;
                 _roundedValue = value;
@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private double _delta;
 
         public double Delta {
-            get { return _delta; }
+            get => _delta;
             set {
                 if (Equals(value, _delta)) return;
                 _delta = value;

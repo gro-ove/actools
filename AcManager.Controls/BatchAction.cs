@@ -97,7 +97,7 @@ namespace AcManager.Controls {
     }
 
     public abstract class BatchAction<T> : BatchAction where T : AcObjectNew {
-        public BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey)
+        protected BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey)
                 : base(displayName, description, groupPath, paramsTemplateKey) { }
 
         protected IEnumerable<T> OfType(IList list) {

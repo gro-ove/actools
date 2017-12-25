@@ -34,10 +34,12 @@ namespace AcManager.PaintShop {
     }
 
     public sealed class CarPaintPattern : Displayable {
-        public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, null, null,
-                new CarPaintColors(), null, null, null, null);
+        public static CarPaintPattern Nothing => new CarPaintPattern("Nothing", PaintShopSource.Transparent,
+                null, null, null, null, null, new CarPaintColors(), null, null, null, null);
 
-        public CarPaintPattern(string name, [CanBeNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
+        public CarPaintPattern(string name, [CanBeNull] PaintShopSource source,
+                [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
+                bool? overlayWithoutAo, bool? underlayWithoutAo,
                 [CanBeNull] Size? size, CarPaintColors colors,
                 [CanBeNull] IEnumerable<PaintShopPatternNumber> numbers,
                 [CanBeNull] IEnumerable<PaintShopPatternFlag> flags,
@@ -47,6 +49,8 @@ namespace AcManager.PaintShop {
             Source = source;
             Overlay = overlay;
             Underlay = underlay;
+            OverlayWithoutAo = overlayWithoutAo;
+            UnderlayWithoutAo = underlayWithoutAo;
             Colors = colors;
             Size = size;
             Numbers = numbers?.NonNull().ToList() ?? new List<PaintShopPatternNumber>(0);
@@ -110,6 +114,9 @@ namespace AcManager.PaintShop {
 
         [CanBeNull]
         public PaintShopSource Underlay { get; }
+
+        public bool? OverlayWithoutAo { get; }
+        public bool? UnderlayWithoutAo { get; }
 
         [NotNull]
         public CarPaintColors Colors { get; }

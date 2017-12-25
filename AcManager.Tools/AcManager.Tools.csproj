@@ -341,6 +341,7 @@
     <Compile Include="Helpers\Loaders\RedirectingLoader.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
     <Compile Include="Helpers\PaintShopRulesLoader.cs" />
+    <Compile Include="Helpers\SettingsHolder.Drive.cs" />
     <Compile Include="Helpers\StereoOdometerHelper.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
     <Compile Include="Helpers\RaceEssentialsHelper.cs" />

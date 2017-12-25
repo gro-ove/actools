@@ -72,6 +72,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         public PaintShopSource Ao, Pattern, Overlay, Underlay;
 
+        public bool OverlayWithoutAo, UnderlayWithoutAo;
+
         [CanBeNull]
         public Color[] Colors;
 

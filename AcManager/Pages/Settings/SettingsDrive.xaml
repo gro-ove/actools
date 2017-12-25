@@ -14,10 +14,9 @@
         <DockPanel x:Name="Starter" set:Search.Keywords="starter;steam">
           <Label>
             <TextBlock>
-              <Run Text="{x:Static g:AppStrings.Settings_Drive_Starter}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                                                               BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
-                                                                               CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run
-                                                                                                                                                                      Text=":" />
+              <Run Text="{x:Static g:AppStrings.Settings_Drive_Starter}" />
+              <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
+                  CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run Text=":" />
             </TextBlock>
           </Label>
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
@@ -164,7 +163,8 @@
           <Label mui:LimitedService.Limited="True">
             <TextBlock>
               <Run Text="Enable AI limitations" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                      Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
+                                                      Command="mui:LinkCommands.NavigateMainWindow"
+                                                      CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
             </TextBlock>
           </Label>
         </CheckBox>
@@ -174,9 +174,9 @@
             mui:NewMarkService.New="True" set:Search.Keywords="quick;drive;modding">
           <Label>
             <TextBlock>
-              <Run Text="Allow to use custom car’s data" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                               Command="mui:LinkCommands.NavigateMainWindow"
-                                                               CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData">[?]</Hyperlink>
+              <Run Text="Allow to use custom car’s data" />
+              <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
+                  CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData">[?]</Hyperlink>
             </TextBlock>
           </Label>
         </CheckBox>
@@ -198,8 +198,8 @@
         <!-- Real head motion -->
         <TextBlock set:Search.SubCategory="Real Head Motion:" Style="{StaticResource SettingsPanel.Heading2}">
           <Run Text="Real Head Motion:" />
-          <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
-                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->
+          <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
+              CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/">[?]</Hyperlink>
         </TextBlock>
 
         <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
@@ -220,6 +220,10 @@
 
         <!-- Game-related events -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
+
+        <CheckBox IsChecked="{Binding Drive.CheckAndFixControlsOrder}" mui:NewMarkService.New="True" set:Search.Keywords="controls;drive">
+          <Label Content="Automatically check and fix controllers order before the race" />
+        </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />
