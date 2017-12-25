@@ -1078,7 +1078,7 @@ namespace AcManager.CustomShowroom {
             try {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TexturesAllFilter,
-                    Title = "Select Color Grading Texture"
+                    Title = "Select color grading texture"
                 };
 
                 if (dialog.ShowDialog() == true) {

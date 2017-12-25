@@ -87,8 +87,8 @@
                 <controls:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Description}" Width="{Binding ActualWidth, ElementName=PART_Header}" />
               </controls:SpacingStackPanel>
               <DockPanel Effect="{DynamicResource FancyHintButtonsEffect}">
-                <Button x:Name="PART_DisableHintsButton" Content="Disable Occasional Hints" DockPanel.Dock="Right" />
-                <Button x:Name="PART_CloseButton" Content="Got It" Margin="0 0 4 0" />
+                <Button x:Name="PART_DisableHintsButton" Content="Disable occasional hints" DockPanel.Dock="Right" />
+                <Button x:Name="PART_CloseButton" Content="Got it" Margin="0 0 4 0" />
               </DockPanel>
             </DockPanel>
           </controls:Cell>

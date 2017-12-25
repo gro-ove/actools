@@ -82,7 +82,7 @@
       <!--old autosave system-->
       <StackPanel Style="{StaticResource SettingsPanel}"
           Visibility="{Binding Replay.Autosave, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays Autosave (Old Approach):" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Autosave replays (old approach):" />
 
         <CheckBox IsChecked="{Binding Drive.AutoSaveReplays}" ToolTip="{x:Static g:AppStrings.Settings_Replays_AutosaveReplays_Tooltip}">
           <Label Content="Autosave replays (with approach used before 1.14 update)" />

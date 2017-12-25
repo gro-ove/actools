@@ -61,7 +61,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_KeepAutosaveReplay : BatchAction<ReplayObject> {
             public static readonly BatchAction_KeepAutosaveReplay Instance = new BatchAction_KeepAutosaveReplay();
-            public BatchAction_KeepAutosaveReplay() : base("Keep Replay", "Keep auto-saved replays in selection", null, null) {
+            public BatchAction_KeepAutosaveReplay() : base("Keep replay", "Keep auto-saved replays in selection", null, null) {
                 DisplayApply = "Keep";
                 Priority = 2;
             }
@@ -81,15 +81,14 @@ namespace AcManager.Pages.Lists {
         #endregion
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var replay = obj as ReplayObject;
-            if (replay == null) return;
-
-            GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
-                Name = replay.Id,
-                TrackId = replay.TrackId,
-                TrackConfiguration = replay.TrackConfiguration,
-                WeatherId = replay.WeatherId
-            }));
+            if (obj is ReplayObject replay) {
+                GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                    Name = replay.Id,
+                    TrackId = replay.TrackId,
+                    TrackConfiguration = replay.TrackConfiguration,
+                    WeatherId = replay.WeatherId
+                }));
+            }
         }
     }
 }

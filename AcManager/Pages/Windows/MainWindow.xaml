@@ -92,12 +92,12 @@
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Results" Source="/Pages/Miscellaneous/RaceResults.xaml" />
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
       <mui:LinkGroupFilterable.FixedLinks>
-        <mui:Link DisplayName="Kunos Cars Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
-        <mui:Link DisplayName="Kunos Cars &amp; Tracks Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
-        <mui:Link DisplayName="Mods Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
+        <mui:Link DisplayName="Kunos cars only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
+        <mui:Link DisplayName="Kunos cars &amp; tracks only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
+        <mui:Link DisplayName="Mods only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
-    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
+    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
     <!-- Media -->
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml"
@@ -115,10 +115,10 @@
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
-        <mui:Link DisplayName="Driver Models" Source="/Pages/Lists/DriverModelsListPage.xaml" />
+        <mui:Link DisplayName="Driver models" Source="/Pages/Lists/DriverModelsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
-        <mui:Link DisplayName="User Championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
+        <mui:Link DisplayName="User championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
@@ -149,7 +149,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ReleaseNotes}" Source="/Pages/About/ReleaseNotesPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
-        <mui:Link DisplayName="Everything About Filtering" Source="/Pages/About/FiltersPage.xaml" />
+        <mui:Link DisplayName="Everything about filtering" Source="/Pages/About/FiltersPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
@@ -162,7 +162,7 @@
           AllowDrop="True" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DragForContentSection}}"
           mui:FancyHintsService.HorizontalContentAlignment="Center" />
     </mui:TitleLink>
-    <mui:TitleLink Content="Lap Times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
+    <mui:TitleLink Content="Lap times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
     <mui:TitleLink Content="Results" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
     <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">

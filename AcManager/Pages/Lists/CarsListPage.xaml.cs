@@ -111,7 +111,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixBrand : BatchAction<CarObject> {
             public static readonly BatchAction_FixBrand Instance = new BatchAction_FixBrand();
-            public BatchAction_FixBrand() : base("Fix Brand", "Try to guess brand if it’s not in the list", "UI", "Batch.FixBrand") {
+            public BatchAction_FixBrand() : base("Fix brand", "Try to guess brand if it’s not in the list", "UI", "Batch.FixBrand") {
                 DisplayApply = "Try";
             }
 
@@ -267,7 +267,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_RecalculateCurves : BatchAction<CarObject> {
             public static readonly BatchAction_RecalculateCurves Instance = new BatchAction_RecalculateCurves();
-            public BatchAction_RecalculateCurves() : base("Recalculate Curves", "I don’t recommend to use it for Kunos cars", "UI", "Batch.RecalculateCurves") {
+            public BatchAction_RecalculateCurves() : base("Recalculate curves", "I don’t recommend to use it for Kunos cars", "UI", "Batch.RecalculateCurves") {
                 DisplayApply = "Recalculate";
             }
 
@@ -479,7 +479,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_UpdatePreviews : BatchAction<CarObject> {
             public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
             public BatchAction_UpdatePreviews()
-                    : base("Update Previews", "With previously used params", "Look", null) {
+                    : base("Update previews", "With previously used params", "Look", null) {
                 DisplayApply = "Update";
                 InternalWaitingDialog = true;
                 Priority = 1;
@@ -508,7 +508,7 @@ namespace AcManager.Pages.Lists {
             }
 
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                return ToolsListPage.Launch("Analyze Cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models=True&Rating=True&Filter={0}",
+                return ToolsListPage.Launch("Analyze cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models=True&Rating=True&Filter={0}",
                         OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
             }
         }
@@ -516,7 +516,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_UpdateAmbientShadows : BatchAction<CarObject> {
             public static readonly BatchAction_UpdateAmbientShadows Instance = new BatchAction_UpdateAmbientShadows();
 
-            public BatchAction_UpdateAmbientShadows() : base("Update Ambient Shadows", "Using previously used params", "Graphics", null) {
+            public BatchAction_UpdateAmbientShadows() : base("Update ambient shadows", "Using previously used params", "Graphics", null) {
                 DisplayApply = "Update";
             }
 
@@ -567,7 +567,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixCarClass : BatchAction<CarObject> {
             public static readonly BatchAction_FixCarClass Instance = new BatchAction_FixCarClass();
-            public BatchAction_FixCarClass() : base("Fix Car Class", "If wrong, try to guess from data and model", "UI", "Batch.FixCarClass") {
+            public BatchAction_FixCarClass() : base("Fix car class", "If wrong, try to guess from data and model", "UI", "Batch.FixCarClass") {
                 DisplayApply = "Fix";
             }
 
@@ -596,7 +596,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixSpecsFormat : BatchAction<CarObject> {
             public static readonly BatchAction_FixSpecsFormat Instance = new BatchAction_FixSpecsFormat();
-            public BatchAction_FixSpecsFormat() : base("Fix Specs Format", "This way, they’ll be more readable", "UI", null) {
+            public BatchAction_FixSpecsFormat() : base("Fix specs format", "This way, they’ll be more readable", "UI", null) {
                 DisplayApply = "Fix";
             }
 
@@ -611,7 +611,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_SetBrandBadge : BatchAction<CarObject> {
             public static readonly BatchAction_SetBrandBadge Instance = new BatchAction_SetBrandBadge();
-            public BatchAction_SetBrandBadge() : base("Update Brand Badge", "Will be updated if exists in library", "UI", null) { }
+            public BatchAction_SetBrandBadge() : base("Update brand badge", "Will be updated if exists in library", "UI", null) { }
 
             private List<FilesStorage.ContentEntry> _badges;
 

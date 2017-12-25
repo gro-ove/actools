@@ -64,11 +64,11 @@
       <mui:SpacingStackPanel Spacing="4">
         <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="4" HorizontalAlignment="Left">
           <CheckBox IsChecked="{Binding ScaleToMaxValues}">
-            <Label Content="Scale curves to Torque and BHP values" />
+            <Label Content="Scale curves to torque and BHP values" />
           </CheckBox>
           <CheckBox IsChecked="{Binding UpdateMaxValues}"
               IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
-            <Label Content="Update Torque and BHP values" />
+            <Label Content="Update torque and BHP values" />
           </CheckBox>
           <CheckBox IsChecked="{Binding RebuildFromData}">
             <Label Content="Rebuild curves from data" />

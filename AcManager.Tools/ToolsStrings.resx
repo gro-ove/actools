@@ -130,13 +130,13 @@
     <value>Can’t restore non-patched version of original launcher. Please, restore it manually: you have to replace “AssettoCorsa.exe” with “AssettoCorsa_backup_sp.exe”.</value>
   </data>
   <data name="OfficialStarter_CannotRun" xml:space="preserve">
-    <value>Can’t Run</value>
+    <value>Can’t run</value>
   </data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
     <value>Can’t use Official Starter: your version of AC is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it.</value>
   </data>
   <data name="NotSupported" xml:space="preserve">
-    <value>Not Supported</value>
+    <value>Not supported</value>
   </data>
   <data name="OfficialStarter_UpdateAC" xml:space="preserve">
     <value>Please, update AC or change Starter to something else.</value>
@@ -173,7 +173,7 @@
     <value>There are some cars which need this font. Are you sure you want to disable it?</value>
   </data>
   <data name="FontObject_DisableFont" xml:space="preserve">
-    <value>Disable Font</value>
+    <value>Disable font</value>
   </data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
     <value>Make sure there is no runned app working with object’s folder.</value>
@@ -188,7 +188,7 @@
     <value>Can’t delete</value>
   </data>
   <data name="FontObject_DeleteFont" xml:space="preserve">
-    <value>Delete Font</value>
+    <value>Delete font</value>
   </data>
   <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
     <value>There are some cars which need this font. Are you sure you want to delete it?</value>
@@ -211,18 +211,18 @@
     <value>Unsupported format</value>
   </data>
   <data name="ReplayObject_PreviousSession" xml:space="preserve">
-    <value>Previous Session</value>
+    <value>Previous session</value>
   </data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
-    <value>Lock Car</value>
+    <value>Lock car</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="JumpStart_DriveThrough" xml:space="preserve">
-    <value>Drive Through</value>
+    <value>Drive through</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="JumpStart_TeleportToPit" xml:space="preserve">
-    <value>Teleport To Pits</value>
+    <value>Teleport to pits</value>
     <comment>For server preset, jump start value</comment>
   </data>
   <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
@@ -305,7 +305,7 @@
     <value>Controls preset</value>
   </data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
-    <value>Force Feedback preset</value>
+    <value>Force feedback preset</value>
   </data>
   <data name="Shared_PpFilter" xml:space="preserve">
     <value>PP filter</value>
@@ -450,7 +450,7 @@
     <value>Please, choose a file in initial directory or some subdirectory.</value>
   </data>
   <data name="Common_CannotDo_Title" xml:space="preserve">
-    <value>Can’t Do</value>
+    <value>Can’t do</value>
   </data>
   <data name="AcRootDirectory_Required" xml:space="preserve">
     <value>AcRootDirectory is required</value>
@@ -528,7 +528,7 @@
     <value>Update over existing files, keep UI information</value>
   </data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Update over existing files, keep Skins previews</value>
+    <value>Update over existing files, keep skins previews</value>
   </data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
     <value>Update over existing files, keep UI information &amp; skins previews</value>
@@ -641,7 +641,7 @@
     <value>Headlights</value>
   </data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
-    <value>Flash Headlights</value>
+    <value>Flash headlights</value>
   </data>
   <data name="Controls_Horn" xml:space="preserve">
     <value>Horn</value>
@@ -663,19 +663,19 @@
     <comment>For turbo, ABS, TC</comment>
   </data>
   <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
-    <value>Increase Delivery</value>
+    <value>Increase delivery</value>
   </data>
   <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
-    <value>Decrease Delivery</value>
+    <value>Decrease delivery</value>
   </data>
   <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
-    <value>Increase Recovery</value>
+    <value>Increase recovery</value>
   </data>
   <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
-    <value>Decrease Recovery</value>
+    <value>Decrease recovery</value>
   </data>
   <data name="Controls_Mguh_Mode" xml:space="preserve">
-    <value>MGU-H Mode</value>
+    <value>MGU-H mode</value>
   </data>
   <data name="Controls_GlanceLeft" xml:space="preserve">
     <value>Glance left</value>
@@ -740,10 +740,10 @@
     <comment>Parameters: width, height, refresh rate</comment>
   </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
-    <value>Single Screen</value>
+    <value>Single screen</value>
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
-    <value>Triple Screen</value>
+    <value>Triple screen</value>
   </data>
   <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
     <value>Oculus Rift</value>
@@ -752,7 +752,7 @@
     <value>{0} (experimental)</value>
   </data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
-    <value>Very High</value>
+    <value>Very high</value>
   </data>
   <data name="AcSettings_Quality_Maximum" xml:space="preserve">
     <value>Maximum</value>
@@ -1023,7 +1023,7 @@
     <comment>Restore file from somewhere</comment>
   </data>
   <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
-    <value>Original file will be moved to Recycle Bin if exists</value>
+    <value>Original file will be moved to the Recycle Bin if exists</value>
   </data>
   <data name="Solving_CreateNewFile" xml:space="preserve">
     <value>Create a new file</value>
@@ -1266,7 +1266,7 @@
     <value>Time</value>
   </data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
-    <value>Very Low</value>
+    <value>Very low</value>
   </data>
   <data name="Common_Weekend" xml:space="preserve">
     <value>Weekend</value>
@@ -1395,7 +1395,7 @@
     <value>Recommended format: “…° W” or “…° E”</value>
   </data>
   <data name="TrackGeoTags_FindIt" xml:space="preserve">
-    <value>Find It</value>
+    <value>Find it</value>
   </data>
   <data name="OrdinalizingSubject_Server" xml:space="preserve">
     <value>server</value>
@@ -1607,7 +1607,7 @@
     <value>File is still parsed, but some values might be skipped.</value>
   </data>
   <data name="SyntaxError_Solution" xml:space="preserve">
-    <value>Open File</value>
+    <value>Open file</value>
   </data>
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
     <value>Can’t get a proper list of resolutions</value>
@@ -1725,7 +1725,7 @@ Would you like to pack it before starting the server? But don’t forget to shar
     <value>Admin password:</value>
   </data>
   <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
-    <value>Show Admin Password Input</value>
+    <value>Show admin password input</value>
   </data>
   <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
     <value>If you disable it, you can always turn it on in online settings</value>

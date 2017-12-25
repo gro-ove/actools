@@ -68,13 +68,13 @@
         <Button Content="Analyze" Command="{Binding CarAnalyzerCommand}">
           <Button.ToolTip>Check for some common issues and fix them immediately (Alt+A)</Button.ToolTip>
         </Button>
-        <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}">
+        <Button Content="Replace tyres" Command="{Binding ReplaceTyresCommand}">
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
       </ToolBar>
       <!-- <ToolBar Band="0" BandIndex="0"
           Visibility="{Binding SelectedObject.PackCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <Button Content="Pack Car" Command="{Binding SelectedObject.PackCommand}" ToolTip="Pack important files for easy distribution" />
+        <Button Content="Pack car" Command="{Binding SelectedObject.PackCommand}" ToolTip="Pack important files for easy distribution" />
       </ToolBar> -->
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -117,7 +117,7 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
             Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <Button Content="Extract Sound" Command="{Binding ExtractSoundCommand}" ToolTip="For development purposes only"
+        <Button Content="Extract sound" Command="{Binding ExtractSoundCommand}" ToolTip="For development purposes only"
             Visibility="{Binding ExtractSoundCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
@@ -282,7 +282,7 @@
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
-                      <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+                      <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                   <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedObject}">
@@ -436,7 +436,7 @@
                     Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                      <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>
@@ -446,7 +446,7 @@
                     Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Filter By Similar Max Speed Achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
+                      <MenuItem Header="Filter by similar max speed achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>

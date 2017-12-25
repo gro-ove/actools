@@ -41,14 +41,14 @@
             <DockPanel>
               <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource AddIconData}"
                   DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
-              <TextBlock Text="Create It" VerticalAlignment="Center" Margin="4 0 0 0" />
+              <TextBlock Text="Create it" VerticalAlignment="Center" Margin="4 0 0 0" />
             </DockPanel>
           </Button>
           <Button Padding="8 3 8 5" Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/Settings/SettingsGenericMods.xaml">
             <DockPanel>
               <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource GearIconData}"
                   DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
-              <TextBlock Text="Open Settings" VerticalAlignment="Center" Margin="4 0 0 0" />
+              <TextBlock Text="Settings" VerticalAlignment="Center" Margin="4 0 0 0" />
             </DockPanel>
           </Button>
         </mui:SpacingUniformGrid>
@@ -111,7 +111,7 @@
               <Path Width="32" Height="12" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                   Data="F1 M 56.5,18L 31.75,18L 41.75,28L 31.25,28L 17.25,14L 31.25,0L 41.75,0L 31.75,10L 56.5,10L 56.5,18 Z M 14.5,18L 24.5,28L 14,28L 0,14L 14,0L 24.5,0L 14.5,10L 19.25,10L 15.25,14L 19.25,18L 14.5,18 Z"
                   DockPanel.Dock="Top" Margin="0 4 0 4" />
-              <TextBlock Text="Disable All" />
+              <TextBlock Text="Disable all" />
             </DockPanel>
           </Button>
           <c:UserPresetsControl UserPresetable="{Binding}" Style="{StaticResource UserPresetsControl.Compact}" Width="240" />

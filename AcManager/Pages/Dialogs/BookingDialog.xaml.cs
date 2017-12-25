@@ -20,7 +20,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         public CarObject Car {
-            get { return _car; }
+            get => _car;
             set {
                 if (Equals(value, _car)) return;
                 _car = value;
@@ -33,7 +33,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         public CarSkinObject Skin {
-            get { return _skin; }
+            get => _skin;
             set {
                 if (Equals(value, _skin)) return;
                 _skin = value;
@@ -53,7 +53,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         public TrackObjectBase Track {
-            get { return _track; }
+            get => _track;
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
@@ -127,7 +127,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _ready;
 
         public bool Ready {
-            get { return _ready; }
+            get => _ready;
             set {
                 if (Equals(value, _ready)) return;
                 _ready = value;
@@ -135,7 +135,7 @@ namespace AcManager.Pages.Dialogs {
                 CommandManager.InvalidateRequerySuggested();
 
                 if (value) {
-                    Toast.Show("Booking Is Finished", AppStrings.Srs_ReadyNotification, () => {
+                    Toast.Show("booking is finished", AppStrings.Srs_ReadyNotification, () => {
                         ServerEntry?.JoinCommand.Execute(ServerEntry.ActualJoin);
                     });
                 }

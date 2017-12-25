@@ -218,7 +218,7 @@ namespace AcManager.Tools.Miscellaneous {
                     using (var client = new CookieAwareWebClient()) {
                         await client.UploadStringTaskAsync(url, "");
                         IgnoreUpdate(type, id);
-                        Toast.Show("Update Reported", "Update reported and will be ignored. Thank you for your participation");
+                        Toast.Show("Update reported", "Update reported and will be ignored. Thank you for your participation");
                         return true;
                     }
                 } catch (Exception e) {

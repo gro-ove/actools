@@ -277,7 +277,7 @@ namespace AcManager.Controls {
 
         private ContextMenu CreateBatchActionContextMenu() {
             var keepOpenItem = new MenuItem {
-                Header = "Keep Batch Actions Panel Open",
+                Header = "Keep batch actions panel open",
                 IsCheckable = true
             };
 

@@ -82,9 +82,9 @@ namespace AcManager.Tools.Starters {
                 }
 
                 if (updateRequired) {
-                    Toast.Show("AC Service Updated", $"New version: {Version}");
+                    Toast.Show("AC Service updated", $"New version: {Version}");
                 } else {
-                    Toast.Show("AC Service Installed", $"Original launcher renamed as “{Path.GetFileName(LauncherOriginalFilename)}”");
+                    Toast.Show("AC Service installed", $"Original launcher renamed as “{Path.GetFileName(LauncherOriginalFilename)}”");
                 }
             } catch (Exception e) {
                 if (updateRequired) {

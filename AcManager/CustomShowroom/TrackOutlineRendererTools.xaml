@@ -125,7 +125,7 @@
             </DockPanel>
         </StackPanel>
 
-        <Button Margin="0 8 0 0" Content="Save Outline" ToolTip="Save new outline.png (original file will be moved to the Recycle Bin)"
+        <Button Margin="0 8 0 0" Content="Save outline" ToolTip="Save new outline.png (original file will be moved to the Recycle Bin)"
                 Command="{Binding SaveCommand}" />
     </StackPanel>
 </mui:ModernDialog>

@@ -73,6 +73,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             NewWindowCreated?.Invoke(this, EventArgs.Empty);
         }
 
+        public new static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string),
+                typeof(DpiAwareWindow), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.None, OnTitleChanged, CoerceTitle));
+
+        private static object CoerceTitle(DependencyObject d, object basevalue) {
+            return basevalue?.ToString().ToTitle();
+        }
+
+        private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            ((Window)d).Title = e.NewValue as string;
+        }
+
+        public new string Title {
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
+        }
+
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs) {
             try {
                 if (IsActive) {

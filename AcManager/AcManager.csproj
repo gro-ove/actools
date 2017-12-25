@@ -343,9 +343,6 @@
     <Compile Include="Pages\Dialogs\CombinePythonAppsPresetsDialog.xaml.cs">
       <DependentUpon>CombinePythonAppsPresetsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\FmodCarPlayerDialog.xaml.cs">
-      <DependentUpon>FmodCarPlayerDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Dialogs\PackServerDialog.Evb.cs" />
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
@@ -901,10 +898,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\CombinePythonAppsPresetsDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Dialogs\FmodCarPlayerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

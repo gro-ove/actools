@@ -14,7 +14,7 @@ namespace AcManager.Pages.SelectionLists {
             InitializeComponent();
         }
 
-        private static readonly KunosDlcInformation FakeKunosDlc = new KunosDlcInformation(-1, "AC", "Original Game", null, null);
+        private static readonly KunosDlcInformation FakeKunosDlc = new KunosDlcInformation(-1, "AC", "Original game", null, null);
         private static readonly KunosDlcInformation FakeModDlc = new KunosDlcInformation(-2, "MOD", "Mods", null, null);
 
         protected override SelectDlc GetSelectedItem(IList<SelectDlc> list, CarObject obj) {

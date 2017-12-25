@@ -118,7 +118,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
             return new[] {
                 new DirectoryEntry {
                     Id = null,
-                    DisplayName = "App Folder",
+                    DisplayName = "App folder",
                     Children = (list["_embedded"]?["items"] as JArray)?.OfType<JObject>()
                                                                        .Where(x => x.GetStringValueOnly("type") == "dir").Select(
                                                                                x => new DirectoryEntry {

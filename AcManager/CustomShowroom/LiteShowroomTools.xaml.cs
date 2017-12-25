@@ -989,7 +989,7 @@ namespace AcManager.CustomShowroom {
                     var dialog = new OpenFileDialog {
                         InitialDirectory = showroomPresetsDirectory,
                         Filter = string.Format(ToolsStrings.Presets_FileFilter, PresetsCategory.DefaultFileExtension),
-                        Title = "Select Custom Showroom Or Custom Previews Preset",
+                        Title = "Select Custom Showroom or Custom Previews preset",
                         CustomPlaces = {
                             new FileDialogCustomPlace(showroomPresetsDirectory),
                             new FileDialogCustomPlace(previewsPresetsDirectory),
@@ -1316,7 +1316,7 @@ namespace AcManager.CustomShowroom {
                 }
 
                 ShowMessage(sb.ToString(), material.Name, d => new [] {
-                    d.CreateCloseDialogButton("Change Values", false, false, MessageBoxResult.OK, ChangeMaterialCommand)
+                    d.CreateCloseDialogButton("Change values", false, false, MessageBoxResult.OK, ChangeMaterialCommand)
                 });
             }, () => Renderer?.SelectedMaterial != null));
 

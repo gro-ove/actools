@@ -47,7 +47,7 @@
             <Label Content="Movable driver" />
           </CheckBox>
           <Button Content="Reset" Command="{Binding Renderer.CarNode.ResetDriverMovementCommand}" IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
-          <Button Content="Save Pos." Command="{Binding Renderer.CarNode.SaveDriverMovementCommand}" ToolTip="Save driver position into “steer.ksanim” file"
+          <Button Content="Save pos." Command="{Binding Renderer.CarNode.SaveDriverMovementCommand}" ToolTip="Save driver position into “steer.ksanim” file"
               IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
           <Button Content="Save KNH" Command="{Binding Renderer.CarNode.UpdateDriverKnhCommand}"
               ToolTip="Save driver position into “driver_base_pos.knh” file (not sure if it’s used at all by either AC or CM thought)" />
@@ -264,7 +264,7 @@
         </DockPanel>
       </mui:SpacingStackPanel>
 
-      <Button Margin="0 4 0 0" Command="{Binding UpdateKn5Command}" Content="Update Model"
+      <Button Margin="0 4 0 0" Command="{Binding UpdateKn5Command}" Content="Update model"
           ToolTip="Save model state, such as wheels position or blurred rims on/off (experimental; current version will be moved to the Recycle Bin)" />
 
       <TextBlock Text="Sound" Style="{StaticResource Heading2}" Margin="0 8 0 0"

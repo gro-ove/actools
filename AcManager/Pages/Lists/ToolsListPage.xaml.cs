@@ -35,7 +35,7 @@ namespace AcManager.Pages.Lists {
             get {
                 var key = $@".FilteredToolLink:{Source.OriginalString}";
                 var defaultValue = ValuesStorage.GetString(key) ?? DefaultFilter;
-                var filter = Prompt.Show(FilterDescription ?? "Optional filter:", "Optional Filter", watermark: @"*", defaultValue: defaultValue,
+                var filter = Prompt.Show(FilterDescription ?? "Optional filter:", "Optional filter", watermark: @"*", defaultValue: defaultValue,
                         suggestions: ValuesStorage.GetStringList("AcObjectListBox:FiltersHistory:car"));
                 if (filter != null) {
                     ValuesStorage.Set(key, filter);

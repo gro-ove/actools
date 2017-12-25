@@ -54,7 +54,7 @@ namespace AcManager.CustomShowroom {
                 base.OnKeyUp(sender, args);
             }
         }
-        
+
         protected virtual void OnKeyUpOverride(KeyEventArgs args) { }
 
         private async Task ShotAsync(Action<IProgress<Tuple<string, double?>>, CancellationToken> action, CancellationToken cancellationToken) {
@@ -110,7 +110,7 @@ namespace AcManager.CustomShowroom {
             if (plugin == null || !plugin.IsReady) {
                 if (!_warningShown) {
                     _warningShown = true;
-                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
+                    FirstFloor.ModernUI.Windows.Toast.Show("Montage plugin not installed", "You’ll have to join pieces manually");
                 }
 
                 OptionMontageMemoryLimit = SettingsHolder.Plugins.MontageMemoryLimit;
@@ -129,7 +129,7 @@ namespace AcManager.CustomShowroom {
                 var magick = plugin.GetFilename("magick.exe");
                 if (!File.Exists(magick)) {
                     magick = plugin.GetFilename("montage.exe");
-                    FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Is Obsolete", "Please, update it, and it’ll consume twice less power");
+                    FirstFloor.ModernUI.Windows.Toast.Show("Montage plugin is obsolete", "Please, update it, and it’ll consume twice less power");
                 }
 
                 Environment.SetEnvironmentVariable("MAGICK_TMPDIR", destination);

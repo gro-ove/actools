@@ -422,12 +422,12 @@
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
     </DockPanel>
-    <mui:LabeledToggleButton DockPanel.Dock="Bottom" IsChecked="{Binding SaveAsNewSkin}" HighlightChecked="False" LabelChecked="Save As New"
-        LabelUnchecked="Modify Current" Margin="0 20 0 0" />
+    <mui:LabeledToggleButton DockPanel.Dock="Bottom" IsChecked="{Binding SaveAsNewSkin}" HighlightChecked="False" LabelChecked="Save as new"
+        LabelUnchecked="Modify current" Margin="0 20 0 0" />
 
     <!--<mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" DockPanel.Dock="Bottom">
       <Button Command="{Binding SkinSaveChangesCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" Padding="0 3 0 5" />
-      <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save As New…" Padding="0 3 0 5" />
+      <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save as new…" Padding="0 3 0 5" />
     </mui:SpacingUniformGrid>-->
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outside="True"

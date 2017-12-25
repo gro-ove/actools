@@ -144,8 +144,8 @@
       <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
         <Label Margin="0 0 0 8" Content="Scale apps:" DockPanel.Dock="Top" />
         <DockPanel>
-          <Button Content="Set Scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <Button Content="Multiply Scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <Button Content="Set scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <Button Content="Multiply scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
           <mui:ValueLabel Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Integer" Postfix="%"
               Content="Value" DockPanel.Dock="Top" Margin="0 0 0 4" />
           <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
@@ -377,7 +377,7 @@
     <mui:SpacingStackPanel Spacing="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"
         Margin="0 20 20 20">
       <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
-      <Button Content="Combine Presets To Multi-Desktop Preset" Command="{Binding CombinePresetsCommand}"
+      <Button Content="Combine presets to multi-desktop preset" Command="{Binding CombinePresetsCommand}"
           ToolTip="Use it if you want to switch between several presets during the race. But keep in mind that all used apps will be enabled and loaded." />
     </mui:SpacingStackPanel>
   </Grid>

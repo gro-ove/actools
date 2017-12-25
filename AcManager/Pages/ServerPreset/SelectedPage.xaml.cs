@@ -329,7 +329,7 @@ namespace AcManager.Pages.ServerPreset {
             public DelegateCommand ChangeWelcomeMessagePathCommand => _changeWelcomeMessagePathCommand ?? (_changeWelcomeMessagePathCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TextFilter,
-                    Title = "Select New Welcome Message",
+                    Title = "Select new welcome message",
                     InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath) ?? "",
                     RestoreDirectory = true
                 };

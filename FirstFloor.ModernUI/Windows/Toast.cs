@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows {
         /// <param name="message">Ex.: “This and that. Without dot in the end”</param>
         /// <param name="click">Click action</param>
         public static void Show(string title, string message, Action click = null) {
-            Show(title, message, AppIconService.GetAppIconUri(), click ?? _defaultAction);
+            Show(title.ToTitle(), message, AppIconService.GetAppIconUri(), click ?? _defaultAction);
         }
 
         /// <summary>

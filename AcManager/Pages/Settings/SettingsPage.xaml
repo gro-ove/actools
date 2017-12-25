@@ -10,10 +10,10 @@
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Content}" Source="/Pages/Settings/SettingsContent.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Toolbar_CustomShowroom}" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Drive}" Source="/Pages/Settings/SettingsDrive.xaml" />
-      <mui:Link DisplayName="Generic Mods" Source="/Pages/Settings/SettingsGenericMods.xaml" IsNew="True"
+      <mui:Link DisplayName="Generic mods" Source="/Pages/Settings/SettingsGenericMods.xaml" IsNew="True"
           IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
       <mui:Link DisplayName="Integrated" Source="/Pages/Settings/SettingsIntegrated.xaml" />
-      <mui:Link DisplayName="Lap Times" Source="/Pages/Settings/SettingsLapTimes.xaml" />
+      <mui:Link DisplayName="Lap times" Source="/Pages/Settings/SettingsLapTimes.xaml" />
       <!--<mui:Link DisplayName="{x:Static g:AppStrings.Main_Live}" Source="/Pages/Settings/SettingsLive.xaml" />-->
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Language}" Source="/Pages/Settings/SettingsLocale.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online}" Source="/Pages/Settings/SettingsOnline.xaml" />

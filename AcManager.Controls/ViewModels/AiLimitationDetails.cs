@@ -115,7 +115,7 @@ namespace AcManager.Controls.ViewModels {
 
         public DelegateCommand ShowMenuCommand => _showMenuCommand ?? (_showMenuCommand = new DelegateCommand(() => {
             var tyres = new MenuItem {
-                Header = "Allowed Tyres",
+                Header = "Allowed tyres",
                 StaysOpenOnClick = true
             };
 

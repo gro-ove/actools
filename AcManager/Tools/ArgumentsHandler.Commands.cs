@@ -201,7 +201,7 @@ namespace AcManager.Tools {
                 SettingsHolder.Locale.LocaleName = locale;
             }
 
-            if (ModernDialog.ShowMessage("Custom locales updated. Would you like to restart app now?", "Locales Updated", MessageBoxButton.YesNo) ==
+            if (ModernDialog.ShowMessage("Custom locales updated. Would you like to restart app now?", "Locales updated", MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes) {
                 WindowsHelper.RestartCurrentApplication();
             }

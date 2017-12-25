@@ -31,7 +31,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             var item = new MenuItem {
-                Header = header.ToTitle(),
+                Header = header,
                 Icon = icon,
                 IsEnabled = isEnabled,
                 Command = command,

@@ -45,7 +45,7 @@ namespace AcManager.Tools.SemiGui {
                 return "Weekend";
             }
 
-            return startProperties.ModeProperties is Game.RaceProperties ? "Race" : "Something Unspeakable";
+            return startProperties.ModeProperties is Game.RaceProperties ? "Race" : "Something unspeakable";
         }
 
         [CanBeNull]

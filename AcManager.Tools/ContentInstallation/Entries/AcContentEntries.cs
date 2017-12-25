@@ -473,7 +473,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             UpdateSharedModelsOverlap();
 
             if (NoConflictMode) {
-                return new[] { new UpdateOption("Just Install") };
+                return new[] { new UpdateOption("Just install") };
             }
 
             bool UiFilter(string x) {
@@ -533,7 +533,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _car.DisplayName);
         }
 
-        public override string GenericModTypeName => "Car Skin";
+        public override string GenericModTypeName => "Car skin";
         public override string NewFormat { get; }
         public override string ExistingFormat { get; }
 
@@ -569,7 +569,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _track.DisplayName);
         }
 
-        public override string GenericModTypeName => "Track Skin";
+        public override string GenericModTypeName => "Track skin";
         public override string NewFormat { get; }
         public override string ExistingFormat { get; }
 
@@ -632,7 +632,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public TrueTypeFontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
-        public override string GenericModTypeName => "TrueType Font";
+        public override string GenericModTypeName => "TrueType font";
         public override string NewFormat => "New TrueType font {0}";
         public override string ExistingFormat => "Update for a TrueType font {0}";
 
@@ -733,7 +733,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public DriverModelContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
-        public override string GenericModTypeName => "Driver Model";
+        public override string GenericModTypeName => "Driver model";
         public override string NewFormat => "New driver model {0}";
         public override string ExistingFormat => "Update for a driver model {0}";
 

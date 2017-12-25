@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 : base(() => Task.Delay(0), () => execute != null) {
             _entry = entry;
             _execute = execute;
-            DisplayName = displayName ?? "Fix It";
+            DisplayName = displayName ?? "Fix it";
         }
 
         protected override bool CanExecuteOverride() {

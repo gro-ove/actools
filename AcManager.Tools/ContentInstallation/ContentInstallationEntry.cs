@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,10 +50,9 @@ namespace AcManager.Tools.ContentInstallation {
         private readonly ContentInstallationParams _installationParams;
 
         internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
-            AddedDateTime = DateTime.Now;
-
-            Source = source;
             _installationParams = installationParams ?? ContentInstallationParams.Default;
+            Source = source;
+            AddedDateTime = DateTime.Now;
             DisplayName = _installationParams.DisplayName;
             InformationUrl = _installationParams.InformationUrl;
             Version = _installationParams.Version;
@@ -67,6 +67,12 @@ namespace AcManager.Tools.ContentInstallation {
                 PreferCleanInstallation = _installationParams.PreferCleanInstallation;
             }
         }
+
+        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.zip", null) {
+            FileName = "input.zip",
+            LocalFilename = @"U:\dump.bin",
+            Progress = AsyncProgressEntry.Ready
+        };
 
         public ContentInstallationEntryState State => _progress.IsReady ? ContentInstallationEntryState.Finished :
                 _isPasswordRequired ? ContentInstallationEntryState.PasswordRequired :
@@ -85,9 +91,10 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
                 OnPropertyChanged(nameof(IsFailed));
+                OnPropertyChanged(nameof(IsEmpty));
 
                 if (value.IsReady) {
-                    ContentInstallationManager.Instance.UpdateBusyDoingSomething();
+                    ContentInstallationManager.Instance?.UpdateBusyDoingSomething();
                 }
             }
         }
@@ -120,6 +127,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         public bool IsFailed => State == ContentInstallationEntryState.Finished && FailedMessage != null;
+        public bool IsEmpty => State == ContentInstallationEntryState.Finished && Entries.Length == 0;
 
         private string _failedMessage;
 
@@ -630,11 +638,6 @@ namespace AcManager.Tools.ContentInstallation {
                                 return false;
                             }
 
-                            if (entries.Count == 0) {
-                                FailedMessage = "Nothing to install";
-                                return false;
-                            }
-
                             foreach (var entry in entries) {
                                 entry.SingleEntry = entries.Count == 1;
                                 await entry.CheckExistingAsync();
@@ -643,6 +646,10 @@ namespace AcManager.Tools.ContentInstallation {
                             Entries = entries.ToArray();
                             Entries.ForEach(x => x.SetInstallationParams(_installationParams));
                             ExtraOptions = (await GetExtraOptionsAsync(Entries)).ToArray();
+
+                            if (Entries.Length == 0) {
+                                return false;
+                            }
 
                             if (CheckCancellation()) return false;
 

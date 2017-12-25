@@ -148,7 +148,7 @@
     <value>Navigation failed</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
+    <value>Unable to navigate to {0}, could not find a ModernFrame target “{1}”</value>
   </data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>Unable to navigate to {0}, no source specified</value>
@@ -181,7 +181,7 @@
     <value>Newer version {0} is ready to be installed</value>
   </data>
   <data name="ImagesFilter" xml:space="preserve">
-    <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
+    <value>Image files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
   </data>
   <data name="KeyBackspace" xml:space="preserve">
     <value>Backspace</value>
@@ -253,7 +253,7 @@
     <value>Source</value>
   </data>
   <data name="StackTrace" xml:space="preserve">
-    <value>Stack Trace</value>
+    <value>Stack trace</value>
   <comment>@Invariant</comment></data>
   <data name="Suggestions" xml:space="preserve">
     <value>Suggestions</value>
@@ -265,10 +265,10 @@
     <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://restart]restart[/url] this app or just [url=cmd://exit]close[/url] it.</value>
   </data>
   <data name="TexturesFilter" xml:space="preserve">
-    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
+    <value>DDS &amp; TIFF files|*.dds;*.tif;*.tiff|Image files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
-    <value>DDS Files (*.dds)|*.dds|All files (*.*)|*.*</value>
+    <value>DDS files (*.dds)|*.dds|All files (*.*)|*.*</value>
   </data>
   <data name="KeyAlt" xml:space="preserve">
     <value>Alt</value>
@@ -402,7 +402,7 @@
     <comment>Title of default tab (showing everything, on the far left) in content section</comment>
   </data>
   <data name="HidePassword" xml:space="preserve">
-    <value>Hide Password</value>
+    <value>Hide password</value>
     <comment>For password-input boxes</comment>
   </data>
   <data name="MarkLimited" xml:space="preserve">
@@ -415,7 +415,7 @@
     <value>Pick a color</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
-    <value>Show Password</value>
+    <value>Show password</value>
     <comment>For password-input boxes</comment>
   </data>
   <data name="Ordinalizing_Minus" xml:space="preserve">
@@ -603,11 +603,12 @@
   <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
     <value>Matching candidates not found</value>
   </data>
+  <!-- TODO: Move out! -->
   <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
-    <value>Save Race Grid As Preset</value>
+    <value>Save race grid as preset</value>
   </data>
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Share Race Grid</value>
+    <value>Share race grid</value>
   </data>
   <data name="Common_Ascending" xml:space="preserve">
     <value>Ascending</value>
@@ -631,19 +632,19 @@
     <value>Unhide</value>
   </data>
   <data name="Toolbar_OnlineManageLists" xml:space="preserve">
-    <value>Manage Lists…</value>
+    <value>Manage lists…</value>
   </data>
   <data name="Toolbar_Invite" xml:space="preserve">
     <value>Invite</value>
   </data>
   <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
-    <value>Cancel Booking</value>
+    <value>Cancel booking</value>
   </data>
   <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
     <value>Share a link to this server so your friends could quickly join you (Ctrl+Page Up)</value>
   </data>
   <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
-    <value>Include Password</value>
+    <value>Include password</value>
   </data>
   <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
     <value>Add server to favourites list (Ctrl+D)</value>

@@ -31,7 +31,7 @@
             <DockPanel mui:Switch.When="{x:Static local:ShareMode.Directly}">
               <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
                 <ContextMenu>
-                  <MenuItem Header="Select Existing Archive" Command="{Binding SelectFileCommand}" />
+                  <MenuItem Header="Select existing archive" Command="{Binding SelectFileCommand}" />
                   <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
                 </ContextMenu>
               </mui:ContextMenuButton>
@@ -140,10 +140,10 @@
               Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}">
             <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
               <ContextMenu>
-                <MenuItem Header="Select Existing Archive" Command="{Binding SelectFileCommand}" />
+                <MenuItem Header="Select existing archive" Command="{Binding SelectFileCommand}" />
                 <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
                 <Separator Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <MenuItem Header="Pack Car Data" IsCheckable="True" IsChecked="{Binding Value, Source={x:Static local:WrapperContentObject.PackCarData}}"
+                <MenuItem Header="Pack car data" IsCheckable="True" IsChecked="{Binding Value, Source={x:Static local:WrapperContentObject.PackCarData}}"
                     StaysOpenOnClick="True" Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </ContextMenu>
             </mui:ContextMenuButton>
@@ -169,7 +169,7 @@
               Background="Transparent">
             <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0">
               <ContextMenu>
-                <MenuItem Header="Reset To Content Version" Command="{Binding ResetToContentVersionCommand}" />
+                <MenuItem Header="Reset to content version" Command="{Binding ResetToContentVersionCommand}" />
               </ContextMenu>
             </mui:ContextMenuButton>
             <Label Content="Version required:" />

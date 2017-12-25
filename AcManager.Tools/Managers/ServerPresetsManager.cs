@@ -128,10 +128,10 @@ namespace AcManager.Tools.Managers {
             if (saved != null) {
                 saved.Extend(entry);
                 SaveDriversLater().Forget();
-                Toast.Show("Saved Driver Extended", "Driver with this GUID already saved. New skin ID has been added");
+                Toast.Show("Saved driver extended", "Driver with this GUID already saved. New skin ID has been added");
             } else {
                 SavedDrivers.Add(new ServerSavedDriver(entry));
-                Toast.Show("Driver Saved", "New saved driver entry added");
+                Toast.Show("Driver saved", "New saved driver entry added");
             }
         }
 

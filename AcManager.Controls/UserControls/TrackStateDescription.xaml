@@ -14,7 +14,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <TextBlock Style="{StaticResource Heading2}" Text="Track State:" Margin="0 0 0 8" />
+        <TextBlock Style="{StaticResource Heading2}" Text="Track state:" Margin="0 0 0 8" />
 
         <DockPanel Margin="0 0 0 4">
             <Label Width="180" DockPanel.Dock="Left" Content="Grip at the start:" />

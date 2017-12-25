@@ -71,7 +71,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_UpdatePreviews : BatchAction<ShowroomObject> {
             public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
             public BatchAction_UpdatePreviews()
-                    : base("Update Previews", "Re-shot previews using reflective sphere", "Look", null) {
+                    : base("Update previews", "Re-shot previews using reflective sphere", "Look", null) {
                 DisplayApply = "Update";
             }
 

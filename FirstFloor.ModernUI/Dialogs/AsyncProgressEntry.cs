@@ -105,6 +105,21 @@ namespace FirstFloor.ModernUI.Dialogs {
             progress = progress.Subrange(splitPoint + 0.0001, 0.9999);
             return result;
         }
+
+        public bool Equals(AsyncProgressEntry other) {
+            return string.Equals(Message, other.Message) && Progress.Equals(other.Progress);
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is AsyncProgressEntry entry && Equals(entry);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return ((Message != null ? Message.GetHashCode() : 0) * 397) ^ Progress.GetHashCode();
+            }
+        }
     }
 
     public static class AsyncProgressEntryExtension {

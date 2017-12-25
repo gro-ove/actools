@@ -38,7 +38,7 @@ namespace AcManager.Tools.ContentRepairUi {
                             $"but according to these TOTALMASS and mass in UI file, driver weights {valueStr}. Could be a mistake.\n\nIf you want to specify weight with driver in UI, add “*”.",
                     (p, c) => FixAsync(car, p, c)) {
                         AffectsData = true,
-                        FixCaption = "Fix Data"
+                        FixCaption = "Fix data"
                     }.AlternateFix("Fix UI", (progress, token) => {
                         car.SpecsWeight = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
                                 weight.ToString(@"F0", CultureInfo.InvariantCulture));

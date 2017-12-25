@@ -166,7 +166,7 @@
     <value>Author, version &amp; URL (Ctrl+click to follow the link if set)</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Open In Showroom</value>
+    <value>Open in showroom</value>
   </data>
   <data name="Common_Presets" xml:space="preserve">
     <value>Presets</value>
@@ -178,7 +178,7 @@
     <value>Settings</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Open In Custom Showroom</value>
+    <value>Open in Custom Showroom</value>
   </data>
   <data name="KunosCareer_RequiredSeries" xml:space="preserve">
     <value>Required series: {0}</value>
@@ -204,23 +204,23 @@
     <value>City:</value>
   </data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
-    <value>Geo Tags:</value>
+    <value>Geo tags:</value>
   </data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>{Error}:</value>
     <comment>Will be pluralized automatically</comment>
   </data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>Save Preset</value>
+    <value>Save preset</value>
   </data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
     <value>Save current settings as preset (Ctrl+S)</value>
   </data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Unsaved Preset</value>
+    <value>Unsaved preset</value>
   </data>
   <data name="QuickSwitches_Header" xml:space="preserve">
-    <value>Quick Switches</value>
+    <value>Quick switches</value>
   </data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Hide wheel</value>
@@ -349,16 +349,16 @@
     <value>Down</value>
   </data>
   <data name="Controls_LoadPresetWarning" xml:space="preserve">
-    <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
+    <value>Load “{0}”? Current values will be replaced (but later could be restored from the Recycle Bin).</value>
   </data>
   <data name="Common_AreYouSure" xml:space="preserve">
     <value>Are you sure?</value>
   </data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Built-in Presets</value>
+    <value>Built-in presets</value>
   </data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>User Presets</value>
+    <value>User presets</value>
   </data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
     <value>Input method: [b]{0}[/b]</value>
@@ -373,7 +373,7 @@
     <value>Enter name or keep field empty:</value>
   </data>
   <data name="Share_EnterNameHeader" xml:space="preserve">
-    <value>Share As</value>
+    <value>Share as</value>
   </data>
   <data name="Share_EnterCustomId" xml:space="preserve">
     <value>Enter custom ID:</value>
@@ -387,7 +387,7 @@ Entry name: [b]{1}[/b]
 Entry type: [b]{2}[/b]</value>
   </data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
-    <value>Is Everything OK?</value>
+    <value>Is everything OK?</value>
   </data>
   <data name="Share_InProgress" xml:space="preserve">
     <value>Sharing…</value>
@@ -435,7 +435,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Image</value>
   </data>
   <data name="ImageViewer_Save_Title" xml:space="preserve">
-    <value>Save Image As</value>
+    <value>Save image as</value>
   </data>
   <data name="ImageViewer_CannotSave" xml:space="preserve">
     <value>Can’t save image</value>
@@ -465,7 +465,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Export</value>
   </data>
   <data name="CustomShowroom_ViewMapping" xml:space="preserve">
-    <value>View Mapping</value>
+    <value>View mapping</value>
   </data>
   <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
     <value>View in 2048×2048</value>
@@ -492,7 +492,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Please, use valid format for them.</value>
   </data>
   <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
-    <value>Export Texture Mapping</value>
+    <value>Export texture mapping</value>
   </data>
   <data name="CustomShowroom_CannotExport" xml:space="preserve">
     <value>Can’t export texture</value>
@@ -549,13 +549,13 @@ Entry type: [b]{2}[/b]</value>
     <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
-    <value>Update Ambient Shadows</value>
+    <value>Update ambient shadows</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
-    <value>Reset To Recommended Values</value>
+    <value>Reset to recommended values</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
-    <value>Ambient Shadow</value>
+    <value>Ambient shadow</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
     <value>Diffusion</value>
@@ -600,13 +600,13 @@ Entry type: [b]{2}[/b]</value>
     <value>Reloading textures…</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
-    <value>Data Is Encrypted</value>
+    <value>Data is encrypted</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
     <value>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</value>
   </data>
   <data name="Common_DevTools" xml:space="preserve">
-    <value>Developer Tools</value>
+    <value>Developer tools</value>
   </data>
   <data name="Common_Unpack" xml:space="preserve">
     <value>Unpack {0}</value>
@@ -629,11 +629,11 @@ Renderable: [b]{3}[/b]
 Visible: [b]{4}[/b]
 
 Transparent: [b]{5}[/b]
-Casting Shadows: [b]{6}[/b]
+Casting shadows: [b]{6}[/b]
 
 Layer: [b]{7}[/b]
-LOD In: [b]{8}[/b]
-LOD In: [b]{9}[/b]
+LOD in: [b]{8}[/b]
+LOD in: [b]{9}[/b]
 
 Material: [b]{10}[/b]</value>
   </data>
@@ -705,7 +705,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Drivers online:</value>
   </data>
   <data name="Online_JoinUsing" xml:space="preserve">
-    <value>Join Using {0}</value>
+    <value>Join using {0}</value>
     <comment>Join using specific car</comment>
   </data>
   <data name="Common_MillisecondsPostfix" xml:space="preserve">
@@ -772,7 +772,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable.</value>
   </data>
   <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
-    <value>Remove ui_skin.json to Recycle Bin (Alt+Delete)</value>
+    <value>Remove ui_skin.json to the Recycle Bin (Alt+Delete)</value>
   </data>
   <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
     <value>Create a new ui_skin.json file (Alt+S)</value>
@@ -808,16 +808,16 @@ Depth mode: [b]{4}[/b]</value>
     <value>Reset to recommended value</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Change Skin</value>
+    <value>Change skin</value>
   </data>
   <data name="Common_Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
   <data name="Common_TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+    <value>Try again</value>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
-    <value>Offline Mode</value>
+    <value>Offline mode</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
     <value>Showroom</value>
@@ -848,7 +848,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Installing…</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Make Independent</value>
+    <value>Make independent</value>
   </data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
     <value>Children will be moved to the new parent!</value>
@@ -860,13 +860,13 @@ Depth mode: [b]{4}[/b]</value>
     <value>Save &amp; Close</value>
   </data>
   <data name="FindInformation_SaveAsYear" xml:space="preserve">
-    <value>Save as Year</value>
+    <value>Save as year</value>
   </data>
   <data name="FindInformation_SaveAsCountry" xml:space="preserve">
-    <value>Save as Country</value>
+    <value>Save as country</value>
   </data>
   <data name="FindInformation_SaveAsDescription" xml:space="preserve">
-    <value>Save as Description</value>
+    <value>Save as description</value>
   </data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
     <value>Can’t update preview</value>
@@ -939,14 +939,14 @@ Depth mode: [b]{4}[/b]</value>
     <value> FPS</value>
   <comment>@Invariant</comment></data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>Download And Install ({0})</value>
+    <value>Download and install ({0})</value>
     <comment>{0} — plugin’s size</comment>
   </data>
   <data name="Plugins_NotAvailable" xml:space="preserve">
     <value>Not available, required app version is {0}.</value>
   </data>
   <data name="Plugins_Update" xml:space="preserve">
-    <value>Update (New Version: {0})</value>
+    <value>Update (new version: {0})</value>
   </data>
   <data name="Common_Unsaved" xml:space="preserve">
     <value>Unsaved</value>
@@ -964,7 +964,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Track</value>
   </data>
   <data name="TableHeader_BestLap" xml:space="preserve">
-    <value>Best Lap</value>
+    <value>Best lap</value>
   </data>
   <data name="TableHeader_Date" xml:space="preserve">
     <value>Date</value>

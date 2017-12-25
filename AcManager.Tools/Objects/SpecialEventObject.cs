@@ -168,7 +168,7 @@ namespace AcManager.Tools.Objects {
 
             dlg.Buttons = new[] {
                 dlg.YesButton,
-                dlg.CreateCloseDialogButton("Switch To Official Starter", false, false, MessageBoxResult.OK),
+                dlg.CreateCloseDialogButton("Switch to Official Starter", false, false, MessageBoxResult.OK),
                 dlg.NoButton
             };
 

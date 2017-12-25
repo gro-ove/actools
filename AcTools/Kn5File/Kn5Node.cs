@@ -97,7 +97,7 @@ namespace AcTools.Kn5File {
         [Description("Mesh")]
         Mesh = 2,
 
-        [Description("Skinned Mesh")]
+        [Description("Skinned mesh")]
         SkinnedMesh = 3
     }
 

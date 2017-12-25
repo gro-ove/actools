@@ -17,7 +17,7 @@
     <StackPanel>
       <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
         <StackPanel>
-          <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
+          <TextBlock Text="Internal stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
           <DockPanel>
             <Label Content="Magick.NET:" />
             <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
@@ -46,7 +46,7 @@
       <mui:BbCodeBlock Style="{StaticResource Heading1}">More: 🧚🏿‍♂️🧚🏿‍♀️🧑🏼🧒🏼👨🏼‍🍳👩🏼‍🍳👩‍👩‍👦‍👦💑👆🏾</mui:BbCodeBlock>
 
       <StackPanel Margin="0 20 20 0">
-        <TextBlock Text="Better Images" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <TextBlock Text="Better images" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <DockPanel>
           <Label Content="Crop transparent:" DockPanel.Dock="Left" Width="200" />
@@ -56,7 +56,7 @@
       </StackPanel>
 
       <StackPanel Margin="0 20 20 0">
-        <TextBlock Text="Progress Rings" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <TextBlock Text="Progress rings" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <DockPanel>
           <Label Content="Style:" DockPanel.Dock="Left" Width="200" />
@@ -79,7 +79,7 @@
             <Setter Property="Margin" Value="0 0 0 4" />
           </Style>
         </StackPanel.Resources>
-        <TextBlock Text="Double Sliders Test" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <TextBlock Text="Double sliders test" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <!--<DockPanel>
           <Label Content="Sel. range:" Width="200" DockPanel.Dock="Left" />
@@ -89,27 +89,27 @@
 
         <DockPanel>
           <Label Content="Simple button:" Width="240" DockPanel.Dock="Left" />
-          <Button Content="Simple Button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Left" />
+          <Button Content="Simple button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Left" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="Async button:" Width="240" DockPanel.Dock="Left" />
-          <mui:AsyncButton Content="Async Button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Left" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="Async button (s.):" Width="240" DockPanel.Dock="Left" />
-          <mui:AsyncButton Content="Async Button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Stretch" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Stretch" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="Async button (c., s.):" Width="240" DockPanel.Dock="Left" />
-          <mui:AsyncButton Content="Async Button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Left" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="Async button (c., s.):" Width="240" DockPanel.Dock="Left" />
-          <mui:AsyncButton Content="Async Button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Stretch" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Stretch" />
         </DockPanel>
 
         <DockPanel>
@@ -197,11 +197,11 @@
           <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider4}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
         </mui:SpacingStackPanel>
 
-        <TextBlock Text="Toggle Buttons Test" Style="{StaticResource SettingsPanel.Heading2}" />
+        <TextBlock Text="Toggle buttons test" Style="{StaticResource SettingsPanel.Heading2}" />
 
         <DockPanel>
           <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-          <mui:LabeledToggleButton x:Name="ToggleButton" LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" />
+          <mui:LabeledToggleButton x:Name="ToggleButton" LabelChecked="State: on" LabelUnchecked="State: off" HorizontalAlignment="Left" />
         </DockPanel>
 
         <!--<mui:SpacingStackPanel Spacing="4" Height="80" Background="Black">
@@ -212,10 +212,10 @@
 
                             <mui:Switch2 Value="{Binding IsChecked, ElementName=SecondaryButton}">
                                 <mui:SpacingStackPanel mui:Switch2.When="True">
-                                    <TextBlock Text="Secondary Checked" />
+                                    <TextBlock Text="Secondary checked" />
                                     <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
                                 </mui:SpacingStackPanel>
-                                <TextBlock mui:Switch2.When="False" Text="Secondary Unchecked" />
+                                <TextBlock mui:Switch2.When="False" Text="Secondary unchecked" />
                             </mui:Switch2>
                         </mui:SpacingStackPanel>
                         <TextBlock mui:Switch2.When="False" Text="Unchecked" />

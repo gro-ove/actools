@@ -257,10 +257,10 @@ namespace AcManager.Pages.Settings {
                 try {
                     var message = Prompt.Show(
                             "You’re going to send an unpacked locale to developers. Thanks in advance!\n\nWould you like to add some notes? Maybe your name for About page? Or your address so I’ll be able to contact you back?",
-                            "Additional Notes", watermark: @"?", multiline: true);
+                            "Additional notes", watermark: @"?", multiline: true);
                     if (message == null) return;
                     await Task.Run(() => AppReporter.SendUnpackedLocale(directory, message));
-                    Toast.Show("Locale Sent", AppStrings.About_ReportAnIssue_Sent_Message);
+                    Toast.Show("Locale sent", AppStrings.About_ReportAnIssue_Sent_Message);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);

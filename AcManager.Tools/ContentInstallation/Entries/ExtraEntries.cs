@@ -71,7 +71,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         protected sealed override bool GenericModSupportedByDesign => true;
-        public override string GenericModTypeName => "Set Of Textures";
+        public override string GenericModTypeName => "Set of textures";
         public override string NewFormat => "New set of textures “{0}”";
         public override string ExistingFormat => "Update for the set of textures “{0}”";
 
@@ -110,7 +110,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         protected sealed override bool GenericModSupportedByDesign => true;
-        public override string GenericModTypeName => "AC Config";
+        public override string GenericModTypeName => "AC config";
         public override string NewFormat => "New AC config {0}";
         public override string ExistingFormat => "Update for a AC config {0}";
 

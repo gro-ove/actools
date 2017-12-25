@@ -154,7 +154,7 @@
               </mui:ReferenceSwitch>-->
 
                 <!--<Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
-                  ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />-->
+                  ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy camera position" />-->
 
                 <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -171,7 +171,7 @@
                   <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
                       IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
                       ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                  <TextBlock Text="Selected Object" Style="{StaticResource Heading2}" />
+                  <TextBlock Text="Selected object" Style="{StaticResource Heading2}" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
@@ -289,7 +289,7 @@
                 </CheckBox>
 
                 <Button Command="{Binding ResetCameraCommand}" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
-                <Button Command="{Binding LoadPresetCameraCommand}" Margin="0 4 0 0" Content="Load From Another Preset" />
+                <Button Command="{Binding LoadPresetCameraCommand}" Margin="0 4 0 0" Content="Load from another preset" />
               </mui:SpacingStackPanel>
             </ScrollViewer>
 
@@ -514,7 +514,7 @@
                           Data="{StaticResource FolderIconData}" />
                     </Button.Content>
                   </Button>
-                  <Button Content="Make A Shot" Command="{Binding ShotCommand}" />
+                  <Button Content="Make a shot" Command="{Binding ShotCommand}" />
                 </DockPanel>
 
               </mui:SpacingStackPanel>
@@ -544,7 +544,7 @@
                   </TextBlock>
                 </c:MessageBlock>
 
-                <Button Content="Add New Car" Command="{Binding AddCarCommand}" ToolTip="Add new car to the scene" />
+                <Button Content="Add new car" Command="{Binding AddCarCommand}" ToolTip="Add new car to the scene" />
               </mui:SpacingStackPanel>
             </ScrollViewer>
           </ResourceDictionary>

@@ -81,7 +81,7 @@
           <FrameworkElement.ContextMenu>
             <ContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
-              <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+              <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
             </ContextMenu>
           </FrameworkElement.ContextMenu>
           <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"

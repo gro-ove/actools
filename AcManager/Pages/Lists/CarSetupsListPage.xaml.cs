@@ -230,7 +230,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_SetSetupTrack : BatchAction<CarSetupObject> {
             public static readonly BatchAction_SetSetupTrack Instance = new BatchAction_SetSetupTrack();
 
-            public BatchAction_SetSetupTrack() : base("Set Track", "Assign setups to a track", "Car Setup", "Batch.SetSetupTrack") {
+            public BatchAction_SetSetupTrack() : base("Set track", "Assign setups to a track", "Car setup", "Batch.SetSetupTrack") {
                 Track = TracksManager.Instance.GetById(ValuesStorage.GetString("_ba.setSetupTrack.track") ?? "") ??
                         TracksManager.Instance.GetDefault();
                 DisplayApply = "Set";
@@ -267,7 +267,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_RemoveSetupTrack : BatchAction<CarSetupObject> {
             public static readonly BatchAction_RemoveSetupTrack Instance = new BatchAction_RemoveSetupTrack();
 
-            public BatchAction_RemoveSetupTrack() : base("Unlink From Track", "Unlink setups from a track", "Car Setup", null) {
+            public BatchAction_RemoveSetupTrack() : base("Unlink from track", "Unlink setups from a track", "Car setup", null) {
                 DisplayApply = "Unlink";
                 Priority = -1;
             }

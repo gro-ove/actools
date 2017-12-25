@@ -154,7 +154,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private const string Extension = ".txt";
 
-        private FileBasedOnlineSources() : base(FilesStorage.Instance.GetDirectory("Online Servers")) {}
+        private FileBasedOnlineSources() : base(FilesStorage.Instance.GetDirectory("Online servers")) {}
 
         public void Initialize() {
             Watcher().Update += OnUpdate;

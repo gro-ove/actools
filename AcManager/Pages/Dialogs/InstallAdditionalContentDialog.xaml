@@ -250,7 +250,7 @@
         Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="t:ContentInstallationEntry">
-          <DockPanel Height="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown" Background="DimGray">
+          <DockPanel Height="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown">
             <Image x:Name="PART_Icon" Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
             <DockPanel Dock="Top" HorizontalAlignment="Left" x:Name="PART_DisplayHeader">
               <DockPanel.ToolTip>
@@ -294,15 +294,27 @@
               <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}" Margin="0 4 0 0">
                 <mui:ReferenceSwitch.Null>
                   <mui:SpacingStackPanel Spacing="8">
-                    <DockPanel>
-                      <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                          Margin="0 1 4 -1" VerticalAlignment="Center" />
-                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" Style="{StaticResource Small}" />
-                    </DockPanel>
+                    <mui:BooleanSwitch Value="{Binding IsEmpty}">
+                      <mui:BooleanSwitch.True>
+                        <DockPanel>
+                          <Path Data="{StaticResource QuestionMarkIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                              Fill="{DynamicResource Accent}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                          <TextBlock TextWrapping="Wrap" Text="App couldn’t detect any content to install here. Would you like to install it manually?"
+                              Style="{StaticResource Small}" />
+                        </DockPanel>
+                      </mui:BooleanSwitch.True>
+                      <mui:BooleanSwitch.False>
+                        <DockPanel>
+                          <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}"
+                              Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                          <TextBlock TextWrapping="Wrap" Text="Successfully installed." Style="{StaticResource Small}" />
+                        </DockPanel>
+                      </mui:BooleanSwitch.False>
+                    </mui:BooleanSwitch>
                     <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
-                      <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                      <Button Content="Show in folder" Command="{Binding ViewInExplorerCommand}"
                           Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <Button Content="Scan Again" /><!-- TODO -->
+                      <Button Content="Scan again" /><!-- TODO -->
                     </mui:SpacingUniformGrid>
                   </mui:SpacingStackPanel>
                 </mui:ReferenceSwitch.Null>
@@ -319,7 +331,7 @@
                       <TextBlock TextWrapping="Wrap" Text="{Binding FailedMessage}" Style="{StaticResource Small}" DockPanel.Dock="Top" />
                     </DockPanel>
                     <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" HorizontalAlignment="Left">
-                      <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}"
+                      <Button Content="Show in folder" Command="{Binding ViewInExplorerCommand}"
                           Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                       <Button Content="Retry" MinWidth="88" /><!-- TODO -->
                     </mui:SpacingUniformGrid>
@@ -448,7 +460,7 @@
                     <DockPanel>
                       <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                           Margin="0 0 8 0" VerticalAlignment="Center" />
-                      <Button DockPanel.Dock="Bottom" Content="View Downloaded File In Explorer" Command="{Binding ViewInExplorerCommand}" Margin="0 4 0 0"
+                      <Button DockPanel.Dock="Bottom" Content="View downloaded file in explorer" Command="{Binding ViewInExplorerCommand}" Margin="0 4 0 0"
                           Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                       <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" DockPanel.Dock="Top" />
                       <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" Style="{StaticResource Small}" Margin="0 2 0 0"
@@ -478,6 +490,16 @@
               <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
               <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
               <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Failed" />
+              <Setter TargetName="PART_Icon" Property="Effect">
+                <Setter.Value>
+                  <mui:GrayscaleEffect SaturationFactor="0" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+              <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Nothing found" />
               <Setter TargetName="PART_Icon" Property="Effect">
                 <Setter.Value>
                   <mui:GrayscaleEffect SaturationFactor="0" />

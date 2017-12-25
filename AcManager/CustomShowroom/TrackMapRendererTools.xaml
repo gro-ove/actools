@@ -85,11 +85,11 @@
         <TextBlock Text="View" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
 
         <UniformGrid Columns="2" Margin="0 4 0 0">
-            <Button Content="Go To Start" Command="{Binding CameraToStartCommand}" Margin="0 0 2 0" />
-            <Button Content="Show All" Command="{Binding ResetCameraCommand}" Margin="2 0 0 0" />
+            <Button Content="Go to start" Command="{Binding CameraToStartCommand}" Margin="0 0 2 0" />
+            <Button Content="Show all" Command="{Binding ResetCameraCommand}" Margin="2 0 0 0" />
         </UniformGrid>
 
-        <TextBlock Text="Image Parameters" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+        <TextBlock Text="Image parameters" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
 
         <CheckBox Margin="0 4 0 0" IsChecked="{Binding UseFxaa}">
             <Label Content="FXAA" />
@@ -107,7 +107,7 @@
                     TickFrequency="100" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
         </DockPanel>
 
-        <Button Margin="0 8 0 0" Content="Save Map" ToolTip="Save new map.png and map.ini (original files will be moved to the Recycle Bin)"
+        <Button Margin="0 8 0 0" Content="Save map" ToolTip="Save new map.png and map.ini (original files will be moved to the Recycle Bin)"
                 Command="{Binding SaveCommand}" />
     </StackPanel>
 </mui:ModernDialog>

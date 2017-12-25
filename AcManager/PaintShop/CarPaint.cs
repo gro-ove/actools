@@ -22,7 +22,7 @@ namespace AcManager.PaintShop {
             ColorAvailable = colorAvailable;
             DetailsTexture = detailsTexture;
             DefaultColor = defaultColor ?? Color.FromRgb(255, 255, 255);
-            ColorReplacements = replacements?.If(colorAvailable, x => x.Prepend(new KeyValuePair<string, CarPaintReplacementSource>("Solid Color", null)))
+            ColorReplacements = replacements?.If(colorAvailable, x => x.Prepend(new KeyValuePair<string, CarPaintReplacementSource>("Solid color", null)))
                                              .ToDictionary(x => x.Key, x => x.Value);
 
             if (ColorReplacements != null) {

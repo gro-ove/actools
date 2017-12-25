@@ -82,11 +82,11 @@ namespace AcManager.Controls.UserControls {
                         },
                         new Separator(),
                         new MenuItem {
-                            Header = "Select All",
+                            Header = "Select all",
                             Command = new DelegateCommand(() => browser.FocusedFrame.SelectAll())
                         },
                         new MenuItem {
-                            Header = "Open Page In Default Browser",
+                            Header = "Open page in default browser",
                             Command = new DelegateCommand<string>(WindowsHelper.ViewInBrowser),
                             CommandParameter = frame.Url
                         },

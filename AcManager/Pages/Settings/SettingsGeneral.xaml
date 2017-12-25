@@ -43,7 +43,7 @@
 
         <DockPanel>
           <Label Content="“Don’t show again” in dialogs:" />
-          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do Not Show Again” Checkboxes" />
+          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do not show again” checkboxes" />
         </DockPanel>
 
         <!--app key and shortcut-->

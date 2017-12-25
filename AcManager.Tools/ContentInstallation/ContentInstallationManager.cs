@@ -19,6 +19,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private ContentInstallationManager() {
             DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
+
+#if DEBUG
+            DownloadList.Add(ContentInstallationEntry.ReadyExample);
+#endif
         }
 
         public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }

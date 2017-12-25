@@ -89,7 +89,7 @@ namespace AcManager.Pages.Settings {
             public DelegateCommand DecompressValuesCommand => _decompressValuesCommand ?? (_decompressValuesCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = "Storages (*.data)|*.data|All files (*.*)|*.*",
-                    Title = "Pick Storage To Resave"
+                    Title = "Pick storage to resave"
                 };
 
                 if (dialog.ShowDialog() == true) {

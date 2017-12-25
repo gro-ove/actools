@@ -993,7 +993,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 Save();
             }
 
-            Toast.Show("Controls Config Fixed", "Controllers have changed in order, so Content Manager re-saved your configuration correctly");
+            Toast.Show("Controls config fixed", "Controllers have changed in order, so Content Manager re-saved your configuration correctly");
         }
 
         protected override void LoadFromIni() {

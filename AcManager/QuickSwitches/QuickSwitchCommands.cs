@@ -61,7 +61,7 @@ namespace AcManager.QuickSwitches {
                             NonfatalError.Notify("Can’t save preset", e);
                         }
                     }), iconData: icons["SaveIconData"] as Geometry)
-                    .AddItem("Share Link", new AsyncCommand(async () => {
+                    .AddItem("Share link", new AsyncCommand(async () => {
                         var presetable = RhmService.Instance;
                         try {
                             var data = presetable.ExportToPresetData();
@@ -74,7 +74,7 @@ namespace AcManager.QuickSwitches {
                         }
                     }))
                     .AddSeparator()
-                    .AddItem("RHM Settings", RhmService.Instance.ShowSettingsCommand, iconData: icons["GearIconData"] as Geometry)
+                    .AddItem("RHM settings", RhmService.Instance.ShowSettingsCommand, iconData: icons["GearIconData"] as Geometry)
                     .IsOpen = true;
         }, () => SettingsHolder.Drive.RhmIntegration && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.RhmLocation));
     }
