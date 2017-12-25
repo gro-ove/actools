@@ -818,6 +818,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                                 ao.Set(e.FxAoMap, e.FxAoParams);
                                 overlay.Set(e.FxOverlayMap, e.FxOverlayParams);
                                 underlay.Set(e.FxUnderlayMap, e.FxUnderlayParams);
+                                e.FxOverlayWithoutAo.Set(p.OverlayWithoutAo);
+                                e.FxUnderlayWithoutAo.Set(p.UnderlayWithoutAo);
                                 e.FxDetailsMap.SetResource(previous.FirstOrDefault());
 
                                 var colors = p.Colors;

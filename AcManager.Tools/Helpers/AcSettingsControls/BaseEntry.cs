@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Windows.Input;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -20,7 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private bool _waiting;
 
         public bool Waiting {
-            get { return _waiting; }
+            get => _waiting;
             set {
                 if (Equals(value, _waiting)) return;
                 _waiting = value;
@@ -33,8 +35,12 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         [CanBeNull]
         public T Input {
-            get { return _input; }
+            get => _input;
             set {
+                if (ControlsSettings.OptionDebugControlles) {
+                    Logging.Debug($"Set: {value?.DisplayName} (ID={value?.Id})");
+                }
+
                 if (Equals(value, _input)) {
                     if (Waiting) Waiting = false;
                     return;

@@ -171,11 +171,7 @@ namespace AcManager.Controls {
             if (BatchMenuVisible) {
                 var item = _list?.ItemsSource.OfType<AcItemWrapper>().ElementAtOrDefault(_list.GetMouseItemIndex());
                 if (item != null) {
-                    var selected = _list.SelectedItems.OfType<AcItemWrapper>().ToList();
-                    _list.SelectedItem = item;
-                    foreach (var s in selected) {
-                        _list.SelectedItems.Add(s);
-                    }
+                    CurrentObject = item.Loaded();
                 }
             }
         }

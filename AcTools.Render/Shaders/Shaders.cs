@@ -1587,7 +1587,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyFloatVariable FxNoiseMultipler, FxFlakes;
 		[NotNull]
-		public EffectOnlyBoolVariable FxUseMask;
+		public EffectOnlyBoolVariable FxOverlayWithoutAo, FxUnderlayWithoutAo, FxUseMask;
 		[NotNull]
 		public EffectOnlyVector2Variable FxAlphaAdjustments;
 		[NotNull]
@@ -1646,6 +1646,8 @@ namespace AcTools.Render.Shaders {
 			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap"));
 			FxNoiseMultipler = new EffectOnlyFloatVariable(E.GetVariableByName("gNoiseMultipler"));
 			FxFlakes = new EffectOnlyFloatVariable(E.GetVariableByName("gFlakes"));
+			FxOverlayWithoutAo = new EffectOnlyBoolVariable(E.GetVariableByName("gOverlayWithoutAo"));
+			FxUnderlayWithoutAo = new EffectOnlyBoolVariable(E.GetVariableByName("gUnderlayWithoutAo"));
 			FxUseMask = new EffectOnlyBoolVariable(E.GetVariableByName("gUseMask"));
 			FxAlphaAdjustments = new EffectOnlyVector2Variable(E.GetVariableByName("gAlphaAdjustments"));
 			FxColor = new EffectOnlyVector4Variable(E.GetVariableByName("gColor"));

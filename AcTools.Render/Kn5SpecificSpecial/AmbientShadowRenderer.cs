@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -96,6 +97,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private bool _wheelMode;
 
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
+        private List<Tuple<Kn5RenderableList, Matrix>> _flattenNodesFix;
 
         private static readonly string[] WheelNodeNames = { "WHEEL", "HUB", "SUSP" };
         private static readonly string[] WheelNodeCorners = { "LF", "LR", "RF", "RR" };
@@ -123,9 +125,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     };
                 }
 
-                foreach (var wheel in WheelNodeCorners.Select(x => WheelNodeNames.Select(y => Scene.GetDummyByName($"{y}_{x}")).FirstOrDefault(y => y != null)).NonNull()) {
-                    AcToolsLogging.Write("Moved up: " + wheel.Name);
-                    wheel.ParentMatrix = Matrix.Translation(0, UpDelta, 0);
+                if (UpDelta != 0f) {
+                    _flattenNodesFix = new List<Tuple<Kn5RenderableList, Matrix>>();
+                    foreach (var wheel in WheelNodeCorners.Select(x => WheelNodeNames.Select(y => Scene.GetDummyByName($"{y}_{x}"))
+                                                                                     .FirstOrDefault(y => y != null)).NonNull()) {
+                        _flattenNodesFix.Add(Tuple.Create(wheel, wheel.ParentMatrix));
+                        wheel.ParentMatrix = Matrix.Translation(0, UpDelta, 0) * wheel.ParentMatrix;
+                    }
                 }
 
                 _flattenNodes = Flatten(Scene, x =>
@@ -275,6 +281,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
 
             // wheels shadows
+            if (_flattenNodesFix != null) {
+                foreach (var tuple in _flattenNodesFix) {
+                    tuple.Item1.ParentMatrix = tuple.Item2;
+                }
+            }
+
             PrepareBuffers(WheelSize + WheelPadding * 2, 128);
             SetWheelShadowCamera();
             _wheelMode = true;

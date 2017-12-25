@@ -361,6 +361,10 @@ namespace AcTools.Utils {
             }
         }
 
+        private static Image CutOutAlpha(Bitmap image){
+            return image.Clone(new RectangleF(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ConvertCombined(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif, [CanBeNull] ImageFormat format) {
             if (resize == null) {
@@ -371,8 +375,9 @@ namespace AcTools.Utils {
             // Because Magick.NET is terribly slow at resizing big images…
             using (var memory = new MemoryStream()) {
                 using (var image = Image.FromStream(source))
-                using (var resized = image.HighQualityResize(resize.Value)) {
-                    resized.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                using (var prepared = format == null || format.Guid == ImageFormat.Jpeg.Guid ? CutOutAlpha((Bitmap)image) : image)
+                using (var resized = prepared.HighQualityResize(resize.Value)) {
+                    resized.Save(memory, ImageFormat.Bmp);
                 }
 
                 using (var image = new MagickImage(memory)) {
@@ -383,13 +388,14 @@ namespace AcTools.Utils {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ConvertGdi(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif, [CanBeNull] ImageFormat format) {
-            using (var image = Image.FromStream(source)) {
+            using (var image = Image.FromStream(source))
+            using (var prepared = format == null || format.Guid == ImageFormat.Jpeg.Guid ? CutOutAlpha((Bitmap)image) : image){
                 if (resize.HasValue) {
-                    using (var resized = image.HighQualityResize(resize.Value)) {
+                    using (var resized = prepared.HighQualityResize(resize.Value)) {
                         SaveImage(resized, destination, quality, exif, format);
                     }
                 } else {
-                    SaveImage(image, destination, quality, exif, format);
+                    SaveImage(prepared, destination, quality, exif, format);
                 }
             }
         }

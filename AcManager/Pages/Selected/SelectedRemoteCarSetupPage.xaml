@@ -44,7 +44,7 @@
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="View In Browser" Command="{Binding SelectedObject.ViewInBrowserCommand}" ToolTip="View setup’s page in the webbrowser (Ctrl+F)" />
         <Button Content="Copy URL" Command="{Binding SelectedObject.CopyUrlCommand}" ToolTip="Copy URL to this setup to the clipboard (Ctrl+Alt+Page Up)" />
-        <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Copy URL to quickly install this setup via Content Manager (Ctrl+Page Up)" />
+        <Button Content="Share Link" Command="{Binding ShareCommand}" ToolTip="Copy URL to quickly install this setup via Content Manager (Ctrl+Page Up)" />
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
         <Button Content="Install" Command="{Binding SelectedObject.InstallCommand}" ToolTip="Install setup (Ctrl+S)" />

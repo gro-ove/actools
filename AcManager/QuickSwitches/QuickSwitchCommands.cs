@@ -61,7 +61,7 @@ namespace AcManager.QuickSwitches {
                             NonfatalError.Notify("Can’t save preset", e);
                         }
                     }), iconData: icons["SaveIconData"] as Geometry)
-                    .AddItem("Share", new AsyncCommand(async () => {
+                    .AddItem("Share Link", new AsyncCommand(async () => {
                         var presetable = RhmService.Instance;
                         try {
                             var data = presetable.ExportToPresetData();

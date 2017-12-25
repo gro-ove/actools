@@ -84,6 +84,8 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
+        public static bool OptionJoinToMultiMaterial = true;
+
         private bool _uniqueNamesSet;
 
         private void EnsureUniqueNamesSet() {
@@ -599,10 +601,9 @@ namespace AcTools.Kn5File {
         }
 
         private static bool IsMultiMaterial(Kn5Node node) {
-            return node.NodeClass == Kn5NodeClass.Base &&
-                    node.Children.Any() &&
-                    node.Children.All(x => x.NodeClass == Kn5NodeClass.Mesh) &&
-                    Enumerable.Range(0, node.Children.Count).All(x => node.Children.Any(y => y.UniqueName == node.UniqueName + "_SUB" + x));
+            if (!OptionJoinToMultiMaterial || node.NodeClass != Kn5NodeClass.Base || !node.Children.Any()) return false;
+            var regex = new Regex($@"^{Regex.Escape(node.Name)}_SUB\d+$", RegexOptions.Compiled);
+            return node.Children.All(x => x.NodeClass == Kn5NodeClass.Mesh && regex.IsMatch(x.Name));
         }
 
         private void ExportCollada_MeshWrapper(XmlWriter xml, Kn5Node node) {

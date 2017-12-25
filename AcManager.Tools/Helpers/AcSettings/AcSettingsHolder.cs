@@ -224,7 +224,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-
         private static ExposureSettings _exposure;
         public static ExposureSettings Exposure => _exposure ?? (_exposure = new ExposureSettings());
 

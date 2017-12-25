@@ -9,6 +9,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
@@ -77,7 +78,7 @@ namespace AcManager.Tools.Managers {
 
         /// <summary>
         /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly
-        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
+        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird thing: there are
         /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
         /// and yet Kunos managed to select not only the character which could be in directory’s name, but
         /// also the character actually used by themself in one of their track.
@@ -86,17 +87,12 @@ namespace AcManager.Tools.Managers {
         /// <returns>Track layout.</returns>
         [CanBeNull]
         public TrackObjectBase GetLayoutByKunosId([NotNull] string id) {
-            var layout = GetLayoutById(id);
-            if (layout != null) return layout;
+            var naive = GetLayoutById(id);
+            if (naive != null) return naive;
 
-            var index = id.LastIndexOf('-');
-            if (index == -1) return null;
-
-            while (index != -1 && index > 0 && index < id.Length - 1) {
-                var candidate = GetLayoutById(id.Substring(0, index) + '/' + id.Substring(index + 1));
-                if (candidate != null) return candidate;
-
-                index = id.LastIndexOf('-', index - 1);
+            for (int i = 0, lastHyphen = id.Length; i < 10 && (lastHyphen = id.LastIndexOf('-', lastHyphen - 1)) != -1; i++) {
+                var adjusted = GetLayoutById(id.Substring(0, lastHyphen) + '/' + id.Substring(lastHyphen + 1));
+                if (adjusted != null) return adjusted;
             }
 
             return null;
@@ -104,7 +100,7 @@ namespace AcManager.Tools.Managers {
 
         /// <summary>
         /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly
-        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
+        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird thing: there are
         /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
         /// and yet Kunos managed to select not only the character which could be in directory’s name, but
         /// also the character actually used by themself in one of their track.
@@ -113,7 +109,15 @@ namespace AcManager.Tools.Managers {
         /// <returns>Track layout.</returns>
         [ItemCanBeNull]
         public async Task<TrackObjectBase> GetLayoutByKunosIdAsync([NotNull] string id) {
-            return await GetLayoutByIdAsync(id) ?? (id.Contains(@"-") ? await GetLayoutByIdAsync(id.ReplaceLastOccurrence(@"-", @"/")) : null);
+            var naive = await GetLayoutByIdAsync(id);
+            if (naive != null) return naive;
+
+            for (int i = 0, lastHyphen = id.Length; i < 10 && (lastHyphen = id.LastIndexOf('-', lastHyphen - 1)) != -1; i++) {
+                var adjusted = await GetLayoutByIdAsync(id.Substring(0, lastHyphen) + '/' + id.Substring(lastHyphen + 1));
+                if (adjusted != null) return adjusted;
+            }
+
+            return null;
         }
 
         [CanBeNull]

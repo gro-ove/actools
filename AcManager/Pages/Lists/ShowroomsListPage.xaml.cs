@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Selected;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
@@ -41,8 +46,50 @@ namespace AcManager.Pages.Lists {
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
             return CommonBatchActions.GetDefaultSet<ShowroomObject>().Concat(new BatchAction[] {
-                BatchAction_PackShowrooms.Instance
+                BatchAction_FixNormals.Instance,
+                BatchAction_UpdatePreviews.Instance,
+                BatchAction_PackShowrooms.Instance,
             });
+        }
+
+        public class BatchAction_FixNormals : BatchAction<ShowroomObject> {
+            public static readonly BatchAction_FixNormals Instance = new BatchAction_FixNormals();
+            public BatchAction_FixNormals()
+                    : base("Fix 360° Lighting", "Fix lighting for 360° panorama showroom", "Graphics", null) {
+                DisplayApply = "Fix";
+            }
+
+            public override bool IsAvailable(ShowroomObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(ShowroomObject obj) {
+                SelectedShowroomPage.FixLighting(obj);
+            }
+        }
+
+        public class BatchAction_UpdatePreviews : BatchAction<ShowroomObject> {
+            public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
+            public BatchAction_UpdatePreviews()
+                    : base("Update Previews", "Re-shot previews using reflective sphere", "Look", null) {
+                DisplayApply = "Update";
+            }
+
+            public override bool IsAvailable(ShowroomObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(ShowroomObject obj) {
+                SelectedShowroomPage.UpdatePreview(obj, true);
+            }
+
+            public override async Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                try {
+                    await base.ApplyAsync(list, progress, cancellation).ConfigureAwait(false);
+                } finally {
+                    SelectedShowroomPage.RemovePreviewSphere();
+                }
+            }
         }
 
         public class BatchAction_PackShowrooms : CommonBatchActions.BatchAction_Pack<ShowroomObject> {

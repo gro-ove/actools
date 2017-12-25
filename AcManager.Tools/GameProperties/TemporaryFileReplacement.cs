@@ -45,8 +45,8 @@ namespace AcManager.Tools.GameProperties {
             return true;
         }
 
-        public void Revert() {
-            if (AcRootDirectory.Instance.Value == null) return;
+        public bool Revert() {
+            if (AcRootDirectory.Instance.Value == null) return false;
 
             var destination = GetAbsolutePath(_relativeDestination);
             var backup = GetAbsolutePath(_relativeBackup);
@@ -58,19 +58,24 @@ namespace AcManager.Tools.GameProperties {
                     }
 
                     Directory.Move(backup, destination);
+                    return true;
                 }
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t restore original directory after replacing it with a temporary one", e);
             }
+
+            return false;
         }
     }
 
     internal abstract class TemporaryFileReplacementBase {
         private readonly string _relativeDestination;
+        private readonly bool _allowHardlinks;
         private readonly string _relativeBackup;
 
-        internal TemporaryFileReplacementBase([NotNull] string relativeDestination, string backupPostfix = @"_backup_cm") {
+        internal TemporaryFileReplacementBase([NotNull] string relativeDestination, string backupPostfix = @"_backup_cm", bool allowHardlinks = true) {
             _relativeDestination = relativeDestination;
+            _allowHardlinks = allowHardlinks;
             _relativeBackup = _relativeDestination + backupPostfix;
         }
 
@@ -93,7 +98,11 @@ namespace AcManager.Tools.GameProperties {
 
             try {
                 Logging.Debug($"{source} → {destination}");
-                FileUtils.HardLinkOrCopy(source, destination);
+                if (_allowHardlinks) {
+                    FileUtils.HardLinkOrCopy(source, destination);
+                } else {
+                    File.Copy(source, destination);
+                }
             } catch (Exception e) {
                 // this exception should be catched here so original clouds folder still
                 // will be restored even when copying a new one has been failed
@@ -103,8 +112,8 @@ namespace AcManager.Tools.GameProperties {
             return true;
         }
 
-        public void Revert() {
-            if (AcRootDirectory.Instance.Value == null) return;
+        public bool Revert() {
+            if (AcRootDirectory.Instance.Value == null) return false;
 
             try {
                 var destination = GetAbsolutePath(_relativeDestination);
@@ -116,18 +125,21 @@ namespace AcManager.Tools.GameProperties {
                     }
 
                     File.Move(backup, destination);
+                    return true;
                 }
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t restore original files after replacing them with temporary ones", e);
             }
+
+            return false;
         }
     }
 
     internal class TemporaryFileReplacement : TemporaryFileReplacementBase {
         private readonly string _source;
 
-        public TemporaryFileReplacement([CanBeNull] string source, [NotNull] string relativeDestination, string backupPostfix = @"_backup_cm")
-                : base(relativeDestination, backupPostfix) {
+        public TemporaryFileReplacement([CanBeNull] string source, [NotNull] string relativeDestination, string backupPostfix = @"_backup_cm",
+                bool allowHardlinks = true) : base(relativeDestination, backupPostfix, allowHardlinks) {
             _source = source;
         }
 

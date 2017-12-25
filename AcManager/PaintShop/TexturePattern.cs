@@ -31,6 +31,8 @@ namespace AcManager.PaintShop {
         public PaintShopSource PatternBase { get; private set; }
         public PaintShopSource PatternOverlay { get; private set; }
         public PaintShopSource PatternUnderlay { get; private set; }
+        public bool PatternOverlayWithoutAo { get; private set; }
+        public bool PatternUnderlayWithoutAo { get; private set; }
 
         private CarPaintPattern _currentPattern;
 
@@ -47,13 +49,16 @@ namespace AcManager.PaintShop {
 
         public ChangeableObservableCollection<CarPaintPattern> Patterns { get; }
 
-        public TexturePattern SetPatterns(PaintShopDestination patternTexture, [CanBeNull] PaintShopSource patternBase,
-                [CanBeNull] PaintShopSource patternOverlay, [CanBeNull] PaintShopSource patternUnderlay,
+        public TexturePattern SetPatterns(PaintShopDestination texture, [CanBeNull] PaintShopSource aoBase,
+                [CanBeNull] PaintShopSource overlay, [CanBeNull] PaintShopSource underlay,
+                bool overlayWithoutAo, bool underlayWithoutAo,
                 IEnumerable<CarPaintPattern> patterns, bool forcePattern) {
-            PatternTexture = patternTexture;
-            PatternBase = patternBase;
-            PatternOverlay = patternOverlay;
-            PatternUnderlay = patternUnderlay;
+            PatternTexture = texture;
+            PatternBase = aoBase;
+            PatternOverlay = overlay;
+            PatternUnderlay = underlay;
+            PatternOverlayWithoutAo = overlayWithoutAo;
+            PatternUnderlayWithoutAo = underlayWithoutAo;
             Patterns.ReplaceEverythingBy(forcePattern ? patterns : patterns.Prepend(CarPaintPattern.Nothing));
             CurrentPattern = Patterns[0];
             return this;
@@ -108,6 +113,8 @@ namespace AcManager.PaintShop {
                             Pattern = CurrentPattern.Source,
                             Overlay = CurrentPattern.Overlay ?? PatternOverlay,
                             Underlay = CurrentPattern.Underlay ?? PatternUnderlay,
+                            OverlayWithoutAo = CurrentPattern.OverlayWithoutAo ?? PatternOverlayWithoutAo,
+                            UnderlayWithoutAo = CurrentPattern.UnderlayWithoutAo ?? PatternUnderlayWithoutAo,
                             Colors = CurrentPattern.Colors.DrawingColors,
                             BackgroundColorHint = GetBackgroundColorHint().ToColor(),
                             Numbers = CurrentPattern.Numbers,

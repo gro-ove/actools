@@ -96,8 +96,7 @@ namespace AcManager.Tools.SemiGui {
                 return;
             }
 
-            var online = properties.ModeProperties as Game.OnlineProperties;
-            if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
+            if (properties.ModeProperties is Game.OnlineProperties online && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
                 var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);
                 if (filter.Test(online.ServerName ?? "")) {
                     Logging.Write("Looks like this is a SRS server, let’s use SRS name");
@@ -149,6 +148,10 @@ namespace AcManager.Tools.SemiGui {
 
             AcSettingsHolder.Graphics.FixShadowMapBias();
             CarCustomDataHelper.Revert();
+
+            if (SettingsHolder.Drive.CheckAndFixControlsOrder) {
+                AcSettingsHolder.Controls.FixControllersOrder();
+            }
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());

@@ -18,6 +18,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
 using StringBasedFilter;
@@ -26,7 +27,8 @@ using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
-        public static TimeSpan OptionUpdatePeriod = TimeSpan.FromMilliseconds(16.67);
+        public static bool OptionDebugControlles = false;
+        public static TimeSpan OptionUpdatePeriod = TimeSpan.FromMilliseconds(1000d / 60d);
         public static TimeSpan OptionRescanPeriod = TimeSpan.FromSeconds(1d);
         public static IFilter<string> OptionIgnoreControlsFilter;
 
@@ -42,6 +44,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         internal ControlsSettings() : base("controls", false) {
+            WheelAxleEntries = new[] {
+                SteerAxleEntry,
+                new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
+                new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true),
+                new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch),
+                new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake)
+            };
+
             try {
                 KeyboardSpecificButtonEntries = new[] {
                     new KeyboardSpecificButtonEntry("GAS", ToolsStrings.Controls_Throttle),
@@ -55,7 +65,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     Interval = OptionUpdatePeriod
                 };
             } catch (Exception e) {
-                Logging.Warning("ControlsSettings exception: " + e);
+                Logging.Warning(e);
             }
         }
 
@@ -66,7 +76,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             // TODO: double "already used as" message
-
             UpdateWheelHShifterDevice();
 
             _timer.Tick += OnTick;
@@ -86,7 +95,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set {
                 if (Equals(_used, value)) return;
 
-                Logging.Debug(_used);
                 if (_used == 0) {
                     RescanDevices();
                 }
@@ -199,11 +207,27 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
                 _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
 
+                var checkedPlaceholders = new List<PlaceholderInputDevice>();
+                void EnsureIndicesMatch(PlaceholderInputDevice placeholder, DirectInputDevice actualDevice) {
+                    if (checkedPlaceholders.Contains(placeholder)) return;
+                    checkedPlaceholders.Add(placeholder);
+
+                    if (!placeholder.OriginalIniIds.Contains(actualDevice.Index)) {
+                        if (OptionDebugControlles) {
+                            Logging.Warning(
+                                    $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual — {actualDevice.Index}");
+                        }
+
+                        FixMessedOrderAsync().Forget();
+                    }
+                }
+
                 foreach (var entry in Entries.OfType<BaseEntry<DirectInputAxle>>()) {
                     var current = entry.Input?.Device;
-                    if (current is PlaceholderInputDevice) {
+                    if (current is PlaceholderInputDevice placeholder) {
                         var replacement = newDevices.FirstOrDefault(x => x.Same(current));
                         if (replacement != null) {
+                            EnsureIndicesMatch(placeholder, replacement);
                             entry.Input = replacement.GetAxle(entry.Input.Id);
                         }
                     } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
@@ -213,9 +237,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                 foreach (var entry in Entries.OfType<BaseEntry<DirectInputButton>>()) {
                     var current = entry.Input?.Device;
-                    if (current is PlaceholderInputDevice) {
+                    if (current is PlaceholderInputDevice placeholder) {
                         var replacement = newDevices.FirstOrDefault(x => x.Same(current));
                         if (replacement != null) {
+                            EnsureIndicesMatch(placeholder, replacement);
                             entry.Input = replacement.GetButton(entry.Input.Id);
                         }
                     } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
@@ -300,6 +325,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void DeviceAxleEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DirectInputAxle.RoundedValue) && sender is DirectInputAxle axle) {
+                if (OptionDebugControlles) {
+                    Logging.Debug($"Axle changed: {axle.Device}, {axle.DisplayName} (ID={axle.Id})");
+                }
+
                 AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
                 AssignInput(axle).Forget();
             }
@@ -380,7 +409,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected override void Save() {
-            if (IsLoading) return;
+            if (IsSaving || IsLoading) return;
 
             if (CurrentPresetName != null) {
                 CurrentPresetChanged = true;
@@ -422,6 +451,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Wheel
+        private bool _wheelSteerScaleAutoAdjust;
+
+        public bool WheelSteerScaleAutoAdjust {
+            get => _wheelSteerScaleAutoAdjust;
+            set {
+                if (Equals(value, _wheelSteerScaleAutoAdjust)) return;
+                _wheelSteerScaleAutoAdjust = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _wheelSteerScale;
+
+        public double WheelSteerScale {
+            get => _wheelSteerScale;
+            set {
+                if (Equals(value, _wheelSteerScale)) return;
+                _wheelSteerScale = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _debouncingInterval;
 
         public int DebouncingInterval {
@@ -434,13 +485,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        public WheelAxleEntry[] WheelAxleEntries { get; } = {
-            new WheelAxleEntry("STEER", ToolsStrings.Controls_Steering, false, true),
-            new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
-            new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true),
-            new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch),
-            new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake)
-        };
+        public WheelAxleEntry SteerAxleEntry { get; } = new WheelAxleEntry("STEER", ToolsStrings.Controls_Steering, false, true);
+        public WheelAxleEntry[] WheelAxleEntries { get; }
 
         private bool _combineWithKeyboardInput;
 
@@ -936,6 +982,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static readonly Dictionary<string, string> ProductGuids = new Dictionary<string, string>();
 
+        private bool _fixingMessedUpOrder;
+
+        private async Task FixMessedOrderAsync() {
+            if (_fixingMessedUpOrder || !SettingsHolder.Drive.CheckAndFixControlsOrder) return;
+            _fixingMessedUpOrder = true;
+            await Task.Yield();
+
+            if (_fixingMessedUpOrder) {
+                Save();
+            }
+
+            Toast.Show("Controls Config Fixed", "Controllers have changed in order, so Content Manager re-saved your configuration correctly");
+        }
+
         protected override void LoadFromIni() {
             if (Devices.Count == 0) {
                 // RescanDevices();
@@ -945,12 +1005,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CombineWithKeyboardInput = Ini["ADVANCED"].GetBool("COMBINE_WITH_KEYBOARD_CONTROL", false);
             WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
             DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
+            WheelSteerScale = Ini["STEER"].GetDouble("SCALE", 1d);
 
             foreach (var device in Devices.OfType<IDirectInputDevice>().Union(_placeholderDevices)) {
                 device.OriginalIniIds.Clear();
             }
 
             var section = Ini["CONTROLLERS"];
+            var orderChanged = false;
             var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
                 IniId = FlexibleParser.TryParseInt(x.Substring(3)),
                 Name = section.GetNonEmpty(x)
@@ -962,12 +1024,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                 var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(id);
                 if (device != null) {
+                    if (OptionDebugControlles) {
+                        Logging.Debug($"{device.DisplayName}: actual index={device.Index}, config index={x.IniId}");
+                    }
+
+                    if (device.Index != x.IniId) {
+                        orderChanged = true;
+                    }
+
                     device.OriginalIniIds.Add(x.IniId.Value);
                     return device;
                 }
 
                 return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, x.IniId.Value);
             }).ToList();
+
+            if (OptionDebugControlles) {
+                if (orderChanged) {
+                    Logging.Warning("Devices from config loaded: " + devices.Count + "; order changed!");
+                } else {
+                    Logging.Debug("Devices from config loaded: " + devices.Count);
+                }
+            }
 
             foreach (var entry in Entries) {
                 entry.Load(Ini, devices);
@@ -984,6 +1062,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
             section = Ini["__EXTRA_CM"];
+            WheelSteerScaleAutoAdjust = section.GetBool("AUTO_ADJUST_SCALE", false);
             AcSettingsHolder.FfPostProcess.Import(section.GetNonEmpty("FF_POST_PROCESS").FromCutBase64());
             AcSettingsHolder.System.ImportFfb(section.GetNonEmpty("SYSTEM").FromCutBase64());
 
@@ -991,9 +1070,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             var name = section.GetNonEmpty("PRESET_NAME");
             CurrentPresetFilename = name == null ? null : Path.Combine(PresetsDirectory, name);
             CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
+
+            if (orderChanged) {
+                FixMessedOrderAsync().Forget();
+            }
         }
 
         public void SaveControllers() {
+            _fixingMessedUpOrder = false;
             FileUtils.EnsureDirectoryExists(PresetsDirectory);
 
             foreach (var device in Devices) {
@@ -1042,6 +1126,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
             Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.Index);
             Ini["STEER"].Set("DEBOUNCING_MS", DebouncingInterval);
+            Ini["STEER"].Set("SCALE", WheelSteerScale);
 
             foreach (var entry in Entries.OfType<IDirectInputEntry>()) {
                 Ini[entry.Id]["JOY"] = -1;
@@ -1064,6 +1149,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section = Ini["__EXTRA_CM"];
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());
             section.Set("SYSTEM", AcSettingsHolder.System.ExportFfb().ToCutBase64());
+            section.Set("AUTO_ADJUST_SCALE", WheelSteerScaleAutoAdjust);
 
             section = Ini["__LAUNCHER_CM"];
             section.Set("PRESET_NAME", CurrentPresetFilename?.SubstringExt(PresetsDirectory.Length + 1));
@@ -1084,5 +1170,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini.Save(filename); // and as a preset
         }
         #endregion
+
+        public void FixControllersOrder() {
+            if (Devices.Count == 0) {
+                RescanDevices();
+            }
+
+            if (_fixingMessedUpOrder) {
+                SaveImmediately();
+            }
+        }
     }
 }

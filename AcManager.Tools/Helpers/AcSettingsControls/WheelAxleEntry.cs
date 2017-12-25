@@ -34,7 +34,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private double _value;
 
         public double Value {
-            get { return _value; }
+            get => _value;
             set {
                 if (Equals(value, _value)) return;
                 _value = value;
@@ -83,7 +83,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private int _degressOfRotation = 900;
 
         public int DegressOfRotation {
-            get { return _degressOfRotation; }
+            get => _degressOfRotation;
             set {
                 value = value.Clamp(40, 1180);
                 if (Equals(value, _degressOfRotation)) return;
@@ -95,7 +95,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private int _rangeFrom;
 
         public int RangeFrom {
-            get { return _rangeFrom; }
+            get => _rangeFrom;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _rangeFrom)) return;
@@ -113,7 +113,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private int _rangeTo = 1;
 
         public int RangeTo {
-            get { return _rangeTo; }
+            get => _rangeTo;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _rangeTo)) return;
@@ -131,7 +131,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private double _gamma = 1d;
 
         public double Gamma {
-            get { return _gamma; }
+            get => _gamma;
             set {
                 value = value.Clamp(1d, 5d);
                 if (Equals(value, _gamma)) return;
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private int _filter;
 
         public int Filter {
-            get { return _filter; }
+            get => _filter;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _filter)) return;
@@ -156,7 +156,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private int _speedSensitivity;
 
         public int SpeedSensitivity {
-            get { return _speedSensitivity; }
+            get => _speedSensitivity;
             set {
                 value = value.Clamp(0, 100);
                 if (Equals(value, _speedSensitivity)) return;
@@ -168,7 +168,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         private bool _invert;
 
         public bool Invert {
-            get { return _invert; }
+            get => _invert;
             set {
                 if (Equals(value, _invert)) return;
                 _invert = value;

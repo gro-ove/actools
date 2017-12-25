@@ -7,7 +7,7 @@ namespace AcManager.Tools.GameProperties {
     internal interface IWeatherSpecificReplacement {
         bool Apply(WeatherObject weather);
 
-        void Revert();
+        bool Revert();
     }
 
     internal class WeatherSpecificDirectoryReplacementBase : TemporaryDirectoryReplacementBase, IWeatherSpecificReplacement {
@@ -64,7 +64,7 @@ namespace AcManager.Tools.GameProperties {
 
     public class WeatherSpecificTyreSmokeHelper : WeatherSpecificHelperBase {
         private static readonly IWeatherSpecificReplacement[] Replacements = {
-            new WeatherSpecificFileReplacementBase(@"tyre_smoke.ini", @"system\cfg\tyre_smoke.ini"), 
+            new WeatherSpecificFileReplacementBase(@"tyre_smoke.ini", @"system\cfg\tyre_smoke.ini"),
             new WeatherSpecificFileReplacementBase(@"tyre_smoke_grass.ini", @"system\cfg\tyre_smoke_grass.ini")
         };
 

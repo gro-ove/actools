@@ -1401,7 +1401,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Open weather’s folder (Ctrl+F)</value>
   </data>
   <data name="Common_Share" xml:space="preserve">
-    <value>Share</value>
+    <value>Share Link</value>
   </data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Share current settings (Ctrl+Page Up)</value>

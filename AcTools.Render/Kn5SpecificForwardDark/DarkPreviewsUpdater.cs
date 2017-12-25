@@ -279,7 +279,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _options = options;
 
             if (_renderer != null) {
-                SetRendererOptions(_renderer, options);
+                SetRendererOptions(_acRoot, _renderer, options);
                 SetRendererCarOptions(_renderer, options);
                 UpdateCamera();
             }
@@ -310,29 +310,37 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     _options.AlignCameraVertically, (float)_options.AlignCameraVerticallyOffset, _options.AlignCameraVerticallyOffsetRelative);
         }
 
-        private static DarkKn5ObjectRenderer CreateRenderer(string acRoot, DarkPreviewsOptions options, CarDescription initialCar, string initialSkinId) {
-            var showroom = options.Showroom;
-
-            if (showroom != null && !File.Exists(showroom)) {
-                var kn5 = Path.Combine(AcPaths.GetShowroomDirectory(acRoot, showroom), $"{showroom}.kn5");
-                showroom = File.Exists(kn5) ? kn5 : null;
+        [CanBeNull]
+        private static string GetShowroomKn5(string acRoot, string showroomValue) {
+            try {
+                if (showroomValue == null || File.Exists(showroomValue)) return showroomValue;
+                var kn5 = Path.Combine(AcPaths.GetShowroomDirectory(acRoot, showroomValue), $"{showroomValue}.kn5");
+                return File.Exists(kn5) ? kn5 : null;
+            } catch {
+                // In case showroomValue is not a valid file path or something
+                return null;
             }
+        }
 
-            var renderer = new DarkKn5ObjectRenderer(initialCar, showroom) {
+        private static DarkKn5ObjectRenderer CreateRenderer(string acRoot, DarkPreviewsOptions options, CarDescription initialCar, string initialSkinId) {
+            var renderer = new DarkKn5ObjectRenderer(initialCar, GetShowroomKn5(acRoot, options.Showroom)) {
                 LoadCarLights = true,
                 LoadShowroomLights = true
             };
 
-            SetRendererOptions(renderer, options);
-
+            SetRendererOptions(acRoot, renderer, options);
             renderer.SelectSkin(initialSkinId);
             renderer.Initialize();
             SetRendererCarOptions(renderer, options);
-
             return renderer;
         }
 
-        private static void SetRendererOptions(DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {
+        private static void SetRendererOptions(string acRoot, DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {
+            var showroomKn5 = GetShowroomKn5(acRoot, options.Showroom);
+            if (showroomKn5 != renderer.CurrentShowroomKn5) {
+                renderer.SetShowroom(showroomKn5);
+            }
+
             // Obvious fixed settings
             renderer.AutoRotate = false;
             renderer.AutoAdjustTarget = false;

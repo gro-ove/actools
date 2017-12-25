@@ -272,7 +272,7 @@
             </StackPanel>
 
             <!-- Password -->
-            <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding PasswordRequired}" x:Name="PasswordPanel" Margin="0 4 0 0">
+            <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding PasswordRequired}" x:Name="PasswordPanel" Margin="0 4 1 0">
               <mui:BooleanSwitch.True>
                 <DockPanel Margin="0 0 0 20" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}">
                   <Path Data="{StaticResource LockIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}" Stretch="Uniform" Margin="0 0 6 0" />

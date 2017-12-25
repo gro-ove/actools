@@ -89,6 +89,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             IsLoading = false;
         }
 
+        public void ForceReload() {
+            Reload();
+        }
+
         private DateTime _lastSaved;
 
         protected bool IsLoading { get; private set; }

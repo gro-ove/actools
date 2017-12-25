@@ -93,6 +93,8 @@
 		float gNoiseMultipler;
 		float gFlakes;
 		float4 gColors[3];
+		bool gOverlayWithoutAo;
+		bool gUnderlayWithoutAo;
 		bool gUseMask;
 	    matrix gTransform;
 	}
@@ -178,28 +180,32 @@
 	}
 
 // pattern
-	float4 ps_Pattern(PS_IN pin) : SV_Target {
-		float4 pattern = GetInputMap(pin.Tex);
-		float4 ao = GetAoMap(pin.Tex);
-		float4 overlay = GetOverlayMap(pin.Tex);
-		float4 details = gDetailsMap.SampleLevel(samLinear, pin.Tex, 0);
+    float4 PatternCombine(float2 uv, float4 patternColor){
+		float4 ao = GetAoMap(uv);
+		float4 overlay = GetOverlayMap(uv);
+        float4 underlay = GetUnderlayMap(uv);
+		float4 details = gDetailsMap.SampleLevel(samLinear, uv, 0);
 
-		float3 resultColor = pattern.rgb;
-		resultColor = resultColor * pattern.a + (float3)(1.0 - pattern.a);
-		resultColor *= ao.rgb;
+		float3 overlayColor = overlay.rgb * overlay.a * (gOverlayWithoutAo ? (float3)1 : ao.rgb);
+		float3 underlayColor = underlay.rgb * underlay.a * (gUnderlayWithoutAo ? (float3)1 : ao.rgb);
+		float3 detailsColor = details.rgb * details.a * ao.rgb;
 
-		float4 result = float4(resultColor, pattern.a);
-		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
-		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
+		float4 result = float4(patternColor.rgb * ao.rgb, patternColor.a);
+		result.rgb = result.rgb * (1.0 - overlay.a) + overlayColor;
+		result.rgb = result.rgb * (1.0 - details.a) + detailsColor;
 		result.a = saturate(result.a + details.a + overlay.a);
 
 		float patternA = pow(abs(result.a), 0.5);
-		result.rgb = result.rgb * patternA + gColor.rgb * (float3)(1.0 - patternA);
+		result.rgb = result.rgb * patternA + gColor.rgb * ao.rgb * (1.0 - patternA);
 
-        float4 underlay = GetUnderlayMap(pin.Tex);
-        result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
+        result.rgb = underlayColor * (1.0 - result.a) + result.rgb * saturate(result.a + (1.0 - underlay.a));
 		result.a = saturate(underlay.a + result.a);
 		return result;
+    }
+
+	float4 ps_Pattern(PS_IN pin) : SV_Target {
+		float4 pattern = GetInputMap(pin.Tex);
+		return PatternCombine(pin.Tex, pattern);
 	}
 
 	technique10 Pattern {
@@ -212,27 +218,10 @@
 
 	float4 ps_ColorfulPattern(PS_IN pin) : SV_Target {
 		float4 pattern = GetInputMap(pin.Tex);
-		float4 ao = GetAoMap(pin.Tex);
-		float4 overlay = GetOverlayMap(pin.Tex);
-		float4 details = gDetailsMap.SampleLevel(samLinear, pin.Tex, 0);
-
-		float3 resultColor = gColors[0].rgb * saturate(pattern.r * 100);
-		resultColor += gColors[1].rgb * saturate(pattern.g * 100);
-		resultColor += gColors[2].rgb * saturate(pattern.b * 100);
-		resultColor *= ao.rgb;
-
-		float4 result = float4(resultColor, pattern.a);
-		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
-		result.rgb = result.rgb * (1.0 - details.a) + details.rgb * ao.rgb * details.a;
-		result.a = saturate(result.a + details.a + overlay.a);
-
-		float patternA = pow(abs(result.a), 0.5);
-		result.rgb = result.rgb * patternA + gColor.rgb * (float3)(1.0 - patternA);
-
-        float4 underlay = GetUnderlayMap(pin.Tex);
-        result.rgb = underlay.rgb * (1.0 - result.a) * underlay.a + result.rgb * saturate(result.a + (1.0 - underlay.a));
-		result.a = saturate(underlay.a + result.a);
-		return result;
+		float3 resultColor = gColors[0].rgb * saturate(pattern.r * 100)
+		    + gColors[1].rgb * saturate(pattern.g * 100)
+		    + gColors[2].rgb * saturate(pattern.b * 100);
+		return PatternCombine(pin.Tex, float4(resultColor, pattern.a));
 	}
 
 	technique10 ColorfulPattern {
