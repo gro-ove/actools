@@ -29,6 +29,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
@@ -68,8 +69,8 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.zip", null) {
-            FileName = "input.zip",
+        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.bin", null) {
+            FileName = "input.bin",
             LocalFilename = @"U:\dump.bin",
             Progress = AsyncProgressEntry.Ready
         };
@@ -889,6 +890,23 @@ namespace AcManager.Tools.ContentInstallation {
             set {
                 if (Equals(value, _entries)) return;
                 _entries = value;
+                OnPropertyChanged();
+
+                if (value.Length == 1) {
+                    DisplayFound = value[0].DisplayName;
+                } else {
+                    DisplayFound = PluralizingConverter.PluralizeExt(value.Length, "Found {0} {item}");
+                }
+            }
+        }
+
+        private string _displayFound;
+
+        public string DisplayFound {
+            get => _displayFound;
+            set {
+                if (Equals(value, _displayFound)) return;
+                _displayFound = value;
                 OnPropertyChanged();
             }
         }

@@ -13,10 +13,12 @@ using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
@@ -114,6 +116,8 @@ namespace AcManager.Pages.Dialogs {
                     ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged -= OnItemPropertyChanged;
                 });
             }
+
+            this.AddWidthCondition(x => (x - 104).Clamp(120, 240)).Add(x => Resources[@"ButtonsRowWidth"] = x);
         }
 
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -158,6 +162,17 @@ namespace AcManager.Pages.Dialogs {
             set {
                 if (Equals(value, _isSevenZipPluginObsolete)) return;
                 _isSevenZipPluginObsolete = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _buttonsRowWidth;
+
+        public double ButtonsRowWidth {
+            get => _buttonsRowWidth;
+            set {
+                if (Equals(value, _buttonsRowWidth)) return;
+                _buttonsRowWidth = value;
                 OnPropertyChanged();
             }
         }
