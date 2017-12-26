@@ -1691,4 +1691,31 @@
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>找不到标签"{0}"</value>
   </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>赛道状态预设</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>找不到车辆涂装{0}</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>找不到车辆涂装{0}</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>找不到天气{0}</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>自定义展厅预设</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>自定义预览图预设</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>随机天气</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>官方天气选项</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mod天气选项</value>
+  </data>
 </root>

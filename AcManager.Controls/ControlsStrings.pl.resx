@@ -437,8 +437,8 @@
     <value>Upewnij się, że dodatek VLC jest prawidłowo zainstalowany.</value>
   </data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
-    <value>Błędna tekstura!</value>
-  </data>
+    <value>Brakuje tekstury!</value>
+  <alternative>Błędna tekstura!</alternative></data>
   <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
     <value>Typ:</value>
   </data>
@@ -530,11 +530,11 @@
     <value>Szkielet (siatka)</value>
   </data>
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Malowanie</value>
-  </data>
+    <value>Skórka</value>
+  <alternative>Malowanie</alternative></data>
   <data name="CustomShowroom_EditingMode" xml:space="preserve">
-    <value>Tryb edycji malowania</value>
-  </data>
+    <value>Tryb edycji skórki</value>
+  <alternative>Tryb edycji malowania</alternative></data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
     <value>Użyj PSD, XCF, itp w zamian jeśli istnieją (Magick.NET dodatek jest wymagany)</value>
   <alternative>Automatycznie aktualizuj tekstury; użyj PSD, XCF, itp zamiast tego jeśli istnieje (Magick.NET dodatek jest wymagany)</alternative></data>
@@ -703,11 +703,11 @@ Tryb głębi: [b]{4}[/b]</value>
     <value>Przycisk klawiatury</value>
   </data>
   <data name="Online_CarIsMissingLabel" xml:space="preserve">
-    <value>Nie można znaleźć auta:</value>
-  </data>
+    <value>Brakuje auta:</value>
+  <alternative>Nie można znaleźć auta:</alternative></data>
   <data name="Online_TrackIsMissingLabel" xml:space="preserve">
-    <value>Nie można znaleźć toru:</value>
-  </data>
+    <value>Brakuje toru:</value>
+  <alternative>Nie można znaleźć toru:</alternative></data>
   <data name="Online_DriversOnlineLabel" xml:space="preserve">
     <value>Kierowcy online:</value>
   </data>
@@ -808,8 +808,8 @@ Tryb głębi: [b]{4}[/b]</value>
     <value>Zresetuj do zalecanej wartości</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Zmień malowanie</value>
-  </data>
+    <value>Zmień skórkę</value>
+  <alternative>Zmień malowanie</alternative></data>
   <data name="Common_Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
@@ -953,5 +953,44 @@ Tryb głębi: [b]{4}[/b]</value>
   </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value> okrążenie</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Samochód</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Tor</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Naj. okr.</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Skórka</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Narodowość</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>SI</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Widoczne</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Zablokowane</value>
   </data>
 </root>

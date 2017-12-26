@@ -933,4 +933,43 @@ Material: [b]{10}[/b]</value>
   <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
     <value>Zum Rand verblassen</value>
   </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Beste Runde</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Fahrzeug</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Fahrzeuglackierung</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Gesperrt</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nationalität</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Sichtbar</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Strecke</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
 </root>

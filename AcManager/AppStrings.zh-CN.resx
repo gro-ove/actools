@@ -3472,4 +3472,64 @@
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
     <value>请记住所有删除的内容总是可以在回收站里找到进行恢复</value>
   </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>筛选长度相近的赛道</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>筛选宽度相近的赛道</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>筛选维修区位置数目相近的赛道</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>打开模型文件夹(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>将模型移动至回收站(Ctrl+Delete)</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>缺少车手模型</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>路面温度:</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0}车手模型</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>随机时间</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>随机温度</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… 米</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… 米</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>… 个</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>赛道总长度,推荐格式: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>平均赛道宽度,推荐格式: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>维修区位置数目和车辆总数上限,推荐格式: “{0}”</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>准备播放录像...</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>开始性能测试...</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>等待录像播放结束...</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>等待性能测试结束...</value>
+  </data>
 </root>

@@ -232,8 +232,8 @@
     <value>Nie można połączyć się ze zdalnym serwerem</value>
   </data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
-    <value>Model kierowcy mógł zostać utracony.</value>
-  </data>
+    <value>Prawdopodobnie brakuje modelu kierowcy</value>
+  <alternative>Model kierowcy mógł zostać utracony.</alternative></data>
   <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
     <value>Hasło jest niewłaściwe</value>
   </data>
@@ -463,8 +463,8 @@
     <value>samochód</value>
   </data>
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
-    <value>malowanie auta</value>
-  </data>
+    <value>skórka auta</value>
+  <alternative>malowanie auta</alternative></data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>czcionka</value>
   </data>
@@ -499,20 +499,20 @@
     <value>Usunąć istniejące pierwsze</value>
   </data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>Przechowywanie informacji UI</value>
-  </data>
+    <value>Utrzymuj informacji UI</value>
+  <alternative>Przechowywanie informacji UI</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Przechowywanie podglądu malowań</value>
-  </data>
+    <value>Utrzymuj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowań</alternative></data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>Przechowywanie informacji UI &amp; podglądu malowań</value>
-  </data>
+    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowań</alternative></data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
-    <value>Przechowywanie podglądu malowania</value>
-  </data>
+    <value>Utrzymuj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowania</alternative></data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>Przechowywanie informacji UI &amp; podglądu malowania</value>
-  </data>
+    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowania</alternative></data>
   <data name="Input_Axle" xml:space="preserve">
     <value>Oś {0}</value>
   </data>
@@ -1057,8 +1057,8 @@
     <value>Brakuje wymaganego auta “{0}”</value>
   </data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
-    <value>Brakuje wymaganego malowania “{1}” dla {0}</value>
-  </data>
+    <value>Brakuje wymaganej skórki “{1}” dla {0}</value>
+  <alternative>Brakuje wymaganego malowania “{1}” dla {0}</alternative></data>
   <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
     <value>Brakuje wymaganej pogody “{0}”</value>
   </data>
@@ -1072,20 +1072,20 @@
     <value>Brakuje aktualizacji ikony</value>
   </data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>Brakuje malowań</value>
-  </data>
+    <value>Brakuje skórek</value>
+  <alternative>Brakuje malowań</alternative></data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>Katalog malowań jest niedostępny</value>
-  </data>
+    <value>Katalog skórek jest niedostępny</value>
+  <alternative>Katalog malowań jest niedostępny</alternative></data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
     <value>Brakuje ustawień toru ({0})</value>
   </data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>Brakuje dekoracji malowania ({0}/livery.png)</value>
-  </data>
+    <value>Brakuje malowania skórki ({0}/livery.png)</value>
+  <alternative>Brakuje dekoracji malowania ({0}/livery.png)</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Brakuje podglądu malowania ({0}/preview.jpg)</value>
-  </data>
+    <value>Brakuje podglądu skórki ({0}/preview.jpg)</value>
+  <alternative>Brakuje podglądu malowania ({0}/preview.jpg)</alternative></data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
     <value>Brakuje modelu (KN5 file)</value>
   </data>
@@ -1234,8 +1234,8 @@
     <value>Nowe auto {0}</value>
   </data>
   <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
-    <value>Nowe malowanie auta {0}</value>
-  </data>
+    <value>Nowa skórka auta {0}</value>
+  <alternative>Nowe malowanie auta {0}</alternative></data>
   <data name="ContentInstallation_TrackNew" xml:space="preserve">
     <value>Nowy tor {0}</value>
   </data>
@@ -1249,23 +1249,23 @@
     <value>Nowa pogoda {0}</value>
   </data>
   <data name="ContentInstallation_CarExisting" xml:space="preserve">
-    <value>Nowa wersja auta {0}</value>
-  </data>
+    <value>Nowa wersja dla auta {0}</value>
+  <alternative>Nowa wersja auta {0}</alternative></data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>Nowa wersja malowania auta {0}</value>
-  </data>
+    <value>Nowa wersja dla skórki auta {0}</value>
+  <alternative>Nowa wersja malowania auta {0}</alternative></data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
-    <value>Nowa wersja toru {0}</value>
-  </data>
+    <value>Nowa wersja dla toru {0}</value>
+  <alternative>Nowa wersja toru {0}</alternative></data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>Nowa wersja salonu {0}</value>
-  </data>
+    <value>Nowa wersja dla salonu {0}</value>
+  <alternative>Nowa wersja salonu {0}</alternative></data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
-    <value>Nowa wersja czcionki {0}</value>
-  </data>
+    <value>Nowa wersja dla czcionki {0}</value>
+  <alternative>Nowa wersja czcionki {0}</alternative></data>
   <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
-    <value>Nowa wersja pogody {0}</value>
-  </data>
+    <value>Nowa wersja dla pogody {0}</value>
+  <alternative>Nowa wersja pogody {0}</alternative></data>
   <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
     <value>Wybierz inne ID.</value>
   </data>
@@ -1588,8 +1588,8 @@
     <value>Sposób rozmieszczania pretendentów</value>
   </data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Użyj nazw malowań, jeśli są dostępne</value>
-  <alternative>Użyj nazw malowań, jeśli dostępne</alternative></data>
+    <value>Użyj nazw skórek, jeśli są dostępne</value>
+  <alternative>Użyj nazw malowań, jeśli dostępne</alternative><alternative>Użyj nazw malowań, jeśli są dostępne</alternative></data>
   <data name="Common_GlobalHeader" xml:space="preserve">
     <value>Ogólny:</value>
   </data>
@@ -1692,5 +1692,32 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   </data>
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Brakuje tagu “{0}”</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Preset stanu toru</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Brakuje skórki {0} samochodu.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Brakuje skórek {0} samochodów.</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Brakuje pogody {0}.</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Preset niestandardowych salonów</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Preset niestandardowych podglądów</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Losowa</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Oryginalny</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mody</value>
   </data>
 </root>

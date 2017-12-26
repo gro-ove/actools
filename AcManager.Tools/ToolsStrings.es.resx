@@ -322,8 +322,8 @@
     <value>Cámara:</value>
   </data>
   <data name="Controls_ChangeCamera" xml:space="preserve">
-    <value>Cambiar cámara</value>
-  </data>
+    <value>Cambiar la cámara</value>
+  <alternative>Cambiar cámara</alternative></data>
   <data name="Assists_AutoShifting" xml:space="preserve">
     <value>Cambio automático</value>
   </data>
@@ -938,11 +938,11 @@
     <value>Mover hacia atrás</value>
   </data>
   <data name="Controls_GlanceLeft" xml:space="preserve">
-    <value>Movimiento hacia izquierda</value>
-  </data>
+    <value>Mirar a la izquierda</value>
+  <alternative>Movimiento hacia izquierda</alternative></data>
   <data name="Controls_GlanceRight" xml:space="preserve">
-    <value>Movmiento hacia derecha</value>
-  </data>
+    <value>Mirar a la derecha</value>
+  <alternative>Movmiento hacia derecha</alternative></data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
     <value>Multiplicador efecto rebufo</value>
   </data>
@@ -1638,7 +1638,9 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
     <value>Los datos de {0} no estan empaquetados, los usuarios podrian modificarlo antes de entrar y obtener ventaja.
 
 Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</value>
-  </data>
+  <alternative>Los datos de {0} no estan empaquetados, los usuarios podrian modificarlo antes de entrar y obtener ventaja.
+
+Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</alternative></data>
   <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
     <value>Los datos no estan encriptados</value>
   </data>

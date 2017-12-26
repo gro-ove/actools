@@ -418,11 +418,11 @@
     <value>Especificações</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Abrir No Expositor</value>
-  <alternative>Abrir No Salão De Exposição</alternative></data>
+    <value>Abrir No Showroom</value>
+  <alternative>Abrir No Salão De Exposição</alternative><alternative>Abrir No Expositor</alternative></data>
   <data name="Common_Presets" xml:space="preserve">
-    <value>Pré-definições</value>
-  </data>
+    <value>Predefinições</value>
+  <alternative>Pré-definições</alternative></data>
   <data name="Common_Options" xml:space="preserve">
     <value>Opções</value>
   </data>
@@ -430,8 +430,8 @@
     <value>Definições</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Abrir No Expositor Personalizado</value>
-  <alternative>Abrir No Salão De Exposição Personalizado</alternative></data>
+    <value>Abrir No Showroom Personalizado</value>
+  <alternative>Abrir No Salão De Exposição Personalizado</alternative><alternative>Abrir No Expositor Personalizado</alternative></data>
   <data name="KunosCareer_RequiredSeries" xml:space="preserve">
     <value>Séries requeridas: {0}</value>
   </data>
@@ -448,11 +448,11 @@
     <value>Cidade:</value>
   </data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>Gravar pré-definição</value>
-  </data>
+    <value>Gravar predefinição</value>
+  <alternative>Gravar pré-definição</alternative></data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Salvar configurações actuais como pré-definição (Ctrl+S)</value>
-  </data>
+    <value>Salvar configurações atuais como predefinição (Ctrl+S)</value>
+  <alternative>Salvar configurações actuais como pré-definição (Ctrl+S)</alternative></data>
   <data name="Presets_Unsaved" xml:space="preserve">
     <value>Desgravado</value>
   <alternative>Não-gravado</alternative></data>
@@ -526,14 +526,14 @@
     <value>Usar um nome diferente online</value>
   </data>
   <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
-    <value>Alternar entre pré-definições de UI</value>
-  </data>
+    <value>Alternar entre predefinições de UI</value>
+  <alternative>Alternar entre pré-definições de UI</alternative></data>
   <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
-    <value>Alternar entre pré-definições de controlos</value>
-  </data>
+    <value>Alternar entre predefinições de controlos</value>
+  <alternative>Alternar entre pré-definições de controlos</alternative></data>
   <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
-    <value>Alternar entre pré-definições de configurações de vídeo</value>
-  </data>
+    <value>Alternar entre predefinições de configurações de vídeo</value>
+  <alternative>Alternar entre pré-definições de configurações de vídeo</alternative></data>
   <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
     <value>Alternar entre filtros de PP</value>
   </data>
@@ -562,11 +562,11 @@
     <value>Ler "{0}"? Os valores actuais serão subsistituídos (mas poderão ser mais tarde recuperados da Reciclagem) </value>
   </data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Pré-definições originais</value>
-  </data>
+    <value>Predefinições originais</value>
+  <alternative>Pré-definições originais</alternative></data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>Pré-definições do Utilizador</value>
-  </data>
+    <value>Predefinições do Utilizador</value>
+  <alternative>Pré-definições do Utilizador</alternative></data>
   <data name="Controls_Preview_Devices" xml:space="preserve">
     <value>Dispositivos: [b]{0}[/b]</value>
   </data>
@@ -603,8 +603,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>Ligação copiada para a área de transferência</value>
   </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Expositor:</value>
-  <alternative>Salão de exposição:</alternative></data>
+    <value>Showroom:</value>
+  <alternative>Salão de exposição:</alternative><alternative>Expositor:</alternative></data>
   <data name="Common_FilterLabel" xml:space="preserve">
     <value>Filtro:</value>
   </data>
@@ -618,8 +618,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>Descativar SweetFX</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
-    <value>Não é possível iniciar o expositor</value>
-  <alternative>Não é possível iniciar o salão de exposição</alternative></data>
+    <value>Não é possível iniciar o showroom</value>
+  <alternative>Não é possível iniciar o salão de exposição</alternative><alternative>Não é possível iniciar o expositor</alternative></data>
   <data name="ImageViewer_DefaultName" xml:space="preserve">
     <value>Imagem</value>
   </data>
@@ -675,8 +675,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>Carregando o modelo...</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Não é possível inicializar o Expositor Personalizado</value>
-  <alternative>Não é possível inicializar o Salão de Exposições Personalizado</alternative></data>
+    <value>Não é possível inicializar o Showroom Personalizado</value>
+  <alternative>Não é possível inicializar o Salão de Exposições Personalizado</alternative><alternative>Não é possível inicializar o Expositor Personalizado</alternative></data>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Ferramentas</value>
   </data>
@@ -747,8 +747,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>Modo Offline</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Expositor</value>
-  <alternative>Salão de exposição</alternative></data>
+    <value>Showroom</value>
+  <alternative>Salão de exposição</alternative><alternative>Expositor</alternative></data>
   <data name="Common_Downloading" xml:space="preserve">
     <value>Fazendo o download...</value>
   </data>
@@ -760,5 +760,8 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="Theme_Light" xml:space="preserve">
     <value>Claro</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Diversos</value>
   </data>
 </root>

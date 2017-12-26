@@ -287,8 +287,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Cancelado.</value>
   </data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Não é possível criar novo expositor</value>
-  <alternative>Não é possível criar novo salão de exposição</alternative></data>
+    <value>Não é possível criar novo showroom</value>
+  <alternative>Não é possível criar novo salão de exposição</alternative><alternative>Não é possível criar novo expositor</alternative></data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
     <value>Capacidade</value>
   </data>
@@ -398,8 +398,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Visualizar "readme_weather.txt"</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>Ver carro no expositor (Ctrl+H)</value>
-  <alternative>Ver carro no salão de exposição (Ctrl+H)</alternative></data>
+    <value>Ver carro no showroom (Ctrl+H)</value>
+  <alternative>Ver carro no salão de exposição (Ctrl+H)</alternative><alternative>Ver carro no expositor (Ctrl+H)</alternative></data>
   <data name="Common_ViewUserFolder" xml:space="preserve">
     <value>Ver Directório do Utilizador</value>
   </data>
@@ -530,14 +530,14 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Criar Nova Fonte</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Criar Novo Expositor</value>
-  <alternative>Criar novo salão de exposição</alternative></data>
+    <value>Criar Novo Showroom</value>
+  <alternative>Criar novo salão de exposição</alternative><alternative>Criar Novo Expositor</alternative></data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Criar Novo Expositor</value>
-  <alternative>Criar novo salão de exposição</alternative></data>
+    <value>Criar Novo Showroom</value>
+  <alternative>Criar novo salão de exposição</alternative><alternative>Criar Novo Expositor</alternative></data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>Criar novo expositor a partir de um panorama existente (Ctrl+N)</value>
-  <alternative>Criar novo salão de exposição a partir de um panorama existente (Ctrl+N)</alternative></data>
+    <value>Criar novo showroom a partir de um panorama existente (Ctrl+N)</value>
+  <alternative>Criar novo salão de exposição a partir de um panorama existente (Ctrl+N)</alternative><alternative>Criar novo expositor a partir de um panorama existente (Ctrl+N)</alternative></data>
   <data name="UpgradeIcon_Current" xml:space="preserve">
     <value>Actual</value>
   </data>
@@ -548,8 +548,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>IDs Personalizados</value>
   </data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Expositor Personalizado</value>
-  <alternative>Salão de exposição personalizado</alternative></data>
+    <value>Showroom Personalizado</value>
+  <alternative>Salão de exposição personalizado</alternative><alternative>Expositor Personalizado</alternative></data>
   <data name="Settings_Live_CustomStyle" xml:space="preserve">
     <value>Estilo personalizado</value>
   </data>
@@ -566,8 +566,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Data:</value>
   </data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>Expositor original</value>
-  <alternative>Salão de exposição original</alternative></data>
+    <value>Showroom original</value>
+  <alternative>Salão de exposição original</alternative><alternative>Expositor original</alternative></data>
   <data name="AcSettings_DefaultValue" xml:space="preserve">
     <value>Valor original:</value>
   </data>
@@ -626,14 +626,14 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Reabrir (Ctrl+R)</value>
   </data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Expositor</value>
-  <alternative>Salão de exposição</alternative></data>
+    <value>Showroom</value>
+  <alternative>Salão de exposição</alternative><alternative>Expositor</alternative></data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Seleccionar expositor, filtro e etc.</value>
-  <alternative>Seleccionar salão de exposição, filtro e etc.</alternative></data>
+    <value>Seleccionar showroom, filtro e etc.</value>
+  <alternative>Seleccionar salão de exposição, filtro e etc.</alternative><alternative>Seleccionar expositor, filtro e etc.</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Expositor Personalizado Leve</value>
-  <alternative>Salão de exposição personalizado Leve</alternative></data>
+    <value>Showroom Personalizado Leve</value>
+  <alternative>Salão de exposição personalizado Leve</alternative><alternative>Expositor Personalizado Leve</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>Conduzir</value>
   </data>
@@ -836,11 +836,11 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Não é possível partilhar repetição</value>
   </data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>Abrir directório do expositor (Ctrl+F)</value>
-  <alternative>Abrir directório dos salões de exposição (Ctrl+F)</alternative></data>
+    <value>Abrir diretório do showroom (Ctrl+F)</value>
+  <alternative>Abrir directório dos salões de exposição (Ctrl+F)</alternative><alternative>Abrir directório do expositor (Ctrl+F)</alternative></data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>Actualizar pré-visualização do expositor</value>
-  <alternative>Actualizar pré-visualização do salão de exposição</alternative></data>
+    <value>Atualizar pré-visualização do showroom</value>
+  <alternative>Actualizar pré-visualização do salão de exposição</alternative><alternative>Actualizar pré-visualização do expositor</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>Desligar Som</value>
   </data>
@@ -854,11 +854,11 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Ligar som (Ctrl+I)</value>
   </data>
   <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
-    <value>Não é possível actualizar pré-visualização do expositor</value>
-  <alternative>Não é possível actualizar pré-visualização do salão de exposição</alternative></data>
+    <value>Não é possível atualizar pré-visualização do showroom</value>
+  <alternative>Não é possível actualizar pré-visualização do salão de exposição</alternative><alternative>Não é possível actualizar pré-visualização do expositor</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
-    <value>Usar pista numa sessão de Condução Rápida (Ctrl+G)</value>
-  </data>
+    <value>Usar pista numa sessão de Corrida Rápida (Ctrl+G)</value>
+  <alternative>Usar pista numa sessão de Condução Rápida (Ctrl+G)</alternative></data>
   <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
     <value>Encontrar informação sobre a pista (Ctrl+I)</value>
   </data>
@@ -866,8 +866,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Copiar valores para outros traçados</value>
   </data>
   <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
-    <value>Actualizar pré-visualização da pista (Ctrl+P)</value>
-  </data>
+    <value>Atualizar pré-visualização da pista (Ctrl+P)</value>
+  <alternative>Actualizar pré-visualização da pista (Ctrl+P)</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Seleccionar apenas uma imagem existente</value>
   </data>
@@ -1403,8 +1403,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Adversários</value>
   </data>
   <data name="Controls_SharePreset" xml:space="preserve">
-    <value>Partilhar Pré-definição</value>
-  </data>
+    <value>Partilhar predefinição</value>
+  <alternative>Partilhar Pré-definição</alternative></data>
   <data name="Controls_ShareFfbOnly" xml:space="preserve">
     <value>Partilhar Apenas Definições de FFB</value>
   </data>
@@ -1646,14 +1646,14 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Pistas</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Expositores</value>
-  <alternative>Salões de exposição</alternative></data>
+    <value>Showrooms</value>
+  <alternative>Salões de exposição</alternative><alternative>Expositores</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
-    <value>Misc.</value>
-  </data>
+    <value>Diversos</value>
+  <alternative>Misc.</alternative></data>
   <data name="Main_ServerPresets" xml:space="preserve">
-    <value>Pré-definições</value>
-  </data>
+    <value>Predefinições</value>
+  <alternative>Pré-definições</alternative></data>
   <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
     <value>Tema:</value>
   </data>
@@ -1697,8 +1697,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Procurar na Wikipedia por omissão</value>
   </data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Expositores:</value>
-  <alternative>Salões de exposição</alternative></data>
+    <value>Showrooms:</value>
+  <alternative>Salões de exposição</alternative><alternative>Expositores:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Fontes:</value>
   </data>
@@ -1934,8 +1934,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Travagem de motor:</value>
   </data>
   <data name="Controls_Miscellaneous" xml:space="preserve">
-    <value>Misc.</value>
-  </data>
+    <value>Diversos.</value>
+  <alternative>Misc.</alternative></data>
   <data name="Controls_Gestures" xml:space="preserve">
     <value>Gestos:</value>
   </data>
@@ -1949,8 +1949,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Repetições:</value>
   </data>
   <data name="AcSettings_Miscellaneous" xml:space="preserve">
-    <value>Misc.</value>
-  </data>
+    <value>Diversos.</value>
+  <alternative>Misc.</alternative></data>
   <data name="AcSettings_System" xml:space="preserve">
     <value>Sistema</value>
   </data>
@@ -2204,8 +2204,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Certifique-se que o carro &amp; pista requeridos foram instalados e estão disponíveis</value>
   </data>
   <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
-    <value>Deseja aplicar esta pré-definição?</value>
-  </data>
+    <value>Deseja aplicar esta predefinição?</value>
+  <alternative>Deseja aplicar esta pré-definição?</alternative></data>
   <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
     <value>Não é possível instalar o setup do carro</value>
   </data>
@@ -2268,8 +2268,8 @@ Autor: [b]{3}[/b]</alternative></data>
     <value>Para</value>
   </data>
   <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
-    <value>Deseja aplicar esta pré-definição ou salvá-la para mais tarde?</value>
-  </data>
+    <value>Deseja aplicar esta predefinição ou salvá-la para mais tarde?</value>
+  <alternative>Deseja aplicar esta pré-definição ou salvá-la para mais tarde?</alternative></data>
   <data name="Arguments_SharedUnsupported" xml:space="preserve">
     <value>Tipo ainda não suportado: “{0}”</value>
   </data>
@@ -2304,8 +2304,8 @@ Autor: [b]{3}[/b]</alternative></data>
     <value>Não esqueça, há um atalho de teclado para todos os botões</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Fazer download das pré-visualizações de expositores comuns</value>
-  <alternative>Fazer download das pré-visualizações de salões de exposição comuns</alternative></data>
+    <value>Fazer download das pré-visualizações de showrooms comuns</value>
+  <alternative>Fazer download das pré-visualizações de salões de exposição comuns</alternative><alternative>Fazer download das pré-visualizações de expositores comuns</alternative></data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
     <value>Por exemplo, ao desactivar</value>
   </data>
@@ -2412,5 +2412,23 @@ Autor: [b]{3}[/b]</alternative></data>
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Grelha de Tempos de Volta</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Geo Tags:</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>Cria uma variação da temperatura do asfalto em relação ao clima, temperatura ambiente e horário. Mais informações em “readme_weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Ângulo gama</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>HDR-off mult.</value>
+  </data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+    <value>Multiplicador</value>
   </data>
 </root>

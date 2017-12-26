@@ -1688,4 +1688,25 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
     <value>Zwei Flächen per Frame</value>
   </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Fahrzeuglackierung {0} fehlt.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Fahrzeuglackierungen {0} fehlen.</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Wetter {0} fehlt.</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Zufall</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Voreinstellung des Streckenzustands</value>
+  </data>
 </root>

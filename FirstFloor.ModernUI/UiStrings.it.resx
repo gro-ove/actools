@@ -196,8 +196,8 @@
     <value>Newer version {0} is ready to be installed</value>
   </data>
   <data name="ImagesFilter" xml:space="preserve">
-    <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  </data>
+    <value>File immagini|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Tutti i file (*.*)|*.*</value>
+  <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
   <data name="KeyBackspace" xml:space="preserve">
     <value>Cancella</value>
   </data>
@@ -298,8 +298,8 @@
     <value>Scroll Lock</value>
   </data>
   <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
+    <value>Stampa schermata</value>
+  <alternative>Print Screen</alternative></data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Insert</value>
   </data>
@@ -403,8 +403,8 @@
     <value>Nascondi password</value>
   </data>
   <data name="MarkLimited" xml:space="preserve">
-    <value>LIMITED</value>
-  </data>
+    <value>LIMITATO</value>
+  <alternative>LIMITED</alternative></data>
   <data name="MarkNew" xml:space="preserve">
     <value>Nuovo</value>
   </data>
@@ -526,12 +526,75 @@
     <value>{0} giorno</value>
   </data>
   <data name="Time_Hour" xml:space="preserve">
-    <value>{0} ora</value>
-  </data>
+    <value>{0} ore</value>
+  <alternative>{0} ora</alternative></data>
   <data name="Time_Minute" xml:space="preserve">
     <value>{0} minuto</value>
   </data>
   <data name="Time_Second" xml:space="preserve">
     <value>{0} secondo</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oops!</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>L'applicazione s'è imbattuta in un problema e ha bisogno di riavviarsi. Utilizza il pulsante "Segnala un problema" in seguito se desideri inviare un report.</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Attendere prego...</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Non sono stati trovati candidati corrispondenti</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Salva la griglia di partenza come preset</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Condividi griglia di partenza</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Discendente</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>e</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Favorito</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Nascondi</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Scopri</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Gestione liste...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Invita</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Annulla prnotazione</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Includi password</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Aggiungi server ai prefriti (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Rimuovi server dai preferiti (Ctrl+D)</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+  </data>
+  <data name="Colon_Format" xml:space="preserve">
+    <value>{0}: {1}</value>
   </data>
 </root>

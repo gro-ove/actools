@@ -645,8 +645,8 @@
     <value>Выберите год или описание и нажмите ОК; зажмите Ctrl, чтобы расширить описание вместо его замены.</value>
   </data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
-    <value>Невозможно обновить превью</value>
-  </data>
+    <value>Невозможно обновить пред. просмотр</value>
+  <alternative>Невозможно обновить превью</alternative></data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
     <value>Вы должны сделать как минимум один снимок экрана.</value>
   <alternative>Вы должны сделать как минимум один скриншот.</alternative></data>
@@ -700,5 +700,151 @@
   </data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>Скрыть модель водителя</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>Введите имя или оставьте поле пустым:</value>
+  </data>
+  <data name="Share_EnterCustomId" xml:space="preserve">
+    <value>Введите пользовательский идентификатор:</value>
+  </data>
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
+    <value>Пользовательский идентификатор:</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>Имя автора: [b]{0}[/ b]
+Название записи: [b]{1}[/ b]
+Тип записи: [b]{2}[/ b]</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>Все нормально?</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Обмен...</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>Не удается передать {0}</value>
+  </data>
+  <data name="Share_SharedMessage" xml:space="preserve">
+    <value>Ссылка скопирована в буфер обмена</value>
+  </data>
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
+    <value>Нажмите, чтобы открыть ссылку</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Выставочный зал:</value>
+  </data>
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Водяной знак Kunos будет временно скрыт</value>
+  </data>
+  <data name="Showroom_HideWatermark" xml:space="preserve">
+    <value>Скрыть водяной знак</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>Выключить SweetFX</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Очевидно, SweetFX не влияет на результат, но может уменьшить время загрузки</value>
+  </data>
+  <data name="Showroom_CannotStart" xml:space="preserve">
+    <value>Не удается запустить демонстрационный зал</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Не удалось сохранить изображение</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>Убедитесь, что дополнение VLC установлено правильно.</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>Текстура отсутствует!</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>Тип:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>Формат:</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Размеры:</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>Просмотр в 2048×2048</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>Просмотр в 512×512</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>Просмотр в 1024×1024</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>Просмотр в 4096×4096</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+    <value>Просмотр в пользовательском разрешении</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Размеры ([Ширина] × [Высота]):</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>Не удается определить размеры</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>Пожалуйста, используйте для них правильный формат.</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>Экспорт текстур</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>Не удается экспортировать текстуру</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Загрузка модели ...</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>Не удается запустить пользовательский демонстрационный зал</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Инструменты</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Выбранные</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Материалы:</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>Текстуры:</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Треугольники:</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Статистика</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Объекты:</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Управление</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>Раскраска</value>
+  </data>
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
+    <value>Режим редактирования раскрасок</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>Сбросить до рекомендуемых значений</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Скрыть колеса</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Лучший круг</value>
   </data>
 </root>

@@ -3128,7 +3128,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
  • [b]0%:[/b] just the color effects on the clouds are considered;
  • [b]50%:[/b] 50% of cloud color and 50% of effects;
  • [b]100%:[/b] just the color of the cloud is considered</value>
-  </data>
+  <alternative>Regular influencias de otros colores en las nubes:
+ • [b]0%:[/b] just the color effects on the clouds are considered;
+ • [b]50%:[/b] 50% of cloud color and 50% of effects;
+ • [b]100%:[/b] just the color of the cloud is considered</alternative></data>
   <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
     <value>Color base, la luz solar, color de la luz y ambiente seran añadidos</value>
   </data>
@@ -3151,7 +3154,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>{0}
 
 Para ver, desempaqueta “{1}” a “…\Documents\Assetto Corsa\replay”.</value>
-  </data>
+  <alternative>{0}
+
+Para ver, desempaqueta “{1}” a “…\Documents\Assetto Corsa\replay”.</alternative></data>
   <data name="Page_Wip_Commentary" xml:space="preserve">
     <value>Si quieres saber mas acerca del desarrollo, [url="https://trello.com/b/MwqpL8Bw/content-manager"]aqui esta Trello board[/url] con mucha informacion.</value>
   </data>
@@ -3245,7 +3250,8 @@ Para ver, desempaqueta “{1}” a “…\Documents\Assetto Corsa\replay”.</va
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
     <value>Formato recomendado: DDS Image, 32f.32f.32f.32f, 5120×2560
 Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
-  </data>
+  <alternative>Formato recomendado: DDS Image, 32f.32f.32f.32f, 5120×2560
+Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternative></data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>En sombra</value>
   </data>
