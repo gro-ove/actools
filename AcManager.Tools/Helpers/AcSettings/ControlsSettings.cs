@@ -61,6 +61,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
                 _keyboardInput = new Dictionary<int, KeyboardInputButton>();
+
+                Logging.Debug($"Update period: {OptionUpdatePeriod.TotalMilliseconds} ms");
                 _timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
                     Interval = OptionUpdatePeriod
                 };
@@ -288,10 +290,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             try {
                 var waiting = GetWaiting() as BaseEntry<T>;
+                if (OptionDebugControlles) {
+                    Logging.Debug($"Waiting entry: {waiting?.DisplayName ?? "none"}");
+                }
                 if (waiting == null) return;
 
                 if (waiting.Input == provider) {
                     waiting.Waiting = false;
+                    if (OptionDebugControlles) {
+                        Logging.Debug("Input equals to provider");
+                    }
                     return;
                 }
 
@@ -326,7 +334,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private void DeviceAxleEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DirectInputAxle.RoundedValue) && sender is DirectInputAxle axle) {
                 if (OptionDebugControlles) {
-                    Logging.Debug($"Axle changed: {axle.Device}, {axle.DisplayName} (ID={axle.Id})");
+                    Logging.Debug($"Axle changed: {axle.Device}, {axle.DisplayName} (ID={axle.Id}; busy={_busy})");
                 }
 
                 AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
