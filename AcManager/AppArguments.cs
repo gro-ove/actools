@@ -196,7 +196,7 @@ namespace AcManager {
         }
 
         private static bool TryParse(string value, ref TimeSpan timeSpan) {
-            var p = value.Split(new[] { ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var p = value.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
             try {
                 double result;
