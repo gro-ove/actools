@@ -10,7 +10,6 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/ModernProgressRing.Imported.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <!--<Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Transparent.Number}">
@@ -83,8 +82,7 @@
   <mui:Switch Value="{Binding CurrentState}">
     <!-- Waiting -->
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Waiting}" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Style="{StaticResource WaveProgressRingStyle}"
-          Effect="{DynamicResource GameLoadingAnimationEffect}" />
+      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Effect="{DynamicResource GameLoadingAnimationEffect}" />
       <TextBlock Text="{Binding WaitingStatus}" TextAlignment="Center" />
     </StackPanel>
 

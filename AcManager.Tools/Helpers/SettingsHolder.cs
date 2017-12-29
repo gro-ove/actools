@@ -484,11 +484,14 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public static PeriodEntry PeriodDisabled = new PeriodEntry(TimeSpan.Zero);
+            public static PeriodEntry PeriodStartup = new PeriodEntry(ToolsStrings.Settings_Period_Startup);
+
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry(TimeSpan.Zero),
-                new PeriodEntry(ToolsStrings.Settings_Period_Startup),
+                PeriodDisabled,
+                PeriodStartup,
                 new PeriodEntry(TimeSpan.FromMinutes(30)),
                 new PeriodEntry(TimeSpan.FromHours(3)),
                 new PeriodEntry(TimeSpan.FromHours(6)),

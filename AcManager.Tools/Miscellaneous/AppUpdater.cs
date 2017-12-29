@@ -7,10 +7,12 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -18,8 +20,10 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
+using Keyboard = System.Windows.Input.Keyboard;
 
 namespace AcManager.Tools.Miscellaneous {
     public class AppUpdater : BaseUpdater {
@@ -46,12 +50,17 @@ namespace AcManager.Tools.Miscellaneous {
             Instance = new AppUpdater();
         }
 
-        private AppUpdater() : base(BuildInformation.AppVersion) {}
+        private AppUpdater() : base(BuildInformation.AppVersion) { }
 
         protected override void OnCommonSettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(SettingsHolder.Common.UpdatePeriod):
                     RestartPeriodicCheck();
+
+                    if (SettingsHolder.Common.UpdatePeriod.TimeSpan == TimeSpan.Zero) {
+                        RemovePreparedAutoUpdate();
+                    }
+
                     break;
 
                 case nameof(SettingsHolder.Common.UpdateToNontestedVersions):
@@ -113,7 +122,8 @@ namespace AcManager.Tools.Miscellaneous {
                     return null;
                 }
 
-                return VersionFromData(data);
+                var version = VersionFromData(data);
+                return CacheStorage.GetBool($".AppUpdater.IgnoreUpdate:{version}") ? null : version;
             } catch (Exception e) {
                 LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
                 Logging.Warning("Cannot get app/manifest.json: " + e);
@@ -137,6 +147,8 @@ namespace AcManager.Tools.Miscellaneous {
                 _updateIsReady = value;
                 OnPropertyChanged();
                 _finishUpdateCommand?.RaiseCanExecuteChanged();
+                _ignoreUpdateCommand?.RaiseCanExecuteChanged();
+                _disableAutoUpdatesCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -161,18 +173,28 @@ namespace AcManager.Tools.Miscellaneous {
 
                 string preparedVersion = null;
                 await Task.Run(() => {
-                    if (File.Exists(UpdateLocation)) {
-                        File.Delete(UpdateLocation);
-                    }
-
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
                         preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
+
+                        // Shouldn’t even get there if version is ignored! But, just in case, and for debugging
+                        if (CacheStorage.GetBool($".AppUpdater.IgnoreUpdate:{preparedVersion}")) {
+                            preparedVersion = null;
+                            return;
+                        }
+
+                        if (File.Exists(UpdateLocation)) {
+                            File.Delete(UpdateLocation);
+                        }
 
                         archive.GetEntry(@"Content Manager.exe").ExtractToFile(UpdateLocation);
                         Logging.Write($"New version {preparedVersion} was extracted to “{UpdateLocation}”");
                     }
                 });
+
+                if (preparedVersion == null) {
+                    return false;
+                }
 
                 UpdateIsReady = preparedVersion;
                 return true;
@@ -191,10 +213,45 @@ namespace AcManager.Tools.Miscellaneous {
             return false;
         }
 
+        private DelegateCommand _updateManuallyCommand;
+
+        public DelegateCommand UpdateManuallyCommand => _updateManuallyCommand ?? (_updateManuallyCommand = new DelegateCommand(() => {
+            if (ModernDialog.ShowMessage(
+                    "Now, CM will open a folder, in which you’ll have to delete CM’s file and replace it with the file with “.update” in its name.",
+                    "Manual update", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+
+            WindowsHelper.ViewFile(MainExecutingFile.Location);
+            Environment.Exit(0);
+        }));
+
+        private void RemovePreparedAutoUpdate() {
+            UpdateIsReady = null;
+            CleanUpUpdateExeAsync().Forget();
+        }
+
+        private DelegateCommand _ignoreUpdateCommand;
+
+        public DelegateCommand IgnoreUpdateCommand => _ignoreUpdateCommand ?? (_ignoreUpdateCommand = new DelegateCommand(() => {
+            CacheStorage.Set($".AppUpdater.IgnoreUpdate:{UpdateIsReady}", true);
+            RemovePreparedAutoUpdate();
+        }, () => UpdateIsReady != null));
+
+        private DelegateCommand _disableAutoUpdatesCommand;
+
+        public DelegateCommand DisableAutoUpdatesCommand => _disableAutoUpdatesCommand ?? (_disableAutoUpdatesCommand = new DelegateCommand(() => {
+            SettingsHolder.Common.UpdatePeriod = SettingsHolder.CommonSettings.PeriodDisabled;
+            RemovePreparedAutoUpdate();
+        }, () => UpdateIsReady != null));
+
         private DelegateCommand _finishUpdateCommand;
 
         public DelegateCommand FinishUpdateCommand => _finishUpdateCommand ??
                 (_finishUpdateCommand = new DelegateCommand(() => {
+                    if (Keyboard.Modifiers == ModifierKeys.Control) {
+                        Environment.Exit(0);
+                        return;
+                    }
+
                     try {
                         RunUpdateExeAndExitIfExists();
                     } catch (Exception e) {
@@ -205,7 +262,9 @@ namespace AcManager.Tools.Miscellaneous {
 
         private const string ExecutableExtension = ".exe";
         private const string UpdatePostfix = ".update" + ExecutableExtension;
-        public static string UpdateLocation => MainExecutingFile.Location.ApartFromLast(ExecutableExtension, StringComparison.OrdinalIgnoreCase) + UpdatePostfix;
+
+        public static string UpdateLocation => MainExecutingFile.Location.ApartFromLast(ExecutableExtension, StringComparison.OrdinalIgnoreCase)
+                + UpdatePostfix;
 
         private const string Certificate = "M2hi1jRoYhJcwMzEyMQkoLphsmdPVEiv51ZpnYae1f4GvGycWm0ebd95GRm5WRkMBA35gULMoSzMwmyOyc45pUkGcuK8hmaGRsaG" +
                 "RoYGQBAlzmtsCeQaQLnYtDQxKiEbzMjKwNzEyM8AFOdiamJkZPiW1c1orPHmXIBsq+tTkQ3/BORmGG5NNjdO0lDiXMzX+jvzEGvaFyW9vfFeh3mDdE+wRDoe0GvYlBx" +
@@ -301,6 +360,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private static async Task CleanUpUpdateExeAsync() {
+            if (!File.Exists(UpdateLocation)) return;
             for (var i = 0; i < 10; i++) {
                 try {
                     File.Delete(UpdateLocation);

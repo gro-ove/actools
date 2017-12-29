@@ -363,7 +363,7 @@ namespace AcManager.Tools.Objects {
         private async Task<string> LoadWinWrapper(CancellationToken cancellation) {
             var wrapperFilename = FilesStorage.Instance.GetFilename("Server Wrapper", "AcServerWrapper.exe");
 
-            var data = await CmApiProvider.GetStaticDataAsync("ac_server_wrapper");
+            var data = await CmApiProvider.GetStaticDataAsync("ac_server_wrapper", TimeSpan.Zero);
             if (cancellation.IsCancellationRequested || data == null) return null;
 
             if (data.Item2) {
@@ -388,12 +388,12 @@ namespace AcManager.Tools.Objects {
 
         [ItemCanBeNull]
         private async Task<string> LoadLinux32Wrapper(CancellationToken cancellation) {
-            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x86"))?.Item1;
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x86", TimeSpan.Zero))?.Item1;
         }
 
         [ItemCanBeNull]
         private async Task<string> LoadLinux64Wrapper(CancellationToken cancellation) {
-            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64"))?.Item1;
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero))?.Item1;
         }
 
         private async Task RunWrapper(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {

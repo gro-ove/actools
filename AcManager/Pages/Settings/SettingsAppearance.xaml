@@ -66,8 +66,9 @@
         <DockPanel>
           <mui:ValueLabel Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource PercentageConverter}}"
               mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />
-          <Slider x:Name="ScaleSlider" Minimum="0.5" Maximum="2" TickFrequency="0.25" TickPlacement="BottomRight"
-              Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01,
+          <mui:FormattedSlider x:Name="ScaleSlider" Minimum="50" Maximum="200" TickFrequency="25" TickPlacement="BottomRight" AutoToolTipFormat="{}{0}%"
+              AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsMoveToPointEnabled="False" LargeChange="10" SmallChange="10"
+              Value="{Binding ScalePercentage, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource SliderRoundConverter},
                 UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
 

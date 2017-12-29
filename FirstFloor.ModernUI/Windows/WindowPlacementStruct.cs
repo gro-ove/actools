@@ -145,19 +145,18 @@ namespace FirstFloor.ModernUI.Windows {
             Logging.Debug($"Test: {leftTest}, {topTest}, {bottomTest}, {rightTest}");
 
             if (autoAdjustWindow) {
-                if (!leftTest){
-                    Logging.Debug($"Auto-adjust left: {screen.Bounds.Left}");
-                    window.Left = screen.Bounds.Left;
+                if (!bottomTest){
+                    Logging.Debug($"Auto-adjust bottom: {screen.Bounds.Bottom - height}");
+                    window.Top = screen.Bounds.Bottom - height;
                 }
 
                 if (!topTest){
                     Logging.Debug($"Auto-adjust top: {screen.Bounds.Top}");
                     window.Top = screen.Bounds.Top;
                 }
-
-                if (!bottomTest){
-                    Logging.Debug($"Auto-adjust bottom: {screen.Bounds.Bottom - height}");
-                    window.Top = screen.Bounds.Bottom - height;
+                if (!leftTest){
+                    Logging.Debug($"Auto-adjust left: {screen.Bounds.Left}");
+                    window.Left = screen.Bounds.Left;
                 }
 
                 if (!rightTest){

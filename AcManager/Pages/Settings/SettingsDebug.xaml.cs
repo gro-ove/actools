@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools;
@@ -46,10 +47,10 @@ namespace AcManager.Pages.Settings {
 
             ProgressRingsComboBox.SelectionChanged += (sender, args) => {
                 var s = ((ComboBox)sender).SelectedItem as RingStyle;
-                ModernProgressRing.Style = TryFindResource(s?.Key ?? "") as Style;
+                ModernProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(s?.Key ?? "");
             };
 
-            ProgressRingsComboBox.ItemsSource = ((string[])FindResource("ProgressRingStyles")).Select(x => new RingStyle(x)).ToArray();
+            ProgressRingsComboBox.ItemsSource = ExtraProgressRings.Styles.Keys.Select(x => new RingStyle(x)).ToArray();
             ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault();
             ProgressRingColor = (Color)FindResource("AccentColor");
         }

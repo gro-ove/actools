@@ -412,25 +412,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Height = height;
         }
 
-        private bool _scaled;
-
-        private void RescaleIfNeeded() {
-            if (OptionScale != 1d && !_scaled) {
-                if (IsFinite(MaxWidth)) MaxWidth *= OptionScale;
-                if (IsFinite(MaxHeight)) MaxHeight *= OptionScale;
-                if (IsFinite(Width)) Width *= OptionScale;
-                if (IsFinite(Height)) Height *= OptionScale;
-                if (IsFinite(MinWidth)) MinWidth *= OptionScale;
-                if (IsFinite(MinHeight)) MinHeight *= OptionScale;
-                _scaled = true;
-            }
-        }
-
         /// <summary>
         /// Refreshes the current monitor DPI settings and update the window size and layout scale accordingly.
         /// </summary>
         protected void RefreshMonitorDpi() {
-            RescaleIfNeeded();
             if (!_isPerMonitorDpiAware) {
                 return;
             }
@@ -545,7 +530,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (key == null) return;
 
             try {
-                RescaleIfNeeded();
                 this.SetPlacement(ValuesStorage.GetString(key));
                 Loaded += (sender, args) => this.IsWindowOnAnyScreen();
             } catch (Exception e) {
@@ -558,7 +542,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (key == null || WindowState == WindowState.Minimized || !IsLoaded) return;
 
             try {
-                RescaleIfNeeded();
                 ValuesStorage.Set(key, this.GetPlacement());
             } catch (Exception e) {
                 Logging.Warning(e);

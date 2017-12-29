@@ -23,7 +23,7 @@ namespace AcManager.ContentRepair.Repairs {
                 CancellationToken cancellation = default(CancellationToken)) {
             if (_flamesTextures == null) {
                 progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading flames textures…"));
-                _flamesTextures = await CmApiProvider.GetStaticDataBytesAsync("flames", cancellation: cancellation);
+                _flamesTextures = await CmApiProvider.GetStaticDataBytesAsync("flames", TimeSpan.FromDays(3), cancellation: cancellation);
                 if (cancellation.IsCancellationRequested) return null;
             }
 

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media.Effects;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
@@ -47,10 +48,10 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             if (_progressStyles == null) {
-                _progressStyles = GoodShuffle.Get((string[])FindResource("ProgressRingStyles"));
+                _progressStyles = GoodShuffle.Get(ExtraProgressRings.Styles.Keys);
             }
 
-            ProgressRing.Style = FindResource(_progressStyles.Next) as Style;
+            ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
 
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;

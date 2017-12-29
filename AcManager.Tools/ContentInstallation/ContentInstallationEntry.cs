@@ -137,7 +137,7 @@ namespace AcManager.Tools.ContentInstallation {
                 _deleteDelayCommand?.RaiseCanExecuteChanged();
 
                 if (value.IsReady) {
-                    ContentInstallationManager.Instance?.UpdateBusyDoingSomething();
+                    ContentInstallationManager.Instance?.UpdateBusyStates();
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
                 _applyPasswordCommand?.RaiseCanExecuteChanged();
-                ContentInstallationManager.Instance.UpdateBusyDoingSomething();
+                ContentInstallationManager.Instance.UpdateBusyStates();
             }
         }
 
@@ -366,7 +366,7 @@ namespace AcManager.Tools.ContentInstallation {
                 _waitingForConfirmation = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
-                ContentInstallationManager.Instance.UpdateBusyDoingSomething();
+                ContentInstallationManager.Instance.UpdateBusyStates();
                 _confirmCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -579,8 +579,11 @@ namespace AcManager.Tools.ContentInstallation {
         private TaskbarHolder _taskbar;
 
         private async Task<bool> RunAsyncInner() {
+            if (Cancelled || FailedMessage != null) return false;
+            if (State == ContentInstallationEntryState.Finished) return true;
+
             IProgress<AsyncProgressEntry> progress = this;
-            ContentInstallationManager.Instance.UpdateBusyDoingSomething();
+            ContentInstallationManager.Instance.UpdateBusyStates();
 
             try {
                 _taskbar = TaskbarService.Create(10000);

@@ -19,6 +19,8 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
+        public static bool IsDebugConfiguration => Configuration == "Debug";
+
 #if PLATFORM_X86
         public static string Platform { get; private set; } = @"x86";
 #elif PLATFORM_X64

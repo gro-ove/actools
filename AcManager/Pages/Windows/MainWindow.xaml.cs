@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -329,6 +330,32 @@ namespace AcManager.Pages.Windows {
                     (_showAdditionalContentDialogCommand = new DelegateCommand(InstallAdditionalContentDialog.ShowInstallDialog));
 
             public AppUpdater AppUpdater => AppUpdater.Instance;
+
+            private AsyncCommand _viewChangelogCommand;
+
+            public AsyncCommand ViewChangelogCommand => _viewChangelogCommand ?? (_viewChangelogCommand = new AsyncCommand(async () => {
+                List<ChangelogEntry> changelog;
+                try {
+                    changelog = await Task.Run(() =>
+                            AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
+                } catch (WebException e) {
+                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
+                    return;
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, e);
+                    return;
+                }
+
+                Logging.Debug("Changelog entries: " + changelog.Count);
+                if (changelog.Any()) {
+                    ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
+                                                      .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                            MessageBoxButton.OK);
+                } else {
+                    ModernDialog.ShowMessage(AppStrings.AdditionalContent_NothingFound.ToSentence(), AppStrings.Changelog_RecentChanges_Title,
+                            MessageBoxButton.OK);
+                }
+            }));
         }
 
         void IFancyBackgroundListener.ChangeBackground(string filename) {
@@ -481,8 +508,7 @@ namespace AcManager.Pages.Windows {
                     }
                 }
 
-                var loading = ContentInstallationManager.Instance.DownloadList.Count(x => x.State != ContentInstallationEntryState.Finished);
-                if (loading > 0 && ModernDialog.ShowMessage(
+                if (ContentInstallationManager.Instance.HasUnfinishedItems && ModernDialog.ShowMessage(
                         "If you’ll close app, installation will be terminated. Are you sure?",
                         "Something is being installed", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     e.Cancel = true;

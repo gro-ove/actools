@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Presentation;
@@ -12,72 +14,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [ContentProperty(nameof(AdditionalContent))]
     public class ModernWindow : DpiAwareWindow {
-        public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register(nameof(FrameMargin), typeof(Thickness),
-                typeof(ModernWindow));
+        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, nameof(NavigateTitleLink), typeof(LinkCommands));
 
-        public Thickness FrameMargin {
-            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
-            set => SetValue(FrameMarginProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the BackgroundContent dependency property.
-        /// </summary>
-        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object),
-                typeof(ModernWindow));
-
-        /// <summary>
-        /// Identifies the MenuLinkGroups dependency property.
-        /// </summary>
-        public static readonly DependencyProperty MenuLinkGroupsProperty = DependencyProperty.Register("MenuLinkGroups", typeof(LinkGroupCollection),
-                typeof(ModernWindow));
-
-        /// <summary>
-        /// Identifies the TitleLinks dependency property.
-        /// </summary>
-        public static readonly DependencyProperty TitleLinksProperty = DependencyProperty.Register("TitleLinks", typeof(LinkCollection), typeof(ModernWindow));
-
-        /// <summary>
-        /// Identifies the IsTitleVisible dependency property.
-        /// </summary>
-        public static readonly DependencyProperty IsTitleVisibleProperty = DependencyProperty.Register("IsTitleVisible", typeof(bool), typeof(ModernWindow),
-                new PropertyMetadata(false));
-
-        /// <summary>
-        /// Identifies the ContentLoader dependency property.
-        /// </summary>
-        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader),
-                typeof(ModernWindow), new PropertyMetadata(new DefaultContentLoader()));
-
-        /// <summary>
-        /// Identifies the LinkNavigator dependency property.
-        /// </summary>
-        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow),
-                new PropertyMetadata(new DefaultLinkNavigator()));
-
-        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ModernWindow"/> class.
-        /// </summary>
         public ModernWindow() {
             DefaultStyleKey = typeof(ModernWindow);
 
-            // create empty collections
             SetCurrentValue(MenuLinkGroupsProperty, new LinkGroupCollection());
+            SetCurrentValue(TitleButtonsProperty, new ObservableCollection<Control>());
             SetCurrentValue(TitleLinksProperty, new LinkCollection());
 
-            // associate window commands with this instance
             CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, OnCloseWindow));
             CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, OnMaximizeWindow, OnCanResizeWindow));
             CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, OnMinimizeWindow, OnCanMinimizeWindow));
             CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, OnRestoreWindow, OnCanResizeWindow));
-
-            // associate navigate link command with this instance
             CommandBindings.Add(new CommandBinding(LinkCommands.NavigateLink, OnNavigateLink, OnCanNavigateLink));
             CommandBindings.Add(new CommandBinding(NavigateTitleLink, OnNavigateTitleLink, OnCanNavigateTitleLink));
-
-            // ContentSource = DefaultContentSource;
         }
 
         public event EventHandler<NavigatingCancelEventArgs> FrameNavigating;
@@ -90,10 +41,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public LinkGroup CurrentLinkGroup => _menu?.SelectedLinkGroup;
 
-        /// <inheritdoc />
-        /// <summary>
-        /// When overridden in a derived class, is invoked whenever application code or internal processes call System.Windows.FrameworkElement.ApplyTemplate().
-        /// </summary>
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
 
@@ -195,33 +142,50 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SystemCommands.RestoreWindow(this);
         }
 
-        /// <summary>
-        /// Gets or sets the background content of this window instance.
-        /// </summary>
+        public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register(nameof(FrameMargin), typeof(Thickness),
+                typeof(ModernWindow));
+
+        public Thickness FrameMargin {
+            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
+            set => SetValue(FrameMarginProperty, value);
+        }
+
+        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register(nameof(BackgroundContent), typeof(object),
+                typeof(ModernWindow));
+
         public object BackgroundContent {
             get => GetValue(BackgroundContentProperty);
             set => SetValue(BackgroundContentProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets the collection of link groups shown in the window’s menu.
-        /// </summary>
+        public static readonly DependencyProperty MenuLinkGroupsProperty = DependencyProperty.Register(nameof(MenuLinkGroups), typeof(LinkGroupCollection),
+                typeof(ModernWindow));
+
         public LinkGroupCollection MenuLinkGroups {
             get => (LinkGroupCollection)GetValue(MenuLinkGroupsProperty);
             set => SetValue(MenuLinkGroupsProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets the collection of links that appear in the menu in the title area of the window.
-        /// </summary>
+        public static readonly DependencyProperty TitleButtonsProperty = DependencyProperty.Register(nameof(TitleButtons), typeof(ObservableCollection<Control>),
+                typeof(ModernWindow));
+
+        public ObservableCollection<Control> TitleButtons {
+            get => (ObservableCollection<Control>)GetValue(TitleButtonsProperty);
+            set => SetValue(TitleButtonsProperty, value);
+        }
+
+        public static readonly DependencyProperty TitleLinksProperty = DependencyProperty.Register(nameof(TitleLinks), typeof(LinkCollection),
+                typeof(ModernWindow));
+
         public LinkCollection TitleLinks {
             get => (LinkCollection)GetValue(TitleLinksProperty);
             set => SetValue(TitleLinksProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the window title is visible in the UI.
-        /// </summary>
+        public static readonly DependencyProperty IsTitleVisibleProperty = DependencyProperty.Register(nameof(IsTitleVisible), typeof(bool),
+                typeof(ModernWindow),
+                new PropertyMetadata(false));
+
         public bool IsTitleVisible {
             get => GetValue(IsTitleVisibleProperty) as bool? == true;
             set => SetValue(IsTitleVisibleProperty, value);
@@ -235,18 +199,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(DefaultContentSourceProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets the content loader.
-        /// </summary>
+        public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register(nameof(ContentLoader), typeof(IContentLoader),
+                typeof(ModernWindow), new PropertyMetadata(new DefaultContentLoader()));
+
         public IContentLoader ContentLoader {
             get => (IContentLoader)GetValue(ContentLoaderProperty);
             set => SetValue(ContentLoaderProperty, value);
         }
 
-        /// <summary>
-        /// Gets or sets the link navigator.
-        /// </summary>
-        /// <value>The link navigator.</value>
+        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator), typeof(ModernWindow),
+                new PropertyMetadata(new DefaultLinkNavigator()));
+
         public ILinkNavigator LinkNavigator {
             get => (ILinkNavigator)GetValue(LinkNavigatorProperty);
             set => SetValue(LinkNavigatorProperty, value);
@@ -274,6 +237,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public Visibility BackButtonVisibility {
             get => GetValue(BackButtonVisibilityProperty) as Visibility? ?? default(Visibility);
             set => SetValue(BackButtonVisibilityProperty, value);
+        }
+
+        public static readonly DependencyProperty CloseButtonProperty = DependencyProperty.Register(nameof(CloseButton), typeof(object),
+                typeof(ModernWindow));
+
+        public object CloseButton {
+            get => GetValue(CloseButtonProperty);
+            set => SetValue(CloseButtonProperty, value);
         }
     }
 }

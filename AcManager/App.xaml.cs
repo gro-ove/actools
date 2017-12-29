@@ -402,6 +402,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
+            ExtraProgressRings.Initialize();
 
             FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {

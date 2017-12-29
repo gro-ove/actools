@@ -95,11 +95,11 @@ namespace AcManager.Tools.Helpers.Api {
         /// <param name="cancellation"></param>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, IProgress<double?> progress = null,
+        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Static", $"{id}.zip"));
 
-            if (JustLoadedStaticData.Contains(id) && file.Exists) {
+            if (file.Exists && (JustLoadedStaticData.Contains(id) || DateTime.Now - file.LastWriteTime < maxAge)) {
                 return Tuple.Create(file.FullName, false);
             }
 
@@ -207,10 +207,17 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<byte[]> GetStaticDataBytesAsync(string id, IProgress<double?> progress = null,
+        public static async Task<byte[]> GetStaticDataBytesAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var t = await GetStaticDataAsync(id, progress, cancellation);
+            var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
             return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetStaticDataBytesIfUpdatedAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
+            return t?.Item2 == true ? await FileUtils.ReadAllBytesAsync(t.Item1) : null;
         }
 
         [ItemCanBeNull]

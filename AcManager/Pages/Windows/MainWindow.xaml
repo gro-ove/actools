@@ -1,24 +1,21 @@
-﻿<c:AppModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="False" MinWidth="800" MinHeight="640"
-    Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter"
-    DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing" Closed="OnClosed"
-    MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
+    IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
+    Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
+    Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
-    mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
-    AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window"
-    AdditionalContentAvailable="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}"
-    AdditionalContentDownloading="{Binding IsBusyDoingSomething, Source={x:Static t:ContentInstallationManager.Instance}}"
-    AdditionalContentToolTip="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} in installing queue'}"
-    ShowAdditionalContentDialogCommand="{Binding ShowAdditionalContentDialogCommand}">
+    mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" SaveKey="MainWindow"
+    LocationAndSizeKey="MainWindow_LS" x:Name="Window">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernWindow.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
       <mui:BooleanLazySwitch x:Key="SteamOverlayFix" TrueResourceKey="Obj" Value="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}">
         <mui:BooleanLazySwitch.Resources>
           <Border x:Key="Obj" Background="#01000000" IsHitTestVisible="False">
@@ -38,8 +35,129 @@
           </Border>
         </mui:BooleanLazySwitch.Resources>
       </mui:BooleanLazySwitch>
+
+      <system:Boolean x:Key="SystemButtonActive">True</system:Boolean>
+
+      <Style x:Key="SystemButtonGo" TargetType="ButtonBase" BasedOn="{StaticResource SystemButton}">
+        <Style.Triggers>
+          <Trigger Property="Tag" Value="{StaticResource SystemButtonActive}">
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                  <mui:Cell>
+                    <Canvas Width="10" Height="6" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        Margin="{TemplateBinding Padding}">
+                      <Line X1="-0.01" X2="15.01" Y1="-5.71" Y2="12.01"
+                          StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}"
+                          Stroke="{DynamicResource GoButtonText}" RenderOptions.EdgeMode="Unspecified" />
+                      <Line X1="10.01" X2="-5.01" Y1="-5.71" Y2="12.01"
+                          StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}"
+                          Stroke="{DynamicResource GoButtonText}" RenderOptions.EdgeMode="Unspecified" />
+                    </Canvas>
+                    <mui:Cell x:Name="Chrome" Background="{DynamicResource Go}"
+                        Opacity="{Binding Background.Opacity, RelativeSource={RelativeSource TemplatedParent}}" SnapsToDevicePixels="True">
+                      <Border Opacity="{Binding BorderBrush.Opacity, RelativeSource={RelativeSource TemplatedParent}}" Background="Black">
+                        <Border Background="{DynamicResource Go}" Opacity="0.7" />
+                      </Border>
+                      <Canvas Width="10" Height="6" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center"
+                          Margin="{TemplateBinding Padding}">
+                        <Line X1="-0.01" X2="15.01" Y1="-5.71" Y2="12.01"
+                            StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}"
+                            Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource TemplatedParent}}" RenderOptions.EdgeMode="Unspecified" />
+                        <Line X1="10.01" X2="-5.01" Y1="-5.71" Y2="12.01"
+                            StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}"
+                            Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource TemplatedParent}}" RenderOptions.EdgeMode="Unspecified" />
+                      </Canvas>
+                    </mui:Cell>
+                  </mui:Cell>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
+
+  <mui:ModernWindow.CloseButton>
+    <mui:ReferenceSwitch Value="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" Null="{StaticResource WindowCloseButtonDefault}">
+      <mui:ReferenceSwitch.NonNull>
+        <Button Command="{Binding AppUpdater.FinishUpdateCommand}" Style="{StaticResource SystemButtonGo}" Tag="{StaticResource SystemButtonActive}"
+            Visibility="{Binding AppUpdater.UpdateIsReady, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+          <Button.ToolTip>
+            <ToolTip>
+              <mui:BbCodeBlock BbCode="{Binding AppUpdater.UpdateIsReady, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" MaxWidth="480"
+                  TextWrapping="Wrap" />
+            </ToolTip>
+          </Button.ToolTip>
+          <Button.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="View changelog" Command="{Binding ViewChangelogCommand}" />
+              <MenuItem Header="Update manually" Command="{Binding AppUpdater.UpdateManuallyCommand}" />
+              <Separator />
+              <MenuItem Header="Ignore this update" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
+              <MenuItem Header="Disable auto-updates" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
+            </ContextMenu>
+          </Button.ContextMenu>
+        </Button>
+      </mui:ReferenceSwitch.NonNull>
+    </mui:ReferenceSwitch>
+  </mui:ModernWindow.CloseButton>
+
+  <mui:ModernWindow.TitleButtons>
+    <mui:BooleanSwitch Width="45"
+        Value="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}">
+      <Button Command="{Binding ShowAdditionalContentDialogCommand}" Style="{StaticResource SystemButtonGo}"
+          Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Width="45">
+        <Button.ToolTip>
+          <ToolTip Content="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}}"
+              ContentStringFormat="{}{0} in installing queue" />
+        </Button.ToolTip>
+        <mui:BooleanSwitch Value="{Binding HasLoadingItems, Source={x:Static t:ContentInstallationManager.Instance}}">
+          <mui:BooleanSwitch.True>
+            <Canvas Width="9" Height="9" ClipToBounds="True">
+              <Canvas Width="9" Height="9">
+                <FrameworkElement.RenderTransform>
+                  <TranslateTransform />
+                </FrameworkElement.RenderTransform>
+                <FrameworkElement.Triggers>
+                  <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard>
+                      <Storyboard RepeatBehavior="Forever" TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.Y)" SpeedRatio="2">
+                        <DoubleAnimationUsingKeyFrames>
+                          <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
+                          <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="8" />
+                          <DiscreteDoubleKeyFrame KeyTime="0:0:1.001" Value="-8" />
+                          <LinearDoubleKeyFrame KeyTime="0:0:2.0" Value="0" />
+                        </DoubleAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </EventTrigger>
+                </FrameworkElement.Triggers>
+                <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                    RenderOptions.EdgeMode="Aliased"
+                    StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+                <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                    StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+              </Canvas>
+              <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+            </Canvas>
+          </mui:BooleanSwitch.True>
+          <mui:BooleanSwitch.False>
+            <Canvas Width="9" Height="9" ClipToBounds="True">
+              <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+              <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+              <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+            </Canvas>
+          </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
+      </Button>
+    </mui:BooleanSwitch>
+  </mui:ModernWindow.TitleButtons>
 
   <mui:ModernWindow.MenuLinkGroups>
     <!-- ReSharper disable Xaml.PathError -->
@@ -225,4 +343,4 @@
       </Border>
     </Popup>
   </mui:Cell>
-</c:AppModernWindow>
+</mui:ModernWindow>

@@ -17,7 +17,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
-        public static bool OptionSaveAndRestoreDownloads = true;
+        public static bool OptionSaveAndRestoreDownloads = false;
 
         private static readonly string StorageKey = ".Downloads.List";
 
@@ -42,7 +42,13 @@ namespace AcManager.Tools.ContentInstallation {
 
         private void Load() {
             if (OptionSaveAndRestoreDownloads) {
-                DownloadList.AddRange(LoadEntries());
+                foreach (var entry in LoadEntries()) {
+                    if (entry.State == ContentInstallationEntryState.Finished) {
+                        DownloadList.Add(entry);
+                    } else {
+                        InstallAsync(entry);
+                    }
+                }
             }
 
             DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
@@ -80,20 +86,43 @@ namespace AcManager.Tools.ContentInstallation {
 
         public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
 
-        private bool _isBusyDoingSomething;
+        private bool _hasLoadingItems;
 
-        public bool IsBusyDoingSomething {
-            get => _isBusyDoingSomething;
+        public bool HasLoadingItems {
+            get => _hasLoadingItems;
             set {
-                if (Equals(value, _isBusyDoingSomething)) return;
-                _isBusyDoingSomething = value;
+                if (Equals(value, _hasLoadingItems)) return;
+                _hasLoadingItems = value;
                 OnPropertyChanged();
             }
         }
 
-        public void UpdateBusyDoingSomething() {
-            IsBusyDoingSomething = DownloadList.Aggregate(false,
-                    (current, entry) => current | (entry.State == ContentInstallationEntryState.Loading));
+        private int _unfinishedItemsCount;
+
+        public int UnfinishedItemsCount {
+            get => _unfinishedItemsCount;
+            set {
+                if (Equals(value, _unfinishedItemsCount)) return;
+                _unfinishedItemsCount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasUnfinishedItems));
+            }
+        }
+
+        public bool HasUnfinishedItems => _unfinishedItemsCount > 0;
+
+        public void UpdateBusyStates() {
+            var hasLoadingItems = false;
+            var unfinishedItems = 0;
+            foreach (var entry in DownloadList) {
+                hasLoadingItems |= entry.State == ContentInstallationEntryState.Loading;
+                if (entry.State != ContentInstallationEntryState.Finished) {
+                    unfinishedItems++;
+                }
+            }
+
+            HasLoadingItems = hasLoadingItems;
+            UnfinishedItemsCount = unfinishedItems;
         }
 
         /*public void Cancel() {
@@ -106,16 +135,19 @@ namespace AcManager.Tools.ContentInstallation {
 
         private readonly TaskCache _taskCache = new TaskCache();
 
-        public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
-            if (source == null) throw new ArgumentNullException(nameof(source));
+        public Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry) {
+            if (entry == null) throw new ArgumentNullException(nameof(entry));
 
-            Logging.Debug(source);
+            Logging.Debug(entry.Source);
             return _taskCache.Get(() => ActionExtension.InvokeInMainThread(() => {
-                var entry = new ContentInstallationEntry(source, installationParams);
                 TaskAdded?.Invoke(this, EventArgs.Empty);
                 DownloadList.Add(entry);
                 return entry.RunAsync();
-            }), source);
+            }), entry.Source);
+        }
+
+        public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
+            return InstallAsync(new ContentInstallationEntry(source, installationParams));
         }
 
         public static bool IsRemoteSource(string source) {
