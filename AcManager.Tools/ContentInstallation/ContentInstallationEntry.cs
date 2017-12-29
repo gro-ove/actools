@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AcManager.Internal;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.ContentInstallation.Installators;
@@ -31,10 +32,12 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.ContentInstallation {
     public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
-        public DateTime AddedDateTime { get; }
+        public DateTime AddedDateTime { get; private set; }
 
         [NotNull]
         public string Source { get; }
@@ -54,7 +57,7 @@ namespace AcManager.Tools.ContentInstallation {
             _installationParams = installationParams ?? ContentInstallationParams.Default;
             Source = source;
             AddedDateTime = DateTime.Now;
-            DisplayName = _installationParams.DisplayName;
+            DisplayName = _installationParams.DisplayName ?? Source.Split(new[]{ '?', '&' }, 2)[0].Split('/', '\\').Last();
             InformationUrl = _installationParams.InformationUrl;
             Version = _installationParams.Version;
 
@@ -67,6 +70,44 @@ namespace AcManager.Tools.ContentInstallation {
 
                 PreferCleanInstallation = _installationParams.PreferCleanInstallation;
             }
+        }
+
+        public static ContentInstallationEntry Deserialize([NotNull] string data) {
+            var j = JObject.Parse(data);
+            return new ContentInstallationEntry(j.GetStringValueOnly("source"), j["params"]?.ToObject<ContentInstallationParams>()) {
+                AddedDateTime = j["added"]?.ToObject<DateTime>() ?? DateTime.Now,
+                DisplayName = j.GetStringValueOnly("name"),
+                InformationUrl = j.GetStringValueOnly("informationUrl"),
+                Version = j.GetStringValueOnly("version"),
+                IsPaused = j.GetBoolValueOnly("paused", false),
+                FileName = j.GetStringValueOnly("fileName"),
+                LocalFilename = j.GetStringValueOnly("localFilename"),
+                InputPassword = j.GetStringValueOnly("password"),
+                Progress = j.GetBoolValueOnly("finished", false) ? AsyncProgressEntry.Ready : default(AsyncProgressEntry),
+                Cancelled = j.GetBoolValueOnly("cancelled", false),
+                FailedMessage = j.GetStringValueOnly("failedMessage"),
+                FailedCommentary = j.GetStringValueOnly("failedCommentary"),
+            };
+        }
+
+        public string Serialize() {
+            return new JObject {
+                ["added"] = AddedDateTime,
+                ["name"] = DisplayName,
+                ["informationUrl"] = InformationUrl,
+                ["version"] = Version,
+                ["source"] = Source,
+                ["paused"] = IsPaused,
+                ["fileName"] = FileName,
+                ["localFilename"] = LocalFilename,
+                ["password"] = InputPassword != null
+                        ? StringCipher.Encrypt(InputPassword, InternalUtils.GetValuesStorageEncryptionKey()).ToCutBase64() : null,
+                ["finished"] = State == ContentInstallationEntryState.Finished,
+                ["cancelled"] = IsCancelling || Cancelled,
+                ["failedMessage"] = FailedMessage,
+                ["failedCommentary"] = FailedCommentary,
+                ["params"] = _installationParams == ContentInstallationParams.Default ? null : JObject.FromObject(_installationParams)
+            }.ToString(Formatting.None);
         }
 
         internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.bin", null) {
@@ -93,6 +134,7 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged(nameof(State));
                 OnPropertyChanged(nameof(IsFailed));
                 OnPropertyChanged(nameof(IsEmpty));
+                _deleteDelayCommand?.RaiseCanExecuteChanged();
 
                 if (value.IsReady) {
                     ContentInstallationManager.Instance?.UpdateBusyDoingSomething();
@@ -113,12 +155,81 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        #region Delays for UI
+        private bool _isDeleting;
+
+        public bool IsDeleting {
+            get => _isDeleting;
+            private set {
+                if (Equals(value, _isDeleting)) return;
+                _isDeleting = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AsyncCommand _deleteDelayCommand;
+
+        public AsyncCommand DeleteDelayCommand => _deleteDelayCommand ?? (_deleteDelayCommand = new AsyncCommand(async () => {
+            IsDeleting = true;
+            await Task.Delay(300);
+            IsDeleted = true;
+        }, () => State == ContentInstallationEntryState.Finished && !IsDeleted));
+
+        private bool _isConfirming;
+
+        public bool IsConfirming {
+            get => _isConfirming;
+            set {
+                if (Equals(value, _isConfirming)) return;
+                _isConfirming = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AsyncCommand _confirmDelayCommand;
+
+        public AsyncCommand ConfirmDelayCommand => _confirmDelayCommand ?? (_confirmDelayCommand = new AsyncCommand(async () => {
+            IsConfirming = true;
+            await Task.Delay(300);
+            ConfirmCommand.Execute();
+        }));
+
+        private bool _isCancelling;
+
+        public bool IsCancelling {
+            get => _isCancelling;
+            set {
+                if (Equals(value, _isCancelling)) return;
+                _isCancelling = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AsyncCommand _cancelDelayCommand;
+
+        public AsyncCommand CancelDelayCommand => _cancelDelayCommand ?? (_cancelDelayCommand = new AsyncCommand(async () => {
+            IsCancelling = true;
+            await Task.Delay(300);
+            CancelCommand.Execute();
+        }));
+        #endregion
+
+        private bool _isDeleted;
+
+        public bool IsDeleted {
+            get => _isDeleted;
+            private set {
+                if (Equals(value, _isDeleted)) return;
+                _isDeleted = value;
+                OnPropertyChanged();
+                _deleteDelayCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
         private DelegateCommand _cancelCommand;
 
-        public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(() => {
-            UserCancelled = true;
-            Cancel();
-        }, () => _cancellationTokenSource != null || FailedMessage != null && !Cancelled));
+        public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(Cancel,
+                () => _cancellationTokenSource != null || FailedMessage != null && !Cancelled));
 
         private void Cancel() {
             Cancelled = true;
@@ -132,10 +243,11 @@ namespace AcManager.Tools.ContentInstallation {
 
         private string _failedMessage;
 
+        [CanBeNull]
         public string FailedMessage {
             get => _failedMessage;
             set {
-                value = value.ToSentence();
+                value = value?.ToSentence();
                 if (Equals(value, _failedMessage)) return;
                 _failedMessage = value;
                 OnPropertyChanged();
@@ -146,22 +258,12 @@ namespace AcManager.Tools.ContentInstallation {
 
         private string _failedCommentary;
 
+        [CanBeNull]
         public string FailedCommentary {
             get => _failedCommentary;
             set {
                 if (Equals(value, _failedCommentary)) return;
                 _failedCommentary = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _userCancelled;
-
-        public bool UserCancelled {
-            get => _userCancelled;
-            private set {
-                if (Equals(value, _userCancelled)) return;
-                _userCancelled = value;
                 OnPropertyChanged();
             }
         }
@@ -309,43 +411,43 @@ namespace AcManager.Tools.ContentInstallation {
         #region Some details
         private string _displayName;
 
+        [NotNull]
         public string DisplayName {
-            get => _displayName ?? FileName;
+            get => _displayName;
             set {
                 if (Equals(value, _displayName)) return;
                 _displayName = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayNameWithUrl));
-                Logging.Debug(DisplayNameWithUrl);
             }
         }
 
         private string _informationUrl;
 
+        /// <summary>
+        /// URL leading to information page, if any.
+        /// </summary>
+        [CanBeNull]
         public string InformationUrl {
             get => _informationUrl;
             set {
                 if (Equals(value, _informationUrl)) return;
                 _informationUrl = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayNameWithUrl));
-                Logging.Debug(DisplayNameWithUrl);
             }
         }
 
-        public string DisplayNameWithUrl => InformationUrl != null
-                ? $@"[url={BbCodeBlock.EncodeAttribute(InformationUrl)}]{BbCodeBlock.Encode(DisplayName ?? "?")}[/url]" : BbCodeBlock.Encode(DisplayName);
-
         private string _fileName;
 
+        /// <summary>
+        /// Actual file name from the server.
+        /// </summary>
+        [CanBeNull]
         public string FileName {
             get => _fileName;
             set {
                 if (Equals(value, _fileName)) return;
                 _fileName = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayName));
-                OnPropertyChanged(nameof(DisplayNameWithUrl));
 
                 try {
                     FileIcon = IconManager.FindIconForFilename(value, true);
@@ -358,6 +460,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private string _version;
 
+        /// <summary>
+        /// Version number, if any.
+        /// </summary>
+        [CanBeNull]
         public string Version {
             get => _version;
             set {
@@ -368,25 +474,13 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
-        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static bool _sevenZipWarning;
-
-        private string _loadedFilename;
-
-        public string LoadedFilename {
-            get => _loadedFilename;
-            set {
-                if (Equals(value, _loadedFilename)) return;
-                _loadedFilename = value;
-                OnPropertyChanged();
-                LocalFilename = value;
-            }
-        }
-
+        #region Installation-related properties
         private string _localFilename;
 
+        /// <summary>
+        /// Path to downloaded file.
+        /// </summary>
+        [CanBeNull]
         public string LocalFilename {
             get => _localFilename;
             set {
@@ -394,28 +488,8 @@ namespace AcManager.Tools.ContentInstallation {
                 _localFilename = value;
                 OnPropertyChanged();
                 _viewInExplorerCommand?.RaiseCanExecuteChanged();
+                DisplayName = Path.GetFileName(value) ?? DisplayName;
             }
-        }
-
-        private DelegateCommand _viewInExplorerCommand;
-
-        public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
-            KeepLoaded = true;
-            WindowsHelper.ViewFile(LocalFilename);
-        }, () => LocalFilename != null && File.Exists(LocalFilename)));
-
-        private static string GetFileNameFromUrl(string url) {
-            var fileName = FileUtils.EnsureFileNameIsValid(
-                    url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
-
-            if (string.IsNullOrWhiteSpace(fileName)) {
-                fileName = FileUtils.EnsureFileNameIsValid(url).Trim();
-                if (string.IsNullOrWhiteSpace(fileName)) {
-                    fileName = "download";
-                }
-            }
-
-            return Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
         }
 
         private bool _canPause;
@@ -443,17 +517,6 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        private bool _keepLoaded;
-
-        public bool KeepLoaded {
-            get => _keepLoaded;
-            set {
-                if (Equals(value, _keepLoaded)) return;
-                _keepLoaded = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _sevenZipInstallatorWouldNotHurt;
 
         public bool SevenZipInstallatorWouldNotHurt {
@@ -463,6 +526,33 @@ namespace AcManager.Tools.ContentInstallation {
                 _sevenZipInstallatorWouldNotHurt = value;
                 OnPropertyChanged();
             }
+        }
+        #endregion
+
+        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static bool _sevenZipWarning;
+
+        private DelegateCommand _viewInExplorerCommand;
+
+        public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
+            if (LocalFilename == null) return;
+            WindowsHelper.ViewFile(LocalFilename);
+        }, () => LocalFilename != null && File.Exists(LocalFilename)));
+
+        private static string GetFileNameFromUrl(string url) {
+            var fileName = FileUtils.EnsureFileNameIsValid(
+                    url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
+
+            if (string.IsNullOrWhiteSpace(fileName)) {
+                fileName = FileUtils.EnsureFileNameIsValid(url).Trim();
+                if (string.IsNullOrWhiteSpace(fileName)) {
+                    fileName = "download";
+                }
+            }
+
+            return Regex.Replace(fileName, @"\.(?:asp|cgi|p(?:hp3?|l)|s?html?)$", "", RegexOptions.IgnoreCase);
         }
 
         public Task<bool> RunAsync() {
@@ -505,16 +595,18 @@ namespace AcManager.Tools.ContentInstallation {
                     }
 
                     // Load remote file if it is remote
+                    string localFilename;
                     if (ContentInstallationManager.IsRemoteSource(Source)) {
                         progress.Report(AsyncProgressEntry.FromStringIndetermitate("Downloading…"));
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         try {
-                            // LoadedFilename = GetLoaderDestination();
-                            // await Task.Delay(1);
-                            LoadedFilename = await FlexibleLoader.LoadAsyncTo(Source,
+                            localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
+                                    destination => {
+                                        DisplayName = Path.GetFileName(destination) ?? DisplayName;
+                                    },
                                     information => {
                                         CanPause = information.CanPause;
                                         FileName = information.FileName ?? information.FileName;
@@ -554,12 +646,14 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         }
                     } else {
-                        LocalFilename = Source;
+                        localFilename = Source;
                         FileName = Path.GetFileName(Source);
                     }
 
+                    LocalFilename = localFilename;
+
                     if (_installationParams.Checksum != null) {
-                        using (var fs = new FileStream(LocalFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
                         using (var sha1 = new SHA1Managed()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), _installationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";
@@ -573,7 +667,7 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         // Scan for content
-                        using (var installator = await FromFile(LocalFilename, _installationParams, cancellation.Token)) {
+                        using (var installator = await FromFile(localFilename, _installationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
                             if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator
@@ -644,7 +738,7 @@ namespace AcManager.Tools.ContentInstallation {
                                 await entry.CheckExistingAsync();
                             }
 
-                            Entries = entries.ToArray();
+                            Entries = entries.OrderByDescending(x => x.Priority).ThenBy(x => x.Name).ToArray();
                             Entries.ForEach(x => x.SetInstallationParams(_installationParams));
                             ExtraOptions = (await GetExtraOptionsAsync(Entries)).ToArray();
 
@@ -667,11 +761,11 @@ namespace AcManager.Tools.ContentInstallation {
                                 return details.OriginalEntry?.DisplayName;
                             }
 
-                            foreach (var extra in _installationParams.PreInstallation.NonNull()) {
+                            /*foreach (var extra in _installationParams.PreInstallation.NonNull()) {
                                 _taskbar?.Set(TaskbarState.Indeterminate, 0d);
                                 await extra(progress, cancellation.Token);
                                 if (CheckCancellation()) return false;
-                            }
+                            }*/
 
                             foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
                                 await extra(progress, cancellation.Token);
@@ -714,11 +808,8 @@ namespace AcManager.Tools.ContentInstallation {
                                 if (CheckCancellation()) return false;
                             }
 
-                            foreach (var extra in _installationParams.PostInstallation.NonNull()) {
-                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                                await extra(progress, cancellation.Token);
-                                if (CheckCancellation()) return false;
-                            }
+                            _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                            await _installationParams.PostInstallation(progress, cancellation.Token);
                         }
 
                         return true;
@@ -894,9 +985,22 @@ namespace AcManager.Tools.ContentInstallation {
 
                 if (value.Length == 1) {
                     DisplayFound = value[0].DisplayName;
+                    IsDisplayFoundSameAsFirstName = true;
                 } else {
                     DisplayFound = PluralizingConverter.PluralizeExt(value.Length, "Found {0} {item}");
+                    IsDisplayFoundSameAsFirstName = false;
                 }
+            }
+        }
+
+        private bool _isDisplayFoundSameAsFirstName;
+
+        public bool IsDisplayFoundSameAsFirstName {
+            get => _isDisplayFoundSameAsFirstName;
+            set {
+                if (Equals(value, _isDisplayFoundSameAsFirstName)) return;
+                _isDisplayFoundSameAsFirstName = value;
+                OnPropertyChanged();
             }
         }
 
@@ -940,13 +1044,13 @@ namespace AcManager.Tools.ContentInstallation {
         public void Dispose() {
             DisposeHelper.Dispose(ref _taskbar);
 
-            if (LoadedFilename != null && !KeepLoaded) {
+            /*if (LoadedFilename != null && !KeepLoaded) {
                 try {
                     File.Delete(LoadedFilename);
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }
-            }
+            }*/
         }
     }
 }

@@ -20,8 +20,14 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class CarContentEntry : ContentEntryBase<CarObject> {
-        public CarContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
-                : base(path, id, name, version, iconData) { }
+        private readonly bool _isChild;
+
+        public CarContentEntry([NotNull] string path, [NotNull] string id, bool isChild, string name = null, string version = null, byte[] iconData = null)
+                : base(path, id, name, version, iconData) {
+            _isChild = isChild;
+        }
+
+        public override double Priority => _isChild ? 50d : 51d;
 
         public override string GenericModTypeName => "Car";
         public override string NewFormat => ToolsStrings.ContentInstallation_CarNew;
@@ -169,6 +175,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     layouts.FirstOrDefault()?.Name;
         }
 
+        public override double Priority => 90d;
+
         private TrackContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
                 [CanBeNull] List<string> requiredKn5Files, string name = null, string version = null,
                 byte[] iconData = null) : base(path, id, name, version, iconData) {
@@ -255,7 +263,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             if (Layouts == null) {
                 if (!existing.MultiLayoutMode) {
                     // Simplest case — basic track+basic track, nothing complicated.
-                    _existingFormat = $"Update for a track {existingName}";
+                    _existingFormat = $"Update for the track {existingName}";
                     NoLayoutsExistingLayout = existing;
                     NoConflictMode = false;
                 } else {
@@ -263,14 +271,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     var existingBasic = existing.LayoutId == null;
                     if (existingBasic) {
                         // Just an update, I guess?
-                        _existingFormat = $"Update for a track {existingName}";
+                        _existingFormat = $"Update for the track {existingName}";
                         NoLayoutsExistingLayout = existing;
                         NoConflictMode = false;
                     } else {
                         // There is no basic track! So, it’s like an additional layout
                         _existingFormat = Name == existingName ?
-                                $"New layout for a track {existingName}" :
-                                $"New layout {Name} for a track {existingName}";
+                                $"New layout for the track {existingName}" :
+                                $"New layout {Name} for the track {existingName}";
                         NoConflictMode = true;
                     }
                 }
@@ -283,13 +291,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     if (!newBasic) {
                         // Simple case: basic track installed, additional layouts are being added
                         _existingFormat = PluralizingConverter.PluralizeExt(Layouts.Count,
-                                $"New {{layout}} for a track {existingName}");
+                                $"New {{layout}} for the track {existingName}");
 
                         NoConflictMode = true;
                     } else {
                         // Basic track installed, user is adding additional layouts, but one of them is basic as well! What to do?…
                         _existingFormat = PluralizingConverter.PluralizeExt(Layouts.Count,
-                                $"Update for a track {existingName}, plus additional {{layout}}");
+                                $"Update for the track {existingName}, plus additional {{layout}}");
                         newBasicLayout.ExistingLayout = existing;
                         HasNewExtraLayouts = true;
                         NoConflictMode = false;
@@ -303,13 +311,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     if (!(existingBasic && newBasic) && newLayouts == Layouts.Count) {
                         // Blessed case! No conflicts
                         _existingFormat = PluralizingConverter.PluralizeExt(Layouts.Count,
-                                $"New {{layout}} for a track {existingName}");
+                                $"New {{layout}} for the track {existingName}");
                         NoConflictMode = true;
                     } else {
                         // What can I say…
                         _existingFormat = PluralizingConverter.PluralizeExt(Layouts.Count, newLayouts > 0 ?
-                                $"Update for a track {existingName}, plus additional {{layout}}" :
-                                $"Update for a track {existingName}");
+                                $"Update for the track {existingName}, plus additional {{layout}}" :
+                                $"Update for the track {existingName}");
                         HasNewExtraLayouts = newLayouts > 0;
                         NoConflictMode = false;
 
@@ -353,7 +361,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 } else if (activeLayouts != null) {
                     overlappedModels = activeLayouts.SelectMany(x => x.Kn5Files).Where(existingModels.Contains).Distinct().ToList();
                 } else if (NoLayoutsExistingLayout != null) {
-                    // If current track as a layout is an update for a existing one, then there are no previous shared models
+                    // If current track as a layout is an update for the existing one, then there are no previous shared models
                     overlappedModels = null;
                 } else {
                     overlappedModels = Kn5Files?.Where(existingModels.Contains).ToList();
@@ -494,6 +502,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class ShowroomContentEntry : ContentEntryBase<ShowroomObject> {
+        public override double Priority => 70d;
+
         public ShowroomContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
 
@@ -523,12 +533,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class CarSkinContentEntry : ContentEntryBase<CarSkinObject> {
+        public override double Priority => 30d;
+
         [NotNull]
         private readonly CarObject _car;
 
         public CarSkinContentEntry([NotNull] string path, [NotNull] string id, [NotNull] string carId, string name = null, byte[] iconData = null)
                 : base(path, id, name, null, iconData) {
-            _car = CarsManager.Instance.GetById(carId) ?? throw new Exception($"Car “{carId}” for a skin not found");
+            _car = CarsManager.Instance.GetById(carId) ?? throw new Exception($"Car “{carId}” for the skin not found");
             NewFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinNew, "{0}", _car.DisplayName);
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _car.DisplayName);
         }
@@ -559,12 +571,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class TrackSkinContentEntry : ContentEntryBase<TrackSkinObject> {
+        public override double Priority => 40d;
+
         [NotNull]
         private readonly TrackObject _track;
 
         public TrackSkinContentEntry([NotNull] string path, [NotNull] string id, [NotNull] string trackId, string name, string version, byte[] iconData = null)
                 : base(path, id, name, version, iconData) {
-            _track = TracksManager.Instance.GetById(trackId) ?? throw new Exception($"Track “{trackId}” for a skin not found");
+            _track = TracksManager.Instance.GetById(trackId) ?? throw new Exception($"Track “{trackId}” for the skin not found");
             NewFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinNew, "{0}", _track.DisplayName);
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _track.DisplayName);
         }
@@ -595,6 +609,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class FontContentEntry : ContentEntryBase<FontObject> {
+        public override double Priority => 20d;
+
         public FontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
@@ -629,12 +645,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class TrueTypeFontContentEntry : ContentEntryBase<TrueTypeFontObject> {
+        public override double Priority => 15d;
+
         public TrueTypeFontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "TrueType font";
-        public override string NewFormat => "New TrueType font {0}";
-        public override string ExistingFormat => "Update for a TrueType font {0}";
+        public override string NewFormat => "New TrueType font “{0}”";
+        public override string ExistingFormat => "Update for the TrueType font “{0}”";
 
         public override FileAcManager<TrueTypeFontObject> GetManager() {
             return TrueTypeFontsManager.Instance;
@@ -646,6 +664,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class PythonAppContentEntry : ContentEntryBase<PythonAppObject> {
+        public override double Priority => 45d;
+
         [CanBeNull]
         private readonly List<string> _icons;
 
@@ -656,8 +676,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         public override string GenericModTypeName => "App";
-        public override string NewFormat => "New app {0}";
-        public override string ExistingFormat => "Update for a app {0}";
+        public override string NewFormat => "New app “{0}”";
+        public override string ExistingFormat => "Update for the app “{0}”";
 
         public override FileAcManager<PythonAppObject> GetManager() {
             return PythonAppsManager.Instance;
@@ -678,6 +698,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class WeatherContentEntry : ContentEntryBase<WeatherObject> {
+        public override double Priority => 25d;
+
         public WeatherContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
@@ -713,12 +735,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class PpFilterContentEntry : ContentEntryBase<PpFilterObject> {
+        public override double Priority => 27d;
+
         public PpFilterContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "PP-Filter";
-        public override string NewFormat => "New PP-filter {0}";
-        public override string ExistingFormat => "Update for a PP-filter {0}";
+        public override string NewFormat => "New PP-filter “{0}”";
+        public override string ExistingFormat => "Update for the PP-filter “{0}”";
 
         public override FileAcManager<PpFilterObject> GetManager() {
             return PpFiltersManager.Instance;
@@ -730,12 +754,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public class DriverModelContentEntry : ContentEntryBase<DriverModelObject> {
+        public override double Priority => 21d;
+
         public DriverModelContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
                 : base(path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "Driver model";
-        public override string NewFormat => "New driver model {0}";
-        public override string ExistingFormat => "Update for a driver model {0}";
+        public override string NewFormat => "New driver model “{0}”";
+        public override string ExistingFormat => "Update for the driver model “{0}”";
 
         public override FileAcManager<DriverModelObject> GetManager() {
             return DriverModelsManager.Instance;

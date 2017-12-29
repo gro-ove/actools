@@ -124,10 +124,10 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        public static async Task<string> LoadAsyncTo(string argument, FlexibleLoaderDestinationCallback destinationCallback,
-                Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
-                Func<bool> pauseCallback = null, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> LoadAsyncTo(string argument,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination, [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination,
+                Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
                 using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
@@ -147,7 +147,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                     }
 
                     cancellation.ThrowIfCancellationRequested();
-                    metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
 
                     var initialProgressCallback = true;
                     var reportStopwatch = Stopwatch.StartNew();
@@ -156,7 +156,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                     if (loader.UsesClientToDownload) {
                         client.DownloadProgressChanged += (sender, args) => {
                             if (initialProgressCallback) {
-                                metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
                                 initialProgressCallback = false;
                             }
 
@@ -168,10 +168,10 @@ namespace AcManager.Tools.Helpers.Loaders {
                         };
                     }
 
-                    var loaded = await loader.DownloadAsync(client, destinationCallback, pauseCallback,
+                    var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
                             loader.UsesClientToDownload ? null : new Progress<long>(p => {
                                 if (initialProgressCallback) {
-                                    metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
                                     initialProgressCallback = false;
                                 }
 

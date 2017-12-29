@@ -34,9 +34,9 @@
               <Setter TargetName="PART_ListBox" Property="ItemsPanel">
                 <Setter.Value>
                   <ItemsPanelTemplate>
-                    <!--<mui:VirtualizingTilePanel ItemWidth="160" ItemHeight="90" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />-->
-                    <mui:VirtualizingTilePanel2 ItemWidth="160" ItemHeight="90" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="24,24"
-                        CacheLengthUnit="Item" />
+                    <mui:VirtualizingTilePanel ItemWidth="160" ItemHeight="90" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                    <!--<mui:VirtualizingTilePanel2 ItemWidth="160" ItemHeight="90" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="24,24"
+                        CacheLengthUnit="Item" />-->
                   </ItemsPanelTemplate>
                 </Setter.Value>
               </Setter>

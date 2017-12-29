@@ -32,6 +32,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         [NotNull]
         public string Name { get; }
 
+        public abstract double Priority { get; }
+
         [CanBeNull]
         public string Version { get; private set; }
 

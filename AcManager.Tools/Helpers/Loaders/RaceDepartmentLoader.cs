@@ -86,14 +86,16 @@ namespace AcManager.Tools.Helpers.Loaders {
             return true;
         }
 
-        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback,
-                Func<bool> pauseCallback, IProgress<long> progress, CancellationToken cancellation) {
+        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
+                IProgress<long> progress, CancellationToken cancellation) {
             if (OptionFailImmediately) {
                 throw new NotSupportedException();
             }
 
             using (client.SetProxy(SettingsHolder.Content.RdProxy)) {
-                return await base.DownloadAsyncInner(client, destinationCallback, pauseCallback, progress, cancellation);
+                return await base.DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
             }
         }
     }

@@ -128,6 +128,7 @@
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Effects\AsTransparencyMask.cs" />
     <Compile Include="Effects\InvertEffect.cs" />
     <Compile Include="Effects\InvertKeepColorEffect.cs" />
     <Compile Include="Effects\NorEffect4.cs" />
@@ -198,11 +199,14 @@
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\BindableConverterConverter.cs" />
     <Compile Include="Windows\Converters\BrushOpacityConverter.cs" />
+    <Compile Include="Windows\Converters\DifferenceToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\DrawingToColorConverter.cs" />
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
+    <Compile Include="Windows\Converters\SolidBrushToColorConverter.cs" />
     <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
     <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
     <Compile Include="Windows\CubicBesierEase.cs" />
@@ -743,6 +747,10 @@
   <ItemGroup>
     <Resource Include="Effects\Shaders\InvertEffect.ps" />
     <Resource Include="Effects\Shaders\InvertKeepColorEffect.ps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Effects\Shaders\AsTransparencyMask.fx" />
+    <Resource Include="Effects\Shaders\AsTransparencyMask.ps" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

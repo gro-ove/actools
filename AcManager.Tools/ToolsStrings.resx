@@ -1287,28 +1287,28 @@
     <value>New showroom {0}</value>
   </data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
-    <value>New font {0}</value>
+    <value>New font “{0}”</value>
   </data>
   <data name="ContentInstallation_WeatherNew" xml:space="preserve">
-    <value>New weather {0}</value>
+    <value>New weather “{0}”</value>
   </data>
   <data name="ContentInstallation_CarExisting" xml:space="preserve">
-    <value>Update for a car {0}</value>
+    <value>Update for {0}</value>
   </data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>Update for a skin {0} for {1}</value>
+    <value>Update for the skin {0} for {1}</value>
   </data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
-    <value>Update for a track {0}</value>
+    <value>Update for {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>Update for a showroom {0}</value>
+    <value>Update for the showroom {0}</value>
   </data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
-    <value>Update for a font {0}</value>
+    <value>Update for the font “{0}”</value>
   </data>
   <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
-    <value>Update for a weather {0}</value>
+    <value>Update for the weather “{0}”</value>
   </data>
   <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
     <value>Select another ID.</value>

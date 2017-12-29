@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcTools.Utils;
@@ -14,15 +17,65 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
-        public static ContentInstallationManager Instance { get; } = new ContentInstallationManager();
+        public static bool OptionSaveAndRestoreDownloads = true;
+
+        private static readonly string StorageKey = ".Downloads.List";
+
+        private static ContentInstallationManager _instance;
+
+        public static ContentInstallationManager Instance {
+            get {
+                if (_instance == null) {
+                    _instance = new ContentInstallationManager();
+                    _instance.Load();
+                }
+
+                return _instance;
+            }
+        }
+
         public static IPluginsNavigator PluginsNavigator { get; set; }
 
         private ContentInstallationManager() {
             DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
+        }
 
-#if DEBUG
-            DownloadList.Add(ContentInstallationEntry.ReadyExample);
-#endif
+        private void Load() {
+            if (OptionSaveAndRestoreDownloads) {
+                DownloadList.AddRange(LoadEntries());
+            }
+
+            DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
+            DownloadList.CollectionChanged += OnCollectionChanged;
+        }
+
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            Save();
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ContentInstallationEntry.Cancelled):
+                case nameof(ContentInstallationEntry.DisplayName):
+                case nameof(ContentInstallationEntry.FailedCommentary):
+                case nameof(ContentInstallationEntry.FailedMessage):
+                case nameof(ContentInstallationEntry.FileName):
+                case nameof(ContentInstallationEntry.InformationUrl):
+                case nameof(ContentInstallationEntry.InputPassword):
+                case nameof(ContentInstallationEntry.IsCancelling):
+                case nameof(ContentInstallationEntry.IsPaused):
+                case nameof(ContentInstallationEntry.LocalFilename):
+                case nameof(ContentInstallationEntry.State):
+                case nameof(ContentInstallationEntry.Version):
+                    Save();
+                    break;
+                case nameof(ContentInstallationEntry.IsDeleted):
+                    // No reason to save here, list will be changed as well
+                    if (sender is ContentInstallationEntry entry) {
+                        DownloadList.Remove(entry);
+                    }
+                    break;
+            }
         }
 
         public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
@@ -43,11 +96,11 @@ namespace AcManager.Tools.ContentInstallation {
                     (current, entry) => current | (entry.State == ContentInstallationEntryState.Loading));
         }
 
-        public void Cancel() {
+        /*public void Cancel() {
             foreach (var entry in DownloadList.ToList()) {
                 entry.CancelCommand.Execute();
             }
-        }
+        }*/
 
         public event EventHandler TaskAdded;
 
@@ -64,28 +117,6 @@ namespace AcManager.Tools.ContentInstallation {
                 return entry.RunAsync();
             }), source);
         }
-
-        /*
-        private void Remove(ContentInstallationEntry entry) {
-            entry.Dispose();
-            ActionExtension.InvokeInMainThread(() => DownloadList.Remove(entry));
-        }
-
-        private async void RemoveLater(ContentInstallationEntry entry) {
-            if (entry.Cancelled || entry.Failed == null) {
-                if (!entry.UserCancelled) {
-                    await Task.Delay(entry.Cancelled ? OptionCancelledDelay : OptionSuccessDelay);
-                }
-
-                Remove(entry);
-            } else {
-                entry.PropertyChanged += (sender, args) => {
-                    if (args.PropertyName == nameof(entry.Cancelled)) {
-                        Remove(entry);
-                    }
-                };
-            }
-        }*/
 
         public static bool IsRemoteSource(string source) {
             return source.StartsWith(@"http:", StringComparison.OrdinalIgnoreCase) ||
@@ -122,6 +153,40 @@ namespace AcManager.Tools.ContentInstallation {
                 Logging.Warning(e);
                 return false;
             }
+        }
+
+        private Busy _busy = new Busy();
+        private bool _isDirty;
+
+        public void Save() {
+            if (!OptionSaveAndRestoreDownloads) return;
+            _isDirty = true;
+            _busy.DoDelay(SaveInner, 300);
+        }
+
+        public void ForceSave() {
+            SaveInner();
+        }
+
+        private IEnumerable<ContentInstallationEntry> LoadEntries() {
+            return CacheStorage.GetStringList(StorageKey).Select(ContentInstallationEntry.Deserialize).NonNull();
+        }
+
+        private void SaveInner() {
+            if (!_isDirty || !OptionSaveAndRestoreDownloads) return;
+            _isDirty = false;
+
+            var l = DownloadList;
+            var sb = new StringBuilder(l.Count * 2);
+            for (var i = 0; i < l.Count; i++) {
+                var x = l[i];
+                if (x.IsDeleted || x.IsDeleting) return;
+
+                if (i > 0) sb.Append('\n');
+                sb.Append(Storage.Encode(x.Serialize()));
+            }
+
+            CacheStorage.Set(StorageKey, sb.ToString());
         }
     }
 }

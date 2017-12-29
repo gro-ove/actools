@@ -246,14 +246,21 @@ namespace AcManager.Tools.Miscellaneous {
                 var idsToUpdate = new[] { id }.Append(information.AlternativeIds ?? new string[0]).ToArray();
                 return updateUrl != null &&
                         await ContentInstallationManager.Instance.InstallAsync(updateUrl, new ContentInstallationParams {
-                            CupType = type,
-                            IdsToUpdate = idsToUpdate,
+                            // Actual installation params
+                            PreferCleanInstallation = information.PreferCleanInstallation,
+
+                            // For displaying stuff
                             DisplayName = information.Name,
+                            IdsToUpdate = idsToUpdate,
+
+                            // For updating content
+                            CupType = type,
                             Author = information.Author,
                             Version = information.Version,
                             InformationUrl = information.InformationUrl,
-                            PreferCleanInstallation = information.PreferCleanInstallation,
-                            PostInstallation = {
+                            SyncDetails = true
+
+                            /*PostInstallation = {
                                 async (progress, token) => {
                                     var manager = GetAssociatedManager(type);
                                     if (manager == null) return;
@@ -265,7 +272,7 @@ namespace AcManager.Tools.Miscellaneous {
                                         cupSupportedObject.SetValues(information.Author, information.InformationUrl, information.Version);
                                     }
                                 }
-                            }
+                            }*/
                         });
             }, type, id);
         }

@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationParams {
         public static readonly ContentInstallationParams Default = new ContentInstallationParams();
 
-        [NotNull]
+        /*[NotNull]
         public readonly List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>
                 PreInstallation = new List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>(),
-                PostInstallation = new List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>();
+                PostInstallation = new List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>();*/
 
         public bool AllowExecutables { get; set; }
 
@@ -45,5 +48,22 @@ namespace AcManager.Tools.ContentInstallation {
         public string Author { get; set; }
 
         public bool PreferCleanInstallation { get; set; }
+
+        public bool SyncDetails { get; set; }
+
+        public async Task PostInstallation(IProgress<AsyncProgressEntry> progress, CancellationToken token) {
+            if (!CupType.HasValue || IdsToUpdate == null) return;
+
+            var manager = CupClient.Instance.GetAssociatedManager(CupType.Value);
+            if (manager == null) return;
+
+            // TODO: Make it firmer
+            progress.Report(new AsyncProgressEntry("Syncing versions…", 0.9999));
+            await Task.Delay(1000);
+            foreach (var cupSupportedObject in IdsToUpdate.Select(x => manager.GetObjectById(x) as ICupSupportedObject).NonNull()) {
+                Logging.Debug($"Set values: {cupSupportedObject}={Version}");
+                cupSupportedObject.SetValues(Author, InformationUrl, Version);
+            }
+        }
     }
 }

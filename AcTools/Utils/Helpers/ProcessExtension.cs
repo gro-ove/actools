@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
@@ -57,21 +58,31 @@ namespace AcTools.Utils.Helpers {
             return new string(text.Reverse().ToArray());
         }
 
+        [NotNull]
         public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, bool shell = true) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            return Process.Start(new ProcessStartInfo {
+
+            // Manual creation allows to catch Win32Exception
+            var process = new Process { StartInfo = new ProcessStartInfo {
                 FileName = filename,
                 Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "",
                 UseShellExecute = shell
-            });
+            } };
+            process.Start();
+            return process;
         }
 
+        [NotNull]
         public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
 
             startInfo.FileName = filename;
             startInfo.Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "";
-            return Process.Start(startInfo);
+
+            // Manual creation allows to catch Win32Exception
+            var process = new Process { StartInfo = startInfo };
+            process.Start();
+            return process;
         }
 
         public static bool HasExitedSafe([NotNull] this Process process) {
@@ -80,8 +91,7 @@ namespace AcTools.Utils.Helpers {
             if (handle == IntPtr.Zero || handle == new IntPtr(-1)) return true;
 
             try {
-                int exitCode;
-                if (Kernel32.GetExitCodeProcess(handle, out exitCode) && exitCode != Kernel32.STILL_ACTIVE) return true;
+                if (Kernel32.GetExitCodeProcess(handle, out var exitCode) && exitCode != Kernel32.STILL_ACTIVE) return true;
                 using (var w = new ProcessWrapper.ProcessWaitHandle(handle)) {
                     return w.WaitOne(0, false);
                 }
@@ -118,8 +128,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             try {
-                int exitCode;
-                if (Kernel32.GetExitCodeProcess(handle, out exitCode) && exitCode != Kernel32.STILL_ACTIVE) return;
+                if (Kernel32.GetExitCodeProcess(handle, out var exitCode) && exitCode != Kernel32.STILL_ACTIVE) return;
                 using (var w = new ProcessWrapper.ProcessWaitHandle(handle)) {
                     AcToolsLogging.Write("Waiting using ProcessWaitHandle…");
 
@@ -221,10 +230,12 @@ namespace AcTools.Utils.Helpers {
 
         private static bool EnumWindow(IntPtr handle, IntPtr pointer) {
             var gch = GCHandle.FromIntPtr(pointer);
-            var list = gch.Target as List<IntPtr>;
-            if (list == null) throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
-            list.Add(handle);
-            return true;
+            if (gch.Target is List<IntPtr> list) {
+                list.Add(handle);
+                return true;
+            }
+
+            throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
         }
 
         public static IReadOnlyList<IntPtr> GetWindowsHandles([NotNull] this Process process) {

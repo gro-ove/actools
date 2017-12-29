@@ -17,6 +17,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
                 : base(path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
 
+        public override double Priority => 120d;
+
         protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => null;
         public override string NewFormat => "New CM theme {0}";
@@ -64,6 +66,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     internal class TexturesConfigEntry : ContentEntryBase {
+        public override double Priority => 110d;
+
         private readonly string _destination;
 
         public TexturesConfigEntry([NotNull] string path, [NotNull] string id, string name = null) : base(path, id, name ?? AcStringValues.NameFromId(id)) {
@@ -102,6 +106,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     internal class SystemConfigEntry : ContentEntryBase {
+        public override double Priority => 110d;
+
         private readonly string _destination;
 
         public SystemConfigEntry([NotNull] string path, [NotNull] string id, string name = null)

@@ -46,7 +46,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Translation:" Margin="0 12 0 0" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Shijie Zhang (St3fan), Stanislav Minakov." />
+            BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Roberto Zagallo, Shijie Zhang (St3fan), Stanislav Minakov." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"

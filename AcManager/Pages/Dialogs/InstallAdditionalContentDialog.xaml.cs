@@ -19,15 +19,24 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public class AdditionalContentEntryTemplateSelectorInner : DataTemplateSelector {
         public DataTemplate BasicTemplate { get; set; }
         public DataTemplate TrackTemplate { get; set; }
+        public DataTemplate FontTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is TrackContentEntry ? TrackTemplate : BasicTemplate;
+            switch (item) {
+                case TrackContentEntry _:
+                    return TrackTemplate;
+                case FontContentEntry _:
+                    return FontTemplate;
+                default:
+                    return BasicTemplate;
+            }
         }
     }
 
@@ -67,7 +76,7 @@ namespace AcManager.Pages.Dialogs {
                 _dialog.Show();
                 _dialog.Closed += (sender, args) => {
                     if (IsAlone) {
-                        ContentInstallationManager.Instance.Cancel();
+                        // ContentInstallationManager.Instance.Cancel();
                     }
 
                     _dialog = null;
@@ -145,10 +154,9 @@ namespace AcManager.Pages.Dialogs {
                         ContentInstallationManager.Instance.InstallAsync(entry.Source).ContinueWith(async v => {
                             if (!v.Result) {
                                 await Task.Delay(1);
-                                ContentInstallationManager.Instance.InstallAsync(entry.LoadedFilename ?? entry.Source).Forget();
+                                ContentInstallationManager.Instance.InstallAsync(entry.LocalFilename ?? entry.Source).Forget();
                             }
                         }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                        entry.KeepLoaded = true;
                         entry.CancelCommand.Execute();
                     }
                 }
@@ -212,9 +220,19 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {
-            ItemsListBox.SelectedItem = ((FrameworkElement)sender).DataContext as ContentInstallationEntry;
+        private void OnItemMouseUp(object sender, MouseButtonEventArgs e) {
+            if (((FrameworkElement)sender).DataContext is ContentInstallationEntry item && !ReferenceEquals(ItemsListBox.SelectedItem, item)) {
+                var control = ItemsListBox.GetItemVisual(item);
+                if (control != null) {
+                    var button = control.FindVisualChildren<Button>().FirstOrDefault(x => x.IsMouseOverElement());
+                    button?.Command?.Execute(button.CommandParameter);
+                }
+
+                ItemsListBox.SelectedItem = item;
+            }
         }
+
+        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {}
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -42,12 +42,12 @@ namespace AcManager.Controls {
             set => SetValue(IconProperty, value);
         }
 
-        public static readonly DependencyProperty IconSourceProperty = DependencyProperty.Register(nameof(IconSource), typeof(ImageSource),
+        public static readonly DependencyProperty IconContentProperty = DependencyProperty.Register(nameof(IconContent), typeof(object),
                 typeof(AcObjectHeaderSection));
 
-        public ImageSource IconSource {
-            get => (ImageSource)GetValue(IconSourceProperty);
-            set => SetValue(IconSourceProperty, value);
+        public object IconContent {
+            get => GetValue(IconContentProperty);
+            set => SetValue(IconContentProperty, value);
         }
 
         private UIElement _iconImage;

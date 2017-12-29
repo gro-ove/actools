@@ -331,9 +331,10 @@
     <Compile Include="Helpers\Loaders\FlexibleLoader.cs" />
     <Compile Include="Helpers\Loaders\FlexibleLoaderDestination.cs" />
     <Compile Include="Helpers\Loaders\FlexibleLoaderMetaInformation.cs" />
+    <Compile Include="Helpers\Loaders\FlexibleLoaderReportDestinationCallback.cs" />
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
-    <Compile Include="Helpers\Loaders\FlexibleLoaderDestinationCallback.cs" />
+    <Compile Include="Helpers\Loaders\FlexibleLoaderGetPreferredDestinationCallback.cs" />
     <Compile Include="Helpers\Loaders\MediaFireLoader.cs" />
     <Compile Include="Helpers\Loaders\MegaLoader.cs" />
     <Compile Include="Helpers\Loaders\OneDriveLoader.cs" />

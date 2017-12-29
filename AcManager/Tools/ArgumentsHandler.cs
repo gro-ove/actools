@@ -174,7 +174,7 @@ namespace AcManager.Tools {
                 return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);
                     return new FlexibleLoaderDestination(filename, true);
-                }, information => {
+                }, null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
@@ -190,7 +190,7 @@ namespace AcManager.Tools {
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         private static async Task LoadRemoveFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), information => {
+                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }

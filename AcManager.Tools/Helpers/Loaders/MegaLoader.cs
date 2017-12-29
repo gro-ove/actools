@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CG.Web.MegaApiClient;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class MegaLoader : ILoader {
@@ -33,10 +34,12 @@ namespace AcManager.Tools.Helpers.Loaders {
         public bool UsesClientToDownload => false;
         public bool CanPause => false;
 
-        public async Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, Func<bool> pauseCallback,
+        public async Task<string> DownloadAsync(CookieAwareWebClient client,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
             // TODO: Resume download?
-            var d = destinationCallback(_uri.OriginalString, FlexibleLoaderMetaInformation.FromLoader(this));
+            var d = getPreferredDestination(_uri.OriginalString, FlexibleLoaderMetaInformation.FromLoader(this));
             if (File.Exists(d.Filename)) {
                 if (d.CanResumeDownload && new FileInfo(d.Filename).Length == TotalSize) {
                     return d.Filename;

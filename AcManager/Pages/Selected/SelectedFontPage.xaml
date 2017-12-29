@@ -4,8 +4,10 @@
     xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="OnLoaded">
-  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}" IconBackground="Black"
-      IconMouseUp="OnIconClick">
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseUp="OnIconClick">
+    <c:AcObjectBase.IconContent>
+      <c:FontIconImage Source="{Binding SelectedObject.IconBitmap}" />
+    </c:AcObjectBase.IconContent>
     <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_FontTooltip}"
@@ -43,7 +45,11 @@
         <TextBlock Text="{x:Static g:AppStrings.AcObject_FontTestLabel}" Style="{StaticResource Label}" Margin="0 0 0 0" />
         <mui:BetterTextBox x:Name="TextBox" Placeholder="?" Margin="0 4 0 0" TextChanged="OnTestTextChanged" />
         <Grid x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True"
-            c:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}" />
+            c:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}">
+          <Grid.Effect>
+            <mui:AsTransparencyMask OverlayColor="{DynamicResource AccentColor}" />
+          </Grid.Effect>
+        </Grid>
       </StackPanel>
 
       <DockPanel Margin="8 0 8 8"

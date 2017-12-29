@@ -101,6 +101,18 @@ namespace AcManager.Tools.Objects {
             SkinsCombinedFilename = Path.Combine(DefaultSkinDirectory, "cm_skins_active.json");
         }
 
+        protected override DateTime GetCreationDateTime() {
+            if (File.Exists(_layoutLocation != null ? Path.Combine(_layoutLocation, @"dlc_ui_track.json")
+                    : Path.Combine(Location, @"ui", @"dlc_ui_track.json"))) {
+                var fileInfo = new FileInfo(JsonFilename);
+                if (fileInfo.Exists) {
+                    return fileInfo.CreationTime;
+                }
+            }
+
+            return base.GetCreationDateTime();
+        }
+
         private class LayoutsInformation {
             public string MainLayout;
             public List<string> AdditionalLayouts;

@@ -18,8 +18,10 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         Task<bool> PrepareAsync([NotNull] CookieAwareWebClient client, CancellationToken cancellation);
 
-        Task<string> DownloadAsync([NotNull] CookieAwareWebClient client, [NotNull] FlexibleLoaderDestinationCallback destinationCallback,
-                [CanBeNull] Func<bool> pauseCallback, [CanBeNull] IProgress<long> progress, CancellationToken cancellation);
+        Task<string> DownloadAsync([NotNull] CookieAwareWebClient client,
+                [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
+                [CanBeNull] IProgress<long> progress, CancellationToken cancellation);
 
         Task<string> GetDownloadLink(CancellationToken cancellation);
     }

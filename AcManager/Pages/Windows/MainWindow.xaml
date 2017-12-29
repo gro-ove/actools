@@ -10,9 +10,9 @@
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
     AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
     LocationAndSizeKey="MainWindow_LS" x:Name="Window"
-    AdditionalContentAvailable="{Binding Queue.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}"
+    AdditionalContentAvailable="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}"
     AdditionalContentDownloading="{Binding IsBusyDoingSomething, Source={x:Static t:ContentInstallationManager.Instance}}"
-    AdditionalContentToolTip="{Binding Queue.Count, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} in installing queue'}"
+    AdditionalContentToolTip="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} in installing queue'}"
     ShowAdditionalContentDialogCommand="{Binding ShowAdditionalContentDialogCommand}">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>

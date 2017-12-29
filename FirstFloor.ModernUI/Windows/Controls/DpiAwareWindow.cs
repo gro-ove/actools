@@ -507,8 +507,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _nativeEnabled = value;
 
                 var handle = new WindowInteropHelper(this).Handle;
-                SetWindowLong(handle, GwlStyle, GetWindowLong(handle, GwlStyle) &
-                        ~WsDisabled | (value ? 0 : WsDisabled));
+                SetWindowLong(handle, GwlStyle, (GetWindowLong(handle, GwlStyle) & ~WsDisabled) | (value ? 0 : WsDisabled));
             }
         }
 

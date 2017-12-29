@@ -891,7 +891,7 @@ namespace AcManager.Tools.Helpers {
             private string _fontIconCharacter;
 
             public string FontIconCharacter {
-                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"A"));
+                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"5"));
                 set {
                     value = value?.Trim().Substring(0, 1);
                     if (Equals(value, _fontIconCharacter)) return;

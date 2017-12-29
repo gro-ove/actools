@@ -93,6 +93,17 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        protected override DateTime GetCreationDateTime() {
+            if (File.Exists(Path.Combine(Location, @"ui", @"dlc_ui_car.json"))) {
+                var fileInfo = new FileInfo(JsonFilename);
+                if (fileInfo.Exists) {
+                    return fileInfo.CreationTime;
+                }
+            }
+
+            return base.GetCreationDateTime();
+        }
+
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.CarTagsList;
         }

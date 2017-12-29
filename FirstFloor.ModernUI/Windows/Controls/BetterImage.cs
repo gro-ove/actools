@@ -1217,41 +1217,55 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private WeakReference<ImageSource> _lastCropMaskRef;
         private Rect? _lastCropMaskRect;
 
-        private unsafe Rect? FindCropMask(ImageSource img){
+        private Rect? FindCropMask(ImageSource img){
             if (_lastCropMaskRef != null && _lastCropMaskRef.TryGetTarget(out var v) && ReferenceEquals(v, img)) {
                 return _lastCropMaskRect;
             }
 
-            var b = (BitmapImage)img;
-            if (b.Format.Masks.Count != 4) return null;
+            var b = (BitmapSource)img;
+            if (FindCropArea(b, out var x0, out var y0, out var x1, out var y1)) return null;
+
+            _lastCropMaskRef = new WeakReference<ImageSource>(img);
+            _lastCropMaskRect = x1 == 0 ? (Rect?)null : new Rect(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+            return _lastCropMaskRect;
+        }
+
+        protected virtual unsafe bool FindCropArea(BitmapSource b, out int left, out int top, out int right, out int bottom) {
+            if (b.Format.Masks.Count != 4) {
+                left = top = right = bottom = 0;
+                return true;
+            }
 
             int w = b.PixelWidth, h = b.PixelHeight, s = (w * b.Format.BitsPerPixel + 7) / 8;
             var a = new byte[h * s];
             b.CopyPixels(a, s, 0);
 
             var k = b.Format.Masks.ElementAtOrDefault(0).Mask;
-            if (k == null) return null;
+            if (k == null) {
+                left = top = right = bottom = 0;
+                return true;
+            }
 
             var m = BitConverter.ToUInt32(k.Reverse().ToArray(), 0);
-            int x0 = w, y0 = h, x1 = 0, y1 = 0;
+
+            left = w;
+            top = h;
+            bottom = right = 0;
             fixed (byte* p = a) {
                 var u = (uint*)p;
                 var o = 0;
-                for (var y = 0; y < h; y++){
-                    for (var x = 0; x < w; x++){
-                        if ((u[o++] & m) != 0){
-                            if (x < x0) x0 = x;
-                            if (y < y0) y0 = y;
-                            if (x > x1) x1 = x;
-                            if (y > y1) y1 = y;
+                for (var y = 0; y < h; y++) {
+                    for (var x = 0; x < w; x++) {
+                        if ((u[o++] & m) != 0) {
+                            if (x < left) left = x;
+                            if (y < top) top = y;
+                            if (x > right) right = x;
+                            if (y > bottom) bottom = y;
                         }
                     }
                 }
             }
-
-            _lastCropMaskRef = new WeakReference<ImageSource>(img);
-            _lastCropMaskRect = x1 == 0 ? (Rect?)null : new Rect(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
-            return _lastCropMaskRect;
+            return false;
         }
 
         protected override void OnRender(DrawingContext dc) {

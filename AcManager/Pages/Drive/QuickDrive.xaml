@@ -113,8 +113,10 @@
 
       <mui:Cell x:Name="TrackCell" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedTrack}"
           AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
-        <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-        <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+        <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
+            Stretch="UniformToFill" />
+        <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
+            ShowBroken="False" />
         <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
             Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
 
@@ -152,7 +154,8 @@
           </Border.Triggers>
         </Border>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed"
+            c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
           <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
               Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
         </Button>

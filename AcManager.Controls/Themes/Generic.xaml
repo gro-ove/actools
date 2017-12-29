@@ -1,4 +1,6 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:AcManager.Controls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectBase.xaml" />
@@ -11,6 +13,7 @@
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/CarBlock.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/GraphDataViewer.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Themes/FontIconImage.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/MessageBlock.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/RaceGridEditorTable.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/TemperatureValueLabel.xaml" />

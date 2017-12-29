@@ -37,10 +37,13 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         protected override async Task ExecuteInner() {
+            Logging.Debug("Fixing error: " + DisplayName);
+
             try {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Solving the issue…");
-                    await _execute(waiting.CancellationToken);
+                    await Task.Yield().ConfigureAwait(false);
+                    await _execute(CancellationToken.None).ConfigureAwait(false);
                 }
             } catch (Exception e) when (e.IsCanceled()) {
                 return;
