@@ -36,6 +36,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _delayed = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Delayed));
+                OnPropertyChanged(nameof(ScalePercentage));
                 ValuesStorage.Set("__uiScale_2", value);
 
                 foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
@@ -44,6 +45,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     window.Height *= delta;
                 }
             }
+        }
+
+        private double _scalePercentage;
+
+        public double ScalePercentage {
+            get => Scale * 100;
+            set => Scale = value / 100;
         }
 
         private double _delayed;

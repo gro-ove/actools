@@ -137,8 +137,8 @@ namespace AcManager {
             } else if (new CustomMessageBox(
                     @"Looks like CM failed to start last time, it could be related to third-party apps such as RivaTuner messing with UI rendering. If this is the case, please, add Content Manager to exceptions.
 
-As an alternative solution, you can switch to software UI rendering, but it will slow app down.", "Potential Compatibility Issue",
-                    "Switch To Software Rendering", "Use Hardware-Accelerated Rendering").ShowDialog() == System.Windows.Forms.DialogResult.Yes) {
+As an alternative solution, you can switch to software UI rendering, but it will slow app down.", "Potential compatibility issue",
+                    "Switch to software rendering", "Use hardware-accelerated rendering").ShowDialog() == System.Windows.Forms.DialogResult.Yes) {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
         }
@@ -389,11 +389,11 @@ As an alternative solution, you can switch to software UI rendering, but it will
             if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {
                 if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;
-                    Toast.Show("Starter Changed to Replacement", "Enjoy Steam being included into CM");
+                    Toast.Show("Starter changed to replacement", "Enjoy Steam being included into CM");
                 }
             } else if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType) {
                 SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.DefaultStarterType;
-                Toast.Show($"Starter Changed to {SettingsHolder.Drive.SelectedStarterType.DisplayName}", "Steam Starter is unavailable", () => {
+                Toast.Show($"Starter changed to {SettingsHolder.Drive.SelectedStarterType.DisplayName}", "Steam Starter is unavailable", () => {
                     ModernDialog.ShowMessage(
                             "To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
                             "Steam Starter is unavailable", MessageBoxButton.OK);
@@ -402,6 +402,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
+            ExtraProgressRings.Initialize();
 
             FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {

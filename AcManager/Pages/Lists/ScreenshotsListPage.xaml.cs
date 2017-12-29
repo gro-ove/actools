@@ -177,8 +177,8 @@ namespace AcManager.Pages.Lists {
             if (!e.Handled && ((FrameworkElement)sender).DataContext is Screenshot image) {
                 e.Handled = true;
                 new ContextMenu()
-                        .AddItem("View In Explorer", image.ViewInExplorerCommand)
-                        .AddItem("Remove To Recycle Bin", image.DeleteCommand)
+                        .AddItem("Show in folder", image.ViewInExplorerCommand)
+                        .AddItem("Remove to the Recycle Bin", image.DeleteCommand)
                         .IsOpen = true;
             }
         }

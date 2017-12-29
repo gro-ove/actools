@@ -10,6 +10,16 @@
 
   <Border x:Key="WindowBackgroundContent" x:Shared="False" Background="{DynamicResource WindowBackgroundContentBrush}" />
 
+  <Button x:Key="WindowCloseButtonDefault" Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Close}"
+      Style="{StaticResource SystemCloseButton}" x:Shared="False">
+    <c:Cell Width="10" Height="10" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
+      <Line X1="-5.01" X2="14.99" Y1="-5.01" Y2="14.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+          RenderOptions.EdgeMode="Unspecified" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=c:ModernWindow}}" />
+      <Line X1="-5.01" X2="14.99" Y1="14.99" Y2="-5.01" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+          RenderOptions.EdgeMode="Unspecified" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=c:ModernWindow}}" />
+    </c:Cell>
+  </Button>
+
   <Style TargetType="c:ModernWindow">
     <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
     <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
@@ -18,6 +28,7 @@
     <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BackgroundContent" Value="{StaticResource WindowBackgroundContent}" />
+    <Setter Property="CloseButton" Value="{StaticResource WindowCloseButtonDefault}" />
     <Setter Property="FrameMargin" Value="0" />
     <Setter Property="Width" Value="800" />
     <Setter Property="Height" Value="640" />
@@ -30,10 +41,12 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernWindow">
-          <Border x:Name="WindowBorder" Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
+          <Border x:Name="WindowBorder" Background="{TemplateBinding Background}"
+              Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
             <AdornerDecorator a:FancyHintsService.HintsDecorator="True">
-              <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                <c:Cell>
+              <c:Cell>
+                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                <c:Cell Margin="{TemplateBinding BorderThickness}">
                   <c:Cell.LayoutTransform>
                     <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
                         ScaleX="{Binding Scale, Source={x:Static c:DpiAwareWindow.AppScale}}"
@@ -47,6 +60,16 @@
                   <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar">
                     <!-- Window system buttons-->
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+                      <StackPanel.RenderTransform>
+                        <TranslateTransform X="{TemplateBinding IconPathThickness}" Y="{TemplateBinding IconPathThickness}" />
+                      </StackPanel.RenderTransform>
+                      <ItemsControl ItemsSource="{TemplateBinding TitleButtons}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                      </ItemsControl>
                       <Button Command="{Binding ViewErrorsCommand, Source={x:Static h:NonfatalError.Instance}}" Style="{StaticResource SystemButton}"
                           Visibility="{Binding HasUnseen, Source={x:Static h:NonfatalError.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.ToolTip>
@@ -77,15 +100,7 @@
                               VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Button>
                       </c:Cell>
-                      <Button Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Close}"
-                          Style="{StaticResource SystemCloseButton}">
-                        <c:Cell Width="10" Height="10" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
-                          <Line X1="-5.01" X2="14.99" Y1="-5.01" Y2="14.99" StrokeThickness="{TemplateBinding IconPathThickness}"
-                              Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
-                          <Line X1="-5.01" X2="14.99" Y1="14.99" Y2="-5.01" StrokeThickness="{TemplateBinding IconPathThickness}"
-                              Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" RenderOptions.EdgeMode="Unspecified" />
-                        </c:Cell>
-                      </Button>
+                      <ContentPresenter Content="{TemplateBinding CloseButton}" />
                     </StackPanel>
 
                     <!-- Title links -->
@@ -137,7 +152,7 @@
                   <ContentPresenter Content="{TemplateBinding AdditionalContent}" />
                   <Rectangle x:Name="DimmingThing" Panel.ZIndex="20" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                 </c:Cell>
-              </Border>
+              </c:Cell>
             </AdornerDecorator>
           </Border>
 

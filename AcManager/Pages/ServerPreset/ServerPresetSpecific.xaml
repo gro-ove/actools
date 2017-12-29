@@ -199,12 +199,12 @@
         mui:ContextMenuAdvancement.PropagateToChildren="True">
       <StackPanel.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="Temperature In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'temperatureRelativeRange=True'}" />
+          <MenuItem Header="Temperature in relative range" IsCheckable="True" IsChecked="{mui:Stored 'temperatureRelativeRange=True'}" />
           <Separator />
-          <MenuItem Header="Wind Speed In Meters Per Second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
-          <MenuItem Header="Wind Speed In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
-          <MenuItem Header="Wind Direction In Degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
-          <MenuItem Header="Wind Speed In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+          <MenuItem Header="Wind speed in meters per second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
+          <MenuItem Header="Wind speed in relative range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+          <MenuItem Header="Wind direction in degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
+          <MenuItem Header="Wind speed in relative range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
         </ContextMenu>
       </StackPanel.ContextMenu>
 

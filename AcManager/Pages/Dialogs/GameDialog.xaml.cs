@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media.Effects;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
@@ -47,10 +48,10 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             if (_progressStyles == null) {
-                _progressStyles = GoodShuffle.Get((string[])FindResource("ProgressRingStyles"));
+                _progressStyles = GoodShuffle.Get(ExtraProgressRings.Styles.Keys);
             }
 
-            ProgressRing.Style = FindResource(_progressStyles.Next) as Style;
+            ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
 
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
@@ -362,12 +363,12 @@ namespace AcManager.Pages.Dialogs {
                         result.Columns.Add("Tyres");
 
                         for (var i = 0; i < laps[0].Sectors.Length; i++) {
-                            result.Columns.Add($"{(i + 1).ToOrdinal("sector")} Sector");
+                            result.Columns.Add($"{(i + 1).ToOrdinal("sector")} sector");
                         }
 
                         result.Columns.Add("Total");
                         result.Columns.Add("Delta");
-                        result.Columns.Add("Session Delta");
+                        result.Columns.Add("Session delta");
                     }
 
                     foreach (var lap in laps.Where(x => x.Total > TimeSpan.Zero)) {
@@ -537,7 +538,7 @@ namespace AcManager.Pages.Dialogs {
                                 ? new MenuItem {
                                     Header = SaveAsText(),
                                     Command = new DelegateCommand(() => {
-                                        var newName = Prompt.Show("Save replay as:", "Replay Name", replayHelper.Name, "?", required: true);
+                                        var newName = Prompt.Show("Save replay as:", "Replay name", replayHelper.Name, "?", required: true);
                                         if (!string.IsNullOrWhiteSpace(newName)) {
                                             replayHelper.Name = newName;
                                         }
@@ -549,7 +550,7 @@ namespace AcManager.Pages.Dialogs {
                         new MenuItem { Header = ButtonText(), Command = new DelegateCommand(replayHelper.ToggleKept) },
                         new Separator(),
                         new MenuItem {
-                            Header = "Share Replay",
+                            Header = "Share replay",
                             Command = new AsyncCommand(() => {
                                 var car = _properties?.BasicProperties?.CarId == null ? null :
                                         CarsManager.Instance.GetById(_properties.BasicProperties.CarId);

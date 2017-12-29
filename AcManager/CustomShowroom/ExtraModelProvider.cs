@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using AcManager.Controls;
@@ -23,7 +24,7 @@ namespace AcManager.CustomShowroom {
             using (var dialog = new WaitingDialog()) {
                 dialog.Report(ControlsStrings.Common_Downloading);
 
-                var data = await CmApiProvider.GetStaticDataBytesAsync("cs_crew", dialog, dialog.CancellationToken);
+                var data = await CmApiProvider.GetStaticDataBytesAsync("cs_crew", TimeSpan.FromDays(3), dialog, dialog.CancellationToken);
                 if (data == null) return null;
 
                 return await Task.Run(() => {

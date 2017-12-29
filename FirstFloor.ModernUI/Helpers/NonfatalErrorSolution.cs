@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 : base(() => Task.Delay(0), () => execute != null) {
             _entry = entry;
             _execute = execute;
-            DisplayName = displayName ?? "Fix It";
+            DisplayName = displayName ?? "Fix it";
         }
 
         protected override bool CanExecuteOverride() {
@@ -37,10 +37,13 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         protected override async Task ExecuteInner() {
+            Logging.Debug("Fixing error: " + DisplayName);
+
             try {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Solving the issue…");
-                    await _execute(waiting.CancellationToken);
+                    await Task.Yield().ConfigureAwait(false);
+                    await _execute(CancellationToken.None).ConfigureAwait(false);
                 }
             } catch (Exception e) when (e.IsCanceled()) {
                 return;

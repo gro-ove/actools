@@ -352,7 +352,7 @@
                   <DockPanel>
                     <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource AddIconData}"
                         DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
-                    <TextBlock Text="Create a New One" VerticalAlignment="Center" Margin="4 0 0 0" />
+                    <TextBlock Text="Create a new one" VerticalAlignment="Center" Margin="4 0 0 0" />
                   </DockPanel>
                 </Button>
                 <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />

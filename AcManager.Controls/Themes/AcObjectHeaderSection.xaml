@@ -26,9 +26,10 @@
           <Setter.Value>
             <ControlTemplate TargetType="ac:AcObjectHeaderSection">
               <DockPanel>
-                <mui:BetterImage x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0"
-                    Source="{Binding IconSource, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Left"
-                    Background="{TemplateBinding IconBackground}" />
+                <Border DockPanel.Dock="Left" Width="24" Height="24" Margin="0 0 4 0" Background="{TemplateBinding IconBackground}">
+                  <ContentPresenter x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality"
+                      Content="{Binding IconContent, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Border>
                 <ac:FavouriteButton IsChecked="{Binding AcObject.IsFavourite, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Right"
                     Margin="8 0 0 0" />
                 <mui:BetterTextBox Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
@@ -42,7 +43,7 @@
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="ShowIcon" Value="True" />
-          <Condition Property="IconSource" Value="{x:Null}" />
+          <Condition Property="IconContent" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter Property="Template">
           <Setter.Value>

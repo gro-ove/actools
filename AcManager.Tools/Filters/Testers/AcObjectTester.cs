@@ -116,7 +116,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("name", "Name", KeywordType.String, KeywordPriority.Obscured),
                 new KeywordDescription("enabled", "Enabled", KeywordType.Flag, KeywordPriority.Normal),
                 new KeywordDescription("rating", "User rating", KeywordType.Number, KeywordPriority.Normal, "rate", "rated"),
-                new KeywordDescription("fav", "In Favorites", KeywordType.Flag, KeywordPriority.Normal, "favourite", "favorite", "favorited", "favourited"),
+                new KeywordDescription("fav", "In favorites", KeywordType.Flag, KeywordPriority.Normal, "favourite", "favorite", "favorited", "favourited"),
                 new KeywordDescription("new", "Added recently", KeywordType.Flag, KeywordPriority.Important),
                 new KeywordDescription("age", "Time passed since file was created", "days", KeywordType.TimeSpan, KeywordPriority.Normal),
                 new KeywordDescription("date", "Creation date", KeywordType.DateTime, KeywordPriority.Obscured),

@@ -269,7 +269,7 @@ namespace AcManager.Tools.Helpers {
                     total = Math.Max(suggestedTotal.Value, args.BytesReceived);
                 }
 
-                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
+                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total, null));
             }
 
             DownloadProgressChanged += Handler;
@@ -290,7 +290,7 @@ namespace AcManager.Tools.Helpers {
                     total = Math.Max(suggestedTotal.Value, args.BytesSent);
                 }
 
-                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesSent, total));
+                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesSent, total, null));
             }
 
             UploadProgressChanged += Handler;

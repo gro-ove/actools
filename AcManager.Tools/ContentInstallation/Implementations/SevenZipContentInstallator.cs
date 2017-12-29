@@ -21,6 +21,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation.Implementations {
     public class SevenZipContentInstallator : ContentInstallatorBase {
         public static readonly string PluginId = "7Zip";
+        public static readonly string MinimalRecommendedVersion = "17.0.1";
 
         public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams, CancellationToken c) {
             var result = new SevenZipContentInstallator(filename, installationParams);

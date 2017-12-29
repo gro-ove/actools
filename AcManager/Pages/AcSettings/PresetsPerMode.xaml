@@ -151,7 +151,7 @@
               <mui:SpacingStackPanel Spacing="8">
                 <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" HorizontalAlignment="Center"
                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
-                <TextBlock Text="Create New" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                <TextBlock Text="Create new" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
               </mui:SpacingStackPanel>
             </Button>
           </Border>

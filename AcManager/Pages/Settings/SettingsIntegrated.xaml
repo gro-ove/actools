@@ -118,7 +118,7 @@
           <Label Content="Update entries for mods if different" />
         </CheckBox>
         <DockPanel>
-          <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+          <Button Content="Import all distances now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
               Command="{Binding ImportSidekickOdometerCommand}" />
           <CheckBox IsChecked="{Binding Drive.SidekickOdometerImportValues}">
             <Label Content="Import driven distance from Sidekick app if bigger" />
@@ -143,7 +143,7 @@
         <!-- Odometer by Stereo -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Odometer by Stereo:" />
         <DockPanel>
-          <Button Content="Import All Distances Now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
+          <Button Content="Import all distances now" ToolTip="By default, CM will only update values for selected car before the race" Margin="8 -4 0 -4"
               Command="{Binding ImportStereoOdometerCommand}" />
           <CheckBox IsChecked="{Binding Drive.StereoOdometerImportValues}">
             <Label Content="Import driven distance from Odometer app if bigger" />

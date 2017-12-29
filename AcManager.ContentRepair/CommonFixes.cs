@@ -46,7 +46,7 @@ namespace AcManager.ContentRepair {
         }
 
         public static async Task FixMissingDefaultPpFilter(CancellationToken cancellation) {
-            var original = await CmApiProvider.GetStaticDataBytesAsync("pp_default", cancellation: cancellation);
+            var original = await CmApiProvider.GetStaticDataBytesAsync("pp_default", TimeSpan.FromDays(3), cancellation: cancellation);
             if (cancellation.IsCancellationRequested) return;
 
             await Task.Run(() => {

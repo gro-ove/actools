@@ -73,6 +73,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             NewWindowCreated?.Invoke(this, EventArgs.Empty);
         }
 
+        public new static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string),
+                typeof(DpiAwareWindow), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.None, OnTitleChanged, CoerceTitle));
+
+        private static object CoerceTitle(DependencyObject d, object basevalue) {
+            return basevalue?.ToString().ToTitle();
+        }
+
+        private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            ((Window)d).Title = e.NewValue as string;
+        }
+
+        public new string Title {
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
+        }
+
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs) {
             try {
                 if (IsActive) {
@@ -396,25 +412,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Height = height;
         }
 
-        private bool _scaled;
-
-        private void RescaleIfNeeded() {
-            if (OptionScale != 1d && !_scaled) {
-                if (IsFinite(MaxWidth)) MaxWidth *= OptionScale;
-                if (IsFinite(MaxHeight)) MaxHeight *= OptionScale;
-                if (IsFinite(Width)) Width *= OptionScale;
-                if (IsFinite(Height)) Height *= OptionScale;
-                if (IsFinite(MinWidth)) MinWidth *= OptionScale;
-                if (IsFinite(MinHeight)) MinHeight *= OptionScale;
-                _scaled = true;
-            }
-        }
-
         /// <summary>
         /// Refreshes the current monitor DPI settings and update the window size and layout scale accordingly.
         /// </summary>
         protected void RefreshMonitorDpi() {
-            RescaleIfNeeded();
             if (!_isPerMonitorDpiAware) {
                 return;
             }
@@ -491,8 +492,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _nativeEnabled = value;
 
                 var handle = new WindowInteropHelper(this).Handle;
-                SetWindowLong(handle, GwlStyle, GetWindowLong(handle, GwlStyle) &
-                        ~WsDisabled | (value ? 0 : WsDisabled));
+                SetWindowLong(handle, GwlStyle, (GetWindowLong(handle, GwlStyle) & ~WsDisabled) | (value ? 0 : WsDisabled));
             }
         }
 
@@ -530,7 +530,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (key == null) return;
 
             try {
-                RescaleIfNeeded();
                 this.SetPlacement(ValuesStorage.GetString(key));
                 Loaded += (sender, args) => this.IsWindowOnAnyScreen();
             } catch (Exception e) {
@@ -543,7 +542,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (key == null || WindowState == WindowState.Minimized || !IsLoaded) return;
 
             try {
-                RescaleIfNeeded();
                 ValuesStorage.Set(key, this.GetPlacement());
             } catch (Exception e) {
                 Logging.Warning(e);

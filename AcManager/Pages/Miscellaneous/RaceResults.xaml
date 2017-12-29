@@ -24,9 +24,9 @@
             <DockPanel>
               <mui:SpacingUniformGrid Columns="1" VerticalSpacing="2" DockPanel.Dock="Right" Margin="4 2 4 2">
                 <Button Content="Details" Command="{Binding ShowDetailsCommand}" />
-                <Button Content="Try Again" Click="OnTryAgainClick" />
+                <Button Content="Try again" Click="OnTryAgainClick" />
                 <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="2">
-                  <Button Content="View In Explorer" Command="{Binding ViewInExplorerCommand}" />
+                  <Button Content="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
                   <Button Content="Delete" Command="{Binding DeleteCommand}" />
                 </mui:SpacingUniformGrid>
               </mui:SpacingUniformGrid>

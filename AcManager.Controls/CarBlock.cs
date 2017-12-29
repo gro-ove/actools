@@ -299,7 +299,7 @@ namespace AcManager.Controls {
             contextMenu.Items.Add(item);
 
             // presets
-            item = new MenuItem { Header = "Showroom Presets" };
+            item = new MenuItem { Header = "Showroom presets" };
             foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue),
                     p => CarOpenInShowroomDialog.RunPreset(p.Filename, car, skin?.Id))) {
                 item.Items.Add(menuItem);
@@ -324,7 +324,7 @@ namespace AcManager.Controls {
 
             // presets
             if (CustomShowroomWrapper != null) {
-                item = new MenuItem { Header = "Custom Showroom Presets" };
+                item = new MenuItem { Header = "Custom showroom presets" };
                 foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(CustomShowroomWrapper.PresetableKeyValue),
                         p => CustomShowroomWrapper.StartAsync(car, skin, p.Filename))) {
                     item.Items.Add(menuItem);

@@ -107,7 +107,7 @@ namespace AcManager.Tools {
 
             public string Id { get; }
 
-            public string DisplayName => "Temporary Source";
+            public string DisplayName => "Temporary source";
 
             public event EventHandler Obsolete {
                 add { }

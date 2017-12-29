@@ -243,7 +243,8 @@ namespace FirstFloor.ModernUI.Helpers {
             return Titling.Convert(s, culture);
         }
 
-        public static string ToSentence(this string s) {
+        public static string ToSentence([NotNull] this string s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             if (s.Length == 0) return string.Empty;
 
             var l = s[s.Length - 1];

@@ -15,7 +15,7 @@ namespace AcManager.ContentRepair {
 
     public class CommonErrorSuggestion : ContentRepairSuggestion {
         public CommonErrorSuggestion(string name, string description, Func<IProgress<AsyncProgressEntry>, CancellationToken, Task<bool>> fix) :
-                base("Common Error", name, description, fix) {}
+                base("Common error", name, description, fix) {}
     }
 
     public class ContentRepairSuggestionFix {

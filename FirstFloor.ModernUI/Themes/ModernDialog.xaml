@@ -182,7 +182,7 @@
                   </ScrollViewer>
 
                   <c:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                    <Button Content="Copy To Clipboard" Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <Button Content="Copy to clipboard" Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Button Content="Restart" Command="{Binding RestartCommand, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Button Content="Close" Command="{Binding ExitCommand, RelativeSource={RelativeSource TemplatedParent}}" />
                   </c:SpacingStackPanel>

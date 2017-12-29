@@ -273,7 +273,7 @@ namespace AcManager.Tools.Profile {
 
             var car = CarsManager.Instance.GetById(entry.CarId)?.DisplayName ?? entry.CarId;
             var track = TracksManager.Instance.GetLayoutByKunosId(entry.TrackId)?.LayoutName ?? entry.TrackId;
-            if (ModernDialog.ShowMessage($"Are you sure you want to remove {car} on {track} lap time?", "Remove Lap Time",
+            if (ModernDialog.ShowMessage($"Are you sure you want to remove {car} on {track} lap time?", "Remove lap time",
                     MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try {

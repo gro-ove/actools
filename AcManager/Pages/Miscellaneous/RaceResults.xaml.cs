@@ -549,11 +549,11 @@ namespace AcManager.Pages.Miscellaneous {
                 e.Handled = true;
                 var c = new ContextMenu();
                 if (item.JoinOnlineServerCommand.CanExecute()) {
-                    c.AddItem("Join Online", item.JoinOnlineServerCommand).AddSeparator();
+                    c.AddItem("Join online", item.JoinOnlineServerCommand).AddSeparator();
                 }
 
-                c.AddItem("Setup Race", item.SetupRaceCommand)
-                 .AddItem("Start Race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
+                c.AddItem("Setup race", item.SetupRaceCommand)
+                 .AddItem("Start race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
                  .IsOpen = true;
             }
         }

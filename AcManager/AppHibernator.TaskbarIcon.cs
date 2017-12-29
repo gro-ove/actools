@@ -14,7 +14,7 @@ namespace AcManager {
 
         private void AddTrayIconWpf() {
             ActionExtension.InvokeInMainThread(() => {
-                var rhm = new MenuItem { Header = "RHM Settings", Command = RhmService.Instance.ShowSettingsCommand };
+                var rhm = new MenuItem { Header = "RHM settings", Command = RhmService.Instance.ShowSettingsCommand };
                 rhm.SetBinding(UIElement.VisibilityProperty, new Binding {
                     Source = RhmService.Instance,
                     Path = new PropertyPath(nameof(RhmService.Active))

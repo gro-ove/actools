@@ -203,21 +203,22 @@ namespace AcManager.LargeFilesSharing {
                     }
                 }
 
+                var stopwatch = new AsyncProgressBytesStopwatch();
                 using (var stream = await request.GetRequestStreamAsync()) {
                     if (cancellation.IsCancellationRequested) return null;
-                    progress?.Report(AsyncProgressEntry.CreateUploading(0, total));
+                    progress?.Report(AsyncProgressEntry.CreateUploading(0, total, stopwatch));
 
                     await stream.WriteAsync(prefix, 0, prefix.Length, cancellation);
                     if (cancellation.IsCancellationRequested) return null;
 
                     const int blockSize = 10240;
                     for (var i = 0; i < data.Length; i += blockSize) {
-                        progress?.Report(AsyncProgressEntry.CreateUploading(prefix.Length + i, total));
+                        progress?.Report(AsyncProgressEntry.CreateUploading(prefix.Length + i, total, stopwatch));
                         await stream.WriteAsync(data, i, Math.Min(blockSize, data.Length - i), cancellation);
                         if (cancellation.IsCancellationRequested) return null;
                     }
 
-                    progress?.Report(AsyncProgressEntry.CreateUploading(prefix.Length + data.Length, total));
+                    progress?.Report(AsyncProgressEntry.CreateUploading(prefix.Length + data.Length, total, stopwatch));
 
                     await stream.WriteAsync(postfix, 0, postfix.Length, cancellation);
                     if (cancellation.IsCancellationRequested) return null;

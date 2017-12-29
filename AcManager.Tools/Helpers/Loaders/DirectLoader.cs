@@ -44,9 +44,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             return Task.FromResult(true);
         }
 
-        public Task<string> DownloadAsync(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress,
-                CancellationToken cancellation) {
-            return DownloadAsyncInner(client, destinationCallback, progress, cancellation);
+        public Task<string> DownloadAsync(CookieAwareWebClient client,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
+                IProgress<long> progress, CancellationToken cancellation) {
+            return DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
         }
 
         private static bool TryDecode5987(string input, out string output) {
@@ -118,22 +120,28 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public bool UsesClientToDownload => false;
+        public bool CanPause => !UsesClientToDownload;
         protected virtual bool? ResumeSupported => null;
         protected virtual bool HeadRequestSupported => true;
 
         protected virtual Task<string> DownloadAsyncInner([NotNull] CookieAwareWebClient client,
-                [NotNull] FlexibleLoaderDestinationCallback destinationCallback, IProgress<long> progress, CancellationToken cancellation) {
+                [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
+                IProgress<long> progress, CancellationToken cancellation) {
             return UsesClientToDownload
-                    ? DownloadClientAsync(client, destinationCallback, cancellation)
-                    : DownloadResumeSupportAsync(client, destinationCallback, progress, cancellation);
+                    ? DownloadClientAsync(client, getPreferredDestination, reportDestination, checkIfPaused, cancellation)
+                    : DownloadResumeSupportAsync(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
         }
 
-        private async Task<string> DownloadClientAsync([NotNull] CookieAwareWebClient client, [NotNull] FlexibleLoaderDestinationCallback destinationCallback,
+        private async Task<string> DownloadClientAsync([NotNull] CookieAwareWebClient client,
+                [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
                 CancellationToken cancellation) {
             cancellation.Register(client.CancelAsync);
             var information = FlexibleLoaderMetaInformation.FromLoader(this);
-            var destination = destinationCallback(Url, information);
+            var destination = getPreferredDestination(Url, information);
             var filename = FileUtils.EnsureUnique(true, destination.Filename);
+            reportDestination?.Invoke(filename);
             await client.DownloadFileTaskAsync(Url, filename).ConfigureAwait(false);
             return filename;
         }
@@ -165,7 +173,9 @@ namespace AcManager.Tools.Helpers.Loaders {
             return false;
         }
 
-        private async Task<string> DownloadResumeSupportAsync([NotNull] CookieAwareWebClient client, [NotNull] FlexibleLoaderDestinationCallback destinationCallback,
+        private async Task<string> DownloadResumeSupportAsync([NotNull] CookieAwareWebClient client,
+                [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
             // Common variables
             string filename = null, selectedDestination = null, actualFootprint = null;
@@ -245,7 +255,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
                 // Let’s check where to load data, which is potentially the most actual data at this point
-                var destination = destinationCallback(Url, information);
+                var destination = getPreferredDestination(Url, information);
                 selectedDestination = destination.Filename;
                 if (partiallyLoaded != null && (!destination.CanResumeDownload || !FileUtils.ArePathsEqual(selectedDestination, resumeDestination))) {
                     Logging.Warning($"Different destination chosen: {selectedDestination} (before: {resumeDestination})");
@@ -255,7 +265,9 @@ namespace AcManager.Tools.Helpers.Loaders {
                 // TODO: Check that header?
 
                 // Where to write?
-                filename = partiallyLoaded?.FullName ?? FileUtils.EnsureUnique(true, destination.Filename);
+                // ReSharper disable once MergeConditionalExpression
+                filename = partiallyLoaded != null ? partiallyLoaded.FullName : FileUtils.EnsureUnique(true, destination.Filename);
+                reportDestination?.Invoke(filename);
 
                 // Set cancellation token
                 cancellation.Register(o => client.CancelAsync(), null);
@@ -281,7 +293,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 using (var file = File.OpenWrite(filename)) {
                                     Logging.Warning("File beginning found, restart download");
                                     file.Write(bytes, 0, firstBytes);
-                                    await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: progress, cancellation: cancellation);
+                                    await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
                                     cancellation.ThrowIfCancellationRequested();
                                 }
 
@@ -293,22 +305,22 @@ namespace AcManager.Tools.Helpers.Loaders {
                         }
 
                         using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write)) {
-                            await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: new Progress<long>(v => {
+                            await CopyToAsync(remoteData, file, checkIfPaused, new Progress<long>(v => {
                                 progress?.Report(v + rangeFrom);
-                            }), cancellation: cancellation);
+                            }), cancellation);
                             cancellation.ThrowIfCancellationRequested();
                         }
                     }
                 } else {
                     if (headRequest) {
-                        Logging.Warning($"Re-open request to be GET");
+                        Logging.Warning("Re-open request to be GET");
                         remoteData.Dispose();
                         remoteData = await client.OpenReadTaskAsync(Url);
                     }
 
                     using (var file = File.OpenWrite(filename)) {
                         Logging.Debug("Downloading the whole file…");
-                        await remoteData.CopyToAsync(file, bufferSize: BufferSize, progress: progress, cancellation: cancellation);
+                        await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
                         cancellation.ThrowIfCancellationRequested();
                     }
                 }
@@ -330,6 +342,31 @@ namespace AcManager.Tools.Helpers.Loaders {
                 throw;
             } finally {
                 remoteData?.Dispose();
+            }
+        }
+
+        private async Task CopyToAsync(Stream input, Stream output, Func<bool> pauseCallback, IProgress<long> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var buffer = new byte[BufferSize];
+            var totalPassed = 0L;
+
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, pauseCallback?.Invoke() == true ? 1 : buffer.Length, cancellation).ConfigureAwait(false)) > 0) {
+                cancellation.ThrowIfCancellationRequested();
+
+                await output.WriteAsync(buffer, 0, read, cancellation);
+                cancellation.ThrowIfCancellationRequested();
+
+                totalPassed += read;
+                progress?.Report(totalPassed);
+
+                if (pauseCallback?.Invoke() == true) {
+                    await Task.Delay(50, cancellation);
+                }
+
+#if DEBUG
+                await Task.Delay(10, cancellation);
+#endif
             }
         }
 

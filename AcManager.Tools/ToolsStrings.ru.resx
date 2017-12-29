@@ -1032,4 +1032,7 @@
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Трудный</value>
   </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Чемпионат</value>
+  </data>
 </root>

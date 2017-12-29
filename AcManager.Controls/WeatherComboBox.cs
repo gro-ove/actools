@@ -173,7 +173,7 @@ namespace AcManager.Controls {
                 }
 
                 if (AllowWeatherByType && WeatherList.Any(x => x.Type != WeatherType.None)) {
-                    list.Add(new HierarchicalGroup("By Type", WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
+                    list.Add(new HierarchicalGroup("By type", WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
                                                                          .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
                 }
 

@@ -168,8 +168,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
             cancellation.ThrowIfCancellationRequested();
 
             var node = nodes.FirstOrDefault(x => x.Id == DestinationDirectoryId) ?? nodes.First(x => x.Type == NodeType.Root);
+            var stopwatch = new AsyncProgressBytesStopwatch();
             var result = await client.UploadAsync(data, name, node, new Progress<double>(v => {
-                progress?.Report(AsyncProgressEntry.CreateUploading((long)(v / 100d * totalLength), totalLength));
+                progress?.Report(AsyncProgressEntry.CreateUploading((long)(v / 100d * totalLength), totalLength, stopwatch));
             }), null, cancellation);
             cancellation.ThrowIfCancellationRequested();
 

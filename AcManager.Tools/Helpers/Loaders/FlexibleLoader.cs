@@ -124,9 +124,10 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        public static async Task<string> LoadAsyncTo(string argument, FlexibleLoaderDestinationCallback destinationCallback,
-                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> LoadAsyncTo(string argument,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination, [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination,
+                Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
             try {
                 using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
@@ -146,38 +147,41 @@ namespace AcManager.Tools.Helpers.Loaders {
                     }
 
                     cancellation.ThrowIfCancellationRequested();
-                    metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
 
                     var initialProgressCallback = true;
+                    var reportStopwatch = Stopwatch.StartNew();
+                    var progressStopwatch = new AsyncProgressBytesStopwatch();
 
-                    var s = Stopwatch.StartNew();
                     if (loader.UsesClientToDownload) {
                         client.DownloadProgressChanged += (sender, args) => {
                             if (initialProgressCallback) {
-                                metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
                                 initialProgressCallback = false;
                             }
 
-                            if (s.Elapsed.TotalMilliseconds < 20) return;
+                            if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
                             order.Delay();
-                            s.Restart();
+                            reportStopwatch.Restart();
                             progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
-                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive));
+                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive, progressStopwatch));
                         };
                     }
 
-                    var loaded = await loader.DownloadAsync(client, destinationCallback, loader.UsesClientToDownload ? null : new Progress<long>(p => {
-                        if (initialProgressCallback) {
-                            metaInformationCallback?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
-                            initialProgressCallback = false;
-                        }
+                    var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
+                            loader.UsesClientToDownload ? null : new Progress<long>(p => {
+                                if (initialProgressCallback) {
+                                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                    initialProgressCallback = false;
+                                }
 
-                        if (s.Elapsed.TotalMilliseconds < 20) return;
-                        order.Delay();
-                        s.Restart();
-                        progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value)
-                                : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
-                    }), cancellation);
+                                if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
+                                order.Delay();
+                                reportStopwatch.Restart();
+                                progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value, progressStopwatch)
+                                        : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
+                            }), cancellation);
+
                     cancellation.ThrowIfCancellationRequested();
                     Logging.Write("Loaded: " + loaded);
                     return loaded;

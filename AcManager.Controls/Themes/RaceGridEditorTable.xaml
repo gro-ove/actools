@@ -261,7 +261,7 @@
                     CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
                 <DataGridTemplateColumn x:Name="PART_RestrictorColumn" Width="100" Header="Restrictor" SortMemberPath="Restrictor"
                     CellTemplate="{StaticResource Detailed.RestrictorDataTemplate}" />
-                <DataGridTemplateColumn x:Name="PART_AiLimitationColumn" Width="120" Header="AI Limitations" CanUserSort="False"
+                <DataGridTemplateColumn x:Name="PART_AiLimitationColumn" Width="120" Header="AI limitations" CanUserSort="False"
                     CellTemplate="{StaticResource Detailed.AiLimitationDataTemplate}" Visibility="Collapsed" />
               </DataGrid.Columns>
             </DataGrid>
@@ -279,7 +279,7 @@
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
               <co:UserPresetsControl Margin="0 0 4 0" UserPresetable="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="300" />
-              <Button Command="{Binding Model.ShareCommand, RelativeSource={RelativeSource TemplatedParent}}" Margin="0 0 4 0" Content="Share Link" />
+              <Button Command="{Binding Model.ShareCommand, RelativeSource={RelativeSource TemplatedParent}}" Margin="0 0 4 0" Content="Share link" />
               <!--ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"-->
               <Button Command="{TemplateBinding AddOpponentCommand}" Content="{x:Static mui:UiStrings.Common_Add}" />
               <Button Command="{TemplateBinding CloseCommand}" Content="{x:Static mui:UiStrings.Close}" Margin="4 0 0 0" />

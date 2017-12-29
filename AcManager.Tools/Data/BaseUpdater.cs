@@ -49,12 +49,16 @@ namespace AcManager.Tools.Data {
         protected virtual void FirstCheck() {
             CheckAndUpdateIfNeeded().Forget();
         }
-        
+
         private CancellationTokenSource _periodicCheckCancellation;
 
         protected virtual void OnCommonSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.CommonSettings.UpdatePeriod)) return;
             RestartPeriodicCheck();
+        }
+
+        private static bool IsValidTimeSpan(TimeSpan t) {
+            return t != TimeSpan.Zero && t.TotalMilliseconds < int.MaxValue;
         }
 
         protected void RestartPeriodicCheck() {
@@ -65,11 +69,12 @@ namespace AcManager.Tools.Data {
 
             var oldValue = UpdatePeriod;
             UpdatePeriod = GetUpdatePeriod();
-            if (oldValue == TimeSpan.Zero && UpdatePeriod != TimeSpan.Zero) {
+
+            if (!IsValidTimeSpan(oldValue) && IsValidTimeSpan(UpdatePeriod)) {
                 CheckAndUpdateIfNeeded().Forget();
             }
 
-            if (UpdatePeriod == TimeSpan.Zero) return;
+            if (!IsValidTimeSpan(UpdatePeriod)) return;
             _periodicCheckCancellation = new CancellationTokenSource();
             PeriodicCheckAsync(_periodicCheckCancellation.Token).Forget();
         }
@@ -84,7 +89,7 @@ namespace AcManager.Tools.Data {
         private string _latestError;
 
         public string LatestError {
-            get { return _latestError; }
+            get => _latestError;
             set {
                 if (Equals(value, _latestError)) return;
                 _latestError = value;
@@ -95,7 +100,7 @@ namespace AcManager.Tools.Data {
         private bool _isGetting;
 
         public bool IsGetting {
-            get { return _isGetting; }
+            get => _isGetting;
             set {
                 if (Equals(value, _isGetting)) return;
                 _isGetting = value;
@@ -108,7 +113,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public string InstalledVersion {
-            get { return _installedVersion; }
+            get => _installedVersion;
             set {
                 if (Equals(value, _installedVersion)) return;
                 _installedVersion = value;

@@ -108,10 +108,10 @@ namespace AcTools.Kn5File {
         [Description("Opaque")]
         Opaque = 0,
 
-        [Description("Alpha Blend")]
+        [Description("Alpha blend")]
         AlphaBlend = 1,
 
-        [Description("Alpha To Coverage")]
+        [Description("Alpha to coverage")]
         AlphaToCoverage = 2
     }
 
@@ -119,7 +119,7 @@ namespace AcTools.Kn5File {
         [Description("Normal")]
         DepthNormal = 0,
 
-        [Description("Read Only")]
+        [Description("Read-only")]
         DepthNoWrite = 1,
 
         [Description("Off")]

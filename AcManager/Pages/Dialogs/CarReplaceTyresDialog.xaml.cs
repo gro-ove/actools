@@ -415,7 +415,7 @@ namespace AcManager.Pages.Dialogs {
             public void UpdateVersion(TyresEntry tyre) {
                 if (ShowMessage(
                         $"Existing tyres are v{SetsVersion}, when this pair is v{tyre.Version}. To add it, app has to remove current tyres first. Are you sure?",
-                        "Versions Differ", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        "Versions differ", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     SetsVersion = tyre.Version;
 
                     var set = CreateSet(tyre);

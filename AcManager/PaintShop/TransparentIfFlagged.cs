@@ -6,6 +6,6 @@ namespace AcManager.PaintShop {
     public class TransparentIfFlagged : SolidColorIfFlagged {
         public TransparentIfFlagged([NotNull] PaintShopDestination[] textures, bool inverse) : base(textures, inverse, Colors.Black, 0d) { }
 
-        public override string DisplayName { get; set; } = "Transparent If Enabled";
+        public override string DisplayName { get; set; } = "Transparent if enabled";
     }
 }

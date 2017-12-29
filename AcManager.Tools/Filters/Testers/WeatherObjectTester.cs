@@ -47,8 +47,8 @@ namespace AcManager.Tools.Filters.Testers {
 
         public IEnumerable<KeywordDescription> GetDescriptions() {
             return new[] {
-                new KeywordDescription("lights", "Forcing Car Lights", KeywordType.Flag, KeywordPriority.Important, "carlights"),
-                new KeywordDescription("temperature", "Temperature Coefficient", KeywordType.Number, KeywordPriority.Normal, "temperaturecoeff"),
+                new KeywordDescription("lights", "Forcing car lights", KeywordType.Flag, KeywordPriority.Important, "carlights"),
+                new KeywordDescription("temperature", "Temperature coefficient", KeywordType.Number, KeywordPriority.Normal, "temperaturecoeff"),
             }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }

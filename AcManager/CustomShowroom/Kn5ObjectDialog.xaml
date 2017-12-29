@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5ObjectDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" Title="Car Texture"
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" Title="Car texture"
     d:DataContext="{d:DesignInstance customShowroom:Kn5ObjectDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
     MaxWidth="999" Topmost="False">
   <mui:ModernDialog.Resources>
@@ -78,9 +78,9 @@
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="512" Header="Calculate 512×512 Map" />
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024" Header="Calculate 1024×1024 Map" />
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="2048" Header="Calculate 2048×2048 Map" />
-          <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate Map of Custom Size" />
+          <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate map of custom size" />
           <Separator />
-          <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show Options" />
+          <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show options" />
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>
     </mui:SpacingStackPanel>

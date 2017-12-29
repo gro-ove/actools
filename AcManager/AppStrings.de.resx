@@ -3353,8 +3353,8 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
     <value>Symbol für Fahrzeuglackierung</value>
   </data>
   <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
-    <value>Tags aufräumen</value>
-  </data>
+    <value>System</value>
+  <alternative>Tags aufräumen</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
     <value>Temperaturkoeffizient</value>
   </data>
@@ -3368,8 +3368,8 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
     <value>Übersetzung vor dem Start updaten</value>
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
-    <value>Übrschreibe Strings mit ungepackter Sprachdatei wenn vorhanden</value>
-  </data>
+    <value>Überschreibe Strings mit ungepackter Sprachdatei wenn vorhanden</value>
+  <alternative>Übrschreibe Strings mit ungepackter Sprachdatei wenn vorhanden</alternative></data>
   <data name="Main_UnhandledException" xml:space="preserve">
     <value>Unbehandelte Ausnahme:
 
@@ -3475,5 +3475,35 @@ Gültige Werte liegen zwischen -1 und 1.</value>
   </data>
   <data name="Controls_AdditionalBindings" xml:space="preserve">
     <value>Zusätzliche Zuweisungen:</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>... m</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>... m</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Asphalttemperatur:</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Zufall</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Zufall</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>Wiederholung wird gestartet...</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>Benchmark wird gestartet...</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>Auf Beendigung der Wiederholung warten</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>Auf Beendigung des Benchmarks warten</value>
   </data>
 </root>

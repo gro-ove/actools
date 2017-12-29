@@ -6,11 +6,11 @@
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectHeaderSection.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectListBox.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcToolBar.xaml" />
-    <ResourceDictionary Source="/AcManager.Controls;component/Themes/AppModernWindow.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/BestLapsList.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/CarBlock.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/GraphDataViewer.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Themes/FontIconImage.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/MessageBlock.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/RaceGridEditorTable.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Themes/TemperatureValueLabel.xaml" />

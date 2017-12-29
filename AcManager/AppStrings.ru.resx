@@ -1330,8 +1330,8 @@
     <value>Ускорение:</value>
   </data>
   <data name="CarPreviews_Title" xml:space="preserve">
-    <value>Обновить превью</value>
-  </data>
+    <value>Обновить пред. просмотр</value>
+  <alternative>Обновить превью</alternative></data>
   <data name="CarPreviews_ShotIn4k" xml:space="preserve">
     <value>Снимать в 3840×2160</value>
   </data>
@@ -2095,23 +2095,23 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Сортировать метки</value>
   </data>
   <data name="Solution_GenerateLivery" xml:space="preserve">
-    <value>Сгенерировать новую раскраску</value>
-  </data>
+    <value>Создать новую раскраску</value>
+  <alternative>Сгенерировать новую раскраску</alternative></data>
   <data name="Solution_GenerateLivery_Details" xml:space="preserve">
-    <value>Сгенерировать новую раскраску используя последние настройки редактора раскрасок</value>
-  </data>
+    <value>Создать новую раскраску используя последние настройки редактора раскрасок</value>
+  <alternative>Сгенерировать новую раскраску используя последние настройки редактора раскрасок</alternative></data>
   <data name="Solution_RandomLivery" xml:space="preserve">
-    <value>Сгенерировать случайную раскраску</value>
-  </data>
+    <value>Создать случайную раскраску</value>
+  <alternative>Сгенерировать случайную раскраску</alternative></data>
   <data name="Toolbar_ChangeLivery" xml:space="preserve">
     <value>Изменить раскраску</value>
   </data>
   <data name="Toolbar_GenerateLivery" xml:space="preserve">
-    <value>Сгенерировать раскраску</value>
-  </data>
+    <value>Создать раскраску</value>
+  <alternative>Сгенерировать раскраску</alternative></data>
   <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
-    <value>Сгенерировать случайную раскраску</value>
-  </data>
+    <value>Создать случайную раскраску</value>
+  <alternative>Сгенерировать случайную раскраску</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
     <value>Использовать трассу в Быстром Заезде (Ctrl+G)</value>
   </data>
@@ -2249,5 +2249,990 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="AcSettings_SessionInformation" xml:space="preserve">
     <value>Информация о сессии</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager Обновлен</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest" xml:space="preserve">
+    <value>Невозможно обработать запрос</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Имя: [b]{0}[/b]
+{1}: [b]{2}[/b]
+Автор: [b]{3}[/b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>Вы хотите применить этот пресет или сохранить его на будущее?</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
+    <value>Вы хотите применить этот пресет?</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>Недоступный, пока, тип: “{0}”</value>
+  </data>
+  <data name="RsrStarter_GettingInformation" xml:space="preserve">
+    <value>Получение информации о событии...</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>Попытаться восстановить JSON файл</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>Приложение попытается прочитать известные свойства из поврежденного JSON файла (будьте осторожны, возможна потеря данных)</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Невозможно восстановить поврежденный JSON</value>
+  </data>
+  <data name="Solution_SetName" xml:space="preserve">
+    <value>Задать имя</value>
+  </data>
+  <data name="Solution_SetNameFromId" xml:space="preserve">
+    <value>Задать имя на основе идентификатора</value>
+  </data>
+  <data name="Solution_SetNameFromId_Details" xml:space="preserve">
+    <value>Новое имя будет: “{0}”</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>Задать имя бренда</value>
+  </data>
+  <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
+    <value>Введите новое имя бренда:</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>Введите новое имя бренда на основе марки автомобиля</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>Новое имя бренда будет: “{0}”</value>
+  </data>
+  <data name="Solution_RemoveObject" xml:space="preserve">
+    <value>Удалить объект</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>Объект будет удален в корзину</value>
+  </data>
+  <data name="Solution_GenerateNew" xml:space="preserve">
+    <value>Создать новый файл</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>Будет создан новый пустой файл; не забудьте установить правильные значения и сохранить их впоследствии</value>
+  </data>
+  <data name="Solution_MakeIndependent" xml:space="preserve">
+    <value>Сделать независимым</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>Удалить идентификатор отсутствующей базовой модели из ui_car.json</value>
+  </data>
+  <data name="Solution_ChangeParent" xml:space="preserve">
+    <value>Изменить базовую модель</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>Выбрать базовую модель из списка</value>
+  </data>
+  <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
+    <value>Установить значок бренда из хранилища содержимого</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge" xml:space="preserve">
+    <value>Изменить логотип</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>Выбрать логотип из списка</value>
+  </data>
+  <data name="Solution_MakeEmptyModel" xml:space="preserve">
+    <value>Создать пустую модель</value>
+  </data>
+  <data name="Solution_GeneratePreview" xml:space="preserve">
+    <value>Создать новый пред. просмотр</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>Настройка и создание нового пред. просмотра</value>
+  </data>
+  <data name="Solution_SetupLivery" xml:space="preserve">
+    <value>Настроить новую раскраску</value>
+  </data>
+  <data name="Solution_FixName_Details" xml:space="preserve">
+    <value>Удалить недопустимые символы</value>
+  </data>
+  <data name="Solution_SetupLivery_Details" xml:space="preserve">
+    <value>Выбрать новую раскраску, используя редактор раскрасок</value>
+  </data>
+  <data name="Solution_RandomLivery_Details" xml:space="preserve">
+    <value>Создать новую раскраску используя случайные настройки редактора раскрасок</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>Выбрать новый пред. просмотр через настройки</value>
+  </data>
+  <data name="Solution_GeneratePreview_Details" xml:space="preserve">
+    <value>Создайть новый пред. просмотр, используя недавно использованный пресет</value>
+  </data>
+  <data name="Solution_FindTrack_Details" xml:space="preserve">
+    <value>Попытаться найти трассу в интернете</value>
+  </data>
+  <data name="Solution_Enable_Details" xml:space="preserve">
+    <value>Переместить шрифт из “fonts-off” в “fonts”</value>
+  </data>
+  <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
+    <value>Создать новый пустую раскраску с названием “default”</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Включить {0}</value>
+  </data>
+  <data name="Solution_EnableSkin_Details" xml:space="preserve">
+    <value>Включить ранее отключенную раскраску</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>Без ничего, только пустота</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
+    <value>Начиная с версии 1.7 Kunos добавили официальную поддержку кастомных лаучеров. В принципе, он работает как Starter +, но теперь CM не нужно заменять AssettoCorsa.exe, и это здорово! Вы хотите перейти на новый официальный лаунчер?</value>
+  </data>
+  <data name="Main_CannotProcessArgument" xml:space="preserve">
+    <value>Невозможно обработать аргумент</value>
+  </data>
+  <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
+    <value>Убедитесь, что он в правильном формате.</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
+    <value>Создать ярлык в меню «Пуск»; необходимо для показа правильных уведомлений в Windows 8, 8.1 и 10</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>Удалите все неважные значения</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
+    <value>Вы хотите изменить путь? Приложение будет перезапущено.</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot" xml:space="preserve">
+    <value>Изменить путь до корневой папки AC</value>
+  </data>
+  <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
+    <value>Особый:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
+    <value>Выбранные папки: {0}</value>
+  </data>
+  <data name="Common_IdFormat" xml:space="preserve">
+    <value>Идентификатор: {0}</value>
+  </data>
+  <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
+    <value>Выбрать зал, фильтр и прочее</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
+    <value>Быстрее и точнее, полезно для рисования моддинга или рисования скинов</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
+    <value>Медленнее и менее точен, но с правильным освещением и отражениями</value>
+  </data>
+  <data name="AcObject_EnterNewId" xml:space="preserve">
+    <value>Введите новый идентификатор:</value>
+  </data>
+  <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
+    <value>Будьте осторожны, изменение идентификатора может вызвать некоторые проблемы с онлайном!</value>
+  </data>
+  <data name="AcObject_Author_TooltipExt" xml:space="preserve">
+    <value>Если вы создаете свои собственные моды, используйте это поле вместо описания (или имени)</value>
+  </data>
+  <data name="AcObject_Url_TooltipExt" xml:space="preserve">
+    <value>Опять же, пожалуйста, используйте это поле, если вы являетесь моддером, и у вас есть веб-страница с дополнительной информацией и новыми версиями для этого объекта</value>
+  </data>
+  <data name="AcObject_Version_TooltipExt" xml:space="preserve">
+    <value>Может использоваться для автоматического обновления</value>
+  </data>
+  <data name="Toolbar_PackData" xml:space="preserve">
+    <value>Упаковать данные</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Включить (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
+    <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
+    <value>Выберите зал, фильтр, положение камеры и т.д.</value>
+  </data>
+  <data name="Car_CannotPackData" xml:space="preserve">
+    <value>Невозможно упаковать данные</value>
+  </data>
+  <data name="Car_PackKunosDataMessage" xml:space="preserve">
+    <value>Вы собираетесь переупаковать оригинальные данные Kunos. Результат, скорее всего, будет отличаться, поэтому вы не сможете играть онлайн. Вы действительно хотите продолжить? [br] [br] Оригинальный «data.acd» будет перенесен в корзину.</value>
+  </data>
+  <data name="Car_PackExistingDataMessage" xml:space="preserve">
+    <value>Упакованные данные уже существуют. Заменить их? [br] [br] Оригинальный «data.acd» будет перенесен в корзину.</value>
+  </data>
+  <data name="Common_CannotFindObjectById" xml:space="preserve">
+    <value>Не удается найти объект с предоставленным ID</value>
+  </data>
+  <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
+    <value>Создать новую раскраску используя последние настройки редактора раскрасок</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery_Tooltip" xml:space="preserve">
+    <value>Создать новую раскраску используя случайные настройки редактора раскрасок</value>
+  </data>
+  <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
+    <value>Раскраска будет перемещена в корзину</value>
+  </data>
+  <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
+    <value>Поделиться настройками (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
+    <value>Протестировать настройки (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
+    <value>Изменить идентификатор раскраски (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Font_MissingFonts" xml:space="preserve">
+    <value>Отсутствующие шрифты</value>
+  </data>
+  <data name="Common_CannotFindCarById" xml:space="preserve">
+    <value>Не удается найти автомобиль с предоставленным ID</value>
+  </data>
+  <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
+    <value>Изменить livery.png (Ctrl+L)</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin" xml:space="preserve">
+    <value>Невозможно удалить “ui_skin.json”</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin_Commentary" xml:space="preserve">
+    <value>Убедитесь что файл не используется.</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Включить звук</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Включить звук (Ctrl+I)</value>
+  </data>
+  <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
+    <value>Невозможно обновить пред.просмотр демонтрационного зала</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>Копировать значения</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>Копировать значения в другие макеты</value>
+  </data>
+  <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
+    <value>Имя маршрута:</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>Идентификатор:</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Включить фары</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>Открыть “readme_weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>Создает отклонения температуры асфальта относительно погоды, температуры окружающей среды и времени. Дополнительная информация в "readme_weather.txt"</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
+    <value>Температурный коэффициент</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>Тестирование температурного коэффициента:</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Облака:</value>
+  </data>
+  <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
+    <value>Переключиться из режима редактирования (Ctrl + E)</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>Дополнительно:</value>
+  </data>
+  <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
+    <value>Регулирует прозрачность облаков</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
+    <value>Используется, когда HDR отключен</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
+    <value>Требуемые серии еще не выполнены</value>
+  </data>
+  <data name="KunosCareer_FullyCompleted" xml:space="preserve">
+    <value>Полностью завершено</value>
+  </data>
+  <data name="KunosCareer_Title" xml:space="preserve">
+    <value>Карьера Kunos</value>
+  </data>
+  <data name="KunosCareer_LeftToEarn" xml:space="preserve">
+    <value>Осталось заработать:</value>
+  </data>
+  <data name="KunosCareer_SeriesGoal" xml:space="preserve">
+    <value>Целевая задача:</value>
+  </data>
+  <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
+    <value>Соперники:</value>
+  </data>
+  <data name="Online_SortByName" xml:space="preserve">
+    <value>Сортировка по Имени</value>
+  </data>
+  <data name="Online_SortByDrivers" xml:space="preserve">
+    <value>Сортировка по Пилотам</value>
+  </data>
+  <data name="Online_SortByCapacity" xml:space="preserve">
+    <value>Сортировка по Мощности</value>
+  </data>
+  <data name="Online_SortByCarsNumber" xml:space="preserve">
+    <value>Сортировать по Количеству автомобилей</value>
+  </data>
+  <data name="Online_SortByPing" xml:space="preserve">
+    <value>Сортировка по Пингу</value>
+  </data>
+  <data name="Online_AddByIp" xml:space="preserve">
+    <value>Добавить по IP</value>
+  </data>
+  <data name="Online_Pinged" xml:space="preserve">
+    <value>Пропингованы {1} из {0}</value>
+  </data>
+  <data name="Online_SkinIsMissing" xml:space="preserve">
+    <value>Раскраска отсутствует</value>
+  </data>
+  <data name="Online_AllCarsAreTaken" xml:space="preserve">
+    <value>Все авто заняты</value>
+  </data>
+  <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
+    <value>Присоедениться к серверу (Ctrl+G)</value>
+  </data>
+  <data name="Online_Sorting_Ping" xml:space="preserve">
+    <value>Пинг</value>
+  </data>
+  <data name="Online_AddServer" xml:space="preserve">
+    <value>Адрес сервера (IP &amp; HTTP or TCP Port):</value>
+  </data>
+  <data name="Online_AddServer_Title" xml:space="preserve">
+    <value>Добавить новый сервер</value>
+  </data>
+  <data name="Online_AddServer_Tooltip" xml:space="preserve">
+    <value>Порт можно опустить, в этом случае приложение сканирует все специальные порты</value>
+  </data>
+  <data name="Online_CannotAddServer" xml:space="preserve">
+    <value>Невозможно добавить сервер</value>
+  </data>
+  <data name="Online_ServerWithIdIsMissing" xml:space="preserve">
+    <value>Сервер с предоставленным идентификатором «{0}» отсутствует</value>
+  </data>
+  <data name="Drive_Time_Warning" xml:space="preserve">
+    <value>Актуальное время выходит за пределы допустимого диапазона, используется самое близкое значение</value>
+  </data>
+  <data name="Drive_Weather_Warning" xml:space="preserve">
+    <value>{} Актуальная погода ({0}) не поддерживается</value>
+  </data>
+  <data name="Drive_ActualTemperature" xml:space="preserve">
+    <value>Актуальная температура:</value>
+  </data>
+  <data name="Drive_LoadingFailed" xml:space="preserve">
+    <value>Ошибка загрузки</value>
+  </data>
+  <data name="Drive_Temperature_Warning" xml:space="preserve">
+    <value>Актуальная температура:</value>
+  </data>
+  <data name="Drive_ArrangeRandomly" xml:space="preserve">
+    <value>Расположить случайно</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
+    <value>Упорядочить в обратном порядке</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
+    <value>Самый сильный соперник будет последним на стартовой линии</value>
+  </data>
+  <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
+    <value>Ограничено количеством доступных питов ({0})</value>
+  </data>
+  <data name="Drive_SkipSession" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponentsLabel" xml:space="preserve">
+    <value>Список возможных соперников:</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
+    <value>Приложение выберет {0} {opponent} из этого списка</value>
+  </data>
+  <data name="Rsr_AppIsMissing" xml:space="preserve">
+    <value>RSR отсутствует</value>
+  </data>
+  <data name="Rsr_AppIsDisabled" xml:space="preserve">
+    <value>RSR отключен</value>
+  </data>
+  <data name="Rsr_InvalidParameters" xml:space="preserve">
+    <value>Недопустимые параметры RSR</value>
+  </data>
+  <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
+    <value>Скачать [url="http://www.radiators-champ.com/RSRLiveTiming/"]здесь[/url].</value>
+  </data>
+  <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
+    <value>Сначала вам нужно включить его.</value>
+  </data>
+  <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
+    <value>Убедитесь, что сайт RSR работает правильно.</value>
+  </data>
+  <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
+    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]Здесь [/ url] - список модов, используемых RSR (включая ссылки на скачивание).</value>
+  </data>
+  <data name="Srs_PortLabel" xml:space="preserve">
+    <value>Порт:</value>
+  </data>
+  <data name="Srs_StartAtLabel" xml:space="preserve">
+    <value>Начните с:</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
+    <value>Сервер SRS готов</value>
+  </data>
+  <data name="Srs_ReadyNotification" xml:space="preserve">
+    <value>Нажмать, чтобы присоединиться к гонке</value>
+  </data>
+  <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
+    <value>Убедитесь, что все необходимые моды установлены.</value>
+  </data>
+  <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
+    <value>Решить все похожие ошибки</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>Ни одно из решений не доступно.</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>Не удается решить проблему</value>
+  </data>
+  <data name="Common_RequiredValue" xml:space="preserve">
+    <value>Требуемое значение</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>Папка неприемлема</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Введите ключ приложения (XXXX-XXXX-…):</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>Ключ приложения</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>Пожалуйста, не делитесь ключом, иначе он может быть отозван!</value>
+  </data>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>Ключ был отозван</value>
+  </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>Приложение будет перезапущено</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>Получить новый ключ</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
+    <value>Ключ аннулирован</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>Извините, но ваш ключ был взломан и аннулирован. Вы хотите связаться с нами, чтобы получить еще один?</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>Теперь приложение будет перезапущено, но это не займет много времени. Еще раз спасибо за вашу поддержку!
+
+[i] Пожалуйста, не делитесь своим ключом, иначе он может быть скомпрометирован. [/ i]</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>Не удается проверить ключ</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>Недопустимый ключ</value>
+  </data>
+  <data name="BrandBadge_Title" xml:space="preserve">
+    <value>Логотип</value>
+  </data>
+  <data name="Common_SelectFile" xml:space="preserve">
+    <value>Выбрать файл</value>
+  </data>
+  <data name="Common_ViewUserFolder" xml:space="preserve">
+    <value>Просмотр папки пользователя</value>
+  </data>
+  <data name="BrandBadge_CannotChange" xml:space="preserve">
+    <value>Невозможно изменить логотип</value>
+  </data>
+  <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
+    <value>Убедитесь, что файл логотипа доступен для записи.</value>
+  </data>
+  <data name="BrandBadge_SelectNew" xml:space="preserve">
+    <value>Выберите новый логотип</value>
+  </data>
+  <data name="BrandBadge_AddAs" xml:space="preserve">
+    <value>Добавить как новый логотип (название бренда):</value>
+  </data>
+  <data name="Common_AddToLibrary" xml:space="preserve">
+    <value>Добавить в библиотеку?</value>
+  </data>
+  <data name="Common_CannotAddToLibrary" xml:space="preserve">
+    <value>Невозможно добавить новую запись в библиотеку</value>
+  </data>
+  <data name="Dialog_CarSetupsFormat" xml:space="preserve">
+    <value>{0} Настройки</value>
+  </data>
+  <data name="Dialog_CarSkinsFormat" xml:space="preserve">
+    <value>{0} Раскраски</value>
+  </data>
+  <data name="CarSpecs_Title" xml:space="preserve">
+    <value>{0} Характеристики</value>
+  </data>
+  <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
+    <value>Соотношение л.с./кг:</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>...л.с.</value>
+  </data>
+  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
+    <value>...Нм</value>
+  </data>
+  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
+    <value>...кг</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>...км/ч</value>
+  </data>
+  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
+    <value>...с 0-100</value>
+  </data>
+  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
+    <value>...кг/л.с.</value>
+  </data>
+  <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
+    <value>Автоматически пересчитывать соотношение л.с./кг</value>
+  </data>
+  <data name="CarSpecs_Power_Tooltip" xml:space="preserve">
+    <value>Максимальное значение лошадинных сил, рекомендуемый формат: "{0}"</value>
+  </data>
+  <data name="CarSpecs_Torque_Tooltip" xml:space="preserve">
+    <value>Максимальное значение крутящего момента, рекомендуемый формат: "{0}"</value>
+  </data>
+  <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
+    <value>Вес без пилота, рекомендуемый формат: "{0}"</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_Tooltip" xml:space="preserve">
+    <value>Максимальная скорость, рекомендуемый формат: "{0}"</value>
+  </data>
+  <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
+    <value>Время ускорения от 0 до 100 км/ч, рекомендуемый формат: «{0}»</value>
+  </data>
+  <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
+    <value>Отношение мощности к весу, рекомендуемый формат: "{0}"</value>
+  </data>
+  <data name="CarSpecs_FixFormats" xml:space="preserve">
+    <value>Исправить форматы</value>
+  </data>
+  <data name="CarSpecs_UpdateCurves" xml:space="preserve">
+    <value>Обновить график</value>
+  </data>
+  <data name="CarSpecs_FixFormat" xml:space="preserve">
+    <value>Исправить формат</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>Попытаться установить правильный формат для значения</value>
+  </data>
+  <data name="CarSpecs_Recalculate" xml:space="preserve">
+    <value>Пересчитать</value>
+  </data>
+  <data name="CarSpecs_Recalculate_PwRatioTooltip" xml:space="preserve">
+    <value>Пересчитать используя значения мощности и веса</value>
+  </data>
+  <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
+    <value>Пересчитать из данных</value>
+  </data>
+  <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
+    <value>Задать кривую мощности</value>
+  </data>
+  <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
+    <value>Скопировать новые значения крутящего момента и мощности?</value>
+  </data>
+  <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
+    <value>Сначала нужно указать значения мощности и крутящего момента.</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
+    <value>Пересчет кривых с использованием данных и значений мощности / крутящего момента</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
+    <value>Пересчет кривых с использованием только данных</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
+    <value>Кривые будут пересчитаны на основе значений engine.ini, power.lut и мощности и крутящего момента от ui_car.json</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
+    <value>Кривые будут пересчитаны на основе engine.ini, но вам придется учесть трансмиссионные потери</value>
+  </data>
+  <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
+    <value>Трансмиссионные потери для {0}</value>
+  </data>
+  <data name="CarSpecs_TransmissionLoss" xml:space="preserve">
+    <value>Трансмиссионные потери</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>Позиция камеры:</value>
+  </data>
+  <data name="CarPreviews_LookAtLabel" xml:space="preserve">
+    <value>Смотреть на:</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews" xml:space="preserve">
+    <value>Изменить размер пред.просмотра</value>
+  </data>
+  <data name="CarPreviews_AllEffects" xml:space="preserve">
+    <value>Включить все эффекты</value>
+  </data>
+  <data name="CarPreviews_Fxaa" xml:space="preserve">
+    <value>Включить FXAA</value>
+  </data>
+  <data name="CarPreviews_ExposureLabel" xml:space="preserve">
+    <value>Экспозиция:</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
+    <value>Включить для лучшего качества</value>
+  </data>
+  <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
+    <value>Использовать FXAA для пред.просмотра</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>Включите все видеоэффекты, такие как отражения и блики (рекомендуется)</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
+    <value>Измените размер пред.просмотра до размера Kunos 1022 × 575 (рекомендуется)</value>
+  </data>
+  <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Очевидно, SweetFx не влияет на результат, но может уменьшить время загрузки</value>
+  </data>
+  <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Водяной знак Kunos будет временно скрыт</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
+    <value>[url="{0}"]{1}[/url] не установлен. Установить?</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
+    <value>Демонстрационный зал отсутствует</value>
+  </data>
+  <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
+    <value>Невозможно загрузить демонстрационный зал “{0}”</value>
+  </data>
+  <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
+    <value>Невозможно установить демонстрационный зал “{0}”</value>
+  </data>
+  <data name="CarPreviews_CannotSave" xml:space="preserve">
+    <value>Невозможно сохранить пред.просмотр</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
+    <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>Демонстрационный зал отсутствует. Открыть опции?</value>
+  </data>
+  <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
+    <value>Фильтр отсутствует. Открыть опции?</value>
+  </data>
+  <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
+    <value>Невозможно обновить предварительный просмотр отключенного автомобиля или раскраски.</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>Что-то пошло не так.</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>Отменено.</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Выберите основную модель</value>
+  </data>
+  <data name="Common_SelectImageForPreview" xml:space="preserve">
+    <value>Выберите изображения для пред.просмотра</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Не удается поделиться погодой</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>Файл “{0}” отсутствует.</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Файлы слишком большие. Лимит - {0}.</value>
+  </data>
+  <data name="Weather_KunosReadme" xml:space="preserve">
+    <value>Мы используем уравнение для создания графика, который определяет температуру асфальта относительно температуры окружающей среды, погоды и дневного времени.
+
+Посмотрите график по [url = "http://fooplot.com/plot/3x7y44pfli"] этой ссылке [/ url].
+
+Используемое уравнение:
+[mono] (((- 10 × α) * х) + 10 * α) * 2 ((ехр (-6 * х) * (0.4 * Sin (6 * х)) + 0,1) * (15 / 1.5) * Sin (0,9 * х)) + 15 [/ mono]
+
+Измените значения 1 в ((-10 * 1) * x) + 10 * 1), чтобы увидеть результаты на ваших графиках.
+Принимаемые значения от -1 до 1.</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Ошибка:</value>
+  </data>
+  <data name="RaceResult_MaxLevel" xml:space="preserve">
+    <value>Максимальный уровень:</value>
+  </data>
+  <data name="RaceResult_BestCombo" xml:space="preserve">
+    <value>Лучшее комбо:</value>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>Лучший круг:</value>
+  </data>
+  <data name="RaceResult_ResultProcessingError" xml:space="preserve">
+    <value>Ошибка обработки результата</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>Инициализация...</value>
+  </data>
+  <data name="Race_CleaningUp" xml:space="preserve">
+    <value>Чистка от некоторого хлама...</value>
+  </data>
+  <data name="CropImage_Title" xml:space="preserve">
+    <value>Обрезать изображение</value>
+  </data>
+  <data name="AdditionalContent_Title" xml:space="preserve">
+    <value>Установка дополнительного содержимого</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>Ничего не найдено</value>
+  </data>
+  <data name="AdditionalContent_WhatToUpdateLabel" xml:space="preserve">
+    <value>Что обновить:</value>
+  </data>
+  <data name="AdditionalContent_IdFormat" xml:space="preserve">
+    <value>Идентификатор: {0}</value>
+  </data>
+  <data name="AdditionalContent_PathFormat" xml:space="preserve">
+    <value>Путь: {0}</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>Невозможно установить контент из файла</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
+    <value>Архив зашифрован. Введите пароль:</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>Требуется пароль</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>Пароль некоректен, повторите попытку:</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Пароль некоректен</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>Невозможно распаковать</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>Воможно архив поврежден или пароль некоректен</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>Установка {0}…</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>Невомзможно установить {0}</value>
+  </data>
+  <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
+    <value>Ровный</value>
+  </data>
+  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
+    <value>Диагональ</value>
+  </data>
+  <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
+    <value>Полосы</value>
+  </data>
+  <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
+    <value>Боковые полосы</value>
+  </data>
+  <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
+    <value>Двойные полосы</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalStripes" xml:space="preserve">
+    <value>Горизонтальные полосы</value>
+  </data>
+  <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
+    <value>Круг</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
+    <value>Диагональ с кругом</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
+    <value>Диагональная линия с кругом</value>
+  </data>
+  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
+    <value>Углепластик</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
+    <value>Горзонтальное разделение</value>
+  </data>
+  <data name="LiveryIcon_Shape_VerticalSplit" xml:space="preserve">
+    <value>Вертикальное разделение</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleHorizontalSplit" xml:space="preserve">
+    <value>Тройное горизонтальное разделение</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
+    <value>Тройное вертикальное раздление</value>
+  </data>
+  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
+    <value>Сплошной</value>
+  </data>
+  <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
+    <value>Градиент</value>
+  </data>
+  <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
+    <value>Глянец</value>
+  </data>
+  <data name="LiveryIcon_Style_Bright" xml:space="preserve">
+    <value>Яркий</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
+    <value>Изменить номер раскраски на “{0}”?</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
+    <value>Номер раскраски изменен</value>
+  </data>
+  <data name="LiveryIcon_CannotChange" xml:space="preserve">
+    <value>Невозможно изменить номер раскраски</value>
+  </data>
+  <data name="LiveryIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>Убедитесь что livery.png не занято другим процессом</value>
+  </data>
+  <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
+    <value>Управление настройками автомобиля</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>Панорама:</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
+    <value>Что-то вроде этого:</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
+    <value>Рекомендуемый формат: DDS-изображение, 32f.32f.32f.32f, 5120 × 2560
+Но если вы не хотите тратить 200 МБ: TIFF Image, 96 бит на пиксель, ZIP</value>
+  </data>
+  <data name="CreateShowroom_InShadow" xml:space="preserve">
+    <value>В тени</value>
+  </data>
+  <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
+    <value>Выберите файл панорамы</value>
+  </data>
+  <data name="UpgradeIcon_Current" xml:space="preserve">
+    <value>Текущий</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>Новый</value>
+  </data>
+  <data name="UpgradeIcon_Commentary" xml:space="preserve">
+    <value>Ctrl+I: Курсив, Ctrl+B: Жирный</value>
+  </data>
+  <data name="VersionInfo_Title" xml:space="preserve">
+    <value>Информация о версии</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
+    <value>Предупреждать о несохраненных изменениях</value>
+  </data>
+  <data name="Controls_ShareFfbOnly" xml:space="preserve">
+    <value>Делиться только настройками FFB</value>
+  </data>
+  <data name="Controls_SharePreset_Tooltip" xml:space="preserve">
+    <value>Только основные свойства, без экспериментальных</value>
+  </data>
+  <data name="Controls_ShareFfbOnly_Tooltip" xml:space="preserve">
+    <value>Включая экспериментальные свойства FFB</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved_Tooltip" xml:space="preserve">
+    <value>В противном случае приложение будет перемещать предыдущие измененные версии в корзину без подтверждения</value>
+  </data>
+  <data name="Controls_SharedFfbOnly" xml:space="preserve">
+    <value>{0} (Только FFB)</value>
+  </data>
+  <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
+    <value>клавиатура</value>
+  </data>
+  <data name="Controls_SharedFor_XboxController" xml:space="preserve">
+    <value>Геймпад Xbox360</value>
+  </data>
+  <data name="Controls_ForceFeedback" xml:space="preserve">
+    <value>Силовая обратная связь</value>
+  </data>
+  <data name="Drive_InvalidScript" xml:space="preserve">
+    <value>Некорректный скрипт</value>
+  </data>
+  <data name="Drive_CannotInitializeLua" xml:space="preserve">
+    <value>Не удалось инициализировать Lua</value>
+  </data>
+  <data name="Drive_CannotStart_Title" xml:space="preserve">
+    <value>Невозможно начать гонку</value>
+  </data>
+  <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
+    <value>Пожалуйста, выберите не отключенный автомобиль.</value>
+  </data>
+  <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
+    <value>Пожайлуста, выберите трассу.</value>
+  </data>
+  <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
+    <value>Пожалуйста, выберите хотя бы одного соперника.</value>
+  </data>
+  <data name="Drive_AiFiltering" xml:space="preserve">
+    <value>Машины ИИ фильтруются...</value>
+  </data>
+  <data name="Drive_CannotFilter_Commentary" xml:space="preserve">
+    <value>Если вы внесли какие-либо изменения в GridTypes.json, убедитесь, что они верны.</value>
+  </data>
+  <data name="Drive_AiCarsLoading" xml:space="preserve">
+    <value>Машины ИИ загружаются ...</value>
+  </data>
+  <data name="Drive_Ordinal_Parameter" xml:space="preserve">
+    <value>Водитель</value>
+  </data>
+  <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
+    <value>Флаг “--force-locale” установлен!</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
+    <value>Сбросить прогресс чемпионата</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
+    <value>Весь прогресс в этом чемпионате будет утерян. Вы уверены?</value>
+  </data>
+  <data name="Drive_AiLevelInDriverName" xml:space="preserve">
+    <value>Показать уровень ИИ рядом с именем водителя</value>
+  </data>
+  <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
+    <value>Использовать пользовательские погодные частицы</value>
+  </data>
+  <data name="RaceGrid_LoadingProgress" xml:space="preserve">
+    <value>Загружено {1} из {0}</value>
+  </data>
+  <data name="RaceGrid_ClassFormat" xml:space="preserve">
+    <value>Класс: {0}</value>
+  </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>Для этого автомобиля нет пит-стопа</value>
+  </data>
+  <data name="RaceGrid_Opponents" xml:space="preserve">
+    <value>Соперники:</value>
+  </data>
+  <data name="Drive_LocalWeatherHeader" xml:space="preserve">
+    <value>Местная погода</value>
+  </data>
+  <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
+    <value>Задать время вручную</value>
+  </data>
+  <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
+    <value>Используйте местную погоду вместо погоды на трассе</value>
+  </data>
+  <data name="Drive_Weather_CannotLoad" xml:space="preserve">
+    <value>Не удается загрузить реальную погоду</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>Как перевести</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Пользовательские переводы</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Язык:</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Рестарт</value>
   </data>
 </root>

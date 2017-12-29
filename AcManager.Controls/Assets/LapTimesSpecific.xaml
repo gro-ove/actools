@@ -12,7 +12,7 @@
   </ResourceDictionary.MergedDictionaries>
 
   <ContextMenu x:Key="BestLapWrappedContextMenu" d:DataContext="{d:DesignInstance t:LapTimeWrapped}">
-    <MenuItem Header="Setup Hotlap" Command="{x:Static h:CommonCommands.SetupHotlapCommand}">
+    <MenuItem Header="Setup hotlap" Command="{x:Static h:CommonCommands.SetupHotlapCommand}">
       <MenuItem.CommandParameter>
         <MultiBinding Converter="{StaticResource MultiParameterConverter}">
           <Binding Path="Entry.CarId" />
@@ -20,7 +20,7 @@
         </MultiBinding>
       </MenuItem.CommandParameter>
     </MenuItem>
-    <MenuItem Header="Start Hotlap" Command="{x:Static h:CommonCommands.RunHotlapCommand}" Foreground="{DynamicResource Go}" FontWeight="Bold">
+    <MenuItem Header="Start hotlap" Command="{x:Static h:CommonCommands.RunHotlapCommand}" Foreground="{DynamicResource Go}" FontWeight="Bold">
       <MenuItem.CommandParameter>
         <MultiBinding Converter="{StaticResource MultiParameterConverter}">
           <Binding Path="Entry.CarId" />
@@ -29,7 +29,7 @@
       </MenuItem.CommandParameter>
     </MenuItem>
     <Separator />
-    <MenuItem Header="Remove Entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
+    <MenuItem Header="Remove entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
       <MenuItem.Icon>
         <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CloseIconData}" HorizontalAlignment="Right"
             VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
@@ -38,7 +38,7 @@
   </ContextMenu>
 
   <c:ContextMenusItems x:Key="BestLapWrappedContextMenuItems" d:DataContext="{d:DesignInstance t:LapTimeWrapped}" x:Shared="False">
-    <MenuItem Header="Setup Hotlap" Command="{x:Static h:CommonCommands.SetupHotlapCommand}">
+    <MenuItem Header="Setup hotlap" Command="{x:Static h:CommonCommands.SetupHotlapCommand}">
       <MenuItem.CommandParameter>
         <MultiBinding Converter="{StaticResource MultiParameterConverter}">
           <Binding Path="Entry.CarId" />
@@ -46,7 +46,7 @@
         </MultiBinding>
       </MenuItem.CommandParameter>
     </MenuItem>
-    <MenuItem Header="Start Hotlap" Command="{x:Static h:CommonCommands.RunHotlapCommand}" Foreground="{DynamicResource Go}" FontWeight="Bold">
+    <MenuItem Header="Start hotlap" Command="{x:Static h:CommonCommands.RunHotlapCommand}" Foreground="{DynamicResource Go}" FontWeight="Bold">
       <MenuItem.CommandParameter>
         <MultiBinding Converter="{StaticResource MultiParameterConverter}">
           <Binding Path="Entry.CarId" />
@@ -55,7 +55,7 @@
       </MenuItem.CommandParameter>
     </MenuItem>
     <Separator />
-    <MenuItem Header="Remove Entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
+    <MenuItem Header="Remove entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
       <MenuItem.Icon>
         <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CloseIconData}" HorizontalAlignment="Right"
             VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />

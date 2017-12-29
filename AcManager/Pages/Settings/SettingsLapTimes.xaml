@@ -44,7 +44,7 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
 
-            <Button Content="Clear Cache" Command="{Binding ClearCacheCommand}" Margin="0 20 0 0" />
+            <Button Content="Clear cache" Command="{Binding ClearCacheCommand}" Margin="0 20 0 0" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

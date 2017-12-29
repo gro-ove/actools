@@ -13,19 +13,30 @@ using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public class AdditionalContentEntryTemplateSelectorInner : DataTemplateSelector {
         public DataTemplate BasicTemplate { get; set; }
         public DataTemplate TrackTemplate { get; set; }
+        public DataTemplate FontTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is TrackContentEntry ? TrackTemplate : BasicTemplate;
+            switch (item) {
+                case TrackContentEntry _:
+                    return TrackTemplate;
+                case FontContentEntry _:
+                    return FontTemplate;
+                default:
+                    return BasicTemplate;
+            }
         }
     }
 
@@ -34,7 +45,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static void Initialize() {
             ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
-            ContentInstallationManager.Instance.Queue.CollectionChanged += OnQueueChanged;
+            ContentInstallationManager.Instance.DownloadList.CollectionChanged += OnQueueChanged;
         }
 
         private static readonly Busy TaskAddedBusy = new Busy();
@@ -46,7 +57,7 @@ namespace AcManager.Pages.Dialogs {
 
         private static void OnQueueChanged(object o, NotifyCollectionChangedEventArgs a) {
             QueueChangedBusy.DoDelay(() => {
-                if (ContentInstallationManager.Instance.Queue.Count == 0 && _dialog?.IsActive != true) {
+                if (ContentInstallationManager.Instance.DownloadList.Count == 0 && _dialog?.IsActive != true) {
                     CloseInstallDialog();
                 }
             }, 100);
@@ -65,7 +76,7 @@ namespace AcManager.Pages.Dialogs {
                 _dialog.Show();
                 _dialog.Closed += (sender, args) => {
                     if (IsAlone) {
-                        ContentInstallationManager.Instance.Cancel();
+                        // ContentInstallationManager.Instance.Cancel();
                     }
 
                     _dialog = null;
@@ -79,6 +90,8 @@ namespace AcManager.Pages.Dialogs {
 
         private static bool IsAlone => Application.Current?.Windows.OfType<MainWindow>().FirstOrDefault()?.IsVisible != true;
 
+        public BetterListCollectionView DownloadListView { get; }
+
         private InstallAdditionalContentDialog() {
             UpdateSevenZipPluginMissing();
             PluginsManager.Instance.PluginEnabled += OnPlugin;
@@ -87,6 +100,9 @@ namespace AcManager.Pages.Dialogs {
                 PluginsManager.Instance.PluginEnabled -= OnPlugin;
                 PluginsManager.Instance.PluginDisabled -= OnPlugin;
             });
+
+            DownloadListView = new BetterListCollectionView(ContentInstallationManager.Instance.DownloadList);
+            DownloadListView.SortDescriptions.Add(new SortDescription(nameof(ContentInstallationEntry.AddedDateTime), ListSortDirection.Descending));
 
             PluginsManager.Instance.UpdateIfObsolete().Forget();
             RecommendedListView = new BetterListCollectionView(PluginsManager.Instance.List);
@@ -100,19 +116,23 @@ namespace AcManager.Pages.Dialogs {
             });
             Buttons = new[] { IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None) };
 
-            if (ContentInstallationManager.Instance.Queue.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
+            if (ContentInstallationManager.Instance.DownloadList.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
                 SevenZipWarning.Visibility = Visibility.Visible;
+                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
             } else {
-                ContentInstallationManager.Instance.Queue.ItemPropertyChanged += OnItemPropertyChanged;
+                ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
                 this.OnActualUnload(() => {
-                    ContentInstallationManager.Instance.Queue.ItemPropertyChanged -= OnItemPropertyChanged;
+                    ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged -= OnItemPropertyChanged;
                 });
             }
+
+            this.AddWidthCondition(x => (x - 104).Clamp(120, 240)).Add(x => Resources[@"ButtonsRowWidth"] = x);
         }
 
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ContentInstallationEntry.SevenZipInstallatorWouldNotHurt)) {
                 SevenZipWarning.Visibility = Visibility.Visible;
+                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
             }
         }
 
@@ -129,23 +149,46 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
 
                 if (oldValue == true && value == false) {
-                    foreach (var entry in ContentInstallationManager.Instance.Queue.Where(x => x.SevenZipInstallatorWouldNotHurt &&
+                    foreach (var entry in ContentInstallationManager.Instance.DownloadList.Where(x => x.SevenZipInstallatorWouldNotHurt &&
                             x.CancelCommand.IsAbleToExecute && x.State == ContentInstallationEntryState.WaitingForConfirmation)) {
                         ContentInstallationManager.Instance.InstallAsync(entry.Source).ContinueWith(async v => {
                             if (!v.Result) {
                                 await Task.Delay(1);
-                                ContentInstallationManager.Instance.InstallAsync(entry.LoadedFilename ?? entry.Source).Forget();
+                                ContentInstallationManager.Instance.InstallAsync(entry.LocalFilename ?? entry.Source).Forget();
                             }
                         }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                        entry.KeepLoaded = true;
                         entry.CancelCommand.Execute();
                     }
                 }
             }
         }
 
+        private bool _isSevenZipPluginObsolete;
+
+        public bool IsSevenZipPluginObsolete {
+            get => _isSevenZipPluginObsolete;
+            set {
+                if (Equals(value, _isSevenZipPluginObsolete)) return;
+                _isSevenZipPluginObsolete = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _buttonsRowWidth;
+
+        public double ButtonsRowWidth {
+            get => _buttonsRowWidth;
+            set {
+                if (Equals(value, _buttonsRowWidth)) return;
+                _buttonsRowWidth = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void UpdateSevenZipPluginMissing() {
             IsSevenZipPluginMissing = !PluginsManager.Instance.IsPluginEnabled(SevenZipContentInstallator.PluginId);
+            IsSevenZipPluginObsolete = PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.Version.IsVersionOlderThan(
+                    SevenZipContentInstallator.MinimalRecommendedVersion) == true;
         }
 
         private void OnPlugin(object o, AppAddonEventHandlerArgs e) {
@@ -164,10 +207,37 @@ namespace AcManager.Pages.Dialogs {
             ArgumentsHandler.OnDragEnter(sender, e);
         }
 
+        private void OnPasswordBoxKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+                (((FrameworkElement)sender).DataContext as ContentInstallationEntry)?.ApplyPasswordCommand.Execute();
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+            }
+        }
+
+        private void OnItemMouseUp(object sender, MouseButtonEventArgs e) {
+            if (((FrameworkElement)sender).DataContext is ContentInstallationEntry item && !ReferenceEquals(ItemsListBox.SelectedItem, item)) {
+                var control = ItemsListBox.GetItemVisual(item);
+                if (control != null) {
+                    var button = control.FindVisualChildren<Button>().FirstOrDefault(x => x.IsMouseOverElement());
+                    button?.Command?.Execute(button.CommandParameter);
+                }
+
+                ItemsListBox.SelectedItem = item;
+            }
+        }
+
+        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {}
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

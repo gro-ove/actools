@@ -14,7 +14,7 @@
               <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"
                   Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                   ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" Padding="4 2 4 3" />
-              <Button Command="{Binding Settings.ShareCommand}" Content="Share Link" Padding="4 2 4 3" />
+              <Button Command="{Binding Settings.ShareCommand}" Content="Share link" Padding="4 2 4 3" />
             </mui:SpacingUniformGrid>
             <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False" Height="24">
               <mui:HierarchicalComboBox.SelectedContent>
@@ -66,7 +66,7 @@
               <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"
                   Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                   ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" Padding="4 2 4 3" />
-              <!--<Button Command="{Binding Settings.ShareCommand}" Content="Share Link" Padding="4 2 4 3" />-->
+              <!--<Button Command="{Binding Settings.ShareCommand}" Content="Share link" Padding="4 2 4 3" />-->
             </mui:SpacingUniformGrid>
             <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False" Height="24">
               <mui:HierarchicalComboBox.SelectedContent>

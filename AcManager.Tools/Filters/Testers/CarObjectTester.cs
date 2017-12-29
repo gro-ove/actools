@@ -167,7 +167,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("torque", "Torque", "N×m", KeywordType.Number, KeywordPriority.Normal),
                 new KeywordDescription("weight", "Weight", "kg", KeywordType.Number, KeywordPriority.Normal, "mass"),
                 new KeywordDescription("acceleration", "Acceleration", "seconds", KeywordType.Number, KeywordPriority.Normal),
-                new KeywordDescription("topspeed", "Top Speed", "km/h", KeywordType.Number, KeywordPriority.Normal, "speed"),
+                new KeywordDescription("topspeed", "Top speed", "km/h", KeywordType.Number, KeywordPriority.Normal, "speed"),
                 new KeywordDescription("maxrpm", "Max RPM from torque curve", KeywordType.Number, KeywordPriority.Normal),
                 new KeywordDescription("pwratio", "P/W ratio", KeywordType.Number, KeywordPriority.Normal, "pw"),
                 new KeywordDescription("skins", "Skins count", KeywordType.Number, KeywordPriority.Normal),

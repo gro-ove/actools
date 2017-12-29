@@ -25,6 +25,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -34,6 +35,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +45,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -52,6 +55,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
@@ -127,7 +131,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppModernWindow.cs" />
     <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
     <Compile Include="CommonBatchActions.cs" />
@@ -137,6 +140,7 @@
     <Compile Include="Dialogs\CupInformationDialog.xaml.cs">
       <DependentUpon>CupInformationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FontIconImage.cs" />
     <Compile Include="Graphs\CarGraphViewer.cs" />
     <Compile Include="Graphs\CustomGraphViewer.cs" />
     <Compile Include="Graphs\CustomTrackerControl.cs" />
@@ -146,6 +150,7 @@
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\FilterHints.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
+    <Compile Include="Presentation\ExtraProgressRings.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
@@ -259,10 +264,6 @@
     <Compile Include="ViewModels\UploaderParams.cs" />
     <Compile Include="WeatherComboBox.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Assets\ModernProgressRing.Imported.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -412,15 +413,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\FontIconImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\GraphDataViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\MessageBlock.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\AppModernWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -556,7 +557,10 @@
     <Resource Include="Assets\Background.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\Libraries\PreBuildEvents.props" />
+  <PropertyGroup>
+    <TemplatesToUpdate>~/bin/t4auto Assets\ExtraProgressRings.tt Assets\ExtraProgressRings.xaml</TemplatesToUpdate>
+  </PropertyGroup>
+  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

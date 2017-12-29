@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -59,16 +60,22 @@ namespace AcManager.Tools.Profile {
             // Starting
             try {
                 _server.RunAsync();
-            } catch (HttpListenerException e) {
+            } catch (HttpListenerException e) when (e.ToString().Contains("0x80004005")) {
                 NonfatalError.NotifyBackground("Can’t start web server",
                         $"Don’t forget to allow port’s usage with something like “netsh http add urlacl url=\"http://+:{port}/\" user=everyone”.", e, new[] {
-                            new NonfatalErrorSolution($"Use “netsh” to allow usage of port {port}", null, token => {
-                                Process.Start(new ProcessStartInfo {
-                                    FileName = "cmd",
-                                    Arguments = $"/C netsh http add urlacl url=\"http://+:{port}/\" user=everyone & pause",
-                                    Verb = "runas"
-                                });
-                                return Task.Delay(1000, token);
+                            new NonfatalErrorSolution($"Use “netsh” to allow usage of port {port}", null, async token => {
+                                try {
+                                    var command = $"netsh http add urlacl url=\"http://+:{port}/\" user=everyone";
+                                    var proc = ProcessExtension.Start("cmd", new[] {
+                                        "/C", $"echo {command} & {command} & @pause"
+                                    }, new ProcessStartInfo { Verb = "runas" });
+                                    await proc.WaitForExitAsync(token).ConfigureAwait(false);
+                                    Logging.Debug("Done: " + proc.ExitCode);
+                                } catch (Win32Exception ex) when (ex.ErrorCode != -1) {
+                                    Logging.Debug(ex.ErrorCode);
+                                    throw new InformativeException("Access denied",
+                                            "Unfortunately, HTTP.sys driver doesn’t allow to assign ports without administrator privileges.");
+                                }
                             })
                         });
             } catch (Exception e) {
@@ -138,7 +145,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
                 _pages = pages;
             }
 
-            [WebApiHandler(HttpVerbs.Get, @"/")]
+            [WebApiHandler(HttpVerbs.Get, @"/"), UsedImplicitly]
             public bool GetIndex(WebServer server, HttpListenerContext context) {
                 try {
                     var buffer = _pages.GetIndexPage();
@@ -151,7 +158,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
                 }
             }
 
-            [WebApiHandler(HttpVerbs.Get, @"/api/car/information")]
+            [WebApiHandler(HttpVerbs.Get, @"/api/car/information"), UsedImplicitly]
             public bool GetCarInformation(WebServer server, HttpListenerContext context) {
                 try {
                     var carId = AcSharedMemory.Instance.Shared?.StaticInfo.CarModel;
@@ -175,7 +182,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
                 }
             }
 
-            [WebApiHandler(HttpVerbs.Get, @"/api/track/information")]
+            [WebApiHandler(HttpVerbs.Get, @"/api/track/information"), UsedImplicitly]
             public bool GetTrackInformation(WebServer server, HttpListenerContext context) {
                 try {
                     var info = AcSharedMemory.Instance.Shared?.StaticInfo;
@@ -204,7 +211,7 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
                 }
             }
 
-            [WebApiHandler(HttpVerbs.Get, @"/api/car/badge")]
+            [WebApiHandler(HttpVerbs.Get, @"/api/car/badge"), UsedImplicitly]
             public bool GetCarBadge(WebServer server, HttpListenerContext context) {
                 try {
                     var currentCar = AcSharedMemory.Instance.Shared?.StaticInfo.CarModel;
@@ -247,9 +254,9 @@ new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{
                 ServerName = name;
             }
 
-            private string Serialize(object data) {
-                var jsonSerializable = data as IJsonSerializable;
-                return jsonSerializable != null ? jsonSerializable.ToJson() : JsonConvert.SerializeObject(data, Formatting.None);
+            private static string Serialize(object data) {
+                return data is IJsonSerializable jsonSerializable ? jsonSerializable.ToJson()
+                        : JsonConvert.SerializeObject(data, Formatting.None);
             }
 
             public void PublishData(object data) {

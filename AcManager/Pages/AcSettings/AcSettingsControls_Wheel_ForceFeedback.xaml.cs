@@ -129,7 +129,7 @@ namespace AcManager.Pages.AcSettings {
                     if (File.Exists(destination) && new FileInfo(destination).Length == new FileInfo(inputFile).Length) return;
 
                     File.Copy(inputFile, destination, true);
-                    Toast.Show("LUTLibrary Installed", "One thing left now is to restart CM. Do it now?", WindowsHelper.RestartCurrentApplication);
+                    Toast.Show("LUTLibrary installed", "One thing left now is to restart CM. Do it now?", WindowsHelper.RestartCurrentApplication);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t install LUTLibrary", e);
                 }

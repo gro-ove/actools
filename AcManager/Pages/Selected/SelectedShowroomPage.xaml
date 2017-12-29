@@ -45,7 +45,7 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_ShowroomTooltip}" />
         <Separator />
-        <Button Content="Fix Lighting For 360° Panorama Showroom" Command="{Binding FixLightingCommand}">
+        <Button Content="Fix lighting for 360° panorama showroom" Command="{Binding FixLightingCommand}">
           <Button.ToolTip>
             <mui:BbCodeBlock MaxWidth="480"
                 BbCode="To solve lighting issues (when only half of panorama is lit by sun), CM will redirect normals up, as in Kunos showrooms.[br][br]Original version will be moved to the Recycle Bin." />

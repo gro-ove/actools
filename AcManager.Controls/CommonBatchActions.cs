@@ -50,7 +50,7 @@ namespace AcManager.Controls {
         public class BatchAction_AddTag : BatchAction<AcJsonObjectNew> {
             public static readonly BatchAction_AddTag Instance = new BatchAction_AddTag();
 
-            public BatchAction_AddTag() : base("Add Tag", "Modify list of tags for several cars easily", "UI", "Batch.AddTag") {
+            public BatchAction_AddTag() : base("Add tag", "Modify list of tags for several cars easily", "UI", "Batch.AddTag") {
                 DisplayApply = "Apply";
                 Tags = new BetterObservableCollection<string>();
             }
@@ -146,7 +146,7 @@ namespace AcManager.Controls {
         public class BatchAction_SetRating : BatchAction<AcObjectNew> {
             public static readonly BatchAction_SetRating Instance = new BatchAction_SetRating();
 
-            public BatchAction_SetRating() : base("Set Rating", "Set rating of several objects at once", "Rating", "Batch.SetRating") {
+            public BatchAction_SetRating() : base("Set rating", "Set rating of several objects at once", "Rating", "Batch.SetRating") {
                 DisplayApply = RemoveRating ? "Un-rate" : "Rate";
             }
 
@@ -191,7 +191,7 @@ namespace AcManager.Controls {
         public class BatchAction_AddToFavourites : BatchAction<AcObjectNew> {
             public static readonly BatchAction_AddToFavourites Instance = new BatchAction_AddToFavourites();
 
-            public BatchAction_AddToFavourites() : base("Add To Favourites", "Add several objects at once", "Rating", null) {
+            public BatchAction_AddToFavourites() : base("Add to favourites", "Add several objects at once", "Rating", null) {
                 DisplayApply = "Favourite";
             }
 
@@ -207,7 +207,7 @@ namespace AcManager.Controls {
         public class BatchAction_RemoveFromFavourites : BatchAction<AcObjectNew> {
             public static readonly BatchAction_RemoveFromFavourites Instance = new BatchAction_RemoveFromFavourites();
 
-            public BatchAction_RemoveFromFavourites() : base("Remove From Favourites", "Remove several objects at once", "Rating", null) {
+            public BatchAction_RemoveFromFavourites() : base("Remove from favourites", "Remove several objects at once", "Rating", null) {
                 DisplayApply = "Unfavourite";
                 Priority = -1;
             }

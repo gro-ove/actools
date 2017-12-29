@@ -146,7 +146,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_AddNamePrefix : BatchAction<CarSkinObject> {
             public static readonly BatchAction_AddNamePrefix Instance = new BatchAction_AddNamePrefix();
             public BatchAction_AddNamePrefix()
-                    : base("Add Prefix Or Postfix", "Add prefix or postfix to skins’ names", "UI", "Batch.AddNamePrefix") {
+                    : base("Add prefix or postfix", "Add prefix or postfix to skins’ names", "UI", "Batch.AddNamePrefix") {
                 DisplayApply = "Add";
                 Priority = 0;
             }
@@ -231,7 +231,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_NameFromId : BatchAction<CarSkinObject> {
             public static readonly BatchAction_NameFromId Instance = new BatchAction_NameFromId();
             public BatchAction_NameFromId()
-                    : base("Set Name From ID", "Update name based on skins’ IDs", "UI", null) {
+                    : base("Set name from ID", "Update name based on skins’ IDs", "UI", null) {
                 DisplayApply = "Update";
                 Priority = 0;
             }
@@ -248,7 +248,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_UpdateLivery : BatchAction<CarSkinObject> {
             public static readonly BatchAction_UpdateLivery Instance = new BatchAction_UpdateLivery();
             public BatchAction_UpdateLivery()
-                    : base("Update Liveries", "With previously used params", "Look", "Batch.UpdateLivery") {
+                    : base("Update liveries", "With previously used params", "Look", "Batch.UpdateLivery") {
                 DisplayApply = "Update";
                 Priority = 2;
             }
@@ -276,7 +276,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_UpdatePreviews : BatchAction<CarSkinObject> {
             public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
             public BatchAction_UpdatePreviews()
-                    : base("Update Previews", "With previously used params", "Look", null) {
+                    : base("Update previews", "With previously used params", "Look", null) {
                 DisplayApply = "Update";
                 InternalWaitingDialog = true;
                 Priority = 1;
@@ -297,7 +297,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_RemoveNumbers : BatchAction<CarSkinObject> {
             public static readonly BatchAction_RemoveNumbers Instance = new BatchAction_RemoveNumbers();
             public BatchAction_RemoveNumbers()
-                    : base("Remove Numbers", "In case they set incorrectly", "UI", null) {
+                    : base("Remove numbers", "In case they set incorrectly", "UI", null) {
                 DisplayApply = "Reset";
             }
 
@@ -313,7 +313,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_ResetPriority : BatchAction<CarSkinObject> {
             public static readonly BatchAction_ResetPriority Instance = new BatchAction_ResetPriority();
             public BatchAction_ResetPriority()
-                    : base("Reset Priorities", "Set all priorities to 0", "UI", null) {
+                    : base("Reset priorities", "Set all priorities to 0", "UI", null) {
                 DisplayApply = "Reset";
             }
 
@@ -329,7 +329,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_RemoveUiSkinJson : BatchAction<CarSkinObject> {
             public static readonly BatchAction_RemoveUiSkinJson Instance = new BatchAction_RemoveUiSkinJson();
             public BatchAction_RemoveUiSkinJson()
-                    : base("Remove UI Files", "Easy way to clean up", "UI File", null) {
+                    : base("Remove UI files", "Easy way to clean up", "UI file", null) {
                 DisplayApply = "Remove";
             }
 
@@ -345,7 +345,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_CreateMissingUiSkinJson : BatchAction<CarSkinObject> {
             public static readonly BatchAction_CreateMissingUiSkinJson Instance = new BatchAction_CreateMissingUiSkinJson();
             public BatchAction_CreateMissingUiSkinJson()
-                    : base("Create Missing UI Files", "And generate names from IDs", "UI File", null) {
+                    : base("Create missing UI files", "And generate names from IDs", "UI file", null) {
                 DisplayApply = "Check";
             }
 
@@ -396,12 +396,11 @@ namespace AcManager.Pages.Lists {
         #endregion
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var skin = obj as CarSkinObject;
-            if (skin == null) return;
-
-            var car = CarsManager.Instance.GetById(skin.CarId);
-            if (car != null) {
-                QuickDrive.Show(car, skin.Id);
+            if (obj is CarSkinObject skin) {
+                var car = CarsManager.Instance.GetById(skin.CarId);
+                if (car != null) {
+                    QuickDrive.Show(car, skin.Id);
+                }
             }
         }
     }

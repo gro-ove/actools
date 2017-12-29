@@ -16,6 +16,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     internal class GenericModConfigEntry : ContentEntryBase {
+        public override double Priority => 95d;
+
         private readonly string _destination;
 
         public GenericModConfigEntry([NotNull] string path, [NotNull] string id, string description = null)

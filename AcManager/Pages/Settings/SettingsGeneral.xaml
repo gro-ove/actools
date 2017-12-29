@@ -43,7 +43,7 @@
 
         <DockPanel>
           <Label Content="“Don’t show again” in dialogs:" />
-          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do Not Show Again” Checkboxes" />
+          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do not show again” checkboxes" />
         </DockPanel>
 
         <!--app key and shortcut-->
@@ -65,17 +65,17 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
+      </StackPanel>
+      <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_General}" Style="{StaticResource SettingsPanel}">
+
         <!--versions-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_CheckForUpdatesLabel}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Common.UpdatePeriod}"
               DisplayMemberPath="DisplayName" />
         </DockPanel>
-
-      </StackPanel>
-      <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_General}" Style="{StaticResource SettingsPanel}">
 
         <!--app version-->
         <DockPanel>

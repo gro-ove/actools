@@ -9,20 +9,20 @@ using Microsoft.Win32;
 
 namespace FirstFloor.ModernUI.Dialogs {
     public sealed class DialogFilterPiece : Displayable {
-        public static readonly DialogFilterPiece AllFiles = new DialogFilterPiece("All Files", "*.*");
-        public static readonly DialogFilterPiece DdsFiles = new DialogFilterPiece("DDS Files", "*.dds");
-        public static readonly DialogFilterPiece JpegFiles = new DialogFilterPiece("JPEG Files", "*.jpg", "*.jpeg");
-        public static readonly DialogFilterPiece PngFiles = new DialogFilterPiece("PNG Files", "*.png");
-        public static readonly DialogFilterPiece DdsAndTiffFiles = new DialogFilterPiece("DDS & TIFF Files", "*.dds", "*.tif", "*.tiff");
-        public static readonly DialogFilterPiece ImageFiles = new DialogFilterPiece("Image Files", "*.dds", "*.tif", "*.tiff", "*.jpg", "*.jpeg", "*.png");
+        public static readonly DialogFilterPiece AllFiles = new DialogFilterPiece("All files", "*.*");
+        public static readonly DialogFilterPiece DdsFiles = new DialogFilterPiece("DDS files", "*.dds");
+        public static readonly DialogFilterPiece JpegFiles = new DialogFilterPiece("JPEG files", "*.jpg", "*.jpeg");
+        public static readonly DialogFilterPiece PngFiles = new DialogFilterPiece("PNG files", "*.png");
+        public static readonly DialogFilterPiece DdsAndTiffFiles = new DialogFilterPiece("DDS & TIFF files", "*.dds", "*.tif", "*.tiff");
+        public static readonly DialogFilterPiece ImageFiles = new DialogFilterPiece("Image files", "*.dds", "*.tif", "*.tiff", "*.jpg", "*.jpeg", "*.png");
         public static readonly DialogFilterPiece Applications = new DialogFilterPiece("Applications", "*.exe");
-        public static readonly DialogFilterPiece ZipFiles = new DialogFilterPiece("ZIP Archives", "*.zip");
-        public static readonly DialogFilterPiece TextFiles = new DialogFilterPiece("Text Files", "*.txt");
-        public static readonly DialogFilterPiece LutTables = new DialogFilterPiece("LUT Tables", "*.lut");
-        public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT Tables", "*.csv");
-        public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip Archives", "*.tar.gz");
-        public static readonly DialogFilterPiece DynamicLibraries = new DialogFilterPiece("Dynamic Libraries", "*.dll");
-        public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip Archives",
+        public static readonly DialogFilterPiece ZipFiles = new DialogFilterPiece("ZIP archives", "*.zip");
+        public static readonly DialogFilterPiece TextFiles = new DialogFilterPiece("Text files", "*.txt");
+        public static readonly DialogFilterPiece LutTables = new DialogFilterPiece("LUT tables", "*.lut");
+        public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT tables", "*.csv");
+        public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip archives", "*.tar.gz");
+        public static readonly DialogFilterPiece DynamicLibraries = new DialogFilterPiece("Dynamic libraries", "*.dll");
+        public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
         public DialogFilterPiece(string displayName, params string[] filter) {

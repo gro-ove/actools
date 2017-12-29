@@ -269,10 +269,10 @@ namespace AcManager.CustomShowroom {
             [Description("Normal")]
             AlphaOff = 0,
 
-            [Description("Alpha Blending")]
+            [Description("Alpha blending")]
             AlphaBlend = 1,
 
-            [Description("Alpha Testing")]
+            [Description("Alpha testing")]
             AlphaTest = 2
         }
 
@@ -280,7 +280,7 @@ namespace AcManager.CustomShowroom {
             [Description("Normal")]
             DepthNormal = 0,
 
-            [Description("Read Only")]
+            [Description("Read-only")]
             DepthNoWrite = 1,
 
             [Description("Off")]
@@ -460,11 +460,10 @@ namespace AcManager.CustomShowroom {
                 UpdateIfChanged();
                 Changed?.Invoke(this, EventArgs.Empty);
 
-                var kn5Renderer = _renderer as IKn5ObjectRenderer;
-                if (kn5Renderer == null) return;
-
-                var v = (MaterialValueSingle)sender;
-                kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value.AsFloat());
+                if (_renderer is IKn5ObjectRenderer kn5Renderer) {
+                    var v = (MaterialValueSingle)sender;
+                    kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value.AsFloat());
+                }
             }
 
             private void OnValue3DChanged(object sender, PropertyChangedEventArgs args) {
@@ -475,12 +474,11 @@ namespace AcManager.CustomShowroom {
                 UpdateIfChanged();
                 Changed?.Invoke(this, EventArgs.Empty);
 
-                var kn5Renderer = _renderer as IKn5ObjectRenderer;
-                if (kn5Renderer == null) return;
-
-                var v = (MaterialValue3D)sender;
-                kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id,
-                        new[] { v.X.AsFloat(), v.Y.AsFloat(), v.Z.AsFloat() });
+                if (_renderer is IKn5ObjectRenderer kn5Renderer) {
+                    var v = (MaterialValue3D)sender;
+                    kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id,
+                            new[] { v.X.AsFloat(), v.Y.AsFloat(), v.Z.AsFloat() });
+                }
             }
 
             public void ApplyValues() {
@@ -586,7 +584,7 @@ namespace AcManager.CustomShowroom {
 
             public bool CanBeSaved => Material != null;
             public PresetsCategory PresetableCategory { get; } = new PresetsCategory(
-                    Path.Combine(AcPaths.GetDocumentsDirectory(), "Editor", "Materials Library"), ".material");
+                    Path.Combine(AcPaths.GetDocumentsDirectory(), "Editor", "Materials library"), ".material");
             string IUserPresetable.PresetableKey => PresetableKey;
 
             // It’s not the best format, but it’s compatible with patched KsEditor
@@ -621,8 +619,7 @@ namespace AcManager.CustomShowroom {
                         }
 
                         foreach (var s in Values3D) {
-                            var jv = p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["C"] as JArray;
-                            if (jv != null) {
+                            if (p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["C"] is JArray jv) {
                                 s.X = ((float)jv["X"].AsDouble()).ToInvariantString();
                                 s.Y = ((float)jv["Y"].AsDouble()).ToInvariantString();
                                 s.Z = ((float)jv["Z"].AsDouble()).ToInvariantString();

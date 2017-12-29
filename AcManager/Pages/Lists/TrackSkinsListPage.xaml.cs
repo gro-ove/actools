@@ -140,7 +140,7 @@ namespace AcManager.Pages.Lists {
             public DelegateCommand JsgmeChangeCommand => _jsgmeChangeCommand ?? (_jsgmeChangeCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = "JSGME|JSGME.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
-                    Title = "Select JSGME Executable"
+                    Title = "Select JSGME executable"
                 };
 
                 if (dialog.ShowDialog() == true) {

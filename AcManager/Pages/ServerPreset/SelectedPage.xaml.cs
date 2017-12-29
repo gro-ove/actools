@@ -329,7 +329,7 @@ namespace AcManager.Pages.ServerPreset {
             public DelegateCommand ChangeWelcomeMessagePathCommand => _changeWelcomeMessagePathCommand ?? (_changeWelcomeMessagePathCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TextFilter,
-                    Title = "Select New Welcome Message",
+                    Title = "Select new welcome message",
                     InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath) ?? "",
                     RestoreDirectory = true
                 };
@@ -522,7 +522,7 @@ namespace AcManager.Pages.ServerPreset {
 
             foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() => {
                 Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink).ElementAtOrDefault(i)?.Source ?? Tab.SelectedSource;
-            }), new KeyGesture(Key.F1 + i, ModifierKeys.Alt)))) {
+            }), new KeyGesture(Key.F1 + i, ModifierKeys.Alt | ModifierKeys.Control)))) {
                 InputBindings.Add(binding);
             }
         }

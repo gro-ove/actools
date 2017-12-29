@@ -77,7 +77,7 @@
           </mui:SpacingUniformGrid>
           <mui:SpacingUniformGrid mui:Switch.When="{x:Static di:UserChampionshipIntroMode.InstallationAlreadyExistingPreview}" VerticalSpacing="4" Columns="1"
               Margin="0 8 0 0">
-            <Button Content="Install As New" mui:ModernDialog.ButtonBehavior="OK" />
+            <Button Content="Install as new" mui:ModernDialog.ButtonBehavior="OK" />
             <Button Content="{Binding ExistingName}" mui:ModernDialog.ButtonBehavior="Yes">
               <Button.ContentStringFormat>Replace “{0}”</Button.ContentStringFormat>
             </Button>

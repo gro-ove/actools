@@ -349,8 +349,8 @@
     <value>Nova pista {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
-    <value>Novo expositor {0}</value>
-  <alternative>Novo salão de exposição {0}</alternative></data>
+    <value>Novo showroom {0}</value>
+  <alternative>Novo salão de exposição {0}</alternative><alternative>Novo expositor {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
     <value>Nova fonte {0}</value>
   </data>
@@ -778,8 +778,8 @@
     <value>fonte</value>
   </data>
   <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>expositor</value>
-  </data>
+    <value>showroom</value>
+  <alternative>expositor</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>pista</value>
   </data>

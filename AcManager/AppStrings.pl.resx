@@ -317,8 +317,8 @@
     <value>Stwórz pusty model</value>
   </data>
   <data name="Solution_CreateEmptySkin" xml:space="preserve">
-    <value>Stwórz puste malowanie</value>
-  </data>
+    <value>Stwórz pustą skórkę</value>
+  <alternative>Stwórz puste malowanie</alternative></data>
   <data name="Solution_Enable" xml:space="preserve">
     <value>Zezwól</value>
   </data>
@@ -380,14 +380,14 @@
     <value>Przenieś czcionki z “fonts-off” do “fonts”</value>
   </data>
   <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
-    <value>Utwórz nowe puste malowanie o nazwie "default"</value>
-  </data>
+    <value>Utwórz nowe pustą skórkę o nazwie "default"</value>
+  <alternative>Utwórz nowe puste malowanie o nazwie "default"</alternative></data>
   <data name="Solution_EnableSkin" xml:space="preserve">
     <value>Zezwól {0}</value>
   </data>
   <data name="Solution_EnableSkin_Details" xml:space="preserve">
-    <value>Zezwól zablokować malowania</value>
-  </data>
+    <value>Zezwól zablokować skórkę</value>
+  <alternative>Zezwól zablokować malowania</alternative></data>
   <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
     <value>Z niczego, tylko pustka</value>
   <alternative>Z niczym, tylko pustka</alternative></data>
@@ -590,8 +590,8 @@
     <value>Mniejsza wartość może zwiększyć reagowanie UI, ale zmniejszy czas ładowania</value>
   </data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
-    <value>Na przykład, wyłączając</value>
-  </data>
+    <value>Na przykład, by wyłączyć</value>
+  <alternative>Na przykład, wyłączając</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
     <value>Dodaj “site:wikipedia.org” jako domyślna</value>
   </data>
@@ -605,8 +605,8 @@
     <value>Używaj domyślnie:</value>
   </data>
   <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
-    <value>Lite Showroom jest kompatybilny z DirectX 10, o wiele prostsze i łatwiejsze dla karty graficznej. Idealne rozwiązanie do tworzenia malowań.</value>
-  </data>
+    <value>Lite Showroom jest kompatybilny z DirectX 10, o wiele prostsze i łatwiejsze dla karty graficznej. Idealne rozwiązanie do malowania skórek.</value>
+  <alternative>Lite Showroom jest kompatybilny z DirectX 10, o wiele prostsze i łatwiejsze dla karty graficznej. Idealne rozwiązanie do tworzenia malowań.</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
     <value>Automatyczna regulacja kamery - piwot</value>
   <alternative>Automatyczna regulacja kamery - pivot</alternative></data>
@@ -683,11 +683,11 @@
     <value>Kariera Kunos:</value>
   </data>
   <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
-    <value>Pozwól, aby zmienić poziom AI</value>
-  </data>
+    <value>Zezwól zmienić poziom AI</value>
+  <alternative>Pozwól, aby zmienić poziom AI</alternative></data>
   <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
-    <value>Pozwól na zmiany malowań samochodu</value>
-  </data>
+    <value>Zezwól zmienić skórkę samochodów</value>
+  <alternative>Pozwól na zmiany malowań samochodu</alternative></data>
   <data name="Settings_Drive_EventsHeader" xml:space="preserve">
     <value>Zdarzenia związane z grą:</value>
   </data>
@@ -1126,8 +1126,8 @@
     <value>Lite Custom Showroom</value>
   </data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
-    <value>Szybsze i dokładniejsze, pomocne dla modujących lub tworzących malowania</value>
-  </data>
+    <value>Szybsze i dokładniejsze, pomocne dla modujących lub malujących skórki</value>
+  <alternative>Szybsze i dokładniejsze, pomocne dla modujących lub tworzących malowania</alternative></data>
   <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
     <value>Fancy Custom Showroom</value>
   </data>
@@ -1144,14 +1144,14 @@
     <value>Analiza</value>
   </data>
   <data name="Toolbar_CarSkins" xml:space="preserve">
-    <value>Malowania</value>
-  </data>
+    <value>Skórki</value>
+  <alternative>Malowania</alternative></data>
   <data name="Toolbar_CarSetups" xml:space="preserve">
     <value>Setupy</value>
   </data>
   <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
-    <value>Menedżer malowań (Ctrl+K)</value>
-  </data>
+    <value>Menedżer skórek (Ctrl+K)</value>
+  <alternative>Menedżer malowań (Ctrl+K)</alternative></data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
     <value>Menedżer setupów (Ctrl+U)</value>
   </data>
@@ -1342,17 +1342,17 @@
     <value>Generuj nowe malowanie za pomocą ustawień losowych</value>
   </data>
   <data name="Car_DeleteSkin" xml:space="preserve">
-    <value>Skasuj malowanie</value>
-  </data>
+    <value>Skasuj skórkę</value>
+  <alternative>Skasuj malowanie</alternative></data>
   <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
-    <value>Malowanie zostanie przeniesione do Kosza</value>
-  </data>
+    <value>Skórka zostanie przeniesione do Kosza</value>
+  <alternative>Malowanie zostanie przeniesione do Kosza</alternative></data>
   <data name="Car_SkinFormat" xml:space="preserve">
-    <value>Malowanie: {0}</value>
-  </data>
+    <value>Skórka: {0}</value>
+  <alternative>Malowanie: {0}</alternative></data>
   <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
-    <value>Otwórz folder malowania (Ctrl+F)</value>
-  <alternative>Otwórz folder malowań (Ctrl+F)</alternative></data>
+    <value>Otwórz folder skórek (Ctrl+F)</value>
+  <alternative>Otwórz folder malowań (Ctrl+F)</alternative><alternative>Otwórz folder malowania (Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
     <value>Otwórz folder setupów (Ctrl+F)</value>
   </data>
@@ -1387,8 +1387,8 @@
     <value>Usuń setup do kosza (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
-    <value>Usuń malowanie do kosza (Ctrl+Delete)</value>
-  </data>
+    <value>Usuń skórkę do kosza (Ctrl+Delete)</value>
+  <alternative>Usuń malowanie do kosza (Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
     <value>Usuń czcionkę do kosza (Ctrl+Delete)</value>
   </data>
@@ -1444,8 +1444,8 @@
     <value>Zmień ID</value>
   </data>
   <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
-    <value>Zmień ID malowań (Ctrl+Shift+F2)</value>
-  </data>
+    <value>Zmień ID skórek (Ctrl+Shift+F2)</value>
+  <alternative>Zmień ID malowań (Ctrl+Shift+F2)</alternative></data>
   <data name="Toolbar_DeleteJson" xml:space="preserve">
     <value>Usuń plik JSON</value>
   </data>
@@ -1471,8 +1471,8 @@
     <value>Nie można znaleźć samochodu z dostarczonego ID</value>
   </data>
   <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
-    <value>Aktualizuj podgląd malowań (Ctrl+P)</value>
-  </data>
+    <value>Aktualizuj podgląd skórek (Ctrl+P)</value>
+  <alternative>Aktualizuj podgląd malowań (Ctrl+P)</alternative></data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
     <value>Zmień malowania livery.png (Ctrl+L)</value>
   </data>
@@ -1769,8 +1769,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>{0} setup</value>
   </data>
   <data name="List_Skins" xml:space="preserve">
-    <value>{0} malowanie</value>
-  </data>
+    <value>{0} skórka</value>
+  <alternative>{0} malowanie</alternative></data>
   <data name="List_Cars" xml:space="preserve">
     <value>{0} samochód</value>
   </data>
@@ -1916,8 +1916,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Hasło:</value>
   </data>
   <data name="Online_SkinIsMissing" xml:space="preserve">
-    <value>Brakujące malowanie</value>
-  </data>
+    <value>Brakuje skórki</value>
+  <alternative>Brakujące malowanie</alternative></data>
   <data name="Online_AllCarsAreTaken" xml:space="preserve">
     <value>Wszystkie samochody są zajęte</value>
   </data>
@@ -2231,11 +2231,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Setupy</value>
   </data>
   <data name="Dialog_CarSkinsFormat" xml:space="preserve">
-    <value>{0} Malowania</value>
-  </data>
+    <value>{0} Skórki</value>
+  <alternative>{0} Malowania</alternative></data>
   <data name="Main_Skins" xml:space="preserve">
-    <value>Malowania</value>
-  </data>
+    <value>Skórki</value>
+  <alternative>Malowania</alternative></data>
   <data name="CarSpecs_Title" xml:space="preserve">
     <value>{0} Dane</value>
   </data>
@@ -2426,8 +2426,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nie można znaleźć filtra. Otworzyć opcję?</value>
   </data>
   <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
-    <value>Nie można zaktualizować podglądów wyłączonego auta lub malowania.</value>
-  </data>
+    <value>Nie można zaktualizować podglądów wyłączonego auta lub skórki.</value>
+  <alternative>Nie można zaktualizować podglądów wyłączonego auta lub malowania.</alternative></data>
   <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
     <value>Coś poszło nie tak.</value>
   </data>
@@ -2515,8 +2515,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Oczekiwanie na wyścig...</value>
   </data>
   <data name="Race_CleaningUp" xml:space="preserve">
-    <value>Czyszczenie pewnych rzeczy ...</value>
-  </data>
+    <value>Czyszczenie danych…</value>
+  <alternative>Czyszczenie pewnych rzeczy ...</alternative></data>
   <data name="RaceResult_Threoretical" xml:space="preserve">
     <value>Teoretyczny:</value>
   </data>
@@ -2668,11 +2668,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Tesla</value>
   </data>
   <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
-    <value>Zmień nazwę malowania "{0}"</value>
-  </data>
+    <value>Zmień numer skórki na "{0}"</value>
+  <alternative>Zmień nazwę malowania "{0}"</alternative></data>
   <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
-    <value>Nazwa malowania została zmieniona</value>
-  </data>
+    <value>Numer skórki został zmieniony</value>
+  <alternative>Nazwa malowania została zmieniona</alternative></data>
   <data name="LiveryIcon_CannotChange" xml:space="preserve">
     <value>Nie można zmienić obrazu malowania</value>
   </data>
@@ -3204,9 +3204,10 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nie można wysłać logów</value>
   </data>
   <data name="About_Footer" xml:space="preserve">
-    <value>Content Manager jest możliwy dzięki pewnym [url="/Pages/About/Credits.xaml|_top"]otwartym źródłom programowania[/url].
+    <value>Content Manager jest możliwy dzięki niektórym [url="/Pages/About/Credits.xaml|_top"]otwartym źródłom programowania[/url].
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
-  </data>
+  <alternative>Content Manager jest możliwy dzięki pewnym [url="/Pages/About/Credits.xaml|_top"]otwartym źródłom programowania[/url].
+Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternative></data>
   <data name="About_Copyright" xml:space="preserve">
     <value>Copyright © 2016 AcClub. All rights reserved.</value>
   </data>
@@ -3491,5 +3492,65 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
     <value>Pamiętaj, że całą usuniętą zawartość zawsze można przywrócić z kosza</value>
+  </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>Filtruj według podobnej długości</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>Filtruj według podobnej szerokości</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>Filtruj według podobnej ilości pit stopów</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Otwórz folder modelu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>Usuń model do Kosza (Ctrl+Delete)</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>Brak modelu kierowcy</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Temperatura drogi:</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} model kierowcy</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Losowy</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Losowy</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>Całkowita długość, zalecany format: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>Średnia szerokość toru, zalecany format: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>Ilość stanowisk do pitów, jako limit liczby samochodów na torze, zalecany format: “{0}”</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>Uruchamiam powtórkę ...</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>Uruchamiam test wydajności ...</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>Czekaj na koniec powtórki ...</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>Czekaj na koniec testu wydajności ...</value>
   </data>
 </root>

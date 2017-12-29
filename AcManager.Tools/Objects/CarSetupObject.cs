@@ -357,7 +357,7 @@ namespace AcManager.Tools.Objects {
         public DelegateCommand CopyUrlCommand => _copyUrlCommand ?? (_copyUrlCommand = new DelegateCommand(() => {
             if (_information.Url == null) return;
             Clipboard.SetText(_information.Url);
-            Toast.Show("Link Copied", "Link to The Setup Market copied to the clipboard");
+            Toast.Show("Link copied", "Link to The Setup Market copied to the clipboard");
         }, () => _information.Url != null));
 
         private AsyncCommand<string> _installCommand;
@@ -368,7 +368,7 @@ namespace AcManager.Tools.Objects {
                     d ?? (Track?.Id ?? _information.TrackKunosId ?? CarSetupObject.GenericDirectory), _information.FileName));
             FileUtils.EnsureFileDirectoryExists(filename);
             File.WriteAllText(filename, _loadedData);
-            Toast.Show("Setup Installed", $"Setup {DisplayName} downloaded and installed");
+            Toast.Show("Setup installed", $"Setup {DisplayName} downloaded and installed");
         }));
     }
 }

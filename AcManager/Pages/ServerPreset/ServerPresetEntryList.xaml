@@ -157,7 +157,7 @@
                 mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="1 0 1 0">
               <mui:SpacingStackPanel.ContextMenu>
                 <ContextMenu>
-                  <MenuItem Header="Delete Entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
+                  <MenuItem Header="Delete entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
                 </ContextMenu>
               </mui:SpacingStackPanel.ContextMenu>
               <mui:BetterTextBox Text="{Binding DriverName, ValidatesOnDataErrors=True}" Style="{StaticResource Borderless.White}" Placeholder="?" />
@@ -264,7 +264,7 @@
               </StackPanel>
               <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal"
                   d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
-                <Button Content="Random Skin" Padding="4 2" Margin="0 -4 0 0" Command="{Binding RandomSkinCommand}" />
+                <Button Content="Random skin" Padding="4 2" Margin="0 -4 0 0" Command="{Binding RandomSkinCommand}" />
                 <Button Content="Store" Padding="4 2" Margin="0 -4 0 0" Command="{Binding StoreCommand}" />
                 <Button Content="Clone" Padding="4 2" Margin="0 -4 0 0" Command="{Binding CloneCommand}" />
                 <Button Content="Delete" Padding="4 2" Margin="0 -4 0 0" Command="{Binding DeleteCommand}" />

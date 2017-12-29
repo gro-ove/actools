@@ -180,4 +180,6 @@
       </Trigger>
     </Style.Triggers>
   </Style>
+
+  <Style TargetType="controls:FormattedSlider" BasedOn="{StaticResource {x:Type Slider}}" />
 </ResourceDictionary>

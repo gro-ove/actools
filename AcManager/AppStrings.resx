@@ -128,16 +128,16 @@
 {0}</value>
   </data>
   <data name="App_AppUpdated" xml:space="preserve">
-    <value>Content Manager Updated</value>
+    <value>Content Manager updated</value>
   </data>
   <data name="App_DataUpdated" xml:space="preserve">
-    <value>Data Updated</value>
+    <value>Data updated</value>
   </data>
   <data name="App_LocaleUpdated" xml:space="preserve">
-    <value>Locale Updated</value>
+    <value>Locale updated</value>
   </data>
   <data name="App_NewVersion" xml:space="preserve">
-    <value>New Version</value>
+    <value>New version</value>
   </data>
   <data name="App_AppUpdated_Details" xml:space="preserve">
     <value>Click to see recent changes</value>
@@ -176,7 +176,7 @@
     <value>RSR returned file in unsupported format.</value>
   </data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
-    <value>Save as Generic</value>
+    <value>Save as generic</value>
   </data>
   <data name="Arguments_SharedMessage" xml:space="preserve">
     <value>Name: [b]{0}[/b]
@@ -200,19 +200,19 @@ Author: [b]{3}[/b]</value>
     <value>Would you like to apply this preset?</value>
   </data>
   <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
-    <value>Apply &amp; Save</value>
+    <value>Apply &amp; save</value>
   </data>
   <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
-    <value>Save &amp; Apply</value>
+    <value>Save &amp; apply</value>
   </data>
   <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
-    <value>Apply Only</value>
+    <value>Apply only</value>
   </data>
   <data name="Arguments_Shared_Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
   <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
-    <value>Save Only</value>
+    <value>Save only</value>
   </data>
   <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
     <value>Can’t install car’s setup</value>
@@ -221,10 +221,10 @@ Author: [b]{3}[/b]</value>
     <value>Metadata is missing.</value>
   </data>
   <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
-    <value>Apply FFB Only</value>
+    <value>Apply FFB only</value>
   </data>
   <data name="Arguments_Shared_JustGo" xml:space="preserve">
-    <value>Just Go</value>
+    <value>Just go</value>
   </data>
   <data name="Arguments_SharedUnsupported" xml:space="preserve">
     <value>Unsupported yet type: “{0}”</value>
@@ -251,7 +251,7 @@ Author: [b]{3}[/b]</value>
     <value>Enter a new name:</value>
   </data>
   <data name="Common_NewName" xml:space="preserve">
-    <value>New Name</value>
+    <value>New name</value>
   </data>
   <data name="Solution_SetNameFromId" xml:space="preserve">
     <value>Set name based on ID</value>
@@ -269,7 +269,7 @@ Author: [b]{3}[/b]</value>
     <value>Enter a new brand name:</value>
   </data>
   <data name="Common_NewBrandName" xml:space="preserve">
-    <value>New Brand Name</value>
+    <value>New brand name</value>
   </data>
   <data name="Solution_SetBrandNameFromName" xml:space="preserve">
     <value>Set brand name based on car’s name</value>
@@ -305,7 +305,7 @@ Author: [b]{3}[/b]</value>
     <value>Set {0} badge</value>
   </data>
   <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
-    <value>Set the brand’s badge from Content storage</value>
+    <value>Set a brand’s badge from Content storage</value>
   </data>
   <data name="Solution_ChangeBrandBadge" xml:space="preserve">
     <value>Change brand’s badge</value>
@@ -401,13 +401,13 @@ Author: [b]{3}[/b]</value>
     <value>Select or create a new upgrade icon with the editor</value>
   </data>
   <data name="Solution_SetUpgradeIcon_Details" xml:space="preserve">
-    <value>Set the upgrade icon from Content storage</value>
+    <value>Set an upgrade icon from Content storage</value>
   </data>
   <data name="Main_Title" xml:space="preserve">
-    <value>Content Manager (Lite Mode)</value>
+    <value>Content Manager (Lite mode)</value>
   </data>
   <data name="Main_OfficialSupportNotification" xml:space="preserve">
-    <value>Now With Official Support!</value>
+    <value>Now with official support!</value>
   </data>
   <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
     <value>New starter is ready, now without any patching at all</value>
@@ -416,7 +416,7 @@ Author: [b]{3}[/b]</value>
     <value>Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn't have to replace AssettoCorsa.exe, and it's great! Would you like to switch to a new Official Starter?</value>
   </data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
-    <value>Can’t process argument</value>
+    <value>Can’t process argument: “{0}”</value>
   </data>
   <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
     <value>Make sure it’s in valid format.</value>
@@ -440,10 +440,10 @@ Author: [b]{3}[/b]</value>
     <value>About</value>
   </data>
   <data name="Main_ReleaseNotes" xml:space="preserve">
-    <value>Release Notes</value>
+    <value>Release notes</value>
   </data>
   <data name="Main_ImportantTips" xml:space="preserve">
-    <value>Important Tips</value>
+    <value>Important tips</value>
   </data>
   <data name="Main_ContentManager" xml:space="preserve">
     <value>Content Manager</value>
@@ -460,7 +460,7 @@ Author: [b]{3}[/b]</value>
     <value>Fonts</value>
   </data>
   <data name="Main_PpFilters" xml:space="preserve">
-    <value>PP Filters</value>
+    <value>PP filters</value>
   </data>
   <data name="Main_Weather" xml:space="preserve">
     <value>Weather</value>
@@ -487,7 +487,7 @@ Author: [b]{3}[/b]</value>
     <value>Live</value>
   </data>
   <data name="Main_Language" xml:space="preserve">
-    <value>Language &amp; Regional</value>
+    <value>Language &amp; regional</value>
   </data>
   <data name="Main_Online" xml:space="preserve">
     <value>Online</value>
@@ -772,7 +772,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Create Start Menu shortcut; required for showing proper notifications in Windows 8, 8.1 and 10</value>
   </data>
   <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
-    <value>Auto Updates:</value>
+    <value>Auto updates:</value>
   </data>
   <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
     <value>Check for updates:</value>
@@ -781,16 +781,16 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>App version:</value>
   </data>
   <data name="Settings_General_CheckForUpdates" xml:space="preserve">
-    <value>Check For Updates</value>
+    <value>Check for updates</value>
   </data>
   <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
     <value>Data version:</value>
   </data>
   <data name="Settings_General_ValuesHeader" xml:space="preserve">
-    <value>Values Storage:</value>
+    <value>Values storage:</value>
   </data>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
-    <value>Clean Up</value>
+    <value>Clean up</value>
   </data>
   <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
     <value>Remove all nonimportant values</value>
@@ -802,7 +802,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>{0:F2} ms</value>
   </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
-    <value>Testing Access:</value>
+    <value>Testing access:</value>
   </data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
     <value>Update to non-tested versions</value>
@@ -960,7 +960,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Add “.acreplay” extension to all existing replays</value>
   </data>
   <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
-    <value>Add To Existing</value>
+    <value>Add to existing</value>
   </data>
   <data name="Settings_Replays_ExtensionHeader_Tooltip" xml:space="preserve">
     <value>With “.acreplay” extension you’ll be able to start a replay just by clicking it in Windows Explorer</value>
@@ -1001,7 +1001,7 @@ Examples:
 If you need some other values, please, contact us and we’ll add them.
 
 [b]Warning[/b]:
- Don't use symbols like “[” or “]”!</value>
+ Don’t use symbols like “[” or “]”!</value>
       <!--Used for saving or autosaving replays after the race.
 
   Values for replacement:
@@ -1076,10 +1076,10 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Destination:</value>
   </data>
   <data name="Common_SignOut" xml:space="preserve">
-    <value>Sign Out</value>
+    <value>Sign out</value>
   </data>
   <data name="Common_SignIn" xml:space="preserve">
-    <value>Sign In</value>
+    <value>Sign in</value>
   </data>
   <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
     <value>Folder:</value>
@@ -1179,13 +1179,13 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Cloning…</value>
   </data>
   <data name="Tags_CleanUp" xml:space="preserve">
-    <value>Clean Up Tags</value>
+    <value>Clean up tags</value>
   </data>
   <data name="Tags_Sort" xml:space="preserve">
-    <value>Sort Tags</value>
+    <value>Sort tags</value>
   </data>
   <data name="Tags_CleanUpAndSort" xml:space="preserve">
-    <value>Clean Up &amp; Sort Tags</value>
+    <value>Clean up &amp; sort tags</value>
   </data>
   <data name="AcObject_Author_TooltipExt" xml:space="preserve">
     <value>If you makes your own mods, please, use this field instead of description (or, of course, name)</value>
@@ -1197,79 +1197,79 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Could be used for auto-updating</value>
   </data>
   <data name="Filter_ByAuthor" xml:space="preserve">
-    <value>Filter By Author</value>
+    <value>Filter by author</value>
   </data>
   <data name="Filter_ByTag" xml:space="preserve">
-    <value>Filter By Tag</value>
+    <value>Filter by tag</value>
   </data>
   <data name="Filter_ByBrand" xml:space="preserve">
-    <value>Filter By Brand</value>
+    <value>Filter by brand</value>
   </data>
   <data name="Filter_ByCountry" xml:space="preserve">
-    <value>Filter By Country</value>
+    <value>Filter by country</value>
   </data>
   <data name="Filter_ByClass" xml:space="preserve">
-    <value>Filter By Class</value>
+    <value>Filter by class</value>
   </data>
   <data name="Filter_ByYear" xml:space="preserve">
-    <value>Filter By Year</value>
+    <value>Filter by year</value>
   </data>
   <data name="Filter_ByDecade" xml:space="preserve">
-    <value>Filter By Decade</value>
+    <value>Filter by decade</value>
   </data>
   <data name="Filter_ByPower" xml:space="preserve">
-    <value>Filter By Similar Power</value>
+    <value>Filter by similar power</value>
   </data>
   <data name="Filter_ByTorque" xml:space="preserve">
-    <value>Filter By Similar Torque</value>
+    <value>Filter by similar torque</value>
   </data>
   <data name="Filter_ByWeight" xml:space="preserve">
-    <value>Filter By Similar Weight</value>
+    <value>Filter by similar weight</value>
   </data>
   <data name="Filter_ByPwRatio" xml:space="preserve">
-    <value>Filter By Similar P/W Ratio</value>
+    <value>Filter by similar P/W ratio</value>
   </data>
   <data name="Filter_ByTopSpeed" xml:space="preserve">
-    <value>Filter By Similar Top Speed</value>
+    <value>Filter by similar top speed</value>
   </data>
   <data name="Filter_ByAcceleration" xml:space="preserve">
-    <value>Filter By Similar Acceleration</value>
+    <value>Filter by similar acceleration</value>
   </data>
   <data name="Filter_ByLength" xml:space="preserve">
-    <value>Filter By Similar Length</value>
+    <value>Filter by similar length</value>
   </data>
   <data name="Filter_ByWidth" xml:space="preserve">
-    <value>Filter By Similar Width</value>
+    <value>Filter by similar width</value>
   </data>
   <data name="Filter_ByPitboxes" xml:space="preserve">
-    <value>Filter By Similar Amount Of Pitstops</value>
+    <value>Filter by similar amount of pitstops</value>
   </data>
   <data name="Filter_ByDriver" xml:space="preserve">
-    <value>Filter By Driver Name</value>
+    <value>Filter by driver name</value>
   </data>
   <data name="Filter_ByTeam" xml:space="preserve">
-    <value>Filter By Team</value>
+    <value>Filter by team</value>
   </data>
   <data name="Filter_ByNumber" xml:space="preserve">
-    <value>Filter By Number</value>
+    <value>Filter by number</value>
   </data>
   <data name="Filter_ByPriority" xml:space="preserve">
-    <value>Filter By Priority</value>
+    <value>Filter by priority</value>
   </data>
   <data name="Filter_ByAge" xml:space="preserve">
-    <value>Filter By Age</value>
+    <value>Filter by age</value>
   </data>
   <data name="Filter_BySize" xml:space="preserve">
-    <value>Filter By Size</value>
+    <value>Filter by size</value>
   </data>
   <data name="Filter_ByWeather" xml:space="preserve">
-    <value>Filter By Weather</value>
+    <value>Filter by weather</value>
   </data>
   <data name="Filter_ByTrack" xml:space="preserve">
-    <value>Filter By Track</value>
+    <value>Filter by track</value>
   </data>
   <data name="Filter_ByCar" xml:space="preserve">
-    <value>Filter By Car</value>
+    <value>Filter by car</value>
   </data>
   <data name="Toolbar_Disable" xml:space="preserve">
     <value>Disable</value>
@@ -1284,19 +1284,19 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Delete</value>
   </data>
   <data name="Toolbar_FindInformation" xml:space="preserve">
-    <value>Find Information</value>
+    <value>Find information</value>
   </data>
   <data name="Toolbar_UpdatePreviews" xml:space="preserve">
-    <value>Update Previews</value>
+    <value>Update previews</value>
   </data>
   <data name="Toolbar_PackData" xml:space="preserve">
-    <value>Pack Data</value>
+    <value>Pack data</value>
   </data>
   <data name="Toolbar_UnpackData" xml:space="preserve">
-    <value>Unpack Data</value>
+    <value>Unpack data</value>
   </data>
   <data name="Toolbar_ReplaceSound" xml:space="preserve">
-    <value>Replace Sound</value>
+    <value>Replace sound</value>
   </data>
   <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
     <value>For a decent online (Ctrl+J)</value>
@@ -1326,7 +1326,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update all previews (Ctrl+P)</value>
   </data>
   <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
-    <value>Manual Mode</value>
+    <value>Manual mode</value>
   </data>
   <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
     <value>Set camera position manually and then press F8 to start shooting</value>
@@ -1347,16 +1347,16 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Can’t find object with provided ID</value>
   </data>
   <data name="Toolbar_UpdatePreview" xml:space="preserve">
-    <value>Update Preview</value>
+    <value>Update preview</value>
   </data>
   <data name="Toolbar_ChangeLivery" xml:space="preserve">
-    <value>Change Livery Icon</value>
+    <value>Change livery icon</value>
   </data>
   <data name="Toolbar_GenerateLivery" xml:space="preserve">
-    <value>Generate Livery Icon</value>
+    <value>Generate livery icon</value>
   </data>
   <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
-    <value>Generate Random Livery</value>
+    <value>Generate random livery</value>
   </data>
   <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
     <value>Generate a new livery icon using last settings of Livery Icon Editor</value>
@@ -1365,7 +1365,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Generate a new livery icon using random settings</value>
   </data>
   <data name="Car_DeleteSkin" xml:space="preserve">
-    <value>Delete Skin</value>
+    <value>Delete skin</value>
   </data>
   <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
     <value>Skin will be moved to the Recycle Bin</value>
@@ -1401,7 +1401,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Open weather’s folder (Ctrl+F)</value>
   </data>
   <data name="Common_Share" xml:space="preserve">
-    <value>Share Link</value>
+    <value>Share link</value>
   </data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Share current settings (Ctrl+Page Up)</value>
@@ -1410,34 +1410,34 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Test</value>
   </data>
   <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
-    <value>Remove setup to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove setup to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
-    <value>Remove skin to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove skin to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
-    <value>Remove font to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove font to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
-    <value>Remove model to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove model to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
-    <value>Remove PP filter to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove PP filter to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_AppTooltip" xml:space="preserve">
-    <value>Remove app to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove app to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
-    <value>Remove replay to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove replay to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
-    <value>Remove showroom to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove showroom to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_TrackTooltip" xml:space="preserve">
-    <value>Remove track to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove track to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_WeatherTooltip" xml:space="preserve">
-    <value>Remove weather to Recycle Bin (Ctrl+Delete)</value>
+    <value>Remove weather to the Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Rename" xml:space="preserve">
     <value>Rename</value>
@@ -1446,7 +1446,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Rename replay according to the new name (Ctrl+S)</value>
   </data>
   <data name="Toolbar_UploadAndShare" xml:space="preserve">
-    <value>Upload &amp; Share</value>
+    <value>Upload &amp; share</value>
   </data>
   <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
     <value>Share replay using Google Drive (Ctrl+Page Up)</value>
@@ -1493,10 +1493,10 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Test filter in showroom (Ctrl+G)</value>
   </data>
   <data name="Font_MissingFonts" xml:space="preserve">
-    <value>Missing Fonts</value>
+    <value>Missing fonts</value>
   </data>
   <data name="DriverModel_MissingDriverModels" xml:space="preserve">
-    <value>Missing Driver Models</value>
+    <value>Missing driver models</value>
   </data>
   <data name="Common_DisablingFormat" xml:space="preserve">
     <value>Disabling {0}…</value>
@@ -1529,20 +1529,20 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Make sure file isn’t used.</value>
   </data>
   <data name="Toolbar_RescanUsings" xml:space="preserve">
-    <value>Rescan Usings</value>
+    <value>Rescan usings</value>
     <comment>For font</comment>
   </data>
   <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
     <value>Collect list of cars per font (Ctrl+U)</value>
   </data>
   <data name="Toolbar_CreateNewFont" xml:space="preserve">
-    <value>Create New Font</value>
+    <value>Create new font</value>
   </data>
   <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
     <value>Create a new font using Kunos tool (Ctrl+N)</value>
   </data>
   <data name="Toolbar_DisableUnused" xml:space="preserve">
-    <value>Disable Unused</value>
+    <value>Disable unused</value>
   </data>
   <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
     <value>Rescan usings and disable all unused fonts (Ctrl+Shift+D)</value>
@@ -1557,7 +1557,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Last scanned: {0}</value>
   </data>
   <data name="AcObject_FontLastScannedNever" xml:space="preserve">
-    <value>Last scanned: Never</value>
+    <value>Last scanned: never</value>
   </data>
   <data name="AcObject_UsingsRescan" xml:space="preserve">
     <value>Rescan</value>
@@ -1582,7 +1582,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Size:</value>
   </data>
   <data name="AcObject_DriverNameLabel" xml:space="preserve">
-    <value>Driver Name:</value>
+    <value>Driver name:</value>
   </data>
   <data name="AcObject_WeatherLabel" xml:space="preserve">
     <value>Weather:</value>
@@ -1591,13 +1591,13 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Can’t share replay</value>
   </data>
   <data name="Replay_DefaultUploadedName" xml:space="preserve">
-    <value>AC Replay</value>
+    <value>AC replay</value>
   </data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
     <value>Open showroom’s folder (Ctrl+F)</value>
   </data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Create New Showroom</value>
+    <value>Create new showroom</value>
   </data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
     <value>Create new showroom from existing panorama (Ctrl+N)</value>
@@ -1606,10 +1606,10 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update showroom’s preview (Ctrl+P)</value>
   </data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
-    <value>Turn Off Sound</value>
+    <value>Turn off sound</value>
   </data>
   <data name="Toolbar_TurnOnSound" xml:space="preserve">
-    <value>Turn On Sound</value>
+    <value>Turn on sound</value>
   </data>
   <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
     <value>Disable sound (Ctrl+I)</value>
@@ -1630,7 +1630,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Find information about track (Ctrl+I)</value>
   </data>
   <data name="Toolbar_CopyValues" xml:space="preserve">
-    <value>Copy Values</value>
+    <value>Copy values</value>
   </data>
   <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
     <value>Copy values to other layouts</value>
@@ -1639,31 +1639,31 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update track’s preview (Ctrl+P)</value>
   </data>
   <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
-    <value>Without Shooting</value>
+    <value>Without shooting</value>
   </data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Just select existing image</value>
   </data>
   <data name="Toolbar_UpdateMap" xml:space="preserve">
-    <value>Update Map</value>
+    <value>Update map</value>
   </data>
   <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
-    <value>Layout Name:</value>
+    <value>Layout name:</value>
   </data>
   <data name="Filter_ByCity" xml:space="preserve">
-    <value>Filter By City</value>
+    <value>Filter by city</value>
   </data>
   <data name="AcObject_CityLabel" xml:space="preserve">
     <value>City:</value>
   </data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
-    <value>Geo Tags:</value>
+    <value>Geo tags:</value>
   </data>
   <data name="Toolbar_EditMode" xml:space="preserve">
-    <value>Edit Mode</value>
+    <value>Edit mode</value>
   </data>
   <data name="Toolbar_DisableEditMode" xml:space="preserve">
-    <value>Disable Edit Mode</value>
+    <value>Disable edit mode</value>
   </data>
   <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
     <value>Update weather’s preview (Ctrl+P)</value>
@@ -1745,10 +1745,10 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Multiplier</value>
   </data>
   <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
-    <value>Switch to Edit Mode (Ctrl+E)</value>
+    <value>Switch to edit mode (Ctrl+E)</value>
   </data>
   <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
-    <value>Switch from Edit Mode (Ctrl+E)</value>
+    <value>Switch from edit mode (Ctrl+E)</value>
   </data>
   <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
     <value>Color curves:</value>
@@ -1856,7 +1856,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Progress: {0}</value>
   </data>
   <data name="KunosCareer_Title" xml:space="preserve">
-    <value>Kunos Career</value>
+    <value>Kunos career</value>
   </data>
   <data name="KunosCareer_LeftToEarn" xml:space="preserve">
     <value>Left to earn: </value>
@@ -1879,7 +1879,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Temperature:</value>
   </data>
   <data name="KunosCareer_TrackState" xml:space="preserve">
-    <value>Track State:</value>
+    <value>Track state:</value>
   </data>
   <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
     <value>Starting position:</value>
@@ -1891,25 +1891,25 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Laps:</value>
   </data>
   <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
-    <value>AI Level:</value>
+    <value>AI level:</value>
   </data>
   <data name="Online_SortByName" xml:space="preserve">
-    <value>Sort By Name</value>
+    <value>Sort by name</value>
   </data>
   <data name="Online_SortByDrivers" xml:space="preserve">
-    <value>Sort By Drivers</value>
+    <value>Sort by drivers</value>
   </data>
   <data name="Online_SortByCapacity" xml:space="preserve">
-    <value>Sort By Capacity</value>
+    <value>Sort by capacity</value>
   </data>
   <data name="Online_SortByCarsNumber" xml:space="preserve">
-    <value>Sort By Cars Number</value>
+    <value>Sort by cars number</value>
   </data>
   <data name="Online_SortByPing" xml:space="preserve">
-    <value>Sort By Ping</value>
+    <value>Sort by ping</value>
   </data>
   <data name="Online_AddByIp" xml:space="preserve">
-    <value>Add By IP</value>
+    <value>Add by IP</value>
   </data>
   <data name="Online_Pinged" xml:space="preserve">
     <value>Pinged {0} out of {1}</value>
@@ -1955,7 +1955,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Nothing to display</value>
   </data>
   <data name="Online_AddNewServer" xml:space="preserve">
-    <value>Add a New Server</value>
+    <value>Add a new server</value>
   </data>
   <data name="Online_PasswordLabel" xml:space="preserve">
     <value>Password:</value>
@@ -2003,16 +2003,16 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Capacity</value>
   </data>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
-    <value>Cars Number</value>
+    <value>Cars number</value>
   </data>
   <data name="Online_Sorting_Ping" xml:space="preserve">
     <value>Ping</value>
   </data>
   <data name="Online_AddServer" xml:space="preserve">
-    <value>Server address (IP &amp; HTTP or TCP Port):</value>
+    <value>Server address (IP &amp; HTTP or TCP port):</value>
   </data>
   <data name="Online_AddServer_Title" xml:space="preserve">
-    <value>Add New Servers</value>
+    <value>Add new servers</value>
   </data>
   <data name="Online_AddServer_Tooltip" xml:space="preserve">
     <value>Port could be omitted, in this case app will scan all specific ports</value>
@@ -2036,7 +2036,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Real conditions</value>
   </data>
   <data name="Drive_ConsiderTimezones" xml:space="preserve">
-    <value>Consider Timezones</value>
+    <value>Consider timezones</value>
   </data>
   <data name="Drive_WeatherLabel" xml:space="preserve">
     <value>Weather:</value>
@@ -2121,13 +2121,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <comment>Will be pluralized automatically</comment>
   </data>
   <data name="Common_GotId" xml:space="preserve">
-    <value>Got It</value>
+    <value>Got it</value>
   </data>
   <data name="Rsr_Commentary" xml:space="preserve">
     <value>If you want to start RSR sessions directly from your browser, [url="https://github.com/gro-ove/actools-cm-download-extension"]here[/url] is an extension to do so!</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
-    <value>Start Race (Ctrl+G)</value>
+    <value>Start race (Ctrl+G)</value>
       <!--Start race (Ctrl+G)-->
   </data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
@@ -2152,7 +2152,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]Here[/url] is the list of mods used by RSR (download links included).</value>
   </data>
   <data name="Rsr_SessionName" xml:space="preserve">
-    <value>RSR Hotlap</value>
+    <value>RSR hotlap</value>
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
     <value>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</value>
@@ -2173,7 +2173,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Quit registration</value>
   </data>
   <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
-    <value>SRS Server Is Ready</value>
+    <value>SRS server is ready</value>
   </data>
   <data name="Srs_ReadyNotification" xml:space="preserve">
     <value>Click to join the race</value>
@@ -2182,7 +2182,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Make sure all required mods are installed.</value>
   </data>
   <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
-    <value>Solve All Similar Errors</value>
+    <value>Solve all similar errors</value>
   </data>
   <data name="AcError_AvailableSolutions" xml:space="preserve">
     <value>Available {solution}:</value>
@@ -2214,7 +2214,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Enter app key (XXXX-XXXX-…):</value>
   </data>
   <data name="AppKey_Title" xml:space="preserve">
-    <value>App Key</value>
+    <value>App key</value>
   </data>
   <data name="AppKey_Tooltip" xml:space="preserve">
     <value>Please, don’t share key, otherwise it might get revoked!</value>
@@ -2229,10 +2229,10 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>App will be restarted</value>
   </data>
   <data name="AppKey_GetNewKey" xml:space="preserve">
-    <value>Get a New Key</value>
+    <value>Get a new key</value>
   </data>
   <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
-    <value>Key Revoked</value>
+    <value>Key revoked</value>
   </data>
   <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
     <value>Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?</value>
@@ -2243,7 +2243,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
 [i]Please, don’t share your key, otherwise it might get compromised.[/i]</value>
   </data>
   <data name="AppKey_PreRestart_Title" xml:space="preserve">
-    <value>Thank You!</value>
+    <value>Thank you!</value>
   </data>
   <data name="AppKey_CannotCheck" xml:space="preserve">
     <value>Can’t check key</value>
@@ -2252,13 +2252,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Key is invalid</value>
   </data>
   <data name="BrandBadge_Title" xml:space="preserve">
-    <value>Brand Badge</value>
+    <value>Brand badge</value>
   </data>
   <data name="Common_SelectFile" xml:space="preserve">
-    <value>Select File</value>
+    <value>Select file</value>
   </data>
   <data name="Common_ViewUserFolder" xml:space="preserve">
-    <value>View User Folder</value>
+    <value>View user folder</value>
   </data>
   <data name="BrandBadge_CannotChange" xml:space="preserve">
     <value>Can’t change brand’s badge</value>
@@ -2267,31 +2267,31 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Make sure brand’s badge file is available to write.</value>
   </data>
   <data name="BrandBadge_SelectNew" xml:space="preserve">
-    <value>Select New Brand’s Badge</value>
+    <value>Select new brand’s badge</value>
   </data>
   <data name="BrandBadge_AddAs" xml:space="preserve">
     <value>Add as a new badge for (brand’s name):</value>
   </data>
   <data name="Common_AddToLibrary" xml:space="preserve">
-    <value>Add To The Library?</value>
+    <value>Add to the library?</value>
   </data>
   <data name="Common_CannotAddToLibrary" xml:space="preserve">
     <value>Can’t add a new entry to the library</value>
   </data>
   <data name="Dialog_CarSetupsFormat" xml:space="preserve">
-    <value>{0} Setups</value>
+    <value>{0} setups</value>
   </data>
   <data name="Main_Setups" xml:space="preserve">
     <value>Setups</value>
   </data>
   <data name="Dialog_CarSkinsFormat" xml:space="preserve">
-    <value>{0} Skins</value>
+    <value>{0} skins</value>
   </data>
   <data name="Main_Skins" xml:space="preserve">
     <value>Skins</value>
   </data>
   <data name="CarSpecs_Title" xml:space="preserve">
-    <value>{0} Specifications</value>
+    <value>{0} specifications</value>
   </data>
   <data name="CarSpecs_PowerLabel" xml:space="preserve">
     <value>BHP:</value>
@@ -2303,13 +2303,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Weight:</value>
   </data>
   <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
-    <value>Max Speed:</value>
+    <value>Max speed:</value>
   </data>
   <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
     <value>Acceleration:</value>
   </data>
   <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
-    <value>P/W Ratio:</value>
+    <value>P/W ratio:</value>
   </data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
     <value>… bhp</value>
@@ -2375,13 +2375,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Amount of pit stops as well as limit for a number of cars on the track, recommended format: “{0}”</value>
   </data>
   <data name="CarSpecs_FixFormats" xml:space="preserve">
-    <value>Fix Formats</value>
+    <value>Fix formats</value>
   </data>
   <data name="CarSpecs_UpdateCurves" xml:space="preserve">
-    <value>Update Curves</value>
+    <value>Update curves</value>
   </data>
   <data name="CarSpecs_FixFormat" xml:space="preserve">
-    <value>Fix Format</value>
+    <value>Fix format</value>
   </data>
   <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
     <value>Try to set proper format for value</value>
@@ -2396,25 +2396,25 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Recalculate from data</value>
   </data>
   <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
-    <value>Set Power Curve</value>
+    <value>Set power curve</value>
   </data>
   <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
-    <value>Copy new values to Torque and BHP?</value>
+    <value>Update torque and BHP specs?</value>
   </data>
   <data name="Common_OneMoreThing" xml:space="preserve">
-    <value>One More Thing</value>
+    <value>One more thing</value>
   </data>
   <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
     <value>You have to specify power and torque values first.</value>
   </data>
   <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
-    <value>Scale Curves To Power/Torque Values</value>
+    <value>Scale curves to power/torque values</value>
   </data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
-    <value>Recalculate Curves Using Data &amp; Power/Torque Values</value>
+    <value>Recalculate curves using data &amp; power/torque values</value>
   </data>
   <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
-    <value>Recalculate Curves Using Data Only</value>
+    <value>Recalculate curves using data only</value>
   </data>
   <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
     <value>Curves will be scaled to fit power and torque values from ui_car.json (you can see them above)</value>
@@ -2426,19 +2426,19 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Curves will be recalculated based on engine.ini, but you’ll have to provide transmission loss</value>
   </data>
   <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
-    <value>Transmission Loss For {0}</value>
+    <value>Transmission loss for {0}</value>
   </data>
   <data name="CarSpecs_TransmissionLoss" xml:space="preserve">
     <value>Transmission loss</value>
   </data>
   <data name="CarPreviews_Title" xml:space="preserve">
-    <value>Update Previews</value>
+    <value>Update previews</value>
   </data>
   <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
-    <value>Camera Position:</value>
+    <value>Camera position:</value>
   </data>
   <data name="CarPreviews_LookAtLabel" xml:space="preserve">
-    <value>Look At:</value>
+    <value>Look at:</value>
   </data>
   <data name="CarPreviews_ResizePreviews" xml:space="preserve">
     <value>Resize previews</value>
@@ -2471,7 +2471,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Resize previews to Kunos size 1022×575 (highly recommended)</value>
   </data>
   <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>Apparantly SweetFx doesn't affect the result, but could decrease loading time</value>
+    <value>Apparantly SweetFX doesn't affect the result, but could decrease loading time</value>
   </data>
   <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos watermark will be temporary hidden</value>
@@ -2480,7 +2480,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>[url="{0}"]{1}[/url] isn’t installed. Install it?</value>
   </data>
   <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
-    <value>Showroom Is Missing</value>
+    <value>Showroom is missing</value>
   </data>
   <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
     <value>Can’t download showroom “{0}”</value>
@@ -2516,13 +2516,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Now updating: {0} ({1}/{2})</value>
   </data>
   <data name="CarParent_Title" xml:space="preserve">
-    <value>Select Parent</value>
+    <value>Select parent</value>
   </data>
   <data name="Common_HowTo_Title" xml:space="preserve">
     <value>How-To</value>
   </data>
   <data name="Common_SelectImageForPreview" xml:space="preserve">
-    <value>Select Image For Preview</value>
+    <value>Select image for preview</value>
   </data>
   <data name="Weather_CannotShare" xml:space="preserve">
     <value>Can’t share weather</value>
@@ -2551,7 +2551,7 @@ Accepted values are from -1 to 1.</value>
     <value>Error:</value>
   </data>
   <data name="RaceResult_MaxLevel" xml:space="preserve">
-    <value>Max Level: </value>
+    <value>Max level: </value>
     <comment>Don’t forget about “: ” at the end!</comment>
   </data>
   <data name="RaceResult_BestCombo" xml:space="preserve">
@@ -2612,13 +2612,13 @@ Accepted values are from -1 to 1.</value>
     <value>Theoretical: </value>
   </data>
   <data name="CropImage_Title" xml:space="preserve">
-    <value>Crop Image</value>
+    <value>Crop image</value>
   </data>
   <data name="CropImage_Skip" xml:space="preserve">
-    <value>Don’t Crop</value>
+    <value>Don’t crop</value>
   </data>
   <data name="AdditionalContent_Title" xml:space="preserve">
-    <value>Install Additional Content</value>
+    <value>Downloads &amp; installations</value>
   </data>
   <data name="AdditionalContent_NothingFound" xml:space="preserve">
     <value>Nothing found</value>
@@ -2639,7 +2639,7 @@ Accepted values are from -1 to 1.</value>
     <value>Archive is encrypted. Input password:</value>
   </data>
   <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
-    <value>Password Required</value>
+    <value>Password required</value>
   </data>
   <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
     <value>Password is invalid, try again:</value>
@@ -2660,7 +2660,7 @@ Accepted values are from -1 to 1.</value>
     <value>Can’t install {0}</value>
   </data>
   <data name="LiveryIcon_Title" xml:space="preserve">
-    <value>Livery Icon</value>
+    <value>Livery icon</value>
   </data>
   <data name="LiveryIcon_ResultLabel" xml:space="preserve">
     <value>Result:</value>
@@ -2708,37 +2708,37 @@ Accepted values are from -1 to 1.</value>
     <value>Stripes</value>
   </data>
   <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
-    <value>Side Stripes</value>
+    <value>Side stripes</value>
   </data>
   <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
-    <value>Double Stripes</value>
+    <value>Double stripes</value>
   </data>
   <data name="LiveryIcon_Shape_HorizontalStripes" xml:space="preserve">
-    <value>Horizontal Stripes</value>
+    <value>Horizontal stripes</value>
   </data>
   <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
     <value>Circle</value>
   </data>
   <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
-    <value>Diagonal with Circle</value>
+    <value>Diagonal with circle</value>
   </data>
   <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
-    <value>Diagonal line with Circle</value>
+    <value>Diagonal line with circle</value>
   </data>
   <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
     <value>Carbon</value>
   </data>
   <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
-    <value>Horizontal Split</value>
+    <value>Horizontal split</value>
   </data>
   <data name="LiveryIcon_Shape_VerticalSplit" xml:space="preserve">
-    <value>Vertical Split</value>
+    <value>Vertical split</value>
   </data>
   <data name="LiveryIcon_Shape_TripleHorizontalSplit" xml:space="preserve">
-    <value>Triple Horizontal Split</value>
+    <value>Triple horizontal split</value>
   </data>
   <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
-    <value>Triple Vertical Split</value>
+    <value>Triple vertical split</value>
   </data>
   <data name="LiveryIcon_Style_Solid" xml:space="preserve">
     <value>Solid</value>
@@ -2762,7 +2762,7 @@ Accepted values are from -1 to 1.</value>
     <value>Change skin’s number to “{0}”?</value>
   </data>
   <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
-    <value>Skin Number Is Changed</value>
+    <value>Skin number is changed</value>
   </data>
   <data name="LiveryIcon_CannotChange" xml:space="preserve">
     <value>Can’t change livery icon</value>
@@ -2786,7 +2786,7 @@ Accepted values are from -1 to 1.</value>
     <value>Countries</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Create New Showroom</value>
+    <value>Create new showroom</value>
   </data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Name:</value>
@@ -2798,20 +2798,20 @@ Accepted values are from -1 to 1.</value>
     <value>Something like this:</value>
   </data>
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
-    <value>Recommended format: DDS Image, 32f.32f.32f.32f, 5120×2560
-But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
+    <value>Recommended format: DDS image, 32f.32f.32f.32f, 5120×2560
+But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
   </data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
-    <value>In Shadow</value>
+    <value>In shadow</value>
   </data>
   <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
-    <value>Select a Panorama File</value>
+    <value>Select a panorama file</value>
   </data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Can't create new showroom</value>
+    <value>Can’t create new showroom</value>
   </data>
   <data name="UpgradeIcon_Title" xml:space="preserve">
-    <value>Upgrade Icon</value>
+    <value>Upgrade icon</value>
   </data>
   <data name="UpgradeIcon_Editor" xml:space="preserve">
     <value>Editor</value>
@@ -2820,7 +2820,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Library</value>
   </data>
   <data name="UpgradeIcon_SelectNew" xml:space="preserve">
-    <value>Select New Upgrade Icon</value>
+    <value>Select new upgrade icon</value>
   </data>
   <data name="UpgradeIcon_CannotChange" xml:space="preserve">
     <value>Can’t change upgrade icon.</value>
@@ -2838,10 +2838,10 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>New</value>
   </data>
   <data name="UpgradeIcon_Commentary" xml:space="preserve">
-    <value>Ctrl+I: Italic, Ctrl+B: Bold</value>
+    <value>Ctrl+I: italic, Ctrl+B: bold</value>
   </data>
   <data name="VersionInfo_Title" xml:space="preserve">
-    <value>Version Info</value>
+    <value>Version info</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
     <value>Latency:</value>
@@ -2874,7 +2874,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>UI</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
-    <value>Switch to Low or Normal if you're experiencing problems with sound</value>
+    <value>Switch to Low or Normal if you’re experiencing problems with sound</value>
   </data>
   <data name="Controls_InputMethodLabel" xml:space="preserve">
     <value>Input method:</value>
@@ -2883,13 +2883,13 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Detected controllers:</value>
   </data>
   <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
-    <value>Warn About Unsaved Changes</value>
+    <value>Warn about unsaved changes</value>
   </data>
   <data name="Controls_SharePreset" xml:space="preserve">
-    <value>Share Preset</value>
+    <value>Share preset</value>
   </data>
   <data name="Controls_ShareFfbOnly" xml:space="preserve">
-    <value>Share FFB Settings Only</value>
+    <value>Share FFB settings only</value>
   </data>
   <data name="Controls_SharePreset_Tooltip" xml:space="preserve">
     <value>Only basic properties, without experimental ones</value>
@@ -2904,13 +2904,13 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Otherwise, app will move previous changed versions to the Recycle Bin silently</value>
   </data>
   <data name="Controls_SwapUsings" xml:space="preserve">
-    <value>Swap Usings</value>
+    <value>Swap usings</value>
   </data>
   <data name="Controls_ApplyToAll" xml:space="preserve">
-    <value>No, Apply to All</value>
+    <value>No, apply to all</value>
   </data>
   <data name="Controls_RemoveOld" xml:space="preserve">
-    <value>Yes, Remove Old</value>
+    <value>Yes, remove old</value>
   </data>
   <data name="Controls_AlreadyUsed" xml:space="preserve">
     <value>Already used</value>
@@ -2919,7 +2919,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Please, choose a file in initial directory (“cfg\controllers\savedsetups”) or some subdirectory.</value>
   </data>
   <data name="Controls_SharedFfbOnly" xml:space="preserve">
-    <value>{0} (FFB Only)</value>
+    <value>{0} (FFB only)</value>
   </data>
   <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
     <value>keyboard</value>
@@ -2964,7 +2964,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Buttons</value>
   </data>
   <data name="Controls_ForceFeedback" xml:space="preserve">
-    <value>Force Feedback</value>
+    <value>Force feedback</value>
   </data>
   <data name="Controls_CombineWithKeyboard" xml:space="preserve">
     <value>Combine with keyboard</value>
@@ -3222,7 +3222,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>System:</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>Allow unsupported DirectX 10 (use on your own risk; doesn't work?)</value>
+    <value>Allow unsupported DirectX 10 (use on your own risk; doesn’t work?)</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
     <value>Skybox reflection</value>
@@ -3264,16 +3264,16 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Enable developer mode?</value>
   </data>
   <data name="About_DeveloperMode_Title" xml:space="preserve">
-    <value>Developer Mode</value>
+    <value>Developer mode</value>
   </data>
   <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
     <value>Describe the issue. And, please, leave some contacts if you want to get a response (also, it could help to resolve the issue).</value>
   </data>
   <data name="About_ReportAnIssue_Title" xml:space="preserve">
-    <value>What’s The Issue?</value>
+    <value>what’s the issue?</value>
   </data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
-    <value>Logs Sent</value>
+    <value>Logs sent</value>
   </data>
   <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
     <value>Thank you for the help!</value>
@@ -3289,7 +3289,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Copyright © 2016–2017 AcClub.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>Mark All As Read</value>
+    <value>Mark all as read</value>
   </data>
   <data name="About_VersionFormat" xml:space="preserve">
     <value>Version: {0}</value>
@@ -3304,7 +3304,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Can’t initialize Lua</value>
   </data>
   <data name="Drive_CannotStart_Title" xml:space="preserve">
-    <value>Can’t Start Race</value>
+    <value>Can’t start race</value>
   </data>
   <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
     <value>Please, select some non-disabled car.</value>
@@ -3352,7 +3352,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Don’t forget to restart app after any changes</value>
   </data>
   <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
-    <value>Reset Championship Progress</value>
+    <value>Reset championship progress</value>
   </data>
   <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
     <value>All progress in this championship will be lost. Are you sure?</value>
@@ -3395,7 +3395,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Use custom weather’s PP-filter</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>Extended Weather:</value>
+    <value>Extended weather:</value>
       <!--Extended Weather-->
   </data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
@@ -3451,10 +3451,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Opponents:</value>
   </data>
   <data name="Drive_LocalWeatherHeader" xml:space="preserve">
-    <value>Local Weather</value>
+    <value>Local weather</value>
   </data>
   <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
-    <value>Set Time Manually</value>
+    <value>Set time manually</value>
   </data>
   <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
     <value>Use local weather instead of weather on the track</value>
@@ -3472,13 +3472,13 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Will take no longer than 500 ms</value>
   </data>
   <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
-    <value>How To Translate</value>
+    <value>How to translate</value>
   </data>
   <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
-    <value>Custom Translations</value>
+    <value>Custom translations</value>
   </data>
   <data name="Settings_Locale_ResxMode" xml:space="preserve">
-    <value>Translate Resx Files</value>
+    <value>Translate RESX files</value>
   </data>
   <data name="Settings_Locale_Prepare" xml:space="preserve">
     <value>Prepare</value>
@@ -3520,7 +3520,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Can’t load changelog</value>
   </data>
   <data name="Changelog_RecentChanges_Title" xml:space="preserve">
-    <value>Recent Changes</value>
+    <value>Recent changes</value>
   </data>
   <data name="Hibernate_TrayText" xml:space="preserve">
     <value>Content Manager is hidden</value>
@@ -3529,7 +3529,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Fallback to Official Starter if original launcher isn’t running</value>
   </data>
   <data name="Main_UnsavedChangesHeader" xml:space="preserve">
-    <value>Unsaved Changes</value>
+    <value>Unsaved changes</value>
   </data>
   <data name="Main_UnsavedChanges" xml:space="preserve">
     <value>Save changes to the following items?</value>
@@ -3562,6 +3562,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Confirm before removal</value>
   </data>
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
-    <value>Keep in mind that all removed content always can be restored from Recycle Bin</value>
+    <value>Keep in mind that all removed content always can be restored from the Recycle Bin</value>
   </data>
 </root>

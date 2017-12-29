@@ -4,10 +4,10 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
     xmlns:internal="http://acstuff.ru/app/internal" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="400" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
+    Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="200" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
     SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}"
     ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch"
-    Closed="OnClosed">
+    Closed="OnClosed" KeyDown="OnKeyDown" x:Name="This">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,10 @@
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
             <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextWrapping="Wrap" />
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                Visibility="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch},
+                    Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
             <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
                 Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
@@ -90,7 +93,83 @@
         </DataTemplate.Triggers>
       </DataTemplate>
 
-      <DataTemplate x:Key="TrackEntryDataTemplate" DataType="{x:Type entries:ContentEntryBase}">
+      <DataTemplate x:Key="FontEntryDataTemplate" DataType="{x:Type entries:FontContentEntry}">
+        <DockPanel>
+          <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
+              Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+
+          <!-- Name and some information -->
+          <DockPanel Dock="Top" IsEnabled="{Binding Active}">
+            <c:FontIconImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
+                Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                Visibility="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch},
+                    Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
+            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
+                Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+              <DockPanel>
+                <TextBlock Style="{StaticResource Small}"
+                    Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplayId, Mode=OneWay}" />
+              </DockPanel>
+              <DockPanel>
+                <TextBlock Style="{StaticResource Small}"
+                    Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
+              </DockPanel>
+            </mui:SpacingUniformGrid>
+            <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+              <DockPanel>
+                <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
+                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}" Placeholder="?" />
+              </DockPanel>
+              <DockPanel>
+                <TextBlock Style="{StaticResource Small}" Text="New version: " />
+                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" Placeholder="?"
+                    x:Name="NewVersion" />
+              </DockPanel>
+            </mui:SpacingUniformGrid>
+          </DockPanel>
+
+          <mui:BooleanSwitch DockPanel.Dock="Top">
+            <mui:BooleanSwitch.Value>
+              <MultiBinding Converter="{StaticResource AndConverter}">
+                <Binding Source="{x:Static internal:AppKeyHolder.IsAllRight}" />
+                <Binding Path="DetectWhileInstalling" Source="{x:Static t:SettingsHolder.GenericMods}" />
+                <Binding Path="GenericModSupported" />
+              </MultiBinding>
+            </mui:BooleanSwitch.Value>
+            <CheckBox IsChecked="{Binding InstallAsGenericMod}" ToolTip="Install as a generic mod as well, allowing to disable/remove it later"
+                Margin="0 4 0 0">
+              <Label Content="Install as a mod as well" />
+            </CheckBox>
+          </mui:BooleanSwitch>
+
+          <!-- Update options -->
+          <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
+              IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
+        </DockPanel>
+
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding IsNew}" Value="True">
+            <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding UpdateOptions.Count}" Value="1">
+            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding IsNewer}" Value="True">
+            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding IsOlder}" Value="True">
+            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+
+      <DataTemplate x:Key="TrackEntryDataTemplate" DataType="{x:Type entries:TrackContentEntry}">
         <DockPanel>
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -203,6 +282,13 @@
           </DataTrigger>
         </DataTemplate.Triggers>
       </DataTemplate>
+
+      <mui:ChainConverter x:Key="EnumToUpperCaseDescriptionConverter">
+        <mui:ChainConverter.Converters>
+          <mui:EnumToDescriptionConverter />
+          <mui:ToUpperConverter />
+        </mui:ChainConverter.Converters>
+      </mui:ChainConverter>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
 
@@ -217,7 +303,7 @@
       <c:MessageBlock Margin="0 0 0 20">
         <DockPanel>
           <mui:BbCodeBlock Text="Turn on 7-Zip plugin to improve installation performance and let CM to unpack all types of archives:" DockPanel.Dock="Top"
-              Margin="0 0 0 20" />
+              Margin="0 0 0 8" />
           <mui:Switch Value="{Binding RecommendedListView.Count}">
             <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
             <ItemsControl ItemsSource="{Binding RecommendedListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 -20 -20" />
@@ -226,155 +312,428 @@
       </c:MessageBlock>
     </mui:BooleanSwitch>
 
-    <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding Queue}"
-        DataContext="{x:Static t:ContentInstallationManager.Instance}" mui:FancyScrollHelper.Outside="True" Margin="0 0 -8 0" Padding="0 0 8 0">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <DockPanel Margin="0 0 0 32">
-            <DockPanel DockPanel.Dock="Top">
-              <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
-                  Command="{Binding CancelCommand}" ToolTip="Cancel installing"
-                  Visibility="{Binding CancelCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
-                <Button.Style>
-                  <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                  </Style>
-                </Button.Style>
-                <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
-                    HorizontalAlignment="Center" StrokeThickness="1" />
-              </Button>
+    <mui:BooleanSwitch x:Name="SevenZipObsoleteWarning" Visibility="Collapsed" Value="{Binding IsSevenZipPluginObsolete}" DockPanel.Dock="Top">
+      <c:MessageBlock Margin="0 0 0 20">
+        <DockPanel>
+          <mui:BbCodeBlock Text="There is a new version of 7-Zip plugin available! Please, update it to ensure it would work properly:" DockPanel.Dock="Top"
+              Margin="0 0 0 8" />
+          <mui:Switch Value="{Binding RecommendedListView.Count}">
+            <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
+            <ItemsControl ItemsSource="{Binding RecommendedListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 -20 -20" />
+          </mui:Switch>
+        </DockPanel>
+      </c:MessageBlock>
+    </mui:BooleanSwitch>
 
-              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="2" DockPanel.Dock="Bottom"
-                  Visibility="{Binding DisplayUpdateFor, Converter={StaticResource NullToVisibilityConverter}}">
-                <DockPanel Visibility="{Binding DisplayName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                    Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Name: " />
-                  <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayNameWithUrl, Mode=OneWay}" />
-                </DockPanel>
-                <DockPanel Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="File name: " />
-                  <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding FileName, Mode=OneWay}" />
-                </DockPanel>
-                <DockPanel Visibility="{Binding Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Version: " />
-                  <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" />
-                </DockPanel>
-              </mui:SpacingUniformGrid>
+    <ListBox x:Name="ItemsListBox" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" mui:FancyScrollHelper.Outside="True"
+        Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="t:ContentInstallationEntry">
+          <Border ClipToBounds="True">
+            <Border.LayoutTransform>
+              <ScaleTransform x:Name="PART_CollapseEntry" ScaleX="1" ScaleY="1" />
+            </Border.LayoutTransform>
 
-              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="1" DockPanel.Dock="Bottom">
-                <DockPanel Visibility="{Binding PreferCleanInstallation, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Clean installation is highly recommended!" FontWeight="Bold" Foreground="{DynamicResource Error}" />
+            <DockPanel x:Name="PART_Panel" MinHeight="72" MaxHeight="72" Margin="20 12" PreviewMouseLeftButtonDown="OnItemMouseDown"
+                PreviewMouseLeftButtonUp="OnItemMouseUp"
+                RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
+              <Image x:Name="PART_Icon" Source="{Binding FileIcon}" DockPanel.Dock="Left" Width="32" Height="32" VerticalAlignment="Center" Margin="0 0 20 0" />
+              <DockPanel Dock="Top" x:Name="PART_DisplayHeader">
+                <DockPanel.ToolTip>
+                  <TextBlock Style="{StaticResource Small}" Text="{Binding DisplaySource}" />
+                </DockPanel.ToolTip>
+
+                <Button Margin="0 -2 0 0" Style="{StaticResource DeleteButton}" Command="{Binding DeleteDelayCommand}"
+                    Visibility="{Binding DeleteDelayCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <DockPanel HorizontalAlignment="Left">
+                  <TextBlock x:Name="PART_DisplayStatus" Style="{StaticResource Label}" Margin="24 1 4 -1" DockPanel.Dock="Right"
+                      Text="{Binding Tag, Converter={StaticResource ToUpperConverter}, RelativeSource={RelativeSource Self}}" />
+                  <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextTrimming="CharacterEllipsis" />
                 </DockPanel>
-              </mui:SpacingUniformGrid>
-
-              <mui:SpacingUniformGrid HorizontalSpacing="4" Columns="1" DockPanel.Dock="Bottom">
-                <DockPanel Visibility="{Binding DisplayUpdateFor, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                    Margin="0 4 0 0">
-                  <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Update for: " />
-                  <mui:SelectableBbCodeBlock FontSize="{DynamicResource SmallFontSize}" BbCode="{Binding DisplayUpdateFor, Mode=OneWay}" />
-                </DockPanel>
-              </mui:SpacingUniformGrid>
-
-              <TextBlock Style="{StaticResource Small}" Margin="0 1 0 -1" Text="Installing from: " DockPanel.Dock="Left" />
-              <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small}" Text="{Binding DisplaySource}" />
-            </DockPanel>
-
-            <mui:Switch Value="{Binding State}" Margin="0 12 0 0">
-              <!-- Loading thing -->
-              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}">
-                <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}"
-                    DockPanel.Dock="Top" Height="4"
-                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" Margin="0 4 0 0"
-                    Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
               </DockPanel>
 
-              <!-- Finished -->
-              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}">
-                <mui:ReferenceSwitch Value="{Binding Failed}">
+              <mui:Switch Value="{Binding State}" Margin="0 4 0 0">
+                <!-- Loading thing -->
+                <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}" Spacing="4">
+                  <TextBlock Text="{Binding Progress.Message}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Style="{StaticResource Small}"
+                      Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
+                  <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
+                      Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                  <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
+                    <mui:LabeledToggleButton LabelUnchecked="Pause" LabelChecked="Resume" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
+                        HighlightChecked="True" />
+                    <Button Content="{x:Static mui:UiStrings.Cancel}" Command="{Binding CancelCommand}" />
+                  </mui:SpacingUniformGrid>
+                </mui:SpacingStackPanel>
+
+                <!-- Password input -->
+                <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center"
+                    HorizontalAlignment="Left" Margin="0 2 0 0" Spacing="6">
+                  <DockPanel>
+                    <TextBlock Text="Password:" Padding="0 0 12 0" Background="Transparent" />
+                    <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
+                        Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" Padding="4 0" PreviewKeyDown="OnPasswordBoxKeyDown" />
+                  </DockPanel>
+                  <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
+                    <Button Command="{Binding ApplyPasswordCommand}" Content="{x:Static mui:UiStrings.Ok}"
+                        IsEnabled="{Binding PasswordIsInvalid, Converter={StaticResource InvertBooleanConverter}}" />
+                    <Button Content="{x:Static mui:UiStrings.Cancel}" Command="{Binding CancelCommand}" />
+                  </mui:SpacingUniformGrid>
+                </mui:SpacingStackPanel>
+
+                <!-- Finished -->
+                <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}" Margin="0 4 0 0">
                   <mui:ReferenceSwitch.Null>
-                    <DockPanel>
-                      <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                          Margin="0 0 8 0" VerticalAlignment="Center" />
-                      <TextBlock TextWrapping="Wrap" Text="Successfully installed" />
-                    </DockPanel>
+                    <mui:SpacingStackPanel Spacing="8">
+                      <mui:BooleanSwitch Value="{Binding IsEmpty}">
+                        <mui:BooleanSwitch.True>
+                          <DockPanel>
+                            <Path Data="{StaticResource QuestionMarkIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                                Fill="{DynamicResource WindowTextReadOnly}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                            <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                Text="App couldn’t detect any content to install here. Would you like to install it manually?" Style="{StaticResource Small}" />
+                          </DockPanel>
+                        </mui:BooleanSwitch.True>
+                        <mui:BooleanSwitch.False>
+                          <DockPanel>
+                            <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}"
+                                Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                            <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="Successfully installed." Style="{StaticResource Small}" />
+                          </DockPanel>
+                        </mui:BooleanSwitch.False>
+                      </mui:BooleanSwitch>
+                      <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
+                        <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
+                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button Content="Scan again" /><!-- TODO -->
+                      </mui:SpacingUniformGrid>
+                    </mui:SpacingStackPanel>
                   </mui:ReferenceSwitch.Null>
                   <mui:ReferenceSwitch.NonNull>
-                    <DockPanel>
-                      <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                          Margin="0 0 8 0" VerticalAlignment="Center" />
-                      <Button DockPanel.Dock="Bottom" Content="View Downloaded File In Explorer" Command="{Binding ViewInExplorerCommand}" Margin="0 4 0 0"
-                          Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <TextBlock TextWrapping="Wrap" Text="{Binding Failed}" DockPanel.Dock="Top" />
-                      <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{Binding FailedCommentary}" Style="{StaticResource Small}" Margin="0 2 0 0"
-                          Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                    </DockPanel>
+                    <mui:SpacingStackPanel Spacing="8">
+                      <DockPanel Background="Transparent" x:Name="PART_ErrorMessage">
+                        <DockPanel.ToolTip>
+                          <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                            <mui:BbCodeBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
+                          </ToolTip>
+                        </DockPanel.ToolTip>
+                        <Path x:Name="PART_ErrorIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                            Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
+                        <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{Binding FailedMessage}" Style="{StaticResource Small}"
+                            DockPanel.Dock="Top" />
+                      </DockPanel>
+                      <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
+                        <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
+                            Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button Content="Retry" /><!-- TODO -->
+                      </mui:SpacingUniformGrid>
+                    </mui:SpacingStackPanel>
                   </mui:ReferenceSwitch.NonNull>
                 </mui:ReferenceSwitch>
-              </DockPanel>
 
-              <!-- Password input -->
-              <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" Spacing="4">
-                <TextBlock Text="Password is required:" Style="{StaticResource Label.Padding}" />
-                <mui:ProperPasswordBox Password="{Binding InputPassword}" Placeholder="?" />
-                <TextBlock Text="Password is invalid" Style="{StaticResource Label.Padding}" Foreground="{DynamicResource Error}"
-                    Visibility="{Binding PasswordIsInvalid, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Command="{Binding ApplyPasswordCommand}" Content="OK" />
-              </mui:SpacingStackPanel>
+                <!-- Waiting for confirmation -->
+                <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
+                  <Border SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="0 2 0 2">
+                    <Border.RenderTransform>
+                      <TranslateTransform x:Name="PART_HeaderOffset" X="0" Y="0" />
+                    </Border.RenderTransform>
+                    <Border ClipToBounds="True">
+                      <Border.RenderTransform>
+                        <ScaleTransform x:Name="PART_CollapseScale" ScaleX="1" ScaleY="1" />
+                      </Border.RenderTransform>
+                      <DockPanel
+                          RenderTransform="{Binding Path=(FrameworkElement.RenderTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
+                        <Path x:Name="PART_AddIcon" Data="{StaticResource AddIconData}" Width="10" Height="10" DockPanel.Dock="Left"
+                            Fill="{DynamicResource Accent}" Stretch="Uniform" Margin="1 2 5 0" VerticalAlignment="Center" />
+                        <TextBlock x:Name="PART_DisplayFound" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{Binding DisplayFound}" />
+                      </DockPanel>
+                    </Border>
+                  </Border>
 
-              <!-- Waiting for confirmation -->
-              <StackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
-                <mui:Switch Value="{Binding Entries.Length}">
-                  <StackPanel mui:Switch.When="0">
-                    <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
-                  </StackPanel>
+                  <mui:BooleanSwitch x:Name="PART_ExpandSwitch" Margin="0 -19 0 0" ClipToBounds="True">
+                    <mui:BooleanSwitch.RenderTransform>
+                      <TranslateTransform x:Name="PART_ContentOffset" X="0" Y="23" />
+                    </mui:BooleanSwitch.RenderTransform>
 
-                  <DockPanel>
-                    <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
-                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Spacing="8" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <DockPanel>
-                            <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
-                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
-                          </DockPanel>
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
-                        Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
+                    <Border SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                      <Border.LayoutTransform>
+                        <TransformGroup>
+                          <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
+                        </TransformGroup>
+                      </Border.LayoutTransform>
 
-                    <ItemsControl ItemsSource="{Binding Entries}">
-                      <ItemsControl.ItemTemplateSelector>
-                        <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
-                            TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
-                      </ItemsControl.ItemTemplateSelector>
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Spacing="8" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                      <DockPanel
+                          RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
+                        <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
+                            Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <mui:SpacingStackPanel Spacing="8" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <DockPanel>
+                                <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                                <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                                <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                              </DockPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
+                            Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
 
-                  </DockPanel>
-                </mui:Switch>
+                        <ItemsControl ItemsSource="{Binding Entries}">
+                          <ItemsControl.ItemTemplateSelector>
+                            <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
+                                FontTemplate="{StaticResource FontEntryDataTemplate}" TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
+                          </ItemsControl.ItemTemplateSelector>
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <mui:SpacingStackPanel Spacing="8" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-                <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 8 0 0" />
-              </StackPanel>
-            </mui:Switch>
+                      </DockPanel>
+                    </Border>
 
-          </DockPanel>
+                  </mui:BooleanSwitch>
+
+                  <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}"
+                      Margin="0 4 0 0">
+                    <Button x:Name="PART_ConfirmButton" Command="{Binding ConfirmCommand}" Content="{x:Static mui:UiStrings.Ok}" />
+                    <Button x:Name="PART_CancelButton" Content="{x:Static mui:UiStrings.Cancel}" Command="{Binding CancelCommand}" />
+                  </mui:SpacingUniformGrid>
+
+                </StackPanel>
+              </mui:Switch>
+
+            </DockPanel>
+
+          </Border>
+          <DataTemplate.Resources>
+            <ResourceDictionary>
+              <system:TimeSpan x:Key="ResetTime">0:0:0.5</system:TimeSpan>
+              <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
+              <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
+              <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
+              <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
+
+              <Storyboard x:Key="CollapseEverything" TargetProperty="(ScaleTransform.ScaleY)">
+                <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_CollapseEntry"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+
+              <Storyboard x:Key="ExpandDetails" TargetProperty="(ScaleTransform.ScaleY)">
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0" Storyboard.TargetName="PART_ExpandSwitch" Storyboard.TargetProperty="Value">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Boolean>True</system:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0" Storyboard.TargetName="PART_Panel" Storyboard.TargetProperty="MaxHeight">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Double>999999</system:Double>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <DoubleAnimation To="1" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_ExpandScale"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="CollapseDetails" TargetProperty="(ScaleTransform.ScaleY)">
+                <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_ExpandScale"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="{StaticResource ResetTime}" Storyboard.TargetName="PART_ExpandSwitch"
+                    Storyboard.TargetProperty="Value">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Boolean>False</system:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames BeginTime="{StaticResource ResetTime}" Storyboard.TargetName="PART_Panel" Storyboard.TargetProperty="MaxHeight">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <system:Double>72</system:Double>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+
+              <Storyboard x:Key="SlideContentUp">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Y" Storyboard.TargetName="PART_ContentOffset">
+                  <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                </DoubleAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="SlideContentBack">
+                <DoubleAnimationUsingKeyFrames BeginTime="{StaticResource ResetTime}" Storyboard.TargetProperty="Y" Storyboard.TargetName="PART_ContentOffset">
+                  <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="23" />
+                </DoubleAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="SlideHeaderIcon">
+                <DoubleAnimation To="24" Duration="{StaticResource SlideRightDuration}" Storyboard.TargetProperty="X" Storyboard.TargetName="PART_HeaderOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_AddIcon"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="SlideHeader">
+                <DoubleAnimation To="-16" Duration="{StaticResource SlideLeftDuration}" Storyboard.TargetProperty="X" Storyboard.TargetName="PART_HeaderOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_AddIcon"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="UnslideHeaderIcon">
+                <DoubleAnimation To="0" Duration="{StaticResource SlideRightDuration}" Storyboard.TargetProperty="X" Storyboard.TargetName="PART_HeaderOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="1" Duration="{StaticResource ExpandDuration}" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_AddIcon"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="UnslideHeader">
+                <DoubleAnimation To="0" Duration="{StaticResource SlideLeftDuration}" Storyboard.TargetProperty="X" Storyboard.TargetName="PART_HeaderOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="1" Duration="{StaticResource ExpandDuration}" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_AddIcon"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+
+              <Storyboard x:Key="CollapseHeader" TargetProperty="(ScaleTransform.ScaleY)">
+                <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_CollapseScale"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="0" Duration="{StaticResource SlideUpDuration}" Storyboard.TargetProperty="Y" Storyboard.TargetName="PART_ContentOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="ExpandHeader" TargetProperty="(ScaleTransform.ScaleY)">
+                <DoubleAnimation To="1" Duration="{StaticResource ExpandDuration}" BeginTime="0:0:0.1" Storyboard.TargetName="PART_CollapseScale"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="23" Duration="{StaticResource SlideUpDuration}" Storyboard.TargetProperty="Y" Storyboard.TargetName="PART_ContentOffset"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+            </ResourceDictionary>
+          </DataTemplate.Resources>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsFailed}" Value="True">
+              <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Failed" />
+              <Setter TargetName="PART_Icon" Property="Effect">
+                <Setter.Value>
+                  <mui:GrayscaleEffect SaturationFactor="0" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Cancelled}" Value="True">
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Cancelled" />
+              <Setter TargetName="PART_ErrorIcon" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+              <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Nothing found" />
+              <Setter TargetName="PART_Icon" Property="Effect">
+                <Setter.Value>
+                  <mui:GrayscaleEffect SaturationFactor="0" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsDeleting}" Value="True">
+              <DataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource CollapseEverything}" />
+              </DataTrigger.EnterActions>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+              <Setter TargetName="PART_ConfirmButton" Property="Command" Value="{Binding ConfirmDelayCommand}" />
+              <Setter TargetName="PART_CancelButton" Property="Command" Value="{Binding CancelDelayCommand}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsCancelling}" Value="True">
+              <Setter TargetName="PART_ConfirmButton" Property="Command" Value="{Binding ConfirmDelayCommand}" />
+              <Setter TargetName="PART_CancelButton" Property="Command" Value="{Binding CancelDelayCommand}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsConfirming}" Value="True">
+              <Setter TargetName="PART_ConfirmButton" Property="Command" Value="{Binding ConfirmDelayCommand}" />
+              <Setter TargetName="PART_CancelButton" Property="Command" Value="{Binding CancelDelayCommand}" />
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+                <Condition Binding="{Binding IsDisplayFoundSameAsFirstName}" Value="False" />
+                <Condition Binding="{Binding IsConfirming}" Value="False" />
+                <Condition Binding="{Binding IsCancelling}" Value="False" />
+              </MultiDataTrigger.Conditions>
+              <MultiDataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ExpandDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource CollapseHeader}" />
+              </MultiDataTrigger.EnterActions>
+              <MultiDataTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource CollapseDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource ExpandHeader}" />
+              </MultiDataTrigger.ExitActions>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+                <Condition Binding="{Binding IsDisplayFoundSameAsFirstName}" Value="True" />
+                <Condition Binding="{Binding Entries[0].Icon, Converter={StaticResource NullToBooleanConverter}}" Value="False" />
+                <Condition Binding="{Binding IsConfirming}" Value="False" />
+                <Condition Binding="{Binding IsCancelling}" Value="False" />
+              </MultiDataTrigger.Conditions>
+              <MultiDataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ExpandDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideHeaderIcon}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideContentUp}" />
+              </MultiDataTrigger.EnterActions>
+              <MultiDataTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource CollapseDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource UnslideHeaderIcon}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideContentBack}" />
+              </MultiDataTrigger.ExitActions>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+                <Condition Binding="{Binding IsDisplayFoundSameAsFirstName}" Value="True" />
+                <Condition Binding="{Binding Entries[0].Icon}" Value="{x:Null}" />
+                <Condition Binding="{Binding IsConfirming}" Value="False" />
+                <Condition Binding="{Binding IsCancelling}" Value="False" />
+              </MultiDataTrigger.Conditions>
+              <MultiDataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ExpandDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideHeader}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideContentUp}" />
+              </MultiDataTrigger.EnterActions>
+              <MultiDataTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource CollapseDetails}" />
+                <BeginStoryboard Storyboard="{StaticResource UnslideHeader}" />
+                <BeginStoryboard Storyboard="{StaticResource SlideContentBack}" />
+              </MultiDataTrigger.ExitActions>
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding IsCancelling}" Value="True">
+              <DataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource SlideHeader}" />
+              </DataTrigger.EnterActions>
+              <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
+              <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Cancelled" />
+              <Setter TargetName="PART_ErrorIcon" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_DisplayFound" Property="Text" Value="Cancelling…" />
+              <Setter TargetName="PART_Icon" Property="Effect">
+                <Setter.Value>
+                  <mui:GrayscaleEffect SaturationFactor="0" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsConfirming}" Value="True">
+              <DataTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource SlideHeader}" />
+              </DataTrigger.EnterActions>
+              <Setter TargetName="PART_DisplayFound" Property="Text" Value="Installing…" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
         </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+      </ListBox.ItemTemplate>
+    </ListBox>
 
   </DockPanel>
 </mui:ModernDialog>

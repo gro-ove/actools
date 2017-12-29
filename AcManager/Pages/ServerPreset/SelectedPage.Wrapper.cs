@@ -27,7 +27,7 @@ namespace AcManager.Pages.ServerPreset {
         [Description("Download URL")]
         Url,
 
-        [Description("Share From Server")]
+        [Description("Share from server")]
         Directly
     }
 
@@ -315,7 +315,7 @@ namespace AcManager.Pages.ServerPreset {
 
         public DelegateCommand SelectFileCommand => _selectFileCommand ?? (_selectFileCommand = new DelegateCommand(() => {
             var dialog = new OpenFileDialog {
-                Title = "Select Packed Archive",
+                Title = "Select packed archive",
                 CheckFileExists = true,
                 Filter = FileDialogFilters.ArchivesFilter,
                 InitialDirectory = _contentDirectory,

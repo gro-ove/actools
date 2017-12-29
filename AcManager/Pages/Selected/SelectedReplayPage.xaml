@@ -180,7 +180,7 @@
                 <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
                 <TextBlock TextWrapping="Wrap" Margin="0 4 0 0"
                     Text="This replay was saved automatically and it will be overwritten soon. Move it from “Autosave” category to keep it." />
-                <Button Command="{Binding KeepReplayCommand}" Content="Keep Replay" Visibility="{Binding KeepReplayCommand}" Margin="0 8 0 0" />
+                <Button Command="{Binding KeepReplayCommand}" Content="Keep replay" Visibility="{Binding KeepReplayCommand}" Margin="0 8 0 0" />
               </StackPanel>
             </mui:BooleanSwitch.True>
           </mui:BooleanSwitch>

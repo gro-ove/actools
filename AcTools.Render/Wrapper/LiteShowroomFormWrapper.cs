@@ -678,8 +678,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     if (!args.Control && !args.Alt && !args.Shift) {
                         if (ReplaceableShowroom) {
                             var dialog = new OpenFileDialog {
-                                Title = @"Select Showroom",
-                                Filter = @"KN5 Files (*.kn5)|*.kn5"
+                                Title = @"Select showroom",
+                                Filter = @"KN5 files (*.kn5)|*.kn5"
                             };
 
                             if (dialog.ShowDialog() == DialogResult.OK) {

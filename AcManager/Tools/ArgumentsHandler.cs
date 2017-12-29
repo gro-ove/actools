@@ -93,41 +93,45 @@ namespace AcManager.Tools {
             if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
             if (list.Count == 0) return ShowMainWindow.Immediately;
 
-            _previousArguments = list;
+            try {
+                // Why it’s here?
+                _previousArguments = list;
 
-            var remote = (await list.Select(async x => Tuple.Create(x,
-                    ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
-                            await ContentInstallationManager.IsRemoteSourceFlexible(x))
-                    ).WhenAll()).Where(x => x.Item2 != null).ToList();
-
-            if (remote.Any()) {
-                list = list.ApartFrom(remote.Select(x => x.Item1)).ToList();
-                if ((await remote.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
-                    AllowExecutables = true
-                })).WhenAll()).All(x => !x)) {
-                    await Task.Delay(ContentInstallationManager.OptionBiggestDelay);
+                var contentToInstall = (await list.Where(x => !IsCustomUriScheme(x)).Select(async x => Tuple.Create(x,
+                        ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
+                                await ContentInstallationManager.IsRemoteSourceFlexible(x))
+                        ).WhenAll()).Where(x => x.Item2 != null).ToList();
+                if (contentToInstall.Any()) {
+                    list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
+                    if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
+                        AllowExecutables = true
+                    })).WhenAll()).All(x => !x)) {
+                        // TODO
+                        await Task.Delay(2000);
+                    }
                 }
+
+                var showMainWindow = false;
+                foreach (var arg in list) {
+                    var result = await ProcessArgument(arg);
+
+                    if (extraDelay != TimeSpan.Zero) {
+                        await Task.Delay(extraDelay);
+                    }
+
+                    if (result == ArgumentHandleResult.FailedShow) {
+                        NonfatalError.Notify(string.Format(AppStrings.Main_CannotProcessArgument, arg), AppStrings.Main_CannotProcessArgument_Commentary);
+                    }
+
+                    if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
+                        showMainWindow = true;
+                    }
+                }
+
+                return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
+            } finally {
+                _previousArguments = null;
             }
-
-            var showMainWindow = false;
-            foreach (var arg in list) {
-                var result = await ProcessArgument(arg);
-
-                if (extraDelay != TimeSpan.Zero) {
-                    await Task.Delay(extraDelay);
-                }
-
-                if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify(AppStrings.Main_CannotProcessArgument, AppStrings.Main_CannotProcessArgument_Commentary);
-                }
-
-                if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
-                    showMainWindow = true;
-                }
-            }
-
-            _previousArguments = null;
-            return showMainWindow ? ShowMainWindow.Yes : ShowMainWindow.No;
         }
 
         public static bool IsCustomUriScheme(string argument) {
@@ -147,11 +151,11 @@ namespace AcManager.Tools {
                 return await ProcessInstallableContent(argument);
             }*/
 
-            try {
+            /*try {
                 if (!FileUtils.Exists(argument)) return ArgumentHandleResult.FailedShow;
             } catch (Exception) {
                 return ArgumentHandleResult.FailedShow;
-            }
+            }*/
 
             return await ProcessInputFile(argument);
         }
@@ -170,11 +174,11 @@ namespace AcManager.Tools {
                 return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);
                     return new FlexibleLoaderDestination(filename, true);
-                }, waiting, information => {
+                }, null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
-                }, waiting.CancellationToken);
+                }, null, waiting, waiting.CancellationToken);
             }
         }
 
@@ -186,11 +190,11 @@ namespace AcManager.Tools {
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         private static async Task LoadRemoveFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), waiting, information => {
+                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
-                }, waiting.CancellationToken);
+                }, null, waiting, waiting.CancellationToken);
             }
         }
 

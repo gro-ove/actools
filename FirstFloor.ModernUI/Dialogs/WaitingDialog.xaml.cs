@@ -200,6 +200,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
             var app = Application.Current;
             if (app == null) {
+                Logging.Debug("App not found");
                 ShowDialog();
                 return;
             }
@@ -208,6 +209,15 @@ namespace FirstFloor.ModernUI.Dialogs {
                 if (_closed || _disposed) return;
 
                 try {
+                    Loaded += (sender, args) => {
+                        if (_closed || _disposed) {
+                            try {
+                                Close();
+                            } catch (Exception e) {
+                                Logging.Error(e);
+                            }
+                        }
+                    };
                     ShowDialog();
                 } catch (InvalidOperationException e) {
                     Logging.Error(e);
@@ -231,7 +241,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public void Report(string value) {
             lock (_lock) {
                 if (Message == value) return;
-                Dispatcher.Invoke(() => {
+                Dispatcher.InvokeAsync(() => {
                     if (value != null) {
                         EnsureShown();
                         Message = value;
@@ -260,7 +270,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public void Report(double? value) {
             lock (_lock) {
                 if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
-                Dispatcher.Invoke(() => {
+                Dispatcher.InvokeAsync(() => {
                     if (value.HasValue) {
                         EnsureShown();
                         SetProgress(value.Value);
@@ -278,7 +288,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public void Report(double value) {
             lock (_lock) {
                 if (Progress.HasValue && Math.Abs(Progress.Value - value) < 0.0001) return;
-                Dispatcher.Invoke(() => {
+                Dispatcher.InvokeAsync(() => {
                     EnsureShown();
                     SetProgress(value);
                 });
@@ -292,7 +302,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public void Report(AsyncProgressEntry value) {
             lock (_lock) {
-                Dispatcher.Invoke(() => {
+                Dispatcher.InvokeAsync(() => {
                     if (value.Message != null) {
                         EnsureShown();
                         Message = value.Message;
@@ -306,7 +316,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public void Report(Tuple<string, double?> value) {
             lock (_lock) {
-                Dispatcher.Invoke(() => {
+                Dispatcher.InvokeAsync(() => {
                     if (value.Item1 != null) {
                         EnsureShown();
                         Message = value.Item1;
@@ -325,7 +335,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 _cancellationTokenSource = null;
             }
 
-            Dispatcher.Invoke(EnsureClosed);
+            Dispatcher.InvokeAsync(EnsureClosed);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -443,7 +443,7 @@ namespace AcManager.Tools.ContentInstallation {
                                      .FirstOrDefault(x => x.EndsWith(".bank") && x.Count('.') == 1 && x != "common.bank")?.ApartFromLast(".bank");
 
                     if (carId != null) {
-                        return new CarContentEntry(directory.Key ?? "", carId,
+                        return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
                 }
@@ -609,7 +609,6 @@ namespace AcManager.Tools.ContentInstallation {
                             if (fileData == null) throw new MissingContentException();
 
                             var icon = new FontObjectBitmap(bitmapData, fileData).GetIcon();
-
                             byte[] ToBytes(BitmapSource cropped) {
                                 var encoder = new PngBitmapEncoder();
                                 using (var stream = new MemoryStream()) {

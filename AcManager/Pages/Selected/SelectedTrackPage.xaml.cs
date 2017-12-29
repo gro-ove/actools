@@ -361,18 +361,17 @@ namespace AcManager.Pages.Selected {
             e.Handled = true;
 
             var context = ((FrameworkElement)sender).DataContext;
-            var wrapper = context as TrackObjectBase;
-            if (wrapper == null) return;
-
-            new ContextMenu {
-                Items = {
-                    new MenuItem {
-                        Header = "Update Outline",
-                        Command = _model.UpdateOutlineCommand,
-                        CommandParameter = wrapper.LayoutId
+            if (context is TrackObjectBase wrapper) {
+                new ContextMenu {
+                    Items = {
+                        new MenuItem {
+                            Header = "Update outline",
+                            Command = _model.UpdateOutlineCommand,
+                            CommandParameter = wrapper.LayoutId
+                        }
                     }
-                }
-            }.IsOpen = true;
+                }.IsOpen = true;
+            }
         }
     }
 }

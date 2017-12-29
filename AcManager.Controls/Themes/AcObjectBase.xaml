@@ -18,7 +18,7 @@
               <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}"
-                IconBackground="{TemplateBinding IconBackground}" Icon="{TemplateBinding Icon}" IconSource="{TemplateBinding IconSource}" x:Name="PART_Header" />
+                IconBackground="{TemplateBinding IconBackground}" Icon="{TemplateBinding Icon}" IconContent="{TemplateBinding IconContent}" x:Name="PART_Header" />
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 8 -14 0" Padding="0 0 8 0">
               <StackPanel MinWidth="500" Margin="0 0 0 40">
                 <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" />

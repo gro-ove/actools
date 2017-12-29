@@ -609,4 +609,7 @@
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}: </value>
   </data>
+  <data name="Colon_Format" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
 </root>

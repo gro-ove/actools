@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5MaterialDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" Title="Car Material"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" Title="Car material"
     d:DataContext="{d:DesignInstance customShowroom:Kn5MaterialDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
     MaxWidth="640" Topmost="False" SizeToContent="Height" Width="640">
   <mui:ModernDialog.Resources>
@@ -79,7 +79,7 @@
         <DockPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
           <DockPanel.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="{Binding OriginalAlphaMode, Converter={StaticResource EnumToDescriptionConverter}}" HeaderStringFormat="{}Original Value: {0}"
+              <MenuItem Header="{Binding OriginalAlphaMode, Converter={StaticResource EnumToDescriptionConverter}}" HeaderStringFormat="{}Original value: {0}"
                   Command="{Binding ResetAlphaModeCommand}" />
             </ContextMenu>
           </DockPanel.ContextMenu>
@@ -95,7 +95,7 @@
         <DockPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
           <DockPanel.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="{Binding OriginalDepthMode, Converter={StaticResource EnumToDescriptionConverter}}" HeaderStringFormat="{}Original Value: {0}"
+              <MenuItem Header="{Binding OriginalDepthMode, Converter={StaticResource EnumToDescriptionConverter}}" HeaderStringFormat="{}Original value: {0}"
                   Command="{Binding ResetDepthModeCommand}" />
             </ContextMenu>
           </DockPanel.ContextMenu>
@@ -123,7 +123,7 @@
                     Padding="0" Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <mui:ValueLabel.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="{Binding OriginalValue}" HeaderStringFormat="{}Original Value: {0}" Command="{Binding ResetCommand}" />
+                      <MenuItem Header="{Binding OriginalValue}" HeaderStringFormat="{}Original value: {0}" Command="{Binding ResetCommand}" />
                     </ContextMenu>
                   </mui:ValueLabel.ContextMenu>
                 </mui:ValueLabel>
@@ -145,7 +145,7 @@
                 <DockPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <DockPanel.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="{Binding OriginalValue}" HeaderStringFormat="{}Original Value: {0}" Command="{Binding ResetCommand}" />
+                      <MenuItem Header="{Binding OriginalValue}" HeaderStringFormat="{}Original value: {0}" Command="{Binding ResetCommand}" />
                     </ContextMenu>
                   </DockPanel.ContextMenu>
 
@@ -176,10 +176,10 @@
   <mui:ModernDialog.ButtonsRowContent>
     <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4">
       <c:UserPresetsControl UserPresetable="{Binding}" />
-      <mui:ButtonWithComboBox Content="Change Material" Command="{Binding ChangeMaterialCommand}" ButtonToolTip="Change material for selected mesh">
+      <mui:ButtonWithComboBox Content="Change material" Command="{Binding ChangeMaterialCommand}" ButtonToolTip="Change material for selected mesh">
         <mui:ButtonWithComboBox.MenuItems>
-          <MenuItem Command="{Binding RenameCommand}" Header="Rename Material" />
-          <MenuItem Command="{Binding ForkCommand}" Header="{Binding Material.Name}" HeaderStringFormat="Fork Material For Mesh “{0}”"
+          <MenuItem Command="{Binding RenameCommand}" Header="Rename material" />
+          <MenuItem Command="{Binding ForkCommand}" Header="{Binding Material.Name}" HeaderStringFormat="Fork material for mesh “{0}”"
               Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               IsEnabled="{Binding IsForkAvailable}" ToolTip="Fork material to be used only for this mesh" />
         </mui:ButtonWithComboBox.MenuItems>

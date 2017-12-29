@@ -30,7 +30,7 @@ namespace AcManager.PaintShop {
         private readonly Color _color;
         private readonly double _opacity;
 
-        public override string DisplayName { get; set; } = "Colored If Enabled";
+        public override string DisplayName { get; set; } = "Colored if enabled";
 
         protected override bool IsActive() {
             return Enabled ^ _inverse;

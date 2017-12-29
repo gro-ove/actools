@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -19,6 +20,15 @@ namespace AcManager.Tools.Data {
         }
 
         public DataUpdater() : base(GetInstalledVersion()) { }
+
+        protected override TimeSpan GetUpdatePeriod() {
+            return TimeSpan.FromDays(3);
+        }
+
+        protected override void OnCommonSettingsChanged(object sender, PropertyChangedEventArgs e) {
+            // Do nothing
+            // base.OnCommonSettingsChanged(sender, e);
+        }
 
         private static string VersionFromData(string data) {
             return JsonConvert.DeserializeObject<ContentManifest>(data).Version;

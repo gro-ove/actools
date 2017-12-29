@@ -948,7 +948,7 @@ namespace AcManager.Tools.Helpers {
             public DelegateCommand SelectRhmLocationCommand => _selectRhmLocationCommand ?? (_selectRhmLocationCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
-                    Title = "Select Real Head Motion Application",
+                    Title = "Select Real Head Motion application",
                     InitialDirectory = Path.GetDirectoryName(RhmLocation) ?? "",
                     FileName = Path.GetFileName(RhmLocation) ?? ""
                 };
@@ -964,7 +964,7 @@ namespace AcManager.Tools.Helpers {
                 => _selectRhmSettingsLocationCommand ?? (_selectRhmSettingsLocationCommand = new DelegateCommand(() => {
                     var dialog = new OpenFileDialog {
                         Filter = "Real Head Motion Settings|Settings.xml|XML Files (*.xml)|*.xml|All files (*.*)|*.*",
-                        Title = "Select Real Head Motion Settings",
+                        Title = "Select Real Head Motion settings",
                         InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation) ?? "",
                         FileName = Path.GetFileName(RhmSettingsLocation) ?? ""
                     };

@@ -248,7 +248,7 @@
                     IsCheckable="True" />
                 <!--<MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}"
                                             IsCheckable="True" IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
-                                    <MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
+                                    <MenuItem Header="Real lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
               </ContextMenu>
             </mui:ContextMenuButton>
             <CheckBox IsChecked="{Binding SelectedObject.RealConditions}">
@@ -285,7 +285,7 @@
                   <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
                     <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" VerticalAlignment="Center"
                         Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
-                    <TextBlock Text="Create New" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                    <TextBlock Text="Create new" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
                   </mui:SpacingStackPanel>
                 </Button>
               </Border>
@@ -524,12 +524,12 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewDirectCommand}">
           <Button.ToolTip>Update championship’s preview (Ctrl+P)</Button.ToolTip>
         </Button>
-        <Button Content="Set Crop Params" Command="{Binding SetCropParamsCommand}" ToolTip="Set offset and size for cropped square version of preview" />
+        <Button Content="Set crop params" Command="{Binding SetCropParamsCommand}" ToolTip="Set offset and size for cropped square version of preview" />
       </ToolBar>
       <ToolBar Band="1" BandIndex="1"
           Visibility="{Binding SelectedSource, Source={x:Reference Tab}, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='Rounds'}"
           IsEnabled="{Binding SelectedObject.IsStarted, Converter={StaticResource InvertBooleanConverter}}">
-        <Button Content="Add New Round" ToolTip="Add a new round (Ctrl+N)" Command="{Binding AddNewRoundCommand}" />
+        <Button Content="Add new round" ToolTip="Add a new round (Ctrl+N)" Command="{Binding AddNewRoundCommand}" />
       </ToolBar>
     </ac:AcObjectBase.ToolBars>
 

@@ -28,13 +28,13 @@
       <mui:BooleanSwitch x:Name="UploaderParams" Value="{Binding SelectedUploader.IsReady}"
           Visibility="{Binding SelectedUploader.SupportsSigning, Converter={StaticResource BooleanToVisibilityConverter}}">
         <mui:BooleanSwitch.True>
-          <mui:AsyncButton Margin="0" Content="Log Out" Command="{Binding LogOutCommand}" Padding="16 1 16 3" />
+          <mui:AsyncButton Margin="0" Content="Log out" Command="{Binding LogOutCommand}" Padding="16 1 16 3" />
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
           <DockPanel DockPanel.Dock="Left" Margin="0">
             <mui:BooleanLazySwitch x:Name="UploaderParamsSwitch" TrueResourceKey="{Binding Id}" TrueResourceKeyStringFormat="UploaderCredentials.{0}"
                 Value="True" DataContext="{Binding SelectedUploader}" DockPanel.Dock="Left" CollapseIfMissing="True" Margin="0 0 4 0" />
-            <mui:AsyncButton Margin="0" Content="Sign In" Command="{Binding SignInCommand}" Padding="16 1 16 3" /><!-- {x:Static g:AppStrings.Common_SignIn} -->
+            <mui:AsyncButton Margin="0" Content="Sign in" Command="{Binding SignInCommand}" Padding="16 1 16 3" /><!-- {x:Static g:AppStrings.Common_SignIn} -->
           </DockPanel>
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>

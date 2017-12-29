@@ -77,7 +77,7 @@ namespace AcManager.Pages.Selected {
             private int _value;
 
             public int Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -96,7 +96,7 @@ namespace AcManager.Pages.Selected {
             public IReadOnlyList<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
 
             public IReadOnlyList<string> DifficultyList => new [] {
-                "Easy", "Average", "Hard", "Very Hard"
+                "Easy", "Average", "Hard", "Very hard"
             };
 
             public BetterObservableCollection<PlacePoints> Points { get; }
@@ -252,7 +252,7 @@ namespace AcManager.Pages.Selected {
             private bool _updatingSerializedRaceGridData;
 
             public bool UpdatingSerializedRaceGridData {
-                get { return _updatingSerializedRaceGridData; }
+                get => _updatingSerializedRaceGridData;
                 set {
                     if (Equals(value, _updatingSerializedRaceGridData)) return;
                     _updatingSerializedRaceGridData = value;
@@ -384,8 +384,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _setCropParamsCommand;
 
             public DelegateCommand SetCropParamsCommand => _setCropParamsCommand ?? (_setCropParamsCommand = new DelegateCommand(() => {
-                Int32Rect rect;
-                var source = ImageEditor.Proceed(SelectedObject.PreviewImage, new Size(206, 206), false, SelectedObject.PreviewCrop, out rect);
+                var source = ImageEditor.Proceed(SelectedObject.PreviewImage, new Size(206, 206), false, SelectedObject.PreviewCrop, out Int32Rect rect);
                 if (source != null) {
                     SelectedObject.PreviewCrop = new Rect(rect.X, rect.Y, rect.Width, rect.Height);
                 }
@@ -504,10 +503,10 @@ namespace AcManager.Pages.Selected {
 
         private void OnRoundTrackClick(object sender, MouseButtonEventArgs e) {
             if (e.Handled) return;
-            var round = ((FrameworkElement)sender).DataContext as UserChampionshipRoundExtended;
-            if (round == null) return;
-            round.Track = SelectTrackDialog.Show(round.Track);
-            e.Handled = true;
+            if (((FrameworkElement)sender).DataContext is UserChampionshipRoundExtended round) {
+                round.Track = SelectTrackDialog.Show(round.Track);
+                e.Handled = true;
+            }
         }
 
         private void OnCarBlockDrop(object sender, DragEventArgs e) {
@@ -548,8 +547,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private void OnItemsControlDrop(object sender, DragEventArgs e) {
-            var roundObject = e.Data.GetData(UserChampionshipRoundExtended.DraggableFormat) as UserChampionshipRoundExtended;
-            if (roundObject == null) {
+            if (!(e.Data.GetData(UserChampionshipRoundExtended.DraggableFormat) is UserChampionshipRoundExtended roundObject)) {
                 e.Effects = DragDropEffects.None;
                 return;
             }
@@ -579,12 +577,10 @@ namespace AcManager.Pages.Selected {
 
         private void OnRoundDescriptionDoubleClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Left) return;
-
-            var round = ((FrameworkElement)sender).DataContext as UserChampionshipRoundExtended;
-            if (round == null) return;
-
-            round.Description = Prompt.Show("Round description:", "Round Description", round.Description, round.Track?.Description, multiline: true) ??
-                    round.Description;
+            if (((FrameworkElement)sender).DataContext is UserChampionshipRoundExtended round) {
+                round.Description = Prompt.Show("Round description:", "Round Description", round.Description, round.Track?.Description, multiline: true) ??
+                        round.Description;
+            }
         }
     }
 }

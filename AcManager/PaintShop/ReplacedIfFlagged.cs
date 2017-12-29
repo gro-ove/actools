@@ -24,7 +24,7 @@ namespace AcManager.PaintShop {
             };
         }
 
-        public override string DisplayName { get; set; } = "Replaced If Enabled";
+        public override string DisplayName { get; set; } = "Replaced if enabled";
 
         private readonly bool _inverse;
         private readonly Dictionary<PaintShopDestination, PaintShopSource> _replacements;

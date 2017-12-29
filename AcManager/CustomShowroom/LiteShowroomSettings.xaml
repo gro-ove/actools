@@ -212,7 +212,7 @@
       <Button Margin="0 20 0 0" Command="{Binding ChangeCarCommand}">
         <Button.Content>
           <mui:Cell>
-            <TextBlock Text="Change Car" />
+            <TextBlock Text="Change car" />
             <ProgressBar IsIndeterminate="True" VerticalAlignment="Bottom"
                 Visibility="{Binding ChangeCarCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
           </mui:Cell>
@@ -716,7 +716,7 @@
         </TextBlock>
       </c:MessageBlock>
 
-      <Button Content="Add New Light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
+      <Button Content="Add new light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
 
       <TextBlock Style="{StaticResource Heading2}" Margin="0 20 0 0">
         <TextBlock.Text>Car’s lights:</TextBlock.Text>
@@ -810,7 +810,7 @@
         </TextBlock>
       </c:MessageBlock>
 
-      <Button Content="Add New Light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
+      <Button Content="Add new light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
 
       <CheckBox IsChecked="{Binding Renderer.LoadCarLights}" Margin="0 20 0 0">
         <TextBlock Style="{StaticResource Heading2}">
@@ -1115,7 +1115,7 @@
           IsEnabled="{Binding Renderer.ColorGradingData, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
         <Label Content="Enabled" />
       </CheckBox>
-      <Button Content="Set Color Grading Texture" Command="{Binding SetColorGradingTextureCommand}" />
+      <Button Content="Set color grading texture" Command="{Binding SetColorGradingTextureCommand}" />
 
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetHdrCommand}" />
     </mui:SpacingStackPanel>

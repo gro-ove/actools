@@ -63,10 +63,10 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
             ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
         <Separator x:Name="ExtraButtonsSeparator" />
-        <Button x:Name="RandomizeSkinsButton" Content="Randomize Skins" Command="{Binding SelectedObject.RandomizeSkinsCommand}" />
-        <Button x:Name="RemoveEntriesButton" Content="Delete All Entries" Command="{Binding SelectedObject.DeleteAllEntriesCommand}" />
-        <Button x:Name="RepackAllArchivesButton" Content="Repack All" Command="{Binding WrapperRepackAllCommand}" />
-        <Button x:Name="ClearUnusedArchivesButton" Content="Remove Unused Archives" Command="{Binding WrapperRemoveUnusedCommand}"
+        <Button x:Name="RandomizeSkinsButton" Content="Randomize skins" Command="{Binding SelectedObject.RandomizeSkinsCommand}" />
+        <Button x:Name="RemoveEntriesButton" Content="Delete all entries" Command="{Binding SelectedObject.DeleteAllEntriesCommand}" />
+        <Button x:Name="RepackAllArchivesButton" Content="Repack all" Command="{Binding WrapperRepackAllCommand}" />
+        <Button x:Name="ClearUnusedArchivesButton" Content="Remove unused archives" Command="{Binding WrapperRemoveUnusedCommand}"
             ToolTip="Unused files from content subfolder will be moved to the Recycle Bin" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
@@ -79,7 +79,7 @@
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
           <mui:Link x:Name="MainBasicLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetBasic.xaml" />
           <mui:Link x:Name="MainCombinedLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetCombined.xaml" />
-          <mui:Link DisplayName="Entry List" Source="{StaticResource EntryListUri}" />
+          <mui:Link DisplayName="Entry list" Source="{StaticResource EntryListUri}" />
           <mui:Link x:Name="AssistsLink" DisplayName="Rules" Source="/Pages/ServerPreset/ServerPresetAssists.xaml" />
           <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
           <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />

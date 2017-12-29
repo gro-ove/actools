@@ -1,107 +1,103 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.OnlineListsManager" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
-                  xmlns:c="http://acstuff.ru/app/controls"
-                  mc:Ignorable="d"
-        Title="Online Servers Lists" d:DataContext="{d:DesignInstance di:OnlineListsManager+ViewModel}" SizeToContent="Manual" ResizeMode="CanResize"
-        Width="800" Height="480" MinWidth="600" MinHeight="320" LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="99999" MaxHeight="99999">
-    <mui:ModernDialog.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="Online servers lists"
+    d:DataContext="{d:DesignInstance di:OnlineListsManager+ViewModel}" SizeToContent="Manual" ResizeMode="CanResize" Width="800" Height="480" MinWidth="600"
+    MinHeight="320" LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="99999" MaxHeight="99999">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="DataGridCell.IsBuiltIn" DataType="{x:Type di:OnlineListsManager+ListEntry}">
-                <TextBlock Text="No" x:Name="ValueTextBlock" />
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
-                        <Setter TargetName="ValueTextBlock" Property="Text" Value="Yes" />
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-            </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.IsBuiltIn" DataType="{x:Type di:OnlineListsManager+ListEntry}">
+        <TextBlock Text="No" x:Name="ValueTextBlock" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
+            <Setter TargetName="ValueTextBlock" Property="Text" Value="Yes" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
 
-            <DataTemplate x:Key="DataGridCell.Name" DataType="{x:Type di:OnlineListsManager+ListEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
-                        Style="{StaticResource Borderless.White}" ToolTip="Name of the list" />
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
-                        <Setter TargetName="TextBox" Property="IsReadOnly" Value="True" />
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-            </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.Name" DataType="{x:Type di:OnlineListsManager+ListEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="?"
+            Style="{StaticResource Borderless.White}" ToolTip="Name of the list" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
+            <Setter TargetName="TextBox" Property="IsReadOnly" Value="True" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
 
-            <DataTemplate x:Key="DataGridCell.Label" DataType="{x:Type di:OnlineListsManager+ListEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Information.Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
-                        Style="{StaticResource Borderless.White}" ToolTip="Label shown in the list" />
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
-                        <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
-                        <Setter TargetName="TextBox" Property="Text" Value="Default icon" />
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-            </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.Label" DataType="{x:Type di:OnlineListsManager+ListEntry}">
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding Information.Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
+            Style="{StaticResource Borderless.White}" ToolTip="Label shown in the list" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
+            <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
+            <Setter TargetName="TextBox" Property="Text" Value="Default icon" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
 
-            <DataTemplate x:Key="DataGridCell.LabelColor" DataType="{x:Type di:OnlineListsManager+ListEntry}">
-                <mui:ColorPicker Color="{Binding Information.Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="ColorPicker"
-                        Style="{StaticResource ColorPicker.Borderless.White}" />
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
-                        <Setter TargetName="ColorPicker" Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-            </DataTemplate>
-        </ResourceDictionary>
-    </mui:ModernDialog.Resources>
+      <DataTemplate x:Key="DataGridCell.LabelColor" DataType="{x:Type di:OnlineListsManager+ListEntry}">
+        <mui:ColorPicker Color="{Binding Information.Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="ColorPicker"
+            Style="{StaticResource ColorPicker.Borderless.White}" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding IsBuiltIn}" Value="True">
+            <Setter TargetName="ColorPicker" Property="Visibility" Value="Collapsed" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
 
-    <DataGrid ItemsSource="{Binding Entries}" Style="{StaticResource DataGrid.Lite}">
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Width="90" Header="Built-In" SortMemberPath="IsBuiltIn" CellTemplate="{StaticResource DataGridCell.IsBuiltIn}" />
-            <DataGridTemplateColumn Width="1*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName"
-                    CellTemplate="{StaticResource DataGridCell.Name}" />
-            <DataGridTemplateColumn Width="0.6*" MinWidth="100" Header="Label" SortMemberPath="Information.Label"
-                    CellTemplate="{StaticResource DataGridCell.Label}" />
-            <DataGridTemplateColumn Width="120" Header="Label Color" SortMemberPath="Information.Color" CellTemplate="{StaticResource DataGridCell.LabelColor}" />
-            <DataGridCheckBoxColumn Width="90" Header="Hidden" SortMemberPath="Information.Hidden"
-                    Binding="{Binding Information.Hidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
-                    EditingElementStyle="{StaticResource {x:Type CheckBox}}">
-                <DataGridCheckBoxColumn.CellStyle>
-                    <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                        <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
-                        <Setter Property="ToolTip" Value="Link to the list will be hidden" />
-                    </Style>
-                </DataGridCheckBoxColumn.CellStyle>
-            </DataGridCheckBoxColumn>
-            <DataGridCheckBoxColumn Width="90" Header="Excluded" SortMemberPath="Information.Excluded"
-                    Binding="{Binding Information.Excluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
-                    EditingElementStyle="{StaticResource {x:Type CheckBox}}">
-                <DataGridCheckBoxColumn.CellStyle>
-                    <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                        <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
-                        <Setter Property="ToolTip">
-                            <Setter.Value>
-                                <TextBlock
-                                        Text="{Binding Id, StringFormat='{}Check if you want servers in this list to be hidden (to see them, search for `@{0}`)'}" />
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </DataGridCheckBoxColumn.CellStyle>
-            </DataGridCheckBoxColumn>
-        </DataGrid.Columns>
-        <DataGrid.RowDetailsTemplate>
-            <DataTemplate DataType="{x:Type di:OnlineListsManager+ListEntry}">
-                <StackPanel Margin="20 4 8 8">
-                    <ListBox ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource SimpleListItem}" Style="{StaticResource VirtualizingListBox}"
-                            TextSearch.TextPath="DisplayName" MaxHeight="320" SelectionMode="Extended" />
-                    <mui:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4" Margin="0 4 0 0">
-                        <Button Content="Add Server" Command="{Binding AddServerCommand}" />
-                        <Button Content="Remove Selected Servers" DockPanel.Dock="Right" />
-                        <Button Content="Remove List" Command="{Binding RemoveListCommand}" />
-                    </mui:SpacingStackPanel>
-                </StackPanel>
-            </DataTemplate>
-        </DataGrid.RowDetailsTemplate>
-    </DataGrid>
+  <DataGrid ItemsSource="{Binding Entries}" Style="{StaticResource DataGrid.Lite}">
+    <DataGrid.Columns>
+      <DataGridTemplateColumn Width="90" Header="Built-In" SortMemberPath="IsBuiltIn" CellTemplate="{StaticResource DataGridCell.IsBuiltIn}" />
+      <DataGridTemplateColumn Width="1*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName"
+          CellTemplate="{StaticResource DataGridCell.Name}" />
+      <DataGridTemplateColumn Width="0.6*" MinWidth="100" Header="Label" SortMemberPath="Information.Label" CellTemplate="{StaticResource DataGridCell.Label}" />
+      <DataGridTemplateColumn Width="120" Header="Label color" SortMemberPath="Information.Color" CellTemplate="{StaticResource DataGridCell.LabelColor}" />
+      <DataGridCheckBoxColumn Width="90" Header="Hidden" SortMemberPath="Information.Hidden"
+          Binding="{Binding Information.Hidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
+          EditingElementStyle="{StaticResource {x:Type CheckBox}}">
+        <DataGridCheckBoxColumn.CellStyle>
+          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
+            <Setter Property="ToolTip" Value="Link to the list will be hidden" />
+          </Style>
+        </DataGridCheckBoxColumn.CellStyle>
+      </DataGridCheckBoxColumn>
+      <DataGridCheckBoxColumn Width="90" Header="Excluded" SortMemberPath="Information.Excluded"
+          Binding="{Binding Information.Excluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
+          EditingElementStyle="{StaticResource {x:Type CheckBox}}">
+        <DataGridCheckBoxColumn.CellStyle>
+          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
+            <Setter Property="ToolTip">
+              <Setter.Value>
+                <TextBlock Text="{Binding Id, StringFormat='{}Check if you want servers in this list to be hidden (to see them, search for `@{0}`)'}" />
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </DataGridCheckBoxColumn.CellStyle>
+      </DataGridCheckBoxColumn>
+    </DataGrid.Columns>
+    <DataGrid.RowDetailsTemplate>
+      <DataTemplate DataType="{x:Type di:OnlineListsManager+ListEntry}">
+        <StackPanel Margin="20 4 8 8">
+          <ListBox ItemsSource="{Binding Servers}" ItemTemplate="{StaticResource SimpleListItem}" Style="{StaticResource VirtualizingListBox}"
+              TextSearch.TextPath="DisplayName" MaxHeight="320" SelectionMode="Extended" />
+          <mui:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4" Margin="0 4 0 0">
+            <Button Content="Add server" Command="{Binding AddServerCommand}" />
+            <Button Content="Remove selected servers" DockPanel.Dock="Right" />
+            <Button Content="Remove list" Command="{Binding RemoveListCommand}" />
+          </mui:SpacingStackPanel>
+        </StackPanel>
+      </DataTemplate>
+    </DataGrid.RowDetailsTemplate>
+  </DataGrid>
 </mui:ModernDialog>

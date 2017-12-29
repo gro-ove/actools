@@ -7,7 +7,7 @@
   <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   <c:BrushOpacityConverter x:Key="BrushOpacityConverter" />
   <c:ChainConverter x:Key="ChainConverter" />
-  <c:DifferentToVisibilityConverter x:Key="DifferentToVisibilityConverter" />
+  <c:DifferenceToVisibilityConverter x:Key="DifferentToVisibilityConverter" />
   <c:DrawingToColorConverter x:Key="DrawingToColorConverter" />
   <c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
   <c:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
@@ -35,6 +35,7 @@
   <c:PluralizingConverter x:Key="PluralizingConverter" />
   <c:ReadableTimeSpanConverter x:Key="ReadableTimeSpanConverter" />
   <c:SliderRoundConverter x:Key="SliderRoundConverter" />
+  <c:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />
   <c:SubstractConverter x:Key="SubstractConverter" />
   <c:SumConverter x:Key="SumConverter" />
   <c:ToLowerConverter x:Key="ToLowerConverter" />

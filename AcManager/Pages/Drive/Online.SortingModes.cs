@@ -125,7 +125,7 @@ namespace AcManager.Pages.Drive {
             new SettingEntry("name", AppStrings.Online_Sorting_Name),
             new SettingEntry("favourites", "Favourites"),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
-            new SettingEntry("connected", "Connected Drivers"),
+            new SettingEntry("connected", "Connected drivers"),
             new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
             new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
             new SettingEntry("ping", AppStrings.Online_Sorting_Ping)

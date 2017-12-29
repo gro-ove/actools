@@ -352,9 +352,17 @@
         <!-- FontObject -->
         <DataTemplate DataType="{x:Type t:FontObject}">
           <DockPanel x:Name="PART_Panel" HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
-            <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 0 0" Source="{Binding IconBitmap}" Background="Black" />
+            <c:FontIconImage Width="24" Height="24" DockPanel.Dock="Left" Margin="10 0 0 0" Source="{Binding IconBitmap}">
+              <c:FontIconImage.Effect>
+                <mui:AsTransparencyMask
+                    OverlayColor="{Binding Path=(TextBlock.Foreground), ElementName=PART_Panel,
+                        Converter={StaticResource SolidBrushToColorConverter}}" />
+              </c:FontIconImage.Effect>
+            </c:FontIconImage>
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}" Stretch="Uniform"
                 Visibility="Collapsed" x:Name="PART_ErrorIcon" />
+            <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" DockPanel.Dock="Right" Stretch="Uniform" Visibility="Collapsed"
+                x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
 
             <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 0 4 0"
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
@@ -367,6 +375,10 @@
                 HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" VerticalAlignment="Center" />
           </DockPanel>
           <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Author}" Value="{x:Static t:AcCommonObject.AuthorKunos}">
+              <Setter Property="Visibility" TargetName="PART_KunosIcon"
+                  Value="{Binding MarkKunosContent, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="PART_DisplayNameText" />
             </DataTrigger>
@@ -375,6 +387,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding HasErrors}" Value="True">
               <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_KunosIcon" />
               <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
             </DataTrigger>
 

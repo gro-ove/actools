@@ -609,4 +609,7 @@
   <data name="Toolbar_Favourite" xml:space="preserve">
     <value>Zu Favoriten hinzufügen</value>
   </data>
+  <data name="Colon_Format" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
 </root>

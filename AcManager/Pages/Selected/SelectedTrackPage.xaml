@@ -38,7 +38,7 @@
       </ToolBar>
       <ToolBar Band="0" BandIndex="0"
           Visibility="{Binding SelectedTrackConfiguration.AiLaneCandidateExists, ConverterParameter={StaticResource BooleanToVisibilityConverter}}">
-        <Button Content="Apply AI Lane" ToolTip="New candidates to AI lanes found, apply? Current lanes, if any, will be moved to the Recycle Bin"
+        <Button Content="Apply AI lane" ToolTip="New candidates to AI lanes found, apply? Current lanes, if any, will be moved to the Recycle Bin"
             Command="{Binding SelectedTrackConfiguration.ApplyAiLaneCandidatesCommand}" />
         <Separator />
         <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
@@ -67,13 +67,13 @@
               ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewWithoutShooting_Tooltip}" InputGestureText="Ctrl+Alt+P"
               Command="{Binding UpdatePreviewDirectCommand}" />
         </mui:ButtonWithComboBox>
-        <mui:ButtonWithComboBox Content="Update Outline" Command="{Binding OutlineSettingsCommand}"
+        <mui:ButtonWithComboBox Content="Update outline" Command="{Binding OutlineSettingsCommand}"
             ButtonToolTip="Re-create outline.png in Kunos style from map.png (Ctrl+U)">
           <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" InputGestureText="Ctrl+Shift+U" Command="{Binding OutlineSettingsCommand}" />
         </mui:ButtonWithComboBox>
         <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdateMap}" Command="{Binding UpdateMapCommand}"
             ButtonToolTip="Re-create map.png in Kunos style from fast_lane.ai" CommandParameter="True">
-          <MenuItem Header="Update Map From Surfaces" ToolTip="Re-create map.png using surfaces instead" Command="{Binding UpdateMapCommand}"
+          <MenuItem Header="Update map from surfaces" ToolTip="Re-create map.png using surfaces instead" Command="{Binding UpdateMapCommand}"
               CommandParameter="False" />
         </mui:ButtonWithComboBox>
       </ToolBar>
@@ -117,7 +117,7 @@
         <mui:Cell Height="200" Width="355" VerticalAlignment="Center" Margin="20 0 0 0" Background="Transparent">
           <mui:Cell.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="Update Outline" Command="{Binding OutlineSettingsCommand}" CommandParameter="{Binding SelectedTrackConfiguration.LayoutId}"
+              <MenuItem Header="Update outline" Command="{Binding OutlineSettingsCommand}" CommandParameter="{Binding SelectedTrackConfiguration.LayoutId}"
                   InputGestureText="Ctrl+U" />
             </ContextMenu>
           </mui:Cell.ContextMenu>
@@ -184,7 +184,7 @@
                 <FrameworkElement.ContextMenu>
                   <ContextMenu>
                     <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
-                    <MenuItem Header="Filter By Origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+                    <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
                   </ContextMenu>
                 </FrameworkElement.ContextMenu>
                 <mui:BbCodeBlock BbCode="{Binding SelectedTrackConfiguration.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
@@ -273,7 +273,7 @@
                   Text="{Binding SelectedTrackConfiguration.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                 <FrameworkElement.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                    <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
                   </ContextMenu>
                 </FrameworkElement.ContextMenu>
               </mui:PlaceholderTextBlock>
@@ -294,7 +294,7 @@
               <DockPanel>
                 <mui:SpacingUniformGrid DockPanel.Dock="Bottom" Rows="1" HorizontalSpacing="4" Margin="0 0 1 0">
                   <Button Content="Manage" Command="{Binding ManageSkinsCommand}" />
-                  <Button Content="View Result" Command="{Binding ViewSkinsResultCommand}" />
+                  <Button Content="View result" Command="{Binding ViewSkinsResultCommand}" />
                 </mui:SpacingUniformGrid>
                 <ItemsControl ItemsSource="{Binding SelectedObject.EnabledOnlySkins}" Style="{StaticResource VirtualizingItemsControl}">
                   <ItemsControl.ItemTemplate>

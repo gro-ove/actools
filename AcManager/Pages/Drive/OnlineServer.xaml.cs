@@ -371,7 +371,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
                 var link = $@"http://acstuff.ru/s/q:race/online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
-                if (CopyPasswordToInviteLink && !string.IsNullOrWhiteSpace(Entry.Password)) {
+                if (CopyPasswordToInviteLink && !string.IsNullOrWhiteSpace(Entry.Password) && Entry.PasswordRequired) {
                     link += $@"&password={EncryptSharedPassword(Entry.Id, Entry.Password)}";
                 }
 

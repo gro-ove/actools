@@ -87,7 +87,7 @@ namespace AcManager.Tools.Helpers.AcLog {
                                     AcSettingsHolder.Python.SetActivated(appId, false);
                                     return Task.Delay(0);
                                 } : (Func<CancellationToken, Task>)null,
-                                FixDisplayName = "Disable App"
+                                FixDisplayName = "Disable app"
                             };
                         }
                     }

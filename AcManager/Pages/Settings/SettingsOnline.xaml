@@ -32,8 +32,8 @@
         </DockPanel>
 
         <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
-          <Button Content="Manage Lists" Command="{Binding ManageListsCommand}" />
-          <Button Content="Manage Drivers Tags" Command="{Binding ManageDriversTagsCommand}" />
+          <Button Content="Manage lists" Command="{Binding ManageListsCommand}" />
+          <Button Content="Manage drivers tags" Command="{Binding ManageDriversTagsCommand}" />
         </mui:SpacingUniformGrid>
 
         <!--display-->
@@ -113,7 +113,7 @@
         </DockPanel>
 
         <!--<CheckBox IsChecked="{Binding Online.UseFastServer}" attached:LimitedService.Limited="True">
-            <Label Content="Use Fast Caching Server (experimental)" />
+            <Label Content="Use fast caching server (experimental)" />
         </CheckBox>-->
 
         <!--adding by ip-->

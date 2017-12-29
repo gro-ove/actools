@@ -22,8 +22,8 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new ViewModel();
             InitializeComponent();
             Buttons = new[] {
-                CreateExtraDialogButton("Add New List", () => {
-                    var name = Prompt.Show("Name for a new servers list:", "Add New Servers List", required: true, maxLength: 255, watermark: @"?");
+                CreateExtraDialogButton("Add new list", () => {
+                    var name = Prompt.Show("Name for a new servers list:", "Add new servers list", required: true, maxLength: 255, watermark: @"?");
                     if (!string.IsNullOrWhiteSpace(name)) {
                         FileBasedOnlineSources.CreateList(name);
                     }

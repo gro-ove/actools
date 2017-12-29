@@ -21,7 +21,7 @@
         <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
         <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
             IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
-        <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
+        <!--<MenuItem Header="Real lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
       </ContextMenu>
 
       <mui:HierarchicalComboBox x:Key="CarSpecificControlsComboBox" ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
@@ -113,8 +113,10 @@
 
       <mui:Cell x:Name="TrackCell" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedTrack}"
           AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
-        <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-        <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+        <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
+            Stretch="UniformToFill" />
+        <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
+            ShowBroken="False" />
         <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
             Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
 
@@ -152,7 +154,8 @@
           </Border.Triggers>
         </Border>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed"
+            c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
           <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
               Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
         </Button>
@@ -376,12 +379,12 @@
             mui:ContextMenuAdvancement.PropagateToChildren="True">
           <DockPanel.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="Wind Speed In Meters Per Second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
-              <MenuItem Header="Wind Speed In Relative Range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
-              <MenuItem Header="Wind Direction In Degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
-              <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindSpeed}" Header="Random Wind Speed"
+              <MenuItem Header="Wind speed in meters per second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
+              <MenuItem Header="Wind speed in relative range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+              <MenuItem Header="Wind direction in degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
+              <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindSpeed}" Header="Random wind speed"
                   DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" />
-              <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindDirection}" Header="Random Wind Direction"
+              <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindDirection}" Header="Random wind direction"
                   DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" />
             </ContextMenu>
           </DockPanel.ContextMenu>
@@ -502,8 +505,8 @@
             Visibility="{Binding QuickDriveAllowCustomData, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
             <ContextMenu>
-              <MenuItem Header="Use Unpacked Data (Global)" IsCheckable="True" IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
-              <MenuItem Header="Reset Car-Specific Flag" Command="{Binding SelectedCar.ResetUseSpecificDataFlagCommand}" />
+              <MenuItem Header="Use unpacked data (global)" IsCheckable="True" IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
+              <MenuItem Header="Reset car-specific flag" Command="{Binding SelectedCar.ResetUseSpecificDataFlagCommand}" />
             </ContextMenu>
           </mui:ContextMenuButton>
           <CheckBox IsChecked="{Binding SelectedCar.UseCustomData}" Margin="0 0 0 0">
@@ -535,7 +538,7 @@
       <mui:BooleanSwitch Value="{Binding SelectedCarRepairSuggestions.Count, Converter={StaticResource MoreConverter}, FallbackValue=False}">
         <Button Command="{Binding RepairCarCommand}" Margin="0 0 4 0" Style="{StaticResource Error.Button}"
             ToolTip="{Binding SelectedCarRepairSuggestions.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {important issue} found'}">
-          <TextBlock Text="Fix Car" />
+          <TextBlock Text="Fix car" />
         </Button>
       </mui:BooleanSwitch>
       <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">

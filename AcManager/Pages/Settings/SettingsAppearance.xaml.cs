@@ -26,6 +26,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
+            ScaleSlider.PreviewMouseLeftButtonUp += (s, a) => ScaleSlider.RemoveFocus();
             var thumb = ScaleSlider.FindVisualChild<Thumb>();
             if (thumb != null) {
                 thumb.DragCompleted += (s, a) => ScaleSlider.RemoveFocus();
@@ -147,7 +148,7 @@ namespace AcManager.Pages.Settings {
             public DelegateCommand ChangeBackgroundImageCommand => _changeBackgroundImageCommand ?? (_changeBackgroundImageCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
-                    Title = "Select Image For Background",
+                    Title = "Select background image",
                     InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? AcPaths.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };

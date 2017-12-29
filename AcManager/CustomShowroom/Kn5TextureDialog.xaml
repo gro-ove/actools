@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls"
-    mc:Ignorable="d" Title="Car Texture" d:DataContext="{d:DesignInstance customShowroom:Kn5TextureDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+    mc:Ignorable="d" Title="Car texture" d:DataContext="{d:DesignInstance customShowroom:Kn5TextureDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
     WindowStartupLocation="CenterScreen" MaxWidth="9999" Topmost="False">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
@@ -91,16 +91,16 @@
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="512" Header="Calculate 512×512 Map" />
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024" Header="Calculate 1024×1024 Map" />
           <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="2048" Header="Calculate 2048×2048 Map" />
-          <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate Map of Custom Size" />
+          <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate map of custom size" />
           <Separator />
-          <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show Options" />
+          <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show options" />
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>
 
       <mui:ButtonWithComboBox Content="Replace" Command="{Binding ReplaceCommand}">
         <mui:ButtonWithComboBox.ButtonToolTip>Replace texture in KN5 with something else</mui:ButtonWithComboBox.ButtonToolTip>
         <mui:ButtonWithComboBox.MenuItems>
-          <MenuItem Command="{Binding RenameCommand}" Header="Rename Texture" />
+          <MenuItem Command="{Binding RenameCommand}" Header="Rename texture" />
           <MenuItem Command="{Binding ForkCommand}"
               Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               IsEnabled="{Binding IsForkAvailable}" ToolTip="Fork texture to be used only in this material" Header="{Binding Material.Name}">

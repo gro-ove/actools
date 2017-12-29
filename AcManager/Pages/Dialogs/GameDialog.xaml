@@ -10,7 +10,6 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/ModernProgressRing.Imported.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <!--<Style x:Key="DeltaCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCell.Transparent.Number}">
@@ -83,8 +82,7 @@
   <mui:Switch Value="{Binding CurrentState}">
     <!-- Waiting -->
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Waiting}" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Style="{StaticResource WaveProgressRingStyle}"
-          Effect="{DynamicResource GameLoadingAnimationEffect}" />
+      <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Effect="{DynamicResource GameLoadingAnimationEffect}" />
       <TextBlock Text="{Binding WaitingStatus}" TextAlignment="Center" />
     </StackPanel>
 
@@ -247,11 +245,11 @@
                 <DataGridTemplateColumn Width="1*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
                     CellTemplate="{StaticResource DataGridCell.Car}" CellStyle="{StaticResource DataGridCell.Transparent.Aligned}" />
 
-                <DataGridTextColumn Width="100" Header="Total Time" SortMemberPath="TotalTime"
+                <DataGridTextColumn Width="100" Header="Total time" SortMemberPath="TotalTime"
                     Binding="{Binding TotalTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
                     CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment.Aligned}" />
-                <DataGridTemplateColumn Width="100" Header="Total Delta" SortMemberPath="TotalTimeDelta"
+                <DataGridTemplateColumn Width="100" Header="Total delta" SortMemberPath="TotalTimeDelta"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment.FarRight}"
                     CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}" CellTemplate="{StaticResource TotalTimeDeltaTemplate.FarRight}" />
 
@@ -260,7 +258,7 @@
                     Binding="{Binding BestLapTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" Visibility="Collapsed"
                     CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment.Aligned}" />
-                <DataGridTemplateColumn x:Name="BestLapTimeDeltaColumn" Width="140" Header="Best Delta" SortMemberPath="DeltaToSessionBest"
+                <DataGridTemplateColumn x:Name="BestLapTimeDeltaColumn" Width="140" Header="Best delta" SortMemberPath="DeltaToSessionBest"
                     CellStyle="{StaticResource DataGridCell.Transparent.RightAlignment}" Visibility="Collapsed">
                   <DataGridTemplateColumn.HeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeader.RightAlignment}">

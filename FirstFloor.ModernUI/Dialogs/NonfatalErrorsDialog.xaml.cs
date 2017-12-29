@@ -17,6 +17,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Delete) return;
             foreach (var result in List.SelectedItems.OfType<NonfatalErrorEntry>().ToList()) {
                 NonfatalError.Instance.Errors.Remove(result);
             }

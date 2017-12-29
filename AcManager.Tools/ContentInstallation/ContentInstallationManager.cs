@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -12,81 +17,137 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
-        public static TimeSpan OptionSuccessDelay = TimeSpan.FromSeconds(3);
-        public static TimeSpan OptionCancelledDelay = TimeSpan.FromSeconds(0);
-        public static TimeSpan OptionBiggestDelay = TimeSpan.FromSeconds(15);
+        public static bool OptionSaveAndRestoreDownloads = false;
 
-        public static ContentInstallationManager Instance { get; } = new ContentInstallationManager();
+        private static readonly string StorageKey = ".Downloads.List";
+
+        private static ContentInstallationManager _instance;
+
+        public static ContentInstallationManager Instance {
+            get {
+                if (_instance == null) {
+                    _instance = new ContentInstallationManager();
+                    _instance.Load();
+                }
+
+                return _instance;
+            }
+        }
+
         public static IPluginsNavigator PluginsNavigator { get; set; }
 
         private ContentInstallationManager() {
-            Queue = new ChangeableObservableCollection<ContentInstallationEntry>();
+            DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
         }
 
-        public ChangeableObservableCollection<ContentInstallationEntry> Queue { get; }
+        private void Load() {
+            if (OptionSaveAndRestoreDownloads) {
+                foreach (var entry in LoadEntries()) {
+                    if (entry.State == ContentInstallationEntryState.Finished) {
+                        DownloadList.Add(entry);
+                    } else {
+                        InstallAsync(entry);
+                    }
+                }
+            }
 
-        private bool _busyDoingSomething;
+            DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
+            DownloadList.CollectionChanged += OnCollectionChanged;
+        }
 
-        public bool BusyDoingSomething {
-            get => _busyDoingSomething;
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            Save();
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ContentInstallationEntry.Cancelled):
+                case nameof(ContentInstallationEntry.DisplayName):
+                case nameof(ContentInstallationEntry.FailedCommentary):
+                case nameof(ContentInstallationEntry.FailedMessage):
+                case nameof(ContentInstallationEntry.FileName):
+                case nameof(ContentInstallationEntry.InformationUrl):
+                case nameof(ContentInstallationEntry.InputPassword):
+                case nameof(ContentInstallationEntry.IsCancelling):
+                case nameof(ContentInstallationEntry.IsPaused):
+                case nameof(ContentInstallationEntry.LocalFilename):
+                case nameof(ContentInstallationEntry.State):
+                case nameof(ContentInstallationEntry.Version):
+                    Save();
+                    break;
+                case nameof(ContentInstallationEntry.IsDeleted):
+                    // No reason to save here, list will be changed as well
+                    if (sender is ContentInstallationEntry entry) {
+                        DownloadList.Remove(entry);
+                    }
+                    break;
+            }
+        }
+
+        public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
+
+        private bool _hasLoadingItems;
+
+        public bool HasLoadingItems {
+            get => _hasLoadingItems;
             set {
-                if (Equals(value, _busyDoingSomething)) return;
-                _busyDoingSomething = value;
+                if (Equals(value, _hasLoadingItems)) return;
+                _hasLoadingItems = value;
                 OnPropertyChanged();
             }
         }
 
-        public void UpdateBusyDoingSomething() {
-            BusyDoingSomething = Queue.Aggregate(false,
-                    (current, entry) => current | (entry.State == ContentInstallationEntryState.Loading));
-        }
+        private int _unfinishedItemsCount;
 
-        private readonly Dictionary<string, Task<bool>> _tasks = new Dictionary<string, Task<bool>>();
-
-        private async Task<bool> InstallAsyncInternal([NotNull] string source, ContentInstallationParams installationParams) {
-            var entry = new ContentInstallationEntry(source, installationParams);
-            ActionExtension.InvokeInMainThread(() => Queue.Add(entry));
-            var result = await entry.RunAsync();
-            ActionExtension.InvokeInMainThread(() => RemoveLater(entry));
-            await Task.Delay(1);
-            _tasks.Remove(source);
-            return result;
-        }
-
-        public void Cancel() {
-            foreach (var entry in Queue.ToList()) {
-                entry.CancelCommand.Execute();
+        public int UnfinishedItemsCount {
+            get => _unfinishedItemsCount;
+            set {
+                if (Equals(value, _unfinishedItemsCount)) return;
+                _unfinishedItemsCount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasUnfinishedItems));
             }
         }
+
+        public bool HasUnfinishedItems => _unfinishedItemsCount > 0;
+
+        public void UpdateBusyStates() {
+            var hasLoadingItems = false;
+            var unfinishedItems = 0;
+            foreach (var entry in DownloadList) {
+                hasLoadingItems |= entry.State == ContentInstallationEntryState.Loading;
+                if (entry.State != ContentInstallationEntryState.Finished) {
+                    unfinishedItems++;
+                }
+            }
+
+            HasLoadingItems = hasLoadingItems;
+            UnfinishedItemsCount = unfinishedItems;
+        }
+
+        /*public void Cancel() {
+            foreach (var entry in DownloadList.ToList()) {
+                entry.CancelCommand.Execute();
+            }
+        }*/
 
         public event EventHandler TaskAdded;
 
+        private readonly TaskCache _taskCache = new TaskCache();
+
+        public Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry) {
+            if (entry == null) throw new ArgumentNullException(nameof(entry));
+
+            Logging.Debug(entry.Source);
+            return _taskCache.Get(() => ActionExtension.InvokeInMainThread(() => {
+                TaskAdded?.Invoke(this, EventArgs.Empty);
+                DownloadList.Add(entry);
+                return entry.RunAsync();
+            }), entry.Source);
+        }
+
         public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
-            TaskAdded?.Invoke(this, EventArgs.Empty);
-            return _tasks.TryGetValue(source, out Task<bool> task) ? task : (_tasks[source] = InstallAsyncInternal(source, installationParams));
-        }
-
-        private void Remove(ContentInstallationEntry entry) {
-            entry.Dispose();
-            ActionExtension.InvokeInMainThread(() => Queue.Remove(entry));
-        }
-
-        private async void RemoveLater(ContentInstallationEntry entry) {
-            if (entry.Cancelled || entry.Failed == null) {
-                if (!entry.UserCancelled) {
-                    await Task.Delay(entry.Cancelled ? OptionCancelledDelay : OptionSuccessDelay);
-                }
-
-                Remove(entry);
-            } else {
-                entry.PropertyChanged += (sender, args) => {
-                    if (args.PropertyName == nameof(entry.Cancelled)) {
-                        Remove(entry);
-                    }
-                };
-            }
+            return InstallAsync(new ContentInstallationEntry(source, installationParams));
         }
 
         public static bool IsRemoteSource(string source) {
@@ -97,6 +158,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         [ItemCanBeNull]
         public static async Task<string> IsRemoteSourceFlexible(string url) {
+            // TODO: Fix, change HEAD to GET?
             if (!Regex.IsMatch(url, @"^(?:[\w-]+\.)*[\w-]+\.[\w-]+/.+$")) return null;
 
             try {
@@ -116,11 +178,47 @@ namespace AcManager.Tools.ContentInstallation {
         public static bool IsAdditionalContent(string filename) {
             // TODO: or PP-filter, or …?
             try {
-                return FileUtils.IsDirectory(filename) ||
+                if (!FileUtils.ArePathsEqual(FileUtils.EnsureFilenameIsValid(filename), filename)) return false;
+                return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename) ||
                         !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.Affects(AcPaths.GetReplaysDirectory(), filename);
-            } catch (Exception) {
+            } catch (Exception e) {
+                Logging.Warning(e);
                 return false;
             }
+        }
+
+        private Busy _busy = new Busy();
+        private bool _isDirty;
+
+        public void Save() {
+            if (!OptionSaveAndRestoreDownloads) return;
+            _isDirty = true;
+            _busy.DoDelay(SaveInner, 300);
+        }
+
+        public void ForceSave() {
+            SaveInner();
+        }
+
+        private IEnumerable<ContentInstallationEntry> LoadEntries() {
+            return CacheStorage.GetStringList(StorageKey).Select(ContentInstallationEntry.Deserialize).NonNull();
+        }
+
+        private void SaveInner() {
+            if (!_isDirty || !OptionSaveAndRestoreDownloads) return;
+            _isDirty = false;
+
+            var l = DownloadList;
+            var sb = new StringBuilder(l.Count * 2);
+            for (var i = 0; i < l.Count; i++) {
+                var x = l[i];
+                if (x.IsDeleted || x.IsDeleting) return;
+
+                if (i > 0) sb.Append('\n');
+                sb.Append(Storage.Encode(x.Serialize()));
+            }
+
+            CacheStorage.Set(StorageKey, sb.ToString());
         }
     }
 }

@@ -31,7 +31,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         protected override bool? ResumeSupported => true;
         protected override bool HeadRequestSupported => false;
 
-        public override string GetFootprint(FlexibleLoaderMetaInformation information, [CanBeNull] WebHeaderCollection headers) {
+        public override string GetFootprint(FlexibleLoaderMetaInformation information, WebHeaderCollection headers) {
             return $"filename={information.FileName}, size={information.TotalSize}, checksum={headers?["X-Goog-Hash"]}".ToCutBase64();
         }
 
@@ -135,11 +135,13 @@ namespace AcManager.Tools.Helpers.Loaders {
             return true;
         }
 
-        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client, FlexibleLoaderDestinationCallback destinationCallback,
+        protected override async Task<string> DownloadAsyncInner(CookieAwareWebClient client,
+                FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
+                FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
             using (client.SetDebugMode(OptionDebugMode))
             using (client.SetAutoRedirect(!OptionManualRedirect)) {
-                return await base.DownloadAsyncInner(client, destinationCallback, progress, cancellation);
+                return await base.DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
             }
         }
     }

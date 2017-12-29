@@ -484,11 +484,14 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public static PeriodEntry PeriodDisabled = new PeriodEntry(TimeSpan.Zero);
+            public static PeriodEntry PeriodStartup = new PeriodEntry(ToolsStrings.Settings_Period_Startup);
+
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry(TimeSpan.Zero),
-                new PeriodEntry(ToolsStrings.Settings_Period_Startup),
+                PeriodDisabled,
+                PeriodStartup,
                 new PeriodEntry(TimeSpan.FromMinutes(30)),
                 new PeriodEntry(TimeSpan.FromHours(3)),
                 new PeriodEntry(TimeSpan.FromHours(6)),
@@ -891,7 +894,7 @@ namespace AcManager.Tools.Helpers {
             private string _fontIconCharacter;
 
             public string FontIconCharacter {
-                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"A"));
+                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"5"));
                 set {
                     value = value?.Trim().Substring(0, 1);
                     if (Equals(value, _fontIconCharacter)) return;

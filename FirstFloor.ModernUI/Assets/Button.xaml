@@ -18,10 +18,11 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ButtonBase}">
-          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-              BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
-            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="True" />
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <Border Background="{TemplateBinding BorderBrush}">
+              <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="True" />
+            </Border>
           </Border>
         </ControlTemplate>
       </Setter.Value>
@@ -42,7 +43,7 @@
     </Style.Triggers>
   </Style>
 
-  <Style x:Key="SystemButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
+  <Style x:Key="SystemButtonSquare" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
     <Setter Property="Width" Value="45" />
     <Setter Property="Height" Value="29" />
     <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
@@ -51,14 +52,14 @@
         <Trigger.EnterActions>
           <BeginStoryboard>
             <Storyboard>
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#24aaaaaa" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="Background.Opacity" To="1" Duration="0:0:0.12" />
             </Storyboard>
           </BeginStoryboard>
         </Trigger.EnterActions>
         <Trigger.ExitActions>
           <BeginStoryboard>
             <Storyboard FillBehavior="Stop">
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#24aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="Background.Opacity" To="0" Duration="0:0:0.12" />
             </Storyboard>
           </BeginStoryboard>
         </Trigger.ExitActions>
@@ -67,14 +68,14 @@
         <Trigger.EnterActions>
           <BeginStoryboard>
             <Storyboard>
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#48aaaaaa" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity" To="1" Duration="0:0:0.12" />
             </Storyboard>
           </BeginStoryboard>
         </Trigger.EnterActions>
         <Trigger.ExitActions>
           <BeginStoryboard>
             <Storyboard FillBehavior="Stop">
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#48aaaaaa" To="#00aaaaaa" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity" To="0" Duration="0:0:0.12" />
             </Storyboard>
           </BeginStoryboard>
         </Trigger.ExitActions>
@@ -85,44 +86,30 @@
     </Style.Triggers>
   </Style>
 
-  <Style x:Key="SystemCloseButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButton}">
-    <Style.Triggers>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard>
-            <Storyboard>
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#e81123" Duration="0:0:0.1" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard>
-            <Storyboard FillBehavior="Stop">
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#e81123" To="#00e81123" Duration="0:0:0.1" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.ExitActions>
-      </Trigger>
-      <Trigger Property="IsPressed" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard>
-            <Storyboard>
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#ba3943" Duration="0:0:0.1" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard>
-            <Storyboard FillBehavior="Stop">
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#ba3943" To="#00ba3943" Duration="0:0:0.1" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.ExitActions>
-      </Trigger>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-      </Trigger>
-    </Style.Triggers>
+  <Style x:Key="SystemButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonSquare}">
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Color="#24aaaaaa" Opacity="0" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="BorderBrush">
+      <Setter.Value>
+        <SolidColorBrush Color="#24aaaaaa" Opacity="0" />
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="SystemCloseButton" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonSquare}">
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Color="#e81123" Opacity="0" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="BorderBrush">
+      <Setter.Value>
+        <SolidColorBrush Color="#ba3943" Opacity="0" />
+      </Setter.Value>
+    </Setter>
   </Style>
 
   <Style x:Key="SystemButtonLink" TargetType="ButtonBase" BasedOn="{StaticResource SystemButtonBase}">
@@ -229,6 +216,36 @@
         <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
       </Trigger>
     </Style.Triggers>
+  </Style>
+
+  <Style x:Key="DeleteButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Setter Property="DockPanel.Dock" Value="Right" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Padding" Value="6 1 6 2" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+            <DockPanel Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+              <Path x:Name="Icon" Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8" RenderOptions.EdgeMode="Aliased"
+                  Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
+                  HorizontalAlignment="Center" StrokeThickness="1" Margin="6 5 0 3" />
+              <ContentPresenter x:Name="Presenter" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="8 0 6 0" />
+            </DockPanel>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Content" Value="{x:Null}">
+              <Setter TargetName="Presenter" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="Icon" Property="Margin" Value="0 5 -1 3" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
   </Style>
 
   <Style x:Key="Go.BaseButtonStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource BaseButtonStyle}">
