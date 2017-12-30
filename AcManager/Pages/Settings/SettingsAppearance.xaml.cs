@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
@@ -13,9 +14,12 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using Microsoft.Win32;
+using OxyPlot;
 using SlimDX.DirectWrite;
+using Path = System.IO.Path;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsAppearance {
@@ -30,7 +34,20 @@ namespace AcManager.Pages.Settings {
             var thumb = ScaleSlider.FindVisualChild<Thumb>();
             if (thumb != null) {
                 thumb.DragCompleted += (s, a) => ScaleSlider.RemoveFocus();
+                thumb.DragDelta += OnDragDelta;
             }
+        }
+
+        private void OnDragDelta(object sender, DragDeltaEventArgs e) {
+            var window = Application.Current.MainWindow;
+            if (window == null) return;
+
+            var thumb = (Thumb)sender;
+            var oldPosition = thumb.PointToScreen(new Point(thumb.ActualWidth / 2, thumb.ActualHeight / 2));
+            DpiAwareWindow.AppScale.ScalePercentage = ScaleSlider.Value.Round();
+            var newPosition = thumb.PointToScreen(new Point(thumb.ActualWidth / 2, thumb.ActualHeight / 2));
+            window.Left += oldPosition.X - newPosition.X;
+            window.Top += oldPosition.Y - newPosition.Y;
         }
 
         public class ViewModel : NotifyPropertyChanged {

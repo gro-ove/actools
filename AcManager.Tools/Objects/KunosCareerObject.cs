@@ -608,9 +608,13 @@ namespace AcManager.Tools.Objects {
             IsCompleted = KunosCareerProgress.Instance.Completed.Contains(Id);
         }
 
+        public void UpdateIfIsAvailable() {
+            bool Fn(string x) => KunosCareerProgress.Instance.Completed.Contains(x);
+            IsAvailable = RequiredSeries.Length == 0 || (RequiredAnySeries ? RequiredSeries.Any(Fn) : RequiredSeries.All(Fn));
+        }
+
         private void LoadProgressFromEntry() {
-            Func<string, bool> fn = x => KunosCareerProgress.Instance.Completed.Contains(x);
-            IsAvailable = RequiredSeries.Length == 0 || (RequiredAnySeries ? RequiredSeries.Any(fn) : RequiredSeries.All(fn));
+            UpdateIfIsAvailable();
 
             foreach (var driver in ChampionshipDrivers) {
                 driver.Points = 0;

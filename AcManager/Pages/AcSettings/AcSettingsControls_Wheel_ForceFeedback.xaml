@@ -133,7 +133,8 @@
         <Label Content="{x:Static с:ControlsStrings.Controls_GyroscopicEffect}" />
       </CheckBox>
 
-      <DockPanel IsEnabled="{Binding IsChecked, ElementName=Experimental}" ToolTip="{x:Static с:ControlsStrings.Controls_DamperGain_Tooltip}">
+      <!--ToolTip="{x:Static с:ControlsStrings.Controls_DamperGain_Tooltip}"-->
+      <DockPanel IsEnabled="{Binding IsChecked, ElementName=Experimental}">
         <mui:ValueLabel Value="{Binding System.FfbDamperGain}" Postfix="%" Content="{x:Static с:ControlsStrings.Controls_DamperGain}" />
         <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbDamperGain}" TickFrequency="10" TickPlacement="BottomRight" />
       </DockPanel>

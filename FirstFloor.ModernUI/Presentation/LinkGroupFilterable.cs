@@ -129,11 +129,10 @@ namespace FirstFloor.ModernUI.Presentation {
             ValuesStorage.Set(KeyRecentlyClosed, RecentlyClosedQueue);
         }
 
-        public LimitedQueue<Link> PreviousSelectedQueue { get; } = new LimitedQueue<Link>(10);
-
         public static int OptionRecentlyClosedQueueSize = 10;
 
-        public LimitedQueue<string> RecentlyClosedQueue { get; } = new LimitedQueue<string>(OptionRecentlyClosedQueueSize);
+        private LimitedQueue<Link> PreviousSelectedQueue { get; } = new LimitedQueue<Link>(10);
+        private LimitedQueue<string> RecentlyClosedQueue { get; } = new LimitedQueue<string>(OptionRecentlyClosedQueueSize);
 
         public void RestoreLastClosed() {
             if (!RecentlyClosedQueue.Any()) return;

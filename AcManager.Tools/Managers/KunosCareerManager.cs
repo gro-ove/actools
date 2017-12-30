@@ -120,7 +120,10 @@ namespace AcManager.Tools.Managers {
                     ev.TakenPlace = takenPlace;
                     career.SaveProgress(true);
                     if (!career.IsCompleted && CheckIfCareerCompleted(career)) {
+                        Logging.Debug("Career is completed!");
                         KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.Append(career.Id).ToArray();
+                        career.IsCompleted = true;
+                        career.NextCareerObject.UpdateIfIsAvailable();
                     }
                     break;
 

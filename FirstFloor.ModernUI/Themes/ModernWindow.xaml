@@ -61,7 +61,8 @@
                     <!-- Window system buttons-->
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
                       <StackPanel.RenderTransform>
-                        <TranslateTransform X="{TemplateBinding IconPathThickness}" Y="{TemplateBinding IconPathThickness}" />
+                        <TranslateTransform X="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}}"
+                            Y="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource MultiplyConverter}, ConverterParameter=-1}" />
                       </StackPanel.RenderTransform>
                       <ItemsControl ItemsSource="{TemplateBinding TitleButtons}">
                         <ItemsControl.ItemsPanel>

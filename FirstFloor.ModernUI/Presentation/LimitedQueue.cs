@@ -4,7 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
-    public class LimitedQueue<T> : List<T> {
+    internal class LimitedQueue<T> : List<T> {
         public int Limit { get; }
 
         public LimitedQueue(int limit, [NotNull] IEnumerable<T> collection) : base(collection.Take(limit)) {

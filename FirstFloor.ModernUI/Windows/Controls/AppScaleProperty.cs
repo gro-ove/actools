@@ -47,8 +47,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private double _scalePercentage;
-
         public double ScalePercentage {
             get => Scale * 100;
             set => Scale = value / 100;
