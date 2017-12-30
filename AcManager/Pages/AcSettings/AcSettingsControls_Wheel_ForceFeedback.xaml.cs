@@ -90,22 +90,23 @@ namespace AcManager.Pages.AcSettings {
                 }
             }
 
+            [CanBeNull]
             public Lut ToLut(string csvFilename) {
                 var lut = _assembly.GetType("LUTLibrary.LUT");
-                var lutInstance = _assembly.GetType("LUTLibrary.LUTReader").GetMethod("Read").Invoke(null, new object[]{ csvFilename });
-                lut.GetMethod("getMaxDeltaX").Invoke(lutInstance, new object[0]);
+                var lutInstance = _assembly.GetType("LUTLibrary.LUTReader").GetMethod("Read")?.Invoke(null, new object[]{ csvFilename });
+                lut.GetMethod("getMaxDeltaX")?.Invoke(lutInstance, new object[0]);
                 Activator.CreateInstance(_assembly.GetType("LUTLibrary.LUTCalculator"), lutInstance);
-                var forceList = (ArrayList)lut.GetMethod("getForce").Invoke(lutInstance, new object[0]);
-                var lut2List = (ArrayList)lut.GetMethod("getLut2").Invoke(lutInstance, new object[0]);
-                var force = (double)(int)lut.GetMethod("getMaxForce").Invoke(lutInstance, new object[0]);
-                return forceList.OfType<int>().Zip(lut2List.OfType<double>(),
+                var forceList = (ArrayList)lut.GetMethod("getForce")?.Invoke(lutInstance, new object[0]);
+                var lut2List = (ArrayList)lut.GetMethod("getLut2")?.Invoke(lutInstance, new object[0]);
+                var force = (double?)(int?)lut.GetMethod("getMaxForce")?.Invoke(lutInstance, new object[0]) ?? 0d;
+                return forceList?.OfType<int>().Zip(lut2List?.OfType<double>() ?? new double[0],
                         (x, i) => new LutPoint(x / force, Math.Round(i / force, 3))).ToLut();
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
             private void Test() {
                 var lut = _assembly.GetType("LUTLibrary.LUT");
-                Logging.Debug((int)lut.GetMethod("getMaxForce").Invoke(Activator.CreateInstance(lut, new object[0]), new object[0]));
+                Logging.Debug((int?)lut.GetMethod("getMaxForce")?.Invoke(Activator.CreateInstance(lut, new object[0]), new object[0]));
             }
 
             [MethodImpl(MethodImplOptions.NoInlining), CanBeNull]
@@ -165,9 +166,14 @@ namespace AcManager.Pages.AcSettings {
                         name += ".lut";
                     }
 
-                    var lut = new LutDataFile();
-                    lut.Values.AddRange(_wrapper.ToLut(filename));
-                    lut.Save(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), name));
+                    var lutData = new LutDataFile();
+                    var lut = _wrapper.ToLut(filename);
+                    if (lut == null) {
+                        throw new Exception("Expected field or method is missing");
+                    }
+
+                    lutData.Values.AddRange(lut);
+                    lutData.Save(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), name));
                     SwitchFfPostProcessLutName(name);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t import CSV-file", e);

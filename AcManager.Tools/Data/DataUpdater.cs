@@ -8,6 +8,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Data {
@@ -30,10 +31,12 @@ namespace AcManager.Tools.Data {
             // base.OnCommonSettingsChanged(sender, e);
         }
 
-        private static string VersionFromData(string data) {
-            return JsonConvert.DeserializeObject<ContentManifest>(data).Version;
+        [CanBeNull]
+        private static string VersionFromData([CanBeNull] string data) {
+            return data == null ? null : JsonConvert.DeserializeObject<ContentManifest>(data).Version;
         }
 
+        [CanBeNull]
         private static string GetInstalledVersion() {
             var versionFilename = FilesStorage.Instance.Combine(FilesStorage.DataDirName, @"Manifest.json");
 
@@ -94,7 +97,7 @@ namespace AcManager.Tools.Data {
 
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
-                        installedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
+                        installedVersion = VersionFromData(archive.GetEntry(@"Manifest.json")?.Open().ReadAsStringAndDispose());
                         archive.ExtractToDirectory(location);
                     }
                 });

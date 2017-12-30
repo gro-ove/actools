@@ -375,7 +375,10 @@ namespace AcManager.Tools.Objects {
                     using (var stream = new MemoryStream(wrapperBytes, false))
                     using (var archive = new ZipArchive(stream)){
                         try {
-                            File.WriteAllBytes(wrapperFilename, archive.GetEntry("acServerWrapper.exe").Open().ReadAsBytesAndDispose());
+                            var entry = archive.GetEntry("acServerWrapper.exe");
+                            if (entry != null) {
+                                File.WriteAllBytes(wrapperFilename, entry.Open().ReadAsBytesAndDispose());
+                            }
                         } catch (Exception e) {
                             Logging.Warning(e);
                         }

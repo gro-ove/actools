@@ -149,6 +149,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var depth = 0;
             while (itemIndex == -1) {
                 selected = (UIElement)VisualTreeHelper.GetParent(selected);
+                if (selected == null) return;
+
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
@@ -188,6 +190,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var depth = 0;
             while (itemIndex == -1) {
                 selected = (UIElement)VisualTreeHelper.GetParent(selected);
+                if (selected == null) return;
+
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
@@ -226,6 +230,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var depth = 0;
             while (itemIndex == -1) {
                 selected = (UIElement)VisualTreeHelper.GetParent(selected);
+                if (selected == null) return;
+
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
@@ -264,6 +270,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var depth = 0;
             while (itemIndex == -1) {
                 selected = (UIElement)VisualTreeHelper.GetParent(selected);
+                if (selected == null) return;
+
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
@@ -473,18 +481,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var itemIndex = gen.IndexFromContainer(element);
             while (itemIndex == -1) {
                 element = (UIElement)VisualTreeHelper.GetParent(element);
+                if (element == null) {
+                    // TODO: Might be wrong
+                    return default(Rect);
+                }
+
                 itemIndex = gen.IndexFromContainer(element);
             }
+
             var elementRect = _realizedChildLayout[element];
             if (Orientation == Orientation.Horizontal) {
                 var viewportHeight = _pixelMeasuredViewport.Height;
-                if (elementRect.Bottom > viewportHeight) _offset.Y += 1;
-                else if (elementRect.Top < 0) _offset.Y -= 1;
+                if (elementRect.Bottom > viewportHeight) {
+                    _offset.Y += 1;
+                } else if (elementRect.Top < 0) {
+                    _offset.Y -= 1;
+                }
             } else {
                 var viewportWidth = _pixelMeasuredViewport.Width;
-                if (elementRect.Right > viewportWidth) _offset.X += 1;
-                else if (elementRect.Left < 0) _offset.X -= 1;
+                if (elementRect.Right > viewportWidth) {
+                    _offset.X += 1;
+                } else if (elementRect.Left < 0) {
+                    _offset.X -= 1;
+                }
             }
+
             InvalidateMeasure();
             return elementRect;
         }

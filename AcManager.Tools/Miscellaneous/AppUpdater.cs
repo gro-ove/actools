@@ -22,6 +22,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Keyboard = System.Windows.Input.Keyboard;
 
@@ -70,8 +71,9 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        private static string VersionFromData(string data) {
-            return JsonConvert.DeserializeObject<AppManifest>(data).Version.Trim();
+        [CanBeNull]
+        private static string VersionFromData([CanBeNull] string data) {
+            return data == null ? null : JsonConvert.DeserializeObject<AppManifest>(data).Version.Trim();
         }
 
         private bool _isSupported = true;
@@ -175,7 +177,7 @@ namespace AcManager.Tools.Miscellaneous {
                 await Task.Run(() => {
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
-                        preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
+                        preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json")?.Open().ReadAsStringAndDispose());
 
                         // Shouldn’t even get there if version is ignored! But, just in case, and for debugging
                         if (CacheStorage.GetBool($".AppUpdater.IgnoreUpdate:{preparedVersion}")) {

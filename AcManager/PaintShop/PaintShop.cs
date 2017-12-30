@@ -902,7 +902,9 @@ namespace AcManager.PaintShop {
             var refSolver = new ReferenceSolver();
             using (var zip = ZipFile.OpenRead(downloadedData))
             using (refSolver.SetDataProvider(zip)) {
-                var manifest = zip.GetEntry("Manifest.json").Open().ReadAsStringAndDispose();
+                var manifest = zip.GetEntry("Manifest.json")?.Open().ReadAsStringAndDispose();
+                if (manifest == null) return new PaintableItem[0];
+
                 var jObj = JsonExtension.UnwrapReferences(JObject.Parse(manifest));
                 if (jObj.GetStringValueOnly("id") != carId) {
                     throw new Exception($"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");

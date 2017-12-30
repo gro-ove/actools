@@ -112,7 +112,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_textBox == null || _passwordBox == null) return;
 
             if (_textBox.IsFocused) {
-                _passwordBox.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_passwordBox, new object[] {
+                _passwordBox.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(_passwordBox, new object[] {
                     _textBox.SelectionStart, _textBox.SelectionLength
                 });
                 _passwordBox.Focus();

@@ -494,7 +494,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void UpdateOrder() {
             if (_adornerLayer == null || _adorner == null) return;
             try {
-                _adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                _adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?
                              .Invoke(_adornerLayer, new object[] { _adorner, Order });
             } catch {
                 // ignored
@@ -536,7 +536,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (adornerLayer == null || adorner == null) return;
 
             try {
-                adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?
                              .Invoke(adornerLayer, new object[] { adorner, GetZOrder(p) });
             } catch (Exception) {
                 // ignored

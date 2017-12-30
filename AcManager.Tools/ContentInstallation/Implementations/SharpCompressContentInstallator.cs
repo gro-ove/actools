@@ -190,13 +190,14 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         }
 
         protected override Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
-            if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
+            var extractor = _extractor;
+            if (extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
 
-            return Task.FromResult(_extractor.Entries.Select(x => x.IsDirectory ?
+            return Task.FromResult(extractor.Entries.Select(x => x.IsDirectory ?
                     (IFileOrDirectoryInfo)new SimpleDirectoryInfo(x) :
                     new ArchiveFileInfo(x,
-                            _extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
-                            _extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
+                            extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
+                            extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
         }
 
         protected override async Task CopyFileEntries(ICopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {

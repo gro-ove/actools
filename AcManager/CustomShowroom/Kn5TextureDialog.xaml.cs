@@ -276,7 +276,7 @@ namespace AcManager.CustomShowroom {
 
             public AsyncCommand ReplaceCommand => _replaceCommand ?? (_replaceCommand = new AsyncCommand(async () => {
                 var dialog = new OpenFileDialog {
-                    InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
+                    InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename) ?? "",
                     Filter = FileDialogFilters.TexturesFilter,
                     FileName = TextureName,
                     CustomPlaces = {

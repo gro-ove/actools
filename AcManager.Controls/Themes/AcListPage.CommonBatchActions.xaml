@@ -50,8 +50,8 @@
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
       <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="8" HorizontalAlignment="Left">
-        <CheckBox IsChecked="{Binding PackSeparately}"
-            d:DataContext="{d:DesignInstance ac:CommonBatchActions+BatchAction_Pack}">
+        <CheckBox IsChecked="{Binding PackSeparately}">
+          <!--d:DataContext="{d:DesignInstance ac:CommonBatchActions+BatchAction_Pack}"-->
           <Label Content="Pack separately" />
         </CheckBox>
       </mui:SpacingUniformGrid>

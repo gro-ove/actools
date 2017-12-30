@@ -56,13 +56,15 @@ namespace AcManager.Controls.Presentation {
 
         private static void SetStylesFromArchive(Stream stream) {
             using (var archive = new ZipArchive(stream))
-            using (var entry = archive.GetEntry("ModernProgressRing.Imported.xaml").Open()) {
+            using (var entry = archive.GetEntry("ModernProgressRing.Imported.xaml")?.Open()) {
                 _styles = ReadStyles(entry);
             }
         }
 
         [Pure]
-        private static Dictionary<string, Style> ReadStyles(Stream stream) {
+        private static Dictionary<string, Style> ReadStyles([CanBeNull] Stream stream) {
+            if (stream == null) return new Dictionary<string, Style> { ["Default"] = null };
+
             var memory = new MemoryStream();
             stream.CopyTo(memory);
 

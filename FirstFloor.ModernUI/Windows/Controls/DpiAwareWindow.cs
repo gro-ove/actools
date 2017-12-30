@@ -61,7 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var app = Application.Current;
             if (app != null && !ReferenceEquals(app.MainWindow, this)) {
                 Owner = app.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
-                        ?? (app.MainWindow.IsVisible ? app.MainWindow : null);
+                        ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null);
             }
 
             foreach (var gesture in NavigationCommands.BrowseBack.InputGestures.OfType<KeyGesture>()

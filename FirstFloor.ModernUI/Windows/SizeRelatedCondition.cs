@@ -286,7 +286,7 @@ namespace FirstFloor.ModernUI.Windows {
         public SizeRelatedCondition<TParent, TValue> ListenOn<TEventSource>(TEventSource source, string eventName) {
             GetType().GetMethods().First(m => m.Name == nameof(ListenOn) && m.GetGenericArguments().Length == 2)
                      .MakeGenericMethod(typeof(TEventSource),
-                             typeof(TEventSource).GetEvent(eventName).EventHandlerType.GetMethod("Invoke").GetParameters()[1].ParameterType)
+                             typeof(TEventSource).GetEvent(eventName).EventHandlerType.GetMethod("Invoke")?.GetParameters()[1].ParameterType)
                      .Invoke(this, new object[] { source, eventName });
             return this;
         }

@@ -140,29 +140,39 @@ namespace AcManager.Pages.Dialogs {
                     }
                 }.ToString());
 
-                using (var unpackedKn5 = new MemoryStream()) {
-                    using (var stream = new MemoryStream(BinaryResources.ShowroomPanoramaTemplate))
-                    using (var archive = new ZipArchive(stream))
-                    using (var entry = archive.GetEntry(@"0").Open()) {
-                        entry.CopyTo(unpackedKn5);
+                try {
+                    using (var unpackedKn5 = new MemoryStream()) {
+                        using (var stream = new MemoryStream(BinaryResources.ShowroomPanoramaTemplate))
+                        using (var archive = new ZipArchive(stream)) {
+                            var entry = archive.GetEntry(@"0");
+                            if (entry == null) {
+                                throw new Exception("Unexpected exception, base model is missing");
+                            }
+
+                            using (var entryStream = entry.Open()) {
+                                entryStream.CopyTo(unpackedKn5);
+                            }
+                        }
+
+                        unpackedKn5.Position = 0;
+
+                        var kn5 = Kn5.FromStream(unpackedKn5);
+                        kn5.SetTexture("0", PanoramaFilename);
+                        kn5.Nodes.First(x => x.Name == @"0" && x.NodeClass == Kn5NodeClass.Mesh).CastShadows = InShadow;
+
+                        var material = kn5.Materials.Values.First(x => x.Name == @"0");
+
+                        var ambient = material.GetPropertyByName("ksAmbient");
+                        if (ambient != null) ambient.ValueA = InShadow ? 3f : 1f;
+
+                        var diffuse = material.GetPropertyByName("ksDiffuse");
+                        if (diffuse != null) diffuse.ValueA = InShadow ? 0f : 2f;
+
+                        // TODO
+                        kn5.Save(Path.Combine(location, ResultId + ".kn5"));
                     }
-
-                    unpackedKn5.Position = 0;
-
-                    var kn5 = Kn5.FromStream(unpackedKn5);
-                    kn5.SetTexture("0", PanoramaFilename);
-                    kn5.Nodes.First(x => x.Name == @"0" && x.NodeClass == Kn5NodeClass.Mesh).CastShadows = InShadow;
-
-                    var material = kn5.Materials.Values.First(x => x.Name == @"0");
-
-                    var ambient = material.GetPropertyByName("ksAmbient");
-                    if (ambient != null) ambient.ValueA = InShadow ? 3f : 1f;
-
-                    var diffuse = material.GetPropertyByName("ksDiffuse");
-                    if (diffuse != null) diffuse.ValueA = InShadow ? 0f : 2f;
-
-                    // TODO
-                    kn5.Save(Path.Combine(location, ResultId + ".kn5"));
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create showroom", e);
                 }
             }
         }
