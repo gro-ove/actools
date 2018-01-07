@@ -8,6 +8,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
@@ -33,8 +34,12 @@
       <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acset:AcSettingsControls.ModeToUriConverter}}" />
     </DockPanel>
 
-    <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
+    <DockPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
+      <DockPanel Margin="0 0 0 8" DockPanel.Dock="Top">
+        <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}" VerticalAlignment="Center"
+            Command="{Binding Controls.RunControlPanelCommand}" ToolTip="Device settings" DockPanel.Dock="Right" Margin="8 0 0 0" />
+        <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
+      </DockPanel>
       <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <ItemsControl ItemsSource="{Binding Controls.Devices}">
           <ItemsControl.ItemsPanel>
@@ -118,7 +123,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
-    </StackPanel>
+    </DockPanel>
 
     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
       <Grid MinWidth="300">

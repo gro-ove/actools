@@ -169,7 +169,7 @@ namespace AcManager.Tools.Objects {
                         RecentlyParsed[filename] = value;
                     }
                 } catch (Exception e) {
-                    Logging.Warning(e.Message);
+                    Logging.Warning(e);
                     return null;
                 }
             }

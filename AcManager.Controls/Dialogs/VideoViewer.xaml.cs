@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Presentation;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Path = System.IO.Path;
@@ -14,7 +15,14 @@ namespace AcManager.Controls.Dialogs {
             Title = title ?? Path.GetFileName(filename);
             DataContext = new ViewModel(filename);
             InitializeComponent();
+            Owner = null;
             Buttons = new Button[] { };
+
+            if (AppAppearanceManager.Instance.BlurImageViewerBackground) {
+                WindowStyle = WindowStyle.None;
+                AllowsTransparency = true;
+                BlurBackground = true;
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {

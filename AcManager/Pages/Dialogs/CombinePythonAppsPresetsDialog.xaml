@@ -27,8 +27,8 @@
           <DockPanel>
             <RadioButton IsChecked="{Binding IsSelected}" DockPanel.Dock="Left" Margin="0 0 4 0" VerticalAlignment="Top"
                 ToolTip="Pick a desktop enabled by default" />
-            <TextBlock Style="{StaticResource Label}" Width="100" DockPanel.Dock="Left" Text="{Binding DisplayName, StringFormat='{}{0}:'}"
-                VerticalAlignment="Top" Margin="0 2 0 0" />
+            <TextBlock Style="{StaticResource Label}" Width="100" DockPanel.Dock="Left"
+                Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" VerticalAlignment="Top" Margin="0 2 0 0" />
             <ListBox ItemsSource="{Binding Desktops}" SelectedItem="{Binding PresetDesktopToUse}" ItemContainerStyle="{StaticResource RadioBoxListItem}"
                 DockPanel.Dock="Bottom" Margin="0 4 0 0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
               <ListBox.ItemTemplate>

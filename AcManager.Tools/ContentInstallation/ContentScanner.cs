@@ -575,7 +575,8 @@ namespace AcManager.Tools.ContentInstallation {
             // Mod
             if (directory.Parent?.NameLowerCase == "mods" && directory.HasAnySubDirectory("content", "apps", "system", "launcher")) {
                 var name = directory.Name;
-                if (name != null) {
+                if (name != null && directory.GetSubDirectory("content")?.GetSubDirectory("tracks")?.Directories.Any(
+                        x => x.GetSubDirectory("skins")?.GetSubDirectory("default")?.GetSubFile("ui_track_skin.json") != null) != true) {
                     var description = directory.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));
                     if (description == null && directory.HasSubDirectory("documentation")) {
                         description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));

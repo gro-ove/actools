@@ -148,6 +148,10 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="ActualUnloadedHelper.cs" />
+    <Compile Include="Win32\AccentPolicy.cs" />
+    <Compile Include="Win32\AccentState.cs" />
+    <Compile Include="Win32\WindowCompositionAttribute.cs" />
+    <Compile Include="Win32\WindowCompositionAttributeData.cs" />
     <Compile Include="Windows\AlwaysExecutable.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
@@ -165,6 +169,7 @@
     <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\AppScaleProperty.cs" />
+    <Compile Include="Windows\Controls\AsyncButton.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BbCode\BbCodeParser.Image.cs" />
     <Compile Include="Windows\Controls\BetterComboBox.cs" />
@@ -176,6 +181,7 @@
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
     <Compile Include="Windows\Controls\DoubleSlider.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Blur.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\IEmojiProvider.cs" />
     <Compile Include="Windows\Controls\INumberInputConverter.cs" />
@@ -200,10 +206,12 @@
     <Compile Include="Windows\Controls\BorderyViewbox.cs" />
     <Compile Include="Windows\Controls\ThumbExt.cs" />
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
+    <Compile Include="Windows\Controls\LimitedViewbox.cs" />
     <Compile Include="Windows\Controls\VirtualizingTilePanel2.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\BindableConverterConverter.cs" />
     <Compile Include="Windows\Converters\BrushOpacityConverter.cs" />
+    <Compile Include="Windows\Converters\ColonConverter.cs" />
     <Compile Include="Windows\Converters\DifferenceToVisibilityConverter.cs" />
     <Compile Include="Windows\Converters\DrawingToColorConverter.cs" />
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />

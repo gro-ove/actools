@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
@@ -32,28 +33,25 @@ namespace AcManager.Tools.GameProperties {
             return _process.MainWindowHandle == User32.GetForegroundWindow();
         }
 
-        private async Task PeriodicChecks() {
+        /*private async Task PeriodicChecks() {
             while (!_cancelled) {
                 await Task.Delay(1000);
                 if (IsAcWindowActive()) {
-                    Run();
+                    Run(false);
                 }
             }
-        }
+        }*/
 
         private IDisposable SetSharedListener() {
             void Handler(object sender, EventArgs args) {
-                if (IsAcWindowActive()) {
-                    Run();
-                }
-
                 _cancelled = true;
                 DisposeHelper.Dispose(ref _process);
                 AcSharedMemory.Instance.Start -= Handler;
+                Run(true);
             }
 
             AcSharedMemory.Instance.Start += Handler;
-            PeriodicChecks().Forget();
+            // PeriodicChecks().Forget();
 
             return new ActionAsDisposable(() => {
                 _cancelled = true;
@@ -62,15 +60,31 @@ namespace AcManager.Tools.GameProperties {
             });
         }
 
-        private static void Run() {
-            AcMousePretender.ClickStartButton();
+        private bool _ran;
+        private static bool _socketFailed;
+
+        private void Run(bool allowCmd) {
+            if (_ran) return;
+
+            if (!_socketFailed && allowCmd) {
+                if (InternalUtils.AcControlPointExecute(InternalUtils.AcControlPointCommand.StartGame)) {
+                    _ran = true;
+                    return;
+                }
+
+                _socketFailed = true;
+            }
+
+            if (IsAcWindowActive()) {
+                AcMousePretender.ClickStartButton();
+            }
         }
 
         private async Task RunDelayed() {
             await Task.Delay(5000);
             if (_cancelled) return;
 
-            Run();
+            Run(false);
         }
     }
 }

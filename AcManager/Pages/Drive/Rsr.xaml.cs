@@ -10,6 +10,7 @@ using AcManager.Controls;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
@@ -22,6 +23,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -29,11 +31,14 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
     public partial class Rsr {
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "RSR");
+
         public static AssistsViewModel Assists { get; } = new AssistsViewModel("rsrassistsn");
 
         private ViewModel Model => (ViewModel)DataContext;
 
         public Rsr() {
+            this.OnActualUnload(_discordPresence);
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))

@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
+using AcManager.DiscordRpc;
 using AcManager.Pages.Dialogs;
 using JetBrains.Annotations;
 using AcManager.Tools.Filters.Testers;
@@ -34,6 +35,8 @@ using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : IParametrizedUriContent, IContent {
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(50, "Preparing to race", "Online");
+
         private string[] _hideIconSourceIds;
 
         private void SetHideIcon() {
@@ -55,6 +58,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public void OnUri(Uri uri) {
+            this.OnActualUnload(_discordPresence);
+
             DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"), ShowDetails);
             SetHideIcon();
 

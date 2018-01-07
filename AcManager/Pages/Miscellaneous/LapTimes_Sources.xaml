@@ -29,11 +29,10 @@
                   <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
                 </mui:ReferenceSwitch.Null>
                 <mui:ReferenceSwitch.NonNull>
-                  <TextBlock Style="{StaticResource Heading2}" VerticalAlignment="Bottom">
-                    <Run Text="{Binding DisplayName}" /><Hyperlink
-                        Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
-                        CommandParameter="{Binding DetailsUrl}">[?]</Hyperlink>
-                  </TextBlock>
+                  <DockPanel>
+                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
+                    <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="{Binding DetailsUrl}" />
+                  </DockPanel>
                 </mui:ReferenceSwitch.NonNull>
               </mui:ReferenceSwitch>
 

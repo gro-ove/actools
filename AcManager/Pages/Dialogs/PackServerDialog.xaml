@@ -22,10 +22,10 @@
           IsEnabled="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static t:ServerPresetPackMode.Windows}}"
           ToolTip="Installed and associated with .EVB-files Enigma Virtual Box is required. Only for Windows without Wrapper enabled.">
         <Label>
-          <TextBlock Margin="0 -6 0 0">
-            <Run Text="Pack into single exe-file" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                        Command="{Binding NavigateCommand}" CommandParameter="http://enigmaprotector.com/en/aboutvb.html">[?]</Hyperlink>
-          </TextBlock>
+          <DockPanel>
+            <TextBlock Text="Pack into single exe-file" />
+            <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="http://enigmaprotector.com/en/aboutvb.html" />
+          </DockPanel>
         </Label>
       </CheckBox>
     </c:PropertiesGrid>

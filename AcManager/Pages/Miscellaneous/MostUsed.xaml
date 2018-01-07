@@ -11,7 +11,7 @@
           <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
               VerticalAlignment="Center" Margin="0 0 8 0" />
           <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
-              Margin="8 2 4 0" />
+              Margin="0 2 4 0" Width="36" TextAlignment="Right" />
           <mui:ReferenceSwitch Value="{Binding Car}" Margin="12 4 8 4">
             <mui:ReferenceSwitch.Null>
               <TextBlock Text="{Binding AcObjectId, StringFormat='{}Car {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
@@ -40,7 +40,7 @@
               <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
                   VerticalAlignment="Center" Margin="0 0 8 0" />
               <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
-                  Margin="8 2 4 0" />
+                  Margin="0 2 4 0" Width="36" TextAlignment="Right" />
               <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">
                 <mui:ReferenceSwitch.Null>
                   <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
@@ -71,7 +71,7 @@
                       <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
                           VerticalAlignment="Center" Margin="0 0 8 0" />
                       <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}"
-                          VerticalAlignment="Center" Margin="8 2 4 0" />
+                          VerticalAlignment="Center" Margin="0 2 4 0" Width="36" TextAlignment="Right" />
                       <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">
                         <mui:ReferenceSwitch.Null>
                           <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />

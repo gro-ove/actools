@@ -41,8 +41,7 @@
                       <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnCloseButtonClick"
-                        Style="{StaticResource FullscreenDialogButton}">
+                    <Button Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnCloseButtonClick" Style="{StaticResource FullscreenDialogButton}">
                       <Path Data="{StaticResource CloseIconData}" />
                     </Button>
                     <Button Grid.Row="1" Command="{Binding NextCommand}" Style="{StaticResource FullscreenDialogButton}">

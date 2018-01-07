@@ -49,12 +49,11 @@
       <StackPanel Visibility="{Binding CurrentLocale.Id, Converter={StaticResource NullToVisibilityConverter}}">
         <DockPanel>
           <Label>
-            <TextBlock>
-              <Run Text="{x:Static g:AppStrings.Settings_Locale_LocaleId}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                                                                 BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
-                                                                                 CommandParameter="https://msdn.microsoft.com/en-us/library/ms533052(v=vs.85).aspx">[?]</Hyperlink><Run
-                                                                                                                                                                                       Text=":" />
-            </TextBlock>
+            <DockPanel Style="{x:Null}">
+              <TextBlock Text="{Binding Source={x:Static g:AppStrings.Settings_Locale_LocaleId}, Converter={StaticResource ColonConverter},
+                  ConverterParameter=trim}" />
+              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://msdn.microsoft.com/en-us/library/ms533052(v=vs.85).aspx" />
+            </DockPanel>
           </Label>
           <mui:BetterTextBox Text="{Binding Locale.LocaleName}" Placeholder="?" />
         </DockPanel>

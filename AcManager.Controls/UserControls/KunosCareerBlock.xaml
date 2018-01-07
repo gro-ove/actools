@@ -50,7 +50,7 @@
         </mui:BetterImage.Style>
       </mui:BetterImage>
 
-      <Grid Opacity="0" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="Information_OnMouseLeftButtonDown"
+      <Grid Opacity="0" Background="Transparent" Cursor="Hand" MouseLeftButtonUp="OnClick"
           Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Grid Background="#33000000">
           <Grid.Effect>

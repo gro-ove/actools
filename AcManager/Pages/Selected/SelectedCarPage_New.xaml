@@ -290,9 +290,9 @@
                         Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
                   </Button>
                   <mui:Cell>
-                    <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
+                    <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseLeftButtonUp="OnVersionInfoBlockClick"
                         TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
+                    <Border Background="Transparent" MouseLeftButtonUp="OnVersionInfoBlockClick" />
                   </mui:Cell>
                 </DockPanel>
               </c:PropertiesGrid>

@@ -534,6 +534,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Rims (blurred/static), cockpit (HR/LR), seatbelt (on/off)
+        [NotNull]
         public CarData.BlurredObject[] BlurredObjects => _blurredObjs ?? (_blurredObjs = _carData.GetBlurredObjects().ToArray());
         private CarData.BlurredObject[] _blurredObjs;
 

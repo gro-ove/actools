@@ -33,7 +33,7 @@ namespace FirstFloor.ModernUI {
             if (WindowsVersionHelper.IsWindows8Point1OrGreater) {
                 ProcessDpiAwareness value;
                 var result = NativeMethods.GetProcessDpiAwareness(IntPtr.Zero, out value);
-                if (result != NativeMethods.S_OK) {
+                if (result != NativeMethods.SOk) {
                     throw new Win32Exception(result);
                 }
 
@@ -71,11 +71,11 @@ namespace FirstFloor.ModernUI {
             }
 
             if (WindowsVersionHelper.IsWindows8Point1OrGreater) {
-                return NativeMethods.SetProcessDpiAwareness(ProcessDpiAwareness.PerMonitorDpiAware) == NativeMethods.S_OK;
+                return NativeMethods.SetProcessDpiAwareness(ProcessDpiAwareness.PerMonitorDpiAware) == NativeMethods.SOk;
             }
 
             // use older Win32 API to set the awereness to SystemDpiAware
-            return NativeMethods.SetProcessDPIAware() == NativeMethods.S_OK;
+            return NativeMethods.SetProcessDPIAware() == NativeMethods.SOk;
 
             // return true if per monitor was already enabled
         }

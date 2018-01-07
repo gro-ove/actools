@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
 using System.Windows;
 using System.Windows.Interop;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -48,7 +50,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public IList<int> OriginalIniIds { get; }
 
-        private readonly Dictionary<int, DirectInputAxle> _axles = new Dictionary<int, DirectInputAxle>(); 
+        private readonly Dictionary<int, DirectInputAxle> _axles = new Dictionary<int, DirectInputAxle>();
         private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>();
 
         public bool Same(IDirectInputDevice other) {
@@ -56,17 +58,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public DirectInputAxle GetAxle(int id) {
-            DirectInputAxle result;
-            if (_axles.TryGetValue(id, out result)) return result;
-            result = new DirectInputAxle(this, id);
-            return _axles[id] = result;
+            return _axles.TryGetValue(id, out var result) ? result : (_axles[id] = new DirectInputAxle(this, id));
         }
 
         public DirectInputButton GetButton(int id) {
-            DirectInputButton result;
-            if (_buttons.TryGetValue(id, out result)) return result;
-            result = new DirectInputButton(this, id);
-            return _buttons[id] = result;
+            return _buttons.TryGetValue(id, out var result) ? result : (_buttons[id] = new DirectInputButton(this, id));
         }
 
         public override string ToString() {
@@ -102,15 +98,19 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return Buttons.ElementAtOrDefault(id);
         }
 
-        public DirectInputButton[] Buttons { get; } 
+        public DirectInputButton[] Buttons { get; }
 
-        public DirectInputAxle[] Axis { get; } 
+        public DirectInputAxle[] Axis { get; }
 
         private Joystick _joystick;
         private readonly int _buttonsCount;
 
         public override string ToString() {
             return $"DirectInputDevice({Id}:{DisplayName}, Ini={Index})";
+        }
+
+        public void RunControlPanel() {
+            _joystick.RunControlPanel();
         }
 
         private static string GuidToString(Guid guid) {

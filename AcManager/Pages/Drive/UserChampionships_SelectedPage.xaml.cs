@@ -10,6 +10,7 @@ using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
+using AcManager.DiscordRpc;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -20,6 +21,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -30,6 +32,8 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Pages.Drive {
     public partial class UserChampionships_SelectedPage : ILoadableContent, IParametrizedUriContent {
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Championships");
+
         public void OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
         }
@@ -59,6 +63,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Initialize() {
+            this.OnActualUnload(_discordPresence);
+
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
@@ -73,6 +79,8 @@ namespace AcManager.Pages.Drive {
                 }
                 acObject.LastSelectedTimestamp = DateTime.Now.ToMillisecondsTimestamp();
             }
+
+            _discordPresence.Details = $"Championships | {acObject.DisplayName}";
         }
 
         private string _id;

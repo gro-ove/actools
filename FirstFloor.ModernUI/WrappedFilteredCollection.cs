@@ -38,6 +38,8 @@ namespace FirstFloor.ModernUI {
         [NotNull]
         private readonly IReadOnlyList<TSource> _source;
 
+        protected IReadOnlyList<TSource> Source => _source;
+
         [CanBeNull]
         private List<TWrapper> _wrapped;
 

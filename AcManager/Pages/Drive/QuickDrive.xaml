@@ -2,9 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
-    Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
+    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded"
+    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -57,110 +57,282 @@
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
 
-      <mui:Cell x:Name="CarCell" Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}"
-          AllowDrop="True" Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
-        <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedCar.DisplayName}"
-            Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+      <DockPanel Grid.Column="0" x:Name="CarCell" Width="160" Margin="0 0 20 0">
+        <DockPanel x:Name="CarCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom">
+          <mui:BetterComboBox Width="44" Height="24" IsEditable="False" SelectedItem="{Binding SelectedCar}" ItemsSource="{Binding TunableVersions}"
+              Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Left" Margin="0 0 8 0">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Height="18">
+                  <mui:BetterImage x:Name="UpgradeIconImage" Margin="-8" Width="34" Height="34" ClearOnChange="True" Filename="/Assets/Img/UpgradeStd.png"
+                      Effect="{DynamicResource CarIconEffect}" DecodeWidth="78">
+                    <mui:BetterImage.OpacityMask>
+                      <VisualBrush Stretch="None">
+                        <VisualBrush.Visual>
+                          <Ellipse Width="20" Height="20" Fill="Black" Margin="7" />
+                        </VisualBrush.Visual>
+                      </VisualBrush>
+                    </mui:BetterImage.OpacityMask>
+                  </mui:BetterImage>
+                  <TextBlock x:Name="PART_Name" Margin="4 0 0 0" Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                </DockPanel>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding IsChild}" Value="True">
+                    <Setter TargetName="UpgradeIconImage" Property="Filename" Value="{Binding UpgradeIcon}" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Name" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </mui:BetterComboBox>
 
-        <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
-            Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <mui:Cell Effect="{DynamicResource OverlayEffect}">
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car" Click="OnCarBlockClick" />
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
-                PreviewMouseRightButtonDown="OnShowroomContextMenu" />
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}" />
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}" />
-          </mui:Cell>
-          <Border.Triggers>
-            <EventTrigger RoutedEvent="Grid.MouseEnter">
-              <EventTrigger.Actions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
-                        EasingFunction="{StaticResource EaseInOut}" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </EventTrigger.Actions>
-            </EventTrigger>
-            <EventTrigger RoutedEvent="Grid.MouseLeave">
-              <EventTrigger.Actions>
-                <BeginStoryboard>
-                  <Storyboard BeginTime="0:0:0.15">
-                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
-                        EasingFunction="{StaticResource EaseInOut}" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </EventTrigger.Actions>
-            </EventTrigger>
-          </Border.Triggers>
-        </Border>
+          <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SelectedCar.SelectedSkin}" ItemsSource="{Binding SelectedCar.EnabledOnlySkins}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Height="18">
+                  <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" DecodeWidth="36" />
+                  <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                </DockPanel>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedCar}">
-          <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-              Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
-        </Button>
-        <mui:ContextMenuButton Click="OnCarContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
-      </mui:Cell>
+        <mui:Cell Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="OnCarBlockDrop"
+            MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
+          <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+          <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedCar.DisplayName}"
+              Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
 
-      <mui:Cell x:Name="TrackCell" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedTrack}"
-          AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
-        <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
-            Stretch="UniformToFill" />
-        <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
-            ShowBroken="False" />
-        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
-            Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+          <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
+              Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mui:Cell Effect="{DynamicResource OverlayEffect}">
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car" Click="OnCarBlockClick" />
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
+                  PreviewMouseRightButtonDown="OnShowroomContextMenu" />
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}" />
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}" />
+            </mui:Cell>
+            <Border.Triggers>
+              <EventTrigger RoutedEvent="Grid.MouseEnter">
+                <EventTrigger.Actions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                          EasingFunction="{StaticResource EaseInOut}" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger.Actions>
+              </EventTrigger>
+              <EventTrigger RoutedEvent="Grid.MouseLeave">
+                <EventTrigger.Actions>
+                  <BeginStoryboard>
+                    <Storyboard BeginTime="0:0:0.15">
+                      <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                          EasingFunction="{StaticResource EaseInOut}" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger.Actions>
+              </EventTrigger>
+            </Border.Triggers>
+          </Border>
 
-        <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
-            Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <mui:Cell Effect="{DynamicResource OverlayEffect}">
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track" Click="OnTrackBlockClick" />
-            <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
-                IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0" HorizontalAlignment="Center"
-                VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}" />
-          </mui:Cell>
-          <Border.Triggers>
-            <EventTrigger RoutedEvent="Grid.MouseEnter">
-              <EventTrigger.Actions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
-                        EasingFunction="{StaticResource EaseInOut}" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </EventTrigger.Actions>
-            </EventTrigger>
-            <EventTrigger RoutedEvent="Grid.MouseLeave">
-              <EventTrigger.Actions>
-                <BeginStoryboard>
-                  <Storyboard BeginTime="0:0:0.15">
-                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
-                        EasingFunction="{StaticResource EaseInOut}" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </EventTrigger.Actions>
-            </EventTrigger>
-          </Border.Triggers>
-        </Border>
+          <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedCar}">
+            <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+          </Button>
+          <mui:ContextMenuButton Click="OnCarContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+        </mui:Cell>
 
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed"
-            c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
-          <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-              Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
-        </Button>
-        <mui:ContextMenuButton Click="OnTrackContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
-      </mui:Cell>
+      </DockPanel>
+
+      <DockPanel x:Name="TrackCell" Grid.Column="1" Width="160" Margin="0 0 20 0">
+        <DockPanel x:Name="TrackCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom">
+          <mui:ReferenceSwitch Value="{Binding SelectedTrack.MainTrackObject.MultiLayouts}">
+            <mui:BetterComboBox Width="44" Height="24" IsEditable="False" SelectedItem="{Binding SelectedTrack}"
+                ItemsSource="{Binding SelectedTrack.MainTrackObject.MultiLayouts}" DockPanel.Dock="Left" Margin="0 0 8 0">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel Height="18">
+                    <mui:BetterImage ClearOnChange="True" Filename="{Binding OutlineImage}" Width="18" Height="18"
+                        Effect="{DynamicResource TrackOutlineAloneEffect}" CropTransparentAreas="True" DecodeWidth="48" />
+                    <TextBlock Margin="4 0 0 0" x:Name="PART_Name" Text="{Binding Name}" VerticalAlignment="Top" />
+                  </DockPanel>
+                  <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                      <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Name" />
+                    </DataTrigger>
+                  </DataTemplate.Triggers>
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
+          </mui:ReferenceSwitch>
+
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding SelectedTrack.MainTrackObject.EnabledOnlySkins}" SelectedItem="{Binding AlwaysNull}"
+              IsEnabled="{Binding SelectedTrack.MainTrackObject.EnabledOnlySkins.Count, Converter={StaticResource MoreConverter}}">
+            <mui:BetterComboBox.Template>
+              <ControlTemplate TargetType="{x:Type mui:BetterComboBox}">
+                <mui:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+                  <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+                      IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                      PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <mui:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                      <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                      <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+                      <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
+                          BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+                        <ScrollViewer x:Name="DropDownScrollViewer">
+                          <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                      </Border>
+                    </mui:Cell>
+                  </Popup>
+                  <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                  <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
+                      HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+                  <mui:LimitedViewbox MinimumScale="0.84" MaximumScale="1" Margin="7 3 20 5" IsHitTestVisible="False" VerticalAlignment="Bottom"
+                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                    <TextBlock Text="{Binding DataContext.SelectedTrack.MainTrackObject.DisplayActiveSkins, ElementName=This}" TextTrimming="CharacterEllipsis"
+                        VerticalAlignment="Bottom" Margin="0 0 0 -1" />
+                  </mui:LimitedViewbox>
+                </mui:Cell>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="HasItems" Value="False">
+                    <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+                  </Trigger>
+                  <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
+                    <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+                  </Trigger>
+                  <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </mui:BetterComboBox.Template>
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <mui:BooleanSwitch x:Name="PART_Switch" Value="False">
+                  <mui:BooleanSwitch.False>
+                    <CheckBox IsChecked="{Binding IsActive}" Margin="0 -1 0 1" Height="18">
+                      <CheckBox.Template>
+                        <ControlTemplate TargetType="{x:Type CheckBox}">
+                          <Border Background="Transparent" Margin="-10 -2" Padding="10 2">
+                            <DockPanel x:Name="LayoutRoot">
+                              <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">
+                                <Path x:Name="CheckMark" Width="10" Height="10" Margin="2" Visibility="Collapsed" Stretch="Fill"
+                                    Fill="{TemplateBinding Foreground}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z " />
+                              </Border>
+                              <ContentPresenter VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                            </DockPanel>
+                          </Border>
+                          <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                              <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                              <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                              <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                              <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+                              <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                              <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                              <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource DataGridForeground}" />
+                              <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource DataGridForeground}" />
+                            </Trigger>
+                          </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                      </CheckBox.Template>
+                      <DockPanel Margin="0 1 0 -1">
+                        <mui:BetterImage Margin="4 0 4 0" ClearOnChange="True" Filename="{Binding PreviewImage}" Width="24" Height="18" Stretch="UniformToFill" />
+                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                      </DockPanel>
+                    </CheckBox>
+                  </mui:BooleanSwitch.False>
+                </mui:BooleanSwitch>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                    <Setter Property="Value" Value="True" TargetName="PART_Switch" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
+
+        <mui:Cell Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True" Drop="OnTrackBlockDrop"
+            MouseLeftButtonUp="OnTrackBlockClick">
+          <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
+              Stretch="UniformToFill" />
+          <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
+              ShowBroken="False" />
+          <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
+              Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+
+          <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
+              Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mui:Cell Effect="{DynamicResource OverlayEffect}">
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track" Click="OnTrackBlockClick" />
+              <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
+                  IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}" />
+            </mui:Cell>
+            <Border.Triggers>
+              <EventTrigger RoutedEvent="Grid.MouseEnter">
+                <EventTrigger.Actions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                          EasingFunction="{StaticResource EaseInOut}" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger.Actions>
+              </EventTrigger>
+              <EventTrigger RoutedEvent="Grid.MouseLeave">
+                <EventTrigger.Actions>
+                  <BeginStoryboard>
+                    <Storyboard BeginTime="0:0:0.15">
+                      <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd"
+                          EasingFunction="{StaticResource EaseInOut}" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger.Actions>
+              </EventTrigger>
+            </Border.Triggers>
+          </Border>
+
+          <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Padding="4" Visibility="Collapsed"
+              c:CupUi.Object="{Binding SelectedTrack.MainTrackObject}">
+            <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+          </Button>
+          <mui:ContextMenuButton Click="OnTrackContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+        </mui:Cell>
+
+      </DockPanel>
 
       <Grid Grid.Column="2">
         <Grid.ColumnDefinitions>
@@ -169,8 +341,6 @@
           <ColumnDefinition MinWidth="124" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
           <RowDefinition />
           <RowDefinition />
         </Grid.RowDefinitions>
@@ -202,7 +372,7 @@
                 <mui:BooleanSwitch.True>
                   <TextBlock Background="Transparent" Style="{StaticResource Label}" Padding="8 0 0 0">
                     <TextBlock.Text>
-                      <MultiBinding StringFormat="{x:Static mui:UiStrings.Colon_Format}">
+                      <MultiBinding StringFormat="{x:Static mui:ColonConverter.FormatBoth}">
                         <Binding Source="{x:Static g:AppStrings.Drive_Time}" />
                         <Binding Source="{x:Static g:AppStrings.Drive_Time_Random}" />
                       </MultiBinding>
@@ -290,7 +460,7 @@
               <mui:BooleanSwitch.True>
                 <TextBlock Background="Transparent" Style="{StaticResource Label}" Margin="0 0 0 4" Padding="8 0 0 0">
                   <TextBlock.Text>
-                    <MultiBinding StringFormat="{x:Static mui:UiStrings.Colon_Format}">
+                    <MultiBinding StringFormat="{x:Static mui:ColonConverter.FormatBoth}">
                       <Binding Source="{x:Static g:AppStrings.Drive_Temperature}" />
                       <Binding Source="{x:Static g:AppStrings.Drive_Temperature_Random}" />
                     </MultiBinding>
@@ -417,7 +587,7 @@
             <mui:BooleanSwitch.True>
               <TextBlock Background="Transparent" Style="{StaticResource Label}" Padding="8 0 0 0" Margin="0 0 0 2">
                 <TextBlock.Text>
-                  <MultiBinding StringFormat="{x:Static mui:UiStrings.Colon_Format}">
+                  <MultiBinding StringFormat="{x:Static mui:ColonConverter.FormatBoth}">
                     <Binding Source="Wind" />
                     <Binding Source="{x:Static g:AppStrings.Drive_Time_Random}" />
                   </MultiBinding>

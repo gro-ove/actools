@@ -25,6 +25,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyAccentColor = "appearance_accentColor";
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
+        public const string KeyBlurImageViewerBackground = "appearance_blurImageViewerBackground";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyLargerTitleLinks = "appearance_biggerTitleLinks";
         public const string KeyBoldTitleLinks = "appearance_boldTitleLinks";
@@ -153,8 +154,8 @@ namespace AcManager.Controls.Presentation {
             var theme = ValuesStorage.GetString(KeyTheme);
 
             // For compatibility with old settings
-            if (theme == "/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml") {
-                theme = "/AcManager.Controls;component/Assets/ModernUI.Light.xaml";
+            if (theme == @"/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml") {
+                theme = @"/AcManager.Controls;component/Assets/ModernUI.Light.xaml";
             }
 
             InitializeThemesList();
@@ -172,6 +173,7 @@ namespace AcManager.Controls.Presentation {
                 BackgroundStretch = ValuesStorage.GetEnum(KeyBackgroundStretch, Stretch.UniformToFill);
                 IdealFormattingMode = ValuesStorage.GetBoolNullable(KeyIdealFormattingMode);
                 ForceMenuAtTopInFullscreenMode = ValuesStorage.GetBool(KeyForceMenuAtTopInFullscreenMode);
+                BlurImageViewerBackground = ValuesStorage.GetBool(KeyBlurImageViewerBackground);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
                 LargerTitleLinks = ValuesStorage.GetBool(KeyLargerTitleLinks);
                 BoldTitleLinks = ValuesStorage.GetBool(KeyBoldTitleLinks);
@@ -373,6 +375,18 @@ namespace AcManager.Controls.Presentation {
                 Application.Current.Resources["LayoutRootFullscreenMargin"] = value ?
                         new Thickness(7d) : new Thickness(7d, 35d, 7d, 7d);
                 ValuesStorage.Set(KeyForceMenuAtTopInFullscreenMode, value);
+            }
+        }
+
+        private bool _blurImageViewerBackground;
+
+        public bool BlurImageViewerBackground {
+            get => _blurImageViewerBackground;
+            set {
+                if (Equals(value, _blurImageViewerBackground)) return;
+                _blurImageViewerBackground = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyBlurImageViewerBackground, value);
             }
         }
 

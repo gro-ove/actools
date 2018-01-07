@@ -13,11 +13,12 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
         <DockPanel x:Name="Starter" set:Search.Keywords="starter;steam">
           <Label>
-            <TextBlock>
-              <Run Text="{x:Static g:AppStrings.Settings_Drive_Starter}" />
-              <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
-                  CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run Text=":" />
-            </TextBlock>
+            <DockPanel Style="{x:Null}">
+              <TextBlock
+                  Text="{Binding Source={x:Static g:AppStrings.Settings_Drive_Starter}, Converter={StaticResource ColonConverter},
+                  ConverterParameter=trim, Mode=OneTime}" />
+              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters" />
+            </DockPanel>
           </Label>
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
             <ComboBox.ItemContainerStyle>
@@ -128,6 +129,11 @@
           <Label Content="For Track Day, use Practice as a session type" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="Might slightly show app down" set:Search.Keywords="quick;drive;appearance;ui"
+            mui:NewMarkService.New="True">
+          <Label Content="Show extra drop-down lists for skins, car modification and track layout" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}"
             set:Search.Keywords="quick;drive">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
@@ -161,11 +167,10 @@
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
             ToolTip="Very experimental feature which might be removed later">
           <Label mui:LimitedService.Limited="True">
-            <TextBlock>
-              <Run Text="Enable AI limitations" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                      Command="mui:LinkCommands.NavigateMainWindow"
-                                                      CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars">[?]</Hyperlink>
-            </TextBlock>
+            <DockPanel Style="{x:Null}">
+              <TextBlock Text="Enable AI limitations" />
+              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars" />
+            </DockPanel>
           </Label>
         </CheckBox>
 
@@ -173,11 +178,10 @@
             ToolTip="If found, temporary replace packed data by unpacked; for more information, go to About section and look for Custom Car Data post"
             mui:NewMarkService.New="True" set:Search.Keywords="quick;drive;modding">
           <Label>
-            <TextBlock>
-              <Run Text="Allow to use custom car’s data" />
-              <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateMainWindow"
-                  CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData">[?]</Hyperlink>
-            </TextBlock>
+            <DockPanel Style="{x:Null}">
+              <TextBlock Text="Allow to use custom car’s data" />
+              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData" />
+            </DockPanel>
           </Label>
         </CheckBox>
 
@@ -196,11 +200,11 @@
         </CheckBox>
 
         <!-- Real head motion -->
-        <TextBlock set:Search.SubCategory="Real Head Motion:" Style="{StaticResource SettingsPanel.Heading2}">
-          <Run Text="Real Head Motion:" />
-          <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
-              CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/">[?]</Hyperlink>
-        </TextBlock>
+        <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}">
+          <TextBlock Text="Real Head Motion:" Style="{StaticResource Heading2}" />
+          <Button Style="{StaticResource MoreDetailsSuperscript}"
+              CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/" />
+        </DockPanel>
 
         <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
           <Label Content="RHM integration" />

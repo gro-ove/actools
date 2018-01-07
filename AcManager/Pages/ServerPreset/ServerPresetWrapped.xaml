@@ -183,14 +183,14 @@
               Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               Style="{StaticResource Expander.Animated}" Margin="-16 0 0 0">
             <Expander.Header>
-              <Label Content="{Binding ChildrenName}" ContentStringFormat="{}{0}:" DockPanel.Dock="Top" HorizontalAlignment="Left" />
+              <Label Content="{Binding ChildrenName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" DockPanel.Dock="Top" HorizontalAlignment="Left" />
             </Expander.Header>
             <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{StaticResource SharedItemChildTemplate}"
                 ItemsPanel="{StaticResource ChildSharedItemsPanel}" Margin="24 4 0 0" />
           </mui:RememberingExpander>
 
           <!--<DockPanel Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Label Content="{Binding ChildrenName}" ContentStringFormat="{}{0}:" DockPanel.Dock="Top" HorizontalAlignment="Left" />
+            <Label Content="{Binding ChildrenName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" DockPanel.Dock="Top" HorizontalAlignment="Left" />
             <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{StaticResource SharedItemChildTemplate}"
                 ItemsPanel="{StaticResource ChildSharedItemsPanel}" Margin="20 8 0 0" />
           </DockPanel>-->
@@ -204,9 +204,10 @@
       <ScrollViewer Padding="0 0 0 20" x:Name="ScrollViewerLeft">
         <StackPanel Style="{StaticResource SettingsPanel}"><!--
     <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
-      <Run Text="AC Server Wrapper" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                          BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
-                                          CommandParameter="https://github.com/gro-ove/ac-server-wrapper">[?]</Hyperlink><Run Text=":" />
+      <DockPanel>
+        <TextBlock Text="AC Server Wrapper:" />
+        <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://github.com/gro-ove/ac-server-wrapper" />
+      </DockPanel>
     </TextBlock>-->
 
           <c:MessageBlock CloseKey="ac-server-wrapper" Margin="0 0 0 8">
@@ -280,9 +281,10 @@
 
     <StackPanel Style="{StaticResource SettingsPanel}">
       <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
-        <Run Text="AC Server Wrapper" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                            BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
-                                            CommandParameter="https://github.com/gro-ove/ac-server-wrapper">[?]</Hyperlink><Run Text=":" />
+        <DockPanel>
+          <TextBlock Text="AC Server Wrapper:" />
+          <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://github.com/gro-ove/ac-server-wrapper" />
+        </DockPanel>
       </TextBlock>
       <DockPanel>
         <Label Content="Wrapper port:" />

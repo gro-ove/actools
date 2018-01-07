@@ -9,6 +9,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return $"#{(alphaChannel ? color.A.ToString("X2") : string.Empty)}{color.R:X2}{color.G:X2}{color.B:X2}";
         }
 
+        public static Color SetAlpha(this Color color, byte alpha) {
+            return Color.FromArgb(alpha, color.R, color.G, color.B);
+        }
+
         public static Color ToColor(this System.Drawing.Color color) {
             return Color.FromArgb(color.A, color.R, color.G, color.B);
         }

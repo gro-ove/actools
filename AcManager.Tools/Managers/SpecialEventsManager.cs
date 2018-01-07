@@ -37,7 +37,7 @@ namespace AcManager.Tools.Managers {
             GameWrapper.Finished += GameWrapper_Finished;
         }
 
-        internal class EventProperties {
+        public class EventProperties {
             public string EventId;
         }
 
@@ -61,7 +61,7 @@ namespace AcManager.Tools.Managers {
 
         public async Task UpdateProgress(IProgress<string> progress, CancellationToken cancellation) {
             if (SteamIdHelper.Instance.Value == null) {
-                throw new InformativeException("Can’t get challenges progress", "Steam ID is missing.");    
+                throw new InformativeException("Can’t get challenges progress", "Steam ID is missing.");
             }
 
             progress.Report("Finishing preparing…");
@@ -81,7 +81,7 @@ namespace AcManager.Tools.Managers {
             foreach (var eventObject in LoadedOnly) {
                 eventObject.TakenPlace = 5;
             }
-            
+
             foreach (var achievment in achievments.Where(x => x.StartsWith(@"SPECIAL_EVENT_"))) {
                 var id = achievment.Substring(0, achievment.Length - 2);
                 var place = FlexibleParser.TryParseInt(achievment.Substring(achievment.Length - 1));

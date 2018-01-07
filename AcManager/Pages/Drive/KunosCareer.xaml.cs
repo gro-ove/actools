@@ -9,11 +9,13 @@ using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
+using AcManager.DiscordRpc;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -34,8 +36,11 @@ namespace AcManager.Pages.Drive {
         }
 
         private ViewModel Model => (ViewModel)DataContext;
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Career");
 
         public void Initialize() {
+            this.OnActualUnload(_discordPresence);
+
             DataContext = new ViewModel(Filter.Create(AcObjectTester.Instance, "enabled+"));
             InitializeComponent();
 

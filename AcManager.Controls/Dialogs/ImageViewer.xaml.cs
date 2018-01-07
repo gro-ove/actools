@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AcManager.Controls.Presentation;
+using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -35,8 +37,15 @@ namespace AcManager.Controls.Dialogs {
             };
 
             InitializeComponent();
+            Owner = null;
             Buttons = new Button[] { };
             Model.PropertyChanged += OnModelPropertyChanged;
+
+            if (AppAppearanceManager.Instance.BlurImageViewerBackground) {
+                WindowStyle = WindowStyle.None;
+                AllowsTransparency = true;
+                BlurBackground = true;
+            }
         }
 
         public HorizontalAlignment HorizontalDetailsAlignment {

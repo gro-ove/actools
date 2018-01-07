@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
+using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Properties;
 using AcManager.Tools;
@@ -20,6 +21,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -33,9 +35,11 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs {
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "SRS");
         private ViewModel Model => (ViewModel)DataContext;
 
         public Srs() {
+            this.OnActualUnload(_discordPresence);
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))

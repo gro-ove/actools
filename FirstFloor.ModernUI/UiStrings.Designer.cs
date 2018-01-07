@@ -88,15 +88,6 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}: {1}.
-        /// </summary>
-        public static string Colon_Format {
-            get {
-                return ResourceManager.GetString("Colon_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string Common_Add {
@@ -196,7 +187,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Password.
+        ///   Looks up a localized string similar to Hide password.
         /// </summary>
         public static string HidePassword {
             get {
@@ -214,7 +205,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*.
+        ///   Looks up a localized string similar to Image files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*.
         /// </summary>
         public static string ImagesFilter {
             get {
@@ -817,7 +808,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to navigate to {0}, could not find a ModernFrame target &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Unable to navigate to {0}, could not find a ModernFrame target “{1}”.
         /// </summary>
         public static string NavigationFailedFrameNotFound {
             get {
@@ -1222,7 +1213,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Race Grid As Preset.
+        ///   Looks up a localized string similar to Save race grid as preset.
         /// </summary>
         public static string RaceGrid_SavePresetHeader {
             get {
@@ -1231,7 +1222,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share Race Grid.
+        ///   Looks up a localized string similar to Share race grid.
         /// </summary>
         public static string RaceGrid_ShareHeader {
             get {
@@ -1258,7 +1249,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Password.
+        ///   Looks up a localized string similar to Show password.
         /// </summary>
         public static string ShowPassword {
             get {
@@ -1276,7 +1267,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stack Trace.
+        ///   Looks up a localized string similar to Stack trace.
         /// </summary>
         public static string StackTrace {
             get {
@@ -1303,7 +1294,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DDS Files|*.dds|All files (*.*)|*.*.
+        ///   Looks up a localized string similar to DDS files (*.dds)|*.dds|All files (*.*)|*.*.
         /// </summary>
         public static string TexturesDdsFilter {
             get {
@@ -1312,7 +1303,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*.
+        ///   Looks up a localized string similar to DDS &amp; TIFF files|*.dds;*.tif;*.tiff|Image files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*.
         /// </summary>
         public static string TexturesFilter {
             get {
@@ -1420,7 +1411,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include Password.
+        ///   Looks up a localized string similar to Include password.
         /// </summary>
         public static string Toolbar_Invite_IncludePasswordHeader {
             get {
@@ -1438,7 +1429,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel Booking.
+        ///   Looks up a localized string similar to Cancel booking.
         /// </summary>
         public static string Toolbar_OnlineCancelBooking {
             get {
@@ -1447,7 +1438,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Lists….
+        ///   Looks up a localized string similar to Manage lists….
         /// </summary>
         public static string Toolbar_OnlineManageLists {
             get {
@@ -1528,7 +1519,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Newer version {0} is ready to be installed.
+        ///   Looks up a localized string similar to Update to version [b]{0}[/b] is ready.[br][br]Click here to restart Content Manager and apply it, or hold [b]Ctrl[/b] to simply close the app and install it later..
         /// </summary>
         public static string UpdateAvailable {
             get {

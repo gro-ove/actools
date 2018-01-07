@@ -19,8 +19,6 @@ using MenuItem = System.Windows.Forms.MenuItem;
 
 namespace AcManager {
     public partial class AppHibernator : IDisposable {
-        public static bool OptionDisableProcessing = false;
-
         public void SetListener() {
             SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
             UpdateGameListeners();
@@ -63,7 +61,6 @@ namespace AcManager {
             }
         }
 
-        private IDisposable _pausedProcessing;
         private IList<Window> _hiddenWindows;
         private NotifyIcon _trayIcon;
 
@@ -134,21 +131,14 @@ namespace AcManager {
                             AddTrayIconWpf();
 
                             /* hide windows */
-                            _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible).ToList();
+                            _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible
+                                    && !x.Topmost).ToList();
                             if (_hiddenWindows != null) {
                                 foreach (var window in _hiddenWindows) {
                                     window.Visibility = Visibility.Collapsed;
                                 }
                             }
-
-                            /* pause processing */
-                            if (OptionDisableProcessing) {
-                                _pausedProcessing = Application.Current?.Dispatcher.DisableProcessing();
-                            }
                         } else {
-                            /* restore processing */
-                            DisposeHelper.Dispose(ref _pausedProcessing);
-
                             /* show hidden windows */
                             if (_hiddenWindows != null) {
                                 foreach (var window in _hiddenWindows) {

@@ -66,8 +66,7 @@
           <CheckBox IsChecked="{Binding ScaleToMaxValues}">
             <Label Content="Scale curves to torque and BHP values" />
           </CheckBox>
-          <CheckBox IsChecked="{Binding UpdateMaxValues}"
-              IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
+          <CheckBox IsChecked="{Binding UpdateMaxValues}" IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
             <Label Content="Update torque and BHP values" />
           </CheckBox>
           <CheckBox IsChecked="{Binding RebuildFromData}">
@@ -75,8 +74,7 @@
           </CheckBox>
         </mui:SpacingUniformGrid>
 
-        <DockPanel
-            IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
+        <DockPanel IsEnabled="{Binding ScaleToMaxValues, Converter={StaticResource InvertBooleanConverter}}">
           <mui:ValueLabel Value="{Binding TransmissionLoss, Converter={StaticResource PercentageConverter}}" Width="160" Padding="0"
               Content="{x:Static g:AppStrings.CarSpecs_TransmissionLoss}" Postfix="%" Margin="0 0 20 0" VerticalAlignment="Center" />
           <Slider Value="{Binding TransmissionLoss, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" Minimum="0" Maximum="50"
@@ -106,11 +104,10 @@
         </CheckBox>
         <CheckBox IsChecked="{Binding PreferHardlinks}">
           <Label>
-            <TextBlock>
-              <Run Text="Try to use hard links" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                                      Command="mui:LinkCommands.NavigateLink" CommandParameter="https://en.wikipedia.org/wiki/Hard_link">[?]</Hyperlink>
-
-            </TextBlock>
+            <DockPanel>
+              <TextBlock Text="Try to use hard links" />
+              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://en.wikipedia.org/wiki/Hard_link" />
+            </DockPanel>
           </Label>
         </CheckBox>
       </mui:SpacingStackPanel>

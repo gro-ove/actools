@@ -13,16 +13,14 @@ namespace FirstFloor.ModernUI {
 
         public BetterListCollectionView([NotNull] IList list)
                 : base(list) {
-            var changed = list as INotifyCollectionChanged;
-            if (changed == null) return;
-
-            changed.CollectionChanged -= OnCollectionChanged;
-            CollectionChangedEventManager.AddListener(changed, this);
+            if (list is INotifyCollectionChanged changed) {
+                changed.CollectionChanged -= OnCollectionChanged;
+                CollectionChangedEventManager.AddListener(changed, this);
+            }
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e) {
-            var notify = e as NotifyCollectionChangedEventArgs;
-            if (notify == null) return false;
+            if (!(e is NotifyCollectionChangedEventArgs notify)) return false;
 
             if (_compatible) {
                 Refresh();
@@ -30,9 +28,7 @@ namespace FirstFloor.ModernUI {
             }
 
             try {
-                ActionExtension.InvokeInMainThread(() => {
-                    OnCollectionChanged(sender, notify);
-                });
+                Dispatcher.Invoke(() => OnCollectionChanged(sender, notify));
             } catch (ArgumentOutOfRangeException ex) {
                 _compatible = true;
 
@@ -42,6 +38,9 @@ namespace FirstFloor.ModernUI {
                 Logging.Debug($"Old: {string.Join(", ", notify.OldItems.OfType<object>())}; new: {string.Join(", ", notify.NewItems.OfType<object>())}");
                 Logging.Debug(ex);
 
+                Refresh();
+            } catch (NotSupportedException ex) {
+                Logging.Warning(ex.Message);
                 Refresh();
             } catch (Exception ex) {
                 Logging.Warning(ex);

@@ -17,6 +17,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -638,7 +639,7 @@ namespace AcManager.Pages.Windows {
 
                     if (child is QuickSwitchSlider slider) {
                         var step = (slider.Maximum - slider.Minimum) / 6d;
-                        var position = (((slider.Value - slider.Minimum) / step - 1).Clamp(0, 4).Round(1d) +
+                        var position = (((slider.Value - slider.Minimum) / step - 1).Clamp(0, 4).Round() +
                                 (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1) + 5) % 5;
                         slider.Value = slider.Minimum + (position + 1) * step;
                         ShowQuickSwitchesPopup(slider.IconData, $@"{slider.Content}: {slider.DisplayValue}", child.ToolTip);
@@ -747,8 +748,50 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private IDisposable _previousPresence;
+
+        // In general, that information should be provided by webpages directly, but just in case some of
+        // them will fail to do that, here are some lower-priority messages.
+        private void UpdateDiscordRichPresence() {
+            _previousPresence?.Dispose();
+
+            string details;
+            switch (CurrentGroupKey) {
+                case "drive":
+                    details = "Preparing to a race";
+                    break;
+                case "lapTimes":
+                    details = "Lap times";
+                    break;
+                case "stats":
+                    details = "Stats";
+                    break;
+                case "media":
+                    details = "Replays";
+                    break;
+                case "content":
+                    details = "Sorting out content";
+                    break;
+                case "server":
+                    details = "Servers settings";
+                    break;
+                case "settings":
+                    details = "In settings";
+                    break;
+                case "about":
+                    details = "Reading documentation";
+                    break;
+                default:
+                    details = "Somewhere in menus";
+                    break;
+            }
+
+            _previousPresence = new DiscordRichPresence(0, "Preparing to race", details);
+        }
+
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
             MakeSureOnlineIsReady(e.Source);
+            UpdateDiscordRichPresence();
         }
 
         private void OnMainMenuInitialize(object sender, ModernMenu.InitializeEventArgs e) {
@@ -765,19 +808,19 @@ namespace AcManager.Pages.Windows {
             Logging.Debug(uri);
 
             if (uri.ToString().Contains("/Pages/AcSettings/")) {
-                SwitchGroup("settings");
+                CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
                 return true;
             }
 
             if (uri.ToString().Contains("/Pages/Settings/")) {
-                SwitchGroup("settings");
+                CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/Settings/SettingsPage.xaml?Uri={0}", uri));
                 return true;
             }
 
             if (uri.ToString().Contains("/Pages/About/ImportantTipsPage.xaml")) {
-                SwitchGroup("about");
+                CurrentGroupKey = "about";
                 NavigateTo(uri);
                 return true;
             }

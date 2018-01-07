@@ -17,6 +17,7 @@ using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -92,8 +93,9 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Open(TrackObject track) {
-            if (!(Application.Current?.MainWindow is MainWindow main) || Keyboard.Modifiers == ModifierKeys.Control ||
-                    SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (!(Application.Current?.MainWindow is MainWindow main)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {
                 main.OpenSubGroup("track skins", $"Skins for {track.DisplayNameWithoutCount}",

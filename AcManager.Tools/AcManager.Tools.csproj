@@ -235,6 +235,7 @@
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
+    <Compile Include="GameProperties\ExtraHotkeysRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\NationCodeProvider.cs" />
@@ -249,6 +250,8 @@
     <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelButtonCombined.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />

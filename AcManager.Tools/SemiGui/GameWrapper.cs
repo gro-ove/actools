@@ -256,10 +256,11 @@ namespace AcManager.Tools.SemiGui {
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {
+                        Started?.Invoke(null, new GameStartedArgs(properties, mode));
+
                         if (mode == GameMode.Race) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
-                            Started?.Invoke(null, new GameStartedArgs(properties));
-
+                            properties.SetAdditional(new ExtraHotkeysRaceHelper());
                             if (SettingsHolder.Drive.ContinueOnEscape) {
                                 properties.SetAdditional(new ContinueRaceHelper());
                             }

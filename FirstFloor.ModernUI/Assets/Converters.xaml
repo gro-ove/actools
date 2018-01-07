@@ -29,10 +29,7 @@
   <c:NullOrEmptyStringToVisibilityConverter x:Key="NullOrEmptyStringToVisibilityConverter" />
   <c:NullToBooleanConverter x:Key="NullToBooleanConverter" />
   <c:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-  <c:OrdinalizingConverter x:Key="OrdinalizingConverter" />
-  <c:OrdinalizingShortConverter x:Key="OrdinalizingShortConverter" />
   <c:PercentageConverter x:Key="PercentageConverter" />
-  <c:PluralizingConverter x:Key="PluralizingConverter" />
   <c:ReadableTimeSpanConverter x:Key="ReadableTimeSpanConverter" />
   <c:SliderRoundConverter x:Key="SliderRoundConverter" />
   <c:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />
@@ -41,10 +38,15 @@
   <c:ToLowerConverter x:Key="ToLowerConverter" />
   <c:ToSentenceConverter x:Key="ToSentenceConverter" />
   <c:ToThicknessConverter x:Key="ToThicknessConverter" />
-  <c:ToTitleConverter x:Key="ToTitleConverter" />
   <c:ToUpperConverter x:Key="ToUpperConverter" />
   <c:ToUpperSpecialConverter x:Key="ToUpperSpecialConverter" />
   <c:UriToCachedImageConverter x:Key="UriToCachedImageConverter" />
+
+  <c:ColonConverter x:Key="ColonConverter" />
+  <c:OrdinalizingConverter x:Key="OrdinalizingConverter" />
+  <c:OrdinalizingShortConverter x:Key="OrdinalizingShortConverter" />
+  <c:PluralizingConverter x:Key="PluralizingConverter" />
+  <c:ToTitleConverter x:Key="ToTitleConverter" />
 
   <c:AndConverter x:Key="AndConverter" />
   <c:OrConverter x:Key="OrConverter" />

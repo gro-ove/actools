@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {

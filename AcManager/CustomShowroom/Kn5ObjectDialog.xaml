@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.Kn5ObjectDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" Title="Car texture"
+    xmlns:customShowroom="clr-namespace:AcManager.CustomShowroom" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" Title="Mesh object"
     d:DataContext="{d:DesignInstance customShowroom:Kn5ObjectDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" WindowStartupLocation="CenterScreen"
     MaxWidth="999" Topmost="False">
   <mui:ModernDialog.Resources>

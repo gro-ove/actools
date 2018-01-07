@@ -167,11 +167,13 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        private static readonly TimeSpan StateChangeDelay = TimeSpan.FromMilliseconds(300);
+
         private AsyncCommand _deleteDelayCommand;
 
         public AsyncCommand DeleteDelayCommand => _deleteDelayCommand ?? (_deleteDelayCommand = new AsyncCommand(async () => {
             IsDeleting = true;
-            await Task.Delay(300);
+            await Task.Delay(StateChangeDelay);
             IsDeleted = true;
         }, () => State == ContentInstallationEntryState.Finished && !IsDeleted));
 
@@ -190,7 +192,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public AsyncCommand ConfirmDelayCommand => _confirmDelayCommand ?? (_confirmDelayCommand = new AsyncCommand(async () => {
             IsConfirming = true;
-            await Task.Delay(300);
+            await Task.Delay(StateChangeDelay);
             ConfirmCommand.Execute();
         }));
 
@@ -209,7 +211,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public AsyncCommand CancelDelayCommand => _cancelDelayCommand ?? (_cancelDelayCommand = new AsyncCommand(async () => {
             IsCancelling = true;
-            await Task.Delay(300);
+            await Task.Delay(StateChangeDelay);
             CancelCommand.Execute();
         }));
         #endregion

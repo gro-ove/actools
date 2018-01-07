@@ -662,8 +662,4 @@
     <value>{0}: </value>
     <comment>Don’t forget about space at the end! If needed, of course.</comment>
   </data>
-  <data name="Colon_Format" xml:space="preserve">
-    <value>{0}: {1}</value>
-    <comment>Don’t forget about space at the end! If needed, of course.</comment>
-  </data>
 </root>

@@ -178,7 +178,10 @@
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
             <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" />
+            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top"
+                Visibility="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch},
+                    Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"

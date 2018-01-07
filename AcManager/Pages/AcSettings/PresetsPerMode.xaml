@@ -114,7 +114,7 @@
   <DockPanel Style="{StaticResource ContentRootWithPadding}">
     <c:MessageBlock Margin="0 0 0 20" DockPanel.Dock="Top">
       <mui:BbCodeBlock>
-        <mui:BbCodeBlock.BbCode>You want CM to select specific video/controls/apps presets depending on which mode do you use? This is the place! All changes will be reverted automatically on the end of the race.[br][br]If you want, you can specify your own mode with Lua by modifying some Data files.</mui:BbCodeBlock.BbCode>
+        <mui:BbCodeBlock.BbCode>You want CM to select specific video/controls/apps presets depending on which mode you use? This is the place! All changes will be reverted automatically on the end of the race.[br][br]If you want, you can specify your own mode with Lua by modifying some Data files.</mui:BbCodeBlock.BbCode>
       </mui:BbCodeBlock>
     </c:MessageBlock>
 

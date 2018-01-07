@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -45,6 +46,8 @@ namespace AcManager.Tools.Objects {
             } else if (SelectedSkin == null) {
                 SelectedSkin = any;
             }
+
+            UpdateDisplayActiveSkins();
         }
 
         private void OnSkinsManagerCreated(object sender, AcObjectEventArgs<TrackSkinObject> args) {
@@ -108,12 +111,29 @@ namespace AcManager.Tools.Objects {
                         other.IsActive = false;
                     }
                     skin.IsActive = true;
-                    ApplySkins(GetEnabledSkins());
+                    ApplySkins(GetActiveSkins());
                 });
             }
         }
 
+        private void Try(Action action, ref int totalFailures, int attempts = 3) {
+            for (var i = 0; i < attempts; i++) {
+                try {
+                    action();
+                    break;
+                } catch (Exception e) {
+                    Logging.Warning(e.Message);
+                    if (i == attempts - 1 || ++totalFailures > 7) throw;
+                    Logging.Debug("Try again in 100 ms…");
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+
         private void ApplySkins(List<EnabledSkinEntry> enabledSkins) {
+            Logging.Debug("Applying track skins: " + enabledSkins.Select(x => x.Id).JoinToString("+"));
+
             var toInstallTemporary = new Dictionary<string, Tuple<double, string>>();
 
             void ScanDirectory(string subdirectory, double priority) {
@@ -145,10 +165,11 @@ namespace AcManager.Tools.Objects {
             var skinsCombinedFileName = Path.GetFileName(SkinsCombinedFilename);
             var filenames = Directory.GetFiles(directory).Where(x => !string.Equals(Path.GetFileName(x), skinsCombinedFileName,
                     StringComparison.OrdinalIgnoreCase)).ToArray();
+            var totalFailures = 0;
 
             if (filenames.Length == 0) {
                 foreach (var p in toInstall) {
-                    FileUtils.HardLinkOrCopy(p.Key, p.Value);
+                    Try(() => FileUtils.HardLinkOrCopy(p.Key, p.Value), ref totalFailures);
                 }
             } else {
                 var mountPoint = FileUtils.GetMountPoint(directory);
@@ -165,7 +186,7 @@ namespace AcManager.Tools.Objects {
                         if (existing.HardLinks.Any(x => FileUtils.ArePathsEqual(x, p.Key))) {
                             // Already correct version, do not touch
                         } else if (existing.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x), directory))) {
-                            File.Delete(existing.Filename);
+                            Try(() => File.Delete(existing.Filename), ref totalFailures);
                         } else {
                             recycle.Add(existing.Filename);
                         }
@@ -174,7 +195,7 @@ namespace AcManager.Tools.Objects {
 
                 foreach (var unnecessary in files.Where(x => toInstall.Keys.All(y => !FileUtils.ArePathsEqual(x.Filename, y)))) {
                     if (unnecessary.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x), directory))) {
-                        File.Delete(unnecessary.Filename);
+                        Try(() => File.Delete(unnecessary.Filename), ref totalFailures);
                     } else {
                         recycle.Add(unnecessary.Filename);
                     }
@@ -184,16 +205,16 @@ namespace AcManager.Tools.Objects {
 
                 // Copying new files
                 foreach (var p in toInstall.Where(x => !File.Exists(x.Value))) {
-                    FileUtils.HardLinkOrCopy(p.Key, p.Value, true);
+                    Try(() => FileUtils.HardLinkOrCopy(p.Key, p.Value, true), ref totalFailures);
                 }
             }
 
             // Done
             _skinsActiveIds = enabledSkins.Select(x => x.Id).ToList();
             if (_skinsActiveIds.Count != 0) {
-                File.WriteAllText(SkinsCombinedFilename, new JArray { _skinsActiveIds }.ToString(Formatting.Indented));
+                Try(() => File.WriteAllText(SkinsCombinedFilename, new JArray { _skinsActiveIds }.ToString(Formatting.Indented)), ref totalFailures);
             } else if (File.Exists(SkinsCombinedFilename)) {
-                File.Delete(SkinsCombinedFilename);
+                Try(() => File.Delete(SkinsCombinedFilename), ref totalFailures);
             }
         }
 
@@ -209,7 +230,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private List<EnabledSkinEntry> GetEnabledSkins() {
+        private List<EnabledSkinEntry> GetActiveSkins() {
             return SkinsManager.EnabledOnly.Where(x => x.IsActive)
                                .Select(x => new EnabledSkinEntry(x.Id, x.Location, x.Priority)).ToList();
         }
@@ -220,6 +241,13 @@ namespace AcManager.Tools.Objects {
                 return;
             }
 
+            try {
+                throw new Exception();
+            } catch (Exception e) {
+                Logging.Debug(e);
+            }
+
+            UpdateDisplayActiveSkins();
             _busyApplyingSkins.Task(async () => {
                 ApplyingSkins = true;
 
@@ -237,7 +265,7 @@ namespace AcManager.Tools.Objects {
                     _working = true;
                     do {
                         _again = false;
-                        var enabled = GetEnabledSkins();
+                        var enabled = GetActiveSkins();
                         await Task.Run(() => ApplySkins(enabled));
                     } while (_again);
                 } catch (Exception e) {
@@ -280,6 +308,22 @@ namespace AcManager.Tools.Objects {
 
         [NotNull]
         public AcEnabledOnlyCollection<TrackSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
+
+        private void UpdateDisplayActiveSkins() {
+            var v = SkinsManager.EnabledOnly.Where(x => x.IsActive).Select(x => x.DisplayName).JoinToReadableString();
+            DisplayActiveSkins = string.IsNullOrWhiteSpace(v) ? "No skins found" : v;
+        }
+
+        private string _displayActiveSkins;
+
+        public string DisplayActiveSkins {
+            get => _displayActiveSkins;
+            set {
+                if (Equals(value, _displayActiveSkins)) return;
+                _displayActiveSkins = value;
+                OnPropertyChanged();
+            }
+        }
 
         /* TODO: force sorting by ID! */
 

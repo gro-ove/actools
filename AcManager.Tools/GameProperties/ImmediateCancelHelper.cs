@@ -76,7 +76,12 @@ namespace AcManager.Tools.GameProperties {
             public void Dispose() {
                 // do not dispose _sharedCancellationTokenSource cause it’s shared
 
-                DisposeHelper.Dispose(ref _keyboard);
+                try {
+                    DisposeHelper.Dispose(ref _keyboard);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t remove events hook", e);
+                }
+
                 AcSharedMemory.Instance.Start -= OnStart;
             }
         }

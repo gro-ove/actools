@@ -17,10 +17,11 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
-        private static async Task<ArgumentHandleResult> ProgressRaceOnline(NameValueCollection p) {
+        private static async Task<ArgumentHandleResult> ProcessRaceOnline(NameValueCollection p) {
             /* required arguments */
             var ip = p.Get(@"ip");
             var port = FlexibleParser.TryParseInt(p.Get(@"port"));
@@ -122,29 +123,11 @@ namespace AcManager.Tools {
             }
         }
 
-        private static async Task<ArgumentHandleResult> ProgressRaceOnlineJoin(NameValueCollection p) {
-            /* required arguments */
-            var ip = p.Get(@"ip");
-            var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
-            var password = p.Get(@"plainPassword");
-            var encryptedPassword = p.Get(@"password");
-
-            if (string.IsNullOrWhiteSpace(ip)) {
-                throw new InformativeException("IP is missing");
-            }
-
-            if (!httpPort.HasValue) {
-                throw new InformativeException("HTTP port is missing or is in invalid format");
-            }
-
+        public static async Task JoinInvitation([NotNull] string ip, int port, [CanBeNull] string password) {
             OnlineManager.EnsureInitialized();
 
-            if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)) {
-                password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
-            }
-
             var list = OnlineManager.Instance.List;
-            var source = new FakeSource(ip, httpPort.Value);
+            var source = new FakeSource(ip, port);
             var wrapper = new OnlineSourceWrapper(list, source);
 
             ServerEntry server;
@@ -195,6 +178,28 @@ namespace AcManager.Tools {
 
             dlg.ShowDialog();
             await wrapper.ReloadAsync(true);
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessRaceOnlineJoin(NameValueCollection p) {
+            /* required arguments */
+            var ip = p.Get(@"ip");
+            var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
+            var password = p.Get(@"plainPassword");
+            var encryptedPassword = p.Get(@"password");
+
+            if (string.IsNullOrWhiteSpace(ip)) {
+                throw new InformativeException("IP is missing");
+            }
+
+            if (!httpPort.HasValue) {
+                throw new InformativeException("HTTP port is missing or is in invalid format");
+            }
+
+            if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)) {
+                password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
+            }
+
+            await JoinInvitation(ip, httpPort.Value, password);
             return ArgumentHandleResult.Successful;
         }
     }

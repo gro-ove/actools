@@ -5,6 +5,21 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// For internal use, to pass a command from Discord.
+        /// </summary>
+        DiscordCmd,
+
+        /// <summary>
+        /// Log much more information about Rich Presence integration. Example: --discord-verbose.
+        /// </summary>
+        DiscordVerbose,
+
+        /// <summary>
+        /// Client ID for Discord Rich Presence. Example: --discord-client-id=390000000000000000.
+        /// </summary>
+        DiscordClientId,
+
+        /// <summary>
         /// Period for reading controllers values, such as pressed buttons or changed values
         /// of axes. Default value: 16 ms.
         /// Example: --controls-update-period=00:00.050.

@@ -41,7 +41,7 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private void OnGameStarted(object sender, GameStartedArgs e) {
-            if (SettingsHolder.Drive.RhmIntegration && !NonCmInstanceRunned()) {
+            if (SettingsHolder.Drive.RhmIntegration && !NonCmInstanceRunned() && e.Mode == GameMode.Race) {
                 Active = true;
                 KeepRunning();
             }

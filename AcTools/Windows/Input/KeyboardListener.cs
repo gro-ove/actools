@@ -98,7 +98,7 @@ namespace AcTools.Windows.Input {
                 // Have to create that delegate to avoid it being sweeped by GC, I guess.
                 _hookProc = new User32.HookProc(KeyboardHookProc);
                 _hookHandle = User32.SetWindowsHookEx(User32.WH_KEYBOARD_LL, _hookProc,
-                        Kernel32.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName), 0);
+                        Kernel32.LoadLibrary("user32.dll"), 0);
                 if (_hookHandle == 0) {
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 }

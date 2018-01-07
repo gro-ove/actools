@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,17 +16,28 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
+using OxyPlot;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class ViewModel : SelectedAcObjectViewModel<PythonAppObject> {
+            [NotNull]
             public PythonAppConfigs Configs { get; }
+
+            [NotNull]
+            public IReadOnlyList<PythonAppConfigKeyValue> KeyValues { get; }
+
+            [CanBeNull]
+            public PythonAppConfigKeyValue IsWaitingForKey => KeyValues.FirstOrDefault(x => x.IsWaiting);
 
             public ViewModel([NotNull] PythonAppObject acObject) : base(acObject) {
                 IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
                 AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
                 Configs = acObject.GetAppConfigs();
+                KeyValues = Configs.SelectMany(x => x.Sections).SelectMany(x => x)
+                                   .OfType<PythonAppConfigKeyValue>().ToList();
             }
 
             private void OnPythonPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -39,7 +52,12 @@ namespace AcManager.Pages.Selected {
                 base.Unload();
             }
 
-            public PythonAppsManager Manager => PythonAppsManager.Instance;
+            private DelegateCommand<PythonAppConfigKeyValue> _toggleWaitingCommand;
+
+            public DelegateCommand<PythonAppConfigKeyValue> ToggleWaitingCommand
+                => _toggleWaitingCommand ?? (_toggleWaitingCommand = new DelegateCommand<PythonAppConfigKeyValue>(o => {
+                    o.IsWaiting = true;
+                }, o => o != null));
 
             private CommandBase _testCommand;
 
@@ -51,13 +69,54 @@ namespace AcManager.Pages.Selected {
             private bool _isActivated;
 
             public bool IsActivated {
-                get { return _isActivated; }
+                get => _isActivated;
                 set {
                     if (Equals(value, _isActivated)) return;
                     _isActivated = value;
                     OnPropertyChanged();
                     AcSettingsHolder.Python.SetActivated(SelectedObject.Id, value);
                 }
+            }
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
+            var key = (Keys)KeyInterop.VirtualKeyFromKey(e.Key);
+            PythonAppConfigKeyValue waiting = null;
+            foreach (var value in ((ViewModel)DataContext).KeyValues) {
+                value.IsPressed = key == value.Value;
+                if (!value.IsWaiting) continue;
+                if (waiting == null) {
+                    waiting = value;
+                } else {
+                    value.IsWaiting = false;
+                }
+            }
+
+            if (waiting == null) return;
+            switch (e.Key) {
+                case Key.Escape:
+                case Key.Back:
+                case Key.Enter:
+                    waiting.IsWaiting = false;
+                    e.Handled = true;
+                    break;
+
+                case Key.Delete:
+                    waiting.ClearCommand.Execute();
+                    e.Handled = true;
+                    break;
+
+                default:
+                    waiting.Value = (Keys)KeyInterop.VirtualKeyFromKey(e.Key);
+                    waiting.IsWaiting = false;
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        private void OnPreviewKeyUp(object sender, KeyEventArgs e) {
+            foreach (var value in ((ViewModel)DataContext).KeyValues) {
+                value.IsPressed = false;
             }
         }
 
@@ -109,7 +168,7 @@ namespace AcManager.Pages.Selected {
             });
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {}
+        private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnFileButtonClick(object sender, RoutedEventArgs e) {
             if (!(((FrameworkElement)sender).DataContext is PythonAppConfigFileValue entry)) return;
@@ -134,7 +193,7 @@ namespace AcManager.Pages.Selected {
                         Filter = entry.Filter ?? DialogFilterPiece.AllFiles.WinFilter,
                         InitialDirectory = directory,
                         FileName = Path.GetFileName(entry.Value) ?? ""
-                };
+                    };
 
                     if (dialog.ShowDialog() == true) {
                         entry.Value = dialog.FileName;

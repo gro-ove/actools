@@ -39,7 +39,7 @@ namespace AcManager.Tools.AcManagersNew {
         private bool _isLoaded;
 
         public bool IsScanned {
-            get { return _isScanned; }
+            get => _isScanned;
             protected set {
                 if (value == _isScanned) return;
                 _isScanned = value;
@@ -48,7 +48,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public bool IsLoaded {
-            get { return _isLoaded; }
+            get => _isLoaded;
             protected set {
                 if (value == _isLoaded) return;
                 _isLoaded = value;
@@ -216,11 +216,12 @@ namespace AcManager.Tools.AcManagersNew {
 
                 IsLoaded = true;
                 ListReady();
-
-                if (GetType() != typeof(CarSkinsManager)) {
-                    Logging.Write($"[{GetType().Name}] Loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms");
-                }
+                LogLoadingTime(start.Elapsed);
             }
+        }
+
+        protected virtual void LogLoadingTime(TimeSpan s) {
+            Logging.Write($"[{GetType().Name}] Loading finished: {WrappersList.Count} objects, {s.ToMillisecondsString()}");
         }
 
         protected void ResetLoading() {
@@ -230,7 +231,7 @@ namespace AcManager.Tools.AcManagersNew {
         private int _loadedCount;
 
         public int LoadedCount {
-            get { return _loadedCount; }
+            get => _loadedCount;
             set {
                 if (Equals(value, _loadedCount)) return;
                 _loadedCount = value;

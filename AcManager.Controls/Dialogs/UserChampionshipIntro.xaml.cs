@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Presentation;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Controls.Dialogs {
@@ -28,7 +29,14 @@ namespace AcManager.Controls.Dialogs {
             ExistingName = existingName;
             Title = UserChampionshipObject.Name;
             InitializeComponent();
+            Owner = null;
             Buttons = new Button[] { };
+
+            if (AppAppearanceManager.Instance.BlurImageViewerBackground) {
+                WindowStyle = WindowStyle.None;
+                AllowsTransparency = true;
+                BlurBackground = true;
+            }
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e) {

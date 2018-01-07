@@ -268,7 +268,7 @@ namespace AcManager.Pages.Dialogs {
             CarsManager.Instance.WrappersList.WrappedValueChanged -= OnListWrappedValueChanged;
         }
 
-        void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(CarObject.ParentId) && sender is CarObject car && SelectedCar != null) {
                 if (car.ParentId == SelectedCar.Id) {
                     UpdateTunableVersions();
@@ -276,7 +276,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        void OnListWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+        private void OnListWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
             if (e.NewValue is CarObject car && SelectedCar != null && car.ParentId == SelectedCar.Id) {
                 _previousTunableParent = null;
                 UpdateTunableVersions();

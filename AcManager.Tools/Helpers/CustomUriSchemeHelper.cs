@@ -19,7 +19,7 @@ namespace AcManager.Tools.Helpers {
         private const string KeyRegisteredLocation = "CustomUriSchemeHelper.RegisteredLocation";
         private const string KeyRegisteredVersion = "CustomUriSchemeHelper.RegisteredVersion";
 
-        private static void RegisterClass(string className, string title, bool urlProtocol, int iconId, bool isEnabled) {
+        private static void RegisterClass(string className, string title, bool urlProtocol, int iconId, bool isEnabled, string openCommand) {
             var path = $@"Software\Classes\{className}";
             if (!isEnabled) {
                 Registry.CurrentUser.DeleteSubKeyTree(path);
@@ -40,14 +40,14 @@ namespace AcManager.Tools.Helpers {
                 }
 
                 using (var commandKey = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                    commandKey?.SetValue("", $@"{MainExecutingFile.Location} ""%1""", RegistryValueKind.String);
+                    commandKey?.SetValue("", string.Format(openCommand, $@"""{MainExecutingFile.Location}"""), RegistryValueKind.String);
                 }
             }
         }
 
         private static void RegisterExtension(string ext, string description, bool isEnabled, int iconId) {
             var className = $@"{ClassName}{ext.ToLowerInvariant()}";
-            RegisterClass(className, description, false, iconId, isEnabled);
+            RegisterClass(className, description, false, iconId, isEnabled, @"{0} ""%1""");
 
             var path = @"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext;
             if (!isEnabled) {
@@ -79,8 +79,8 @@ namespace AcManager.Tools.Helpers {
                 var isEnabled = SettingsHolder.Common.IsRegistryEnabled;
                 var isFilesIntegrationEnabled = SettingsHolder.Common.IsRegistryFilesIntegrationEnabled;
 
-                if (SettingsHolder.Common.IsRegistryEnabled) {
-                    RegisterClass(ClassName, AppTitle, true, 0, isEnabled);
+                if (isEnabled) {
+                    RegisterClass(ClassName, AppTitle, true, 0, true, @"{0} ""%1""");
                     RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary, isFilesIntegrationEnabled, 1);
                     RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay, isFilesIntegrationEnabled, 2);
                 }
@@ -97,6 +97,14 @@ namespace AcManager.Tools.Helpers {
             if (!MainExecutingFile.IsInDevelopment && (OptionRegisterEachTime || ValuesStorage.GetString(KeyRegisteredLocation) != MainExecutingFile.Location
                     && ValuesStorage.GetString(KeyRegisteredVersion) != Version)) {
                 EnsureRegistered();
+            }
+        }
+
+        public static void RegisterDiscordClass(string discordAppId) {
+            try {
+                RegisterClass($"discord-{discordAppId}", AppTitle, true, 0, true, @"{0} ""--discord-cmd=%1""");
+            } catch (Exception e) {
+                Logging.Warning("Can’t register: " + e);
             }
         }
 

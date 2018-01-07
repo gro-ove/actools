@@ -23,6 +23,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -119,12 +120,13 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void Open([NotNull] CarObject car) {
-            if (Application.Current?.MainWindow is MainWindow main && Keyboard.Modifiers != ModifierKeys.Control &&
-                    !SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (!(Application.Current?.MainWindow is MainWindow main)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+                CarSkinsDialog.Show(car);
+            } else {
                 main.OpenSubGroup("skins", $"Skins for {car.DisplayName}",
                         UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id), FilterHints.CarSkins);
-            } else {
-                CarSkinsDialog.Show(car);
             }
         }
 

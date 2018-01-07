@@ -71,8 +71,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             e.CanExecute = true;
         }
 
-        public void SwitchGroup(string groupKey) {
-            _menu?.SwitchToGroupByKey(groupKey);
+        public string CurrentGroupKey {
+            get => _menu?.SelectedLinkGroup?.GroupKey;
+            set => _menu?.SwitchToGroupByKey(value);
         }
 
         public void NavigateTo(Uri uri) {

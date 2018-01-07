@@ -40,7 +40,6 @@ namespace AcManager.Tools.Objects {
         }
     }
 
-    [MoonSharpUserData]
     public sealed partial class CarObject : AcJsonObjectNew, IDraggable {
         public static int OptionSkinsLoadingConcurrency = 5;
 

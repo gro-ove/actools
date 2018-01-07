@@ -143,10 +143,10 @@ namespace AcManager.Tools {
                         return ArgumentHandleResult.Ignore; // TODO?
 
                     case "race/online":
-                        return await ProgressRaceOnline(custom.Params);
+                        return await ProcessRaceOnline(custom.Params);
 
                     case "race/online/join":
-                        return await ProgressRaceOnlineJoin(custom.Params);
+                        return await ProcessRaceOnlineJoin(custom.Params);
 
                     case "loadgooglespreadsheetslocale":
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));

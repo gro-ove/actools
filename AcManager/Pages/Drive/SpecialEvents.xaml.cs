@@ -8,6 +8,7 @@ using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.DiscordRpc;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters.Testers;
@@ -17,6 +18,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -30,6 +32,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Pages.Drive {
     public partial class SpecialEvents : ILoadableContent, IParametrizedUriContent {
         public static bool OptionScalableTiles = true;
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Challenges");
 
         private string _filter;
 
@@ -46,7 +49,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Initialize() {
-            DataContext = new ViewModel(_filter);
+            this.OnActualUnload(_discordPresence);
+            DataContext = new ViewModel(_filter, _discordPresence);
             InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
@@ -67,7 +71,9 @@ namespace AcManager.Pages.Drive {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public class ViewModel : NotifyPropertyChanged, IComparer {
+        private class ViewModel : NotifyPropertyChanged, IComparer {
+            private readonly DiscordRichPresence _discordPresence;
+
             public AcWrapperCollectionView List { get; }
 
             private SpecialEventObject _selected;
@@ -80,10 +86,13 @@ namespace AcManager.Pages.Drive {
                     _selected = value;
                     OnPropertyChanged();
                     ValuesStorage.Set(KeySelectedId, value?.Id);
+                    // _discordPresence.LargeImage = value == null ? null : new DiscordImage("", value.DisplayName);
+                    _discordPresence.Details = value == null ? "Challenges" : $"Challenges | {value.DisplayName}";
                 }
             }
 
-            public ViewModel(string filter) {
+            public ViewModel(string filter, DiscordRichPresence discordPresence) {
+                _discordPresence = discordPresence;
                 List = new AcWrapperCollectionView(SpecialEventsManager.Instance.WrappersAsIList);
                 List.CurrentChanged += OnCurrentChanged;
                 List.MoveCurrentToIdOrFirst(ValuesStorage.GetString(KeySelectedId));

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,14 +50,11 @@ namespace AcManager.Pages.Dialogs {
                 _progressStyles = GoodShuffle.Get(ExtraProgressRings.Styles.Keys);
             }
 
-            ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
-
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            Buttons = new[] {
-                CancelButton
-            };
+            ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
+            Buttons = new[] { CancelButton };
         }
 
         public GameDialog(Game.Result readyResult) {
@@ -80,7 +76,7 @@ namespace AcManager.Pages.Dialogs {
             if (IsResultCancel) {
                 try {
                     _cancellationSource.Cancel();
-                } catch (ObjectDisposedException) {}
+                } catch (ObjectDisposedException) { }
             }
         }
 
@@ -92,6 +88,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         private Game.StartProperties _properties;
+
         private GameMode _mode;
 
         public void Show(Game.StartProperties properties, GameMode mode) {
@@ -289,22 +286,25 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 var bestProgress = (from player in data.PlayerEntries
-                                where player.LapTimeProgress > 0.03
-                                orderby player.LapTimeProgress descending
-                                select player).FirstOrDefault();
+                                    where player.LapTimeProgress > 0.03
+                                    orderby player.LapTimeProgress descending
+                                    select player).FirstOrDefault();
                 var bestConsistent = (from player in data.PlayerEntries
-                                where player.LapTimeSpread < 0.02
-                                orderby player.LapTimeSpread descending
-                                select player).FirstOrDefault();
+                                      where player.LapTimeSpread < 0.02
+                                      orderby player.LapTimeSpread descending
+                                      select player).FirstOrDefault();
 
                 data.RemarkableNotes = new[] {
                     sessionBestLap == null ? null :
-                            new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber), null),
+                            new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber),
+                                    null),
                     new SessionFinishedData.RemarkableNote("[b]The Best Off-roader Award[/b] goes to ", (from player in data.PlayerEntries
-                                                                                  let cuts = (double)player.Laps.Sum(x => x.Cuts) / player.Laps.Length
-                                                                                  where cuts > 1.5
-                                                                                  orderby cuts descending
-                                                                                  select player).FirstOrDefault(), null),
+                                                                                                         let cuts =
+                                                                                                                 (double)player.Laps.Sum(x => x.Cuts)
+                                                                                                                         / player.Laps.Length
+                                                                                                         where cuts > 1.5
+                                                                                                         orderby cuts descending
+                                                                                                         select player).FirstOrDefault(), null),
                     new SessionFinishedData.RemarkableNote("[b]Remarkable progress[/b] shown by ", bestProgress, null),
                     new SessionFinishedData.RemarkableNote("[b]The most consistent[/b] is ", bestConsistent, null),
                 }.Where(x => x?.Player != null).ToList();
@@ -475,7 +475,7 @@ namespace AcManager.Pages.Dialogs {
             public int Wins { get; set; }
             public int Runs { get; set; }
             public TimeSpan BestReactionTime { get; set; }
-            public DragFinishedData() : base(ToolsStrings.Session_Drag) {}
+            public DragFinishedData() : base(ToolsStrings.Session_Drag) { }
         }
 
         public void OnResult(Game.Result result, ReplayHelper replayHelper) {
@@ -586,7 +586,7 @@ namespace AcManager.Pages.Dialogs {
                 var solution = whatsGoingOn?.Solution;
                 if (solution != null) {
                     fixButton = this.CreateFixItButton(solution);
-                    tryAgainButton = CreateExtraDialogButton($"{solution.DisplayName} And Try Again", new AsyncCommand(async () => {
+                    tryAgainButton = CreateExtraDialogButton($"{solution.DisplayName} and try again", new AsyncCommand(async () => {
                         await solution.ExecuteAsync();
                         CloseWithResult(MessageBoxResult.None);
                         GameWrapper.StartAsync(_properties).Forget();
@@ -721,16 +721,16 @@ namespace AcManager.Pages.Dialogs {
         private void OnPlayersTableLoaded(object sender, RoutedEventArgs e) {
             var columns = ((DataGrid)sender).Columns.TakeLast(3).ToList();
             this.AddWidthCondition(1000).Add(columns[1]).Add(columns[2])
-                    .Add(x => {
-                        columns[0].Width = x ? 100 : 140;
-                        columns[0].HeaderStyle = (Style)FindResource(x ?
-                                "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
-                        ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
-                                "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
-                        if (x) {
-                            FancyHints.GameDialogTableSize.MaskAsUnnecessary();
-                        }
-                    });
+                .Add(x => {
+                    columns[0].Width = x ? 100 : 140;
+                    columns[0].HeaderStyle = (Style)FindResource(x ?
+                            "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
+                    ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
+                            "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
+                    if (x) {
+                        FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                    }
+                });
 
             if (ActualWidth < 1000d) {
                 FancyHints.GameDialogTableSize.Trigger();

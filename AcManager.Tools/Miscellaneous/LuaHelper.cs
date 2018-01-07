@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using AcManager.Tools.Data;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -34,7 +36,11 @@ namespace AcManager.Tools.Miscellaneous {
         public static Script GetExtended() {
             try {
                 if (!_registered) {
-                    UserData.RegisterAssembly();
+                    UserData.RegisterType<CarObject>();
+                    UserData.RegisterType<TrackObject>();
+                    UserData.RegisterType<TrackExtraLayoutObject>();
+                    UserData.RegisterType<TrackObjectBase>();
+                    UserData.RegisterType<TagsCollection>();
                     _registered = true;
                 }
 
@@ -49,7 +55,7 @@ namespace AcManager.Tools.Miscellaneous {
                     ["equals"] = (Func<string, string, bool>)CompareStrings,
                     ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase
                 };
-                
+
                 state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType>();
                 return state;
             } catch (Exception e) {

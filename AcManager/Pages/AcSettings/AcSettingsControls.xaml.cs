@@ -51,7 +51,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            internal ViewModel() {}
+            internal ViewModel() { }
 
             private CommandBase _saveCommand;
 
@@ -71,7 +71,7 @@ namespace AcManager.Pages.AcSettings {
 
                 if (!FileUtils.Affects(ControlsSettings.UserPresetsDirectory, filename)) {
                     if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
-                                                 ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                            ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));
                     }
 
@@ -111,9 +111,7 @@ namespace AcManager.Pages.AcSettings {
             }
 
             public ControlsSettings Controls => AcSettingsHolder.Controls;
-
             public SystemSettings System => AcSettingsHolder.System;
-
             public FfPostProcessSettings FfPostProcess => AcSettingsHolder.FfPostProcess;
         }
 

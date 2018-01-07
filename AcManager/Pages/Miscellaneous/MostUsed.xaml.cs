@@ -93,11 +93,12 @@ namespace AcManager.Pages.Miscellaneous {
                        Distance = PlayerStatsManager.Instance.GetDistanceDrivenAtTrack(trackId) / 1e3
                    }
                    where track.Distance > 0d
-                   orderby track.Distance descending
                    group track by track.MainId
                    into layouts
-                   select new MostUsedTrack(index++, layouts.Key, layouts.Sum(x => x.Distance),
-                           layouts.Select((x, i) => new MostUsedTrackLayout(i, x.Id, x.Distance)));
+                   let item = new MostUsedTrack(index++, layouts.Key, layouts.Sum(x => x.Distance),
+                           layouts.Select((x, i) => new MostUsedTrackLayout(i, x.Id, x.Distance)))
+                   orderby item.TotalDistance descending
+                   select item;
         }
 
         public class MostUsedObject : NotifyPropertyChanged {

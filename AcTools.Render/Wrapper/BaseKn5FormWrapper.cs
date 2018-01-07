@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml.Schema;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific;
@@ -100,7 +101,7 @@ namespace AcTools.Render.Wrapper {
     public abstract class FormWrapperMouseBase : FormWrapperBase {
         public bool FormMoving;
 
-        public FormWrapperMouseBase(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
+        protected FormWrapperMouseBase(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
             Form.MouseMove += OnMouseMove;
             Form.MouseDown += OnMouseDown;
             Form.MouseUp += OnMouseUp;
@@ -196,7 +197,8 @@ namespace AcTools.Render.Wrapper {
                 Helper.CameraMousePan(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
             } else if (button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
                 Helper.CameraMouseRotate(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
-            } else if (button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
+            } else if (button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)
+                    && (!Kn5ObjectRenderer.UseFpsCamera || User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey))) {
                 Helper.CameraMouseZoom(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
             }
         }
@@ -207,9 +209,11 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected override void OnMouseWheel(float value) {
-            if (Kn5ObjectRenderer.UseFpsCamera || !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
-                Kn5ObjectRenderer.Camera.Zoom(value * (Kn5ObjectRenderer.UseFpsCamera ? -0.1f : -0.4f));
-            } else {
+            var useFpsCamera = Kn5ObjectRenderer.UseFpsCamera;
+            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
+            if (!(useFpsCamera ^ ctrlPressed)) {
+                Kn5ObjectRenderer.Camera.Zoom(value * (useFpsCamera ? -0.1f : -0.4f));
+            } else if (!useFpsCamera) {
                 var c = Kn5ObjectRenderer.CameraOrbit;
                 if (c == null) return;
                 Kn5ObjectRenderer.ChangeCameraFov(c.FovY - value * 0.05f);

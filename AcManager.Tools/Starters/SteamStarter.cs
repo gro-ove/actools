@@ -187,7 +187,6 @@ namespace AcManager.Tools.Starters {
         private static Assembly _assembly;
 
         private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args) {
-            Logging.Debug(new AssemblyName(args.Name).Name);
             return new AssemblyName(args.Name).Name == "Steamworks.NET"
                     ? (_assembly ?? (_assembly = Assembly.LoadFrom(Path.Combine(_dllsPath, "Steamworks.NET.dll")))) : null;
         }

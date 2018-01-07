@@ -20,7 +20,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
-    public abstract class DpiAwareWindow : Window {
+    public abstract partial class DpiAwareWindow : Window {
         public static event EventHandler NewWindowCreated;
         public static event EventHandler NewWindowOpened;
 
@@ -166,6 +166,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetDpiMultiplier();
             UpdateSizeLimits();
             LoadLocationAndSize();
+            SetBackgroundBlurIfNeeded();
         }
 
         public static readonly DependencyPropertyKey IconPathThicknessPropertyKey = DependencyProperty.RegisterReadOnly(nameof(IconPathThickness), typeof(double),
@@ -319,7 +320,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private readonly Busy _busy = new Busy();
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
-            if (msg != NativeMethods.WM_DPICHANGED || _source?.CompositionTarget == null) {
+            if (msg != NativeMethods.WmDpiChanged || _source?.CompositionTarget == null) {
                 return IntPtr.Zero;
             }
 
@@ -421,11 +422,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             // get the current DPI of the monitor of the window
-            var monitor = NativeMethods.MonitorFromWindow(_source.Handle, NativeMethods.MONITOR_DEFAULTTONEAREST);
+            var monitor = NativeMethods.MonitorFromWindow(_source.Handle, NativeMethods.MonitorDefaultToNearest);
 
             uint xDpi = 96;
             uint yDpi = 96;
-            if (NativeMethods.GetDpiForMonitor(monitor, (int)MonitorDpiType.EffectiveDpi, ref xDpi, ref yDpi) != NativeMethods.S_OK) {
+            if (NativeMethods.GetDpiForMonitor(monitor, (int)MonitorDpiType.EffectiveDpi, ref xDpi, ref yDpi) != NativeMethods.SOk) {
                 xDpi = 96;
                 yDpi = 96;
             }

@@ -158,11 +158,11 @@
         </c:MessageBlock>
 
         <!-- Real Head Motion -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
-          <Run Text="Real Head Motion:" />
-          <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
-                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink> -->
-        </TextBlock>
+        <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}">
+          <TextBlock Text="Real Head Motion:" Style="{StaticResource Heading2}" />
+          <Button Style="{StaticResource MoreDetailsSuperscript}"
+              CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/" />
+        </DockPanel>
 
         <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
           <Label Content="RHM integration" />

@@ -4,7 +4,7 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_ContentManager}" ShowInTaskbar="True"
     WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
-    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200" ButtonsRowContentAlignment="Left">
+    d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200" ButtonsRowContentAlignment="Left" WindowStyle="None">
   <mui:ModernDialog.ButtonsRowContent>
     <Button Content="Install recommended plugins" Command="{Binding InstallRecommendedCommand, Source={x:Static t:PluginsManager.Instance}}" />
   </mui:ModernDialog.ButtonsRowContent>

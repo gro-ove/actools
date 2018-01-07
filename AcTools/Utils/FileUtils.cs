@@ -624,13 +624,13 @@ namespace AcTools.Utils {
             return sb.ToString();
         }
 
-        [CanBeNull]
+        [NotNull]
         public static string[] GetFileSiblingHardLinks([NotNull] string filename, [NotNull] string mountPoint) {
             var result = new List<string>();
             uint stringLength = 256;
             var sb = new StringBuilder((int)stringLength);
             var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
-            if (findHandle.ToInt32() == -1) return null;
+            if (findHandle.ToInt32() == -1) return new string[0];
 
             do {
                 result.Add(mountPoint + sb.ToString().Substring(1));

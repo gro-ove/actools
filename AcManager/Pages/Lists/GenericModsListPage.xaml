@@ -44,7 +44,7 @@
               <TextBlock Text="Create it" VerticalAlignment="Center" Margin="4 0 0 0" />
             </DockPanel>
           </Button>
-          <Button Padding="8 3 8 5" Command="mui:LinkCommands.NavigateMainWindow" CommandParameter="/Pages/Settings/SettingsGenericMods.xaml">
+          <Button Padding="8 3 8 5" Command="mui:LinkCommands.NavigateLinkMainWindow" CommandParameter="/Pages/Settings/SettingsGenericMods.xaml">
             <DockPanel>
               <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource GearIconData}"
                   DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />

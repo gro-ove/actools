@@ -50,7 +50,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="dr8008, /u/FolkSong, MadMat, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Zkirtaem." />
+            BbCode="dr8008, /u/FolkSong, MadMat, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, Zkirtaem." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas for animations:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"

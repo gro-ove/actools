@@ -42,6 +42,11 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
+        public static string GetCfgControlsFilename() {
+            return Path.Combine(GetDocumentsCfgDirectory(), "controls.ini");
+        }
+
+        [NotNull, Pure]
         public static string GetDocumentsScreensDirectory() {
             return Path.Combine(GetDocumentsDirectory(), "screens");
         }

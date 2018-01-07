@@ -249,6 +249,7 @@
       <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
+    <Compile Include="DiscordHandler.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="LocaleHelper.cs" />
     <Compile Include="PackedHelper.cs" />
@@ -279,11 +280,20 @@
     <Compile Include="Pages\AcSettings\AcSettingsControls.xaml.cs">
       <DependentUpon>AcSettingsControls.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsControls_Keyboard_Buttons.xaml.cs">
+      <DependentUpon>AcSettingsControls_Keyboard_Buttons.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Keyboard.xaml.cs">
       <DependentUpon>AcSettingsControls_Keyboard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel_System.xaml.cs">
+      <DependentUpon>AcSettingsControls_Wheel_System.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsControls_System.xaml.cs">
+      <DependentUpon>AcSettingsControls_System.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel_ForceFeedback.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel_ForceFeedback.xaml</DependentUpon>
@@ -327,6 +337,9 @@
     <Compile Include="Pages\ContentTools\ContentTool.cs" />
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\DiscordJoinRequestDialog.xaml.cs">
+      <DependentUpon>DiscordJoinRequestDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\BookingDialog.xaml.cs">
       <DependentUpon>BookingDialog.xaml</DependentUpon>
@@ -621,6 +634,7 @@
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
     <Compile Include="Tools\EmojiProvider.cs" />
+    <Compile Include="Tools\GameDiscordPresence.cs" />
     <Compile Include="Tools\GameSessionNameProvider.cs" />
     <Compile Include="Tools\LargeFileUploaderParams.cs" />
     <Compile Include="Tools\LiveryIconEditor.cs" />
@@ -805,13 +819,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\AcSettings\AcSettingsControls_Keyboard_Buttons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\AcSettings\AcSettingsControls_Keyboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsControls_Wheel_System.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsControls_Wheel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsControls_System.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsControls_Wheel_ForceFeedback.xaml">
       <SubType>Designer</SubType>
@@ -876,6 +902,10 @@
     <Page Include="Pages\Dialogs\AssistsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\DiscordJoinRequestDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\BookingDialog.xaml">
       <SubType>Designer</SubType>
@@ -1639,6 +1669,10 @@
     <ProjectReference Include="..\AcManager.ContentRepair\AcManager.ContentRepair.csproj">
       <Project>{cc98a959-9317-4c44-a2af-4361f1ba167c}</Project>
       <Name>AcManager.ContentRepair</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.DiscordRpc\AcManager.DiscordRpc.csproj">
+      <Project>{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}</Project>
+      <Name>AcManager.DiscordRpc</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcManager.LargeFilesSharing\AcManager.LargeFilesSharing.csproj">
       <Project>{fb438f1b-be94-494a-bd40-b6c08f0a5598}</Project>

@@ -20,6 +20,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -167,8 +168,10 @@ namespace AcManager.Pages.Lists {
         private static int _remoteLinksStatus;
 
         public static void Open([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
-            if (forceNewWindow || Keyboard.Modifiers == ModifierKeys.Control || !(Application.Current?.MainWindow is MainWindow main) || !main.IsActive ||
-                    SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (forceNewWindow
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || !(Application.Current?.MainWindow is MainWindow main) || !main.IsActive
+                    || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car, forceRemoteSource);
                 return;
             }

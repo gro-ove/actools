@@ -54,7 +54,7 @@ namespace AcManager.Tools.Objects {
         protected override void ClearData() {
             base.ClearData();
             Priority = 0;
-            Categories.Clear();
+            Categories = new TagsCollection();
         }
 
         public override void Reload() {

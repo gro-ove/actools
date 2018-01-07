@@ -763,13 +763,17 @@ namespace AcManager.Controls.ViewModels {
 
                 NonfilteredList.ReplaceEverythingBy(candidates);
             } catch (SyntaxErrorException e) {
+                Logging.Warning(e);
                 ErrorMessage = string.Format(ToolsStrings.Common_SyntaxErrorFormat, e.Message);
                 NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } catch (ScriptRuntimeException e) {
+                Logging.Warning(e);
                 ErrorMessage = e.Message;
             } catch (InformativeException e) when (e.SolutionCommentary == null) {
+                Logging.Warning(e);
                 ErrorMessage = e.Message;
             } catch (Exception e) {
+                Logging.Warning(e);
                 ErrorMessage = e.Message;
                 NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } finally {

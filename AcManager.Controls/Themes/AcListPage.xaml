@@ -238,7 +238,7 @@
                               Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z" />
                           <TextBlock x:Name="PART_BatchBlock_RunButton_Text" VerticalAlignment="Center" Margin="4 0 0 0">
                             <TextBlock.Text>
-                              <MultiBinding StringFormat="{}{0}: {1}">
+                              <MultiBinding StringFormat="{x:Static mui:ColonConverter.FormatBoth}">
                                 <Binding Path="SelectedBatchAction.DisplayApply" TargetNullValue="Run" RelativeSource="{RelativeSource TemplatedParent}" />
                                 <Binding Path="SelectedAmount" RelativeSource="{RelativeSource TemplatedParent}" />
                               </MultiBinding>

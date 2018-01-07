@@ -28,7 +28,8 @@
         <TextBlock Style="{StaticResource Small}" HorizontalAlignment="Left" Margin="4"
             Text="{Binding WheelHShifterDevice.DisplayName, StringFormat={x:Static g:AppStrings.Controls_DeviceFormat}, FallbackValue=?}"
             FontStyle="{Binding WheelHShifterDevice.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
-        <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="4 0 4 4" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
+        <ItemsControl x:Name="HShifterButtons" ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="4 0 4 4"
+            ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <mui:UniformGridWithOrientation Orientation="Vertical" Rows="4" />
@@ -43,32 +44,41 @@
         <Slider Minimum="0" Maximum="250" Value="{Binding DebouncingInterval}" TickFrequency="25" TickPlacement="BottomRight" />
       </DockPanel>
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_BrakeBalance}" />
-      <ItemsControl ItemsSource="{Binding WheelCarBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+      <mui:SpacingUniformGrid x:Name="MainGrid" VerticalStackMode="True">
+        <StackPanel>
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Turbo}" />
-      <ItemsControl ItemsSource="{Binding WheelCarTurboButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_BrakeBalance}" />
+          <ItemsControl ItemsSource="{Binding WheelCarBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_TractionControl}" />
-      <ItemsControl ItemsSource="{Binding WheelCarTractionControlButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Turbo}" />
+          <ItemsControl ItemsSource="{Binding WheelCarTurboButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Abs}" />
-      <ItemsControl ItemsSource="{Binding WheelCarAbsButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_TractionControl}" />
+          <ItemsControl ItemsSource="{Binding WheelCarTractionControlButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_EngineBrake}" />
-      <ItemsControl ItemsSource="{Binding WheelCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Abs}" />
+          <ItemsControl ItemsSource="{Binding WheelCarAbsButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_MguK}" />
-      <ItemsControl ItemsSource="{Binding WheelCarMgukButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_EngineBrake}" />
+          <ItemsControl ItemsSource="{Binding WheelCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Miscellaneous}" />
-      <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Gestures}" />
+          <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_View}" />
-      <ItemsControl ItemsSource="{Binding WheelViewButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+        </StackPanel>
+        <StackPanel>
 
-      <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Gestures}" />
-      <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_MguK}" />
+          <ItemsControl ItemsSource="{Binding WheelCarMgukButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Miscellaneous}" />
+          <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_View}" />
+          <ItemsControl ItemsSource="{Binding WheelViewButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+        </StackPanel>
+      </mui:SpacingUniformGrid>
     </StackPanel>
   </ScrollViewer>
 </UserControl>

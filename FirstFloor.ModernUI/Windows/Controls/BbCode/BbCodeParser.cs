@@ -262,16 +262,23 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             toolTip = true;
 
                             if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _)) {
-                                url = new Uri(temporary.OriginalString);
-                                if (double.TryParse(parameter, out maxSize)) {
-                                    expand = true;
-                                } else {
+                                try {
+                                    url = new Uri(temporary.OriginalString);
+                                    if (double.TryParse(parameter, out maxSize)) {
+                                        expand = true;
+                                    } else {
+                                        maxSize = double.NaN;
+                                        expand = false;
+                                    }
+
+                                    cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
+                                            _imageCache ?? (_imageCache = new InlineImageCache(BbCodeBlock.OptionImageCacheDirectory));
+                                } catch {
+                                    url = null;
                                     maxSize = double.NaN;
                                     expand = false;
+                                    cache = null;
                                 }
-
-                                cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
-                                        _imageCache ?? (_imageCache = new InlineImageCache(BbCodeBlock.OptionImageCacheDirectory));
                             } else {
                                 url = null;
                                 maxSize = double.NaN;

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
@@ -25,14 +26,11 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = AcSettingsHolder.Controls.GetKeyboardInputButton(section.GetInt("KEY", -1));
         }
 
-        [DllImport("user32.dll")]
-        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
         // FOR GOD’S SAKE KUNOS!
-        private static bool CheckValue(int value) {
+        protected static bool CheckValue(int value) {
             try {
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                Convert.ToChar(MapVirtualKey((uint)value, 2U));
+                Convert.ToChar(User32.MapVirtualKey((uint)value, 2U));
                 return true;
             } catch (Exception) {
                 return false;

@@ -19,16 +19,18 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public sealed override string DisplayName { get; set; }
 
-        private bool _waiting;
+        private bool _isWaiting;
 
-        public bool Waiting {
-            get => _waiting;
+        public bool IsWaiting {
+            get => _isWaiting;
             set {
-                if (Equals(value, _waiting)) return;
-                _waiting = value;
+                if (Equals(value, _isWaiting)) return;
+                _isWaiting = value;
                 OnPropertyChanged();
             }
         }
+
+        public virtual EntryLayer Layer => EntryLayer.Basic;
 
         [CanBeNull]
         private T _input;
@@ -42,14 +44,14 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 }
 
                 if (Equals(value, _input)) {
-                    if (Waiting) Waiting = false;
+                    if (IsWaiting) IsWaiting = false;
                     return;
                 }
 
                 OnInputChanged(_input, value);
 
                 _input = value;
-                Waiting = false;
+                IsWaiting = false;
                 OnPropertyChanged();
 
                 _clearCommand?.RaiseCanExecuteChanged();
@@ -63,7 +65,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         public abstract void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices);
 
         public void Clear() {
-            Waiting = false;
+            IsWaiting = false;
             Input = null;
         }
 

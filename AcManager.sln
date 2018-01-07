@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager", "AcManager\AcManager.csproj", "{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}"
 EndProject
@@ -53,12 +53,14 @@ EndProject
 # EndProject
 # Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.NeuralTyres.Tests", "AcTools.NeuralTyres.Tests\AcTools.NeuralTyres.Tests.csproj", "{C098567B-C6FD-45AE-AE3F-85DE42F18F96}"
 # EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.DiscordRpc", "AcManager.DiscordRpc\AcManager.DiscordRpc.csproj", "{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
 		Debug|x64 = Debug|x64
-		Release|x86 = Release|x86
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Debug|x64.ActiveCfg = Debug|x64
@@ -251,11 +253,20 @@ Global
 		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x64.Build.0 = Release|x64
 		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.ActiveCfg = Release|x86
 		# {C098567B-C6FD-45AE-AE3F-85DE42F18F96}.Release|x86.Build.0 = Release|x86
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Debug|x64.ActiveCfg = Debug|x64
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Debug|x64.Build.0 = Debug|x64
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Debug|x86.ActiveCfg = Debug|x86
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Debug|x86.Build.0 = Debug|x86
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x64.ActiveCfg = Release|x64
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x64.Build.0 = Release|x64
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x86.ActiveCfg = Release|x86
+		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6414BBD0-671D-45D3-99B4-17943FB2FEB0}
 		RESX_SortFileContentOnSave = False
 	EndGlobalSection
 EndGlobal

@@ -82,15 +82,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return changed;
         }
 
-        public static bool SetBlurredObjects([NotNull] IRenderableObject parent, CarData.BlurredObject[] blurredObjects, float speed) {
-            var c = parent as Kn5RenderableCar;
-            var getDummyByName = c != null ? (Func<string, RenderableList>)c.GetDummyByName :
+        public static bool SetBlurredObjects([NotNull] IRenderableObject parent, [NotNull] CarData.BlurredObject[] blurredObjects, float speed) {
+            var getDummyByName = parent is Kn5RenderableCar c ? (Func<string, RenderableList>)c.GetDummyByName :
                 ((RenderableList)parent).GetDummyByName;
 
             var changed = false;
             foreach (var o in CarData.BlurredObject.GetNamesToToggle(blurredObjects, speed)) {
                 var node = getDummyByName(o.Item1);
-                if (node.IsEnabled != o.Item2) {
+                if (node != null && node.IsEnabled != o.Item2) {
                     node.IsEnabled = o.Item2;
                     changed = true;
                 }

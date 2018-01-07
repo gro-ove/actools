@@ -15,6 +15,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,7 +38,8 @@ using System.IO.Compression;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum ImageCropMode {
-        Absolute, Relative
+        Absolute,
+        Relative
     }
 
     public interface ICancellable {
@@ -72,7 +74,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Set true to immediately move decoded image to UI thread from non-UI one.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
-
         public static bool OptionDisplayImmediate = false;
 
         /// <summary>
@@ -160,9 +161,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Properties
         public static readonly DependencyProperty ShowBrokenProperty = DependencyProperty.Register(nameof(ShowBroken), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
-                    ((BetterImage)o)._showBroken = (bool)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => { ((BetterImage)o)._showBroken = (bool)e.NewValue; }));
 
         private bool _showBroken = true;
 
@@ -172,9 +171,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty HideBrokenProperty = DependencyProperty.Register(nameof(HideBroken), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(false, (o, e) => {
-                    ((BetterImage)o)._hideBroken = (bool)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(false, (o, e) => { ((BetterImage)o)._hideBroken = (bool)e.NewValue; }));
 
         private bool _hideBroken;
 
@@ -184,9 +181,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty ClearOnChangeProperty = DependencyProperty.Register(nameof(ClearOnChange), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(false, (o, e) => {
-                    ((BetterImage)o)._clearOnChange = (bool)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(false, (o, e) => { ((BetterImage)o)._clearOnChange = (bool)e.NewValue; }));
 
         private bool _clearOnChange;
 
@@ -196,9 +191,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty DelayedCreationProperty = DependencyProperty.Register(nameof(DelayedCreation), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
-                    ((BetterImage)o)._delayedCreation = (bool)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => { ((BetterImage)o)._delayedCreation = (bool)e.NewValue; }));
 
         private bool _delayedCreation = true;
 
@@ -208,9 +201,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(nameof(DecodeHeight), typeof(int),
-                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
-                    ((BetterImage)o)._decodeHeight = (int)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => { ((BetterImage)o)._decodeHeight = (int)e.NewValue; }));
 
         private int _decodeHeight = -1;
 
@@ -227,9 +218,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// if you want to disable this behavior and force full-size decoding.
         /// </summary>
         public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(DecodeWidth), typeof(int),
-                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
-                    ((BetterImage)o)._decodeWidth = (int)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => { ((BetterImage)o)._decodeWidth = (int)e.NewValue; }));
 
         private int _decodeWidth = -1;
 
@@ -239,9 +228,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty AsyncDecodeProperty = DependencyProperty.Register(nameof(AsyncDecode), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
-                    ((BetterImage)o)._asyncDecode = (bool)e.NewValue;
-                }));
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => { ((BetterImage)o)._asyncDecode = (bool)e.NewValue; }));
 
         private bool _asyncDecode = true;
 
@@ -251,9 +238,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch),
-                typeof(BetterImage), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
-                    ((BetterImage)o)._stretch = (Stretch)e.NewValue;
-                }));
+                typeof(BetterImage),
+                new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                        (o, e) => { ((BetterImage)o)._stretch = (Stretch)e.NewValue; }));
 
         private Stretch _stretch = Stretch.Uniform;
 
@@ -263,9 +250,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty StretchDirectionProperty = DependencyProperty.Register(nameof(StretchDirection), typeof(StretchDirection),
-                typeof(BetterImage), new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
-                    ((BetterImage)o)._stretchDirection = (StretchDirection)e.NewValue;
-                }));
+                typeof(BetterImage),
+                new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                        (o, e) => { ((BetterImage)o)._stretchDirection = (StretchDirection)e.NewValue; }));
 
         private StretchDirection _stretchDirection = StretchDirection.Both;
 
@@ -354,9 +341,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(CropUnits), typeof(ImageCropMode),
-                typeof(BetterImage), new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
-                    ((BetterImage)o)._cropUnits = (ImageCropMode)e.NewValue;
-                }));
+                typeof(BetterImage),
+                new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                        (o, e) => { ((BetterImage)o)._cropUnits = (ImageCropMode)e.NewValue; }));
 
         private ImageCropMode _cropUnits = ImageCropMode.Relative;
 
@@ -366,9 +353,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty CropTransparentAreasProperty = DependencyProperty.Register(nameof(CropTransparentAreas), typeof(bool),
-                typeof(BetterImage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
-                    ((BetterImage)o)._cropTransparentAreas = (bool)e.NewValue;
-                }));
+                typeof(BetterImage),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure,
+                        (o, e) => { ((BetterImage)o)._cropTransparentAreas = (bool)e.NewValue; }));
 
         private bool _cropTransparentAreas;
 
@@ -432,7 +419,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
                 fileNameBuilder.Append(BitConverter.ToString(hash).Replace(@"-", "").ToLower());
                 if (Path.HasExtension(canonicalUrl)) {
-                    fileNameBuilder.Append(Path.GetExtension(canonicalUrl));
+                    fileNameBuilder.Append(Regex.Match(Path.GetExtension(canonicalUrl), @"^\.[-_a-zA-Z0-9]+").Value);
                 }
             }
 
@@ -491,6 +478,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var cache = GetCachedFilename(uri);
+
+#if DEBUG
+            Logging.Debug(uri);
+            Logging.Debug(cache);
+#endif
+
             var cacheFile = cache == null ? null : new FileInfo(cache);
             if (cacheFile?.Exists == true) {
                 httpRequest.IfModifiedSince = cacheFile.LastWriteTime;
@@ -608,7 +601,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             try {
 #if ZIP_SUPPORT
-                // Loading from ZIP file
+        // Loading from ZIP file
                 string zipFilename, entryName;
                 if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
                     using (var zip = ZipFile.OpenRead(zipFilename)) {
@@ -653,7 +646,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             try {
 #if ZIP_SUPPORT
-                // Loading from ZIP file
+        // Loading from ZIP file
                 string zipFilename, entryName;
                 if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
                     using (var zip = ZipFile.OpenRead(zipFilename)) {
@@ -815,8 +808,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var app = Application.Current;
             if (app == null) return;
             foreach (var image in app.Windows.OfType<Window>()
-                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
+                                     .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
+                                     .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
 #endif
@@ -975,11 +968,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (Filename.StartsWith("http://") || Filename.StartsWith("https://")) {
-                LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(v => {
-                    ActionExtension.InvokeInMainThread(() => {
-                        SetCurrent(v.IsCompleted ? v.Result : BitmapEntry.Empty);
-                    });
-                });
+                LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(
+                        v => { ActionExtension.InvokeInMainThread(() => { SetCurrent(v.IsCompleted ? v.Result : BitmapEntry.Empty); }); });
                 return true;
             }
 
@@ -1217,7 +1207,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private WeakReference<ImageSource> _lastCropMaskRef;
         private Rect? _lastCropMaskRect;
 
-        private Rect? FindCropMask(ImageSource img){
+        private Rect? FindCropMask(ImageSource img) {
             if (_lastCropMaskRef != null && _lastCropMaskRef.TryGetTarget(out var v) && ReferenceEquals(v, img)) {
                 return _lastCropMaskRect;
             }
@@ -1392,4 +1382,3 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
     }
 }
-

@@ -1,50 +1,49 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsLapTimes" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsLapTimes+ViewModel}">
-    <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-    </UserControl.Resources>
-    <ScrollViewer mui:SaveScroll.Key="SettingsLapTimes">
-        <StackPanel Style="{StaticResource SettingsPanel}">
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
-                <TextBlock.Text>Sources:</TextBlock.Text>
-            </TextBlock>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance settings:SettingsLapTimes+ViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="SettingsLapTimes">
+    <StackPanel Style="{StaticResource SettingsPanel}">
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
+        <TextBlock.Text>Sources:</TextBlock.Text>
+      </TextBlock>
 
-            <ItemsControl ItemsSource="{Binding Sources, Source={x:Static t:LapTimesManager.Instance}}" Margin="0 -12 0 0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="t:LapTimesSource">
-                        <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
-                            <DockPanel Margin="0 -12 0 0">
-                                <!--name-->
-                                <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32" DockPanel.Dock="Top" Margin="0 0 0 2">
-                                    <mui:ReferenceSwitch.Null>
-                                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
-                                    </mui:ReferenceSwitch.Null>
-                                    <mui:ReferenceSwitch.NonNull>
-                                        <TextBlock VerticalAlignment="Bottom">
-                                            <Run Text="{Binding DisplayName}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
-                                                    BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
-                                                    CommandParameter="{Binding DetailsUrl}">[?]</Hyperlink>
-                                        </TextBlock>
-                                    </mui:ReferenceSwitch.NonNull>
-                                </mui:ReferenceSwitch>
+      <ItemsControl ItemsSource="{Binding Sources, Source={x:Static t:LapTimesManager.Instance}}" Margin="0 -12 0 0">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="t:LapTimesSource">
+            <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
+              <DockPanel Margin="0 -12 0 0">
+                <!--name-->
+                <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32" DockPanel.Dock="Top" Margin="0 0 0 2">
+                  <mui:ReferenceSwitch.Null>
+                    <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
+                  </mui:ReferenceSwitch.Null>
+                  <mui:ReferenceSwitch.NonNull>
+                    <DockPanel VerticalAlignment="Bottom" Style="{x:Null}">
+                      <TextBlock Text="{Binding DisplayName}" />
+                      <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="{Binding DetailsUrl}" />
+                    </DockPanel>
+                  </mui:ReferenceSwitch.NonNull>
+                </mui:ReferenceSwitch>
 
-                                <!--description-->
-                                <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
-                            </DockPanel>
-                        </CheckBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <mui:SpacingStackPanel Spacing="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                <!--description-->
+                <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+              </DockPanel>
+            </CheckBox>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:SpacingStackPanel Spacing="4" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
 
-            <Button Content="Clear cache" Command="{Binding ClearCacheCommand}" Margin="0 20 0 0" />
-        </StackPanel>
-    </ScrollViewer>
+      <Button Content="Clear cache" Command="{Binding ClearCacheCommand}" Margin="0 20 0 0" />
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

@@ -34,7 +34,11 @@ namespace AcManager.Tools.GameProperties {
             }
 
             public void Dispose() {
-                DisposeHelper.Dispose(ref _keyboard);
+                try {
+                    DisposeHelper.Dispose(ref _keyboard);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t remove events hook", e);
+                }
             }
         }
 

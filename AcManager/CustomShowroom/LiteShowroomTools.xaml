@@ -195,7 +195,7 @@
                           <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
                               CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0" />
                           <Label VerticalAlignment="Center" Width="90">
-                            <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
+                            <TextBlock Text="{Binding SlotName, StringFormat={x:Static mui:ColonConverter.Format}}" />
                           </Label>
                           <mui:BetterTextBox Text="{Binding TextureName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
                         </DockPanel>

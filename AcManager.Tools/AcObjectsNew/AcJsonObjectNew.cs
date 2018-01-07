@@ -154,8 +154,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected void LoadTags(JObject json) {
-            var tags = json[@"tags"] as JArray;
-            Tags = tags != null ? new TagsCollection(tags.Select(x => x.ToString())) : new TagsCollection();
+            Tags = json[@"tags"] is JArray tags ? new TagsCollection(tags.Select(x => x.ToString())) : new TagsCollection();
         }
 
         protected void LoadCountry(JObject json) {
@@ -185,8 +184,7 @@ namespace AcManager.Tools.AcObjectsNew {
             Url = json.GetStringValueOnly("url")?.Trim();
 
             if (Version == null && Name != null) {
-                string name;
-                Version = AcStringValues.GetVersionFromName(Name, out name);
+                Version = AcStringValues.GetVersionFromName(Name, out var name);
                 if (Version != null) {
                     Name = name;
                 }

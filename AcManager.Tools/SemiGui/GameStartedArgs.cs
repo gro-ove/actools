@@ -7,8 +7,11 @@ namespace AcManager.Tools.SemiGui {
         [NotNull]
         public readonly Game.StartProperties StartProperties;
 
-        public GameStartedArgs([NotNull] Game.StartProperties startProperties) {
+        public readonly GameMode Mode;
+
+        public GameStartedArgs([NotNull] Game.StartProperties startProperties, GameMode mode) {
             StartProperties = startProperties;
+            Mode = mode;
         }
     }
 }

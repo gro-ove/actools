@@ -21,6 +21,7 @@ using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
+using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
@@ -438,6 +439,24 @@ As an alternative solution, you can switch to software UI rendering, but it will
             // paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
 
+            // discord
+            if (AppArguments.Has(AppFlag.DiscordCmd)) {
+                // Do not show main window and wait for futher instructions?
+            }
+
+            AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
+            DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
+            DiscordImage.OptionDefaultImage = "ks_brands_hatch";
+            GameWrapper.Started += (sender, args) => {
+                args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
+            };
+            /*new DiscordRichPresence(10000, "Testing", "Testing") {
+                LargeImage = new DiscordImage("", "Testing"),
+                Party = new DiscordParty("party") {
+                    JoinSecret = "join0"
+                }
+            };*/
+
             // reshade?
             var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
             if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), "kn5only", StringComparison.OrdinalIgnoreCase)) {
@@ -454,7 +473,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             // auto-show that thing
             InstallAdditionalContentDialog.Initialize();
 
-            // Let’s roll
+            // let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this, _tryingToRunFlag).Run();
         }
@@ -653,6 +672,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             KunosCareerProgress.SaveBeforeExit();
             UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
+            DiscordConnector.Instance.Dispose();
             Dispose();
         }
 

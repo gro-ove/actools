@@ -164,7 +164,7 @@ namespace AcTools.Render.Data {
 
         #region Blurred objects
         public class BlurredObject {
-            public BlurredObject(IniFileSection section) {
+            public BlurredObject([NotNull] IniFileSection section) {
                 WheelIndex = section.GetInt("WHEEL_INDEX", -1);
                 Name = section.GetNonEmpty("NAME");
                 MinSpeed = section.GetFloat("MIN_SPEED", 0f);
@@ -176,11 +176,13 @@ namespace AcTools.Render.Data {
             public float MinSpeed { get; }
             public float MaxSpeed { get; }
 
-            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle(BlurredObject[] list, float speed) {
+            [NotNull]
+            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle([NotNull] BlurredObject[] list, float speed) {
                 return GetNamesToToggle(list, new[] { speed, speed, speed, speed });
             }
 
-            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle(BlurredObject[] list, float[] speed) {
+            [NotNull]
+            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle([NotNull] BlurredObject[] list, [NotNull] float[] speed) {
                 return from o in list
                        let s = o.WheelIndex < speed.Length ? speed[o.WheelIndex] : 0f
                        select Tuple.Create(o.Name, o.MinSpeed <= s && s <= o.MaxSpeed);

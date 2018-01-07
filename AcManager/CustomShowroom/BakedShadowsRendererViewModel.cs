@@ -355,39 +355,17 @@ namespace AcManager.CustomShowroom {
         private AsyncCommand<string> _calculateAoCommand;
 
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
-            var filename = FilesStorage.Instance.GetTemporaryFilename(
-                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} AO.png");
-            var resultSizeN = await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car);
-            if (!resultSizeN.HasValue) return;
+            try {
+                var filename = FilesStorage.Instance.GetTemporaryFilename(
+                        $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} AO.png");
+                var resultSizeN = await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car);
+                if (!resultSizeN.HasValue) return;
 
-            var resultSize = resultSizeN.Value;
-            var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
-            var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
-                    $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} Original ({uniquePostfix}).tmp");
-            if (File.Exists(originalTexture)) {
-                new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
-                    Model = {
-                        Saveable = true,
-                        SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                        MaxImageWidth = resultSize.Width,
-                        MaxImageHeight = resultSize.Height,
-                        SaveDialogFilterPieces = {
-                            DialogFilterPiece.DdsFiles,
-                            DialogFilterPiece.JpegFiles,
-                            DialogFilterPiece.PngFiles,
-                        },
-                        SaveAction = SaveAction,
-                    },
-                    ShowInTaskbar = true
-                }.ShowDialog();
-                return;
-            }
-
-            if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
-                var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
-                if (image != null) {
-                    image.Image?.SaveAsPng(originalTexture);
+                var resultSize = resultSizeN.Value;
+                var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
+                var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
+                        $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} Original ({uniquePostfix}).tmp");
+                if (File.Exists(originalTexture)) {
                     new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
                         Model = {
                             Saveable = true,
@@ -406,23 +384,49 @@ namespace AcManager.CustomShowroom {
                     }.ShowDialog();
                     return;
                 }
-            }
 
-            new ImageViewer(filename) {
-                Model = {
-                    Saveable = true,
-                    SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                    SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                    SaveDialogFilterPieces = {
-                        DialogFilterPiece.DdsFiles,
-                        DialogFilterPiece.JpegFiles,
-                        DialogFilterPiece.PngFiles,
+                if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
+                    var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
+                    if (image != null) {
+                        image.Image?.SaveAsPng(originalTexture);
+                        new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
+                            Model = {
+                                Saveable = true,
+                                SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
+                                SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                                MaxImageWidth = resultSize.Width,
+                                MaxImageHeight = resultSize.Height,
+                                SaveDialogFilterPieces = {
+                                    DialogFilterPiece.DdsFiles,
+                                    DialogFilterPiece.JpegFiles,
+                                    DialogFilterPiece.PngFiles,
+                                },
+                                SaveAction = SaveAction,
+                            },
+                            ShowInTaskbar = true
+                        }.ShowDialog();
+                        return;
+                    }
+                }
+
+                new ImageViewer(filename) {
+                    Model = {
+                        Saveable = true,
+                        SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
+                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                        SaveDialogFilterPieces = {
+                            DialogFilterPiece.DdsFiles,
+                            DialogFilterPiece.JpegFiles,
+                            DialogFilterPiece.PngFiles,
+                        },
+                        SaveAction = SaveAction,
                     },
-                    SaveAction = SaveAction,
-                },
-                ShowInTaskbar = true,
-                ImageMargin = new Thickness()
-            }.ShowDialog();
+                    ShowInTaskbar = true,
+                    ImageMargin = new Thickness()
+                }.ShowDialog();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t create AO map", e);
+            }
         }));
 
         private static void SaveAction(string source, string destination) {

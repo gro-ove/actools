@@ -16,6 +16,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
+using AcManager.DiscordRpc;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
@@ -68,6 +69,7 @@ namespace AcManager.Pages.Drive {
         public static readonly Uri ModeDrag =  new Uri(ModeDragPath, UriKind.Relative);
 
         private ViewModel Model => (ViewModel)DataContext;
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Quick Drive");
 
         public Task LoadAsync(CancellationToken cancellationToken) {
             return WeatherManager.Instance.EnsureLoadedAsync();
@@ -80,8 +82,6 @@ namespace AcManager.Pages.Drive {
         private static WeakReference<QuickDrive> _current;
 
         public void Initialize() {
-            OnSizeChanged(null, null);
-
             if (_selectNextCarSkinId != null && _selectNextCar != null) {
                 _selectNextCar.SelectedSkin = _selectNextCar.EnabledOnlySkins.GetByIdOrDefault(_selectNextCarSkinId) ?? _selectNextCar.SelectedSkin;
             }
@@ -91,11 +91,14 @@ namespace AcManager.Pages.Drive {
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
                     weatherId: _selectNextWeather?.Id,
                     mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid);
+
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
             this.OnActualUnload(() => {
+                _discordPresence.Dispose();
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(Model.TrackState,
                         nameof(INotifyPropertyChanged.PropertyChanged), OnTrackStateChanged);
+                Model.Dispose();
             });
 
             _current = new WeakReference<QuickDrive>(this);
@@ -150,9 +153,9 @@ namespace AcManager.Pages.Drive {
             _selectNextMode = null;
             _selectNextSerializedRaceGrid = null;
 
-            this.OnActualUnload(() => {
-                Model.Unload();
-            });
+            this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra);
+            this.AddSizeCondition(x => 180 + ((x.ActualWidth - 800) / 2d).Clamp(0, 60).Round()).Add(x => LeftPanel.Width = x);
+            this.AddSizeCondition(x => (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round()).Add(x => CarCell.Width = TrackCell.Width = x);
         }
 
         private void OnTrackStateChanged(object sender, PropertyChangedEventArgs e) {
@@ -319,6 +322,75 @@ namespace AcManager.Pages.Drive {
                 RandomTemperatureCommand.Execute();
             }));
 
+            private CarObject _previousTunableParent;
+
+            public void Dispose() {
+                CarsManager.Instance.WrappersList.ItemPropertyChanged -= OnListItemPropertyChanged;
+                CarsManager.Instance.WrappersList.WrappedValueChanged -= OnListWrappedValueChanged;
+            }
+
+            private void UpdateTunableVersions(CarObject selected) {
+                if (!_uiMode || !SettingsHolder.Drive.ShowExtraComboBoxes) return;
+
+                if (selected == null) {
+                    TunableVersions.Clear();
+                    HasChildren = false;
+                    _previousTunableParent = null;
+                    return;
+                }
+
+                var parent = selected.ParentId == null ? selected : selected.Parent;
+                if (parent == _previousTunableParent) {
+                    return;
+                }
+
+                if (parent == null) {
+                    TunableVersions.Clear();
+                    HasChildren = false;
+                    _previousTunableParent = null;
+                    return;
+                }
+
+                _previousTunableParent = parent;
+
+                var children = parent.Children.Where(x => x.Enabled).ToList();
+                HasChildren = children.Any();
+
+                if (!HasChildren) {
+                    TunableVersions.Clear();
+                    return;
+                }
+
+                TunableVersions.ReplaceEverythingBy_Direct(new [] { parent }.Where(x => x.Enabled).Concat(children));
+            }
+
+            private void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(CarObject.ParentId) && sender is CarObject car && SelectedCar != null && car.ParentId == SelectedCar.Id) {
+                    _previousTunableParent = null;
+                    UpdateTunableVersions(SelectedCar);
+                }
+            }
+
+            private void OnListWrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+                if (e.NewValue is CarObject car && SelectedCar != null && car.ParentId == SelectedCar.Id) {
+                    _previousTunableParent = null;
+                    UpdateTunableVersions(SelectedCar);
+                }
+            }
+
+            private bool _hasChildren;
+
+            public bool HasChildren {
+                get => _hasChildren;
+                set {
+                    if (Equals(value, _hasChildren)) return;
+                    _hasChildren = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
+
             [CanBeNull]
             public CarObject SelectedCar {
                 get => _selectedCar;
@@ -330,6 +402,7 @@ namespace AcManager.Pages.Drive {
                                 OnCarDataChanged);
                     }
 
+                    UpdateTunableVersions(value);
                     _selectedCar = value;
                     // _selectedCar?.LoadSkins();
                     OnPropertyChanged();
@@ -398,6 +471,11 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
+            public object AlwaysNull {
+                get => "";
+                set => OnPropertyChanged();
+            }
+
             public TrackStateViewModel TrackState => TrackStateViewModel.Instance;
 
             public TrackObjectBase SelectedTrack {
@@ -454,6 +532,12 @@ namespace AcManager.Pages.Drive {
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null) {
+                if (uiMode && SettingsHolder.Drive.ShowExtraComboBoxes) {
+                    CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
+                    CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
+                    CarsManager.Instance.EnsureLoadedAsync().Forget();
+                }
+
                 _uiMode = uiMode;
                 _carSkinId = carSkinId;
                 _carSetupId = carSetupId;
@@ -846,8 +930,6 @@ namespace AcManager.Pages.Drive {
 
                 return false;
             }
-
-            public void Unload() {}
         }
 
         public static void LoadPreset(string presetFilename) {
@@ -1010,14 +1092,6 @@ namespace AcManager.Pages.Drive {
                         .AddItem("Set random temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
                         .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             }
-        }
-
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            LeftPanel.Width = 180 + ((ActualWidth - 800) / 2d).Clamp(0, 60);
-
-            var cellWidth = (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round();
-            CarCell.Width = cellWidth;
-            TrackCell.Width = cellWidth;
         }
 
         private void OnShowroomButtonClick(object sender, RoutedEventArgs e) {

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -490,8 +491,11 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _value)) return;
                 _value = value;
                 OnPropertyChanged();
+                OnValueChanged();
             }
         }
+
+        protected virtual void OnValueChanged() { }
 
         // private bool _enabledInverse;
         private bool _isEnabled = true;
@@ -511,6 +515,9 @@ namespace AcManager.Tools.Objects {
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex NumberRegex = new Regex(@"^(?:number|float)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex KeyRegex = new Regex(@"^(?:key|button|keyboard|keyboard button)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex BooleanRegex = new Regex(@"^[""`'“”]?([\w-]+)[""`'“”]?\s+or\s+[""`'“”]?([\w-]+)[""`'“”]?",
@@ -684,6 +691,10 @@ namespace AcManager.Tools.Objects {
                             return new PythonAppConfigNumberValue();
                         }
 
+                        if (KeyRegex.IsMatch(description)) {
+                            return new PythonAppConfigKeyValue();
+                        }
+
                         var boolean = BooleanRegex.Match(description);
                         if (boolean.Success) {
                             return new PythonAppConfigBoolValue(boolean.Groups[1].Value, boolean.Groups[2].Value);
@@ -772,6 +783,52 @@ namespace AcManager.Tools.Objects {
             DirectoryMode = directoryMode;
             Filter = filter?.IndexOf('|') == -1 ? filter + @"|" + filter : filter;
         }
+    }
+
+    public class PythonAppConfigKeyValue : PythonAppConfigValue {
+        public string DisplayValue => Value.ToReadableKey();
+
+        public new Keys Value {
+            get => (Keys?)FlexibleParser.TryParseInt(base.Value) ?? Keys.None;
+            set {
+                if (Equals(value, Value)) return;
+                base.Value = ((int)value).ToInvariantString();
+            }
+        }
+
+        protected override void OnValueChanged() {
+            IsWaiting = false;
+            OnPropertyChanged(nameof(DisplayValue));
+        }
+
+        private bool _isWaiting;
+
+        public bool IsWaiting {
+            get => _isWaiting;
+            set {
+                if (Equals(value, _isWaiting)) return;
+                _isWaiting = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isPressed;
+
+        public bool IsPressed {
+            get => _isPressed;
+            set {
+                if (Equals(value, _isPressed)) return;
+                _isPressed = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DelegateCommand _clearCommand;
+
+        public DelegateCommand ClearCommand => _clearCommand ?? (_clearCommand = new DelegateCommand(() => {
+            Value = Keys.None;
+            IsWaiting = false;
+        }));
     }
 
     public class PythonAppConfigNumberValue : PythonAppConfigValue {

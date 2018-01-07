@@ -55,6 +55,11 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.BlurImageViewerBackground}" set:Search.Keywords="images;viewers;image viewer"
+            ToolTip="Works only on Windows 7 or Windows 10">
+          <Label Content="Blur Image Viewer’s background" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
           <Label Content="Larger title links" />
         </CheckBox>

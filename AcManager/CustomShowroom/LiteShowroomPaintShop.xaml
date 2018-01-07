@@ -12,7 +12,7 @@
       <ContentControl.Resources>
         <DataTemplate DataType="{x:Type lp:InputTextValue}">
           <DockPanel Style="{StaticResource DockPanel}">
-            <Label Content="{Binding Name}" ContentStringFormat="{}{0}:" />
+            <Label Content="{Binding Name}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" />
             <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                 Placeholder="{Binding DefaultValue, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}}" />
           </DockPanel>
@@ -20,7 +20,7 @@
 
         <DataTemplate DataType="{x:Type lp:InputSelectValue}">
           <DockPanel Style="{StaticResource DockPanel}">
-            <Label Content="{Binding Name}" ContentStringFormat="{}{0}:" />
+            <Label Content="{Binding Name}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" />
             <mui:BetterComboBox Nullable="True" ItemsSource="{Binding Values}" SelectedItem="{Binding Value}" IsEditable="False"
                 Placeholder="{Binding DefaultValue, TargetNullValue='Random'}">
               <ComboBox.ItemTemplate>
@@ -40,7 +40,7 @@
         <DataTemplate DataType="{x:Type lp:InputNumberValue}">
           <DockPanel Style="{StaticResource DockPanel}">
             <Slider Value="{Binding NumberValue}" Minimum="{Binding From}" Maximum="{Binding To}" DockPanel.Dock="Bottom" Margin="0 4 0 0" />
-            <Label Content="{Binding Name}" ContentStringFormat="{}{0}:" />
+            <Label Content="{Binding Name}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" />
             <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Mode="Integer" Minimum="{Binding From}" Maximum="{Binding To}"
                 Placeholder="{Binding DefaultValue, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}}" />
           </DockPanel>

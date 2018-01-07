@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -48,6 +49,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             CloseCommand = new DelegateCommand<MessageBoxResult?>(CloseWithResult);
             Buttons = new Control[] { CloseButton };
+        }
+
+        public new Task<MessageBoxResult> ShowAndWaitAsync() {
+            var task = new TaskCompletionSource<MessageBoxResult>();
+            Closed += (s, a) => task.SetResult(MessageBoxResult);
+            Show();
+            Focus();
+            return task.Task;
         }
 
         protected void CloseWithResult(MessageBoxResult? result) {
@@ -206,13 +215,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <value>
         /// The message box result.
         /// </value>
-        public MessageBoxResult MessageBoxResult { get; private set; } = MessageBoxResult.None;
+        public MessageBoxResult MessageBoxResult { get; protected set; } = MessageBoxResult.None;
 
         public bool IsResultCancel => MessageBoxResult == MessageBoxResult.Cancel;
-
         public bool IsResultOk => MessageBoxResult == MessageBoxResult.OK;
-
         public bool IsResultYes => MessageBoxResult == MessageBoxResult.Yes;
+        public bool IsResultNo => MessageBoxResult == MessageBoxResult.No;
 
         private static MessageBoxResult ShowMessageInner(string text, string title, MessageBoxButton button,
                 ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {

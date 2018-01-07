@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
+using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -26,6 +27,7 @@ using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -37,6 +39,8 @@ using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
 namespace AcManager.Pages.Drive {
     public partial class OnlineServer : IParametrizedUriContent, IImmediateContent {
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(100, "Preparing to race", "Online");
+
         public static TimeSpan OptionAutoConnectPeriod = TimeSpan.FromSeconds(5d);
 
         private Holder<ServerEntry> _holder;
@@ -52,6 +56,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public void OnUri(Uri uri) {
+            this.OnActualUnload(_discordPresence);
+
             var id = uri.GetQueryParam("Id");
             if (id == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
@@ -64,6 +70,10 @@ namespace AcManager.Pages.Drive {
 
             Initialize();
         }
+
+        private const string KeyCopyPasswordToInviteLink = "Online.CopyPasswordToInviteLink";
+
+        public static bool IncludePasswordToInviteLink => ValuesStorage.GetBool(KeyCopyPasswordToInviteLink, true);
 
         private void Initialize() {
             var entry = _holder.Value;
@@ -83,6 +93,8 @@ namespace AcManager.Pages.Drive {
             UpdateBindings();
             Model.Entry.PropertyChanged += OnEntryPropertyChanged;
             ResizingStuff();
+
+            _discordPresence.Details = $"Online | {entry.DisplayName}";
         }
 
         private bool? _showExtendedInformation;
@@ -353,9 +365,7 @@ namespace AcManager.Pages.Drive {
                 new OnlineListsManager().ShowDialog();
             }));
 
-            private const string KeyCopyPasswordToInviteLink = "Online.CopyPasswordToInviteLink";
-
-            private bool _copyPasswordToInviteLink = ValuesStorage.GetBool(KeyCopyPasswordToInviteLink, true);
+            private bool _copyPasswordToInviteLink = IncludePasswordToInviteLink;
 
             public bool CopyPasswordToInviteLink {
                 get => _copyPasswordToInviteLink;

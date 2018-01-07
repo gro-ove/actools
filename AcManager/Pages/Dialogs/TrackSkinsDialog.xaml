@@ -4,4 +4,4 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" MinWidth="600" Width="800" Height="720"
         MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized"
         Closed="OnClosed" LocationAndSizeKey="TrackSkinsDialog.LS" d:DataContext="{d:DesignInstance di:TrackSkinsDialog+ViewModel}"
-        Title="{Binding SelectedTrack.DisplayName, StringFormat={x:Static g:AppStrings.Dialog_CarSkinsFormat}}" SaveKey="TrackSkinsDialog" />
+        Title="{Binding SelectedTrack.DisplayNameWithoutCount, StringFormat={x:Static g:AppStrings.Dialog_CarSkinsFormat}}" SaveKey="TrackSkinsDialog" />

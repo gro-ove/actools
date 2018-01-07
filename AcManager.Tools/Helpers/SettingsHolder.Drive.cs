@@ -75,7 +75,7 @@ namespace AcManager.Tools.Helpers {
             public static readonly StarterType SidePassageStarterType = new StarterType(
                     "AC Service",
                     "AC Service",
-                    "Replaces original launcher by a small service. Fast and reliable. Original launcher still can be used — take a look at service’s icon in system tray.\n\nJust as a reminder (press “[?]” to read complete description): original launcher is renamed as “AssettoCorsa_original.exe”.");
+                    "Replaces original launcher by a small service. Fast and reliable. Original launcher still can be used — take a look at service’s icon in system tray.\n\nJust as a reminder (press “?” to read complete description): original launcher is renamed as “AssettoCorsa_original.exe”.");
 
             public static readonly StarterType SteamStarterType = new StarterType(
                     "Steam",
@@ -983,6 +983,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _checkAndFixControlsOrder)) return;
                     _checkAndFixControlsOrder = value;
                     ValuesStorage.Set("Settings.DriveSettings.CheckAndFixControlsOrder", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _showExtraComboBoxes;
+
+            public bool ShowExtraComboBoxes {
+                get => _showExtraComboBoxes ?? (_showExtraComboBoxes = ValuesStorage.GetBool("Settings.DriveSettings.ShowExtraComboBoxes", true)).Value;
+                set {
+                    if (Equals(value, _showExtraComboBoxes)) return;
+                    _showExtraComboBoxes = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ShowExtraComboBoxes", value);
                     OnPropertyChanged();
                 }
             }

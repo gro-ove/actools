@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
@@ -52,6 +53,38 @@ namespace AcTools.Utils.Helpers {
                 c[++p] = lookup[d & 0xF];
             }
             return new string(c, 0, c.Length);
+        }
+
+        [Pure, CanBeNull]
+        public static byte[] FromCutBase64([CanBeNull] this string encoded) {
+            if (!string.IsNullOrWhiteSpace(encoded)) {
+                try {
+                    var padding = 4 - encoded.Length % 4;
+                    if (padding > 0 && padding < 4) {
+                        encoded = encoded + "=".RepeatString(padding);
+                    }
+
+                    return Convert.FromBase64String(encoded);
+                } catch (Exception e) {
+                    AcToolsLogging.Write(">" + encoded + "<");
+                    AcToolsLogging.Write(e);
+                }
+            }
+
+            return null;
+        }
+
+        [Pure, CanBeNull]
+        public static string ToCutBase64([CanBeNull] this byte[] decoded) {
+            if (decoded != null) {
+                try {
+                    return Convert.ToBase64String(decoded).TrimEnd('=');
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                }
+            }
+
+            return null;
         }
     }
 }
