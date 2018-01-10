@@ -365,7 +365,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
 
 #if DEBUG
-                await Task.Delay(10, cancellation);
+                // await Task.Delay(10, cancellation);
 #endif
             }
         }

@@ -8,7 +8,8 @@ using AcTools.Utils.Helpers;
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     [Flags]
     public enum EntryLayer {
-        Basic, CtrlShortcut
+        Basic = 1,
+        CtrlShortcut = 2
     }
 
     public interface IEntry : IWithId, INotifyPropertyChanged {

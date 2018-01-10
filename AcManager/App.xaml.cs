@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -179,7 +180,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             AppArguments.Set(AppFlag.DirectRequestTimeout, ref KunosApiProvider.OptionDirectRequestTimeout);
             AppArguments.Set(AppFlag.CommandTimeout, ref GameCommandExecutorBase.OptionCommandTimeout);
 
-            AppArguments.Set(AppFlag.DisableAcRootChecking, ref AcRootDirectory.OptionDisableChecking);
+            AppArguments.Set(AppFlag.DisableAcRootChecking, ref AcPaths.OptionEaseAcRootCheck);
             AppArguments.Set(AppFlag.AcObjectsLoadingConcurrency, ref BaseAcManagerNew.OptionAcObjectsLoadingConcurrency);
             AppArguments.Set(AppFlag.SkinsLoadingConcurrency, ref CarObject.OptionSkinsLoadingConcurrency);
             AppArguments.Set(AppFlag.KunosCareerIgnoreSkippedEvents, ref KunosCareerEventsManager.OptionIgnoreSkippedEvents);
@@ -238,11 +239,16 @@ As an alternative solution, you can switch to software UI rendering, but it will
             };
 
             AcToolsLogging.Logger = (s, m, p, l) => Logging.Write($"{s} (AcTools)", m, p, l);
-            AcToolsLogging.NonFatalErrorHandler = (s, c, e) => NonfatalError.Notify(s, c, e);
+            AcToolsLogging.NonFatalErrorHandler = (s, c, e, b) => {
+                if (b) {
+                    NonfatalError.NotifyBackground(s, c, e);
+                } else {
+                    NonfatalError.Notify(s, c, e);
+                }
+            };
 
             AppArguments.Set(AppFlag.ControlsDebugMode, ref ControlsSettings.OptionDebugControlles);
             AppArguments.Set(AppFlag.ControlsRescanPeriod, ref ControlsSettings.OptionRescanPeriod);
-            AppArguments.Set(AppFlag.ControlsUpdatePeriod, ref ControlsSettings.OptionUpdatePeriod);
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
@@ -450,6 +456,14 @@ As an alternative solution, you can switch to software UI rendering, but it will
             GameWrapper.Started += (sender, args) => {
                 args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
             };
+            /*new DiscordHandler().JoinRequest(new DiscordJoinRequest {
+                UserId = "395654492135358465",
+                AvatarUrl = "https://cdn.discordapp.com/avatars/395654492135358465/267c97d7c8f1bf20c18e7898d120b464.png",
+                Discriminator = "1234",
+                UserName = "Test user"
+            }, CancellationToken.None, reply => {
+                Logging.Debug(reply);
+            });*/
             /*new DiscordRichPresence(10000, "Testing", "Testing") {
                 LargeImage = new DiscordImage("", "Testing"),
                 Party = new DiscordParty("party") {

@@ -25,7 +25,7 @@
     </Grid.ColumnDefinitions>
 
     <DockPanel>
-      <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top">
+      <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top" Margin="0 0 0 0">
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Controls_InputMethodLabel}" />
           <ComboBox ItemsSource="{Binding Controls.InputMethods}" SelectedItem="{Binding Controls.InputMethod}" DisplayMemberPath="DisplayName" />
@@ -72,13 +72,14 @@
 
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
 
-                <ItemsControl ItemsSource="{Binding Axis}" Margin="0 8 0 0">
+                <ItemsControl ItemsSource="{Binding Axis}" Margin="0 8 0 0"
+                    Visibility="{Binding Axis.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type t:DirectInputAxle}">
-                      <Grid Height="8" Margin="0 2 0 2">
+                      <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DefaultName}" Background="Transparent">
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="20" />
-                          <ColumnDefinition Width="144" />
+                          <ColumnDefinition Width="40" />
+                          <ColumnDefinition Width="124" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
@@ -86,7 +87,7 @@
                         <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}" StrokeThickness="1" />
                         <Rectangle Grid.Column="1" Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
                           <Rectangle.RenderTransform>
-                            <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=132}" Y="0" />
+                            <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=112}" Y="0" />
                           </Rectangle.RenderTransform>
                         </Rectangle>
                       </Grid>
@@ -94,7 +95,8 @@
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <ItemsControl ItemsSource="{Binding Buttons}" Margin="0 8 -4 0">
+                <ItemsControl ItemsSource="{Binding Buttons}" Margin="0 8 -4 0"
+                    Visibility="{Binding Buttons.Length, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
@@ -102,11 +104,14 @@
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type t:DirectInputButton}">
-                      <mui:Cell Height="24" Margin="0 0 4 4">
+                      <mui:Cell Height="24" Margin="0 0 4 4" ToolTip="{Binding DefaultName}" Background="Transparent">
                         <Ellipse x:Name="Bg" Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}"
                             StrokeThickness="1" />
-                        <TextBlock x:Name="Fg" Text="{Binding ShortName}" Style="{StaticResource Small}" TextAlignment="Center" VerticalAlignment="Center"
-                            Foreground="{DynamicResource ButtonText}" />
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Width="17" Height="17" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Margin="2 1 2 3">
+                          <TextBlock x:Name="Fg" Text="{Binding ShortName}" Style="{StaticResource Heading2}" FontWeight="Normal"
+                              Foreground="{DynamicResource ButtonText}" />
+                        </Viewbox>
                       </mui:Cell>
                       <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Value}" Value="True">

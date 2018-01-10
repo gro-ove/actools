@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private T _value;
 
         public T Value {
-            get { return _value; }
+            get => _value;
             set {
                 if (Equals(value, _value)) return;
                 _value = value;
@@ -23,5 +23,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         protected virtual void OnValueChanged() {}
+
+        public sealed override string DisplayName {
+            get => base.DisplayName;
+            set => base.DisplayName = value;
+        }
     }
 }

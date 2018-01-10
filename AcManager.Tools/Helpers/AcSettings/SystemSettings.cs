@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
@@ -10,31 +11,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
             new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp)
         };
-
-        #region Some controls stuff
-        private bool _softLock;
-
-        public bool SoftLock {
-            get => _softLock;
-            set {
-                if (Equals(value, _softLock)) return;
-                _softLock = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /*private int _ffbSkipSteps;
-
-        public int FfbSkipSteps {
-            get { return _ffbSkipSteps; }
-            set {
-                value = value.Clamp(0, 1000);
-                if (Equals(value, _ffbSkipSteps)) return;
-                _ffbSkipSteps = value;
-                OnPropertyChanged();
-            }
-        }*/
-        #endregion
 
         #region Miscellaneous
         private int _simulationValue;
@@ -146,6 +122,18 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Experimental FFB
+        private bool _softLock;
+
+        public bool SoftLock {
+            get => _softLock;
+            set {
+                if (Equals(value, _softLock)) return;
+                _softLock = value;
+                OnPropertyChanged();
+                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
+            }
+        }
+
         private bool _ffbGyro;
 
         public bool FfbGyro {
@@ -154,7 +142,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _ffbGyro)) return;
                 _ffbGyro = value;
                 OnPropertyChanged();
-                AcSettingsHolder.Controls.CurrentPresetChanged = true;
+                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
             }
         }
 
@@ -167,7 +155,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _ffbDamperMinLevel)) return;
                 _ffbDamperMinLevel = value;
                 OnPropertyChanged();
-                AcSettingsHolder.Controls.CurrentPresetChanged = true;
+                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
             }
         }
 
@@ -180,7 +168,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _ffbDamperGain)) return;
                 _ffbDamperGain = value;
                 OnPropertyChanged();
-                AcSettingsHolder.Controls.CurrentPresetChanged = true;
+                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
             }
         }
         #endregion

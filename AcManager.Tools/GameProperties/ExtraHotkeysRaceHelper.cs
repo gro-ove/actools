@@ -2,62 +2,627 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using AcManager.Internal;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.Helpers.DirectInput;
 using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using AcTools.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
+using SlimDX;
+using SlimDX.DirectInput;
+using Keyboard = System.Windows.Input.Keyboard;
+using Keys = System.Windows.Forms.Keys;
+using AcCommand = AcManager.Internal.InternalUtils.AcControlPointCommand;
+using Application = System.Windows.Application;
+using Control = System.Windows.Controls.Control;
+using Cursor = System.Windows.Forms.Cursor;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using ProgressBar = System.Windows.Controls.ProgressBar;
 
 namespace AcManager.Tools.GameProperties {
     public class ExtraHotkeysRaceHelper : Game.GameHandler {
-        private class MemoryListener : IDisposable {
-            private static readonly Dictionary<string, InternalUtils.AcControlPointCommand> ExtraCommands
-                    = new  Dictionary<string, InternalUtils.AcControlPointCommand> {
-                        ["__CM_START_SESSION"] = InternalUtils.AcControlPointCommand.StartGame,
-                        ["__CM_RESET_SESSION"] = InternalUtils.AcControlPointCommand.RestartSession,
-                        ["__CM_TO_PITS"] = InternalUtils.AcControlPointCommand.TeleportToPits,
-                        ["__CM_SETUP_CAR"] = InternalUtils.AcControlPointCommand.TeleportToPitsWithConfig,
-                        ["__CM_EXIT"] = InternalUtils.AcControlPointCommand.Shutdown,
-                    };
+        public static TimeSpan OptionSmallInterval = TimeSpan.FromMilliseconds(150);
+        public static TimeSpan OptionLargeInterval = TimeSpan.FromMilliseconds(700);
 
-            private KeyboardListener _keyboard;
+        public abstract class JoyCommandBase {
+            public bool ShowDelay { get; set; } = true;
+            public ModifierKeys Modifiers { get; set; } = ModifierKeys.Control;
+            public TimeSpan MinInterval { get; set; } = OptionLargeInterval;
 
-            public MemoryListener() {
-                var ini = new IniFile(AcPaths.GetCfgControlsFilename());
+            private string _delayedName;
 
-                foreach (var key in AcSettingsHolder.Controls.SystemButtonKeys) {
-                    var section = ini[key];
-                    if (section.GetInt("JOY", -1) != -1)
+            public string DelayedName {
+                get => _delayedName;
+                set {
+                    _delayedName = value;
+                    _applied = true;
+                    _lastApplied = Stopwatch.StartNew();
                 }
+            }
 
-                var keys = AcSettingsHolder.Controls.SystemButtonKeys.ToList();
+            private Stopwatch _lastApplied;
+            private bool _isPressed, _applied;
 
+            private void SetPressed(bool isPressed) {
+                if (_isPressed == isPressed) return;
+
+                var wasPressed = _isPressed;
+                _isPressed = isPressed;
+
+                if (DelayedName != null) {
+                    if (!wasPressed) {
+                        ShowHoldDialog();
+                        _lastApplied = Stopwatch.StartNew();
+                        _applied = false;
+                    } else if (!_applied) {
+                        if (_lastApplied.Elapsed > MinInterval) {
+                            ApplySafe();
+                            HideHoldDialogSmoothly();
+                        } else {
+                            HideHoldDialog();
+                        }
+                    }
+                }
+            }
+
+            private bool _joyPressed, _keyboardPressed;
+
+            public void SetJoyPressed(bool isPressed) {
+                _joyPressed = isPressed;
+                SetPressed(_joyPressed || _keyboardPressed);
+            }
+
+            public void SetKeyboardPressed(bool isPressed) {
+                _keyboardPressed = isPressed;
+                SetPressed(_joyPressed || _keyboardPressed);
+            }
+
+            public double Progress => _lastApplied?.Elapsed.TotalSeconds / MinInterval.TotalSeconds ?? 0d;
+
+            public void Update() {
+                if (DelayedName == null) {
+                    if (_isPressed && !(_lastApplied?.Elapsed < MinInterval)) {
+                        ApplySafe();
+                        (_lastApplied = _lastApplied ?? Stopwatch.StartNew()).Restart();
+                    }
+                } else if (_isPressed && !_applied && _lastApplied?.Elapsed > MinInterval) {
+                    ApplySafe();
+                    HideHoldDialogSmoothly();
+                }
+            }
+
+            private void ApplySafe() {
+                _applied = true;
                 try {
-                    _keyboard = new KeyboardListener();
-                    _keyboard.KeyUp += OnKey;
+                    Apply();
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
             }
 
-            private static void OnKey(object sender, VirtualKeyCodeEventArgs e) {
-                try {
-                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None && AcSharedMemory.Instance.IsPaused &&
-                            (DateTime.Now - AcSharedMemory.Instance.PauseTime).TotalSeconds > 0.15) {
-                        AcMousePretender.ClickContinueButton();
+            public virtual void ConsiderControlsIni(IniFile iniFile) { }
+
+            protected abstract void Apply();
+
+            #region UI
+            [CanBeNull]
+            private DpiAwareWindow _dialog;
+
+            [CanBeNull]
+            private ProgressBar _progressBar;
+
+            [CanBeNull]
+            private TextBlock _textBlock;
+
+            private void ShowHoldDialog() {
+                if (!ShowDelay) return;
+
+                Application.Current.Dispatcher.InvokeAsync(() => {
+                    _textBlock = new TextBlock {
+                        Text = $"Hold to {DelayedName.ToSentenceMember()}…",
+                        Style = (Style)Application.Current.Resources["Title"],
+                        Foreground = new SolidColorBrush(Colors.White),
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        FontWeight = FontWeights.Light,
+                        FontSize = 16
+                    };
+
+                    _progressBar = new ProgressBar {
+                        Background = new SolidColorBrush(Colors.Black),
+                        Foreground = new SolidColorBrush(AppearanceManager.Current.AccentColor),
+                        Maximum = 1d,
+                        Opacity = 0.4
+                    };
+
+                    var content = new Cell {
+                        Margin = new Thickness(-20),
+                        Width = 300,
+                        Height = 40,
+                        Children = { _progressBar, _textBlock }
+                    };
+
+                    RenderOptions.SetClearTypeHint(_textBlock, ClearTypeHint.Auto);
+                    TextOptions.SetTextHintingMode(_textBlock, TextHintingMode.Animated);
+                    TextOptions.SetTextRenderingMode(_textBlock, TextRenderingMode.Grayscale);
+                    TextOptions.SetTextFormattingMode(_textBlock, TextFormattingMode.Display);
+
+                    _dialog = new ModernDialog {
+                        MinWidth = 20,
+                        MinHeight = 20,
+                        Width = 300,
+                        Height = 40,
+                        SizeToContent = SizeToContent.Manual,
+                        WindowStyle = WindowStyle.None,
+                        BlurBackground = true,
+                        AllowsTransparency = true,
+                        Topmost = true,
+                        ShowTopBlob = false,
+                        ShowTitle = false,
+                        Owner = null,
+                        BorderThickness = new Thickness(0),
+                        Background = new SolidColorBrush(Colors.Transparent),
+                        Buttons = new Control[0],
+                        Padding = new Thickness(20, 20, 20, 0),
+                        Content = content,
+                        WindowStartupLocation = WindowStartupLocation.Manual,
+                        OpacityMask = new VisualBrush {
+                            Stretch = Stretch.None,
+                            Visual = new Border {
+                                Background = new SolidColorBrush(Colors.Black),
+                                Width = 300,
+                                Height = 40,
+                                CornerRadius = new CornerRadius(4)
+                            }
+                        }
+                    };
+
+                    _dialog.Loaded += OnDialogLoaded;
+                    _dialog.Show();
+
+                    CompositionTargetEx.Rendering -= OnRendering;
+                    CompositionTargetEx.Rendering += OnRendering;
+                });
+            }
+
+            private void OnRendering(object sender, RenderingEventArgs renderingEventArgs) {
+                if (_progressBar == null) return;
+                _progressBar.Value = Progress;
+            }
+
+            private static Point GetWindowPosition(int width, int height) {
+                var screen = Screen.FromPoint(Cursor.Position);
+                var bounds = screen.Bounds;
+                var x = bounds.Left + (bounds.Width - width) / 2;
+                var y = bounds.Bottom - height - 60;
+                return new Point(x, y);
+            }
+
+            private void OnDialogLoaded(object sender, RoutedEventArgs routedEventArgs) {
+                var dialog = (DpiAwareWindow)sender;
+                if (!_isPressed) {
+                    try {
+                        dialog.Close();
+                    } catch (Exception e) {
+                        Logging.Error(e);
                     }
-                } catch (Exception ex) {
-                    Logging.Error(ex);
+                    return;
+                }
+
+                var point = GetWindowPosition(dialog.ActualWidth.RoundToInt(), dialog.ActualHeight.RoundToInt());
+                dialog.Left = point.X;
+                dialog.Top = point.Y;
+            }
+
+            private void HideHoldDialogSmoothly() {
+                var dialog = _dialog;
+                var progress = _progressBar;
+                var text = _textBlock;
+                if (dialog == null || progress == null || text == null) {
+                    HideHoldDialog();
+                    return;
+                }
+
+                _dialog = null;
+                _progressBar = null;
+                _textBlock = null;
+                CompositionTargetEx.Rendering -= OnRendering;
+
+                Application.Current.Dispatcher.InvokeAsync(async () => {
+                    var d = new Duration(TimeSpan.FromSeconds(0.12));
+                    progress.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation((Color)Application.Current.Resources["GoColor"], d));
+                    progress.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(1d, d));
+                    TextBlock.GetForeground(text).BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation(Colors.Black, d));
+                    await Task.Delay(500);
+                    try {
+                        dialog.Close();
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
+                });
+            }
+
+            private void HideHoldDialog() {
+                var dialog = _dialog;
+                if (dialog == null) return;
+
+                _dialog = null;
+                _progressBar = null;
+                _textBlock = null;
+                CompositionTargetEx.Rendering -= OnRendering;
+
+                Application.Current.Dispatcher.InvokeAsync(() => {
+                    try {
+                        dialog.Close();
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
+                });
+            }
+            #endregion
+        }
+
+        public class HotkeyJoyCommand : JoyCommandBase {
+            private readonly Keys[] _keys;
+
+            public HotkeyJoyCommand(params Keys[] keys) {
+                _keys = keys;
+            }
+
+            protected override void Apply() {
+                Press(_keys);
+            }
+
+            public override string ToString() {
+                return $"(Keys={_keys.JoinToString('+')})";
+            }
+        }
+
+        public class CallbackJoyCommand : JoyCommandBase {
+            private readonly Action _apply;
+
+            public CallbackJoyCommand(Action apply) {
+                _apply = apply;
+            }
+
+            protected override void Apply() {
+                _apply?.Invoke();
+            }
+
+            public override string ToString() {
+                return $"(Callback={_apply})";
+            }
+        }
+
+        public class ReverseHotkeyJoyCommand : JoyCommandBase {
+            private readonly string _baseId;
+            private Keys? _key;
+
+            public ReverseHotkeyJoyCommand(string baseId) {
+                _baseId = baseId;
+            }
+
+            protected override void Apply() {
+                if (_key.HasValue) {
+                    Press(Keys.RControlKey, Keys.RShiftKey, _key.Value);
                 }
             }
 
+            public override void ConsiderControlsIni(IniFile iniFile) {
+                _key = (Keys)iniFile[_baseId].GetInt("KEY", -1);
+            }
+
+            public override string ToString() {
+                return $"(RevHotkey={_baseId})";
+            }
+        }
+
+        public class AcJoyCommand : JoyCommandBase {
+            private readonly AcCommand _command;
+
+            public AcJoyCommand(AcCommand command) {
+                _command = command;
+            }
+
+            protected override void Apply() {
+                InternalUtils.AcControlPointExecute(_command);
+            }
+
+            public override string ToString() {
+                return $"(AcCommand={_command})";
+            }
+        }
+
+        private static void Press(params Keys[] values) {
+            for (var i = 0; i < values.Length; i++) {
+                User32.SendInput(new User32.KeyboardInput {
+                    VirtualKeyCode = (ushort)values[i],
+                    Flags = User32.IsExtendedKey(values[i]) ? User32.KeyboardFlag.ExtendedKey : User32.KeyboardFlag.None
+                });
+                Thread.Sleep(10);
+            }
+            for (var i = values.Length - 1; i >= 0; i--) {
+                User32.SendInput(new User32.KeyboardInput {
+                    VirtualKeyCode = (ushort)values[i],
+                    Flags = User32.IsExtendedKey(values[i]) ? User32.KeyboardFlag.ExtendedKey | User32.KeyboardFlag.KeyUp : User32.KeyboardFlag.KeyUp
+                });
+                Thread.Sleep(10);
+            }
+        }
+
+        private class MemoryListener : IDisposable {
+            private static readonly string[] ShortenDelays = {
+                "ABS", "__CM_ABS_DECREASE",
+                "TRACTION_CONTROL", "__CM_TRACTION_CONTROL_DECREASE",
+            };
+
+            private static readonly Dictionary<string, JoyCommandBase> ExtraCommands;
+            private static bool _isInPits;
+
+            static MemoryListener() {
+                var startStopSession = new CallbackJoyCommand(() => {
+                    InternalUtils.AcControlPointExecute(_isInPits ? AcCommand.StartGame : AcCommand.TeleportToPitsWithConfig);
+                });
+
+                ExtraCommands = new Dictionary<string, JoyCommandBase> {
+                    ["__CM_START_SESSION"] = new AcJoyCommand(AcCommand.StartGame),
+                    ["__CM_RESET_SESSION"] = new AcJoyCommand(AcCommand.RestartSession),
+                    ["__CM_TO_PITS"] = new AcJoyCommand(AcCommand.TeleportToPits),
+                    ["__CM_SETUP_CAR"] = new AcJoyCommand(AcCommand.TeleportToPitsWithConfig),
+                    ["__CM_EXIT"] = new AcJoyCommand(AcCommand.Shutdown),
+                    ["__CM_PAUSE"] = new CallbackJoyCommand(() => {
+                        if (!ContinueRaceHelper.ContinueRace()) {
+                            Press(Keys.Escape);
+                        }
+                    }),
+                    ["__CM_START_STOP_SESSION"] = startStopSession,
+                    ["__CM_ABS_DECREASE"] = new ReverseHotkeyJoyCommand("ABS"),
+                    ["__CM_TRACTION_CONTROL_DECREASE"] = new ReverseHotkeyJoyCommand("TRACTION_CONTROL"),
+                    // ["__CM_DISCORD_REQUEST_ACCEPT"] = DiscordJoyAcceptCommand,
+                    // ["__CM_DISCORD_REQUEST_DENY"] = DiscordJoyDenyCommand,
+                };
+
+                AcSharedMemory.Instance.Updated += (sender, args) => {
+                    var isInPitsNow = args.Current?.Graphics.IsInPit == true;
+                    if (isInPitsNow == _isInPits) return;
+
+                    startStopSession.DelayedName = isInPitsNow ? null : "Setup car in pits";
+                    _isInPits = isInPitsNow;
+                };
+            }
+
+            private KeyboardListener _keyboard;
+
+            private struct JoyKey {
+                public JoyKey(int joy, int button) {
+                    Joy = joy;
+                    Button = button;
+                    Pov = null;
+                    Direction = DirectInputPovDirection.Top;
+                }
+
+                public JoyKey(int joy, int pov, DirectInputPovDirection direction) {
+                    Joy = joy;
+                    Button = null;
+                    Pov = pov;
+                    Direction = direction;
+                }
+
+                public readonly int Joy;
+                public readonly int? Button;
+                public readonly int? Pov;
+                public readonly DirectInputPovDirection Direction;
+
+                public bool Equals(JoyKey other) {
+                    return Joy == other.Joy && Button == other.Button && Pov == other.Pov && Direction == other.Direction;
+                }
+
+                public override bool Equals(object obj) {
+                    return !ReferenceEquals(null, obj) && obj is JoyKey key && Equals(key);
+                }
+
+                public override int GetHashCode() {
+                    unchecked {
+                        var hashCode = Joy;
+                        hashCode = (hashCode * 397) ^ Button.GetHashCode();
+                        hashCode = (hashCode * 397) ^ Pov.GetHashCode();
+                        hashCode = (hashCode * 397) ^ (int)Direction;
+                        return hashCode;
+                    }
+                }
+
+                public override string ToString() {
+                    return $"(Joy={Joy}, Button={Button ?? -1}, Pov={Pov ?? -1})";
+                }
+            }
+
+            private readonly KeyValuePair<JoyKey, JoyCommandBase>[] _joyToCommand;
+            private readonly KeyValuePair<Keys, JoyCommandBase>[] _keyToCommand;
+            private readonly DirectInput _directInput;
+            private readonly List<Joystick> _devices;
+            private readonly Thread _pollThread;
+            private readonly bool _ignorePovInPits;
+
+            public MemoryListener() {
+                var ini = new IniFile(AcPaths.GetCfgControlsFilename());
+                var delayEnabled = ini["__EXTRA_CM"].GetBool("DELAY_SPECIFIC_SYSTEM_COMMANDS", true);
+                _ignorePovInPits = ini["__EXTRA_CM"].GetBool("SYSTEM_IGNORE_POV_IN_PITS", true);
+                var showDelay = ini["__EXTRA_CM"].GetBool("SHOW_SYSTEM_DELAYS", true);
+
+                var keyToCommand = new Dictionary<Keys, JoyCommandBase>();
+                var joyToCommand = new Dictionary<JoyKey, JoyCommandBase>();
+
+                foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
+                    var section = ini[n];
+                    var delay = ShortenDelays.Contains(n) ? OptionSmallInterval : OptionLargeInterval;
+
+                    var isExtra = ExtraCommands.TryGetValue(n, out var c);
+                    var joy = section.GetInt("JOY", -1);
+                    var button = section.GetInt("BUTTON", -1);
+                    var pov = section.GetInt("__CM_POV", -1);
+                    var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+                    var key = section.GetInt("KEY", -1);
+
+                    var delayedName = delayEnabled ? AcSettingsHolder.Controls.SystemRaceButtonEntries.FirstOrDefault(
+                            x => x.Delayed && x.WheelButton.Id == n)?.WheelButton.DisplayName : null;
+
+                    if (isExtra && key != -1) {
+                        c.MinInterval = delay;
+                        c.DelayedName = delayedName;
+                        c.ShowDelay &= showDelay;
+                        keyToCommand[(Keys)key] = c;
+                    }
+
+                    if (joy == -1 || button == -1 && pov == -1) {
+                        continue;
+                    }
+
+                    var joyKey = button != -1 ? new JoyKey(joy, button) : new JoyKey(joy, pov, povDirection);
+                    if (isExtra) {
+                        c.ConsiderControlsIni(ini);
+                    } else if (key != -1) {
+                        c = new HotkeyJoyCommand(Keys.RControlKey, (Keys)key);
+                    } else {
+                        return;
+                    }
+
+                    c.MinInterval = delay;
+                    c.DelayedName = delayedName;
+                    c.ShowDelay &= showDelay;
+                    joyToCommand[joyKey] = c;
+                }
+
+                if (keyToCommand.Count > 0) {
+                    _keyboard = new KeyboardListener();
+                    _keyboard.KeyDown += OnKeyDown;
+                    _keyboard.KeyUp += OnKeyUp;
+                }
+
+                if (joyToCommand.Count > 0) {
+                    try {
+                        _directInput = new DirectInput();
+                        _devices = _directInput.GetDevices(DeviceClass.GameController,
+                                DeviceEnumerationFlags.AttachedOnly).Select(x => new Joystick(_directInput, x.InstanceGuid)).ToList();
+                        _pollThread = new Thread(Start) {
+                            Name = "CM Controllers Polling",
+                            IsBackground = true
+                        };
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
+                }
+
+                _joyToCommand = joyToCommand.ToArray();
+                _keyToCommand = keyToCommand.ToArray();
+                _pollThread?.Start();
+            }
+
+            private bool? _running;
+
+            private void Start() {
+                if (_running == null) {
+                    _running = true;
+                }
+
+                while (_running == true) {
+                    OnTick();
+                    Thread.Sleep(20);
+                }
+            }
+
+            private void OnTick() {
+                var povAvailable = !(_ignorePovInPits && _isInPits);
+                for (var index = _devices.Count - 1; index >= 0; index--) {
+                    for (var i = 0; i < _joyToCommand.Length; i++) {
+                        if (_joyToCommand[i].Key.Joy == index) goto PollDevice;
+                    }
+
+                    continue;
+                    PollDevice:
+
+                    try {
+                        var joystick = _devices[index];
+                        if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure || Result.Last.IsFailure) {
+                            continue;
+                        }
+
+                        var state = joystick.GetCurrentState();
+                        var buttons = state.GetButtons();
+                        var povs = state.GetPointOfViewControllers();
+                        for (var i = 0; i < _joyToCommand.Length; i++) {
+                            var command = _joyToCommand[i];
+                            var key = command.Key;
+                            if (key.Joy == index) {
+                                command.Value.SetJoyPressed(key.Button.HasValue
+                                        ? buttons.ElementAtOrDefault(key.Button.Value)
+                                        : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ElementAtOrDefault(key.Pov ?? 0)));
+                            }
+                        }
+                    } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
+                        _devices.RemoveAt(index);
+                    } catch (DirectInputException e) {
+                        _devices.RemoveAt(index);
+                        Logging.Warning(e);
+                    }
+                }
+
+                for (var i = _joyToCommand.Length - 1; i >= 0; i--) {
+                    _joyToCommand[i].Value.Update();
+                }
+
+                for (var i = _keyToCommand.Length - 1; i >= 0; i--) {
+                    _keyToCommand[i].Value.Update();
+                }
+            }
+
+            private JoyCommandBase GetCommand(Keys key) {
+                for (var i = _keyToCommand.Length - 1; i >= 0; i--) {
+                    var x = _keyToCommand[i];
+                    if (x.Key == key) {
+                        return x.Value;
+                    }
+                }
+                return null;
+            }
+
+            private void OnKeyDown(object sender, VirtualKeyCodeEventArgs e) {
+                var c = GetCommand(e.Key);
+                if (Keyboard.Modifiers == c.Modifiers) {
+                    GetCommand(e.Key)?.SetKeyboardPressed(true);
+                }
+            }
+
+            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
+                GetCommand(e.Key)?.SetKeyboardPressed(false);
+            }
+
             public void Dispose() {
+                _running = false;
+
+                try {
+                    _devices?.DisposeEverything();
+                    _directInput?.Dispose();
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t release devices", e);
+                }
+
                 try {
                     DisposeHelper.Dispose(ref _keyboard);
                 } catch (Exception e) {

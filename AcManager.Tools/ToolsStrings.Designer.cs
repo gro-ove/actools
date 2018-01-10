@@ -538,7 +538,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Single Screen.
+        ///   Looks up a localized string similar to Single screen.
         /// </summary>
         public static string AcSettings_CameraMode_SingleScreen {
             get {
@@ -547,7 +547,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Triple Screen.
+        ///   Looks up a localized string similar to Triple screen.
         /// </summary>
         public static string AcSettings_CameraMode_TripleScreen {
             get {
@@ -754,7 +754,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Very High.
+        ///   Looks up a localized string similar to Very high.
         /// </summary>
         public static string AcSettings_Quality_VeryHigh {
             get {
@@ -763,7 +763,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Very Low.
+        ///   Looks up a localized string similar to Very low.
         /// </summary>
         public static string AcSettings_Quality_VeryLow {
             get {
@@ -1564,7 +1564,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t Do.
+        ///   Looks up a localized string similar to Can’t do.
         /// </summary>
         public static string Common_CannotDo_Title {
             get {
@@ -1906,7 +1906,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a car {0}.
+        ///   Looks up a localized string similar to Update for {0}.
         /// </summary>
         public static string ContentInstallation_CarExisting {
             get {
@@ -1924,7 +1924,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a skin {0} for {1}.
+        ///   Looks up a localized string similar to Update for the skin {0} for {1}.
         /// </summary>
         public static string ContentInstallation_CarSkinExisting {
             get {
@@ -1942,7 +1942,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a font {0}.
+        ///   Looks up a localized string similar to Update for the font “{0}”.
         /// </summary>
         public static string ContentInstallation_FontExisting {
             get {
@@ -1951,7 +1951,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New font {0}.
+        ///   Looks up a localized string similar to New font “{0}”.
         /// </summary>
         public static string ContentInstallation_FontNew {
             get {
@@ -1960,7 +1960,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep Skins Previews.
+        ///   Looks up a localized string similar to Update over existing files, keep skins previews.
         /// </summary>
         public static string ContentInstallation_KeepSkinsPreviews {
             get {
@@ -1969,7 +1969,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep UI Information.
+        ///   Looks up a localized string similar to Update over existing files, keep UI information.
         /// </summary>
         public static string ContentInstallation_KeepUiInformation {
             get {
@@ -1978,7 +1978,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep UI Information &amp; Skins Previews.
+        ///   Looks up a localized string similar to Update over existing files, keep UI information &amp; skins previews.
         /// </summary>
         public static string ContentInstallation_KeepUiInformationAndSkinsPreviews {
             get {
@@ -1987,7 +1987,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a showroom {0}.
+        ///   Looks up a localized string similar to Update for the showroom {0}.
         /// </summary>
         public static string ContentInstallation_ShowroomExisting {
             get {
@@ -2005,7 +2005,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a track {0}.
+        ///   Looks up a localized string similar to Update for {0}.
         /// </summary>
         public static string ContentInstallation_TrackExisting {
             get {
@@ -2023,7 +2023,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update for a weather {0}.
+        ///   Looks up a localized string similar to Update for the weather “{0}”.
         /// </summary>
         public static string ContentInstallation_WeatherExisting {
             get {
@@ -2032,7 +2032,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New weather {0}.
+        ///   Looks up a localized string similar to New weather “{0}”.
         /// </summary>
         public static string ContentInstallation_WeatherNew {
             get {
@@ -2041,7 +2041,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t load content pack.
+        ///   Looks up a localized string similar to Can’t load CM’s data.
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent {
             get {
@@ -2055,6 +2055,15 @@ namespace AcManager.Tools {
         public static string ContentSyncronizer_CannotLoadContent_Commentary {
             get {
                 return ResourceManager.GetString("ContentSyncronizer_CannotLoadContent_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brake.
+        /// </summary>
+        public static string Controls_Brake {
+            get {
+                return ResourceManager.GetString("Controls_Brake", resourceCulture);
             }
         }
         
@@ -2122,11 +2131,20 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flash Headlights.
+        ///   Looks up a localized string similar to Flash headlights.
         /// </summary>
         public static string Controls_FlashHeadlights {
             get {
                 return ResourceManager.GetString("Controls_FlashHeadlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gas.
+        /// </summary>
+        public static string Controls_Gas {
+            get {
+                return ResourceManager.GetString("Controls_Gas", resourceCulture);
             }
         }
         
@@ -2284,7 +2302,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MGU-H Mode.
+        ///   Looks up a localized string similar to MGU-H mode.
         /// </summary>
         public static string Controls_Mguh_Mode {
             get {
@@ -2293,7 +2311,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decrease Delivery.
+        ///   Looks up a localized string similar to Decrease delivery.
         /// </summary>
         public static string Controls_Mguk_DecreaseDelivery {
             get {
@@ -2302,7 +2320,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decrease Recovery.
+        ///   Looks up a localized string similar to Decrease recovery.
         /// </summary>
         public static string Controls_Mguk_DecreaseRecovery {
             get {
@@ -2311,7 +2329,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Increase Delivery.
+        ///   Looks up a localized string similar to Increase delivery.
         /// </summary>
         public static string Controls_Mguk_IncreaseDelivery {
             get {
@@ -2320,7 +2338,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Increase Recovery.
+        ///   Looks up a localized string similar to Increase recovery.
         /// </summary>
         public static string Controls_Mguk_IncreaseRecovery {
             get {
@@ -2361,6 +2379,15 @@ namespace AcManager.Tools {
         public static string Controls_PreviousGear {
             get {
                 return ResourceManager.GetString("Controls_PreviousGear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steer.
+        /// </summary>
+        public static string Controls_Steer {
+            get {
+                return ResourceManager.GetString("Controls_Steer", resourceCulture);
             }
         }
         
@@ -2473,7 +2500,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AssettoCorsa.club is changed..
+        ///   Looks up a localized string similar to AssettoCorsa.club has changed..
         /// </summary>
         public static string DirectLoader_AcClubChanged {
             get {
@@ -2491,7 +2518,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Drive is changed..
+        ///   Looks up a localized string similar to Google Drive has changed..
         /// </summary>
         public static string DirectLoader_GoogleDriveChanged {
             get {
@@ -2500,7 +2527,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RaceDepartment is changed..
+        ///   Looks up a localized string similar to RaceDepartment has changed..
         /// </summary>
         public static string DirectLoader_RdChanged {
             get {
@@ -2644,7 +2671,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Font.
+        ///   Looks up a localized string similar to Delete font.
         /// </summary>
         public static string FontObject_DeleteFont {
             get {
@@ -2662,7 +2689,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable Font.
+        ///   Looks up a localized string similar to Disable font.
         /// </summary>
         public static string FontObject_DisableFont {
             get {
@@ -2761,7 +2788,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep Skin Preview.
+        ///   Looks up a localized string similar to Update over existing files, keep skin preview.
         /// </summary>
         public static string Installator_KeepSkinPreview {
             get {
@@ -2770,7 +2797,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep UI Information &amp; Skin Preview.
+        ///   Looks up a localized string similar to Update over existing files, keep UI information &amp; skin preview.
         /// </summary>
         public static string Installator_KeepUiInformationAndSkinPreview {
             get {
@@ -2779,7 +2806,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove Existing First.
+        ///   Looks up a localized string similar to Clean installation.
         /// </summary>
         public static string Installator_RemoveExistingFirst {
             get {
@@ -2788,7 +2815,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Everytything.
+        ///   Looks up a localized string similar to Update over existing files.
         /// </summary>
         public static string Installator_UpdateEverything {
             get {
@@ -2797,7 +2824,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lock Car.
+        ///   Looks up a localized string similar to Lock car.
         /// </summary>
         public static string JumpStart_CarLocked {
             get {
@@ -2806,7 +2833,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drive Through.
+        ///   Looks up a localized string similar to Drive through.
         /// </summary>
         public static string JumpStart_DriveThrough {
             get {
@@ -2815,7 +2842,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Teleport To Pits.
+        ///   Looks up a localized string similar to Teleport to pits.
         /// </summary>
         public static string JumpStart_TeleportToPit {
             get {
@@ -3004,7 +3031,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Supported.
+        ///   Looks up a localized string similar to Not supported.
         /// </summary>
         public static string NotSupported {
             get {
@@ -3013,7 +3040,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t Run.
+        ///   Looks up a localized string similar to Can’t run.
         /// </summary>
         public static string OfficialStarter_CannotRun {
             get {
@@ -3376,7 +3403,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Admin Password Input.
+        ///   Looks up a localized string similar to Show admin password input.
         /// </summary>
         public static string Online_ShowAdminPasswordInputHeader {
             get {
@@ -3664,7 +3691,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Previous Session.
+        ///   Looks up a localized string similar to Previous session.
         /// </summary>
         public static string ReplayObject_PreviousSession {
             get {
@@ -4044,7 +4071,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Feedback preset.
+        ///   Looks up a localized string similar to Force feedback preset.
         /// </summary>
         public static string Shared_ForceFeedbackPreset {
             get {
@@ -4224,7 +4251,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Original file will be moved to Recycle Bin if exists.
+        ///   Looks up a localized string similar to Original file will be moved to the Recycle Bin if exists.
         /// </summary>
         public static string Solving_RestoreFrom_Commentary {
             get {
@@ -4260,7 +4287,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open File.
+        ///   Looks up a localized string similar to Open file.
         /// </summary>
         public static string SyntaxError_Solution {
             get {
@@ -4296,7 +4323,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find It.
+        ///   Looks up a localized string similar to Find it.
         /// </summary>
         public static string TrackGeoTags_FindIt {
             get {

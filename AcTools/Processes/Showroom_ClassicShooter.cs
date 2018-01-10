@@ -9,7 +9,6 @@ using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using AcTools.Windows.Input;
-using AcTools.Windows.Input.Native;
 
 namespace AcTools.Processes {
     class DistanceChange : IDisposable {
@@ -71,10 +70,13 @@ namespace AcTools.Processes {
 
             private bool _terminated;
             private Process _process;
-            private readonly InputSimulator _inputSimulator;
+
+            private readonly KeyboardSimulator _keyboard;
+            private readonly MouseSimulator _mouse;
 
             public ClassicShooter() {
-                _inputSimulator = new InputSimulator();
+                _keyboard = new KeyboardSimulator();
+                _mouse = new MouseSimulator();
             }
 
             public void SetRotate(double dx, double dy) {
@@ -209,18 +211,18 @@ namespace AcTools.Processes {
             // ReSharper disable once UnusedMember.Local
             private void DisableAutorotation() {
                 User32.BringProcessWindowToFront(_process);
-                _inputSimulator.Mouse.MoveMouseTo((int)(65536.0 * DisableRotationClickX / Screen.PrimaryScreen.Bounds.Width),
+                _mouse.MoveMouseTo((int)(65536.0 * DisableRotationClickX / Screen.PrimaryScreen.Bounds.Width),
                     (int)(65536.0 * DisableRotationClickY / Screen.PrimaryScreen.Bounds.Height));
-                _inputSimulator.Mouse.LeftButtonClick();
+                _mouse.LeftButtonClick();
             }
 
             private void RotateCam(double x, double y) {
                 PressKey(Keys.F7);
 
                 User32.BringProcessWindowToFront(_process);
-                _inputSimulator.Mouse.MoveMouseTo(32767 - 32767 * x / Screen.PrimaryScreen.Bounds.Width,
+                _mouse.MoveMouseTo(32767 - 32767 * x / Screen.PrimaryScreen.Bounds.Width,
                     32767 - 32767 * y / Screen.PrimaryScreen.Bounds.Height);
-                _inputSimulator.Mouse.RightButtonDown();
+                _mouse.RightButtonDown();
                 Wait(WaitTimeoutIteration);
 
                 var lx = 0.0;
@@ -236,7 +238,7 @@ namespace AcTools.Processes {
                     var dy = (int)Math.Round(ly) - py;
 
                     User32.BringProcessWindowToFront(_process);
-                    _inputSimulator.Mouse.MoveMouseBy(dx, dy);
+                    _mouse.MoveMouseBy(dx, dy);
                     px += dx;
                     py += dy;
 
@@ -244,7 +246,7 @@ namespace AcTools.Processes {
                 }
 
                 User32.BringProcessWindowToFront(_process);
-                _inputSimulator.Mouse.RightButtonUp();
+                _mouse.RightButtonUp();
                 PressKey(Keys.F7);
                 Wait(WaitTimeoutEnsure);
             }
@@ -286,10 +288,10 @@ namespace AcTools.Processes {
 
             private void PressKey(Keys key) {
                 User32.BringProcessWindowToFront(_process);
-                var code = (VirtualKeyCode)key;
-                _inputSimulator.Keyboard.KeyDown(code);
+                var code = key;
+                _keyboard.KeyDown(code);
                 Wait(WaitTimeoutIteration);
-                _inputSimulator.Keyboard.KeyUp(code);
+                _keyboard.KeyUp(code);
                 Wait(WaitTimeoutIteration);
             }
 

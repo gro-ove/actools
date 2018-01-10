@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Tools.SharedMemory;
@@ -10,26 +11,44 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ContinueRaceHelper : Game.GameHandler {
+        public static bool ContinueRace() {
+            try {
+                if (AcSharedMemory.Instance.IsPaused) {
+                    AcMousePretender.ClickContinueButton();
+                    return true;
+                }
+            } catch (Exception ex) {
+                Logging.Error(ex);
+            }
+
+            return false;
+        }
+
         private class MemoryListener : IDisposable {
             private KeyboardListener _keyboard;
 
             public MemoryListener() {
                 try {
                     _keyboard = new KeyboardListener();
-                    _keyboard.KeyUp += OnKey;
+                    _keyboard.PreviewKeyDown += OnKeyDown;
+                    _keyboard.PreviewKeyUp += OnKeyUp;
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
             }
 
-            private static void OnKey(object sender, VirtualKeyCodeEventArgs e) {
-                try {
-                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None && AcSharedMemory.Instance.IsPaused &&
-                            (DateTime.Now - AcSharedMemory.Instance.PauseTime).TotalSeconds > 0.15) {
-                        AcMousePretender.ClickContinueButton();
-                    }
-                } catch (Exception ex) {
-                    Logging.Error(ex);
+            private static bool _isKeyDown;
+
+            private static void OnKeyDown(object sender, VirtualKeyCodeEventArgs e) {
+                if (!_isKeyDown && e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
+                    _isKeyDown = true;
+                    e.Handled |= ContinueRace();
+                }
+            }
+
+            private static void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
+                if (e.Key == Keys.Escape) {
+                    _isKeyDown = false;
                 }
             }
 

@@ -473,6 +473,6 @@ namespace AcManager {
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetDllDirectory(string lpPathName);
+        private static extern bool SetDllDirectory(string lpPathName);
     }
 }

@@ -325,7 +325,7 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _softwareRenderingMode)) return;
                 _softwareRenderingMode = value;
                 OnPropertyChanged();
-                ValuesStorage.SetEnum(KeySoftwareRendering, value);
+                ValuesStorage.Set(KeySoftwareRendering, value);
             }
         }
         #endregion

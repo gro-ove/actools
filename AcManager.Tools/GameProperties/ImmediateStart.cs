@@ -5,8 +5,10 @@ using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {
@@ -26,7 +28,7 @@ namespace AcManager.Tools.GameProperties {
             if (_cancelled) return false;
 
             if (_process == null) {
-                _process = AcSharedMemory.TryToFindGameProcess();
+                _process = AcProcess.TryToFind();
                 if (_process == null) return false;
             }
 
@@ -43,11 +45,22 @@ namespace AcManager.Tools.GameProperties {
         }*/
 
         private IDisposable SetSharedListener() {
-            void Handler(object sender, EventArgs args) {
+            async void Handler(object sender, EventArgs args) {
                 _cancelled = true;
                 DisposeHelper.Dispose(ref _process);
                 AcSharedMemory.Instance.Start -= Handler;
-                Run(true);
+
+                for (var i = 0; i < 20; i++) {
+                    Run(true);
+
+                    var isInPit = AcSharedMemory.Instance.Shared?.Graphics.IsInPit;
+                    if (isInPit == false) {
+                        Logging.Debug("Is in pit: " + isInPit);
+                        break;
+                    }
+
+                    await Task.Delay(30);
+                }
             }
 
             AcSharedMemory.Instance.Start += Handler;

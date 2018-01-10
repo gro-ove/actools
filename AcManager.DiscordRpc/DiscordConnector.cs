@@ -49,8 +49,6 @@ namespace AcManager.DiscordRpc {
         public IDisposable SetAppId(int appId) {
             var oldValue = _overrideProcessId;
             _overrideProcessId = appId;
-            // _currentConnection?.Dispose();
-            // _currentDelay?.Cancel();
             return new ActionAsDisposable(() => _overrideProcessId = oldValue);
         }
 

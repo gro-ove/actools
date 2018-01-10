@@ -199,12 +199,20 @@ namespace AcManager.Tools.Objects {
                 } else {
                     _acdData.Refresh(null);
                 }
+
+                _steerLock.Reset();
+                OnPropertyChanged(nameof(SteerLock));
             } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.Affects(Path.Combine(Location, "data"), filename)) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));
                 } else {
                     _acdData.Refresh(FileUtils.GetRelativePath(filename, Path.Combine(Location, "data")).ToLowerInvariant());
+                }
+
+                if (FileUtils.Affects(filename, Path.Combine(Location, "data", "car.ini"))) {
+                    _steerLock.Reset();
+                    OnPropertyChanged(nameof(SteerLock));
                 }
             }
 

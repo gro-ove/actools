@@ -4,6 +4,11 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
+        [CanBeNull]
+        public static T ElementAtOrDefault<T>([NotNull] this T[] array, int index) {
+            return index >= 0 && index < array.Length ? array[index] : default(T);
+        }
+
         public static T[] Slice<T>(this T[] array, int startIndex, int length) {
             if (startIndex == 0 && length == array.Length) {
                 return array;

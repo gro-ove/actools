@@ -20,14 +20,6 @@ namespace AcManager {
         DiscordClientId,
 
         /// <summary>
-        /// Period for reading controllers values, such as pressed buttons or changed values
-        /// of axes. Default value: 16 ms.
-        /// Example: --controls-update-period=00:00.050.
-        /// </summary>
-        [FlagDefaultValue("00:00.016")]
-        ControlsUpdatePeriod,
-
-        /// <summary>
         /// Period for checking if connected controllers were changed. Default value: 1 second.
         /// Example: --controls-rescan-period=00:01.
         /// </summary>

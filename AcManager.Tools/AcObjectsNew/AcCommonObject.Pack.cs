@@ -183,10 +183,10 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (_subFiles == null) {
                     _subFiles = Directory.GetFiles(location, "*", SearchOption.AllDirectories)
-                                         .Select(x => FileUtils.GetRelativePath(x, location)).ToArray();
+                                         .Select(x => FileUtils.GetRelativePath(x, location).Replace('\\', '/')).ToArray();
                 }
 
-                var f = RegexFromQuery.Create(mask.Replace('/', '\\').Replace(@"\", @"\\"), StringMatchMode.CompleteMatch);
+                var f = RegexFromQuery.Create(mask.Replace('\\', '/'), StringMatchMode.CompleteMatch);
                 return _subFiles.Where(x => f.IsMatch(x)).Select(x => Path.Combine(location, x));
             }
 

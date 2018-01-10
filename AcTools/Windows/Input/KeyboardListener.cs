@@ -48,7 +48,7 @@ namespace AcTools.Windows.Input {
         }
 
         #region Static part
-        public static readonly int AppEventFlag = Math.Abs("typo4".GetHashCode());
+        public static readonly uint AppEventFlag = (uint)Math.Abs("accm".GetHashCode());
 
         private static readonly List<KeyboardListener> Subscribed;
         private static int _hookHandle;
@@ -115,16 +115,6 @@ namespace AcTools.Windows.Input {
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
             }
-        }
-        #endregion
-
-        #region Ignore events sent by app
-        public static void IgnoreNextKeyDown(byte virtualKeyCode) {
-
-        }
-
-        public static void IgnoreNextKeyUp(byte virtualKeyCode) {
-
         }
         #endregion
     }

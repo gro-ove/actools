@@ -32,10 +32,10 @@ namespace AcTools.Processes {
             var coordinates = coordinatesProvider(point);
             AcToolsLogging.Write($"Mouse position: {originalPosition.X}, {originalPosition.Y}; screen resolution: {screenWidth}×{screenHeight}");
 
-            var inputSimulator = new InputSimulator();
-            inputSimulator.Mouse.MoveMouseTo(65536d * coordinates.X / screenWidth, 65536d * coordinates.Y / screenHeight);
-            inputSimulator.Mouse.LeftButtonClick();
-            inputSimulator.Mouse.MoveMouseTo(65536d * originalPosition.X / screenWidth, 65536d * originalPosition.Y / screenHeight);
+            var mouse = new MouseSimulator();
+            mouse.MoveMouseTo(65536d * coordinates.X / screenWidth, 65536d * coordinates.Y / screenHeight);
+            mouse.LeftButtonClick();
+            mouse.MoveMouseTo(65536d * originalPosition.X / screenWidth, 65536d * originalPosition.Y / screenHeight);
         }
 
         // Please, feel free to add coordinates for your own screen

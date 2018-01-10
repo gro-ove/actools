@@ -55,6 +55,8 @@ EndProject
 # EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.DiscordRpc", "AcManager.DiscordRpc\AcManager.DiscordRpc.csproj", "{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.WheelAngles", "AcTools.WheelAngles\AcTools.WheelAngles.csproj", "{FB504C5F-0420-41E2-8E17-ABC25A9C5491}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -261,6 +263,14 @@ Global
 		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x64.Build.0 = Release|x64
 		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x86.ActiveCfg = Release|x86
 		{3E1FD5C5-80A7-49E8-AC58-88D8417F4052}.Release|x86.Build.0 = Release|x86
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Debug|x64.ActiveCfg = Debug|x64
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Debug|x64.Build.0 = Debug|x64
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Debug|x86.ActiveCfg = Debug|x86
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Debug|x86.Build.0 = Debug|x86
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x64.ActiveCfg = Release|x64
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x64.Build.0 = Release|x64
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x86.ActiveCfg = Release|x86
+		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

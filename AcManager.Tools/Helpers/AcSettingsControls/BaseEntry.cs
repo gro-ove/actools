@@ -58,6 +58,10 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             }
         }
 
+        public virtual bool IsCompatibleWith(T obj) {
+            return obj != null;
+        }
+
         protected virtual void OnInputChanged([CanBeNull] T oldValue, [CanBeNull] T newValue) {}
 
         public abstract void Save(IniFile ini);

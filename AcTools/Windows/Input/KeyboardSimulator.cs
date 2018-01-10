@@ -2,117 +2,81 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using AcTools.Windows.Input.Native;
+using System.Windows.Forms;
+using JetBrains.Annotations;
 
 namespace AcTools.Windows.Input {
-    public class KeyboardSimulator : IKeyboardSimulator {
-        private readonly IInputSimulator _inputSimulator;
-
-        private readonly IInputMessageDispatcher _messageDispatcher;
-
-        public KeyboardSimulator(IInputSimulator inputSimulator) {
-            if (inputSimulator == null) {
-                throw new ArgumentNullException(nameof(inputSimulator));
-            }
-
-            _inputSimulator = inputSimulator;
-            _messageDispatcher = new WindowsInputMessageDispatcher();
-        }
-
-        internal KeyboardSimulator(IInputSimulator inputSimulator, IInputMessageDispatcher messageDispatcher) {
-            if (inputSimulator == null) throw new ArgumentNullException(nameof(inputSimulator));
-
-            if (messageDispatcher == null) {
-                throw new InvalidOperationException(
-                        string.Format(
-                                "The {0} cannot operate with a null {1}. Please provide a valid {1} instance to use for dispatching {2} messages.",
-                                typeof(KeyboardSimulator).Name, typeof(IInputMessageDispatcher).Name,
-                                typeof(InputEntry).Name));
-            }
-
-            _inputSimulator = inputSimulator;
-            _messageDispatcher = messageDispatcher;
-        }
-
-        public IMouseSimulator Mouse => _inputSimulator.Mouse;
-
-        private static void ModifiersDown(InputBuilder builder, IEnumerable<VirtualKeyCode> modifierKeyCodes) {
+    public class KeyboardSimulator {
+        private static void ModifiersDown(InputBuilder builder, IEnumerable<Keys> modifierKeyCodes) {
             if (modifierKeyCodes == null) return;
             foreach (var key in modifierKeyCodes) {
                 builder.AddKeyDown(key);
             }
         }
 
-        private static void ModifiersUp(InputBuilder builder, IEnumerable<VirtualKeyCode> modifierKeyCodes) {
+        private static void ModifiersUp(InputBuilder builder, IEnumerable<Keys> modifierKeyCodes) {
             if (modifierKeyCodes == null) return;
-
-            var stack = new Stack<VirtualKeyCode>(modifierKeyCodes);
+            var stack = new Stack<Keys>(modifierKeyCodes);
             while (stack.Count > 0) {
                 builder.AddKeyUp(stack.Pop());
             }
         }
 
-        private void KeysPress(InputBuilder builder, IEnumerable<VirtualKeyCode> keyCodes) {
+        private void KeysPress(InputBuilder builder, IEnumerable<Keys> keyCodes) {
             if (keyCodes == null) return;
             foreach (var key in keyCodes) {
                 builder.AddKeyPress(key);
             }
         }
 
-        private void SendSimulatedInput(InputEntry[] inputList) {
-            _messageDispatcher.DispatchInput(inputList);
+        private void SendSimulatedInput(User32.Input[] inputList) {
+            InputBuilder.DispatchInput(inputList);
         }
 
-        public IKeyboardSimulator KeyDown(VirtualKeyCode keyCode) {
+        public KeyboardSimulator KeyDown(Keys keyCode) {
             var inputList = new InputBuilder().AddKeyDown(keyCode).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
 
-        public IKeyboardSimulator KeyUp(VirtualKeyCode keyCode) {
+        public KeyboardSimulator KeyUp(Keys keyCode) {
             var inputList = new InputBuilder().AddKeyUp(keyCode).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
 
-        public IKeyboardSimulator KeyPress(VirtualKeyCode keyCode) {
+        public KeyboardSimulator KeyPress(Keys keyCode) {
             var inputList = new InputBuilder().AddKeyPress(keyCode).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
 
-        public IKeyboardSimulator KeyPress(params VirtualKeyCode[] keyCodes) {
+        public KeyboardSimulator KeyPress(params Keys[] keyCodes) {
             var builder = new InputBuilder();
             KeysPress(builder, keyCodes);
             SendSimulatedInput(builder.ToArray());
             return this;
         }
 
-        public IKeyboardSimulator ModifiedKeyStroke(VirtualKeyCode modifierKeyCode, VirtualKeyCode keyCode) {
+        public KeyboardSimulator ModifiedKeyStroke(Keys modifierKeyCode, Keys keyCode) {
             ModifiedKeyStroke(new[] { modifierKeyCode }, new[] { keyCode });
             return this;
         }
 
-        public IKeyboardSimulator ModifiedKeyStroke(IEnumerable<VirtualKeyCode> modifierKeyCodes, VirtualKeyCode keyCode) {
+        public KeyboardSimulator ModifiedKeyStroke(IEnumerable<Keys> modifierKeyCodes, Keys keyCode) {
             ModifiedKeyStroke(modifierKeyCodes, new[] { keyCode });
             return this;
         }
 
-        /// <summary>
-        /// Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the modifierKey and K and C are the keys.
-        /// The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
-        /// </summary>
-        /// <param name="modifierKey">The modifier key</param>
-        /// <param name="keyCodes">The list of keys to simulate</param>
-        public IKeyboardSimulator ModifiedKeyStroke(VirtualKeyCode modifierKey, IEnumerable<VirtualKeyCode> keyCodes) {
+        public KeyboardSimulator ModifiedKeyStroke(Keys modifierKey, IEnumerable<Keys> keyCodes) {
             ModifiedKeyStroke(new[] { modifierKey }, keyCodes);
             return this;
         }
 
-        public IKeyboardSimulator ModifiedKeyStroke(IEnumerable<VirtualKeyCode> modifierKeyCodes, IEnumerable<VirtualKeyCode> keyCodes) {
+        public KeyboardSimulator ModifiedKeyStroke(IEnumerable<Keys> modifierKeyCodes, IEnumerable<Keys> keyCodes) {
             var builder = new InputBuilder();
 
-            var virtualKeyCodes = modifierKeyCodes as IList<VirtualKeyCode> ?? modifierKeyCodes.ToList();
+            var virtualKeyCodes = modifierKeyCodes as IList<Keys> ?? modifierKeyCodes.ToList();
             ModifiersDown(builder, virtualKeyCodes);
             KeysPress(builder, keyCodes);
             ModifiersUp(builder, virtualKeyCodes);
@@ -121,24 +85,24 @@ namespace AcTools.Windows.Input {
             return this;
         }
 
-        public IKeyboardSimulator TextEntry(string text) {
+        public KeyboardSimulator TextEntry(string text) {
             var inputList = new InputBuilder().AddCharacters(text).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
 
-        public IKeyboardSimulator TextEntry(char character) {
+        public KeyboardSimulator TextEntry(char character) {
             var inputList = new InputBuilder().AddCharacter(character).ToArray();
             SendSimulatedInput(inputList);
             return this;
         }
 
-        public IKeyboardSimulator Sleep(int millsecondsTimeout) {
+        public KeyboardSimulator Sleep(int millsecondsTimeout) {
             Thread.Sleep(millsecondsTimeout);
             return this;
         }
 
-        public IKeyboardSimulator Sleep(TimeSpan timeout) {
+        public KeyboardSimulator Sleep(TimeSpan timeout) {
             Thread.Sleep(timeout);
             return this;
         }

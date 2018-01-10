@@ -576,6 +576,15 @@
   <data name="Controls_Brakes" xml:space="preserve">
     <value>Brakes</value>
   </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Gas</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Brake</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Steer</value>
+  </data>
   <data name="Controls_SteerLeft" xml:space="preserve">
     <value>Steer left</value>
   </data>

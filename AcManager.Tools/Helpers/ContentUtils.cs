@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,24 +22,26 @@ namespace AcManager.Tools.Helpers {
             Registered[key.ToLowerInvariant()] = resourceManager;
         }
 
-        [ContractAnnotation("null => null; notnull => notnull")]
-        public static string Translate(string line) {
-            if (line == null) return null;
-            if (line.Length < 3 || line[0] != '{' || line[line.Length - 1] != '}') return line;
-
+        private static string GetString(string piece) {
             ResourceManager resourceManager;
             string key;
 
-            var s = line.Split(new[] { '.' }, 2);
+            var s = piece.Split(new[] { '.' }, 2);
             if (s.Length == 1) {
                 resourceManager = Registered.Values.FirstOrDefault();
-                key = line.Substring(1, line.Length - 2);
+                key = piece;
             } else {
-                resourceManager = Registered.GetValueOrDefault(s[0].Substring(1).ToLowerInvariant());
-                key = s[1].Substring(0, s[1].Length - 1);
+                resourceManager = Registered.GetValueOrDefault(s[0].ToLowerInvariant());
+                key = s[1];
             }
 
-            return resourceManager?.GetString(key, CultureInfo.CurrentUICulture) ?? line;
+            return resourceManager?.GetString(key, CultureInfo.CurrentUICulture);
+        }
+
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static string Translate(string line) {
+            return !(line?.Length > 2) || line.IndexOf('{') == -1 ? line
+                    : Regex.Replace(line, @"\{(\w+(?:\.\w+)?)\}", m => GetString(m.Groups[1].Value) ?? m.Value);
         }
 
         [CanBeNull]

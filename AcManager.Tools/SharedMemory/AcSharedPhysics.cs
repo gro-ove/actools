@@ -1,23 +1,8 @@
 ﻿using System;
-using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcManager.Tools.SharedMemory {
-    internal static class StructExtension {
-        [Pure, NotNull]
-        public static T ToStruct<T>(this MemoryMappedFile file, byte[] buffer) {
-            using (var stream = file.CreateViewStream()) {
-                stream.Read(buffer, 0, buffer.Length);
-                var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                var data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
-                handle.Free();
-                return data;
-            }
-        }
-    }
-
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode), Serializable]
     public class AcSharedPhysics {
         public int PacketId;
@@ -95,7 +80,7 @@ namespace AcManager.Tools.SharedMemory {
         // added in 1.6
         public float AirTemp;
         public float RoadTemp;
-        
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] LocalAngularVelocity;
 
@@ -107,7 +92,7 @@ namespace AcManager.Tools.SharedMemory {
         public int ErsRecoveryLevel;
         public int ErsPowerLevel;
         public int ErsHeatCharging;
-        public int ErsisCharging;
+        public int ErsIsCharging;
         public float KersCurrentKJ;
 
         [MarshalAs(UnmanagedType.Bool)]
@@ -150,7 +135,7 @@ namespace AcManager.Tools.SharedMemory {
         // added in 1.12
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] LocalVelocity;
-        
+
         public static readonly int Size = Marshal.SizeOf(typeof(AcSharedPhysics));
         public static readonly byte[] Buffer = new byte[Size];
     }

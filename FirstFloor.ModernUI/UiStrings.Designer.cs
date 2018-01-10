@@ -1519,7 +1519,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update to version [b]{0}[/b] is ready.[br][br]Click here to restart Content Manager and apply it, or hold [b]Ctrl[/b] to simply close the app and install it later..
+        ///   Looks up a localized string similar to Update to version [b]{0}[/b] is ready.[br][br]Hold [b]Ctrl[/b] and click to restart Content Manager and apply it, or click to simply close the app and install the update later..
         /// </summary>
         public static string UpdateAvailable {
             get {

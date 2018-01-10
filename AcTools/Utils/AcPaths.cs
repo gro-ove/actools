@@ -6,6 +6,13 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public static class AcPaths {
+        public static bool OptionEaseAcRootCheck;
+
+        public static bool IsAcRoot([NotNull] string directory) {
+            return Directory.Exists(Path.Combine(directory, "content", "cars")) && Directory.Exists(Path.Combine(directory, "apps"))
+                    && File.Exists(Path.Combine(directory, "acs.exe"));
+        }
+
         [NotNull, Pure]
         public static string GetDocumentsDirectory() {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Assetto Corsa");

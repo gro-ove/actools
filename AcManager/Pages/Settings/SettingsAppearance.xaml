@@ -173,7 +173,7 @@
 
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
           <Button Visibility="{Binding SoftwareRenderingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" />
+              Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2" />
           <CheckBox IsChecked="{Binding SoftwareRendering}">
             <Label Content="Disable hardware acceleration for UI (not recommended!)" />
           </CheckBox>

@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
     mc:Ignorable="d">
   <mui:ModernTab Layout="Tab" SelectedSource="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" SaveKey="__AcSettingsControls_Wheel.SelectedPage"
-      Margin="0 16 0 0">
+      Margin="0 0 0 0" LinksMargin="0 0 44 0" FrameMargin="0 28 0 0">
     <mui:ModernTab.Links>
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Axis}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Buttons}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Buttons.xaml" />

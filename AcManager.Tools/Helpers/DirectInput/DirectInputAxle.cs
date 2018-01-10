@@ -3,9 +3,12 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public sealed class DirectInputAxle : BaseInputProvider<double>, IDirectInputProvider {
-        public DirectInputAxle(IDirectInputDevice device, int id) : base(id) {
+        public string DefaultName { get; }
+
+        public DirectInputAxle(IDirectInputDevice device, int id, string displayName = null) : base(id) {
             Device = device;
-            ShortName = (id + 1).ToInvariantString();
+            DefaultName = string.Format(ToolsStrings.Input_Axle, (id + 1).ToInvariantString());
+            ShortName = displayName ?? (id + 1).ToInvariantString();
             DisplayName = string.Format(ToolsStrings.Input_Axle, ShortName);
         }
 

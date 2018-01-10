@@ -5,20 +5,39 @@ using AcTools.DataFile;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     public class WheelButtonEntry : BaseEntry<DirectInputButton>, IDirectInputEntry {
-        public WheelButtonEntry(string id, string name) : base(id, name) {}
+        private readonly bool _supportsPov;
+
+        public WheelButtonEntry(string id, string name, bool supportsPov = false) : base(id, name) {
+            _supportsPov = supportsPov;
+        }
+
+        public override bool IsCompatibleWith(DirectInputButton obj) {
+            return _supportsPov ? base.IsCompatibleWith(obj) : obj?.GetType() == typeof(DirectInputButton);
+        }
 
         public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
 
             var deviceId = section.GetInt("JOY", -1);
             var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
-            Input = device?.GetButton(section.GetInt("BUTTON", -1));
+
+            var pov = section.GetInt("__CM_POV", -1);
+            var direction = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+            Input = pov != -1 ? device?.GetPov(pov, direction) : device?.GetButton(section.GetInt("BUTTON", -1));
         }
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
             section.Set("JOY", Input?.Device.Index);
-            section.Set("BUTTON", Input?.Id ?? -1);
+
+            if (Input is DirectInputPov pov) {
+                section.Set("__CM_POV", pov.Id);
+                section.SetIntEnum("__CM_POV_DIR", pov.Direction);
+            } else {
+                section.Set("BUTTON", Input?.Id ?? -1);
+                section.Remove("__CM_POV");
+                section.Remove("__CM_POV_DIR");
+            }
         }
 
         IDirectInputDevice IDirectInputEntry.Device => Input?.Device;

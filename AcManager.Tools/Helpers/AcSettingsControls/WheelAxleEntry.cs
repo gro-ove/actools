@@ -209,7 +209,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                     Gamma = section.GetDouble("STEER_GAMMA", 1d);
                 }
 
-                DegressOfRotation = section.GetInt("LOCK", 900);
+                DegressOfRotation = section.GetIntNullable("__CM_ORIGINAL_LOCK") ?? section.GetInt("LOCK", 900);
                 Filter = section.GetDouble("STEER_FILTER", 0d).ToIntPercentage();
                 SpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0d).ToIntPercentage();
             }
@@ -238,6 +238,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 }
 
                 section.Set("LOCK", DegressOfRotation);
+                section.Remove("__CM_ORIGINAL_LOCK");
                 section.Set("STEER_FILTER", Filter.ToDoublePercentage());
                 section.Set("SPEED_SENSITIVITY", SpeedSensitivity.ToDoublePercentage());
             }

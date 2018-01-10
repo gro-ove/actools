@@ -6,6 +6,7 @@ using System.Linq;
 using System.Timers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -142,17 +143,7 @@ namespace AcManager.Tools.SharedMemory {
         [CanBeNull]
         public Process GameProcess => _gameProcess;
 
-        private static bool IsGameProcess(Process process) {
-            var filename = process.GetFilenameSafe();
-            return filename == null || AcRootDirectory.CheckDirectory(Path.GetDirectoryName(filename));
-        }
-
-        [CanBeNull]
-        public static Process TryToFindGameProcess() {
-            var processes = Process.GetProcesses();
-            return processes.FirstOrDefault(x => (x.ProcessName == "acs" || x.ProcessName == "acs_x86") && IsGameProcess(x)) ??
-                    processes.FirstOrDefault(x => x.ProcessName.IndexOf(@"acs", StringComparison.OrdinalIgnoreCase) != -1 && IsGameProcess(x));
-        }
+        private Stopwatch _samePackedIdTime;
 
         private void UpdatePhysics() {
             if (_physicsFile == null) return;
@@ -172,7 +163,7 @@ namespace AcManager.Tools.SharedMemory {
                     IsPaused = false;
                     if (Status != AcSharedMemoryStatus.Live) {
                         Status = AcSharedMemoryStatus.Live;
-                        _gameProcess = TryToFindGameProcess();
+                        _gameProcess = AcProcess.TryToFind();
                         KnownProcess = _gameProcess != null;
                     }
 
@@ -184,7 +175,21 @@ namespace AcManager.Tools.SharedMemory {
                     Status = AcSharedMemoryStatus.Connected;
                     Shared = null;
                 } else {
-                    IsPaused = Shared != null && Shared.Graphics.Status == AcGameStatus.AcPause;
+                    var shared = Shared;
+                    if (shared == null || shared.Graphics.Status == AcGameStatus.AcPause) {
+                        IsPaused = true;
+                    } else {
+                        // Sometimes, AC doesn’t bother setting Status flag to AcPause
+                        if (_samePackedIdTime == null) {
+                            _samePackedIdTime = Stopwatch.StartNew();
+                            IsPaused = false;
+                        } else if (_samePackedIdTime.ElapsedMilliseconds > 50) {
+                            // Might be a false positive at 20 FPS, but who would play like that anyway?
+                            IsPaused = true;
+                        } else {
+                            IsPaused = false;
+                        }
+                    }
                 }
             } catch (Exception ex) {
                 Logging.Error(ex);

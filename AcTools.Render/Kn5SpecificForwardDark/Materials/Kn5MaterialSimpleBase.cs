@@ -100,11 +100,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-#if DEBUG
         public virtual void SetMatrices(Matrix objectTransform, ICamera camera) {
-#else
-        public virtual void SetMatrices(Matrix objectTransform, ICamera camera) {
-#endif
             Effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
             Effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
             Effect.FxWorld.SetMatrix(objectTransform);

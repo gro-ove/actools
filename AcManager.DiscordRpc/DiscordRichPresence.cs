@@ -8,10 +8,10 @@ using JetBrains.Annotations;
 
 namespace AcManager.DiscordRpc {
     public struct DiscordJoinRequest {
-        public string UserId { get; internal set; }
-        public string UserName { get; internal set; }
-        public string Discriminator { get; internal set; }
-        public string AvatarUrl { get; internal set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string Discriminator { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
     public enum DiscordJoinRequestReply {

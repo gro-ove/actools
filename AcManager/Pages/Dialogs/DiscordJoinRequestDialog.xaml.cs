@@ -9,10 +9,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using AcManager.DiscordRpc;
+using AcManager.Tools.Helpers.DirectInput;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -24,11 +26,15 @@ using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.DirectInput;
 using Keys = System.Windows.Forms.Keys;
+using Path = System.Windows.Shapes.Path;
 
 namespace AcManager.Pages.Dialogs {
     public partial class DiscordJoinRequestDialog : INotifyPropertyChanged {
         private DirectInput _directInput;
-        private List<Joystick> _devices;
+
+        [CanBeNull]
+        private Joystick[] _devices;
+        private JoystickState[] _states;
 
         private static Point GetWindowPosition(int width, int height) {
             var screen = System.Windows.Forms.Screen.FromPoint(System.Windows.Forms.Cursor.Position);
@@ -37,6 +43,60 @@ namespace AcManager.Pages.Dialogs {
             var y = bounds.Bottom - height - 20;
             return new Point(x, y);
         }
+
+        private class ControlsInput {
+            private int _joy, _button, _pov;
+            private Keys _key;
+            private DirectInputPovDirection _povDirection;
+
+            public ControlsInput(IniFileSection section, Keys key) {
+                _joy = section.GetInt("JOY", -1);
+                _button = section.GetInt("BUTTON", -1);
+                _pov = section.GetInt("__CM_POV", -1);
+                _povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+
+                var k = section.GetInt("KEY", -1);
+                _key = k == -1 ? key : (Keys)k;
+            }
+
+            [CanBeNull]
+            private string GetIconKey() {
+                if (_joy != -1 && _pov != -1) {
+                    switch (_povDirection) {
+                        case DirectInputPovDirection.Left:
+                            return "JoystickPovLeftIconData";
+                        case DirectInputPovDirection.Top:
+                            return "JoystickPovUpIconData";
+                        case DirectInputPovDirection.Right:
+                            return "JoystickPovRightIconData";
+                        case DirectInputPovDirection.Bottom:
+                            return "JoystickPovDownIconData";
+                    }
+                }
+
+                return null;
+            }
+
+            public void SetIcon(Path p, FrameworkElement resources) {
+                p.Data = resources.TryFindResource(GetIconKey() ?? "") as Geometry;
+                if (p.Data != null) {
+                    p.Visibility = Visibility.Visible;
+                }
+            }
+
+            public bool IsPressed(JoystickState[] states) {
+                if (User32.IsKeyPressed(_key)) return true;
+
+                var state = states.ElementAtOrDefault(_joy);
+                if (state == null) return false;
+
+                return state.GetButtons().ElementAtOrDefault(_button)
+                        || _pov >= 0 && _pov < state.GetPointOfViewControllers().Length
+                                && _povDirection.IsInRange(state.GetPointOfViewControllers().ElementAtOrDefault(_pov));
+            }
+        }
+
+        private readonly ControlsInput _yes, _no;
 
         public DiscordJoinRequestDialog(DiscordJoinRequest args, CancellationToken cancellation = default(CancellationToken)) {
             cancellation.Register(async () => {
@@ -59,13 +119,20 @@ namespace AcManager.Pages.Dialogs {
 
             this.OnActualUnload(OnUnload);
 
+            var config = new IniFile(AcPaths.GetCfgControlsFilename());
+            _yes = new ControlsInput(config["__CM_DISCORD_REQUEST_ACCEPT"], Keys.Enter);
+            _no = new ControlsInput(config["__CM_DISCORD_REQUEST_DENY"], Keys.Back);
+
             try {
                 if (_directInput == null) {
                     _directInput = new DirectInput();
                 }
 
                 _devices = _directInput.GetDevices(DeviceClass.GameController,
-                        DeviceEnumerationFlags.AttachedOnly).Select(x => new Joystick(_directInput, x.InstanceGuid)).ToList();
+                        DeviceEnumerationFlags.AttachedOnly).Select(x => new Joystick(_directInput, x.InstanceGuid)).ToArray();
+                _states = new JoystickState[_devices.Length];
+                _yes.SetIcon(YesIcon, this);
+                _no.SetIcon(NoIcon, this);
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -91,6 +158,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnRendering(object sender, RenderingEventArgs args) {
+            if (_devices == null) return;
+
             switch (MessageBoxResult) {
                 case MessageBoxResult.No:
                     AlterValue(YesBar, false, null);
@@ -100,33 +169,26 @@ namespace AcManager.Pages.Dialogs {
                     return;
             }
 
-            var anyLeftPressed = User32.IsKeyPressed(Keys.Left) || User32.IsKeyPressed(Keys.Enter);
-            var anyRightPressed = User32.IsKeyPressed(Keys.Right) || User32.IsKeyPressed(Keys.Escape);
-
-            for (var index = _devices.Count - 1; index >= 0; index--) {
+            for (var index = _devices.Length - 1; index >= 0; index--) {
                 var joystick = _devices[index];
+                if (joystick == null) continue;
 
                 try {
-                    if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure || Result.Last.IsFailure) {
-                        continue;
-                    }
-
-                    var pointOfViews = joystick.GetCurrentState().GetPointOfViewControllers();
-                    for (var i = 0; i < pointOfViews.Length; i++) {
-                        var value = pointOfViews[i];
-                        anyLeftPressed |= value >= 22500 && value <= 31500;
-                        anyRightPressed |= value >= 4500 && value <= 13500;
+                    if (!joystick.Acquire().IsFailure && !joystick.Poll().IsFailure && !Result.Last.IsFailure) {
+                        _states[index] = joystick.GetCurrentState();
                     }
                 } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
-                    _devices.Remove(joystick);
+                    _devices[index] = null;
                 } catch (DirectInputException e) {
-                    _devices.Remove(joystick);
+                    _devices[index] = null;
                     Logging.Warning(e);
                 }
             }
 
-            AlterValue(NoBar, anyRightPressed, NoCommand);
-            AlterValue(YesBar, !anyRightPressed && anyLeftPressed, YesCommand);
+            var yes = _yes.IsPressed(_states);
+            var no = _no.IsPressed(_states);
+            AlterValue(NoBar, no, NoCommand);
+            AlterValue(YesBar, !no && yes, YesCommand);
         }
 
         private AsyncCommand _yesCommand;

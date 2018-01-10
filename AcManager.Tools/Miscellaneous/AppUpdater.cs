@@ -249,7 +249,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public DelegateCommand FinishUpdateCommand => _finishUpdateCommand ??
                 (_finishUpdateCommand = new DelegateCommand(() => {
-                    if (Keyboard.Modifiers == ModifierKeys.Control) {
+                    if (Keyboard.Modifiers != ModifierKeys.Control) {
                         Environment.Exit(0);
                         return;
                     }

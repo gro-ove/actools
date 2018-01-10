@@ -16,6 +16,7 @@ using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.WheelAngles;
 using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -31,7 +32,6 @@ using Key = System.Windows.Input.Key;
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
         public static bool OptionDebugControlles = false;
-        public static TimeSpan OptionUpdatePeriod = TimeSpan.FromMilliseconds(1000d / 60d);
         public static TimeSpan OptionRescanPeriod = TimeSpan.FromSeconds(1d);
         public static IFilter<string> OptionIgnoreControlsFilter;
 
@@ -47,6 +47,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         internal ControlsSettings() : base("controls", false) {
+            _keyboardInput = new Dictionary<int, KeyboardInputButton>();
+
             WheelAxleEntries = new[] {
                 SteerAxleEntry,
                 new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
@@ -62,14 +64,62 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
-            try {
-                _keyboardInput = new Dictionary<int, KeyboardInputButton>();
-                _timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
-                    Interval = OptionUpdatePeriod
-                };
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
+            #region Constructing system entries
+            SystemRaceButtonEntries = new[] {
+                new SystemButtonEntryCombined("__CM_PAUSE", "Pause race", fixedValueCallback: x => new[]{ Keys.Escape }),
+                new SystemButtonEntryCombined("__CM_START_SESSION", "Start race", customCommand: true),
+                new SystemButtonEntryCombined("__CM_START_STOP_SESSION", "Start/setup", customCommand: true,
+                        toolTip: "Combined command: if you’re in pits, driving will started, otherwise, you’ll get to pits", delayed: true),
+                new SystemButtonEntryCombined("RESET_RACE", "Restart race", delayed: true),
+                new SystemButtonEntryCombined("__CM_RESET_SESSION", "Restart session", customCommand: true, delayed: true),
+                new SystemButtonEntryCombined("__CM_TO_PITS", "Teleport to pits", customCommand: true, delayed: true),
+                new SystemButtonEntryCombined("__CM_SETUP_CAR", "Setup in pits", customCommand: true, delayed: true),
+                new SystemButtonEntryCombined("__CM_EXIT", "Exit the race", customCommand: true, delayed: true),
+            };
+
+            SystemUiButtonEntries = new[] {
+                new SystemButtonEntryCombined("HIDE_APPS", "Apps"),
+                new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display"),
+                new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names"),
+                new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line"),
+            };
+
+            SystemReplayButtonEntries = new[] {
+                new SystemButtonEntryCombined("START_REPLAY", "Start replay"),
+                new SystemButtonEntryCombined("PAUSE_REPLAY", "Pause replay"),
+                new SystemButtonEntryCombined("NEXT_LAP", "Next lap"),
+                new SystemButtonEntryCombined("PREVIOUS_LAP", "Previous lap"),
+                new SystemButtonEntryCombined("NEXT_CAR", "Next car"),
+                new SystemButtonEntryCombined("PREVIOUS_CAR", "Previous car"),
+                new SystemButtonEntryCombined("SLOWMO", "Slow motion"),
+                new SystemButtonEntryCombined("FFWD", "Fast-forward"),
+                new SystemButtonEntryCombined("REV", "Rewind"),
+            };
+
+            SystemDiscordButtonEntries = new[] {
+                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_ACCEPT", "Accept join request", fixedValueCallback: x => new[]{ Keys.Enter }, delayed: true),
+                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_DENY", "Deny join request", fixedValueCallback: x => new[]{ Keys.Back }, delayed: true)
+            };
+
+            var systemAbs = new SystemButtonEntryCombined("ABS", "ABS", true);
+            var systemTractionControl = new SystemButtonEntryCombined("TRACTION_CONTROL", "Traction control", true);
+
+            SystemCarButtonEntries = new[] {
+                new SystemButtonEntryCombined("MOUSE_STEERING", "Mouse steering"),
+                new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI"),
+                new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter"),
+                systemAbs,
+                new SystemButtonEntryCombined("__CM_ABS_DECREASE", "ABS (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
+                    Keys.Control, Keys.Shift, key.Value
+                } : null, buttonReference: systemAbs.SystemButton),
+                systemTractionControl,
+                new SystemButtonEntryCombined("__CM_TRACTION_CONTROL_DECREASE", "Traction c. (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
+                    Keys.Control, Keys.Shift, key.Value
+                } : null, buttonReference: systemTractionControl.SystemButton),
+                new SystemButtonEntryCombined("KERS", "KERS"),
+            };
+
+            #endregion
         }
 
         internal void FinishInitialization() {
@@ -78,18 +128,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.PropertyChanged += EntryPropertyChanged;
             }
 
-            // TODO: double "already used as" message
+            // TODO: double “already used as” message
             UpdateWheelHShifterDevice();
-
-            _timer.Tick += OnTick;
-            _timer.IsEnabled = true;
         }
 
         #region Devices
         [CanBeNull]
         private SlimDX.DirectInput.DirectInput _directInput;
         private readonly Dictionary<int, KeyboardInputButton> _keyboardInput;
-        private readonly DispatcherTimer _timer;
 
         private int _used;
 
@@ -100,11 +146,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                 if (_used == 0) {
                     RescanDevices();
+
+                    Logging.Debug("Subscribed");
+                    CompositionTargetEx.Rendering -= OnTick;
+                    CompositionTargetEx.Rendering += OnTick;
                 }
 
                 _used = value;
                 OnPropertyChanged(false);
                 UpdateInputs();
+
+                if (value == 0) {
+                    Logging.Debug("Unsubscribed");
+                    CompositionTargetEx.Rendering -= OnTick;
+                }
             }
         }
 
@@ -114,13 +169,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Devices.FirstOrDefault()?.RunControlPanel();
         }));
 
-        public event EventHandler<DirectInputAxleEventArgs> AxleEventHandler;
-        public event EventHandler<DirectInputButtonEventArgs> ButtonEventHandler;
-
         private Stopwatch _rescanStopwatch;
 
         private void UpdateInputs() {
-            if (Used == 0 && AxleEventHandler == null && ButtonEventHandler == null) return;
+            if (Used == 0) return;
 
             if (_rescanStopwatch == null) {
                 _rescanStopwatch = Stopwatch.StartNew();
@@ -141,11 +193,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         private void OnTick(object sender, EventArgs e) {
-            UpdateInputs();
+            if (Application.Current?.MainWindow?.IsVisible == true) {
+                UpdateInputs();
+            }
         }
 
         public void Dispose() {
-            _timer.Stop();
+            CompositionTargetEx.Rendering -= OnTick;
             Devices.DisposeEverything();
             DisposeHelper.Dispose(ref _directInput);
         }
@@ -254,26 +308,38 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     }
                 }
 
+                void GetActualInput(BaseEntry<DirectInputButton> entry, IDirectInputDevice replacement) {
+                    if (entry.Input is DirectInputPov pov) {
+                        entry.Input = replacement.GetPov(entry.Input.Id, pov.Direction);
+                    } else if (entry.Input != null) {
+                        entry.Input = replacement.GetButton(entry.Input.Id);
+                    }
+                }
+
                 foreach (var entry in Entries.OfType<BaseEntry<DirectInputButton>>()) {
                     var current = entry.Input?.Device;
                     if (current is PlaceholderInputDevice placeholder) {
                         var replacement = newDevices.FirstOrDefault(x => x.Same(current));
                         if (replacement != null) {
                             EnsureIndicesMatch(placeholder, replacement);
-                            entry.Input = replacement.GetButton(entry.Input.Id);
+                            GetActualInput(entry, replacement);
                         }
                     } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)current).GetButton(entry.Input.Id);
+                        GetActualInput(entry, GetPlaceholderDevice((DirectInputDevice)current));
                     }
                 }
 
                 foreach (var device in Devices.ApartFrom(newDevices)) {
+                    for (var i = 0; i < device.Axis.Length; i++) {
+                        device.Axis[i].PropertyChanged -= DeviceAxleEventHandler;
+                    }
+
                     for (var i = 0; i < device.Buttons.Length; i++) {
                         device.Buttons[i].PropertyChanged -= DeviceButtonEventHandler;
                     }
 
-                    for (var i = 0; i < device.Axis.Length; i++) {
-                        device.Axis[i].PropertyChanged -= DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Povs.Length; i++) {
+                        device.Povs[i].PropertyChanged -= DevicePovEventHandler;
                     }
 
                     device.Dispose();
@@ -285,12 +351,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 foreach (var device in newDevices) {
                     ProductGuids[device.DisplayName] = device.Id;
 
+                    for (var i = 0; i < device.Axis.Length; i++) {
+                        device.Axis[i].PropertyChanged += DeviceAxleEventHandler;
+                    }
+
                     for (var i = 0; i < device.Buttons.Length; i++) {
                         device.Buttons[i].PropertyChanged += DeviceButtonEventHandler;
                     }
 
-                    for (var i = 0; i < device.Axis.Length; i++) {
-                        device.Axis[i].PropertyChanged += DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Povs.Length; i++) {
+                        device.Povs[i].PropertyChanged += DevicePovEventHandler;
                     }
                 }
             } finally {
@@ -320,8 +390,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     return;
                 }
 
-                var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && (waiting.Layer & x.Layer) != 0).ToList();
+                if (!waiting.IsCompatibleWith(provider)) {
+                    if (OptionDebugControlles) {
+                        Logging.Debug("Not compatible with given input");
+                    }
+                    return;
+                }
 
+                var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && (waiting.Layer & x.Layer) != 0).ToList();
                 if (existing.Any()) {
                     var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
                             await ConflictResolver.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
@@ -355,15 +431,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     Logging.Debug($"Axle changed: {axle.Device}, {axle.DisplayName} (ID={axle.Id}; busy={_busy})");
                 }
 
-                AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
                 AssignInput(axle).Forget();
             }
         }
 
         private void DeviceButtonEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DirectInputButton.Value) && sender is DirectInputButton button && button.Value) {
-                ButtonEventHandler?.Invoke(this, new DirectInputButtonEventArgs(button));
                 AssignInput(button).Forget();
+            }
+        }
+
+        private void DevicePovEventHandler(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(DirectInputPov.Value) && sender is DirectInputPov pov && pov.Value) {
+                AssignInput<DirectInputButton>(pov).Forget();
             }
         }
 
@@ -442,6 +522,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             base.Save();
+        }
+
+        // For system settings, with some FFB stuff
+        internal void OnSystemFfbSettingsChanged() {
+            CurrentPresetChanged = true;
+            Save();
         }
 
         public void LoadPreset(string presetFilename, bool backup) {
@@ -858,54 +944,73 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region System shortcuts (Ctrl+…)
-        public SystemButtonEntryCombined[] SystemRaceButtonEntries { get; } = {
-            new SystemButtonEntryCombined("RESET_RACE", "Restart race"),
-            new SystemButtonEntryCombined("__CM_START_SESSION", "Start race", customCommand: true),
-            new SystemButtonEntryCombined("__CM_RESET_SESSION", "Restart session", customCommand: true),
-            new SystemButtonEntryCombined("__CM_TO_PITS", "Teleport to pits", customCommand: true),
-            new SystemButtonEntryCombined("__CM_SETUP_CAR", "Setup car in pits", customCommand: true),
-            new SystemButtonEntryCombined("__CM_EXIT", "Exit the race", customCommand: true),
-        };
+        public SystemButtonEntryCombined[] SystemRaceButtonEntries { get; }
+        public SystemButtonEntryCombined[] SystemCarButtonEntries { get; }
+        public SystemButtonEntryCombined[] SystemUiButtonEntries { get; }
+        public SystemButtonEntryCombined[] SystemReplayButtonEntries { get; }
+        public SystemButtonEntryCombined[] SystemDiscordButtonEntries { get; }
 
-        public SystemButtonEntryCombined[] SystemCarButtonEntries { get; } = {
-            new SystemButtonEntryCombined("MOUSE_STEERING", "Mouse steering"),
-            new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI"),
-            new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter"),
-            new SystemButtonEntryCombined("ABS", "ABS", true),
-            new SystemButtonEntryCombined("TRACTION_CONTROL", "Traction control", true),
-            new SystemButtonEntryCombined("KERS", "KERS"),
-        };
-
-        public SystemButtonEntryCombined[] SystemUiButtonEntries { get; } = {
-            new SystemButtonEntryCombined("HIDE_APPS", "Apps"),
-            new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage displayer"),
-            new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names"),
-            new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line"),
-        };
-
-        public SystemButtonEntryCombined[] SystemReplayButtonEntries { get; } = {
-            new SystemButtonEntryCombined("START_REPLAY", "Start replay"),
-            new SystemButtonEntryCombined("PAUSE_REPLAY", "Pause replay"),
-            new SystemButtonEntryCombined("NEXT_LAP", "Next lap"),
-            new SystemButtonEntryCombined("PREVIOUS_LAP", "Previous lap"),
-            new SystemButtonEntryCombined("NEXT_CAR", "Next car"),
-            new SystemButtonEntryCombined("PREVIOUS_CAR", "Previous car"),
-            new SystemButtonEntryCombined("SLOWMO", "Slow motion"),
-            new SystemButtonEntryCombined("FFWD", "Fast-forward"),
-            new SystemButtonEntryCombined("REV", "Rewind"),
-        };
-
+        [NotNull]
         private IEnumerable<SystemButtonEntryCombined> SystemButtonEntries  => SystemRaceButtonEntries
                     .Concat(SystemCarButtonEntries)
                     .Concat(SystemUiButtonEntries)
-                    .Concat(SystemReplayButtonEntries);
+                    .Concat(SystemReplayButtonEntries)
+                    .Concat(SystemDiscordButtonEntries);
 
-        public IEnumerable<string> SystemButtonKeys => SystemCarButtonEntries.Select(x => x.SystemButton.Id);
+        [NotNull]
+        public IEnumerable<string> SystemButtonKeys => SystemButtonEntries.Select(x => x.WheelButton.Id).NonNull();
+
+        private bool _delaySpecificSystemCommands;
+
+        public bool DelaySpecificSystemCommands {
+            get => _delaySpecificSystemCommands;
+            set {
+                if (Equals(value, _delaySpecificSystemCommands)) return;
+                _delaySpecificSystemCommands = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _showSystemDelays;
+
+        public bool ShowSystemDelays {
+            get => _showSystemDelays;
+            set {
+                if (Equals(value, _showSystemDelays)) return;
+                _showSystemDelays = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _systemIgnorePovInPits;
+
+        public bool SystemIgnorePovInPits {
+            get => _systemIgnorePovInPits;
+            set {
+                if (Equals(value, _systemIgnorePovInPits)) return;
+                _systemIgnorePovInPits = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _hardwareLock;
+
+        public bool HardwareLock {
+            get => _hardwareLock;
+            set {
+                if (Equals(value, _hardwareLock)) return;
+                _hardwareLock = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DisplayHardwareLockSupported { get; } = WheelSteerLock.GetSupportedNames().OrderBy(x => x).JoinToReadableString();
         #endregion
 
         #region Main
         private const string HandbrakeId = "HANDBRAKE";
 
+        [NotNull]
         private IEnumerable<IEntry> Entries
             => WheelAxleEntries
                     .Select(x => (IEntry)x)
@@ -913,7 +1018,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     .Union(WheelButtonEntries.Select(x => x.WheelButton))
                     .Union(WheelHShifterButtonEntries)
                     .Union(KeyboardSpecificButtonEntries)
-                    .Union(SystemButtonEntries.Select(x => x.SystemButton))
+                    .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())
                     .Union(SystemButtonEntries.Select(x => x.WheelButton));
 
         private bool _skip;
@@ -1128,6 +1233,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             section = Ini["__EXTRA_CM"];
             WheelSteerScaleAutoAdjust = section.GetBool("AUTO_ADJUST_SCALE", false);
+            DelaySpecificSystemCommands = section.GetBool("DELAY_SPECIFIC_SYSTEM_COMMANDS", true);
+            ShowSystemDelays = section.GetBool("SHOW_SYSTEM_DELAYS", true);
+            SystemIgnorePovInPits = section.GetBool("SYSTEM_IGNORE_POV_IN_PITS", true);
+            HardwareLock = section.GetBool("HARDWARE_LOCK", false);
             AcSettingsHolder.FfPostProcess.Import(section.GetNonEmpty("FF_POST_PROCESS").FromCutBase64()?.ToUtf8String());
             AcSettingsHolder.System.ImportFfb(section.GetNonEmpty("SYSTEM").FromCutBase64()?.ToUtf8String());
 
@@ -1215,6 +1324,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());
             section.Set("SYSTEM", AcSettingsHolder.System.ExportFfb().ToCutBase64());
             section.Set("AUTO_ADJUST_SCALE", WheelSteerScaleAutoAdjust);
+            section.Set("DELAY_SPECIFIC_SYSTEM_COMMANDS", DelaySpecificSystemCommands);
+            section.Set("SHOW_SYSTEM_DELAYS", ShowSystemDelays);
+            section.Set("SYSTEM_IGNORE_POV_IN_PITS", SystemIgnorePovInPits);
+            section.Set("HARDWARE_LOCK", HardwareLock);
 
             section = Ini["__LAUNCHER_CM"];
             section.Set("PRESET_NAME", CurrentPresetFilename?.SubstringExt(PresetsDirectory.Length + 1));

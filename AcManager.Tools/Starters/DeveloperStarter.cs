@@ -39,7 +39,7 @@ namespace AcManager.Tools.Starters {
         }
 
         private void OnTick(object sender, EventArgs eventArgs) {
-            var process = AcSharedMemory.TryToFindGameProcess();
+            var process = AcProcess.TryToFind();
             if (process != null) {
                 _timer.IsEnabled = false;
                 _process = process;

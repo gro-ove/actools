@@ -16,7 +16,7 @@ namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsControls_Wheel_System : INotifyPropertyChanged {
         public AcSettingsControls_Wheel_System() {
             InitializeComponent();
-            this.AddWidthCondition(800).Add(x => {
+            this.AddWidthCondition(900).Add(x => {
                 // Resources["ItemsPanelTemplate"] = TryFindResource(x ? "TwoColumnsPanel" : "OneColumnPanel");
                 MainGrid.Columns = x ? 2 : 1;
             });

@@ -63,6 +63,17 @@
         <Label Content="{x:Static с:ControlsStrings.Controls_SoftLock}" />
       </CheckBox>
 
+      <CheckBox IsChecked="{Binding Controls.HardwareLock}" mui:NewMarkService.New="True">
+        <CheckBox.ToolTip>
+          <mui:BbCodeBlock MaxWidth="480"
+              BbCode="CM will try to adjust device’s steering lock, [b]very experimental[/b].[br][br]Be ready to fix steering lock in device’s settings in case CM will fail to revert it back." />
+        </CheckBox.ToolTip>
+        <DockPanel Style="{x:Null}">
+          <Label Content="Try to set hardware lock" DockPanel.Dock="Top" Margin="0 0 0 2" />
+          <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}" />
+        </DockPanel>
+      </CheckBox>
+
       <DockPanel ToolTip="{x:Static с:ControlsStrings.Controls_SkipFfbSteps_Tooltip}">
         <mui:ValueLabel Value="{Binding Controls.WheelFfbSkipSteps}" Content="{x:Static с:ControlsStrings.Controls_SkipFfbSteps}" />
         <Slider Minimum="0" Maximum="5" Value="{Binding Controls.WheelFfbSkipSteps}" TickFrequency="1" TickPlacement="BottomRight" />

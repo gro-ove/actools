@@ -17,8 +17,6 @@ namespace AcManager.Tools.Managers {
     }
 
     public class AcRootDirectory {
-        public static bool OptionDisableChecking = false;
-
         public const string Key = "_ac_root";
 
         public static AcRootDirectory Instance { get; private set; }
@@ -148,7 +146,9 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (!OptionDisableChecking) {
+            if (!AcPaths.OptionEaseAcRootCheck) {
+                // We don’ use AcPaths.IsAcRoot() here to get a nice message telling what’s wrong, but logic is similar
+
                 if (!Directory.Exists(directory)) {
                     reason = ToolsStrings.AcRootDirectory_Missing;
                     return false;
@@ -166,11 +166,6 @@ namespace AcManager.Tools.Managers {
 
                 if (!Directory.Exists(Path.Combine(directory, @"content", @"cars"))) {
                     reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"content\cars");
-                    return false;
-                }
-
-                if (!Directory.Exists(Path.Combine(directory, @"content", @"tracks"))) {
-                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"content\tracks");
                     return false;
                 }
 

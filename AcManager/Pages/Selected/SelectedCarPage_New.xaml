@@ -415,9 +415,7 @@
               </c:PropertiesGrid>
 
               <c:MessageBlock CloseKey="carpagemsg">
-                <mui:BbCodeBlock>
-                  <mui:BbCodeBlock.BbCode>[i]Did you know?[/i] You can right-click on a property to filter cars by it.</mui:BbCodeBlock.BbCode>
-                </mui:BbCodeBlock>
+                <mui:BbCodeBlock BbCode="[i]Did you know?[/i] You can right-click on a property to filter cars by it." />
               </c:MessageBlock>
             </mui:SpacingStackPanel>
 

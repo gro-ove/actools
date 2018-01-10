@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using AcTools.Utils.Helpers;
+
 // ReSharper disable InconsistentNaming
 
 namespace AcTools.Windows {
     public static class User32 {
         public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
-
         [DllImport("user32.dll")]
         public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
@@ -63,14 +66,126 @@ namespace AcTools.Windows {
         [DllImport("user32.dll")]
         public static extern bool ScreenToClient(IntPtr hwnd, ref Win32Point pt);
 
-        public static bool IsKeyPressed(int keyCode) => (GetAsyncKeyState((Keys)keyCode) & 0x8000) != 0;
-
         public static bool IsKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;
 
-        public static short GetAsyncKeyState(int keyCode) => GetAsyncKeyState((Keys)keyCode);
+        [DllImport("user32.dll")]
+        public static extern short GetKeyState(Keys virtualKeyCode);
 
         [DllImport("user32.dll")]
         public static extern short GetAsyncKeyState(Keys vKey);
+
+        public enum InputType : uint {
+            Mouse = 0,
+            Keyboard = 1,
+            Hardware = 2,
+        }
+
+        [Flags]
+        public enum KeyboardFlag : uint {
+            None = 0,
+            ExtendedKey = 1,
+            KeyUp = 2,
+            Unicode = 4,
+            ScanCode = 8
+        }
+
+        [Flags]
+        public enum MouseFlag : uint {
+            Move = 0x0001,
+            LeftDown = 0x0002,
+            LeftUp = 0x0004,
+            RightDown = 0x0008,
+            RightUp = 0x0010,
+            MiddleDown = 0x0020,
+            MiddleUp = 0x0040,
+            XDown = 0x0080,
+            XUp = 0x0100,
+            VerticalWheel = 0x0800,
+            HorizontalWheel = 0x1000,
+            VirtualDesk = 0x4000,
+            Absolute = 0x8000,
+        }
+
+        public struct MouseInput {
+            public int X;
+            public int Y;
+            public uint MouseData;
+            public MouseFlag Flags;
+            public uint Time;
+            public uint ExtraInfo;
+        }
+
+        public static bool IsExtendedKey(Keys keyCode) {
+            return keyCode == Keys.Menu ||
+                    keyCode == Keys.LMenu ||
+                    keyCode == Keys.RMenu ||
+                    keyCode == Keys.Control ||
+                    keyCode == Keys.RControlKey ||
+                    keyCode == Keys.Insert ||
+                    keyCode == Keys.Delete ||
+                    keyCode == Keys.Home ||
+                    keyCode == Keys.End ||
+                    keyCode == Keys.Prior ||
+                    keyCode == Keys.Next ||
+                    keyCode == Keys.Right ||
+                    keyCode == Keys.Up ||
+                    keyCode == Keys.Left ||
+                    keyCode == Keys.Down ||
+                    keyCode == Keys.NumLock ||
+                    keyCode == Keys.Cancel ||
+                    keyCode == Keys.Snapshot ||
+                    keyCode == Keys.Divide;
+        }
+
+        public struct KeyboardInput {
+            public ushort VirtualKeyCode;
+            public ushort ScanCode;
+            public KeyboardFlag Flags;
+            public uint Time;
+            public uint ExtraInfo;
+        }
+
+        public struct HardwareInput {
+            public uint Msg;
+            public ushort ParamL;
+            public ushort ParamH;
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct Input {
+            [FieldOffset(0)]
+            public InputType Type;
+
+            [FieldOffset(4)]
+            public MouseInput Mouse;
+
+            [FieldOffset(4)]
+            public KeyboardInput Keyboard;
+
+            [FieldOffset(4)]
+            public HardwareInput Hardware;
+
+            public Input(KeyboardInput keyboardInput) {
+                Mouse = default(MouseInput);
+                Hardware = default(HardwareInput);
+                Type = InputType.Keyboard;
+                Keyboard = keyboardInput;
+            }
+
+            public static readonly int Size = Marshal.SizeOf(typeof(Input));
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint SendInput(uint numberOfInputs, Input[] inputs, int sizeOfInputStructure);
+
+        public static uint SendInput(params KeyboardInput[] input) {
+            return SendInput((IEnumerable<KeyboardInput>)input);
+        }
+
+        public static uint SendInput(IEnumerable<KeyboardInput> input) {
+            var array = input.Select(x => new Input(x)).ToArrayIfItIsNot();
+            return SendInput((uint)array.Length, array, Input.Size);
+        }
 
         public const int HC_ACTION = 0;
 
