@@ -12,6 +12,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -27,7 +28,7 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Pages.Drive {
     public partial class KunosCareer_SelectedPage : ILoadableContent, IParametrizedUriContent {
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Career");
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Career").Default();
 
         public void OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
@@ -43,6 +44,7 @@ namespace AcManager.Pages.Drive {
             }
 
             await acObject.EnsureEventsLoadedAsync();
+            _discordPresence?.Default(acObject.DisplayName);
             DataContext = new ViewModel(acObject);
         }
 
@@ -56,6 +58,7 @@ namespace AcManager.Pages.Drive {
             }
 
             acObject.EnsureEventsLoaded();
+            _discordPresence?.Default(acObject.DisplayName);
             DataContext = new ViewModel(acObject);
         }
 

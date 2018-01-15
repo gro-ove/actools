@@ -51,14 +51,13 @@ namespace FirstFloor.ModernUI.Helpers {
                 [CanBeNull] IEnumerable<NonfatalErrorSolution> solutions, bool show, string m, string p, int l) {
             if (exception is UserCancelledException) return;
 
-            var i = exception as InformativeException;
-            if (i != null) {
+            if (exception is InformativeException i) {
                 message = i.Message;
                 commentary = i.SolutionCommentary;
                 exception = i.InnerException;
             }
 
-            Logging.Write('•', $"{message}:\n{exception}", m, p, l);
+            Logging.Write('•', exception == null ? message : $"{message}:\n{exception}", m, p, l);
 
             var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new NonfatalErrorSolution[0]);
             ActionExtension.InvokeInMainThreadAsync(() => {

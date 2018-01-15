@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Windows {
 
             if (!File.Exists(ShortcutLocation)) return false;
             using (var shortcut = new ShellLink(ShortcutLocation)) {
-                return shortcut.AppUserModelID == AppUserModelId;
+                return shortcut.AppUserModelId == AppUserModelId;
             }
         }
 
@@ -42,9 +42,9 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public static void CreateShortcut() {
-            if (HasShortcut()) return;
-
             try {
+                if (HasShortcut()) return;
+
                 var directory = Path.GetDirectoryName(ShortcutLocation) ?? "";
                 if (!Directory.Exists(directory)) {
                     Directory.CreateDirectory(directory);
@@ -53,7 +53,7 @@ namespace FirstFloor.ModernUI.Windows {
                 using (var shortcut = new ShellLink()) {
                     shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
                     shortcut.Arguments = "";
-                    shortcut.AppUserModelID = AppUserModelId;
+                    shortcut.AppUserModelId = AppUserModelId;
                     shortcut.Save(ShortcutLocation);
                 }
 

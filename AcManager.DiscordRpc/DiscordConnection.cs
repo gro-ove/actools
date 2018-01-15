@@ -169,7 +169,7 @@ namespace AcManager.DiscordRpc {
         private Tuple<string, DiscordJoinRequestReply> _reply;
 
         private async Task ReplyWith(string userId, DiscordJoinRequestReply reply) {
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < 2; i++) {
                 try {
                     Utils.Log("Replying to request: " + reply);
                     await Execute(reply == DiscordJoinRequestReply.Yes ? "SEND_ACTIVITY_JOIN_INVITE" : "CLOSE_ACTIVITY_JOIN_REQUEST",

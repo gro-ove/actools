@@ -104,6 +104,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                         return new WhatsGoingOn(WhatsGoingOnType.WrongTextureFormat);
                     }
 
+                    if (crash.Contains(@"CarAvatar::resetMultVolume")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.CarSoundIsBroken);
+                    }
+
                     if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
                         return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
                     }

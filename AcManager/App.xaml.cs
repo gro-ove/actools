@@ -338,7 +338,13 @@ As an alternative solution, you can switch to software UI rendering, but it will
             ContextMenus.ContextMenusProvider = new ContextMenusProvider();
             PrepareUi();
 
-            AppShortcut.Initialize("AcClub.ContentManager", "Content Manager");
+            AppShortcut.Initialize("Content Manager", "Content Manager");
+
+            // If shortcut exists, make sure it has a proper app ID set for notifications
+            if (File.Exists(AppShortcut.ShortcutLocation)) {
+                AppShortcut.CreateShortcut();
+            }
+
             AppIconService.Initialize(new AppIconProvider());
 
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
@@ -452,7 +458,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
             DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
-            DiscordImage.OptionDefaultImage = "ks_brands_hatch";
+            DiscordImage.OptionDefaultImage = "track_ks_brands_hatch";
             GameWrapper.Started += (sender, args) => {
                 args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
             };
@@ -665,7 +671,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
         private void OnAppUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_NewVersion,
                     string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady),
-                    () => { AppUpdater.Instance.FinishUpdateCommand.Execute(); });
+                    () => AppUpdater.Instance.FinishUpdateCommand.Execute(null));
         }
 
         private void OnLocaleUpdated(object sender, EventArgs e) {

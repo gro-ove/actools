@@ -638,7 +638,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_SyncCarLogo : BatchAction<CarObject> {
             public static readonly BatchAction_SyncCarLogo Instance = new BatchAction_SyncCarLogo ();
-            public BatchAction_SyncCarLogo() : base("Update Car’s Logo", "Replace them by brand badges", "Look", "Batch.SyncCarLogo") { }
+            public BatchAction_SyncCarLogo() : base("Update car’s logo", "Replace them by brand badges", "Look", "Batch.SyncCarLogo") { }
 
             public override bool IsAvailable(CarObject obj) {
                 return true;

@@ -39,8 +39,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
     public class DisplayInputParams {
         public readonly int Take;
 
-        private Func<int, bool> _test;
-        private Func<int, string> _name;
+        private readonly Func<int, bool> _test;
+        private readonly Func<int, string> _name;
 
         public bool Test(int v) {
             return _test(v);
@@ -77,7 +77,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public static bool Get([NotNull] string guid, out string displayName, out DisplayInputParams axes, out DisplayInputParams buttons, out DisplayInputParams povs) {
             var file = FilesStorage.Instance.GetContentFile("Controllers", $"{guid}.json");
             if (file.Exists) {
-                Logging.Debug($"Description found: {guid}");
+                Logging.Debug($"Description found: {guid.ToUpperInvariant()}");
 
                 try {
                     var jData = JsonExtension.Parse(File.ReadAllText(file.Filename));
@@ -103,7 +103,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
     public class PlaceholderInputDevice : IDirectInputDevice {
         [CanBeNull]
-        private DisplayInputParams _axesP, _buttonsP, _povsP;
+        private readonly DisplayInputParams _axesP, _buttonsP, _povsP;
 
         public PlaceholderInputDevice([CanBeNull] string id, string displayName, int index) {
             Id = id;

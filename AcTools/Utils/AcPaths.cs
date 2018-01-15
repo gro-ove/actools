@@ -49,6 +49,11 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
+        public static string GetCfgAppsFilename() {
+            return Path.Combine(GetDocumentsCfgDirectory(), "python.ini");
+        }
+
+        [NotNull, Pure]
         public static string GetCfgControlsFilename() {
             return Path.Combine(GetDocumentsCfgDirectory(), "controls.ini");
         }

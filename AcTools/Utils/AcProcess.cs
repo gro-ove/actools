@@ -17,12 +17,17 @@ namespace AcTools.Utils {
         [CanBeNull]
         public static Process TryToFind() {
             if (_lastFound != null && !_lastFound.HasExitedSafe()) {
+                AcToolsLogging.Write("Previously found process is still running");
                 return _lastFound;
             }
 
             var processes = Process.GetProcesses();
-            return _lastFound = processes.FirstOrDefault(x => (x.ProcessName == "acs" || x.ProcessName == "acs_x86") && IsGameProcess(x)) ??
+            _lastFound = processes.FirstOrDefault(x => (x.ProcessName == "acs" || x.ProcessName == "acs_x86") && IsGameProcess(x)) ??
                     processes.FirstOrDefault(x => x.ProcessName.IndexOf(@"acs", StringComparison.OrdinalIgnoreCase) != -1 && IsGameProcess(x));
+            if (_lastFound != null) {
+                AcToolsLogging.Write("Process found");
+            }
+            return _lastFound;
         }
     }
 }

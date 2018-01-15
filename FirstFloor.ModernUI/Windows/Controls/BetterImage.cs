@@ -478,12 +478,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var cache = GetCachedFilename(uri);
-
-#if DEBUG
-            Logging.Debug(uri);
-            Logging.Debug(cache);
-#endif
-
             var cacheFile = cache == null ? null : new FileInfo(cache);
             if (cacheFile?.Exists == true) {
                 httpRequest.IfModifiedSince = cacheFile.LastWriteTime;

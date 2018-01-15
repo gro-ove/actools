@@ -41,6 +41,10 @@ namespace FirstFloor.ModernUI.Helpers {
             KillAfter = DateTime.Now + Timeout;
         }
 
+        public void Pause() {
+            KillAfter = DateTime.MaxValue;
+        }
+
         public void Dispose() {
             lock (StaticLock) {
                 _sockets?.Remove(this);
@@ -51,30 +55,25 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void Kill() {
+            Logging.Write(Victim);
             Killed = true;
 
-            var socket = Victim as Socket;
-            if (socket != null) {
-                socket.Close();
-                return;
-            }
-
-            var webClient = Victim as WebClient;
-            if (webClient != null) {
-                webClient.CancelAsync();
-                return;
-            }
-
-            var webRequest = Victim as WebRequest;
-            if (webRequest != null) {
-                webRequest.Abort();
-                return;
+            switch (Victim) {
+                case Socket socket:
+                    socket.Close();
+                    return;
+                case WebClient webClient:
+                    webClient.CancelAsync();
+                    return;
+                case WebRequest webRequest:
+                    webRequest.Abort();
+                    return;
             }
 
             var disposable = Victim as IDisposable;
             disposable?.Dispose();
         }
-        
+
         private static readonly object StaticLock = new object();
 
         private static List<KillerOrder> _sockets;

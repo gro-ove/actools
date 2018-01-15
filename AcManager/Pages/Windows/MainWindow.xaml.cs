@@ -786,7 +786,7 @@ namespace AcManager.Pages.Windows {
                     break;
             }
 
-            _previousPresence = new DiscordRichPresence(0, "Preparing to race", details);
+            _previousPresence = new DiscordRichPresence(0, "Preparing to race", details).Default();
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {

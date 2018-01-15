@@ -3,7 +3,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using JetBrains.Annotations;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
+// ReSharper disable SuspiciousTypeConversion.Global
 
 namespace FirstFloor.ModernUI.Windows {
     // Modified from http://smdn.jp/programming/tips/createlnk/
@@ -14,45 +16,35 @@ namespace FirstFloor.ModernUI.Windows {
         #region Win32 and COM
 
         // IShellLink Interface
-        [ComImport,
-         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
-         Guid("000214F9-0000-0000-C000-000000000046")]
+        [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("000214F9-0000-0000-C000-000000000046")]
         private interface IShellLinkW {
-            uint GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile,
-                         int cchMaxPath, ref WIN32_FIND_DATAW pfd, uint fFlags);
+            uint GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cchMaxPath, ref Win32_Find_Dataw pfd, uint fFlags);
             uint GetIDList(out IntPtr ppidl);
             uint SetIDList(IntPtr pidl);
-            uint GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName,
-                                int cchMaxName);
+            uint GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cchMaxName);
             uint SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
-            uint GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir,
-                                     int cchMaxPath);
+            uint GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cchMaxPath);
             uint SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
-            uint GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs,
-                              int cchMaxPath);
+            uint GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cchMaxPath);
             uint SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
             uint GetHotKey(out ushort pwHotkey);
             uint SetHotKey(ushort wHotKey);
             uint GetShowCmd(out int piShowCmd);
             uint SetShowCmd(int iShowCmd);
-            uint GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath,
-                                 int cchIconPath, out int piIcon);
+            uint GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cchIconPath, out int piIcon);
             uint SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
-            uint SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel,
-                                 uint dwReserved);
+            uint SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, uint dwReserved);
             uint Resolve(IntPtr hwnd, uint fFlags);
             uint SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
         }
 
         // ShellLink CoClass (ShellLink object)
-        [ComImport,
-         ClassInterface(ClassInterfaceType.None),
-         Guid("00021401-0000-0000-C000-000000000046")]
+        [ComImport, ClassInterface(ClassInterfaceType.None), Guid("00021401-0000-0000-C000-000000000046")]
         private class CShellLink { }
 
         // WIN32_FIND_DATAW Structure
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
-        private struct WIN32_FIND_DATAW {
+        private struct Win32_Find_Dataw {
             public uint dwFileAttributes;
             public ComTypes.FILETIME ftCreationTime;
             public ComTypes.FILETIME ftLastAccessTime;
@@ -61,8 +53,10 @@ namespace FirstFloor.ModernUI.Windows {
             public uint nFileSizeLow;
             public uint dwReserved0;
             public uint dwReserved1;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxPath)]
             public string cFileName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
             public string cAlternateFileName;
         }
@@ -80,45 +74,22 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         // PropertyKey Structure
-        // Narrowed down from PropertyKey.cs of Windows API Code Pack 1.1 
+        // Narrowed down from PropertyKey.cs of Windows API Code Pack 1.1
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         private struct PropertyKey {
-            #region Fields
+            public Guid FormatId { get; }
 
-            private Guid formatId;    // Unique GUID for property
-            private Int32 propertyId; // Property identifier (PID)
-
-            #endregion
-
-            #region Public Properties
-
-            public Guid FormatId {
-                get {
-                    return formatId;
-                }
-            }
-
-            public Int32 PropertyId {
-                get {
-                    return propertyId;
-                }
-            }
-
-            #endregion
-
-            #region Constructor
+            public Int32 PropertyId { get; }
 
             public PropertyKey(Guid formatId, Int32 propertyId) {
-                this.formatId = formatId;
-                this.propertyId = propertyId;
+                FormatId = formatId;
+                PropertyId = propertyId;
             }
 
             public PropertyKey(string formatId, Int32 propertyId) {
-                this.formatId = new Guid(formatId);
-                this.propertyId = propertyId;
+                FormatId = new Guid(formatId);
+                PropertyId = propertyId;
             }
-
-            #endregion
         }
 
         // PropVariant Class (only for string value)
@@ -127,10 +98,8 @@ namespace FirstFloor.ModernUI.Windows {
         // /interop-with-propvariants-in-net.aspx
         [StructLayout(LayoutKind.Explicit)]
         private sealed class PropVariant : IDisposable {
-            #region Fields
-
             [FieldOffset(0)]
-            ushort valueType;     // Value type 
+            private ushort valueType; // Value type
 
             // [FieldOffset(2)]
             // ushort wReserved1; // Reserved field
@@ -140,36 +109,21 @@ namespace FirstFloor.ModernUI.Windows {
             // ushort wReserved3; // Reserved field
 
             [FieldOffset(8)]
-            IntPtr ptr;           // Value
-
-            #endregion
-
-            #region Public Properties
+            private readonly IntPtr ptr; // Value
 
             // Value type (System.Runtime.InteropServices.VarEnum)
             public VarEnum VarType {
-                get { return (VarEnum)valueType; }
-                set { valueType = (ushort)value; }
+                get => (VarEnum)valueType;
+                set => valueType = (ushort)value;
             }
 
             // Whether value is empty or null
-            public bool IsNullOrEmpty {
-                get {
-                    return (valueType == (ushort)VarEnum.VT_EMPTY ||
-                            valueType == (ushort)VarEnum.VT_NULL);
-                }
-            }
+            public bool IsNullOrEmpty => (valueType == (ushort)VarEnum.VT_EMPTY ||
+                    valueType == (ushort)VarEnum.VT_NULL);
 
             // Value (only for string value)
-            public string Value {
-                get {
-                    return Marshal.PtrToStringUni(ptr);
-                }
-            }
-
+            public string Value => Marshal.PtrToStringUni(ptr);
             #endregion
-
-            #region Constructor
 
             public PropVariant() { }
 
@@ -182,10 +136,6 @@ namespace FirstFloor.ModernUI.Windows {
                 ptr = Marshal.StringToCoTaskMemUni(value);
             }
 
-            #endregion
-
-            #region Destructor
-
             ~PropVariant() {
                 Dispose();
             }
@@ -194,70 +144,47 @@ namespace FirstFloor.ModernUI.Windows {
                 PropVariantClear(this);
                 GC.SuppressFinalize(this);
             }
-
-            #endregion
         }
 
         [DllImport("Ole32.dll", PreserveSig = false)]
-        private extern static void PropVariantClear([In, Out] PropVariant pvar);
+        private static extern void PropVariantClear([In, Out] PropVariant pvar);
 
-        #endregion
-
-        #region Fields
-
-        private IShellLinkW shellLinkW = null;
+        private IShellLinkW _shellLinkW = null;
 
         // Name = System.AppUserModel.ID
         // ShellPKey = PKEY_AppUserModel_ID
         // FormatID = 9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3
         // PropID = 5
         // Type = String (VT_LPWSTR)
-        private readonly PropertyKey AppUserModelIDKey =
-            new PropertyKey("{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}", 5);
+        private readonly PropertyKey _appUserModelIdKey =
+                new PropertyKey("{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}", 5);
 
-        private const int MAX_PATH = 260;
-        private const int INFOTIPSIZE = 1024;
+        private const int MaxPath = 260;
+        private const int InfoTipSize = 1024;
 
-        private const int STGM_READ = 0x00000000;     // STGM constants
-        private const uint SLGP_UNCPRIORITY = 0x0002; // SLGP flags
-
-        #endregion
-
-        #region Private Properties (Interfaces)
+        private const int StgmRead = 0x00000000; // STGM constants
+        private const uint SlgpUncPriority = 0x0002; // SLGP flags
 
         private IPersistFile PersistFile {
             get {
-                IPersistFile PersistFile = shellLinkW as IPersistFile;
-
-                if (PersistFile == null)
-                    throw new COMException("Failed to create IPersistFile.");
-                else
-                    return PersistFile;
+                if (!(_shellLinkW is IPersistFile persistFile)) throw new COMException("Failed to create IPersistFile.");
+                return persistFile;
             }
         }
 
         private IPropertyStore PropertyStore {
             get {
-                IPropertyStore PropertyStore = shellLinkW as IPropertyStore;
-
-                if (PropertyStore == null)
-                    throw new COMException("Failed to create IPropertyStore.");
-                else
-                    return PropertyStore;
+                if (!(_shellLinkW is IPropertyStore propertyStore)) throw new COMException("Failed to create IPropertyStore.");
+                return propertyStore;
             }
         }
-
-        #endregion
 
         #region Public Properties (Minimal)
 
         // Path of loaded shortcut file
         public string ShortcutFile {
             get {
-                string shortcutFile;
-
-                PersistFile.GetCurFile(out shortcutFile);
-
+                PersistFile.GetCurFile(out var shortcutFile);
                 return shortcutFile;
             }
         }
@@ -266,65 +193,47 @@ namespace FirstFloor.ModernUI.Windows {
         public string TargetPath {
             get {
                 // No limitation to length of buffer string in the case of Unicode though.
-                StringBuilder targetPath = new StringBuilder(MAX_PATH);
-
-                WIN32_FIND_DATAW data = new WIN32_FIND_DATAW();
-
-                VerifySucceeded(shellLinkW.GetPath(targetPath, targetPath.Capacity, ref data,
-                                                   SLGP_UNCPRIORITY));
-
+                var targetPath = new StringBuilder(MaxPath);
+                var data = new Win32_Find_Dataw();
+                VerifySucceeded(_shellLinkW.GetPath(targetPath, targetPath.Capacity, ref data, SlgpUncPriority));
                 return targetPath.ToString();
             }
-            set {
-                VerifySucceeded(shellLinkW.SetPath(value));
-            }
+            set => VerifySucceeded(_shellLinkW.SetPath(value));
         }
 
         public string Arguments {
             get {
                 // No limitation to length of buffer string in the case of Unicode though.
-                StringBuilder arguments = new StringBuilder(INFOTIPSIZE);
-
-                VerifySucceeded(shellLinkW.GetArguments(arguments, arguments.Capacity));
-
+                var arguments = new StringBuilder(InfoTipSize);
+                VerifySucceeded(_shellLinkW.GetArguments(arguments, arguments.Capacity));
                 return arguments.ToString();
             }
-            set {
-                VerifySucceeded(shellLinkW.SetArguments(value));
-            }
+            set => VerifySucceeded(_shellLinkW.SetArguments(value));
         }
 
         // AppUserModelID to be used for Windows 7 or later.
-        public string AppUserModelID {
+        public string AppUserModelId {
             get {
-                using (PropVariant pv = new PropVariant()) {
-                    VerifySucceeded(PropertyStore.GetValue(AppUserModelIDKey, pv));
-
-                    if (pv.Value == null)
-                        return "Null";
-                    else
-                        return pv.Value;
+                using (var pv = new PropVariant()) {
+                    VerifySucceeded(PropertyStore.GetValue(_appUserModelIdKey, pv));
+                    return pv.Value ?? "Null";
                 }
             }
             set {
-                using (PropVariant pv = new PropVariant(value)) {
-                    VerifySucceeded(PropertyStore.SetValue(AppUserModelIDKey, pv));
+                using (var pv = new PropVariant(value)) {
+                    VerifySucceeded(PropertyStore.SetValue(_appUserModelIdKey, pv));
                     VerifySucceeded(PropertyStore.Commit());
                 }
             }
         }
-
         #endregion
 
-        #region Constructor
-
-        public ShellLink()
-            : this(null) { }
+        public ShellLink() : this(null) { }
 
         // Construct with loading shortcut file.
         public ShellLink(string file) {
             try {
-                shellLinkW = (IShellLinkW)new CShellLink();
+                _shellLinkW = (IShellLinkW)new CShellLink();
             } catch {
                 throw new COMException("Failed to create ShellLink object.");
             }
@@ -332,10 +241,6 @@ namespace FirstFloor.ModernUI.Windows {
             if (file != null)
                 Load(file);
         }
-
-        #endregion
-
-        #region Destructor
 
         ~ShellLink() {
             Dispose(false);
@@ -346,21 +251,17 @@ namespace FirstFloor.ModernUI.Windows {
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) {
-            if (shellLinkW != null) {
+        private void Dispose(bool disposing) {
+            if (_shellLinkW != null) {
                 // Release all references.
-                Marshal.FinalReleaseComObject(shellLinkW);
-                shellLinkW = null;
+                Marshal.FinalReleaseComObject(_shellLinkW);
+                _shellLinkW = null;
             }
         }
 
-        #endregion
-
-        #region Methods
-
         // Save shortcut file.
         public void Save() {
-            string file = ShortcutFile;
+            var file = ShortcutFile;
 
             if (file == null)
                 throw new InvalidOperationException("File name is not given.");
@@ -368,28 +269,22 @@ namespace FirstFloor.ModernUI.Windows {
                 Save(file);
         }
 
-        public void Save(string file) {
-            if (file == null)
-                throw new ArgumentNullException("File name is required.");
-            else
-                PersistFile.Save(file, true);
+        public void Save([NotNull] string file) {
+            PersistFile.Save(file, true);
         }
 
         // Load shortcut file.
-        public void Load(string file) {
-            if (!File.Exists(file))
-                throw new FileNotFoundException("File is not found.", file);
-            else
-                PersistFile.Load(file, STGM_READ);
+        public void Load([NotNull] string file) {
+            if (!File.Exists(file)) throw new FileNotFoundException("File is not found.", file);
+            PersistFile.Load(file, StgmRead);
         }
 
         // Verify if operation succeeded.
-        public static void VerifySucceeded(uint hresult) {
-            if (hresult > 1)
+        private static void VerifySucceeded(uint hresult) {
+            if (hresult > 1) {
                 throw new InvalidOperationException("Failed with HRESULT: " +
-                                                    hresult.ToString("X"));
+                        hresult.ToString("X"));
+            }
         }
-
-        #endregion
     }
 }

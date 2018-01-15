@@ -428,7 +428,7 @@ namespace AcManager.Tools.Profile {
 
                 /* mark lap as spoiled if needed */
                 if (_lapSpoiledId != graphics.CompletedLaps) {
-                    if (graphics.IsInPit) {
+                    if (graphics.IsInPits) {
                         Logging.Debug($"Lap spoiled: in pits (ID: {_lapSpoiledId})");
                         _lapSpoiledId = graphics.CompletedLaps;
                     }

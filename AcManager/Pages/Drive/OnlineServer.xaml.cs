@@ -53,11 +53,10 @@ namespace AcManager.Pages.Drive {
 
             _holder = new Holder<ServerEntry>(entry, t => { });
             Initialize();
+            this.OnActualUnload(_discordPresence);
         }
 
         public void OnUri(Uri uri) {
-            this.OnActualUnload(_discordPresence);
-
             var id = uri.GetQueryParam("Id");
             if (id == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
@@ -81,7 +80,7 @@ namespace AcManager.Pages.Drive {
                 entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
 
-            DataContext = new ViewModel(entry);
+            DataContext = new ViewModel(entry, _discordPresence);
             InitializeComponent();
             AssistsPopup.DataContext = AssistsDescription.DataContext = Model.Assists;
 
@@ -308,6 +307,9 @@ namespace AcManager.Pages.Drive {
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IComparer {
+            [CanBeNull]
+            private readonly DiscordRichPresence _discordPresence;
+
             public AssistsViewModel Assists { get; } = new AssistsViewModel("onlineassists");
 
             private ServerEntry _entry;
@@ -322,6 +324,13 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
 
                     FancyBackgroundManager.Instance.ChangeBackground(value.Track?.PreviewImage);
+                    _discordPresence?.Car(value.SelectedCarEntry?.CarObject).Track(value.Track);
+
+                    value.SubscribeWeak((sender, args) => {
+                        if (args.PropertyName == nameof(value.SelectedCarEntry)) {
+                            _discordPresence?.Car(value.SelectedCarEntry?.CarObject);
+                        }
+                    });
 
                     if (value.ActualName != null) {
                         _tsServer = TsRegex.Match(value.ActualName).Groups.OfType<Group>().ElementAtOrDefault(1)?.Value;
@@ -339,7 +348,9 @@ namespace AcManager.Pages.Drive {
             private static readonly Regex TsRegex = new Regex(@"\s+(?:teamspeak|ts):?\s*((?:(?:[12]?\d{1,2})\.){3}(?:[12]?\d{1,2})(?::\d+)?)",
                     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            public ViewModel([NotNull] ServerEntry entry) {
+            internal ViewModel([NotNull] ServerEntry entry, [CanBeNull] DiscordRichPresence discordPresence) {
+                _discordPresence = discordPresence;
+
                 Entry = entry;
                 Assists.ServerAssists = Entry.AssistsInformation;
 

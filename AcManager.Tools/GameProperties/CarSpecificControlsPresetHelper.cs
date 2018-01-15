@@ -40,28 +40,28 @@ namespace AcManager.Tools.GameProperties {
 
             var carSteerLock = car.SteerLock ?? 0d;
             if (carSteerLock < 40) {
-                Logging.Debug("Invalid car steer lock");
+                Logging.Warning("Invalid car steer lock");
                 Revert();
                 return specificControlsLoaded;
             }
 
-            Logging.Debug($"Car steer lock: {carSteerLock}°");
+            Logging.Write($"Car steer lock: {carSteerLock}°");
             var hardLock = extra.GetBool("HARDWARE_LOCK", false);
             var currentDegrees = steer.GetInt("LOCK", 900);
 
             if (hardLock) {
-                Logging.Debug($"Hardware lock enabled, controls lock: {currentDegrees}");
+                Logging.Write($"Hardware lock enabled, controls lock: {currentDegrees}");
             }
 
             if (hardLock && currentDegrees > carSteerLock) {
                 var lockSetter = GetSteerLockSetter(ini);
-                Logging.Debug(lockSetter == null
+                Logging.Write(lockSetter == null
                         ? "Lock setter for provided device not found"
                         : $"Lock setter: {lockSetter.MinimumSteerLock}…{lockSetter.MaximumSteerLock}");
 
                 if (lockSetter != null && carSteerLock < lockSetter.MaximumSteerLock) {
                     var newDegrees = carSteerLock.RoundToInt().Clamp(lockSetter.MinimumSteerLock, lockSetter.MaximumSteerLock);
-                    Logging.Debug("Updated lock: " + newDegrees);
+                    Logging.Write("Updated lock: " + newDegrees);
 
                     try {
                         if (lockSetter.Apply(newDegrees, false, out var appliedValue)) {
@@ -86,7 +86,7 @@ namespace AcManager.Tools.GameProperties {
                 var currentScale = steer.GetDouble("SCALE", 1d);
                 var newScale = Math.Min(currentDegrees / carSteerLock, 1d);
                 if (newScale != currentScale) {
-                    Logging.Debug($"Set scale: {newScale}");
+                    Logging.Write($"Set scale: {newScale}");
                     steer.Set("__CM_ORIGINAL_SCALE", currentScale);
                     steer.Set("SCALE", newScale);
                     ini.Save();

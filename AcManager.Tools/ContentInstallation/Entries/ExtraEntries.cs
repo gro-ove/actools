@@ -105,6 +105,50 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
     }
 
+    internal class CrewBrandConfigEntry : ContentEntryBase {
+        public override double Priority => 109d;
+
+        private readonly string _destination;
+
+        public CrewBrandConfigEntry([NotNull] string path, [NotNull] string id, string name = null) : base(path, id, GetName(id, name)) {
+            _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", "crew_brand", id);
+        }
+
+        private static string GetName(string id, string name) {
+            return name ?? AcStringValues.NameFromId(id);
+        }
+
+        protected sealed override bool GenericModSupportedByDesign => true;
+        public override string GenericModTypeName => "Crew brand textures";
+        public override string NewFormat => "New crew brand textures “{0}”";
+        public override string ExistingFormat => "Update for the crew brand textures “{0}”";
+
+        protected override IEnumerable<UpdateOption> GetUpdateOptions() {
+            yield return new UpdateOption("Install") {
+                RemoveExisting = false
+            };
+        }
+
+        protected override ICopyCallback GetCopyCallback(string destination) {
+            var path = EntryPath;
+            return new CopyCallback(fileInfo => {
+                var filename = fileInfo.Key;
+                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
+
+                var subFilename = FileUtils.GetRelativePath(filename, path);
+                return Path.Combine(destination, subFilename);
+            });
+        }
+
+        protected override Task<string> GetDestination(CancellationToken cancellation) {
+            return Task.FromResult(_destination);
+        }
+
+        protected override Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
+            return Task.FromResult(Directory.Exists(_destination) ? Tuple.Create(Name, (string)null) : null);
+        }
+    }
+
     internal class SystemConfigEntry : ContentEntryBase {
         public override double Priority => 110d;
 

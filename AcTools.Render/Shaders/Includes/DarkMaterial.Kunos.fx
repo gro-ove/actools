@@ -308,14 +308,14 @@ float4 ps_Tyres(PS_IN pin) : SV_Target {
 	float3 color, normal; float alpha;
 	Unpack_Tyres(pin, color, alpha, normal);
 
-	float4 refl = CalculateReflection_Maps(pin.PosW, normal, alpha);
+	float4 refl = CalculateReflection(pin.PosW, normal);
 	float3 lighted = CalculateLight_Maps(color, normal, pin.PosW, alpha, 1.0, pin.PosH.xy);
 
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		lighted *= 1.0 - refl.a;
 	}
 
-	return float4(lighted + refl.rgb * refl.a * alpha, 1.0);
+	return float4(lighted + refl.rgb * refl.a, 1.0);
 }
 
 technique10 Tyres {

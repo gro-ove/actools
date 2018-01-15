@@ -10,6 +10,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.DiscordRpc;
 using AcManager.Pages.Windows;
+using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
@@ -32,7 +33,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Pages.Drive {
     public partial class SpecialEvents : ILoadableContent, IParametrizedUriContent {
         public static bool OptionScalableTiles = true;
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Challenges");
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Challenges").Default();
 
         private string _filter;
 
@@ -72,6 +73,7 @@ namespace AcManager.Pages.Drive {
         private ViewModel Model => (ViewModel)DataContext;
 
         private class ViewModel : NotifyPropertyChanged, IComparer {
+            [CanBeNull]
             private readonly DiscordRichPresence _discordPresence;
 
             public AcWrapperCollectionView List { get; }
@@ -86,23 +88,21 @@ namespace AcManager.Pages.Drive {
                     _selected = value;
                     OnPropertyChanged();
                     ValuesStorage.Set(KeySelectedId, value?.Id);
-                    // _discordPresence.LargeImage = value == null ? null : new DiscordImage("", value.DisplayName);
-                    _discordPresence.Details = value == null ? "Challenges" : $"Challenges | {value.DisplayName}";
+                    _discordPresence?.Car(value?.CarObject).Track(value?.TrackObject)
+                                     .Details("Challenges", value?.DisplayName);
                 }
             }
 
-            public ViewModel(string filter, DiscordRichPresence discordPresence) {
+            public ViewModel(string filter, [CanBeNull] DiscordRichPresence discordPresence) {
                 _discordPresence = discordPresence;
+
                 List = new AcWrapperCollectionView(SpecialEventsManager.Instance.WrappersAsIList);
                 List.CurrentChanged += OnCurrentChanged;
                 List.MoveCurrentToIdOrFirst(ValuesStorage.GetString(KeySelectedId));
 
                 if (!string.IsNullOrWhiteSpace(filter)) {
                     var filterObject = Filter.Create(SpecialEventObjectTester.Instance, filter);
-                    List.Filter = wrapper => {
-                        var v = (wrapper as AcItemWrapper)?.Value as SpecialEventObject;
-                        return v != null && filterObject.Test(v);
-                    };
+                    List.Filter = w => (w as AcItemWrapper)?.Value is SpecialEventObject v && filterObject.Test(v);
                 }
 
                 List.CustomSort = this;

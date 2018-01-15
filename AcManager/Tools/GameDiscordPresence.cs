@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using AcManager.DiscordRpc;
 using AcManager.Pages.Drive;
@@ -14,32 +12,9 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
-using Newtonsoft.Json;
 
 namespace AcManager.Tools {
     public class GameDiscordPresence : Game.GameHandler {
-        private static string[] _knownCarBrands;
-        private static string[] _knownTracks;
-
-        private static void InitializeKnownIds() {
-            if (_knownCarBrands != null) return;
-            _knownCarBrands = ReadIds("CarBrands");
-            _knownTracks = ReadIds("Tracks");
-
-            string[] ReadIds(string name) {
-                var file = FilesStorage.Instance.GetContentFile("Discord", $"{name}.json");
-                if (file.Exists) {
-                    try {
-                        return JsonConvert.DeserializeObject<string[]>(File.ReadAllText(file.Filename));
-                    } catch (Exception e) {
-                        Logging.Error(e);
-                    }
-                }
-
-                return new string[0];
-            }
-        }
-
         public override IDisposable Set(Process process) {
             var appId = process != null ? DiscordConnector.Instance.SetAppId(process.Id) : null;
             if (appId != null) {
@@ -55,53 +30,35 @@ namespace AcManager.Tools {
         private readonly DiscordRichPresence _presence;
 
         public GameDiscordPresence(Game.StartProperties properties, GameMode mode) {
-            InitializeKnownIds();
-
             switch (mode) {
                 case GameMode.Replay:
                     _presence = new DiscordRichPresence(1000, "Preparing to race", "Watching replay");
-                    return;
+                    break;
                 case GameMode.Benchmark:
                     _presence = new DiscordRichPresence(1000, "Preparing to race", "Running benchmark");
-                    return;
+                    break;
+                case GameMode.Race:
+                    if (properties.GetAdditional<RsrMark>() != null) {
+                        _presence = new DiscordRichPresence(1000, "RSR", "Hotlap");
+                    } else if (properties.GetAdditional<SrsMark>() != null) {
+                        _presence = new DiscordRichPresence(1000, "SRS", "In a race");
+                    } else if (properties.ModeProperties is Game.OnlineProperties online) {
+                        _presence = new DiscordRichPresence(1000, "Online", "In a race");
+                        WatchForOnlineDetails(online).Forget();
+                    } else if (properties.GetAdditional<SpecialEventsManager.EventProperties>()?.EventId is string challengeId) {
+                        var challenge = SpecialEventsManager.Instance.GetById(challengeId);
+                        _presence = new DiscordRichPresence(1000, "Driving Solo", challenge != null ? $"Challenge | {challenge.DisplayName}" : "Challenge");
+                    } else {
+                        _presence = new DiscordRichPresence(1000, "Driving Solo", GetSessionName(properties.ModeProperties));
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
 
-            if (properties.GetAdditional<RsrMark>() != null) {
-                _presence = new DiscordRichPresence(1000, "RSR", "Hotlap");
-            } else if (properties.GetAdditional<SrsMark>() != null) {
-                _presence = new DiscordRichPresence(1000, "SRS", "In a race");
-            } else if (properties.ModeProperties is Game.OnlineProperties online) {
-                _presence = new DiscordRichPresence(1000, "Online", "In a race");
-                WatchForOnlineDetails(online).Forget();
-            } else if (properties.GetAdditional<SpecialEventsManager.EventProperties>()?.EventId is string challengeId) {
-                var challenge = SpecialEventsManager.Instance.GetById(challengeId);
-                _presence = new DiscordRichPresence(1000, "Driving Solo", challenge != null ? $"Challenge | {challenge.DisplayName}" : "Challenge");
-            } else {
-                _presence = new DiscordRichPresence(1000, "Driving Solo", GetSessionName(properties.ModeProperties));
-            }
-
-            _presence.Start = DateTime.Now;
-
-            var car = CarsManager.Instance.GetById(properties.BasicProperties?.CarId ?? "");
-            if (car != null) {
-                var carBrand = car.Brand?.ToLowerInvariant().Replace(" ", "_");
-                if (!_knownCarBrands.Contains(carBrand)) {
-                    carBrand = "various";
-                }
-
-                _presence.SmallImage = new DiscordImage($@"car_{carBrand}", car.Name ?? car.Id);
-            }
-
-            var track = TracksManager.Instance.GetLayoutById(properties.BasicProperties?.TrackId ?? "",
-                    properties.BasicProperties?.TrackConfigurationId ?? "");
-            if (track != null) {
-                var trackId = track.MainTrackObject.Id;
-                if (!_knownTracks.Contains(trackId)) {
-                    trackId = "unknown";
-                }
-
-                _presence.LargeImage = new DiscordImage($@"track_{trackId}", track.Name ?? track.Id);
-            }
+            _presence.Now()
+                     .Car(properties.BasicProperties?.CarId)
+                     .Track(properties.BasicProperties?.TrackId, properties.BasicProperties?.TrackConfigurationId);
         }
 
         private async Task WatchForOnlineDetails(Game.OnlineProperties online) {
@@ -130,6 +87,8 @@ namespace AcManager.Tools {
                         JoinSecret = joinSecret,
                         MatchSecret = matchSecret,
                     };
+
+                    _presence.ForceUpdate();
                 } catch (Exception e) {
                     Logging.Warning(e.Message);
                 }

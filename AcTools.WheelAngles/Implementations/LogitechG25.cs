@@ -51,15 +51,33 @@ namespace AcTools.WheelAngles.Implementations {
 
         private static IEnumerable<string> LocateLogitechSteeringWheelDll () {
             // For 32-bit apps
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).Replace(" (x86)", "");
-            yield return Path.Combine(programFiles, "Logitech",
-                    "Gaming Software", "SDKs", "32", LogitechSteeringWheel);
-            yield return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Logitech",
-                    "Gaming Software", "SDKs", "32", LogitechSteeringWheel);
-            yield return Path.Combine(programFiles, "Logitech",
-                    "Gaming Software", "SDKs", LogitechSteeringWheel);
-            yield return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Logitech",
-                    "Gaming Software", "SDKs", LogitechSteeringWheel);
+
+            var programFileses = new[] {
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).Replace(" (x86)", ""),
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
+            }.Distinct().ToArray();
+
+            var appPaths = new[] {
+                Path.Combine("Logitech", "Gaming Software"),
+                "Logitech Gaming Software"
+            };
+
+            var sdkFolders = new[] {
+                "SDKs",
+                "SDK",
+            };
+
+            var platforms = new[] {
+                "32", "x86", "64", "x64", null
+            };
+
+            foreach (var programFiles in programFileses)
+            foreach (var appPath in appPaths)
+            foreach (var sdkFolder in sdkFolders)
+            foreach (var platform in platforms) {
+                yield return new[] { programFiles, appPath, sdkFolder, platform }.NonNull().JoinToString(Path.DirectorySeparatorChar);
+            }
         }
 
         private static bool LoadLogitechSteeringWheelDll() {
@@ -87,8 +105,8 @@ namespace AcTools.WheelAngles.Implementations {
                 }
             }
 
-            AcToolsLogging.NonFatalErrorNotify($"Failed to find “{LogitechSteeringWheel}”",
-                    "Please, make sure you have Logitech Gaming Software installed, or simply put that library next to executable.", isBackground: true);
+            AcToolsLogging.NonFatalErrorNotifyBackground($"Failed to find “{LogitechSteeringWheel}”",
+                    "Please, make sure you have Logitech Gaming Software installed, or simply put that library next to executable.");
             return (_logitechDllInitialized = false).Value;
         }
 
@@ -106,7 +124,7 @@ namespace AcTools.WheelAngles.Implementations {
             }
 
             if (process == null) {
-                AcToolsLogging.NonFatalErrorNotify($"Can’t set {ControllerName} steer lock", "Failed to find game process", isBackground: true);
+                AcToolsLogging.NonFatalErrorNotifyBackground($"Can’t set {ControllerName} steer lock", "Failed to find game process");
                 return;
             }
 

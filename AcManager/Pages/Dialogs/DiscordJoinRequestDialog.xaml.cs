@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +18,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 using AcManager.DiscordRpc;
+using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.DirectInput;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -35,6 +42,9 @@ namespace AcManager.Pages.Dialogs {
         [CanBeNull]
         private Joystick[] _devices;
         private JoystickState[] _states;
+
+        private CmInGameAppHelper _inGameApp;
+        private CmInGameAppJoinRequestParams _inGameAppParams;
 
         private static Point GetWindowPosition(int width, int height) {
             var screen = System.Windows.Forms.Screen.FromPoint(System.Windows.Forms.Cursor.Position);
@@ -97,8 +107,11 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private readonly ControlsInput _yes, _no;
+        private readonly DiscordJoinRequest _args;
 
         public DiscordJoinRequestDialog(DiscordJoinRequest args, CancellationToken cancellation = default(CancellationToken)) {
+            _args = args;
+
             cancellation.Register(async () => {
                 await Task.Delay(200);
                 CloseWithResult(MessageBoxResult.Cancel);
@@ -109,7 +122,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             Buttons = new Control[0];
 
-            Title.Text = $"User {args.UserName} wants to join. Allow?";
+            Title.BbCode = $"User {args.UserName} wants to join. Allow?";
 
             if (!string.IsNullOrWhiteSpace(args.AvatarUrl)) {
                 Image.Filename = $"{args.AvatarUrl}?size=128";
@@ -137,6 +150,8 @@ namespace AcManager.Pages.Dialogs {
                 Logging.Error(e);
             }
 
+            _inGameAppParams = new CmInGameAppJoinRequestParams(args.UserName, args.UserId, args.AvatarUrl,
+                    b => (b ? YesCommand : NoCommand).Execute());
             CompositionTargetEx.Rendering += OnRendering;
         }
 
@@ -158,37 +173,43 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnRendering(object sender, RenderingEventArgs args) {
-            if (_devices == null) return;
+            try {
+                if (_devices == null) return;
 
-            switch (MessageBoxResult) {
-                case MessageBoxResult.No:
-                    AlterValue(YesBar, false, null);
-                    return;
-                case MessageBoxResult.Yes:
-                    AlterValue(NoBar, false, null);
-                    return;
-            }
-
-            for (var index = _devices.Length - 1; index >= 0; index--) {
-                var joystick = _devices[index];
-                if (joystick == null) continue;
-
-                try {
-                    if (!joystick.Acquire().IsFailure && !joystick.Poll().IsFailure && !Result.Last.IsFailure) {
-                        _states[index] = joystick.GetCurrentState();
-                    }
-                } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
-                    _devices[index] = null;
-                } catch (DirectInputException e) {
-                    _devices[index] = null;
-                    Logging.Warning(e);
+                switch (MessageBoxResult) {
+                    case MessageBoxResult.No:
+                        AlterValue(YesBar, false, null);
+                        return;
+                    case MessageBoxResult.Yes:
+                        AlterValue(NoBar, false, null);
+                        return;
                 }
-            }
 
-            var yes = _yes.IsPressed(_states);
-            var no = _no.IsPressed(_states);
-            AlterValue(NoBar, no, NoCommand);
-            AlterValue(YesBar, !no && yes, YesCommand);
+                for (var index = _devices.Length - 1; index >= 0; index--) {
+                    var joystick = _devices[index];
+                    if (joystick == null) continue;
+
+                    try {
+                        if (!joystick.Acquire().IsFailure && !joystick.Poll().IsFailure && !Result.Last.IsFailure) {
+                            _states[index] = joystick.GetCurrentState();
+                        }
+                    } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
+                        _devices[index] = null;
+                    } catch (DirectInputException e) {
+                        _devices[index] = null;
+                        Logging.Warning(e);
+                    }
+                }
+
+                var yes = _yes.IsPressed(_states);
+                var no = _no.IsPressed(_states);
+                AlterValue(NoBar, no, NoCommand);
+                AlterValue(YesBar, !no && yes, YesCommand);
+            } finally {
+                _inGameAppParams.YesProgress = YesBar.Value;
+                _inGameAppParams.NoProgress = NoBar.Value;
+                _inGameApp.Update(_inGameAppParams);
+            }
         }
 
         private AsyncCommand _yesCommand;
@@ -222,6 +243,7 @@ namespace AcManager.Pages.Dialogs {
         }, () => MessageBoxResult == MessageBoxResult.None));
 
         private void OnUnload() {
+            _inGameApp.Dispose();
             CompositionTargetEx.Rendering -= OnRendering;
             DisposeHelper.Dispose(ref _devices);
             DisposeHelper.Dispose(ref _directInput);

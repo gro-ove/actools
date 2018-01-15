@@ -9,6 +9,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
 using AcManager.Pages.Windows;
+using AcManager.Tools;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -34,7 +35,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private ViewModel Model => (ViewModel)DataContext;
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Championships");
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Championships").Default();
 
         public void Initialize() {
             this.OnActualUnload(_discordPresence);

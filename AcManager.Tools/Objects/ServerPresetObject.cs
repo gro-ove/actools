@@ -235,6 +235,7 @@ namespace AcManager.Tools.Objects {
 
             var welcomeFilename = Path.Combine(ServerPresetsManager.ServerDirectory, "cfg", $"welcome_{Id}.txt");
             if (!string.IsNullOrWhiteSpace(WelcomeMessage)) {
+                FileUtils.EnsureFileDirectoryExists(welcomeFilename);
                 File.WriteAllText(welcomeFilename, WelcomeMessage);
                 section.Set("WELCOME_MESSAGE", string.IsNullOrWhiteSpace(WelcomeMessagePath) ? "" : $"cfg/{Path.GetFileName(welcomeFilename)}");
             } else {
@@ -249,6 +250,7 @@ namespace AcManager.Tools.Objects {
             var ini = EntryListIniObject ?? IniFile.Empty;
             ini.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                FileUtils.EnsureFileDirectoryExists(EntryListIniFilename);
                 File.WriteAllText(EntryListIniFilename, ini.ToString());
                 base.Save();
             }

@@ -10,7 +10,7 @@ namespace AcManager.Tools.Helpers {
         private CarObject _currentCar;
 
         public CarObject CurrentCar {
-            get { return _currentCar; }
+            get => _currentCar;
             set {
                 if (value == null) return;
                 if (Equals(value, _currentCar)) return;
@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers {
         private TrackObjectBase _currentTrack;
 
         public TrackObjectBase CurrentTrack {
-            get { return _currentTrack; }
+            get => _currentTrack;
             set {
                 if (value == null) return;
                 if (Equals(value, _currentTrack)) return;

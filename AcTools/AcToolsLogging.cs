@@ -24,8 +24,7 @@ namespace AcTools {
         /// <param name="message">Ex.: “Can’t do this and that”.</param>
         /// <param name="commentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        /// <param name="isBackground">Doesn’t show right away.</param>
-        public static void NonFatalErrorNotify([NotNull] string message, [CanBeNull] string commentary, Exception exception = null, bool isBackground = false) {
+        public static void NonFatalErrorNotify([NotNull] string message, [CanBeNull] string commentary, Exception exception = null) {
             if (Logger == null) {
                 Console.WriteLine("Non-fatal error: " + message);
 
@@ -37,7 +36,29 @@ namespace AcTools {
                     Console.WriteLine(exception);
                 }
             } else {
-                NonFatalErrorHandler.Invoke(message, commentary, exception, isBackground);
+                NonFatalErrorHandler.Invoke(message, commentary, exception, false);
+            }
+        }
+
+        /// <summary>
+        /// Notify about some non-fatal exception. User will see some message.
+        /// </summary>
+        /// <param name="message">Ex.: “Can’t do this and that”.</param>
+        /// <param name="commentary">Ex.: “Make sure A is something and B is something else.”</param>
+        /// <param name="exception">Exception which caused the problem.</param>
+        public static void NonFatalErrorNotifyBackground([NotNull] string message, [CanBeNull] string commentary, Exception exception = null) {
+            if (Logger == null) {
+                Console.WriteLine("Non-fatal error: " + message);
+
+                if (commentary != null) {
+                    Console.WriteLine(commentary);
+                }
+
+                if (exception != null) {
+                    Console.WriteLine(exception);
+                }
+            } else {
+                NonFatalErrorHandler.Invoke(message, commentary, exception, true);
             }
         }
     }

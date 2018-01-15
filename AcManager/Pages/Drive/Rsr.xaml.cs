@@ -31,15 +31,13 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
     public partial class Rsr {
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "RSR");
-
         public static AssistsViewModel Assists { get; } = new AssistsViewModel("rsrassistsn");
 
         private ViewModel Model => (ViewModel)DataContext;
 
         public Rsr() {
-            this.OnActualUnload(_discordPresence);
             DataContext = new ViewModel();
+            this.OnActualUnload(Model);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
@@ -54,7 +52,9 @@ namespace AcManager.Pages.Drive {
             }.Go();
         }
 
-        public class ViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged, IDisposable {
+            private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "RSR");
+
             private const string KeyGhostCar = "Rsr.GhostCar";
             private const string KeyShowExtensionMessage = "Rsr.ExtMsg";
 
@@ -123,6 +123,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _car)) return;
                     _car = value;
                     OnPropertyChanged();
+                    _discordPresence?.Car(value);
                 }
             }
 
@@ -145,6 +146,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _track)) return;
                     _track = value;
                     OnPropertyChanged();
+                    _discordPresence?.Track(value);
                 }
             }
 
@@ -260,6 +262,10 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _goCommand;
 
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(Go, () => EventId != null));
+
+            public void Dispose() {
+                _discordPresence?.Dispose();
+            }
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]

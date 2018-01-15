@@ -88,7 +88,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public override Task CheckAndUpdateIfNeeded() {
-#if !FORCE_UPDATE || !DEBUG
+#if !FORCE_UPDATE
             if (!MainExecutingFile.IsPacked) {
                 LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
                 IsSupported = false;
@@ -106,7 +106,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
-#if FORCE_UPDATE && DEBUG
+#if FORCE_UPDATE
             return ((await GetLatestVersion())?.IsVersionNewerThan(BuildInformation.AppVersion) == true || true) && await LoadAndPrepare();
 #else
             return (await GetLatestVersion())?.IsVersionNewerThan(BuildInformation.AppVersion) == true && await LoadAndPrepare();
@@ -157,7 +157,7 @@ namespace AcManager.Tools.Miscellaneous {
         private bool _isPreparing;
 
         private async Task<bool> LoadAndPrepare() {
-#if !FORCE_UPDATE || !DEBUG
+#if !FORCE_UPDATE
             if (!MainExecutingFile.IsPacked) {
                 NonfatalError.Notify(ToolsStrings.AppUpdater_CannotUpdateApp, ToolsStrings.AppUpdater_UnpackedVersionMessage);
                 LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
@@ -245,11 +245,11 @@ namespace AcManager.Tools.Miscellaneous {
             RemovePreparedAutoUpdate();
         }, () => UpdateIsReady != null));
 
-        private DelegateCommand _finishUpdateCommand;
+        private DelegateCommand<string> _finishUpdateCommand;
 
-        public DelegateCommand FinishUpdateCommand => _finishUpdateCommand ??
-                (_finishUpdateCommand = new DelegateCommand(() => {
-                    if (Keyboard.Modifiers != ModifierKeys.Control) {
+        public DelegateCommand<string> FinishUpdateCommand => _finishUpdateCommand ??
+                (_finishUpdateCommand = new DelegateCommand<string>(s => {
+                    if (Keyboard.Modifiers == ModifierKeys.Alt && s != @"force" || s == @"close") {
                         Environment.Exit(0);
                         return;
                     }
@@ -260,7 +260,7 @@ namespace AcManager.Tools.Miscellaneous {
                         ModernDialog.ShowMessage(string.Format(ToolsStrings.AppUpdater_CannotUpdate_Message, e.Message.ToSentenceMember()),
                                 ToolsStrings.AppUpdater_UpdateFailed, MessageBoxButton.OK);
                     }
-                }, () => UpdateIsReady != null));
+                }, s => UpdateIsReady != null));
 
         private const string ExecutableExtension = ".exe";
         private const string UpdatePostfix = ".update" + ExecutableExtension;

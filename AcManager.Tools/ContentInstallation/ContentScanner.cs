@@ -43,10 +43,13 @@ namespace AcManager.Tools.ContentInstallation {
         private class FileNodeBase : IWithId {
             [CanBeNull]
             public DirectoryNode Parent { get; }
+
             [CanBeNull]
             public string Key { get; }
+
             [CanBeNull]
             public string Name { get; }
+
             [CanBeNull]
             public string NameLowerCase { get; }
 
@@ -76,10 +79,13 @@ namespace AcManager.Tools.ContentInstallation {
             // File nodes always have non-null key and name
             [NotNull]
             public new DirectoryNode Parent => base.Parent ?? throw new Exception();
+
             [NotNull]
             public new string Key => base.Key ?? throw new Exception();
+
             [NotNull]
             public new string Name => base.Name ?? throw new Exception();
+
             [NotNull]
             public new string NameLowerCase => base.NameLowerCase ?? throw new Exception();
 
@@ -562,6 +568,11 @@ namespace AcManager.Tools.ContentInstallation {
             // New textures
             if (directory.NameLowerCase == "damage" && directory.HasSubFile("flatspot_fl.png")) {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "damage");
+            }
+
+            if (directory.Parent?.NameLowerCase == "crew_brand" && directory.HasSubFile("Brands_Crew.dds") && directory.HasSubFile("Brands_Crew.jpg")
+                    && directory.HasSubFile("Brands_Crew_NM.dds")) {
+                return new CrewBrandConfigEntry(directory.Key ?? "", directory.Name ?? "clouds");
             }
 
             if (directory.NameLowerCase == "clouds" && directory.Files.Any(x => x.NameLowerCase.StartsWith("cloud") && x.NameLowerCase.EndsWith(".dds"))) {

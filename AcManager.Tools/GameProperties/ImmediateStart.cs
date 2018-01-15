@@ -53,7 +53,7 @@ namespace AcManager.Tools.GameProperties {
                 for (var i = 0; i < 20; i++) {
                     Run(true);
 
-                    var isInPit = AcSharedMemory.Instance.Shared?.Graphics.IsInPit;
+                    var isInPit = AcSharedMemory.Instance.Shared?.Graphics.IsInPits;
                     if (isInPit == false) {
                         Logging.Debug("Is in pit: " + isInPit);
                         break;

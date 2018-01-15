@@ -8,9 +8,16 @@ using JetBrains.Annotations;
 
 namespace AcManager.DiscordRpc {
     public struct DiscordJoinRequest {
+        [NotNull]
         public string UserId { get; set; }
+
+        [NotNull]
         public string UserName { get; set; }
+
+        [NotNull]
         public string Discriminator { get; set; }
+
+        [CanBeNull]
         public string AvatarUrl { get; set; }
     }
 
@@ -29,6 +36,7 @@ namespace AcManager.DiscordRpc {
         public DiscordImage([NotNull] string key, [NotNull] string text) {
             Key = key == "" ? OptionDefaultImage : key;
             Text = text;
+            Logging.Debug(key);
         }
     }
 
@@ -177,6 +185,7 @@ namespace AcManager.DiscordRpc {
         private static Busy _busy = new Busy();
 
         private void Update(bool force = false) {
+            if (IsDisposed) return;
             _busy.DoDelay(() => {
                 if (!force && Instances.FirstOrDefault() != this) return;
                 DiscordConnector.Instance.Update(Instances.FirstOrDefault());
@@ -184,6 +193,7 @@ namespace AcManager.DiscordRpc {
         }
 
         public void ForceUpdate() {
+            if (IsDisposed) return;
             DiscordConnector.Instance.Update(Instances.FirstOrDefault());
         }
 

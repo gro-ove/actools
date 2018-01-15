@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Internal;
+using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcManager.Tools.SharedMemory;
@@ -39,7 +40,7 @@ using ProgressBar = System.Windows.Controls.ProgressBar;
 namespace AcManager.Tools.GameProperties {
     public class ExtraHotkeysRaceHelper : Game.GameHandler {
         public static TimeSpan OptionSmallInterval = TimeSpan.FromMilliseconds(150);
-        public static TimeSpan OptionLargeInterval = TimeSpan.FromMilliseconds(700);
+        public static TimeSpan OptionLargeInterval = TimeSpan.FromMilliseconds(450);
 
         public abstract class JoyCommandBase {
             public bool ShowDelay { get; set; } = true;
@@ -51,6 +52,7 @@ namespace AcManager.Tools.GameProperties {
             public string DelayedName {
                 get => _delayedName;
                 set {
+                    if (Equals(value, _delayedName)) return;
                     _delayedName = value;
                     _applied = true;
                     _lastApplied = Stopwatch.StartNew();
@@ -95,6 +97,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             public double Progress => _lastApplied?.Elapsed.TotalSeconds / MinInterval.TotalSeconds ?? 0d;
+            public bool IsDelayed => DelayedName != null && _isPressed && !_applied;
 
             public void Update() {
                 if (DelayedName == null) {
@@ -374,11 +377,11 @@ namespace AcManager.Tools.GameProperties {
             };
 
             private static readonly Dictionary<string, JoyCommandBase> ExtraCommands;
-            private static bool _isInPits;
+            private static bool _isInPits, _isDriving;
 
             static MemoryListener() {
                 var startStopSession = new CallbackJoyCommand(() => {
-                    InternalUtils.AcControlPointExecute(_isInPits ? AcCommand.StartGame : AcCommand.TeleportToPitsWithConfig);
+                    InternalUtils.AcControlPointExecute(_isDriving ? AcCommand.TeleportToPitsWithConfig : AcCommand.StartGame);
                 });
 
                 ExtraCommands = new Dictionary<string, JoyCommandBase> {
@@ -400,11 +403,21 @@ namespace AcManager.Tools.GameProperties {
                 };
 
                 AcSharedMemory.Instance.Updated += (sender, args) => {
-                    var isInPitsNow = args.Current?.Graphics.IsInPit == true;
-                    if (isInPitsNow == _isInPits) return;
+                    _isInPits = args.Current?.Graphics.IsInPits == true;
+                    _isDriving = IsDriving(args.Current);
+                    startStopSession.DelayedName = _isDriving ? "Setup car in pits" : null;
 
-                    startStopSession.DelayedName = isInPitsNow ? null : "Setup car in pits";
-                    _isInPits = isInPitsNow;
+                    bool IsDriving(AcShared shared) {
+                        if (shared == null) return false;
+                        var p = shared.Physics;
+                        if (p.SteerAngle != 0f || p.TurboBoost != 0f || p.SpeedKmh > 0.02f) return true;
+                        for (var i = 0; i < 3; i++) {
+                            if (p.AccG[i] != 0f || p.TyreDirtyLevel[i] != 0f || p.CarDamage[i] != 0f) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
                 };
             }
 
@@ -457,14 +470,20 @@ namespace AcManager.Tools.GameProperties {
             private readonly KeyValuePair<Keys, JoyCommandBase>[] _keyToCommand;
             private readonly DirectInput _directInput;
             private readonly List<Joystick> _devices;
-            private readonly Thread _pollThread;
             private readonly bool _ignorePovInPits;
+
+            [CanBeNull]
+            private readonly Thread _pollThread;
+
+            [CanBeNull]
+            private readonly CmInGameAppHelper _inGameApp;
 
             public MemoryListener() {
                 var ini = new IniFile(AcPaths.GetCfgControlsFilename());
                 var delayEnabled = ini["__EXTRA_CM"].GetBool("DELAY_SPECIFIC_SYSTEM_COMMANDS", true);
+                var showDelay = delayEnabled && ini["__EXTRA_CM"].GetBool("SHOW_SYSTEM_DELAYS", true);
+                var isAcFullscreen = new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"].GetBool("FULLSCREEN", false);
                 _ignorePovInPits = ini["__EXTRA_CM"].GetBool("SYSTEM_IGNORE_POV_IN_PITS", true);
-                var showDelay = ini["__EXTRA_CM"].GetBool("SHOW_SYSTEM_DELAYS", true);
 
                 var keyToCommand = new Dictionary<Keys, JoyCommandBase>();
                 var joyToCommand = new Dictionary<JoyKey, JoyCommandBase>();
@@ -486,7 +505,7 @@ namespace AcManager.Tools.GameProperties {
                     if (isExtra && key != -1) {
                         c.MinInterval = delay;
                         c.DelayedName = delayedName;
-                        c.ShowDelay &= showDelay;
+                        c.ShowDelay &= showDelay && !isAcFullscreen;
                         keyToCommand[(Keys)key] = c;
                     }
 
@@ -500,14 +519,17 @@ namespace AcManager.Tools.GameProperties {
                     } else if (key != -1) {
                         c = new HotkeyJoyCommand(Keys.RControlKey, (Keys)key);
                     } else {
-                        return;
+                        continue;
                     }
 
                     c.MinInterval = delay;
                     c.DelayedName = delayedName;
-                    c.ShowDelay &= showDelay;
+                    c.ShowDelay &= showDelay && !isAcFullscreen;
                     joyToCommand[joyKey] = c;
                 }
+
+                Logging.Debug("Extra key bindings: " + keyToCommand.Count);
+                Logging.Debug("Extra joystick bindings: " + joyToCommand.Count);
 
                 if (keyToCommand.Count > 0) {
                     _keyboard = new KeyboardListener();
@@ -532,6 +554,11 @@ namespace AcManager.Tools.GameProperties {
                 _joyToCommand = joyToCommand.ToArray();
                 _keyToCommand = keyToCommand.ToArray();
                 _pollThread?.Start();
+
+                if (showDelay && isAcFullscreen
+                        && (_joyToCommand.Any(x => x.Value.DelayedName != null) || _keyToCommand.Any(x => x.Value.DelayedName != null))) {
+                    _inGameApp = CmInGameAppHelper.GetInstance();
+                }
             }
 
             private bool? _running;
@@ -583,12 +610,33 @@ namespace AcManager.Tools.GameProperties {
                     }
                 }
 
+                string delayedName = null;
+                var delayedProgress = 0d;
+
                 for (var i = _joyToCommand.Length - 1; i >= 0; i--) {
-                    _joyToCommand[i].Value.Update();
+                    var v = _joyToCommand[i].Value;
+                    v.Update();
+                    if (v.IsDelayed) {
+                        delayedName = v.DelayedName;
+                        delayedProgress = v.Progress;
+                    }
                 }
 
                 for (var i = _keyToCommand.Length - 1; i >= 0; i--) {
-                    _keyToCommand[i].Value.Update();
+                    var v = _keyToCommand[i].Value;
+                    v.Update();
+                    if (v.IsDelayed) {
+                        delayedName = v.DelayedName;
+                        delayedProgress = v.Progress;
+                    }
+                }
+
+                if (delayedName != null) {
+                    _inGameApp?.Update(new CmInGameAppDelayedInputParams(delayedName.ToSentenceMember()) {
+                        Progress = delayedProgress
+                    });
+                } else {
+                    _inGameApp?.HideApp();
                 }
             }
 
@@ -604,8 +652,8 @@ namespace AcManager.Tools.GameProperties {
 
             private void OnKeyDown(object sender, VirtualKeyCodeEventArgs e) {
                 var c = GetCommand(e.Key);
-                if (Keyboard.Modifiers == c.Modifiers) {
-                    GetCommand(e.Key)?.SetKeyboardPressed(true);
+                if (c != null && Keyboard.Modifiers == c.Modifiers) {
+                    c.SetKeyboardPressed(true);
                 }
             }
 
@@ -628,6 +676,8 @@ namespace AcManager.Tools.GameProperties {
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t remove events hook", e);
                 }
+
+                _inGameApp?.Dispose();
             }
         }
 

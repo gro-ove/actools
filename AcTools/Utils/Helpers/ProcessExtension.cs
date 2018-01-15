@@ -87,7 +87,16 @@ namespace AcTools.Utils.Helpers {
 
         public static bool HasExitedSafe([NotNull] this Process process) {
             if (process == null) throw new ArgumentNullException(nameof(process));
-            var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryLimitedInformation | Kernel32.ProcessAccessFlags.Synchronize, false, process.Id);
+
+            int processId;
+            try {
+                processId = process.Id;
+            } catch (InvalidOperationException) {
+                // What?
+                return true;
+            }
+
+            var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryLimitedInformation | Kernel32.ProcessAccessFlags.Synchronize, false, processId);
             if (handle == IntPtr.Zero || handle == new IntPtr(-1)) return true;
 
             try {

@@ -37,6 +37,8 @@ namespace AcManager.Pages.Selected {
                 _set = true;
                 Loaded += OnLoaded;
                 Unloaded += OnUnloaded;
+            } else {
+                model.Load();
             }
 
             UpdateBindingsLaterAsync().Forget();

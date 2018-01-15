@@ -90,7 +90,8 @@ namespace AcManager.Pages.Drive {
                     _selectNextCar, null, //_selectNextCarSkinId,
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
                     weatherId: _selectNextWeather?.Id,
-                    mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid);
+                    mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid,
+                    presence: _discordPresence);
 
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
@@ -411,6 +412,8 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
 
                     AcContext.Instance.CurrentCar = value;
+                    _presence?.Car(value);
+
                     if (value != null && value.Author != AcCommonObject.AuthorKunos) {
                         SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, false, true).ToList();
                         if (value.AcdData != null) {
@@ -489,6 +492,8 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
                     TrackUpdated();
                     FancyBackgroundManager.Instance.ChangeBackground(value?.PreviewImage);
+                    AcContext.Instance.CurrentTrack = value;
+                    _presence?.Track(value);
                 }
             }
 
@@ -529,9 +534,12 @@ namespace AcManager.Pages.Drive {
             private readonly string _carSkinId, _carSetupId, _weatherId;
             private readonly int? _forceTime;
 
+            [CanBeNull]
+            private readonly DiscordRichPresence _presence;
+
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
-                    Uri mode = null, string serializedRaceGrid = null) {
+                    Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null) {
                 if (uiMode && SettingsHolder.Drive.ShowExtraComboBoxes) {
                     CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
                     CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
@@ -544,6 +552,7 @@ namespace AcManager.Pages.Drive {
                 _weatherId = weatherId;
                 // _serializedRaceGrid = serializedRaceGrid;
                 _forceTime = time;
+                _presence = presence;
 
                 if (trackSkin != null) {
                     var mainLayout = TracksManager.Instance.GetById(trackSkin.TrackId);

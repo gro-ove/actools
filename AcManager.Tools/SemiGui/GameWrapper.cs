@@ -197,6 +197,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
             properties.SetAdditional(new CarRaceTextures());
+            properties.SetAdditional(new ExtraHotkeysRaceHelper());
         }
 
         private static void StartAsync_PrepareRace(Game.StartProperties properties) {
@@ -260,7 +261,6 @@ namespace AcManager.Tools.SemiGui {
 
                         if (mode == GameMode.Race) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
-                            properties.SetAdditional(new ExtraHotkeysRaceHelper());
                             if (SettingsHolder.Drive.ContinueOnEscape) {
                                 properties.SetAdditional(new ContinueRaceHelper());
                             }

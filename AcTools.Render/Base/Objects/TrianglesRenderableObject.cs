@@ -163,11 +163,12 @@ namespace AcTools.Render.Base.Objects {
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             if (IsEmpty) return;
 
-            var vbd = new BufferDescription(Vertices[0].Stride * Vertices.Length, ResourceUsage.Immutable,
+            var first = Vertices.Length > 0 ? Vertices[0] : new T();
+            var vbd = new BufferDescription(first.Stride * Vertices.Length, ResourceUsage.Immutable,
                     BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             _verticesStream = new DataStream(Vertices, false, false);
             _verticesBuffer = new Buffer(contextHolder.Device, _verticesStream, vbd);
-            _verticesBufferBinding = new VertexBufferBinding(_verticesBuffer, Vertices[0].Stride, 0);
+            _verticesBufferBinding = new VertexBufferBinding(_verticesBuffer, first.Stride, 0);
 
             var ibd = new BufferDescription(sizeof(ushort) * Indices.Length, ResourceUsage.Immutable,
                     BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);

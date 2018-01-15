@@ -30,7 +30,7 @@ namespace AcManager.Tools.SharedMemory {
         public float DistanceTraveled;
 
         [MarshalAs(UnmanagedType.Bool)]
-        public bool IsInPit;
+        public bool IsInPits;
 
         public int CurrentSectorIndex;
         public int LastSectorTime;

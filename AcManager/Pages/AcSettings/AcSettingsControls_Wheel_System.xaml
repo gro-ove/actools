@@ -155,14 +155,32 @@
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Options:" />
           <StackPanel Style="{StaticResource SettingsPanel}">
-            <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
-              <Label Content="Delay race-terminating commands by half a second" />
-            </CheckBox>
+            <mui:BooleanSwitch Value="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
+              <mui:BooleanSwitch.True>
+                <!-- ¯\_(ツ)_/¯ -->
+                <StackPanel>
+                  <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
+                    <Label Content="Delay race-terminating commands by half a second" />
+                  </CheckBox>
 
-            <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}"
-                ToolTip="Doesn’t work in fullscreen mode, and, I believe, doesn’t work in VR">
-              <Label Content="Show popups while delaying" />
-            </CheckBox>
+                  <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
+                    <Label Content="Show popups while delaying" />
+                  </CheckBox>
+                </StackPanel>
+              </mui:BooleanSwitch.True>
+              <mui:BooleanSwitch.False>
+                <StackPanel>
+                  <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
+                    <Label Content="Delay race-terminating commands by half a second" />
+                  </CheckBox>
+
+                  <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}"
+                      ToolTip="Doesn’t work in fullscreen mode, and, I believe, doesn’t work in VR">
+                    <Label Content="Show popups while delaying" />
+                  </CheckBox>
+                </StackPanel>
+              </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch>
 
             <CheckBox IsChecked="{Binding SystemIgnorePovInPits}" ToolTip="To avoid conflicts with pits menu">
               <Label Content="Ignore POV1 buttons in pits" />
@@ -172,6 +190,11 @@
               <mui:BbCodeBlock BbCode="[i]Did you know?[/i] In this section, you can use POV buttons as well." />
             </c:MessageBlock>
           </StackPanel>
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Related video options:" />
+          <CheckBox IsChecked="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
+            <Label Content="Fullscreen (disable to delay race-terminating commands and show popups)" />
+          </CheckBox>
 
         </StackPanel>
       </mui:SpacingUniformGrid>

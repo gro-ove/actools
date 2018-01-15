@@ -12,6 +12,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -32,7 +33,7 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Pages.Drive {
     public partial class UserChampionships_SelectedPage : ILoadableContent, IParametrizedUriContent {
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Championships");
+        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Championships").Default();
 
         public void OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
@@ -47,6 +48,7 @@ namespace AcManager.Pages.Drive {
                 return;
             }
 
+            _discordPresence?.Default(acObject.DisplayName);
             DataContext = new ViewModel(acObject);
         }
 
@@ -59,6 +61,7 @@ namespace AcManager.Pages.Drive {
                 return;
             }
 
+            _discordPresence?.Default(acObject.DisplayName);
             DataContext = new ViewModel(acObject);
         }
 

@@ -95,7 +95,7 @@ namespace AcManager.Tools.Helpers {
                 [234]d|a(?:[ci]|mg)|b(?:r|mw)|c(?:cgt|pu|sl|ts|tr\d*)|d(?:mc|rs|s3|tm)|
                 g(?:gt|pu|rm|sr|t[\dbceirsx]?\d?)|ffb|
                 h(?:dr|ks|rt)|ita|jtc|ksdrift|lms?|
-                m(?:c12|gu|p\d*)|n(?:a|vidia)|rs[\dr]?|s(?:l|r8)|qv|vdc|wrc)\b",
+                m(?:c12|gu|p\d*)|n(?:a|vidia)|rs[\drs]?|s(?:l|r8)|qv|vdc|wrc)\b",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
         [NotNull]

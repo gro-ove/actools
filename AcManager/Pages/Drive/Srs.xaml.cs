@@ -35,12 +35,11 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs {
-        private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "SRS");
         private ViewModel Model => (ViewModel)DataContext;
 
         public Srs() {
-            this.OnActualUnload(_discordPresence);
             DataContext = new ViewModel();
+            this.OnActualUnload(Model);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
@@ -90,7 +89,9 @@ namespace AcManager.Pages.Drive {
             public string Nationality { get; }
         }
 
-        public class ViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged, IDisposable {
+            private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(30, "Preparing to race", "SRS").Default();
+
             private const string KeyShowExtensionMessage = "Srs.ExtMsg";
 
             [CanBeNull]
@@ -103,7 +104,7 @@ namespace AcManager.Pages.Drive {
             private bool _showExtensionMessage;
 
             public bool ShowExtensionMessage {
-                get { return AppKeyHolder.IsAllRight && _showExtensionMessage; }
+                get => AppKeyHolder.IsAllRight && _showExtensionMessage;
                 set {
                     if (Equals(value, _showExtensionMessage)) return;
                     _showExtensionMessage = value;
@@ -133,7 +134,7 @@ namespace AcManager.Pages.Drive {
             private string _quitUrl;
 
             public string QuitUrl {
-                get { return _quitUrl; }
+                get => _quitUrl;
                 set {
                     if (Equals(value, _quitUrl)) return;
                     _quitUrl = value;
@@ -149,7 +150,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public PlayerInformation Player {
-                get { return _player; }
+                get => _player;
                 set {
                     if (Equals(value, _player)) return;
                     Logging.Debug(value?.DisplayName);
@@ -164,7 +165,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public ServerInformation Server {
-                get { return _server; }
+                get => _server;
                 set {
                     if (Equals(value, _server)) return;
                     _server = value;
@@ -191,7 +192,7 @@ namespace AcManager.Pages.Drive {
             private DateTime? _startTime;
 
             public DateTime? StartTime {
-                get { return _startTime; }
+                get => _startTime;
                 set {
                     if (Equals(value, _startTime)) return;
                     _startTime = value;
@@ -221,7 +222,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public string CarId {
-                get { return _carId; }
+                get => _carId;
                 set {
                     if (Equals(value, _carId)) return;
                     _carId = value;
@@ -237,18 +238,19 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public CarObject Car {
-                get { return _car; }
+                get => _car;
                 set {
                     if (Equals(value, _car)) return;
                     _car = value;
                     OnPropertyChanged();
+                    _discordPresence?.Car(value);
                 }
             }
 
             private string _carSkinId;
 
             public string CarSkinId {
-                get { return _carSkinId; }
+                get => _carSkinId;
                 set {
                     if (Equals(value, _carSkinId)) return;
                     _carSkinId = value;
@@ -259,7 +261,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public CarSkinObject CarSkin {
-                get { return _carSkin; }
+                get => _carSkin;
                 set {
                     if (Equals(value, _carSkin)) return;
                     _carSkin = value;
@@ -271,7 +273,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public string TrackId {
-                get { return _trackId; }
+                get => _trackId;
                 set {
                     if (Equals(value, _trackId)) return;
                     _trackId = value;
@@ -282,11 +284,12 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public TrackObjectBase Track {
-                get { return _track; }
+                get => _track;
                 set {
                     if (Equals(value, _track)) return;
                     _track = value;
                     OnPropertyChanged();
+                    _discordPresence?.Track(value);
                 }
             }
 
@@ -344,6 +347,10 @@ namespace AcManager.Pages.Drive {
 
             public void SetAssociated(WebBlock webBlock) {
                 _associated = webBlock;
+            }
+
+            public void Dispose() {
+                _discordPresence?.Dispose();
             }
         }
 

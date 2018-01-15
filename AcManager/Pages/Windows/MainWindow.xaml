@@ -87,6 +87,9 @@
               <Separator />
               <MenuItem Header="Ignore this update" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
               <MenuItem Header="Disable auto-updates" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
+              <Separator />
+              <MenuItem Header="Apply update and restart" Command="{Binding AppUpdater.FinishUpdateCommand}" CommandParameter="force" />
+              <MenuItem Header="Close and apply update next time" Command="{Binding AppUpdater.FinishUpdateCommand}" CommandParameter="close" />
             </ContextMenu>
           </Button.ContextMenu>
           <Canvas Width="10" Height="6" ClipToBounds="True">

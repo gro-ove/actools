@@ -178,7 +178,7 @@
     <value>Yes</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update to version [b]{0}[/b] is ready.[br][br]Hold [b]Ctrl[/b] and click to restart Content Manager and apply it, or click to simply close the app and install the update later.</value>
+    <value>Update to version [b]{0}[/b] is ready.[br][br]Click to restart Content Manager and apply it, or hold [b]Alt[/b] and click to simply close the app and install the update later.[br][br]There is also a context menu here, by the way.</value>
   </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Image files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
