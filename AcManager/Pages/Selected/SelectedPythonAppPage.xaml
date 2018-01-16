@@ -32,7 +32,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding SelectedObject.AppIcon.Value}">
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding SelectedObject.AppIcon.Value}" IconMouseUp="OnIconClick">
     <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_AppTooltip}"

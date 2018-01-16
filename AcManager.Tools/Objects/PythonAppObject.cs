@@ -24,6 +24,22 @@ using StringBasedFilter.Parsing;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Objects {
+    public sealed class PythonAppWindow : Displayable {
+        [NotNull]
+        public string IconOn { get; }
+
+        [NotNull]
+        public string IconOff { get; }
+
+        public PythonAppWindow([NotNull] string name) {
+            DisplayName = name;
+
+            var iconsDir = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "gui", "icons");
+            IconOn = Path.Combine(iconsDir, name + "_ON.png");
+            IconOff = Path.Combine(iconsDir, name + "_OFF.png");
+        }
+    }
+
     public class PythonAppObject : AcCommonObject, IAcObjectVersionInformation, ICupSupportedObject {
         public static readonly string[] VersionSources = { "version.txt", "changelog.txt", "readme.txt", "read me.txt" };
         private static readonly Regex VersionRegex = new Regex(@"^\s{0,4}(?:-\s*)?v?(\d+(?:\.\d+)+)", RegexOptions.Compiled);
@@ -36,9 +52,11 @@ namespace AcManager.Tools.Objects {
         }
 
         public Lazier<string> AppIcon { get; }
+        public Lazier<IReadOnlyList<PythonAppWindow>> Windows { get; }
 
         public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
-            AppIcon = Lazier.CreateAsync(TryToFindAppIcon);
+            AppIcon = Lazier.CreateAsync(TryToFindAppIconAsync);
+            Windows = Lazier.CreateAsync(() => Task.Run(() => GetWindows().ToIReadOnlyListIfItIsNot()));
         }
 
         private IEnumerable<string> GetPythonFilenames() {
@@ -56,32 +74,28 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private string TryToFindAppIconInPythonFiles() {
-            return (from filename in GetPythonFilenames()
-                    select File.ReadAllText(filename)
-                    into data
-                    select Regex.Matches(data, @"\bac\.newApp\s*\(\s*""([^""]+)\s*""\)").OfType<Match>().Select(x => x.Groups[1].Value)
-                                .Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
-                    into apps
-                    where apps.Count != 0
-                    select apps.Any(x => string.Equals(x, Id, StringComparison.OrdinalIgnoreCase)) ? Id : apps[0]
-                    into appId
-                    select Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "gui", "icons", appId + "_OFF.png")).FirstOrDefault();
+        private IEnumerable<PythonAppWindow> GetWindows() {
+            return GetPythonFilenames().Select(File.ReadAllText).SelectMany(data =>
+                    Regex.Matches(data, @"(?:^|(?<=\n))#\s*[Aa]pp\s+[Ww]indow: .+|\bac\.newApp\s*\(\s*""([^""]+)\s*""\)")
+                         .OfType<Match>().Select(x => x.Groups[1].Value).Where(x => !string.IsNullOrWhiteSpace(x))
+                         .Distinct(StringComparer.OrdinalIgnoreCase).Select(x => new PythonAppWindow(x)));
         }
 
-        private async Task<string> TryToFindAppIcon() {
+        [ItemCanBeNull]
+        private async Task<string> TryToFindAppIconAsync() {
             const string iconMissing = "_";
 
-            var iconKey = $"appIcon:{Id}";
-            var result = ValuesStorage.GetString(iconKey);
+            var iconKey = $".AppIcon:{Id}";
+            var result = CacheStorage.GetString(iconKey);
             if (result != null) {
                 return result == iconMissing ? null : result;
             }
 
-            var icon = await Task.Run(() => TryToFindAppIconInPythonFiles()).ConfigureAwait(false);
-            ValuesStorage.Set(iconKey, icon ?? iconMissing);
-
-            return icon;
+            var windows = await Windows.GetValueAsync();
+            var icon = windows?.FirstOrDefault(x => string.Equals(x.DisplayName, Id, StringComparison.Ordinal))
+                    ?? windows?.OrderBy(x => x.DisplayName.Length).FirstOrDefault();
+            CacheStorage.Set(iconKey, icon?.IconOff ?? iconMissing);
+            return icon?.IconOff;
         }
 
         protected override void LoadOrThrow() {

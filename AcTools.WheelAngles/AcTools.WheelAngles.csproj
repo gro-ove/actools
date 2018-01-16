@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Implementations\LogitechG25.cs" />
     <Compile Include="Implementations\LogitechG27.cs" />
+    <Compile Include="Implementations\LogitechG29.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
     <Compile Include="IWheelSteerLockSetter.cs" />

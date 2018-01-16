@@ -71,7 +71,7 @@ namespace AcTools.Utils {
         }
 
         [ItemCanBeNull]
-        public Task<T> ForceGetValue() {
+        public Task<T> GetValueAsync() {
             if (_isSet || _fnTask == null) return Task.FromResult(Value);
             return _settingTask ?? (_settingTask = SetTask());
         }
@@ -81,7 +81,7 @@ namespace AcTools.Utils {
 
             var setting = ++_isSettingId;
             try {
-                var ready = await _fnTask();
+                var ready = await _fnTask().ConfigureAwait(false);
                 if (_isSettingId != setting) return default(T);
 
                 _value = ready;

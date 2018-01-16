@@ -110,11 +110,11 @@ namespace AcManager.Pages.Miscellaneous {
                     case "track":
                         return value.Test(obj.Track?.Name ?? obj.Parsed?.TrackId);
                     case "playercar":
-                        return value.Test(obj.PlayerCar?.ForceGetValue().Result?.Name);
+                        return value.Test(obj.PlayerCar?.GetValueAsync().Result?.Name);
                     case "sessions":
                         return value.Test(obj.SessionNames);
                     case "details":
-                        return value.Test(obj.ModeDetails?.ForceGetValue().Result);
+                        return value.Test(obj.ModeDetails?.GetValueAsync().Result);
                     case "summary":
                         return value.Test(obj.Summary);
                     case "online":
@@ -124,9 +124,9 @@ namespace AcManager.Pages.Miscellaneous {
                     case "quick":
                         return value.Test(obj.QuickDrivePreset != null);
                     case "car":
-                        return obj.Cars.ForceGetValue().Result?.Any(x => value.Test(x.Car.DisplayName)) == true;
+                        return obj.Cars.GetValueAsync().Result?.Any(x => value.Test(x.Car.DisplayName)) == true;
                     case null:
-                        return obj.Cars.ForceGetValue().Result?.Any(x => value.Test(x.Car.DisplayName)) == true ||
+                        return obj.Cars.GetValueAsync().Result?.Any(x => value.Test(x.Car.DisplayName)) == true ||
                                 value.Test(obj.Track?.Name ?? obj.Parsed?.TrackId);
                 }
 
@@ -137,9 +137,9 @@ namespace AcManager.Pages.Miscellaneous {
                 switch (key) {
                     case null:
                     case "car":
-                        return obj.Cars.ForceGetValue().Result?.Any(x => x.Car != null && filter.Test(CarObjectTester.Instance, x.Car)) == true;
+                        return obj.Cars.GetValueAsync().Result?.Any(x => x.Car != null && filter.Test(CarObjectTester.Instance, x.Car)) == true;
                     case "playercar":
-                        var c = obj.PlayerCar.ForceGetValue().Result;
+                        var c = obj.PlayerCar.GetValueAsync().Result;
                         return c != null && filter.Test(CarObjectTester.Instance, c);
                     case "track":
                         return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);

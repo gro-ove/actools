@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -202,6 +204,10 @@ namespace AcManager.Pages.Selected {
             } catch (ArgumentException ex) {
                 NonfatalError.Notify("Can’t open dialog", ex);
             }
+        }
+
+        private void OnIconClick(object sender, MouseButtonEventArgs e) {
+            AppIconEditor.RunAsync(_model.SelectedObject).Forget();
         }
     }
 }

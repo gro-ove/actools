@@ -68,7 +68,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(4, l.Value);
 
             l.Reset();
-            Assert.AreEqual(5, l.ForceGetValue().Result);
+            Assert.AreEqual(5, l.GetValueAsync().Result);
         }
     }
 

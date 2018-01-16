@@ -378,6 +378,9 @@
     <Compile Include="Pages\Dialogs\PackServerDialog.xaml.cs">
       <DependentUpon>PackServerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\AppIconEditor.xaml.cs">
+      <DependentUpon>AppIconEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
@@ -967,6 +970,10 @@
     <Page Include="Pages\Dialogs\PackServerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\AppIconEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>

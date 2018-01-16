@@ -1,0 +1,24 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AppIconEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" Title="App icons" d:DataContext="{d:DesignInstance dialogs:AppIconEditor+ViewModel}"
+    MaxHeight="99999" MaxWidth="99999">
+  <DataGrid ItemsSource="{Binding Windows}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True" HeadersVisibility="None">
+    <DataGrid.Columns>
+      <DataGridTemplateColumn Width="120" Header="Window name" SortMemberPath="Window.DisplayName">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate DataType="{x:Type dialogs:AppIconEditor+AppWindowItem}">
+            <TextBlock Text="{Binding Window.DisplayName}" TextTrimming="CharacterEllipsis" />
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+      <DataGridTemplateColumn Width="1*" Header="Icon" CanUserSort="False">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate DataType="{x:Type dialogs:AppIconEditor+AppWindowItem}">
+            <mui:BetterImage Filename="{Binding Window.IconOn}" Width="64" Height="64" />
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+    </DataGrid.Columns>
+  </DataGrid>
+</mui:ModernDialog>
