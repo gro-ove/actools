@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
 
         private const string KeyCopyPasswordToInviteLink = "Online.CopyPasswordToInviteLink";
 
-        public static bool IncludePasswordToInviteLink => ValuesStorage.GetBool(KeyCopyPasswordToInviteLink, true);
+        public static bool IncludePasswordToInviteLink => ValuesStorage.Get<bool>(KeyCopyPasswordToInviteLink, true);
 
         private void Initialize() {
             var entry = _holder.Value;

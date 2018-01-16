@@ -9,6 +9,7 @@ using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -70,7 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 linkGroup.Initialize();
             }
 
-            if (!SelectUriIfLinkExists(ValuesStorage.GetUri($"{SaveKey}_link"))) {
+            if (!SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}_link"))) {
                 SelectUriIfLinkExists(DefaultSource);
             }
         }
@@ -296,7 +297,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void SwitchToGroupByKey(string key) {
-            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.GetUri($"{SaveKey}__{key}"))) {
+            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}__{key}"))) {
                 SelectedLink = (from g in LinkGroups
                                 where g.GroupKey == key
                                 from l in g.Links

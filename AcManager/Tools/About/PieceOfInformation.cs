@@ -19,7 +19,7 @@ namespace AcManager.Tools.About {
             Url = url;
             IsLimited = limited;
 
-            IsNew = !ValuesStorage.GetBool(_sid);
+            IsNew = !ValuesStorage.Get<bool>(_sid);
             IsHidden = IsNew && hidden;
 
             if (packed) {

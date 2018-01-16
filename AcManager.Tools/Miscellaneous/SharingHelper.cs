@@ -246,7 +246,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private void SaveHistory() {
-            ValuesStorage.Set(Key, History.Select(x => x.Serialize()));
+            ValuesStorage.Storage.SetStringList(Key, History.Select(x => x.Serialize()));
         }
 
         public void AddToHistory(SharedEntryType type, string name, string target, InternalUtils.ShareResult result) {

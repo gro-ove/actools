@@ -7,6 +7,7 @@ using AcManager.Tools.Profile;
 using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -36,7 +37,7 @@ namespace AcManager.Tools.Helpers {
             var section = new IniFile(filename)["Cars"];
             foreach (var v in section) {
                 var carId = v.Key;
-                var value = v.Value.AsDouble();
+                var value = v.Value.As<double>();
                 if (value > 0) {
                     yield return Tuple.Create(carId, value);
                 }

@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -30,7 +31,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return BackToString(value.AsDouble());
+            return BackToString(value.As<double>());
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -38,7 +39,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            return BackToString(values.FirstOrDefault().AsDouble());
+            return BackToString(values.FirstOrDefault().As<double>());
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {

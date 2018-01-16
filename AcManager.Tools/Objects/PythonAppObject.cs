@@ -86,7 +86,7 @@ namespace AcManager.Tools.Objects {
             const string iconMissing = "_";
 
             var iconKey = $".AppIcon:{Id}";
-            var result = CacheStorage.GetString(iconKey);
+            var result = CacheStorage.Get<string>(iconKey);
             if (result != null) {
                 return result == iconMissing ? null : result;
             }

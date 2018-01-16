@@ -25,6 +25,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -1036,7 +1037,7 @@ namespace AcManager.Controls.ViewModels {
 
         public string DisplayVarietyLimitation {
             get => _varietyLimitation == 0 ? ToolsStrings.AssistState_Off : PluralizingConverter.PluralizeExt(_varietyLimitation, "{0} car");
-            set => VarietyLimitation = value.AsInt();
+            set => VarietyLimitation = value.As<int>();
         }
         #endregion
 

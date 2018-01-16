@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(double), typeof(Visibility))]
@@ -9,7 +10,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value == null) return null;
 
-            var a = value.AsDouble();
+            var a = value.As<double>();
             if (parameter == null) {
                 return a > 0d ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -20,11 +21,11 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             }
 
             if (!t.Contains(',')) {
-                return a > t.AsDouble() ? Visibility.Visible : Visibility.Collapsed;
+                return a > t.As<double>() ? Visibility.Visible : Visibility.Collapsed;
             }
 
             var p = t.Split(',');
-            var s = p[0].AsDouble();
+            var s = p[0].As<double>();
             var r = p.Contains(@"inverse") ? s > a : a > s;
             return r ? Visibility.Visible : p.Contains(@"hidden") ? Visibility.Hidden : Visibility.Collapsed;
         }

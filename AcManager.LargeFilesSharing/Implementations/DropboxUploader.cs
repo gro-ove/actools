@@ -56,7 +56,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
         public override Task PrepareAsync(CancellationToken cancellation) {
             if (!IsReady) {
-                var enc = Storage.GetEncryptedString(KeyAuthToken);
+                var enc = Storage.GetEncrypted<string>(KeyAuthToken);
                 if (enc != null) {
                     try {
                         _authToken = JsonConvert.DeserializeObject<AuthResponse>(enc);
@@ -105,7 +105,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
         private bool? _muteUpload;
 
         public bool MuteUpload {
-            get => _muteUpload ?? (_muteUpload = ValuesStorage.GetBool(KeyMuteUpload)).Value;
+            get => _muteUpload ?? (_muteUpload = ValuesStorage.Get(KeyMuteUpload, false)).Value;
             set {
                 if (Equals(value, MuteUpload)) return;
                 _muteUpload = value;

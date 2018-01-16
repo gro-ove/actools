@@ -3,6 +3,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -102,14 +103,14 @@ namespace AcManager.Tools.AcObjectsNew {
             var ratingNewKey = $"{typeName}:{newId}:rating";
 
             if (RatingsStorage.Contains(isFavouriteOldKey)) {
-                RatingsStorage.SetString(isFavouriteNewKey, RatingsStorage.GetString(isFavouriteOldKey));
+                RatingsStorage.Set(isFavouriteNewKey, RatingsStorage.Get<string>(isFavouriteOldKey));
                 if (!keepOld) {
                     RatingsStorage.Remove(isFavouriteOldKey);
                 }
             }
 
             if (RatingsStorage.Contains(ratingOldKey)) {
-                RatingsStorage.SetString(ratingNewKey, RatingsStorage.GetString(ratingOldKey));
+                RatingsStorage.Set(ratingNewKey, RatingsStorage.Get<string>(ratingOldKey));
                 if (!keepOld) {
                     RatingsStorage.Remove(ratingOldKey);
                 }
@@ -129,7 +130,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private bool? _isFavourite;
 
         public bool IsFavourite {
-            get => _isFavourite ?? (_isFavourite = RatingsStorage.GetBool(_isFavouriteKey)).Value;
+            get => _isFavourite ?? (_isFavourite = RatingsStorage.Get<bool>(_isFavouriteKey)).Value;
             set {
                 if (Equals(value, _isFavourite)) return;
                 _isFavourite = value;
@@ -158,7 +159,7 @@ namespace AcManager.Tools.AcObjectsNew {
             get {
                 if (!_ratingLoaded) {
                     _ratingLoaded = true;
-                    _rating = RatingsStorage.GetDoubleNullable(_ratingKey);
+                    _rating = RatingsStorage.Get<double?>(_ratingKey);
                 }
                 return _rating;
             }

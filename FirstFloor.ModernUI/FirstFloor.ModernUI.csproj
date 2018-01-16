@@ -136,10 +136,12 @@
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="Helpers\IStorage.cs" />
-    <Compile Include="Helpers\StorageMethods.cs" />
-    <Compile Include="Helpers\StorageWpfMethods.cs" />
+    <Compile Include="Helpers\Stored.cs" />
+    <Compile Include="Helpers\StoredValue.cs" />
     <Compile Include="Helpers\Substorage.cs" />
     <Compile Include="NotifyExtension.cs" />
+    <Compile Include="Serialization\SimpleSerialization.cs" />
+    <Compile Include="Serialization\SimpleSerialization.Wpf.cs" />
     <Compile Include="TaskExtension.cs" />
     <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>
@@ -408,7 +410,6 @@
     <Compile Include="Windows\Navigation\NavigationType.cs" />
     <Compile Include="Windows\ShellLink.cs" />
     <Compile Include="Windows\SizeRelatedCondition.cs" />
-    <Compile Include="Windows\Stored.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
     <Compile Include="Windows\TaskbarService.cs" />
     <Compile Include="Windows\Toast.cs" />

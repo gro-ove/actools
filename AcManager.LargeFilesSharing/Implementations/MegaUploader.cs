@@ -17,7 +17,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/Mega.png", UriKind.Relative),
                 "50 GB of space, but with floating download quota. Has proper API for downloading shared files, so it works with CM, but files might get damaged due to poor network connection.",
                 true, true) {
-            _userEmail = Storage.GetEncryptedString(KeyUserEmail);
+            _userEmail = Storage.GetEncrypted<string>(KeyUserEmail);
         }
 
         private MegaApiClient.LogonSessionToken _token;
@@ -35,8 +35,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
         public override Task PrepareAsync(CancellationToken cancellation) {
             if (!IsReady) {
                 _token = new MegaApiClient.LogonSessionToken(
-                        Storage.GetEncryptedString(KeySession),
-                        Storage.GetEncryptedBytes(KeyToken));
+                        Storage.GetEncrypted<string>(KeySession),
+                        Storage.GetEncrypted<byte[]>(KeyToken));
                 if (IsTokenValid) {
                     IsReady = true;
                 } else {
@@ -95,8 +95,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
             var root = new List<HierarchicalNode<T, TResult>>();
             var flat = new List<HierarchicalNode<T, TResult>>(list.Count);
 
-            Func<T, HierarchicalNode<T, TResult>> process = null;
-            process = node => {
+            HierarchicalNode<T, TResult> Process(T node) {
                 var index = flat.FindIndex(x => Equals(x.Obj, node));
                 if (index != -1) return flat[index];
 
@@ -105,17 +104,17 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
                 var parentN = getParent(node, list);
                 if (!Equals(parentN, default(T))) {
-                    var parent = process(parentN);
+                    var parent = Process(parentN);
                     parent.Children.Add(created);
                 } else {
                     root.Add(created);
                 }
 
                 return created;
-            };
+            }
 
             for (var i = 0; i < list.Count; i++) {
-                process(list[i]);
+                Process(list[i]);
             }
 
             for (var i = 0; i < 10000; i++) {

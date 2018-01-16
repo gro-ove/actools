@@ -98,7 +98,7 @@ namespace AcManager.Pages.Drive {
             private WebBlock _associated;
 
             internal ViewModel() {
-                ShowExtensionMessage = ValuesStorage.GetBool(KeyShowExtensionMessage, true);
+                ShowExtensionMessage = ValuesStorage.Get<bool>(KeyShowExtensionMessage, true);
             }
 
             private bool _showExtensionMessage;

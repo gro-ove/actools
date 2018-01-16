@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public override string DisplayName {
-            get { return string.Empty; }
+            get => string.Empty;
             set {
                 value = value.Trim();
                 if (string.IsNullOrEmpty(value)) return;

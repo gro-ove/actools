@@ -29,7 +29,7 @@ namespace AcManager.Controls.Helpers {
         private bool? _warnIfChanged;
 
         public bool WarnIfChanged {
-            get => (bool)(_warnIfChanged ?? (_warnIfChanged = ValuesStorage.GetBool(KeyWarnIfChanged, true)));
+            get => (bool)(_warnIfChanged ?? (_warnIfChanged = ValuesStorage.Get(KeyWarnIfChanged, true)));
             set {
                 if (Equals(value, WarnIfChanged)) return;
                 _warnIfChanged = value;
@@ -69,7 +69,7 @@ namespace AcManager.Controls.Helpers {
             }
 
             public override int GetHashCode() {
-                return Filename?.GetHashCode() ?? 0;
+                return Filename.GetHashCode();
             }
         }
 
@@ -83,7 +83,7 @@ namespace AcManager.Controls.Helpers {
         private bool _presetsReady;
 
         public bool PresetsReady {
-            get { return _presetsReady; }
+            get => _presetsReady;
             set {
                 if (Equals(value, _presetsReady)) return;
                 _presetsReady = value;
@@ -226,7 +226,7 @@ namespace AcManager.Controls.Helpers {
         public HierarchicalGroup Presets { get; } = new HierarchicalGroup();
 
         public object SelectedPreset {
-            get { return null; }
+            get => null;
             set {
                 var entry = value as ISavedPresetEntry;
                 if (entry != null) {

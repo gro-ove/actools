@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isEnabled = true;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (Equals(value, _isEnabled)) return;
                 _isEnabled = value;
@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isNew;
 
         public bool IsNew {
-            get { return _isNew; }
+            get => _isNew;
             set {
                 if (Equals(value, _isNew)) return;
                 _isNew = value;
@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isShown = true;
 
         public bool IsShown {
-            get { return _isShown; }
+            get => _isShown;
             set {
                 if (Equals(value, _isShown)) return;
                 _isShown = value;
@@ -44,7 +44,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private Uri _source;
 
         public virtual Uri Source {
-            get { return _source; }
+            get => _source;
             set {
                 if (_source == value) return;
                 _source = value;

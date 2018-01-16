@@ -42,6 +42,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -216,7 +217,7 @@ namespace AcManager.Pages.Windows {
         private const string KeyOfficialStarterNotification = "mw.osn";
 
         private static bool OfficialStarterNotification() {
-            if (ValuesStorage.GetBool(KeyOfficialStarterNotification)) return false;
+            if (ValuesStorage.Get<bool>(KeyOfficialStarterNotification)) return false;
 
             if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.OfficialStarterType) {
                 ValuesStorage.Set(KeyOfficialStarterNotification, true);
@@ -686,7 +687,7 @@ namespace AcManager.Pages.Windows {
 
         private class InnerPopupHeightConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value.AsDouble() / OptionScale - 2d;
+                return value.As<double>() / OptionScale - 2d;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -873,10 +874,10 @@ namespace AcManager.Pages.Windows {
 
                 if (!_subGroupKeys.Contains(groupKey)) {
                     _subGroupKeys.Add(groupKey);
-                    ValuesStorage.Set(KeySubGroupKeys, _subGroupKeys);
+                    ValuesStorage.Storage.SetStringList(KeySubGroupKeys, _subGroupKeys);
                 }
 
-                ValuesStorage.Set(GetSubGroupLinksKey(groupKey),
+                ValuesStorage.Storage.SetStringList(GetSubGroupLinksKey(groupKey),
                         groupLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source.OriginalString)));
             }
 

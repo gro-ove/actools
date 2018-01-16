@@ -26,7 +26,7 @@ namespace AcManager.Pages.Dialogs {
         private const string KeyWizardVersion = "_wizardVersion";
 
         public static bool IsReviewNeeded() {
-            return ValuesStorage.GetString(KeyWizardVersion) != WizardVersion;
+            return ValuesStorage.Get<string>(KeyWizardVersion) != WizardVersion;
         }
 
         public static void JustReviewed() {
@@ -88,7 +88,7 @@ namespace AcManager.Pages.Dialogs {
                 ChangeAcRoot = changeAcRoot;
                 ChangeSteamId = changeSteamId;
 
-                FirstRun = ValuesStorage.GetBool(KeyFirstRun) == false;
+                FirstRun = ValuesStorage.Get(KeyFirstRun, false);
                 if (FirstRun) {
                     ValuesStorage.Set(KeyFirstRun, true);
                 }

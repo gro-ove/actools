@@ -34,8 +34,8 @@ namespace AcManager.Controls.Helpers {
 
         private FancyBackgroundManager() {
             _listener = new List<IFancyBackgroundListener>();
-            _enabled = ValuesStorage.GetBool(KeyEnabled);
-            _backgroundFilename = ValuesStorage.GetString(KeyBackground);
+            _enabled = ValuesStorage.Get(KeyEnabled, false);
+            _backgroundFilename = ValuesStorage.Get<string>(KeyBackground);
         }
 
         private readonly List<IFancyBackgroundListener> _listener;

@@ -23,6 +23,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -39,7 +40,7 @@ namespace AcManager.Pages.ServerPreset {
 
         private class ProgressCapacityConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return Math.Max((value.AsDouble() - 2d) / 10d, 1d);
+                return Math.Max((value.As<double>() - 2d) / 10d, 1d);
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -52,8 +53,8 @@ namespace AcManager.Pages.ServerPreset {
         private class ClientsToBandwidthConverterInner : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
                 if (values.Length != 2) return null;
-                var hz = values[0].AsDouble();
-                var mc = values[1].AsDouble();
+                var hz = values[0].As<double>();
+                var mc = values[1].As<double>();
                 return 384d * hz * mc * (mc - 1) / 1e6;
             }
 
@@ -207,7 +208,7 @@ namespace AcManager.Pages.ServerPreset {
                 get {
                     if (_savedDrivers == null) {
                         if (!_savedDriversFilterSet) {
-                            SavedDriversFilter = ValuesStorage.GetString(KeySavedDriversFilter);
+                            SavedDriversFilter = ValuesStorage.Get<string>(KeySavedDriversFilter);
                         }
 
                         _savedDrivers = new BetterListCollectionView(ServerPresetsManager.Instance.SavedDrivers);
@@ -222,9 +223,7 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private bool SavedDriversFilterFn(object o) {
-                var d = o as ServerSavedDriver;
-                if (d == null) return false;
-                return _savedDriversFilterObj?.Test(d) != false;
+                return o is ServerSavedDriver d && _savedDriversFilterObj?.Test(d) != false;
             }
 
             private IFilter<ServerSavedDriver> _savedDriversFilterObj;

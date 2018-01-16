@@ -278,7 +278,7 @@ namespace AcManager.CustomShowroom {
             switch (size) {
                 case null:
                     var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
-                            ValuesStorage.GetString(KeyDimensions, _size.HasValue ? $"{_size?.Width}x{_size?.Height}" : ""), @"2048x2048");
+                            ValuesStorage.Get(KeyDimensions, _size.HasValue ? $"{_size?.Width}x{_size?.Height}" : ""), @"2048x2048");
                     if (string.IsNullOrWhiteSpace(result)) return null;
 
                     ValuesStorage.Set(KeyDimensions, result);

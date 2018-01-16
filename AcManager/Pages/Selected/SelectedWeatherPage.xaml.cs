@@ -25,6 +25,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -54,10 +55,10 @@ namespace AcManager.Pages.Selected {
 
             private const string KeyTemperature = "swp.temp";
 
-            private double _temperature = ValuesStorage.GetDouble(KeyTemperature, 20d);
+            private double _temperature = ValuesStorage.Get(KeyTemperature, 20d);
 
             public double Temperature {
-                get { return _temperature; }
+                get => _temperature;
                 set {
                     value = value.Round(0.5);
                     if (Equals(value, _temperature)) return;
@@ -73,10 +74,10 @@ namespace AcManager.Pages.Selected {
 
             private const string KeyTime = "swp.time";
 
-            private int _time = ValuesStorage.GetInt(KeyTime, 12 * 60 * 60);
+            private int _time = ValuesStorage.Get(KeyTime, 12 * 60 * 60);
 
             public int Time {
-                get { return _time; }
+                get => _time;
                 set {
                     if (value == _time) return;
                     _time = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
@@ -88,7 +89,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public string DisplayTime {
-                get { return $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+                get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
                 set {
                     int time;
                     if (!FlexibleParser.TryParseTime(value, out time)) return;
@@ -197,9 +198,7 @@ namespace AcManager.Pages.Selected {
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand<string>(o => {
                 SelectedObject.SaveCommand.Execute();
-
-                int time;
-                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o, out time) ? time : (int?)null);
+                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o, out var time) ? time : (int?)null);
             }, o => SelectedObject.Enabled));
 
             private ICommand _viewTemperatureReadmeCommand;
@@ -218,7 +217,7 @@ namespace AcManager.Pages.Selected {
                     return;
                 }
 
-                if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
+                if (!ValuesStorage.Get<bool>(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
                         ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
                         MessageBoxResult.OK) {
                     return;
@@ -295,7 +294,7 @@ namespace AcManager.Pages.Selected {
             _object = WeatherManager.Instance.GetById(_id);
         }
 
-        public bool EditMode { get; private set; } = ValuesStorage.GetBool(KeyEditMode);
+        public bool EditMode { get; private set; } = ValuesStorage.Get<bool>(KeyEditMode);
 
         private FrameworkElement _editMode;
 

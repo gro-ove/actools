@@ -222,7 +222,7 @@ namespace AcManager.Controls.UserControls {
             if (_loaded) return;
             _loaded = true;
             _something.OnLoaded();
-            Navigate((SaveKey == null ? null : ValuesStorage.GetString(SaveKey)) ?? StartPage);
+            Navigate((SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey)) ?? StartPage);
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

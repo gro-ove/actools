@@ -20,7 +20,7 @@ namespace AcManager.Pages.Dialogs {
         public CarObject Car { get; private set; }
 
         public ObservableCollection<FilesStorage.ContentEntry> Icons {
-            get { return _icons; }
+            get => _icons;
             set {
                 if (Equals(value, _icons)) return;
                 _icons = value;
@@ -29,7 +29,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public FilesStorage.ContentEntry Selected {
-            get { return _selected; }
+            get => _selected;
             set {
                 if (Equals(value, _selected)) return;
                 _selected = value;
@@ -59,7 +59,7 @@ namespace AcManager.Pages.Dialogs {
             Icons = new ObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentFiles(ContentCategory.UpgradeIcons));
 
             if (Icons.Contains(Selected)) return;
-            var previous = ValuesStorage.GetString(_key);
+            var previous = ValuesStorage.Get<string>(_key);
             Selected = (previous != null ? Icons.FirstOrDefault(x => x.Name == previous) : null) ?? (Icons.Count > 0 ? Icons[0] : null);
         }
 
@@ -77,10 +77,8 @@ namespace AcManager.Pages.Dialogs {
                 File.Copy(Selected.Filename, Car.UpgradeIcon);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
-                return;
             } catch (Exception ex) {
                 NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, ex);
-                return;
             }
         }
 

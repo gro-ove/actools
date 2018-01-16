@@ -9,7 +9,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _fieldOfView;
 
         public int FieldOfView {
-            get { return _fieldOfView; }
+            get => _fieldOfView;
             set {
                 value = value.Clamp(10, 120);
                 if (Equals(value, _fieldOfView)) return;
@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _worldAligned;
 
         public bool WorldAligned {
-            get { return _worldAligned; }
+            get => _worldAligned;
             set {
                 if (Equals(value, _worldAligned)) return;
                 _worldAligned = value;
@@ -32,7 +32,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _glancingSpeed;
 
         public int GlancingSpeed {
-            get { return _glancingSpeed; }
+            get => _glancingSpeed;
             set {
                 value = value.Clamp(1, 40);
                 if (Equals(value, _glancingSpeed)) return;
@@ -44,7 +44,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _glancingAngle;
 
         public int GlancingAngle {
-            get { return _glancingAngle; }
+            get => _glancingAngle;
             set {
                 value = value.Clamp(5, 90);
                 if (Equals(value, _glancingAngle)) return;
@@ -54,7 +54,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public bool GForcesBinded {
-            get { return ValuesStorage.GetBool("AcSettings.CameraOnboard.GForceBinded", true); }
+            get => ValuesStorage.Get<bool>("AcSettings.CameraOnboard.GForceBinded", true);
             set {
                 if (Equals(value, GForcesBinded)) return;
                 ValuesStorage.Set("AcSettings.CameraOnboard.GForceBinded", value);
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _gForceX;
 
         public int GForceX {
-            get { return _gForceX; }
+            get => _gForceX;
             set {
                 value = value.Clamp(0, 300);
                 if (Equals(value, _gForceX)) return;
@@ -89,7 +89,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _gForceY;
 
         public int GForceY {
-            get { return _gForceY; }
+            get => _gForceY;
             set {
                 value = value.Clamp(0, 300);
                 if (Equals(value, _gForceY)) return;
@@ -103,7 +103,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _gForceZ;
 
         public int GForceZ {
-            get { return _gForceZ; }
+            get => _gForceZ;
             set {
                 value = value.Clamp(0, 300);
                 if (Equals(value, _gForceZ)) return;
@@ -117,7 +117,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _highSpeedShaking;
 
         public int HighSpeedShaking {
-            get { return _highSpeedShaking; }
+            get => _highSpeedShaking;
             set {
                 value = value.Clamp(0, 200);
                 if (Equals(value, _highSpeedShaking)) return;

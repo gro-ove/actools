@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private void LoadSelected() {
-            var source = ValuesStorage.GetString(KeySelected);
+            var source = ValuesStorage.Get<string>(KeySelected);
             SetSelected((_selectLater == null ?
                     Links.FirstOrDefault(x => x.DisplayName == source) :
                     Links.FirstOrDefault(x => x.Source == _selectLater)) ?? Links.FirstOrDefault(), false);
@@ -102,12 +102,12 @@ namespace FirstFloor.ModernUI.Presentation {
         private Link _selectedLink;
 
         public override Link SelectedLink {
-            get { return _selectedLink; }
-            set { SetSelected(value, true); }
+            get => _selectedLink;
+            set => SetSelected(value, true);
         }
 
         private void SaveLinks() {
-            ValuesStorage.Set(KeyGroup, from x in Links where x is LinkInput select x.DisplayName);
+            ValuesStorage.Storage.SetStringList(KeyGroup, from x in Links where x is LinkInput select x.DisplayName);
         }
 
         public void OnDrop(LinkInput widget, int newIndex) {
@@ -126,7 +126,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private void SaveRecentlyClosed() {
-            ValuesStorage.Set(KeyRecentlyClosed, RecentlyClosedQueue);
+            ValuesStorage.Storage.SetStringList(KeyRecentlyClosed, RecentlyClosedQueue);
         }
 
         public static int OptionRecentlyClosedQueueSize = 10;
@@ -212,7 +212,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isEnabled = true;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (Equals(value, _isEnabled)) return;
                 _isEnabled = value;
@@ -223,7 +223,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private Uri _source;
 
         public Uri Source {
-            get { return _source; }
+            get => _source;
             set {
                 if (_source == value) return;
                 _source = value;

@@ -7,6 +7,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using SlimDX;
 using Size = System.Drawing.Size;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -58,18 +59,18 @@ namespace AcManager.CustomShowroom {
 
             try {
                 var area = Screen.PrimaryScreen.WorkingArea;
-                var size = ValuesStorage.GetPoint(KeyNormalSize, new Point(1600, 900));
-                var pos = ValuesStorage.GetPoint(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
+                var size = ValuesStorage.Get(KeyNormalSize, new Point(1600, 900));
+                var pos = ValuesStorage.Get(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
 
                 Form.Width = ((int)size.X).Clamp(320, area.Width);
                 Form.Height = ((int)size.Y).Clamp(200, area.Height);
                 Form.Top = ((int)pos.Y).Clamp(0, area.Height - Form.Height);
                 Form.Left = ((int)pos.X).Clamp(0, area.Width - Form.Width);
 
-                Form.WindowState = ValuesStorage.GetBool(KeyNormalMaximized) ? FormWindowState.Maximized : FormWindowState.Normal;
+                Form.WindowState = ValuesStorage.Get(KeyNormalMaximized, false) ? FormWindowState.Maximized : FormWindowState.Normal;
                 Form.FormBorderStyle = FormBorderStyle.Sizable;
                 Form.TopMost = false;
-                FullscreenEnabled = ValuesStorage.GetBool(KeyNormalFullscreen);
+                FullscreenEnabled = ValuesStorage.Get(KeyNormalFullscreen, false);
 
                 UpdateSize();
 
@@ -86,8 +87,8 @@ namespace AcManager.CustomShowroom {
 
             try {
                 var area = Screen.PrimaryScreen.WorkingArea;
-                var size = ValuesStorage.GetPoint(KeyToolSize, new Point(400, 240));
-                var pos = ValuesStorage.GetPoint(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
+                var size = ValuesStorage.Get(KeyToolSize, new Point(400, 240));
+                var pos = ValuesStorage.Get(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
 
                 _lastVisibleTools = _helper.Visible;
                 _helper.Visible = false;
@@ -112,8 +113,8 @@ namespace AcManager.CustomShowroom {
             if (_switchingInProgress) return;
 
             if (EditMode) {
-                ValuesStorage.Set(KeyToolSize, new Point(Form.Width, Form.Height));
-                ValuesStorage.Set(KeyToolPos, new Point(Form.Left, Form.Top));
+                ValuesStorage.Set(KeyToolSize, new Point(Form.Width, Form.Height).As<string>());
+                ValuesStorage.Set(KeyToolPos, new Point(Form.Left, Form.Top).As<string>());
             } else {
                 ValuesStorage.Set(KeyNormalFullscreen, FullscreenEnabled);
 
@@ -122,8 +123,8 @@ namespace AcManager.CustomShowroom {
                 } else {
                     ValuesStorage.Set(KeyNormalMaximized, Form.WindowState == FormWindowState.Maximized);
                     if (Form.WindowState == FormWindowState.Normal) {
-                        ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height));
-                        ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top));
+                        ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height).As<string>());
+                        ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top).As<string>());
                     }
                 }
             }

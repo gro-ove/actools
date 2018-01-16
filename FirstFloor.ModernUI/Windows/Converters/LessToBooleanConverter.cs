@@ -3,13 +3,14 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(double), typeof(bool))]
     public class LessToBooleanConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value.AsDouble() < parameter.AsDouble();
+            return value.As<double>() < parameter.As<double>();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -68,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                     var l = (LogarithmicScale)o;
                     l._fixedValues = (string)e.NewValue;
                     l._fixedValuesArray = l._fixedValues?
-                            .Split(new[]{ ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.AsDouble()).ToArray();
+                            .Split(new[]{ ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.As<double>()).ToArray();
                     l._dirty = true;
                 }));
 
@@ -118,22 +119,22 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             Update();
-            return Convert(value.AsDouble(), _linear, _a, _b, _c);
+            return Convert(value.As<double>(), _linear, _a, _b, _c);
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             Update();
-            return ConvertBack(value.AsDouble(), _linear, _a, _b, _c, _fixedValuesArray);
+            return ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray);
         }
 
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             Update();
-            return Convert(values.FirstOrDefault().AsDouble(), _linear, _a, _b, _c);
+            return Convert(values.FirstOrDefault().As<double>(), _linear, _a, _b, _c);
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
             Update();
-            return new object[] { ConvertBack(value.AsDouble(), _linear, _a, _b, _c, _fixedValuesArray) };
+            return new object[] { ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray) };
         }
     }
 }

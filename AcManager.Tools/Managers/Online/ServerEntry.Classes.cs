@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -407,7 +408,7 @@ namespace AcManager.Tools.Managers.Online {
             private string _displayName;
 
             public string DisplayName {
-                get => _displayName ?? (_displayName = TagsStorage.GetString(_keyName) ?? DefaultName());
+                get => _displayName ?? (_displayName = TagsStorage.Get(_keyName, DefaultName()));
                 set {
                     if (Equals(value, DisplayName)) return;
                     _displayName = value;
@@ -419,7 +420,7 @@ namespace AcManager.Tools.Managers.Online {
             private Color? _color;
 
             public Color Color {
-                get => _color ?? (_color = TagsStorage.GetColor(_keyColor) ?? DefaultColor()).Value;
+                get => _color ?? (_color = TagsStorage.Get(_keyColor, DefaultColor())).Value;
                 set {
                     if (Equals(value, Color)) return;
                     _color = value;
@@ -460,7 +461,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             public static void SetTags(string driverName, IReadOnlyList<DriverTag> tags) {
-                TagsStorage.Set(GetKey(driverName, true), tags.Select(x => x.Id));
+                TagsStorage.SetStringList(GetKey(driverName, true), tags.Select(x => x.Id));
                 UpdateServerEntry(driverName, tags.Contains(FriendTag))?.RaiseDriversTagsChanged();
             }
 
@@ -509,7 +510,7 @@ namespace AcManager.Tools.Managers.Online {
                        where key.StartsWith(KeyTagsPrefix) && TagsStorage.GetStringList(key).Contains(tagId)
                        select key.Substring(KeyTagsPrefix.Length)
                        into converted
-                       select TagsStorage.GetString(KeyOriginalNamePrefix + converted) ?? converted;
+                       select TagsStorage.Get(KeyOriginalNamePrefix + converted, converted);
             }
 
             public static void SetNames(string tagId, IEnumerable<string> names) {
@@ -524,7 +525,7 @@ namespace AcManager.Tools.Managers.Online {
                         if (!namesConvertedList.Contains(convertedName)) {
                             var list = TagsStorage.GetStringList(key).ToList();
                             if (list.Remove(tagId)) {
-                                TagsStorage.Set(key, list);
+                                TagsStorage.SetStringList(key, list);
                                 CurrentDriver.UpdateName(convertedName, tagId);
 
                                 var server = tagId == FriendTagId ? UpdateServerEntry(convertedName, false) : GetServerEntry(convertedName);
@@ -545,7 +546,7 @@ namespace AcManager.Tools.Managers.Online {
                 foreach (var convertedName in namesConvertedList) {
                     var list = TagsStorage.GetStringList(KeyTagsPrefix + convertedName).ToList();
                     if (!list.Contains(tagId)) {
-                        TagsStorage.Set(KeyTagsPrefix + convertedName, list.Append(tagId));
+                        TagsStorage.SetStringList(KeyTagsPrefix + convertedName, list.Append(tagId));
                         CurrentDriver.UpdateName(convertedName, tag);
 
                         var server = tagId == FriendTagId ? UpdateServerEntry(convertedName, true) : GetServerEntry(convertedName);
@@ -565,8 +566,7 @@ namespace AcManager.Tools.Managers.Online {
                     if (key.StartsWith(KeyTagsPrefix)) {
                         var list = TagsStorage.GetStringList(key).ToList();
                         if (list.Remove(tagId)) {
-                            TagsStorage.Set(key, list);
-
+                            TagsStorage.SetStringList(key, list);
                             var name = key.Substring(KeyTagsPrefix.Length);
                             CurrentDriver.UpdateName(name, tagId);
                         }
@@ -582,7 +582,7 @@ namespace AcManager.Tools.Managers.Online {
         public class HasAnyFriendsHolder : NotifyPropertyChanged {
             private const string KeyHasFriends = "_hasFriends";
 
-            private bool _value = ValuesStorage.GetBool(KeyHasFriends);
+            private bool _value = ValuesStorage.Get<bool>(KeyHasFriends);
 
             public bool Value {
                 get => _value;

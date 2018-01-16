@@ -109,12 +109,12 @@ namespace AcManager.LargeFilesSharing.Implementations {
             var clientId = data.Item1;
             var clientSecret = data.Item2.Substring(2);
 
-            var enc = Storage.GetEncryptedString(KeyAuthToken);
+            var enc = Storage.GetEncrypted<string>(KeyAuthToken);
             if (enc == null) return;
 
             try {
                 _authToken = JsonConvert.DeserializeObject<AuthResponse>(enc);
-                _authExpiration = Storage.GetDateTime(KeyAuthExpiration) ?? default(DateTime);
+                _authExpiration = Storage.Get(KeyAuthExpiration, default(DateTime));
             } catch (Exception) {
                 Logging.Warning("Can’t load auth token");
                 return;

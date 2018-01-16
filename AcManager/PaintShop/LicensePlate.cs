@@ -110,7 +110,7 @@ namespace AcManager.PaintShop {
             = new ChangeableObservableCollection<PlateValueBase>();
 
         private static readonly string KeyPreviewMode = @"__PaintShop.LicensePlate.PreviewMode";
-        private bool _previewMode = ValuesStorage.GetBool(KeyPreviewMode, true);
+        private bool _previewMode = ValuesStorage.Get<bool>(KeyPreviewMode, true);
 
         public bool PreviewMode {
             get => _previewMode;

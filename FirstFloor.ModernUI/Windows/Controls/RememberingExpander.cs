@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnKeyChanged(string newValue) {
             if (newValue != null) {
                 _busy.DoDelay(() => {
-                    IsExpanded = ValuesStorage.GetBool(newValue, DefaultValue);
+                    IsExpanded = ValuesStorage.Get(newValue, DefaultValue);
                     _loaded = true;
                 }, 10);
             }

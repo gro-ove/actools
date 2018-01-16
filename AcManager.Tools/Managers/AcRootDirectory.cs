@@ -31,7 +31,7 @@ namespace AcManager.Tools.Managers {
         private AcRootDirectory(string directory) {
             if (!ValuesStorage.Contains(Key)) IsFirstRun = true;
 
-            Value = directory ?? ValuesStorage.GetString(Key);
+            Value = directory ?? ValuesStorage.Get<string>(Key);
             if (Value == null || CheckDirectory(Value)) return;
 
             Logging.Warning($"AC root directory “{Value}” is not valid anymore");

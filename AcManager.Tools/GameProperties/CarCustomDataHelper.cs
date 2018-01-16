@@ -26,7 +26,7 @@ namespace AcManager.Tools.GameProperties {
         protected override bool SetOverride(CarObject car) {
             if (!car.SetCustomData(true)) return false;
             Logging.Write("Custom data is set: " + car);
-            ValuesStorage.Set(KeyModifiedIds, ValuesStorage.GetStringList(KeyModifiedIds).Append(car.Id));
+            ValuesStorage.Storage.SetStringList(KeyModifiedIds, ValuesStorage.GetStringList(KeyModifiedIds).Append(car.Id));
             _isActive++;
             return true;
         }

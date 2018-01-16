@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
@@ -362,7 +363,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         private class MultiplyConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                var v = value.AsDouble() * parameter.AsDouble(1d);
+                var v = value.As(0d) * parameter.As(1d);
                 if (v < 15) return v * 1.15;
                 if (v < 20) return v * 1.08;
                 return v;

@@ -92,7 +92,7 @@ namespace AcManager.Controls {
         }
 
         private void OnCloseKeyChanged() {
-            SetClosed(ValuesStorage.GetBool("msgblock:" + CloseKey));
+            SetClosed(ValuesStorage.Get("msgblock:" + CloseKey, false));
         }
 
         private void SetClosed(bool value) {

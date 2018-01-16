@@ -18,9 +18,9 @@ namespace AcManager.Tools {
         }
 
         private static UploaderParams _sharing;
-        public static UploaderParams Sharing => _sharing ?? (_sharing = new UploaderParams(Storage.GetSubstorage("sharing:")));
+        public static UploaderParams Sharing => _sharing ?? (_sharing = new UploaderParams(new Substorage(Storage, "sharing:")));
 
         private static UploaderParams _serverPresets;
-        public static UploaderParams ServerPresets => _serverPresets ?? (_serverPresets = new UploaderParams(Storage.GetSubstorage("serverPresets:")));
+        public static UploaderParams ServerPresets => _serverPresets ?? (_serverPresets = new UploaderParams(new Substorage(Storage, "serverPresets:")));
     }
 }

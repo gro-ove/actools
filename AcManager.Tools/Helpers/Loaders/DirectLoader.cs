@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -185,10 +186,10 @@ namespace AcManager.Tools.Helpers.Loaders {
 
             try {
                 // Read resume-related data and remove it to avoid conflicts
-                var resumeDestination = CacheStorage.GetString(_keyDestination);
-                var resumePartiallyLoadedFilename = CacheStorage.GetString(_keyPartiallyLoadedFilename);
-                var resumeLastWriteDate = CacheStorage.GetDateTime(_keyLastWriteDate);
-                var resumePreviousFootprint = CacheStorage.GetString(_keyFootprint);
+                var resumeDestination = CacheStorage.Get<string>(_keyDestination);
+                var resumePartiallyLoadedFilename = CacheStorage.Get<string>(_keyPartiallyLoadedFilename);
+                var resumeLastWriteDate = CacheStorage.Get<DateTime?>(_keyLastWriteDate);
+                var resumePreviousFootprint = CacheStorage.Get<string>(_keyFootprint);
                 ClearResumeData();
 
                 // Collect known information for destination callback

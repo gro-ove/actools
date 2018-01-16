@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
@@ -76,7 +77,7 @@ namespace AcManager.Controls.Converters {
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            return TimeSpan.FromMinutes(value.AsDouble().Round(parameter.AsDouble()));
+            return TimeSpan.FromMinutes(value.As<double>().Round(parameter.As<double>()));
         }
     }
 
@@ -87,7 +88,7 @@ namespace AcManager.Controls.Converters {
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            return TimeSpan.FromSeconds(value.AsDouble().Round(parameter.AsDouble()));
+            return TimeSpan.FromSeconds(value.As<double>().Round(parameter.As<double>()));
         }
     }
 }

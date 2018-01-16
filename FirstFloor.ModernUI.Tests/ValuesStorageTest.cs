@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FirstFloor.ModernUI.Serialization;
+using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {
-    [TestClass]
+    [TestFixture]
     public class ValuesStorageTest {
-        [TestMethod]
+        [Test]
         public void TestEncryption() {
             ValuesStorage.Initialize(null, "Superior Binturong Sizzling Wry Drake Mediumblue Dizzy Merganser Grateful Flyingsquirrel");
             var str = "Wretched Angora Pretty Northernhairynosedwombat Offbeat Skeletal Turaco";
@@ -14,26 +15,26 @@ namespace FirstFloor.ModernUI.Tests {
 
 
             ValuesStorage.SetEncrypted(key, str);
-            var result = ValuesStorage.GetEncryptedString(key);
+            var result = ValuesStorage.GetEncrypted<string>(key);
 
 
             Assert.AreEqual(str, result, "Encryption test failed");
         }
 
-        [TestMethod]
+        [Test]
         public void TestSubstorage() {
             var storage = new Storage();
             var sub = new Substorage(storage, "sub/");
 
-            StorageMethods.Set(storage, "0", 10);
-            StorageMethods.Set(storage, "1", 20);
+            storage.Set("0", 10);
+            storage.Set("1", 20);
 
-            StorageMethods.Set(sub, "a", 18);
-            Assert.AreEqual(18, storage.GetInt("sub/a"), "Wrong value");
+            sub.Set("a", 18);
+            Assert.AreEqual(18, storage.Get<int>("sub/a"), "Wrong value");
 
-            StorageMethods.Set(storage, "2", 30);
+            storage.Set("2", 30);
 
-            StorageMethods.Set(sub, "b", "qwerty");
+            sub.Set("b", "qwerty");
             Assert.IsTrue(sub.Keys.SequenceEqual(new[] { "a", "b" }));
 
             using (var e = sub.GetEnumerator()) {

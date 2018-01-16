@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         [Bindable(true)]
         public object Content {
-            get { return _content; }
+            get => _content;
             set {
                 if (Equals(value, _content)) return;
                 _content = value;
@@ -17,14 +17,14 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public override string DisplayName {
-            get { return Content?.ToString(); }
-            set { Content = value; }
+            get => Content?.ToString();
+            set => Content = value;
         }
 
         private string _groupKey;
 
         public string GroupKey {
-            get { return _groupKey; }
+            get => _groupKey;
             set {
                 if (Equals(value, _groupKey)) return;
                 _groupKey = value;
@@ -35,7 +35,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isAccented;
 
         public bool IsAccented {
-            get { return _isAccented; }
+            get => _isAccented;
             set {
                 if (Equals(value, _isAccented)) return;
                 _isAccented = value;

@@ -6,6 +6,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -40,7 +41,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             var list = new List<AcFormEntry>();
 
             int GetDesktop(string sectionId) {
-                return sectionId.StartsWith("DESK_") ? sectionId.Substring(5).Split('_')[0].AsInt() : 0;
+                return sectionId.StartsWith("DESK_") ? sectionId.Substring(5).Split('_')[0].As<int>() : 0;
             }
 
             string GetId(string sectionId) {

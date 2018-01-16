@@ -19,6 +19,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -168,7 +169,7 @@ namespace AcManager.PaintShop {
                 return new Size(x, y);
             }
 
-            var v = token.ToString().AsInt(1024);
+            var v = token.ToString().As(1024);
             return new Size(v, v);
         }
 
@@ -180,31 +181,31 @@ namespace AcManager.PaintShop {
                 var p = s.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 switch (p.Length) {
                     case 3:
-                        return new PaintShopPatternColorReference(refSolver.GetColorReference(p[1], p[2].AsInt(0)));
+                        return new PaintShopPatternColorReference(refSolver.GetColorReference(p[1], p[2].As(0)));
                     default:
                         return new PaintShopPatternColorReference(System.Drawing.Color.Black);
                 }
             }
 
-            return s.StartsWith("#") ? new PaintShopPatternColorReference(s.ToColor()?.ToColor()) : new PaintShopPatternColorReference(s.AsInt(0));
+            return s.StartsWith("#") ? new PaintShopPatternColorReference(s.ToColor()?.ToColor()) : new PaintShopPatternColorReference(s.As(0));
         }
 
         private static FontWeight GetFontWeight(JToken t) {
             if (t == null || t.Type == JTokenType.Null || t.Type == JTokenType.None) return FontWeight.Normal;
             var s = t.ToString();
-            return Enum.TryParse(s, true, out FontWeight v) ? v : s.AsInt((int)FontWeight.Normal).FindClosest<FontWeight>();
+            return Enum.TryParse(s, true, out FontWeight v) ? v : s.As((int)FontWeight.Normal).FindClosest<FontWeight>();
         }
 
         private static FontStyle GetFontStyle(JToken t) {
             if (t == null || t.Type == JTokenType.Null || t.Type == JTokenType.None) return FontStyle.Normal;
             var s = t.ToString();
-            return Enum.TryParse(s, true, out FontStyle v) ? v : s.AsInt((int)FontStyle.Normal).FindClosest<FontStyle>();
+            return Enum.TryParse(s, true, out FontStyle v) ? v : s.As((int)FontStyle.Normal).FindClosest<FontStyle>();
         }
 
         private static FontStretch GetFontStretch(JToken t) {
             if (t == null || t.Type == JTokenType.Null || t.Type == JTokenType.None) return FontStretch.Normal;
             var s = t.ToString();
-            return Enum.TryParse(s, true, out FontStretch v) ? v : s.AsInt((int)FontStretch.Normal).FindClosest<FontStretch>();
+            return Enum.TryParse(s, true, out FontStretch v) ? v : s.As((int)FontStretch.Normal).FindClosest<FontStretch>();
         }
 
         [NotNull]
@@ -341,7 +342,7 @@ namespace AcManager.PaintShop {
                     case 2:
                         return new PaintShopSource(refSolver.GetTextureReference(p[1]));
                     case 3:
-                        return new PaintShopSource(refSolver.GetColorReference(p[1], p[2].AsInt(0)));
+                        return new PaintShopSource(refSolver.GetColorReference(p[1], p[2].As(0)));
                     default:
                         return null;
                 }

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(double), typeof(double))]
@@ -10,9 +11,9 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            var precision = parameter.AsDouble();
+            var precision = parameter.As<double>();
             if (Equals(precision, 0d)) precision = 1d;
-            return Math.Round(value.AsDouble() / precision) * precision;
+            return Math.Round(value.As<double>() / precision) * precision;
         }
     }
 }

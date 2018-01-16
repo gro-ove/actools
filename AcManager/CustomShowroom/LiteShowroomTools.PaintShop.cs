@@ -22,6 +22,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -124,7 +125,7 @@ namespace AcManager.CustomShowroom {
                         }
 
                         Mode = Mode.Skin;
-                        SkinNumber = Skin.SkinNumber.AsInt(1);
+                        SkinNumber = Skin.SkinNumber.As(1);
                         SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
 

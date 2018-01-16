@@ -47,7 +47,7 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         public static string GetCurrentFilename(string key) {
-            return ValuesStorage.GetString("__userpresets_p_" + key);
+            return ValuesStorage.Get<string>("__userpresets_p_" + key);
         }
 
         public static void SetCurrentFilename(string key, string filename, bool resetIsChanged = true) {
@@ -58,7 +58,7 @@ namespace AcManager.Controls {
         }
 
         public static bool IsChanged(string key) {
-            return ValuesStorage.GetBool("__userpresets_c_" + key);
+            return ValuesStorage.Get("__userpresets_c_" + key, false);
         }
 
         [NotNull]
@@ -195,8 +195,7 @@ namespace AcManager.Controls {
         private string _selectedPresetFilename;
 
         public string SelectedPresetFilename {
-            get => _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.PresetableKey)
-                    ?? string.Empty;
+            get => _selectedPresetFilename ?? ValuesStorage.Get("__userpresets_p_" + _presetable.PresetableKey, string.Empty);
             set {
                 if (Equals(value, _selectedPresetFilename)) return;
                 _selectedPresetFilename = value;
@@ -493,7 +492,7 @@ namespace AcManager.Controls {
             if (value.HasValue) {
                 ValuesStorage.Set(key, value.Value);
             } else {
-                value = ValuesStorage.GetBool(key);
+                value = ValuesStorage.Get(key, false);
             }
 
             SetValue(ChangedPropertyKey, value.Value);

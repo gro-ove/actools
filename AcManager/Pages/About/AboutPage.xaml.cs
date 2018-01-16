@@ -9,6 +9,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -68,7 +69,7 @@ namespace AcManager.Pages.About {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.About_ReportAnIssue_CannotSend, e);
                 }
-            }, () => (DateTime.Now - ValuesStorage.GetDateTime(KeyLogsSentTime, default(DateTime))).TotalSeconds > 3d, TimeSpan.FromSeconds(3)));
+            }, () => (DateTime.Now - ValuesStorage.Get<DateTime>(KeyLogsSentTime)).TotalSeconds > 3d, TimeSpan.FromSeconds(3)));
         }
     }
 }

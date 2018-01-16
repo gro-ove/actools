@@ -14,6 +14,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -21,7 +22,7 @@ namespace AcManager.Pages.Selected {
     public class CarSetupValues : NotifyPropertyChanged, IDisposable {
         private static string SavedKeyToSetupKey(string savedKey) {
             if (savedKey.StartsWith("INTERNAL_GEAR_")) {
-                var gear = savedKey.Substring("INTERNAL_GEAR_".Length).AsInt();
+                var gear = savedKey.Substring("INTERNAL_GEAR_".Length).As<int>();
                 return $"GEAR_{gear - 1}";
             }
 
@@ -30,7 +31,7 @@ namespace AcManager.Pages.Selected {
 
         private static string SetupKeyToSavedKey(string setupKey) {
             if (setupKey.StartsWith("GEAR_")) {
-                var gear = setupKey.Substring("GEAR_".Length).AsInt();
+                var gear = setupKey.Substring("GEAR_".Length).As<int>();
                 return $"INTERNAL_GEAR_{gear + 1}";
             }
 

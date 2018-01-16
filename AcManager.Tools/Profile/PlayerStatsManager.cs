@@ -15,6 +15,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
@@ -472,7 +473,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
         /// Meters!
         /// </summary>
         public double GetDistanceDrivenByCar(string carId) {
-            return GetMainStorage().GetDouble(KeyDistancePerCarPrefix + carId);
+            return GetMainStorage().Get(KeyDistancePerCarPrefix + carId, 0d);
         }
 
         /// <summary>
@@ -483,7 +484,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
         }
 
         public double GetMaxSpeedByCar(string carId) {
-            return GetMainStorage().GetDouble(KeyMaxSpeedPerCarPrefix + carId);
+            return GetMainStorage().Get(KeyMaxSpeedPerCarPrefix + carId, 0d);
         }
 
         public IEnumerable<string> GetTrackLayoutsIds() {
@@ -492,7 +493,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
         }
 
         public double GetDistanceDrivenAtTrack(string trackLayoutId) {
-            return GetMainStorage().GetDouble(KeyDistancePerTrackPrefix + trackLayoutId);
+            return GetMainStorage().Get(KeyDistancePerTrackPrefix + trackLayoutId, 0d);
         }
 
         private static IEnumerable<string> FixAcTrackId(string acTrackId) {
@@ -511,7 +512,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
             foreach (var f in FixAcTrackId(trackLayoutId)) {
                 var k = KeyDistancePerTrackPrefix + f;
                 if (storage.Contains(k)) {
-                    return storage.GetDouble(k);
+                    return storage.Get(k, 0d);
                 }
             }
 

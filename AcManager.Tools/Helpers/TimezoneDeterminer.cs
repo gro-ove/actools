@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -14,7 +15,7 @@ namespace AcManager.Tools.Helpers {
         public static async Task<TimeZoneInfo> TryToDetermineAsync(GeoTagsEntry geoTags) {
             var key = Key + geoTags;
             if (CacheStorage.Contains(key)) {
-                return CacheStorage.GetTimeZoneInfo(key);
+                return CacheStorage.Get<string>(key).As<TimeZoneInfo>();
             }
 
             try {

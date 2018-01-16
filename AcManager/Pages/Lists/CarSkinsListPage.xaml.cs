@@ -153,7 +153,7 @@ namespace AcManager.Pages.Lists {
                 Priority = 0;
             }
 
-            private string _prefix = ValuesStorage.GetString("_ba.addNamePrefix.prefix", "");
+            private string _prefix = ValuesStorage.Get("_ba.addNamePrefix.prefix", "");
 
             public string Prefix {
                 get => _prefix;
@@ -166,7 +166,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _postfixMode = ValuesStorage.GetBool("_ba.addNamePrefix.postfixMode", true);
+            private bool _postfixMode = ValuesStorage.Get<bool>("_ba.addNamePrefix.postfixMode", true);
 
             public bool PostfixMode {
                 get => _postfixMode;
@@ -179,7 +179,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _skipExisting = ValuesStorage.GetBool("_ba.addNamePrefix.skipExisting", true);
+            private bool _skipExisting = ValuesStorage.Get<bool>("_ba.addNamePrefix.skipExisting", true);
 
             public bool SkipExisting {
                 get => _skipExisting;
@@ -192,7 +192,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _keepSpace = ValuesStorage.GetBool("_ba.addNamePrefix.keepSpace", true);
+            private bool _keepSpace = ValuesStorage.Get<bool>("_ba.addNamePrefix.keepSpace", true);
 
             public bool KeepSpace {
                 get => _keepSpace;
@@ -255,7 +255,7 @@ namespace AcManager.Pages.Lists {
                 Priority = 2;
             }
 
-            private bool _randomShape = ValuesStorage.GetBool("_ba.updateLivery.random", true);
+            private bool _randomShape = ValuesStorage.Get<bool>("_ba.updateLivery.random", true);
             public bool RandomShape {
                 get => _randomShape;
                 set {
@@ -365,7 +365,7 @@ namespace AcManager.Pages.Lists {
             public BatchAction_PackSkins() : base("Batch.PackCarSkins") {}
 
             #region Properies
-            private bool _cmForFlag = ValuesStorage.GetBool("_ba.packSkins.cmForFlag", true);
+            private bool _cmForFlag = ValuesStorage.Get<bool>("_ba.packSkins.cmForFlag", true);
             public bool CmForFlag {
                 get => _cmForFlag;
                 set {
@@ -376,7 +376,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _cmPaintShopValues = ValuesStorage.GetBool("_ba.packSkins.cmPaintShopValues", true);
+            private bool _cmPaintShopValues = ValuesStorage.Get<bool>("_ba.packSkins.cmPaintShopValues", true);
             public bool CmPaintShopValues {
                 get => _cmPaintShopValues;
                 set {

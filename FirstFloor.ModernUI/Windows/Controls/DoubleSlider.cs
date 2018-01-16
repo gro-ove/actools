@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -310,7 +311,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static object CoerceRangeCallback(DependencyObject d, object baseValue) {
             var r = (DoubleSlider)d;
-            return Clamp(baseValue.AsDouble(), 0d, (r.Maximum - r.Minimum) * 2d);
+            return Clamp(baseValue.As<double>(), 0d, (r.Maximum - r.Minimum) * 2d);
         }
 
         private double _range;
@@ -340,7 +341,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static object CoerceFromCallback(DependencyObject d, object baseValue) {
             var r = (DoubleSlider)d;
-            return Clamp(baseValue.AsDouble(), r.Minimum, r.Maximum);
+            return Clamp(baseValue.As<double>(), r.Minimum, r.Maximum);
         }
 
         private double _from = double.NaN;
@@ -377,7 +378,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static object CoerceToCallback(DependencyObject d, object baseValue) {
             var r = (DoubleSlider)d;
-            return Clamp(baseValue.AsDouble(), r.Minimum, r.Maximum);
+            return Clamp(baseValue.As<double>(), r.Minimum, r.Maximum);
         }
 
         private double _to = double.NaN;

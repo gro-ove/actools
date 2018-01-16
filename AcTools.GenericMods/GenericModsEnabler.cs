@@ -10,6 +10,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -179,9 +180,9 @@ namespace AcTools.GenericMods {
 
         public static bool UpdateApplyOrder(IniFile ini) {
             var changed = false;
-            var current = ini["MODS"].OrderBy(x => x.Value.AsInt()).ToList();
+            var current = ini["MODS"].OrderBy(x => x.Value.As<int>()).ToList();
             for (var i = 0; i < current.Count; i++) {
-                if (current[i].Value.AsInt() == i + 1) continue;
+                if (current[i].Value.As<int>() == i + 1) continue;
                 ini["MODS"].Set(current[i].Key, i + 1);
                 changed = true;
             }

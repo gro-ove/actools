@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -26,10 +27,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static DateTime _lastShown;
 
         static FancyHint() {
-            StartupId = ValuesStorage.GetInt(KeyStartup);
+            StartupId = ValuesStorage.Get<int>(KeyStartup);
             ValuesStorage.Set(KeyStartup, StartupId + 1);
-
-            _lastShown = ValuesStorage.GetDateTime(KeyLastShown, DateTime.MinValue);
+            _lastShown = ValuesStorage.Get(KeyLastShown, DateTime.MinValue);
         }
 
         private readonly string _keyShown, _keyAvailable;
@@ -140,7 +140,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _available;
 
         public bool Available {
-            get => _keyAvailable == null || (_available ?? (_available = ValuesStorage.GetBool(_keyAvailable)).Value);
+            get => _keyAvailable == null || (_available ?? (_available = ValuesStorage.Get<bool>(_keyAvailable)).Value);
             private set {
                 if (_keyAvailable == null || Equals(value, Available)) return;
                 _available = value;
@@ -152,7 +152,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _shown;
 
         public bool Shown {
-            get => _shown ?? (_shown = !OptionDebugMode && ValuesStorage.GetBool(_keyShown)).Value;
+            get => _shown ?? (_shown = !OptionDebugMode && ValuesStorage.Get<bool>(_keyShown)).Value;
             private set {
                 if (Equals(value, Shown)) return;
                 _shown = value;
@@ -173,7 +173,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private bool? _enabled;
 
         public bool Enabled {
-            get => _enabled ?? (_enabled = ValuesStorage.GetBool("Settings.FancyHintsService.Enabled", true)).Value;
+            get => _enabled ?? (_enabled = ValuesStorage.Get("Settings.FancyHintsService.Enabled", true)).Value;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;

@@ -10,7 +10,7 @@
         /// </summary>
         /// <value>The display name.</value>
         public virtual string DisplayName {
-            get { return _displayName; }
+            get => _displayName;
             set {
                 if (_displayName == value) return;
                 _displayName = value;

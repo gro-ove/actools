@@ -726,7 +726,7 @@ namespace AcManager.Pages.Drive {
                 } else {
                     FancyHints.DegressWind.Trigger(TimeSpan.FromSeconds(1.5d));
                     stored.SubscribeWeak((o, e) => {
-                        if (e.PropertyName == nameof(Stored.StoredValue.Value)) {
+                        if (e.PropertyName == nameof(StoredValue.Value)) {
                             FancyHints.DegressWind.MaskAsUnnecessary();
                         }
                     });

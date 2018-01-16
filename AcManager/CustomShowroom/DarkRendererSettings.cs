@@ -26,6 +26,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -97,9 +98,9 @@ namespace AcManager.CustomShowroom {
 
         public static DarkLightType[] LightTypes { get; }
             = EnumExtension.GetValues<DarkLightType>()
-                           .ApartFrom(EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
+                           .ApartFrom(EffectDarkMaterial.EnableAdditionalAreaLights.As<bool>()
                                    ? new DarkLightType[0] : new[] { DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube })
-                           .ApartFrom(EffectDarkMaterial.EnableAdditionalFakeLights.AsBoolean()
+                           .ApartFrom(EffectDarkMaterial.EnableAdditionalFakeLights.As<bool>()
                                    ? new DarkLightType[0] : new[] { DarkLightType.Plane })
                            .ToArray();
 
@@ -107,7 +108,7 @@ namespace AcManager.CustomShowroom {
             if (!ValuesStorage.Contains(DefaultKey)) return;
 
             try {
-                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.GetString(DefaultKey));
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(DefaultKey));
                 data.MsaaMode = 0;
                 data.SsaaMode = 1;
                 data.ShadowMapSize = 2048;
@@ -495,7 +496,7 @@ namespace AcManager.CustomShowroom {
         private bool? _loadCameraEnabled;
 
         public virtual bool LoadCameraEnabled {
-            get => _loadCameraEnabled ?? (_loadCameraEnabled = ValuesStorage.GetBool(KeyLoadCamera)).Value;
+            get => _loadCameraEnabled ?? (_loadCameraEnabled = ValuesStorage.Get<bool>(KeyLoadCamera)).Value;
             set {
                 if (Equals(value, LoadCameraEnabled)) return;
                 _loadCameraEnabled = value;
@@ -511,7 +512,7 @@ namespace AcManager.CustomShowroom {
         private bool? _lockCamera;
 
         public bool LockCamera {
-            get => _lockCamera ?? (_lockCamera = ValuesStorage.GetBool(KeyLockCamera)).Value;
+            get => _lockCamera ?? (_lockCamera = ValuesStorage.Get<bool>(KeyLockCamera)).Value;
             set {
                 if (Equals(value, LockCamera)) return;
                 _lockCamera = value;
@@ -803,7 +804,7 @@ namespace AcManager.CustomShowroom {
             _presetableKeyValue = presetableKeyValue;
             Renderer = renderer;
             Renderer.SetLightsDescriptionProvider(this);
-            TryToGuessCarLights = ValuesStorage.GetBool(KeyTryToGuessCarLights, true);
+            TryToGuessCarLights = ValuesStorage.Get<bool>(KeyTryToGuessCarLights, true);
 
             CameraPosition.PropertyChanged += OnCameraCoordinatePropertyChanged;
             CameraLookAt.PropertyChanged += OnCameraCoordinatePropertyChanged;

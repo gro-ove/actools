@@ -19,8 +19,8 @@ namespace AcManager.LargeFilesSharing {
 
         protected FileUploaderBase(IStorage storage, string name, [CanBeNull] Uri icon, string description, bool supportsSigning, bool supportsDirectories) {
             Id = GetType().Name;
-            Storage = storage.GetSubstorage(Id + ":");
-            _destinationDirectoryId = Storage.GetString(KeyDestinationDirectoryId);
+            Storage = new Substorage(storage, Id + ":");
+            _destinationDirectoryId = Storage.Get<string>(KeyDestinationDirectoryId);
 
             DisplayName = name;
             Description = description;

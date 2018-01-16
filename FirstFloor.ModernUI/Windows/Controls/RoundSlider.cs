@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -157,9 +158,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private class InnerConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-                var value = values[0].AsDouble();
-                var min = values[1].AsDouble();
-                var max = values[2].AsDouble();
+                var value = values[0].As<double>();
+                var min = values[1].As<double>();
+                var max = values[2].As<double>();
                 return 359.999 * (value - min) / (max - min);
             }
 

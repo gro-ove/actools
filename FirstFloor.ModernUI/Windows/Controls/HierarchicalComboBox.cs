@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -237,7 +238,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         [ValueConversion(typeof(int), typeof(Visibility))]
         private class InnerCountToVisibilityConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value.AsInt() > 0 ? Visibility.Visible : Visibility.Collapsed;
+                return value.As<int>() > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

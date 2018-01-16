@@ -16,6 +16,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -115,7 +116,7 @@ namespace AcManager.Tools.Managers {
                 var eventObject = GetById(pair.GetValueOrDefault("name") ?? "");
                 if (eventObject == null) continue;
                 eventObject.TakenPlace = Math.Min(eventObject.TakenPlace,
-                        (eventObject.ConditionType == null ? 4 : 3) - pair.GetValueOrDefault("maxTier").AsInt(-1));
+                        (eventObject.ConditionType == null ? 4 : 3) - pair.GetValueOrDefault("maxTier").As(-1));
             }
         }
 

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -327,11 +328,11 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        [Pure]
-        public string GetString([LocalizationRequired(false)] string key, string defaultValue = null) {
+        [ContractAnnotation("defaultValue:null => canbenull; defaultValue:notnull => notnull")]
+        public T Get<T>(string key, T defaultValue = default(T)) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             lock (_storage) {
-                return _storage.TryGetValue(key, out var value) ? value : defaultValue;
+                return _storage.TryGetValue(key, out var value) ? value.As<T>() : defaultValue;
             }
         }
 
@@ -359,12 +360,13 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public void SetString([LocalizationRequired(false)] string key, string value) {
+        public void Set([LocalizationRequired(false)] string key, object value) {
+            var v = value.AsShort<string>();
             lock (_storage) {
                 var exists = _storage.TryGetValue(key, out var previous);
-                if (exists && previous == value) return;
+                if (exists && previous == v) return;
 
-                _storage[key] = value;
+                _storage[key] = v;
                 Dirty();
 
                 if (exists) {
@@ -375,7 +377,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public void SetStringList(string key, IEnumerable<string> value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            SetString(key, string.Join("\n", value.Select(Encode)));
+            Set(key, string.Join("\n", value.Select(Encode)));
         }
 
         /* I know that this is not a proper protection or anything, but I just don’t want to save some
@@ -389,21 +391,21 @@ namespace FirstFloor.ModernUI.Helpers {
             return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : null;
         }
 
-        public string GetEncryptedString([LocalizationRequired(false)] string key, string defaultValue = null) {
+        public T GetEncrypted<T>([LocalizationRequired(false)] string key, T defaultValue = default(T)) {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             if (_encryptionKey == null || !Contains(key)) return defaultValue;
-            var result = StringCipher.Decrypt(GetString(key, defaultValue), key + _encryptionKey);
-            return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : defaultValue;
+            var result = StringCipher.Decrypt(Get<string>(key), key + _encryptionKey);
+            return result?.EndsWith(Something) == true ? result.Substring(0, result.Length - Something.Length).As(defaultValue) : defaultValue;
         }
 
-        public void SetEncryptedString([LocalizationRequired(false)] string key, string value) {
+        public void SetEncrypted([LocalizationRequired(false)] string key, object value) {
             if (_encryptionKey == null) return;
-            var encrypted = StringCipher.Encrypt(value + Something, key + _encryptionKey);
+            var encrypted = StringCipher.Encrypt(value.AsShort<string>() + Something, key + _encryptionKey);
             if (encrypted == null) {
                 Remove(key);
             } else {
-                SetString(key, encrypted);
+                Set(key, encrypted);
             }
         }
 

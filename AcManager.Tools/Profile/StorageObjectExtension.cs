@@ -7,7 +7,7 @@ namespace AcManager.Tools.Profile {
     public static class StorageObjectExtension {
         [CanBeNull]
         public static T GetObject<T>(this IStorage storage, string key) {
-            var json = storage.GetString(key);
+            var json = storage.Get<string>(key);
             try {
                 if (!string.IsNullOrWhiteSpace(json)) {
                     return JsonConvert.DeserializeObject<T>(json);
@@ -20,7 +20,7 @@ namespace AcManager.Tools.Profile {
         }
 
         public static T GetOrCreateObject<T>(this IStorage storage, string key) where T : new() {
-            var json = storage.GetString(key);
+            var json = storage.Get<string>(key);
             try {
                 if (!string.IsNullOrWhiteSpace(json)) {
                     return JsonConvert.DeserializeObject<T>(json);

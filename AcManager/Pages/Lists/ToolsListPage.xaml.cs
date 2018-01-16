@@ -34,7 +34,7 @@ namespace AcManager.Pages.Lists {
         protected override Uri LaunchSource {
             get {
                 var key = $@".FilteredToolLink:{Source.OriginalString}";
-                var defaultValue = ValuesStorage.GetString(key) ?? DefaultFilter;
+                var defaultValue = ValuesStorage.Get(key, DefaultFilter);
                 var filter = Prompt.Show(FilterDescription ?? "Optional filter:", "Optional filter", watermark: @"*", defaultValue: defaultValue,
                         suggestions: ValuesStorage.GetStringList("AcObjectListBox:FiltersHistory:car"));
                 if (filter != null) {

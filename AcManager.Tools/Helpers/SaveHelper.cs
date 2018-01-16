@@ -141,7 +141,7 @@ namespace AcManager.Tools.Helpers {
         public bool Load() {
             if (Key == null) return false;
 
-            var data = _storage.GetString(Key);
+            var data = _storage.Get<string>(Key);
             if (data == null) return false;
 
             try {
@@ -217,12 +217,12 @@ namespace AcManager.Tools.Helpers {
 
         [CanBeNull, Pure]
         public static T Load([NotNull] string key, IStorage storage = null) {
-            return LoadSerialized((storage ?? ValuesStorage.Storage).GetString(key));
+            return LoadSerialized((storage ?? ValuesStorage.Storage).Get<string>(key));
         }
 
         [NotNull, Pure]
         public static T LoadOrReset([NotNull] string key, IStorage storage = null) {
-            return LoadSerialized((storage ?? ValuesStorage.Storage).GetString(key)) ?? new T();
+            return LoadSerialized((storage ?? ValuesStorage.Storage).Get<string>(key)) ?? new T();
         }
 
         [CanBeNull, Pure]

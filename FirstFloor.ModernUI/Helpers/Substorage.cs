@@ -70,28 +70,28 @@ namespace FirstFloor.ModernUI.Helpers {
             return _baseStorage.Contains(_prefix + key);
         }
 
-        public string GetString(string key, string defaultValue = null) {
-            return _baseStorage.GetString(_prefix + key, defaultValue);
+        public T Get<T>(string key, T defaultValue = default(T)) {
+            return _baseStorage.Get(_prefix + key, defaultValue);
         }
 
         public IEnumerable<string> GetStringList(string key, IEnumerable<string> defaultValue = null) {
             return _baseStorage.GetStringList(_prefix + key, defaultValue);
         }
 
-        public string GetEncryptedString(string key, string defaultValue = null) {
-            return _baseStorage.GetEncryptedString(_prefix + key, defaultValue);
+        public T GetEncrypted<T>(string key, T defaultValue = default(T)) {
+            return _baseStorage.GetEncrypted(_prefix + key, defaultValue);
         }
 
-        public void SetString(string key, string value) {
-            _baseStorage.SetString(_prefix + key, value);
+        public void Set(string key, object value) {
+            _baseStorage.Set(_prefix + key, value);
         }
 
         public void SetStringList(string key, IEnumerable<string> value) {
             _baseStorage.SetStringList(_prefix + key, value);
         }
 
-        public void SetEncryptedString(string key, string value) {
-            _baseStorage.SetEncryptedString(_prefix + key, value);
+        public void SetEncrypted(string key, object value) {
+            _baseStorage.SetEncrypted(_prefix + key, value);
         }
 
         public bool Remove(string key) {

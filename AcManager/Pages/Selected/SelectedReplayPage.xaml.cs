@@ -112,7 +112,7 @@ namespace AcManager.Pages.Selected {
         public static string GetShared(string filename) {
             var name = Path.GetFileName(filename)?.ApartFromLast(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase);
             var info = new FileInfo(filename);
-            return name == null || !info.Exists ? null : CacheStorage.GetString($@"sharedReplay:{name.ToLowerInvariant()}:{info.Length}");
+            return name == null || !info.Exists ? null : CacheStorage.Get<string>($@"sharedReplay:{name.ToLowerInvariant()}:{info.Length}");
         }
 
         public static void SetShared(string filename, string url) {
@@ -193,7 +193,7 @@ namespace AcManager.Pages.Selected {
             public DelegateCommand ChangeCategoryCommand => _changeCategoryCommand ?? (_changeCategoryCommand = new DelegateCommand(() => {
                 const string key = "__replayLastUsedCategory";
                 var newCategory = Prompt.Show("Where to move selected replay?", "Change Replay’s Category",
-                        ValuesStorage.GetString(key), "?", required: true, maxLength: 60,
+                        ValuesStorage.Get<string>(key), "?", required: true, maxLength: 60,
                         suggestions: ReplaysManager.Instance.EnabledOnly.Select(x => x.Category).ApartFrom(ReplayObject.AutosaveCategory));
                 if (string.IsNullOrWhiteSpace(newCategory)) return;
 

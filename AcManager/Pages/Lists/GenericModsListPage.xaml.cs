@@ -113,7 +113,7 @@ namespace AcManager.Pages.Lists {
                 var storageKey = $".genericMods.selected:{key}";
 
                 void LoadCurrent() {
-                    var selected = ValuesStorage.GetString(storageKey);
+                    var selected = ValuesStorage.Get<string>(storageKey);
                     if (selected != null) {
                         view.MoveCurrentTo(view.OfType<GenericMod>().FirstOrDefault(x => x.DisplayName == selected) ??
                                 view.OfType<GenericMod>().FirstOrDefault());

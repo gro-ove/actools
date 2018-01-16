@@ -23,6 +23,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
@@ -98,7 +99,7 @@ namespace AcManager.Pages.Drive {
 
                 List = new AcWrapperCollectionView(SpecialEventsManager.Instance.WrappersAsIList);
                 List.CurrentChanged += OnCurrentChanged;
-                List.MoveCurrentToIdOrFirst(ValuesStorage.GetString(KeySelectedId));
+                List.MoveCurrentToIdOrFirst(ValuesStorage.Get<string>(KeySelectedId));
 
                 if (!string.IsNullOrWhiteSpace(filter)) {
                     var filterObject = Filter.Create(SpecialEventObjectTester.Instance, filter);
@@ -208,7 +209,7 @@ namespace AcManager.Pages.Drive {
 
         private async void ScrollLayoutUpdated(object sender, EventArgs e) {
             if (_positionLoaded) return;
-            var value = ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d;
+            var value = ValuesStorage.Get<double>(KeyScrollValue);
             await Task.Delay(10);
             _scroll?.ScrollToHorizontalOffset(OptionScalableTiles ? value / (Equals(_scale, 0d) ? 1d : _scale) : value);
             _positionLoaded = true;

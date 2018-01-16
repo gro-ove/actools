@@ -24,6 +24,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -373,7 +374,7 @@ namespace AcManager.Controls {
                 _batchActionKey = "batchAction:" + GetType().Name;
             }
 
-            var selected = ValuesStorage.GetString(_batchActionKey);
+            var selected = ValuesStorage.Get<string>(_batchActionKey);
             SelectedBatchAction = (selected == null ? null : grouped.GetByIdOrDefault<BatchAction>(selected)) ??
                     grouped.Flatten().OfType<BatchAction>().OrderByDescending(x => x.Priority).FirstOrDefault();
         }
@@ -650,7 +651,7 @@ namespace AcManager.Controls {
                     }
 
                     PrepareBatchAction();
-                    if (!Stored.GetValue(KeepBatchActionsPanelOpenKey, true).AsBoolean()) {
+                    if (!Stored.GetValue(KeepBatchActionsPanelOpenKey, true).As<bool>()) {
                         SetMultiSelectionMode(false);
                     }
                 } catch (Exception e) {

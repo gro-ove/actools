@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
@@ -49,7 +50,7 @@ namespace AcManager.Controls.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            switch (value.AsInt()) {
+            switch (value.As<int>()) {
                 case 1:
                     return FirstPlaceBrush;
                 case 2:

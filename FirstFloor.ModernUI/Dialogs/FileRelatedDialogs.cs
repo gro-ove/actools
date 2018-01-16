@@ -116,7 +116,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 }
 
                 var initial = key == null ? p.InitialDirectory :
-                        ValuesStorage.GetString(key, p.InitialDirectory);
+                        ValuesStorage.Get(key, p.InitialDirectory);
                 if (initial != null) {
                     dialog.InitialDirectory = initial;
                 }
@@ -170,7 +170,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 }
 
                 var initial = key == null ? p.InitialDirectory :
-                        ValuesStorage.GetString(key, p.InitialDirectory);
+                        ValuesStorage.Get(key, p.InitialDirectory);
                 if (initial != null) {
                     dialog.InitialDirectory = initial;
                 }

@@ -12,6 +12,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
@@ -53,7 +54,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public DateTime? LastUsingsRescan {
-            get { return ValuesStorage.GetDateTime("DriverModelsManager.LastUsingsRescan"); }
+            get => ValuesStorage.Get<DateTime?>("DriverModelsManager.LastUsingsRescan");
             set {
                 if (Equals(value, LastUsingsRescan)) return;
 

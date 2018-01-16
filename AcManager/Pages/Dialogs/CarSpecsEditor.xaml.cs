@@ -44,7 +44,7 @@ namespace AcManager.Pages.Dialogs {
         private readonly TextBox[] _fixableInputs;
 
         public CarSpecsEditor(CarObject car) {
-            _automaticallyRecalculate = ValuesStorage.GetBool(AutomaticallyRecalculateKey);
+            _automaticallyRecalculate = ValuesStorage.Get<bool>(AutomaticallyRecalculateKey);
 
             InitializeComponent();
             DataContext = this;

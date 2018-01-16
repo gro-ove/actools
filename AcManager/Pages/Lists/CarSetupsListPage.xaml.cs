@@ -213,7 +213,7 @@ namespace AcManager.Pages.Lists {
                 return true;
             }
 
-            private bool _asGeneric = ValuesStorage.GetBool("_ba.installRemoteSetup.asGeneric");
+            private bool _asGeneric = ValuesStorage.Get<bool>("_ba.installRemoteSetup.asGeneric");
 
             public bool AsGeneric {
                 get => _asGeneric;
@@ -234,7 +234,7 @@ namespace AcManager.Pages.Lists {
             public static readonly BatchAction_SetSetupTrack Instance = new BatchAction_SetSetupTrack();
 
             public BatchAction_SetSetupTrack() : base("Set track", "Assign setups to a track", "Car setup", "Batch.SetSetupTrack") {
-                Track = TracksManager.Instance.GetById(ValuesStorage.GetString("_ba.setSetupTrack.track") ?? "") ??
+                Track = TracksManager.Instance.GetById(ValuesStorage.Get("_ba.setSetupTrack.track", "")) ??
                         TracksManager.Instance.GetDefault();
                 DisplayApply = "Set";
             }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class StringCipher {
@@ -42,7 +43,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static byte[] Decrypt(byte[] input, string passPhrase) {
+        private static byte[] Decrypt(byte[] input, [NotNull] string passPhrase) {
             if (input == null) return null;
 
             try {
@@ -71,7 +72,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static string Encrypt(string input, string pass) {
+        public static string Encrypt([CanBeNull] string input, [NotNull] string pass) {
             try {
                 if (input == null) return null;
 
@@ -83,7 +84,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static string Decrypt(string input, string pass) {
+        public static string Decrypt([CanBeNull] string input, [NotNull] string pass) {
             try {
                 if (input == null) return null;
 

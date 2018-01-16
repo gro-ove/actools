@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -42,18 +43,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnValuesChanged() {
             _relativeRangeBusy.Do(() => {
                 var format = RelativeRangeStringFormat;
-                var from = Value.AsDouble();
-                var to = SecondValue.AsDouble();
+                var from = Value.As<double>();
+                var to = SecondValue.As<double>();
                 RelativeRangeBase = ((from + to) / 2).ToString(format);
                 RelativeRangeHalf = (Math.Abs(from - to) / 2).ToString(format);
-                SetValue(ValuesEqualPropertyKey, RelativeRangeHalf.AsDouble() == 0);
+                SetValue(ValuesEqualPropertyKey, RelativeRangeHalf.As<double>() == 0);
             });
         }
 
         private void OnRelativeRangeValuesChanged() {
             _relativeRangeBusy.Do(() => {
-                var rangeBase = RelativeRangeBase.AsDouble();
-                var rangeHalf = RelativeRangeHalf.AsDouble();
+                var rangeBase = RelativeRangeBase.As<double>();
+                var rangeHalf = RelativeRangeHalf.As<double>();
                 Value = (rangeBase - rangeHalf).ToString(CultureInfo.CurrentUICulture);
                 SecondValue = (rangeBase + rangeHalf).ToString(CultureInfo.CurrentUICulture);
                 SetValue(ValuesEqualPropertyKey, rangeHalf == 0f);

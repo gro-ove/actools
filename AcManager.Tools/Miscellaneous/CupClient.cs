@@ -12,6 +12,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -296,7 +297,7 @@ namespace AcManager.Tools.Miscellaneous {
         private void RegisterLatestVersion([NotNull] CupKey key, [NotNull] CupInformation information) {
             Logging.Debug("New update: " + key + information);
 
-            if (_storage.GetBool($"ignore:{key}") || _storage.GetBool($"ignore:{key}:{information.Version}") ||
+            if (_storage.Get<bool>($"ignore:{key}") || _storage.Get<bool>($"ignore:{key}:{information.Version}") ||
                     _versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
                 return;
             }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml.Linq;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
@@ -26,7 +27,7 @@ namespace AcManager.Tools.Miscellaneous {
             var cell = source.FirstOrDefault(x => x.Location == location);
             if (string.IsNullOrEmpty(cell?.Node.Value)) return null;
 
-            var id = cell.Node.Value.AsInt();
+            var id = cell.Node.Value.As<int>();
             return strings.ElementAtOrDefault(id);
         }
 
@@ -50,7 +51,7 @@ namespace AcManager.Tools.Miscellaneous {
                 foreach (var x in c.Where(x => x.Location?.StartsWith("B") == true && x.Location != "B1")) {
                     var g = c.GetString(x.Location.Replace("B", "A"), s);
                     var t = c.GetString(x.Location.Replace("B", "D"), s);
-                    var k = s.ElementAtOrDefault(x.Node.Element(n + "v")?.Value.AsInt() ?? -1);
+                    var k = s.ElementAtOrDefault(x.Node.Element(n + "v")?.Value.As<int>() ?? -1);
                     if (k == null || t == null || g == null) continue;
                     Dictionary<string, string> gd;
                     if (r.TryGetValue(g, out gd)) {

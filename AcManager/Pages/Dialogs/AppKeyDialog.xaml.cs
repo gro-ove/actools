@@ -42,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public static void RequestNewKeyUsingEmail() {
-            var key = ValuesStorage.GetEncryptedString(AppKeyRevokedKey);
+            var key = ValuesStorage.GetEncrypted<string>(AppKeyRevokedKey);
             if (key == null) return;
 
             Process.Start($"mailto:illvdg13@gmail.com?subject={Uri.EscapeDataString(@"My Key Is Got Revoked")}&body={Uri.EscapeDataString(@"Key: " + key)}");
@@ -54,7 +54,7 @@ namespace AcManager.Pages.Dialogs {
             public AppKeyDialogViewModel() {
                 var key = AppKeyHolder.Key;
                 if (string.IsNullOrWhiteSpace(key)) {
-                    key = ValuesStorage.GetEncryptedString(AppKeyRevokedKey);
+                    key = ValuesStorage.GetEncrypted<string>(AppKeyRevokedKey);
                     KeyRevoked = key != null;
                 }
 
@@ -64,7 +64,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _keyRevoked;
 
             public bool KeyRevoked {
-                get { return _keyRevoked; }
+                get => _keyRevoked;
                 set {
                     if (Equals(value, _keyRevoked)) return;
                     _keyRevoked = value;
@@ -80,7 +80,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _isValueAcceptable = true;
 
             public bool IsValueAcceptable {
-                get { return _isValueAcceptable; }
+                get => _isValueAcceptable;
                 set {
                     if (value == _isValueAcceptable) return;
                     _isValueAcceptable = value;
@@ -95,7 +95,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _offlineModeAvailable;
 
             public bool OfflineModeAvailable {
-                get { return _offlineModeAvailable; }
+                get => _offlineModeAvailable;
                 set {
                     if (Equals(value, _offlineModeAvailable)) return;
                     _offlineModeAvailable = value;
@@ -124,7 +124,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _internetConnectionRequired;
 
             public bool InternetConnectionRequired {
-                get { return _internetConnectionRequired; }
+                get => _internetConnectionRequired;
                 set {
                     if (Equals(value, _internetConnectionRequired)) return;
                     _internetConnectionRequired = value;
@@ -137,7 +137,7 @@ namespace AcManager.Pages.Dialogs {
             private string _value;
 
             public string Value {
-                get { return _value; }
+                get => _value;
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
@@ -154,7 +154,7 @@ namespace AcManager.Pages.Dialogs {
             private bool _checkingInProgress;
 
             public bool CheckingInProgress {
-                get { return _checkingInProgress; }
+                get => _checkingInProgress;
                 set {
                     if (Equals(value, _checkingInProgress)) return;
                     _checkingInProgress = value;

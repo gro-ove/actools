@@ -33,6 +33,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
@@ -605,7 +606,7 @@ namespace AcManager.Pages.Dialogs {
                 double w, h;
 
                 if (resizeable) {
-                    var p = ValuesStorage.GetPoint(KeySize, new Point(width.Value, height.Value));
+                    var p = ValuesStorage.Get(KeySize, new Point(width.Value, height.Value));
                     w = Math.Min(p.X, area.Width);
                     h = Math.Min(p.Y, area.Height);
                 } else {
@@ -634,7 +635,7 @@ namespace AcManager.Pages.Dialogs {
             base.OnSizeChanged(sender, e);
 
             if (ResizeMode == ResizeMode.CanResizeWithGrip) {
-                ValuesStorage.Set(KeySize, new Point(Width, Height));
+                ValuesStorage.Set(KeySize, new Point(Width, Height).As<string>());
             }
         }
 
@@ -764,7 +765,7 @@ namespace AcManager.Pages.Dialogs {
 
                 ResultPreviewComparisons = new ObservableCollection<ResultPreviewComparison>(
                         Directory.GetFiles(_resultDirectory, "*.*").Select(x => {
-                            var id = (Path.GetFileNameWithoutExtension(x) ?? "").ToLower();
+                            var id = Path.GetFileNameWithoutExtension(x).ToLower();
                             return new ResultPreviewComparison {
                                 Name = toUpdate.Car.GetSkinById(id)?.DisplayName ?? id,
 
@@ -817,8 +818,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 string filterId;
 
-                var builtInPpFilter = SelectedFilter as BuiltInPpFilter;
-                if (builtInPpFilter != null) {
+                if (SelectedFilter is BuiltInPpFilter builtInPpFilter) {
                     builtInPpFilter.EnsureInstalled();
                     filterId = builtInPpFilter.Name;
                 } else {

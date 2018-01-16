@@ -35,6 +35,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -67,7 +68,7 @@ namespace AcManager.CustomShowroom {
 
         public AmbientShadowParams() {
             if (ValuesStorage.Contains(KeyOldSavedData) && !ValuesStorage.Contains(KeySavedData)) {
-                ValuesStorage.Set(KeySavedData, ValuesStorage.GetString(KeyOldSavedData));
+                ValuesStorage.Set(KeySavedData, ValuesStorage.Get<string>(KeyOldSavedData));
             }
 
             _saveable = new SaveHelper<SaveableData>(KeySavedData, () => new SaveableData {
@@ -772,8 +773,8 @@ namespace AcManager.CustomShowroom {
             public DelegateCommand<string> ShotSetResolutionCommand => _shotSetResolutionCommand ?? (_shotSetResolutionCommand = new DelegateCommand<string>(s => {
                 var d = s?.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
                 if (d?.Length == 2) {
-                    ShotWidth = d[0].AsInt();
-                    ShotHeight = d[1].AsInt();
+                    ShotWidth = d[0].As<int>();
+                    ShotHeight = d[1].As<int>();
                 }
             }));
 
@@ -837,7 +838,7 @@ namespace AcManager.CustomShowroom {
                 ShotFormatHdrExr
             };
 
-            private static readonly Stored.StoredValue LastShot = Stored.Get("customShowroom.lastShot");
+            private static readonly StoredValue LastShot = Stored.Get("customShowroom.lastShot");
 
             private DelegateCommand _shotOpenDirectoryCommand;
 

@@ -7,19 +7,19 @@ namespace FirstFloor.ModernUI.Helpers {
         bool Contains([NotNull, LocalizationRequired(false)] string key);
 
         [CanBeNull, Pure]
-        string GetString([NotNull, LocalizationRequired(false)] string key, string defaultValue = null);
+        T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T));
 
         [NotNull, Pure]
         IEnumerable<string> GetStringList([NotNull, LocalizationRequired(false)] string key, IEnumerable<string> defaultValue = null);
 
         [CanBeNull, Pure]
-        string GetEncryptedString([NotNull, LocalizationRequired(false)] string key, string defaultValue = null);
+        T GetEncrypted<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T));
 
-        void SetString([NotNull, LocalizationRequired(false)] string key, string value);
+        void Set([NotNull, LocalizationRequired(false)] string key, object value);
 
         void SetStringList([NotNull, LocalizationRequired(false)] string key, [NotNull] IEnumerable<string> value);
 
-        void SetEncryptedString([NotNull, LocalizationRequired(false)] string key, string value);
+        void SetEncrypted([NotNull, LocalizationRequired(false)] string key, object value);
 
         bool Remove([NotNull, LocalizationRequired(false)] string key);
 

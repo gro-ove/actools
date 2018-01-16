@@ -20,6 +20,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -400,7 +401,7 @@ namespace AcManager.Pages.Drive {
 
         private class InnerStartingPositionConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-                return values.Length != 2 ? null : GetDisplayPosition(values[0].AsInt(), values[1].AsInt());
+                return values.Length != 2 ? null : GetDisplayPosition(values[0].As<int>(), values[1].As<int>());
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {

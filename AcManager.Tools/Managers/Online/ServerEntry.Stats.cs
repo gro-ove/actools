@@ -17,7 +17,7 @@ namespace AcManager.Tools.Managers.Online {
             get {
                 if (_stats == null) {
                     _stats = StatsStorage.GetOrCreateObject<OverallStats>(Id);
-                    _stats.Storage = StatsStorage.GetSubstorage(Id);
+                    _stats.Storage = new Substorage(StatsStorage, Id);
                 }
 
                 return _stats;

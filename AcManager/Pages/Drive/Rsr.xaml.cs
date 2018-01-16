@@ -59,8 +59,8 @@ namespace AcManager.Pages.Drive {
             private const string KeyShowExtensionMessage = "Rsr.ExtMsg";
 
             internal ViewModel() {
-                GhostCar = ValuesStorage.GetBool(KeyGhostCar, true);
-                ShowExtensionMessage = ValuesStorage.GetBool(KeyShowExtensionMessage, true);
+                GhostCar = ValuesStorage.Get<bool>(KeyGhostCar, true);
+                ShowExtensionMessage = ValuesStorage.Get<bool>(KeyShowExtensionMessage, true);
             }
 
             private bool _showExtensionMessage;

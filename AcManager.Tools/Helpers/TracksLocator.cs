@@ -6,6 +6,7 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -18,7 +19,7 @@ namespace AcManager.Tools.Helpers {
 
             var key = Key + address;
             if (CacheStorage.Contains(key)) {
-                var cache = CacheStorage.GetPointNullable(key);
+                var cache = CacheStorage.Get<string>(key).As<Point?>();
                 return cache.HasValue ? new GeoTagsEntry(cache.Value.X, cache.Value.Y) : null;
             }
 
@@ -26,7 +27,7 @@ namespace AcManager.Tools.Helpers {
                 var result = await YahooApiProvider.LocateAsync(address);
                 if (result.LatitudeValue.HasValue && result.LongitudeValue.HasValue) {
                     Logging.Write($"“{address}”, geo tags: ({result})");
-                    CacheStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value));
+                    CacheStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value).As<string>());
                     return result;
                 }
 

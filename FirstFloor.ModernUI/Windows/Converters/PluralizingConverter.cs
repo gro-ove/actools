@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using FirstFloor.ModernUI.Localizable;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
@@ -52,12 +53,12 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
                 if (!found) return Pluralize(value, s);
             }
-            
+
             return s.Contains('{') ? string.Format(s, value) : s;
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return parameter == null ? null : PluralizeExt(value.AsInt(), parameter.ToString());
+            return parameter == null ? null : PluralizeExt(value.As<int>(), parameter.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

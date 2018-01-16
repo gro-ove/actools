@@ -44,7 +44,7 @@ namespace AcManager.CustomShowroom {
             if (!ValuesStorage.Contains(DefaultKey)) return;
 
             try {
-                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.GetString(DefaultKey));
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(DefaultKey));
                 data.Width = CommonAcConsts.PreviewWidth;
                 data.Height = CommonAcConsts.PreviewHeight;
                 data.SsaaMode = 1;
@@ -418,7 +418,7 @@ namespace AcManager.CustomShowroom {
         private bool? _highQualityPreview;
 
         public bool HighQualityPreview {
-            get => _highQualityPreview ?? (_highQualityPreview = ValuesStorage.GetBool(".cmPsHqPreview")).Value;
+            get => _highQualityPreview ?? (_highQualityPreview = ValuesStorage.Get(".cmPsHqPreview", false)).Value;
             set {
                 if (Equals(value, HighQualityPreview)) return;
                 _highQualityPreview = value;

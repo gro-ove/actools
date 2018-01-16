@@ -18,6 +18,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -145,7 +146,7 @@ namespace AcManager.CustomShowroom {
                 set {
                     if (value == _value) return;
                     _value = value;
-                    IsChanged = value.AsFloat() != OriginalValue;
+                    IsChanged = value.As<float>() != OriginalValue;
                     OnPropertyChanged();
                 }
             }
@@ -157,7 +158,7 @@ namespace AcManager.CustomShowroom {
             }));
 
             protected override void ApplyOverride() {
-                OriginalValue = Value.AsFloat();
+                OriginalValue = Value.As<float>();
             }
         }
 
@@ -462,7 +463,7 @@ namespace AcManager.CustomShowroom {
 
                 if (_renderer is IKn5ObjectRenderer kn5Renderer) {
                     var v = (MaterialValueSingle)sender;
-                    kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value.AsFloat());
+                    kn5Renderer.UpdateMaterialPropertyA(_kn5, _materialId, v.Id, v.Value.As<float>());
                 }
             }
 
@@ -477,7 +478,7 @@ namespace AcManager.CustomShowroom {
                 if (_renderer is IKn5ObjectRenderer kn5Renderer) {
                     var v = (MaterialValue3D)sender;
                     kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id,
-                            new[] { v.X.AsFloat(), v.Y.AsFloat(), v.Z.AsFloat() });
+                            new[] { v.X.As<float>(), v.Y.As<float>(), v.Z.As<float>() });
                 }
             }
 
@@ -614,21 +615,21 @@ namespace AcManager.CustomShowroom {
                         foreach (var s in ValuesSingle) {
                             var jv = p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["A"];
                             if (jv != null) {
-                                s.Value = ((float)jv.AsDouble()).ToInvariantString();
+                                s.Value = ((float)jv.As<double>()).ToInvariantString();
                             }
                         }
 
                         foreach (var s in Values3D) {
                             if (p.FirstOrDefault(x => (string)x["PropertyName"] == s.Id)?["C"] is JArray jv) {
-                                s.X = ((float)jv["X"].AsDouble()).ToInvariantString();
-                                s.Y = ((float)jv["Y"].AsDouble()).ToInvariantString();
-                                s.Z = ((float)jv["Z"].AsDouble()).ToInvariantString();
+                                s.X = ((float)jv["X"].As<double>()).ToInvariantString();
+                                s.Y = ((float)jv["Y"].As<double>()).ToInvariantString();
+                                s.Z = ((float)jv["Z"].As<double>()).ToInvariantString();
                             }
                         }
                     }
 
-                    AlphaMode = (MaterialAlphaMode)j["BlendMode"].AsInt();
-                    DepthMode = (MaterialDepthMode)j["DepthMode"].AsInt();
+                    AlphaMode = (MaterialAlphaMode)j["BlendMode"].As<int>();
+                    DepthMode = (MaterialDepthMode)j["DepthMode"].As<int>();
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }

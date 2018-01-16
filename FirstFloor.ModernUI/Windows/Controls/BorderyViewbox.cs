@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -204,11 +205,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private class InvertConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return parameter.AsDouble(1d) / value.AsDouble(1d);
+                return parameter.As(1d) / value.As(1d);
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-                return parameter.AsDouble(1d) * value.AsDouble(1d);
+                return parameter.As(1d) * value.As(1d);
             }
         }
 

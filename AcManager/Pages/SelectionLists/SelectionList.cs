@@ -19,6 +19,7 @@ using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -140,7 +141,7 @@ namespace AcManager.Pages.SelectionLists {
 
         private void LoadScroll() {
             EnsureItemsSourceSet();
-            _scrollViewer?.ScrollToVerticalOffset(ValuesStorage.GetDouble(_scrollKey));
+            _scrollViewer?.ScrollToVerticalOffset(ValuesStorage.Get<double>(_scrollKey));
         }
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
@@ -154,7 +155,7 @@ namespace AcManager.Pages.SelectionLists {
 
         private void SaveListToCache(IList<TItem> list) {
             if (_cacheKey == null) return;
-            CacheStorage.Set(_cacheKey, list.Select(x => x.Serialize()));
+            CacheStorage.Storage.SetStringList(_cacheKey, list.Select(x => x.Serialize()));
         }
 
         [CanBeNull]

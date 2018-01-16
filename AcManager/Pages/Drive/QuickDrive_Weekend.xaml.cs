@@ -7,6 +7,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.Drive {
@@ -138,7 +139,7 @@ namespace AcManager.Pages.Drive {
         private class SpecialPluralizingConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null || parameter == null) return null;
-                var number = value.AsInt();
+                var number = value.As<int>();
                 return number != 0 ? PluralizingConverter.PluralizeExt(number, parameter.ToString()) : "";
             }
 
@@ -151,13 +152,13 @@ namespace AcManager.Pages.Drive {
         private class SpecialSessionConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                var number = value.AsInt();
+                var number = value.As<int>();
                 return number == 0 ? AppStrings.Drive_SkipSession : number.ToString();
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                return value as string == AppStrings.Drive_SkipSession ? 0 : value.AsInt();
+                return value as string == AppStrings.Drive_SkipSession ? 0 : value.As<int>();
             }
         }
     }

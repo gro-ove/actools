@@ -531,7 +531,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (key == null) return;
 
             try {
-                this.SetPlacement(ValuesStorage.GetString(key));
+                this.SetPlacement(ValuesStorage.Get<string>(key));
                 Loaded += (sender, args) => this.IsWindowOnAnyScreen();
             } catch (Exception e) {
                 Logging.Warning(e);

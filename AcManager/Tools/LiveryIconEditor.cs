@@ -21,6 +21,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Brush = System.Windows.Media.Brush;
@@ -244,12 +245,12 @@ namespace AcManager.Tools {
             } else if (randomMode) {
                 SelectedShape = Shapes.RandomElement();
             } else {
-                SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
+                SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.Get<string>(KeyShape)) ?? Shapes.FirstOrDefault();
             }
 
             SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == @"0"
-                    ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
-            SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
+                    ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.Get<string>(KeyNumbers)) ?? Numbers.FirstOrDefault();
+            SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.Get<string>(KeyStyle)) ?? Styles.FirstOrDefault();
 
             Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? @"0" : skin.SkinNumber;
             TextColorValue = Colors.White;
@@ -386,7 +387,7 @@ namespace AcManager.Tools {
         }
 
         public int NumberValue {
-            get => _value.AsInt();
+            get => _value.As<int>();
             set => Value = value.ToInvariantString();
         }
 

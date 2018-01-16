@@ -9,6 +9,7 @@ using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -81,22 +82,19 @@ namespace AcManager.Pages.Dialogs {
             public PythonAppObject App { get; }
             public List<AppWindowItem> Windows { get; }
 
-            private bool _showEnabled = ValuesStorage.GetBool("");
-
-            public bool ShowEnabled {
-                get => _showEnabled;
-                set {
-                    if (Equals(value, _showEnabled)) return;
-                    _showEnabled = value;
-                    OnPropertyChanged();
-                    Windows.ForEach(x => x.Update(value));
-                }
-            }
+            public StoredValue<bool> ShowEnabled { get; }
 
             public ViewModel(PythonAppObject app) {
+                ShowEnabled = Stored.Get("AppIconEditor.ShowEnabled", false)
+                                    .SubscribeWeak((s, e) => UpdateWindowsShowEnabled());
+
                 App = app;
                 Windows = app.Windows.GetValueAsync().Result?.Select(x =>new AppWindowItem(x)).ToList() ?? new List<AppWindowItem>();
-                Windows.ForEach(x => x.Update(ShowEnabled));
+                UpdateWindowsShowEnabled();
+            }
+
+            private void UpdateWindowsShowEnabled() {
+                Windows.ForEach(x => x.Update(ShowEnabled.Value));
             }
 
             public void Apply() {}

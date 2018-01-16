@@ -3,25 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Windows.Forms;
-using System.Windows.Threading;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Plugins;
-using AcManager.Tools.Starters;
-using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using StringBasedFilter;
-using Application = System.Windows.Application;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 // ReSharper disable RedundantArgumentDefaultValue
 
@@ -134,7 +126,7 @@ namespace AcManager.Tools.Helpers {
 
             public PeriodEntry RefreshPeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.OnlineSettings.RefreshPeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.OnlineSettings.RefreshPeriod");
                     return _refreshPeriod ?? (_refreshPeriod = RefreshPeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             RefreshPeriods.ElementAt(4));
                 }
@@ -163,7 +155,7 @@ namespace AcManager.Tools.Helpers {
             private int? _onlineServerId;
 
             public int OnlineServerId {
-                get => _onlineServerId ?? (_onlineServerId = ValuesStorage.GetInt("Settings.OnlineSettings.OnlineServerId", 1)).Value;
+                get => _onlineServerId ?? (_onlineServerId = ValuesStorage.Get("Settings.OnlineSettings.OnlineServerId", 1)).Value;
                 set {
                     if (Equals(value, _onlineServerId)) return;
                     _onlineServerId = value;
@@ -175,7 +167,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _compactUi;
 
             public bool CompactUi {
-                get => _compactUi ?? (_compactUi = ValuesStorage.GetBool("Settings.OnlineSettings.CompactUi", false)).Value;
+                get => _compactUi ?? (_compactUi = ValuesStorage.Get("Settings.OnlineSettings.CompactUi", false)).Value;
                 set {
                     if (Equals(value, _compactUi)) return;
                     _compactUi = value;
@@ -187,7 +179,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _showBrandBadges;
 
             public bool ShowBrandBadges {
-                get => _showBrandBadges ?? (_showBrandBadges = ValuesStorage.GetBool("Settings.OnlineSettings.ShowBrandBadges", true)).Value;
+                get => _showBrandBadges ?? (_showBrandBadges = ValuesStorage.Get("Settings.OnlineSettings.ShowBrandBadges", true)).Value;
                 set {
                     if (Equals(value, _showBrandBadges)) return;
                     _showBrandBadges = value;
@@ -199,7 +191,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _rememberPasswords;
 
             public bool RememberPasswords {
-                get => _rememberPasswords ?? (_rememberPasswords = ValuesStorage.GetBool("Settings.OnlineSettings.RememberPasswords", true)).Value;
+                get => _rememberPasswords ?? (_rememberPasswords = ValuesStorage.Get("Settings.OnlineSettings.RememberPasswords", true)).Value;
                 set {
                     if (Equals(value, _rememberPasswords)) return;
                     _rememberPasswords = value;
@@ -212,7 +204,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool LoadServersWithMissingContent {
                 get => _loadServersWithMissingContent ??
-                        (_loadServersWithMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServersWithMissingContent2", true)).Value;
+                        (_loadServersWithMissingContent = ValuesStorage.Get("Settings.OnlineSettings.LoadServersWithMissingContent2", true)).Value;
                 set {
                     if (Equals(value, _loadServersWithMissingContent)) return;
                     _loadServersWithMissingContent = value;
@@ -224,7 +216,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _integrateMinorating;
 
             public bool IntegrateMinorating {
-                get => _integrateMinorating ?? (_integrateMinorating = ValuesStorage.GetBool("Settings.OnlineSettings.IntegrateMinorating", true)).Value;
+                get => _integrateMinorating ?? (_integrateMinorating = ValuesStorage.Get("Settings.OnlineSettings.IntegrateMinorating", true)).Value;
                 set {
                     if (Equals(value, _integrateMinorating)) return;
                     _integrateMinorating = value;
@@ -245,7 +237,7 @@ namespace AcManager.Tools.Helpers {
 
             public SettingEntry FixNamesMode {
                 get {
-                    var saved = ValuesStorage.GetIntNullable("Settings.IntegratedSettings.FixNamesMode");
+                    var saved = ValuesStorage.Get<int?>("Settings.IntegratedSettings.FixNamesMode");
                     return _fixNamesMode ?? (_fixNamesMode = FixNamesModes.GetByIdOrDefault(saved) ?? FixNamesModes.ElementAt(1));
                 }
                 set {
@@ -260,7 +252,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool AlwaysAllowToUsePassword {
                 get => _alwaysAllowToUsePassword ??
-                        (_alwaysAllowToUsePassword = ValuesStorage.GetBool("Settings.OnlineSettings.AlwaysAllowToUsePassword", true)).Value;
+                        (_alwaysAllowToUsePassword = ValuesStorage.Get("Settings.OnlineSettings.AlwaysAllowToUsePassword", true)).Value;
                 set {
                     if (Equals(value, _alwaysAllowToUsePassword)) return;
                     _alwaysAllowToUsePassword = value;
@@ -273,7 +265,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool LoadServerInformationDirectly {
                 get => _loadServerInformationDirectly ??
-                        (_loadServerInformationDirectly = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServerInformationDirectly", false)).Value;
+                        (_loadServerInformationDirectly = ValuesStorage.Get("Settings.OnlineSettings.LoadServerInformationDirectly", false)).Value;
                 set {
                     if (Equals(value, _loadServerInformationDirectly)) return;
                     _loadServerInformationDirectly = value;
@@ -285,7 +277,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _pingOnlyOnce;
 
             public bool PingOnlyOnce {
-                get => _pingOnlyOnce ?? (_pingOnlyOnce = ValuesStorage.GetBool("Settings.OnlineSettings.PingOnlyOnce", true)).Value;
+                get => _pingOnlyOnce ?? (_pingOnlyOnce = ValuesStorage.Get("Settings.OnlineSettings.PingOnlyOnce", true)).Value;
                 set {
                     if (Equals(value, _pingOnlyOnce)) return;
                     _pingOnlyOnce = value;
@@ -297,7 +289,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _pingingWithThreads;
 
             public bool ThreadsPing {
-                get => _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", false)).Value;
+                get => _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.Get("Settings.OnlineSettings.ThreadsPing", false)).Value;
                 set {
                     if (Equals(value, _pingingWithThreads)) return;
                     _pingingWithThreads = value;
@@ -309,7 +301,7 @@ namespace AcManager.Tools.Helpers {
             private int? _pingingConcurrency;
 
             public int PingConcurrency {
-                get => _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.GetInt("Settings.OnlineSettings.PingConcurrency", 10)).Value;
+                get => _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.Get("Settings.OnlineSettings.PingConcurrency", 10)).Value;
                 set {
                     value = value.Clamp(1, 1000);
                     if (Equals(value, _pingingConcurrency)) return;
@@ -322,7 +314,7 @@ namespace AcManager.Tools.Helpers {
             private int? _pingTimeout;
 
             public int PingTimeout {
-                get => _pingTimeout ?? (_pingTimeout = ValuesStorage.GetInt("Settings.OnlineSettings.PingTimeout", 2000)).Value;
+                get => _pingTimeout ?? (_pingTimeout = ValuesStorage.Get("Settings.OnlineSettings.PingTimeout", 2000)).Value;
                 set {
                     if (Equals(value, _pingTimeout)) return;
                     _pingTimeout = value;
@@ -334,7 +326,7 @@ namespace AcManager.Tools.Helpers {
             private int? _scanPingTimeout;
 
             public int ScanPingTimeout {
-                get => _scanPingTimeout ?? (_scanPingTimeout = ValuesStorage.GetInt("Settings.OnlineSettings.ScanPingTimeout", 1000)).Value;
+                get => _scanPingTimeout ?? (_scanPingTimeout = ValuesStorage.Get("Settings.OnlineSettings.ScanPingTimeout", 1000)).Value;
                 set {
                     if (Equals(value, _scanPingTimeout)) return;
                     _scanPingTimeout = value;
@@ -346,7 +338,7 @@ namespace AcManager.Tools.Helpers {
             private string _portsEnumeration;
 
             public string PortsEnumeration {
-                get => _portsEnumeration ?? (_portsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.PortsEnumeration", @"9000-10000"));
+                get => _portsEnumeration ?? (_portsEnumeration = ValuesStorage.Get("Settings.OnlineSettings.PortsEnumeration", @"9000-10000"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _portsEnumeration)) return;
@@ -360,7 +352,7 @@ namespace AcManager.Tools.Helpers {
 
             public string LanPortsEnumeration {
                 get => _lanPortsEnumeration ??
-                        (_lanPortsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", @"9000-10000"));
+                        (_lanPortsEnumeration = ValuesStorage.Get("Settings.OnlineSettings.LanPortsEnumeration", @"9000-10000"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _lanPortsEnumeration)) return;
@@ -377,7 +369,7 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, _ignoredInterfaces)) return;
                     _ignoredInterfaces = value.ToList();
-                    ValuesStorage.Set("Settings.OnlineSettings.IgnoredInterfaces", value);
+                    ValuesStorage.Storage.SetStringList("Settings.OnlineSettings.IgnoredInterfaces", value);
                     OnPropertyChanged();
                 }
             }
@@ -386,7 +378,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SearchForMissingContent {
                 get => _searchForMissingContent ??
-                        (_searchForMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.SearchForMissingContent", false)).Value;
+                        (_searchForMissingContent = ValuesStorage.Get("Settings.OnlineSettings.SearchForMissingContent", false)).Value;
                 set {
                     if (Equals(value, _searchForMissingContent)) return;
                     _searchForMissingContent = value;
@@ -398,7 +390,7 @@ namespace AcManager.Tools.Helpers {
             private int? _pingAttempts;
 
             public int PingAttempts {
-                get => _pingAttempts ?? (_pingAttempts = ValuesStorage.GetInt("Settings.OnlineSettings.PingAttempts", 10)).Value;
+                get => _pingAttempts ?? (_pingAttempts = ValuesStorage.Get("Settings.OnlineSettings.PingAttempts", 10)).Value;
                 set {
                     value = value.Clamp(1, 1000);
                     if (Equals(value, _pingAttempts)) return;
@@ -412,7 +404,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ServerPresetsManaging {
                 get => _serverPresetsManaging ??
-                        (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
+                        (_serverPresetsManaging = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
                 set {
                     if (Equals(value, _serverPresetsManaging)) return;
                     _serverPresetsManaging = value;
@@ -425,7 +417,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ServerPresetsAutoSave {
                 get => _serverPresetsAutoSave ??
-                        (_serverPresetsAutoSave = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsAutoSave", true)).Value;
+                        (_serverPresetsAutoSave = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsAutoSave", true)).Value;
                 set {
                     if (Equals(value, _serverPresetsAutoSave)) return;
                     _serverPresetsAutoSave = value;
@@ -438,7 +430,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ServerPresetsUpdateDataAutomatically {
                 get => _serverPresetsUpdateDataAutomatically ??
-                        (_serverPresetsUpdateDataAutomatically = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true))
+                        (_serverPresetsUpdateDataAutomatically = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true))
                                 .Value;
                 set {
                     if (Equals(value, _serverPresetsUpdateDataAutomatically)) return;
@@ -452,7 +444,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ServerPresetsFitInFewerTabs {
                 get => _serverPresetsFitInFewerTabs ??
-                        (_serverPresetsFitInFewerTabs = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", false)).Value;
+                        (_serverPresetsFitInFewerTabs = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", false)).Value;
                 set {
                     if (Equals(value, _serverPresetsFitInFewerTabs)) return;
                     _serverPresetsFitInFewerTabs = value;
@@ -475,11 +467,11 @@ namespace AcManager.Tools.Helpers {
 
             public TemperatureUnitMode TemperatureUnitMode {
                 get => _temperatureUnitMode ??
-                        (_temperatureUnitMode = ValuesStorage.GetEnum("Settings.CommonSettings.TemperatureUnitMode", TemperatureUnitMode.Celsius)).Value;
+                        (_temperatureUnitMode = ValuesStorage.Get("Settings.CommonSettings.TemperatureUnitMode", TemperatureUnitMode.Celsius)).Value;
                 set {
                     if (Equals(value, _temperatureUnitMode)) return;
                     _temperatureUnitMode = value;
-                    ValuesStorage.SetEnum("Settings.CommonSettings.TemperatureUnitMode", value);
+                    ValuesStorage.Set("Settings.CommonSettings.TemperatureUnitMode", value);
                     OnPropertyChanged();
                 }
             }
@@ -503,7 +495,7 @@ namespace AcManager.Tools.Helpers {
             [NotNull]
             public PeriodEntry UpdatePeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.CommonSettings.UpdatePeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.CommonSettings.UpdatePeriod");
                     return _updatePeriod ?? (_updatePeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             Periods.ElementAt(2));
                 }
@@ -528,7 +520,7 @@ namespace AcManager.Tools.Helpers {
             [NotNull]
             public SettingEntry RegistryMode {
                 get {
-                    var saved = ValuesStorage.GetString("Settings.CommonSettings.RegistryMode");
+                    var saved = ValuesStorage.Get<string>("Settings.CommonSettings.RegistryMode");
                     return _registryMode ?? (_registryMode = RegistryModes.FirstOrDefault(x => x.Value == saved) ??
                             RegistryModes.ElementAt(2));
                 }
@@ -549,7 +541,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool UpdateToNontestedVersions {
                 get => _updateToNontestedVersions ??
-                        (_updateToNontestedVersions = ValuesStorage.GetBool("Settings.CommonSettings.UpdateToNontestedVersions", false)).Value;
+                        (_updateToNontestedVersions = ValuesStorage.Get("Settings.CommonSettings.UpdateToNontestedVersions", false)).Value;
                 set {
                     if (Equals(value, _updateToNontestedVersions)) return;
                     _updateToNontestedVersions = value;
@@ -562,7 +554,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ShowDetailedChangelog {
                 get => _showDetailedChangelog ??
-                        (_showDetailedChangelog = ValuesStorage.GetBool("Settings.CommonSettings.ShowDetailedChangelog", true)).Value;
+                        (_showDetailedChangelog = ValuesStorage.Get("Settings.CommonSettings.ShowDetailedChangelog", true)).Value;
                 set {
                     if (Equals(value, _showDetailedChangelog)) return;
                     _showDetailedChangelog = value;
@@ -574,7 +566,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _developerMode;
 
             public bool DeveloperMode {
-                get => MsMode || (_developerMode ?? (_developerMode = ValuesStorage.GetBool("Settings.CommonSettings.DeveloperModeN", false)).Value);
+                get => MsMode || (_developerMode ?? (_developerMode = ValuesStorage.Get("Settings.CommonSettings.DeveloperModeN", false)).Value);
                 set {
                     if (Equals(value, _developerMode)) return;
                     _developerMode = value;
@@ -590,7 +582,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _msMode;
 
             public bool MsMode {
-                get => _msMode ?? (_msMode = ValuesStorage.GetBool("Settings.CommonSettings.DeveloperMode", false)).Value;
+                get => _msMode ?? (_msMode = ValuesStorage.Get("Settings.CommonSettings.DeveloperMode", false)).Value;
                 set {
                     if (Equals(value, _msMode)) return;
                     _msMode = value;
@@ -607,7 +599,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool FixResolutionAutomatically {
                 get => _fixResolutionAutomatically ??
-                        (_fixResolutionAutomatically = ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically_", false)).Value;
+                        (_fixResolutionAutomatically = ValuesStorage.Get("Settings.CommonSettings.FixResolutionAutomatically_", false)).Value;
                 set {
                     if (Equals(value, _fixResolutionAutomatically)) return;
                     _fixResolutionAutomatically = value;
@@ -628,7 +620,7 @@ namespace AcManager.Tools.Helpers {
 
             public string CupRegistries {
                 get => _cupRegistries ?? (_cupRegistries =
-                        ValuesStorage.GetString("Settings.ContentSettings.CupRegistries", "http://cm.custom.ru/cup/"));
+                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "http://cm.custom.ru/cup/"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _cupRegistries)) return;
@@ -641,7 +633,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _displaySteerLock;
 
             public bool DisplaySteerLock {
-                get => _displaySteerLock ?? (_displaySteerLock = ValuesStorage.GetBool("Settings.ContentSettings.DisplaySteerLock", false)).Value;
+                get => _displaySteerLock ?? (_displaySteerLock = ValuesStorage.Get("Settings.ContentSettings.DisplaySteerLock", false)).Value;
                 set {
                     if (Equals(value, _displaySteerLock)) return;
                     _displaySteerLock = value;
@@ -653,7 +645,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _oldLayout;
 
             public bool OldLayout {
-                get => _oldLayout ?? (_oldLayout = ValuesStorage.GetBool("Settings.ContentSettings.OldLayout", false)).Value;
+                get => _oldLayout ?? (_oldLayout = ValuesStorage.Get("Settings.ContentSettings.OldLayout", false)).Value;
                 set {
                     if (Equals(value, _oldLayout)) return;
                     _oldLayout = value;
@@ -665,7 +657,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _markKunosContent;
 
             public bool MarkKunosContent {
-                get => _markKunosContent ?? (_markKunosContent = ValuesStorage.GetBool("Settings.ContentSettings.MarkKunosContent", true)).Value;
+                get => _markKunosContent ?? (_markKunosContent = ValuesStorage.Get("Settings.ContentSettings.MarkKunosContent", true)).Value;
                 set {
                     if (Equals(value, _markKunosContent)) return;
                     _markKunosContent = value;
@@ -678,7 +670,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool MentionCmInPackedContent {
                 get => _mentionCmInPackedContent ??
-                        (_mentionCmInPackedContent = ValuesStorage.GetBool("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
+                        (_mentionCmInPackedContent = ValuesStorage.Get("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
                 set {
                     if (Equals(value, _mentionCmInPackedContent)) return;
                     _mentionCmInPackedContent = value;
@@ -690,7 +682,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _rateCars;
 
             public bool RateCars {
-                get => _rateCars ?? (_rateCars = ValuesStorage.GetBool("Settings.ContentSettings.RateCars", false)).Value;
+                get => _rateCars ?? (_rateCars = ValuesStorage.Get("Settings.ContentSettings.RateCars", false)).Value;
                 set {
                     if (Equals(value, _rateCars)) return;
                     _rateCars = value;
@@ -702,8 +694,7 @@ namespace AcManager.Tools.Helpers {
             private int? _loadingConcurrency;
 
             public int LoadingConcurrency {
-                get => _loadingConcurrency ?? (_loadingConcurrency = ValuesStorage.GetInt("Settings.ContentSettings.LoadingConcurrency",
-                        BaseAcManagerNew.OptionAcObjectsLoadingConcurrency)).Value;
+                get => _loadingConcurrency ?? (_loadingConcurrency = ValuesStorage.Get("Settings.ContentSettings.LoadingConcurrency",                         BaseAcManagerNew.OptionAcObjectsLoadingConcurrency)).Value;
                 set {
                     value = value < 1 ? 1 : value;
                     if (Equals(value, _loadingConcurrency)) return;
@@ -716,7 +707,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _curversInDrive;
 
             public bool CurversInDrive {
-                get => _curversInDrive ?? (_curversInDrive = ValuesStorage.GetBool("Settings.ContentSettings.CurversInDrive", true)).Value;
+                get => _curversInDrive ?? (_curversInDrive = ValuesStorage.Get("Settings.ContentSettings.CurversInDrive", true)).Value;
                 set {
                     if (Equals(value, _curversInDrive)) return;
                     _curversInDrive = value;
@@ -728,7 +719,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _smoothCurves;
 
             public bool SmoothCurves {
-                get => _smoothCurves ?? (_smoothCurves = ValuesStorage.GetBool("Settings.ContentSettings.SmoothCurves", false)).Value;
+                get => _smoothCurves ?? (_smoothCurves = ValuesStorage.Get("Settings.ContentSettings.SmoothCurves", false)).Value;
                 set {
                     if (Equals(value, _smoothCurves)) return;
                     _smoothCurves = value;
@@ -741,7 +732,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CarsDisplayNameCleanUp {
                 get => _carsDisplayNameCleanUp
-                        ?? (_carsDisplayNameCleanUp = ValuesStorage.GetBool("Settings.ContentSettings.CarsDisplayNameCleanUp", true)).Value;
+                        ?? (_carsDisplayNameCleanUp = ValuesStorage.Get("Settings.ContentSettings.CarsDisplayNameCleanUp", true)).Value;
                 set {
                     if (Equals(value, _carsDisplayNameCleanUp)) return;
                     _carsDisplayNameCleanUp = value;
@@ -753,7 +744,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {
-                get => _carsYearPostfix ?? (_carsYearPostfix = ValuesStorage.GetBool("Settings.ContentSettings.CarsYearPostfix", false)).Value;
+                get => _carsYearPostfix ?? (_carsYearPostfix = ValuesStorage.Get("Settings.ContentSettings.CarsYearPostfix", false)).Value;
                 set {
                     if (Equals(value, _carsYearPostfix)) return;
                     _carsYearPostfix = value;
@@ -765,7 +756,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _carSkinsDisplayId;
 
             public bool CarSkinsDisplayId {
-                get => _carSkinsDisplayId ?? (_carSkinsDisplayId = ValuesStorage.GetBool("Settings.ContentSettings.CarSkinsDisplayId", false)).Value;
+                get => _carSkinsDisplayId ?? (_carSkinsDisplayId = ValuesStorage.Get("Settings.ContentSettings.CarSkinsDisplayId", false)).Value;
                 set {
                     if (Equals(value, _carSkinsDisplayId)) return;
                     _carSkinsDisplayId = value;
@@ -777,7 +768,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _carsFixSpecs;
 
             public bool CarsFixSpecs {
-                get => _carsFixSpecs ?? (_carsFixSpecs = ValuesStorage.GetBool("Settings.ContentSettings.CarsFixSpecs", true)).Value;
+                get => _carsFixSpecs ?? (_carsFixSpecs = ValuesStorage.Get("Settings.ContentSettings.CarsFixSpecs", true)).Value;
                 set {
                     if (Equals(value, _carsFixSpecs)) return;
                     _carsFixSpecs = value;
@@ -789,7 +780,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _carsProperPwRatio;
 
             public bool CarsProperPwRatio {
-                get => _carsProperPwRatio ?? (_carsProperPwRatio = ValuesStorage.GetBool("Settings.ContentSettings.CarsProperPwRatio", false)).Value;
+                get => _carsProperPwRatio ?? (_carsProperPwRatio = ValuesStorage.Get("Settings.ContentSettings.CarsProperPwRatio", false)).Value;
                 set {
                     if (Equals(value, _carsProperPwRatio)) return;
                     _carsProperPwRatio = value;
@@ -802,7 +793,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool ChangeBrandIconAutomatically {
                 get => _changeBrandIconAutomatically ??
-                        (_changeBrandIconAutomatically = ValuesStorage.GetBool("Settings.ContentSettings.ChangeBrandIconAutomatically", true)).Value;
+                        (_changeBrandIconAutomatically = ValuesStorage.Get("Settings.ContentSettings.ChangeBrandIconAutomatically", true)).Value;
                 set {
                     if (Equals(value, _changeBrandIconAutomatically)) return;
                     _changeBrandIconAutomatically = value;
@@ -815,7 +806,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool DownloadShowroomPreviews {
                 get => _downloadShowroomPreviews ??
-                        (_downloadShowroomPreviews = ValuesStorage.GetBool("Settings.ContentSettings.DownloadShowroomPreviews", true)).Value;
+                        (_downloadShowroomPreviews = ValuesStorage.Get("Settings.ContentSettings.DownloadShowroomPreviews", true)).Value;
                 set {
                     if (Equals(value, _downloadShowroomPreviews)) return;
                     _downloadShowroomPreviews = value;
@@ -827,7 +818,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _scrollAutomatically;
 
             public bool ScrollAutomatically {
-                get => _scrollAutomatically ?? (_scrollAutomatically = ValuesStorage.GetBool("Settings.ContentSettings.ScrollAutomatically", true)).Value;
+                get => _scrollAutomatically ?? (_scrollAutomatically = ValuesStorage.Get("Settings.ContentSettings.ScrollAutomatically", true)).Value;
                 set {
                     if (Equals(value, _scrollAutomatically)) return;
                     _scrollAutomatically = value;
@@ -839,7 +830,7 @@ namespace AcManager.Tools.Helpers {
             private string _temporaryFilesLocation;
 
             public string TemporaryFilesLocation {
-                get => _temporaryFilesLocation ?? (_temporaryFilesLocation = ValuesStorage.GetString("Settings.ContentSettings.TemporaryFilesLocation", ""));
+                get => _temporaryFilesLocation ?? (_temporaryFilesLocation = ValuesStorage.Get("Settings.ContentSettings.TemporaryFilesLocation", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _temporaryFilesLocation)) return;
@@ -855,7 +846,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdLogin;
 
             public string RdLogin {
-                get => _rdLogin ?? (_rdLogin = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdLogin", ""));
+                get => _rdLogin ?? (_rdLogin = ValuesStorage.GetEncrypted("Settings.ContentSettings.RdLogin", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdLogin)) return;
@@ -868,7 +859,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdPassword;
 
             public string RdPassword {
-                get => _rdPassword ?? (_rdPassword = ValuesStorage.GetEncryptedString("Settings.ContentSettings.RdPassword", ""));
+                get => _rdPassword ?? (_rdPassword = ValuesStorage.GetEncrypted("Settings.ContentSettings.RdPassword", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdPassword)) return;
@@ -881,7 +872,7 @@ namespace AcManager.Tools.Helpers {
             private string _rdProxy;
 
             public string RdProxy {
-                get => _rdProxy ?? (_rdProxy = ValuesStorage.GetString("Settings.ContentSettings.RdProxy", ""));
+                get => _rdProxy ?? (_rdProxy = ValuesStorage.Get("Settings.ContentSettings.RdProxy", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rdProxy)) return;
@@ -894,7 +885,7 @@ namespace AcManager.Tools.Helpers {
             private string _fontIconCharacter;
 
             public string FontIconCharacter {
-                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"5"));
+                get => _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.Get("Settings.ContentSettings.FontIconCharacter", @"5"));
                 set {
                     value = value?.Trim().Substring(0, 1);
                     if (Equals(value, _fontIconCharacter)) return;
@@ -907,7 +898,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _skinsSkipPriority;
 
             public bool SkinsSkipPriority {
-                get => _skinsSkipPriority ?? (_skinsSkipPriority = ValuesStorage.GetBool("Settings.ContentSettings.SkinsSkipPriority", false)).Value;
+                get => _skinsSkipPriority ?? (_skinsSkipPriority = ValuesStorage.Get("Settings.ContentSettings.SkinsSkipPriority", false)).Value;
                 set {
                     if (Equals(value, _skinsSkipPriority)) return;
                     _skinsSkipPriority = value;
@@ -932,7 +923,7 @@ namespace AcManager.Tools.Helpers {
 
             public DelayEntry NewContentPeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.ContentSettings.NewContentPeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.ContentSettings.NewContentPeriod");
                     return _newContentPeriod ?? (_newContentPeriod = NewContentPeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             NewContentPeriods.ElementAt(4));
                 }
@@ -947,7 +938,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _simpleFiltering;
 
             public bool SimpleFiltering {
-                get => _simpleFiltering ?? (_simpleFiltering = ValuesStorage.GetBool("Settings.ContentSettings.SimpleFiltering", true)).Value;
+                get => _simpleFiltering ?? (_simpleFiltering = ValuesStorage.Get("Settings.ContentSettings.SimpleFiltering", true)).Value;
                 set {
                     if (Equals(value, _simpleFiltering)) return;
                     _simpleFiltering = value;
@@ -960,7 +951,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _deleteConfirmation;
 
             public bool DeleteConfirmation {
-                get => _deleteConfirmation ?? (_deleteConfirmation = ValuesStorage.GetBool("Settings.ContentSettings.DeleteConfirmation", true)).Value;
+                get => _deleteConfirmation ?? (_deleteConfirmation = ValuesStorage.Get("Settings.ContentSettings.DeleteConfirmation", true)).Value;
                 set {
                     if (Equals(value, _deleteConfirmation)) return;
                     _deleteConfirmation = value;
@@ -984,7 +975,7 @@ namespace AcManager.Tools.Helpers {
             public SearchEngineEntry SearchEngine {
                 get {
                     return _searchEngine ?? (_searchEngine = SearchEngines.FirstOrDefault(x =>
-                            x.DisplayName == ValuesStorage.GetString("Settings.ContentSettings.SearchEngine")) ??
+                            x.DisplayName == ValuesStorage.Get<string>("Settings.ContentSettings.SearchEngine")) ??
                             SearchEngines.First());
                 }
                 set {
@@ -998,7 +989,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _searchWithWikipedia;
 
             public bool SearchWithWikipedia {
-                get => _searchWithWikipedia ?? (_searchWithWikipedia = ValuesStorage.GetBool("Settings.ContentSettings.SearchWithWikipedia", true)).Value;
+                get => _searchWithWikipedia ?? (_searchWithWikipedia = ValuesStorage.Get("Settings.ContentSettings.SearchWithWikipedia", true)).Value;
                 set {
                     if (Equals(value, _searchWithWikipedia)) return;
                     _searchWithWikipedia = value;
@@ -1022,7 +1013,7 @@ namespace AcManager.Tools.Helpers {
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
                     }
-                }, false),
+                }, false)
                 // new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
                 // new MissingContentSearchEntry("AC Drifting Pro", (type, id) => $"http://www.acdriftingpro.com/?s={HttpUtility.UrlEncode(id)}", false),
                 // new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
@@ -1033,7 +1024,7 @@ namespace AcManager.Tools.Helpers {
             public MissingContentSearchEntry MissingContentSearch {
                 get {
                     return _missingContentSearch ?? (_missingContentSearch = MissingContentSearchEntries.FirstOrDefault(x =>
-                            x.DisplayName == ValuesStorage.GetString("Settings.ContentSettings.MissingContentSearch")) ??
+                            x.DisplayName == ValuesStorage.Get<string>("Settings.ContentSettings.MissingContentSearch")) ??
                             MissingContentSearchEntries.First());
                 }
                 set {
@@ -1049,7 +1040,7 @@ namespace AcManager.Tools.Helpers {
             public string CarReplaceTyresDonorFilter {
                 get {
                     if (_carReplaceTyresDonorFilter == null) {
-                        _carReplaceTyresDonorFilter = ValuesStorage.GetString("Settings.ContentSettings.CarReplaceTyresDonorFilter", "k+");
+                        _carReplaceTyresDonorFilter = ValuesStorage.Get("Settings.ContentSettings.CarReplaceTyresDonorFilter", "k+");
                         if (string.IsNullOrWhiteSpace(_carReplaceTyresDonorFilter)) {
                             _carReplaceTyresDonorFilter = "*";
                         }
@@ -1077,7 +1068,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _useOldLiteShowroom;
 
             public bool UseOldLiteShowroom {
-                get => _useOldLiteShowroom ?? (_useOldLiteShowroom = ValuesStorage.GetBool("Settings.CustomShowroomSettings.UseOldLiteShowroom", false)).Value;
+                get => _useOldLiteShowroom ?? (_useOldLiteShowroom = ValuesStorage.Get("Settings.CustomShowroomSettings.UseOldLiteShowroom", false)).Value;
                 set {
                     if (Equals(value, _useOldLiteShowroom)) return;
                     _useOldLiteShowroom = value;
@@ -1089,7 +1080,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _liteUseFxaa;
 
             public bool LiteUseFxaa {
-                get => _liteUseFxaa ?? (_liteUseFxaa = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseFxaa", true)).Value;
+                get => _liteUseFxaa ?? (_liteUseFxaa = ValuesStorage.Get("Settings.CustomShowroomSettings.LiteUseFxaa", true)).Value;
                 set {
                     if (Equals(value, _liteUseFxaa)) return;
                     _liteUseFxaa = value;
@@ -1101,7 +1092,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _liteUseMsaa;
 
             public bool LiteUseMsaa {
-                get => _liteUseMsaa ?? (_liteUseMsaa = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseMsaa", false)).Value;
+                get => _liteUseMsaa ?? (_liteUseMsaa = ValuesStorage.Get("Settings.CustomShowroomSettings.LiteUseMsaa", false)).Value;
                 set {
                     if (Equals(value, _liteUseMsaa)) return;
                     _liteUseMsaa = value;
@@ -1113,7 +1104,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _liteUseBloom;
 
             public bool LiteUseBloom {
-                get => _liteUseBloom ?? (_liteUseBloom = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseBloom", true)).Value;
+                get => _liteUseBloom ?? (_liteUseBloom = ValuesStorage.Get("Settings.CustomShowroomSettings.LiteUseBloom", true)).Value;
                 set {
                     if (Equals(value, _liteUseBloom)) return;
                     _liteUseBloom = value;
@@ -1126,7 +1117,7 @@ namespace AcManager.Tools.Helpers {
 
             [CanBeNull]
             public string ShowroomId {
-                get => _showroomId ?? (_showroomId = ValuesStorage.GetString("Settings.CustomShowroomSettings.ShowroomId", @"showroom"));
+                get => _showroomId ?? (_showroomId = ValuesStorage.Get("Settings.CustomShowroomSettings.ShowroomId", @"showroom"));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _showroomId)) return;
@@ -1140,7 +1131,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CustomShowroomInstead {
                 get => _customShowroomInstead ??
-                        (_customShowroomInstead = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomInstead", false)).Value;
+                        (_customShowroomInstead = ValuesStorage.Get("Settings.CustomShowroomSettings.CustomShowroomInstead", false)).Value;
                 set {
                     if (Equals(value, _customShowroomInstead)) return;
                     _customShowroomInstead = value;
@@ -1153,7 +1144,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CustomShowroomPreviews {
                 get => _customShowroomPreviews ??
-                        (_customShowroomPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomPreviews", true)).Value;
+                        (_customShowroomPreviews = ValuesStorage.Get("Settings.CustomShowroomSettings.CustomShowroomPreviews", true)).Value;
                 set {
                     if (Equals(value, _customShowroomPreviews)) return;
                     _customShowroomPreviews = value;
@@ -1166,7 +1157,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool DetailedExifForPreviews {
                 get => _detailedExifForPreviews ??
-                        (_detailedExifForPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.DetailedExifForPreviews", true)).Value;
+                        (_detailedExifForPreviews = ValuesStorage.Get("Settings.CustomShowroomSettings.DetailedExifForPreviews", true)).Value;
                 set {
                     if (Equals(value, _detailedExifForPreviews)) return;
                     _detailedExifForPreviews = value;
@@ -1178,7 +1169,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _previewsRecycleOld;
 
             public bool PreviewsRecycleOld {
-                get => _previewsRecycleOld ?? (_previewsRecycleOld = ValuesStorage.GetBool("Settings.CustomShowroomSettings.PreviewsRecycleOld", true)).Value;
+                get => _previewsRecycleOld ?? (_previewsRecycleOld = ValuesStorage.Get("Settings.CustomShowroomSettings.PreviewsRecycleOld", true)).Value;
                 set {
                     if (Equals(value, _previewsRecycleOld)) return;
                     _previewsRecycleOld = value;
@@ -1190,7 +1181,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _smartCameraPivot;
 
             public bool SmartCameraPivot {
-                get => _smartCameraPivot ?? (_smartCameraPivot = ValuesStorage.GetBool("Settings.CustomShowroomSettings.SmartCameraPivot", true)).Value;
+                get => _smartCameraPivot ?? (_smartCameraPivot = ValuesStorage.Get("Settings.CustomShowroomSettings.SmartCameraPivot", true)).Value;
                 set {
                     if (Equals(value, _smartCameraPivot)) return;
                     _smartCameraPivot = value;
@@ -1203,7 +1194,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool AlternativeControlScheme {
                 get => _alternativeControlScheme ??
-                        (_alternativeControlScheme = ValuesStorage.GetBool("Settings.CustomShowroomSettings.AlternativeControlScheme", false)).Value;
+                        (_alternativeControlScheme = ValuesStorage.Get("Settings.CustomShowroomSettings.AlternativeControlScheme", false)).Value;
                 set {
                     if (Equals(value, _alternativeControlScheme)) return;
                     _alternativeControlScheme = value;
@@ -1238,7 +1229,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _customIds;
 
             public bool CustomIds {
-                get => _customIds ?? (_customIds = ValuesStorage.GetBool("Settings.SharingSettings.CustomIds", false)).Value;
+                get => _customIds ?? (_customIds = ValuesStorage.Get("Settings.SharingSettings.CustomIds", false)).Value;
                 set {
                     if (Equals(value, _customIds)) return;
                     _customIds = value;
@@ -1250,7 +1241,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _verifyBeforeSharing;
 
             public bool VerifyBeforeSharing {
-                get => _verifyBeforeSharing ?? (_verifyBeforeSharing = ValuesStorage.GetBool("Settings.SharingSettings.VerifyBeforeSharing", true)).Value;
+                get => _verifyBeforeSharing ?? (_verifyBeforeSharing = ValuesStorage.Get("Settings.SharingSettings.VerifyBeforeSharing", true)).Value;
                 set {
                     if (Equals(value, _verifyBeforeSharing)) return;
                     _verifyBeforeSharing = value;
@@ -1262,7 +1253,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _copyLinkToClipboard;
 
             public bool CopyLinkToClipboard {
-                get => _copyLinkToClipboard ?? (_copyLinkToClipboard = ValuesStorage.GetBool("Settings.SharingSettings.CopyLinkToClipboard", true)).Value;
+                get => _copyLinkToClipboard ?? (_copyLinkToClipboard = ValuesStorage.Get("Settings.SharingSettings.CopyLinkToClipboard", true)).Value;
                 set {
                     if (Equals(value, _copyLinkToClipboard)) return;
                     _copyLinkToClipboard = value;
@@ -1274,7 +1265,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _shareAnonymously;
 
             public bool ShareAnonymously {
-                get => _shareAnonymously ?? (_shareAnonymously = ValuesStorage.GetBool("Settings.SharingSettings.ShareAnonymously", false)).Value;
+                get => _shareAnonymously ?? (_shareAnonymously = ValuesStorage.Get("Settings.SharingSettings.ShareAnonymously", false)).Value;
                 set {
                     if (Equals(value, _shareAnonymously)) return;
                     _shareAnonymously = value;
@@ -1286,7 +1277,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _shareWithoutName;
 
             public bool ShareWithoutName {
-                get => _shareWithoutName ?? (_shareWithoutName = ValuesStorage.GetBool("Settings.SharingSettings.ShareWithoutName", false)).Value;
+                get => _shareWithoutName ?? (_shareWithoutName = ValuesStorage.Get("Settings.SharingSettings.ShareWithoutName", false)).Value;
                 set {
                     if (Equals(value, _shareWithoutName)) return;
                     _shareWithoutName = value;
@@ -1299,7 +1290,7 @@ namespace AcManager.Tools.Helpers {
 
             [CanBeNull]
             public string SharingName {
-                get => _sharingName ?? (_sharingName = ValuesStorage.GetString("Settings.SharingSettings.SharingName", null) ?? Drive.PlayerNameOnline);
+                get => _sharingName ?? (_sharingName = ValuesStorage.Get<string>("Settings.SharingSettings.SharingName") ?? Drive.PlayerNameOnline);
                 set {
                     value = value?.Trim();
 
@@ -1325,7 +1316,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _srsEnabled;
 
             public bool SrsEnabled {
-                get => _srsEnabled ?? (_srsEnabled = ValuesStorage.GetBool("Settings.LiveSettings.SrsEnabled", true)).Value;
+                get => _srsEnabled ?? (_srsEnabled = ValuesStorage.Get("Settings.LiveSettings.SrsEnabled", true)).Value;
                 set {
                     if (Equals(value, _srsEnabled)) return;
                     _srsEnabled = value;
@@ -1337,7 +1328,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _srsCustomStyle;
 
             public bool SrsCustomStyle {
-                get => _srsCustomStyle ?? (_srsCustomStyle = ValuesStorage.GetBool("Settings.LiveSettings.SrsCustomStyle", true)).Value;
+                get => _srsCustomStyle ?? (_srsCustomStyle = ValuesStorage.Get("Settings.LiveSettings.SrsCustomStyle", true)).Value;
                 set {
                     if (Equals(value, _srsCustomStyle)) return;
                     _srsCustomStyle = value;
@@ -1349,7 +1340,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _srsAutoMode;
 
             public bool SrsAutoMode {
-                get => _srsAutoMode ?? (_srsAutoMode = ValuesStorage.GetBool("Settings.LiveSettings.SrsAutoMode", true)).Value;
+                get => _srsAutoMode ?? (_srsAutoMode = ValuesStorage.Get("Settings.LiveSettings.SrsAutoMode", true)).Value;
                 set {
                     if (Equals(value, _srsAutoMode)) return;
                     _srsAutoMode = value;
@@ -1361,7 +1352,7 @@ namespace AcManager.Tools.Helpers {
             private string _srsAutoMask;
 
             public string SrsAutoMask {
-                get => _srsAutoMask ?? (_srsAutoMask = ValuesStorage.GetString("Settings.LiveSettings.SrsAutoMask", @"SimRacingSystem*"));
+                get => _srsAutoMask ?? (_srsAutoMask = ValuesStorage.Get("Settings.LiveSettings.SrsAutoMask", @"SimRacingSystem*"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _srsAutoMask)) return;
@@ -1374,7 +1365,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _rsrEnabled;
 
             public bool RsrEnabled {
-                get => _rsrEnabled ?? (_rsrEnabled = ValuesStorage.GetBool("Settings.RsrSettings.RsrEnabled", true)).Value;
+                get => _rsrEnabled ?? (_rsrEnabled = ValuesStorage.Get("Settings.RsrSettings.RsrEnabled", true)).Value;
                 set {
                     if (Equals(value, _rsrEnabled)) return;
                     _rsrEnabled = value;
@@ -1386,7 +1377,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _rsrCustomStyle;
 
             public bool RsrCustomStyle {
-                get => _rsrCustomStyle ?? (_rsrCustomStyle = ValuesStorage.GetBool("Settings.RsrSettings.RsrCustomStyle", true)).Value;
+                get => _rsrCustomStyle ?? (_rsrCustomStyle = ValuesStorage.Get("Settings.RsrSettings.RsrCustomStyle", true)).Value;
                 set {
                     if (Equals(value, _rsrCustomStyle)) return;
                     _rsrCustomStyle = value;
@@ -1399,7 +1390,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RsrDisableAppAutomatically {
                 get => _rsrDisableAppAutomatically ??
-                        (_rsrDisableAppAutomatically = ValuesStorage.GetBool("Settings.LiveTimingSettings.RsrDisableAppAutomatically", false)).Value;
+                        (_rsrDisableAppAutomatically = ValuesStorage.Get("Settings.LiveTimingSettings.RsrDisableAppAutomatically", false)).Value;
                 set {
                     if (Equals(value, _rsrDisableAppAutomatically)) return;
                     _rsrDisableAppAutomatically = value;
@@ -1412,7 +1403,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RsrDifferentPlayerName {
                 get => _rsrDifferentPlayerName ??
-                        (_rsrDifferentPlayerName = ValuesStorage.GetBool("Settings.LiveTimingSettings.RsrDifferentPlayerName", false)).Value;
+                        (_rsrDifferentPlayerName = ValuesStorage.Get("Settings.LiveTimingSettings.RsrDifferentPlayerName", false)).Value;
                 set {
                     if (Equals(value, _rsrDifferentPlayerName)) return;
                     _rsrDifferentPlayerName = value;
@@ -1424,7 +1415,7 @@ namespace AcManager.Tools.Helpers {
             private string _rsrPlayerName;
 
             public string RsrPlayerName {
-                get => _rsrPlayerName ?? (_rsrPlayerName = ValuesStorage.GetString("Settings.LiveTimingSettings.RsrPlayerName", Drive.PlayerName));
+                get => _rsrPlayerName ?? (_rsrPlayerName = ValuesStorage.Get("Settings.LiveTimingSettings.RsrPlayerName", Drive.PlayerName));
                 set {
                     value = value.Trim();
                     if (Equals(value, _rsrPlayerName)) return;
@@ -1445,7 +1436,7 @@ namespace AcManager.Tools.Helpers {
             private string _localeName;
 
             public string LocaleName {
-                get => _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName_", @"en"));
+                get => _localeName ?? (_localeName = ValuesStorage.Get("Settings.LocaleSettings.LocaleName_", @"en"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _localeName)) return;
@@ -1458,7 +1449,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _loadUnpacked;
 
             public bool LoadUnpacked {
-                get => _loadUnpacked ?? (_loadUnpacked = ValuesStorage.GetBool("Settings.LocaleSettings.LoadUnpacked", false)).Value;
+                get => _loadUnpacked ?? (_loadUnpacked = ValuesStorage.Get("Settings.LocaleSettings.LoadUnpacked", false)).Value;
                 set {
                     if (Equals(value, _loadUnpacked)) return;
                     _loadUnpacked = value;
@@ -1470,7 +1461,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _resxLocalesMode;
 
             public bool ResxLocalesMode {
-                get => _resxLocalesMode ?? (_resxLocalesMode = ValuesStorage.GetBool("Settings.LocaleSettings.ResxLocalesMode", false)).Value;
+                get => _resxLocalesMode ?? (_resxLocalesMode = ValuesStorage.Get("Settings.LocaleSettings.ResxLocalesMode", false)).Value;
                 set {
                     if (Equals(value, _resxLocalesMode)) return;
                     _resxLocalesMode = value;
@@ -1485,7 +1476,7 @@ namespace AcManager.Tools.Helpers {
             public PeriodEntry UpdatePeriod {
                 get {
                     return _updatePeriod ?? (_updatePeriod = Common.Periods.FirstOrDefault(x =>
-                            x.TimeSpan == (ValuesStorage.GetTimeSpan("Settings.LocaleSettings.UpdatePeriod") ?? Common.Periods.ElementAt(4).TimeSpan)) ??
+                            x.TimeSpan == (ValuesStorage.Get<TimeSpan?>("Settings.LocaleSettings.UpdatePeriod") ?? Common.Periods.ElementAt(4).TimeSpan)) ??
                             Common.Periods.First());
                 }
                 set {
@@ -1499,7 +1490,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _updateOnStart;
 
             public bool UpdateOnStart {
-                get => _updateOnStart ?? (_updateOnStart = ValuesStorage.GetBool("Settings.LocaleSettings.UpdateOnStart", true)).Value;
+                get => _updateOnStart ?? (_updateOnStart = ValuesStorage.Get("Settings.LocaleSettings.UpdateOnStart", true)).Value;
                 set {
                     if (Equals(value, _updateOnStart)) return;
                     _updateOnStart = value;
@@ -1520,7 +1511,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool QuickDriveFastAccessButtons {
                 get => _quickDriveFastAccessButtons ??
-                        (_quickDriveFastAccessButtons = ValuesStorage.GetBool("Settings.InterfaceSettings.QuickDriveFastAccessButtons", true)).Value;
+                        (_quickDriveFastAccessButtons = ValuesStorage.Get("Settings.InterfaceSettings.QuickDriveFastAccessButtons", true)).Value;
                 set {
                     if (Equals(value, _quickDriveFastAccessButtons)) return;
                     _quickDriveFastAccessButtons = value;
@@ -1532,7 +1523,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _skinsSetupsNewWindow;
 
             public bool SkinsSetupsNewWindow {
-                get => _skinsSetupsNewWindow ?? (_skinsSetupsNewWindow = ValuesStorage.GetBool("Settings.InterfaceSettings.SkinsSetupsNewWindow", false)).Value;
+                get => _skinsSetupsNewWindow ?? (_skinsSetupsNewWindow = ValuesStorage.Get("Settings.InterfaceSettings.SkinsSetupsNewWindow", false)).Value;
                 set {
                     if (Equals(value, _skinsSetupsNewWindow)) return;
                     _skinsSetupsNewWindow = value;
@@ -1563,7 +1554,7 @@ namespace AcManager.Tools.Helpers {
 
             public DelayEntry TheSetupMarketCacheListPeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
                     return _theSetupMarketCacheListPeriod ?? (_theSetupMarketCacheListPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             Periods.ElementAt(3));
                 }
@@ -1579,7 +1570,7 @@ namespace AcManager.Tools.Helpers {
 
             public DelayEntry TheSetupMarketCacheDataPeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod");
                     return _theSetupMarketCacheDataPeriod ?? (_theSetupMarketCacheDataPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             Periods.ElementAt(2));
                 }
@@ -1595,7 +1586,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool TheSetupMarketCacheServer {
                 get => _theSetupMarketCacheServer ?? (_theSetupMarketCacheServer =
-                        ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCacheServer2", true)).Value;
+                        ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketCacheServer2", true)).Value;
                 set {
                     if (Equals(value, _theSetupMarketCacheServer)) return;
                     _theSetupMarketCacheServer = value;
@@ -1607,7 +1598,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _theSetupMarketTab;
 
             public bool TheSetupMarketTab {
-                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketTab", false)).Value;
+                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketTab", false)).Value;
                 set {
                     if (Equals(value, _theSetupMarketTab)) return;
                     _theSetupMarketTab = value;
@@ -1621,7 +1612,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool TheSetupMarketCounter {
                 get => TheSetupMarketTab && (_theSetupMarketCounter ??
-                        (_theSetupMarketCounter = ValuesStorage.GetBool("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
+                        (_theSetupMarketCounter = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
                 set {
                     if (Equals(value, _theSetupMarketCounter)) return;
                     _theSetupMarketCounter = value;
@@ -1633,7 +1624,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _rsrLimitTemperature;
 
             public bool RsrLimitTemperature {
-                get => _rsrLimitTemperature ?? (_rsrLimitTemperature = ValuesStorage.GetBool("Settings.IntegratedSettings.RsrLimitTemperature", true)).Value;
+                get => _rsrLimitTemperature ?? (_rsrLimitTemperature = ValuesStorage.Get("Settings.IntegratedSettings.RsrLimitTemperature", true)).Value;
                 set {
                     if (Equals(value, _rsrLimitTemperature)) return;
                     _rsrLimitTemperature = value;
@@ -1653,7 +1644,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _cefFilterAds;
 
             public bool CefFilterAds {
-                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.GetBool("Settings.PluginsSettings.CefFilterAds", false)).Value;
+                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.Get("Settings.PluginsSettings.CefFilterAds", false)).Value;
                 set {
                     if (Equals(value, _cefFilterAds)) return;
                     _cefFilterAds = value;
@@ -1665,7 +1656,7 @@ namespace AcManager.Tools.Helpers {
             private long? _montageMemoryLimit;
 
             public long MontageMemoryLimit {
-                get => _montageMemoryLimit ?? (_montageMemoryLimit = ValuesStorage.GetLong("Settings.PluginsSettings.MontageMemoryLimit", 2147483648L)).Value;
+                get => _montageMemoryLimit ?? (_montageMemoryLimit = ValuesStorage.Get("Settings.PluginsSettings.MontageMemoryLimit", 2147483648L)).Value;
                 set {
                     if (Equals(value, _montageMemoryLimit)) return;
                     _montageMemoryLimit = value;
@@ -1677,7 +1668,7 @@ namespace AcManager.Tools.Helpers {
             private long? _montageVramCache;
 
             public long MontageVramCache {
-                get => _montageVramCache ?? (_montageVramCache = ValuesStorage.GetLong("Settings.PluginsSettings.MontageVramCache", 536870912L)).Value;
+                get => _montageVramCache ?? (_montageVramCache = ValuesStorage.Get("Settings.PluginsSettings.MontageVramCache", 536870912L)).Value;
                 set {
                     if (Equals(value, _montageVramCache)) return;
                     _montageVramCache = value;
@@ -1691,7 +1682,7 @@ namespace AcManager.Tools.Helpers {
             private string _montageTemporaryDirectory;
 
             public string MontageTemporaryDirectory {
-                get => _montageTemporaryDirectory ?? (_montageTemporaryDirectory = ValuesStorage.GetString("Settings.PluginsSettings.MontageTemporaryDirectory",
+                get => _montageTemporaryDirectory ?? (_montageTemporaryDirectory = ValuesStorage.Get("Settings.PluginsSettings.MontageTemporaryDirectory",
                         MontageDefaultTemporaryDirectory));
                 set {
                     value = value.Trim();
@@ -1727,7 +1718,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _useHardLinks;
 
             public bool UseHardLinks {
-                get => _useHardLinks ?? (_useHardLinks = ValuesStorage.GetBool("Settings.GenericModsSettings.UseHardLinks", true)).Value;
+                get => _useHardLinks ?? (_useHardLinks = ValuesStorage.Get("Settings.GenericModsSettings.UseHardLinks", true)).Value;
                 set {
                     if (Equals(value, _useHardLinks)) return;
                     _useHardLinks = value;
@@ -1740,7 +1731,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool DetectWhileInstalling {
                 get => _detectWhileInstalling ??
-                        (_detectWhileInstalling = ValuesStorage.GetBool("Settings.GenericModsSettings.DetectWhileInstalling", true)).Value;
+                        (_detectWhileInstalling = ValuesStorage.Get("Settings.GenericModsSettings.DetectWhileInstalling", true)).Value;
                 set {
                     if (Equals(value, _detectWhileInstalling)) return;
                     _detectWhileInstalling = value;
@@ -1753,7 +1744,7 @@ namespace AcManager.Tools.Helpers {
 
             public string ModsDirectory {
                 get => _modsDirectory ??
-                        (_modsDirectory = ValuesStorage.GetString("Settings.GenericModsSettings.ModsDirectory", "mods"));
+                        (_modsDirectory = ValuesStorage.Get("Settings.GenericModsSettings.ModsDirectory", "mods"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _modsDirectory)) return;

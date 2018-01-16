@@ -13,6 +13,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -61,7 +62,7 @@ namespace AcManager.Controls.ViewModels {
         private static double? LoadGrip(string data) {
             try {
                 var o = JObject.Parse(data);
-                return o["s"].AsDouble();
+                return o["s"].As<double>();
             } catch (Exception e) {
                 Logging.Error(e.Message);
                 return null;

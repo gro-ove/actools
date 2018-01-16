@@ -23,7 +23,7 @@ namespace AcManager.Tools.Profile {
                 : base(filename, null, disableCompression) {
             Filename = filename;
             _displayName = displayName;
-            LastModified = this.GetDateTime(KeyLastUpdated);
+            LastModified = Get<DateTime?>(KeyLastUpdated);
         }
 
         public LapTimesStorage(string displayName, string sourceId)
@@ -39,9 +39,8 @@ namespace AcManager.Tools.Profile {
         }
 
         private bool Unpack(string packed, out DateTime date, out TimeSpan lapTime) {
-            long timestamp, milliseconds;
             var s = packed?.Split(';');
-            if (s?.Length == 2 && long.TryParse(s[0], out timestamp) && long.TryParse(s[1], out milliseconds)) {
+            if (s?.Length == 2 && long.TryParse(s[0], out var timestamp) && long.TryParse(s[1], out var milliseconds)) {
                 date = timestamp.ToDateTime();
                 lapTime = TimeSpan.FromMilliseconds(milliseconds);
                 return true;
@@ -54,15 +53,13 @@ namespace AcManager.Tools.Profile {
 
         [CanBeNull]
         private LapTimeEntry GetLapTime(string carId, string trackAcId, string packedValue) {
-            DateTime date;
-            TimeSpan lapTime;
-            return Unpack(packedValue, out date, out lapTime) ?
+            return Unpack(packedValue, out var date, out var lapTime) ?
                     new LapTimeEntry(_displayName, carId, trackAcId, date, lapTime) : null;
         }
 
         [CanBeNull]
         public LapTimeEntry GetLapTime(string carId, string trackAcId) {
-            return GetLapTime(carId, trackAcId, GetString(GetKey(carId, trackAcId)));
+            return GetLapTime(carId, trackAcId, Get<string>(GetKey(carId, trackAcId)));
         }
 
         public IEnumerable<LapTimeEntry> GetCached() {
@@ -76,7 +73,7 @@ namespace AcManager.Tools.Profile {
 
         public void Set([NotNull] LapTimeEntry entry) {
             if (entry == null) throw new ArgumentNullException(nameof(entry));
-            this.Set(GetKey(entry.CarId, entry.TrackAcId), Pack(entry));
+            Set(GetKey(entry.CarId, entry.TrackAcId), Pack(entry));
         }
 
         public bool Remove([NotNull] string carId, [NotNull] string trackAnyId) {
@@ -109,12 +106,12 @@ namespace AcManager.Tools.Profile {
 
         public void SyncLastModified(ILapTimesReader reader) {
             LastModified = reader.GetLastModified();
-            this.Set(KeyLastUpdated, LastModified.Value);
+            Set(KeyLastUpdated, LastModified.Value);
         }
 
         public void SyncLastModified() {
             LastModified = DateTime.Now;
-            this.Set(KeyLastUpdated, LastModified.Value);
+            Set(KeyLastUpdated, LastModified.Value);
         }
 
         public bool IsBetter([NotNull] LapTimeEntry entry) {

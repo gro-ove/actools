@@ -43,7 +43,7 @@ namespace AcManager.Tools.Objects {
         public bool UseCustomData {
             get {
                 InitializeCustomDataKeys();
-                return _useCustomData ?? (_useCustomData = ValuesStorage.GetBoolNullable(_keyUseCustomData)) ?? UseCustomDataGlobal;
+                return _useCustomData ?? (_useCustomData = ValuesStorage.Get<bool?>(_keyUseCustomData)) ?? UseCustomDataGlobal;
             }
             set {
                 if (Equals(value, UseCustomData)) return;
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Objects {
         private static bool? _useCustomDataGlobal;
 
         public bool UseCustomDataGlobal {
-            get => _useCustomDataGlobal ?? (_useCustomDataGlobal = ValuesStorage.GetBool(KeyUseCustomDataGlobal)).Value;
+            get => _useCustomDataGlobal ?? (_useCustomDataGlobal = ValuesStorage.Get<bool>(KeyUseCustomDataGlobal)).Value;
             set {
                 if (Equals(value, UseCustomDataGlobal)) return;
                 _useCustomDataGlobal = value;

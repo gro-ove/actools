@@ -82,7 +82,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_filtersHistory.Remove(o)) {
                 var saveKey = SaveKey;
                 if (saveKey != null) {
-                    ValuesStorage.Set(saveKey, _filtersHistory);
+                    ValuesStorage.Storage.SetStringList(saveKey, _filtersHistory);
                 }
             }
         }));
@@ -124,7 +124,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var saveKey = SaveKey;
             if (saveKey != null) {
-                ValuesStorage.Set(saveKey, _filtersHistory);
+                ValuesStorage.Storage.SetStringList(saveKey, _filtersHistory);
             }
         }
 

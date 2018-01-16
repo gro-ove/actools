@@ -45,7 +45,7 @@ namespace AcManager.Tools.Helpers {
                     Logging.Warning($"Invalid forced value: “{forced}”");
                 } else {
                     if (ValuesStorage.Contains(Key)) {
-                        var loaded = ValuesStorage.GetString(Key);
+                        var loaded = ValuesStorage.Get<string>(Key);
                         _value = loaded == NoneValue ? null : loaded;
                         _loaded = true;
                     }

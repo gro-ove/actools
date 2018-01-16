@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
@@ -15,7 +17,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         [Localizable(false)]
         public string GroupKey {
-            get { return _groupKey ?? string.Empty; }
+            get => _groupKey ?? string.Empty;
             set {
                 if (_groupKey == value) return;
                 _groupKey = value;
@@ -51,13 +53,13 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
             }
 
-            var source = ValuesStorage.GetUri(KeySelected);
+            var source = ValuesStorage.Get<Uri>(KeySelected);
             _selectedLink = Links.FirstOrDefault(x => x.Source == source) ?? Links.FirstOrDefault();
             Links.CollectionChanged += Links_CollectionChanged;
         }
 
         private void Links_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-            ValuesStorage.Set(KeyTemporary, Links.Select((x, i) =>
+            ValuesStorage.Storage.SetStringList(KeyTemporary, Links.Select((x, i) =>
                     x is CustomLink ? ((i > 0 ? Links[i - 1] : null)?.Source.ToString() ?? "") + '\n' + ((CustomLink)x).Serialize() : null).Where(x => x != null));
         }
 
@@ -86,7 +88,7 @@ namespace FirstFloor.ModernUI.Presentation {
         private bool _isShown = true;
 
         public bool IsShown {
-            get { return _isShown; }
+            get => _isShown;
             set {
                 if (Equals(value, _isShown)) return;
                 _isShown = value;

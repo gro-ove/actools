@@ -3,6 +3,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
@@ -69,13 +70,14 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var p = parameter as string;
-            if (p == null) return Convert(value);
+            if (parameter is string p) {
+                var i = p.IndexOf('×');
+                return i != -1
+                        ? Convert(value, false, i == 0 ? -1 : p.Substring(0, i).As<int>(), i == p.Length - 1 ? -1 : p.Substring(i + 1).As<int>())
+                        : Convert(value, p == "oneTrueDpi");
+            }
 
-            var i = p.IndexOf('×');
-            return i != -1
-                    ? Convert(value, false, i == 0 ? -1 : p.Substring(0, i).AsInt(), i == p.Length - 1 ? -1 : p.Substring(i + 1).AsInt())
-                    : Convert(value, p == "oneTrueDpi");
+            return Convert(value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

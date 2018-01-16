@@ -21,7 +21,7 @@ namespace AcManager.Tools.GameProperties {
         private const string KeyName = "srsname";
 
         public static string GetName() {
-            return ValuesStorage.GetString(KeyName, SettingsHolder.Drive.PlayerNameOnline);
+            return ValuesStorage.Get(KeyName, SettingsHolder.Drive.PlayerNameOnline);
         }
 
         public static void SetName(string name) {

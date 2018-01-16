@@ -40,7 +40,7 @@ namespace AcManager.Tools.Miscellaneous {
         public static void Initialize() {
             Debug.Assert(Instance == null);
 
-            PreviousVersion = ValuesStorage.GetString(KeyPreviousVersion);
+            PreviousVersion = ValuesStorage.Get<string>(KeyPreviousVersion);
             Logging.Write("Previos version: " + PreviousVersion);
 
             if (PreviousVersion?.IsVersionOlderThan(BuildInformation.AppVersion) != false) {
@@ -125,7 +125,7 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 var version = VersionFromData(data);
-                return CacheStorage.GetBool($".AppUpdater.IgnoreUpdate:{version}") ? null : version;
+                return CacheStorage.Get<bool>($".AppUpdater.IgnoreUpdate:{version}") ? null : version;
             } catch (Exception e) {
                 LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
                 Logging.Warning("Cannot get app/manifest.json: " + e);
@@ -180,7 +180,7 @@ namespace AcManager.Tools.Miscellaneous {
                         preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json")?.Open().ReadAsStringAndDispose());
 
                         // Shouldn’t even get there if version is ignored! But, just in case, and for debugging
-                        if (CacheStorage.GetBool($".AppUpdater.IgnoreUpdate:{preparedVersion}")) {
+                        if (CacheStorage.Get($".AppUpdater.IgnoreUpdate:{preparedVersion}", false)) {
                             preparedVersion = null;
                             return;
                         }

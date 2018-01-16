@@ -49,10 +49,10 @@ namespace AcTools.WheelAngles.Implementations {
         private const string LogitechSteeringWheel = "LogitechSteeringWheel.dll";
         private static bool? _logitechDllInitialized;
 
-        private static IEnumerable<string> LocateLogitechSteeringWheelDll () {
+        private static IEnumerable<string> LocateLogitechSteeringWheelDll() {
             // For 32-bit apps
 
-            var programFileses = new[] {
+            var programFiles = new[] {
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).Replace(" (x86)", ""),
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
@@ -68,15 +68,30 @@ namespace AcTools.WheelAngles.Implementations {
                 "SDK",
             };
 
+            var sdkSubFolders = new[] {
+                null,
+                "SteeringWheel",
+            };
+
             var platforms = new[] {
                 "32", "x86", "64", "x64", null
             };
 
-            foreach (var programFiles in programFileses)
-            foreach (var appPath in appPaths)
-            foreach (var sdkFolder in sdkFolders)
-            foreach (var platform in platforms) {
-                yield return new[] { programFiles, appPath, sdkFolder, platform }.NonNull().JoinToString(Path.DirectorySeparatorChar);
+            return Extend(programFiles, appPaths, sdkFolders, sdkSubFolders, platforms);
+
+            IEnumerable<string> Extend(params string[][] extra) {
+                var sb = new List<string>(extra.Length);
+                for (int i = 0, c = extra.Aggregate(1, (a, b) => a * b.Length); i < c; i++) {
+                    for (int k = extra.Length - 1, j = i; k >= 0; k--) {
+                        var e = extra[k];
+                        var p = e[j % e.Length];
+                        if (p != null) sb.Insert(0, p);
+                        j /= e.Length;
+                    }
+
+                    yield return string.Join("\\", sb);
+                    sb.Clear();
+                }
             }
         }
 

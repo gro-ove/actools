@@ -28,6 +28,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
@@ -50,8 +51,8 @@ namespace AcManager.Pages.Selected {
 
     public class NumberToColumnsConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var v = value.AsInt();
-            var max = parameter.AsInt();
+            var v = value.As<int>();
+            var max = parameter.As<int>();
             if (max < 1 || v <= max) return v;
 
             var from = max / 2;

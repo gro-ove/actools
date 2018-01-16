@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
-using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
@@ -21,8 +21,10 @@ using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
-using Microsoft.Win32;
+using JetBrains.Annotations;
 using StringBasedFilter;
+using Application = System.Windows.Application;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Lists {
     public partial class TrackSkinsListPage : IParametrizedUriContent, ILoadableContent {
@@ -94,7 +96,7 @@ namespace AcManager.Pages.Lists {
 
         public static void Open(TrackObject track) {
             if (!(Application.Current?.MainWindow is MainWindow main)
-                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(Keys.K)
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {
@@ -106,7 +108,7 @@ namespace AcManager.Pages.Lists {
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
             return CommonBatchActions.GetDefaultSet<TrackSkinObject>().Concat(new BatchAction[] {
-                BatchAction_PackSkins.Instance,
+                BatchAction_PackSkins.Instance
             });
         }
 
@@ -115,7 +117,7 @@ namespace AcManager.Pages.Lists {
             public BatchAction_PackSkins() : base("Batch.PackTrackSkins") {}
 
             #region Properies
-            private bool _jsgmeCompatible = ValuesStorage.GetBool("_ba.packTrackSkins.jsgme", true);
+            private bool _jsgmeCompatible = ValuesStorage.Get("_ba.packTrackSkins.jsgme", true);
             public bool JsgmeCompatible {
                 get => _jsgmeCompatible;
                 set {
@@ -126,7 +128,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private string _includeJsgme = ValuesStorage.GetString("_ba.packTrackSkins.includeJsgme");
+            private string _includeJsgme = ValuesStorage.Get<string>("_ba.packTrackSkins.includeJsgme");
             public string IncludeJsgme {
                 get => _includeJsgme;
                 set {

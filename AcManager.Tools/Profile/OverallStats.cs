@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using StringBasedFilter;
@@ -336,7 +337,7 @@ namespace AcManager.Tools.Profile {
             public double TotalTyreWearRounded => Math.Floor(TotalTyreWear * OptionTyreWearScale);
 
             private void UpdateMaxDistancePerCar([NotNull] SessionStats session) {
-                var drivenDistance = Storage.GetDouble(KeyDistancePerCarPrefix + session.CarId) + session.Distance;
+                var drivenDistance = Storage.Get(KeyDistancePerCarPrefix + session.CarId, 0d) + session.Distance;
                 Storage.Set(KeyDistancePerCarPrefix + session.CarId, drivenDistance);
 
                 if (session.CarId == MaxDistancePerCarCarId) {
@@ -348,7 +349,7 @@ namespace AcManager.Tools.Profile {
             }
 
             private void UpdateMaxDistancePerTrack([NotNull] SessionStats session) {
-                var drivenDistance = Storage.GetDouble(KeyDistancePerTrackPrefix + session.TrackId) + session.Distance;
+                var drivenDistance = Storage.Get(KeyDistancePerTrackPrefix + session.TrackId, 0d) + session.Distance;
                 Storage.Set(KeyDistancePerTrackPrefix + session.TrackId, drivenDistance);
 
                 if (session.TrackId == MaxDistancePerTrackTrackId) {
@@ -369,7 +370,7 @@ namespace AcManager.Tools.Profile {
                 UpdateMaxDistancePerTrack(session);
 
                 /* max speed per car */
-                if (session.MaxSpeed > Storage.GetDouble(KeyMaxSpeedPerCarPrefix + session.CarId)) {
+                if (session.MaxSpeed > Storage.Get(KeyMaxSpeedPerCarPrefix + session.CarId, 0d)) {
                     Storage.Set(KeyMaxSpeedPerCarPrefix + session.CarId, session.MaxSpeed);
                 }
 

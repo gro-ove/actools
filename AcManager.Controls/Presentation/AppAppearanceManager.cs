@@ -14,6 +14,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -151,7 +152,7 @@ namespace AcManager.Controls.Presentation {
             AppearanceManager.Current.Initialize();
             AppearanceManager.Current.ThemeObsolete += OnThemeObsolete;
 
-            var theme = ValuesStorage.GetString(KeyTheme);
+            var theme = ValuesStorage.Get<string>(KeyTheme);
 
             // For compatibility with old settings
             if (theme == @"/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml") {
@@ -163,26 +164,26 @@ namespace AcManager.Controls.Presentation {
 
             try {
                 _loading = true;
-                var accentColor = ValuesStorage.GetColor(KeyAccentColor, AccentColors.First());
+                var accentColor = ValuesStorage.Get(KeyAccentColor, AccentColors.First());
                 Logging.Debug($"Loaded: {accentColor}");
                 AccentColor = accentColor.A == 0 ? AccentColors.First() : accentColor;
 
-                AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
-                BackgroundFilename = ValuesStorage.GetString(KeyBackgroundImage);
-                BackgroundOpacity = ValuesStorage.GetDouble(KeyBackgroundOpacity, 0.2);
-                BackgroundStretch = ValuesStorage.GetEnum(KeyBackgroundStretch, Stretch.UniformToFill);
-                IdealFormattingMode = ValuesStorage.GetBoolNullable(KeyIdealFormattingMode);
-                ForceMenuAtTopInFullscreenMode = ValuesStorage.GetBool(KeyForceMenuAtTopInFullscreenMode);
-                BlurImageViewerBackground = ValuesStorage.GetBool(KeyBlurImageViewerBackground);
-                SmallFont = ValuesStorage.GetBool(KeySmallFont);
-                LargerTitleLinks = ValuesStorage.GetBool(KeyLargerTitleLinks);
-                BoldTitleLinks = ValuesStorage.GetBool(KeyBoldTitleLinks);
-                BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
-                SoftwareRenderingMode = ValuesStorage.GetBool(KeySoftwareRendering);
-                LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
-                ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
-                PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
-                FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
+                AccentDisplayColor = ValuesStorage.Get<string>(KeyAccentDisplayColor);
+                BackgroundFilename = ValuesStorage.Get<string>(KeyBackgroundImage);
+                BackgroundOpacity = ValuesStorage.Get(KeyBackgroundOpacity, 0.2);
+                BackgroundStretch = ValuesStorage.Get(KeyBackgroundStretch, Stretch.UniformToFill);
+                IdealFormattingMode = ValuesStorage.Get<bool?>(KeyIdealFormattingMode);
+                ForceMenuAtTopInFullscreenMode = ValuesStorage.Get<bool>(KeyForceMenuAtTopInFullscreenMode);
+                BlurImageViewerBackground = ValuesStorage.Get<bool>(KeyBlurImageViewerBackground);
+                SmallFont = ValuesStorage.Get<bool>(KeySmallFont);
+                LargerTitleLinks = ValuesStorage.Get<bool>(KeyLargerTitleLinks);
+                BoldTitleLinks = ValuesStorage.Get<bool>(KeyBoldTitleLinks);
+                BitmapScalingMode = ValuesStorage.Get(KeyBitmapScaling, BitmapScalingMode.HighQuality);
+                SoftwareRenderingMode = ValuesStorage.Get<bool>(KeySoftwareRendering);
+                LargeSubMenuFont = ValuesStorage.Get<bool>(KeyLargeSubMenuFont);
+                ShowSubMenuDraggableIcons = ValuesStorage.Get(KeyShowSubMenuDraggableIcons, true);
+                PopupToolBars = ValuesStorage.Get<bool>(KeyPopupToolBars);
+                FrameAnimation = FrameAnimations.GetByIdOrDefault(ValuesStorage.Get<string>(KeyFrameAnimation)) ?? FrameAnimations.First();
 
                 UpdateBackgroundImageBrush().Forget();
             } finally {
@@ -283,7 +284,7 @@ namespace AcManager.Controls.Presentation {
 
                 if (Equals(value, _backgroundStretch)) return;
                 _backgroundStretch = value;
-                ValuesStorage.SetEnum(KeyBackgroundStretch, value);
+                ValuesStorage.Set(KeyBackgroundStretch, value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(BackgroundStretchMode));
                 UpdateBackgroundImageBrush().Forget();
@@ -306,7 +307,7 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _bitmapScalingMode)) return;
                 _bitmapScalingMode = value;
                 OnPropertyChanged();
-                ValuesStorage.SetEnum(KeyBitmapScaling, value);
+                ValuesStorage.Set(KeyBitmapScaling, value);
             }
         }
         #endregion
@@ -628,7 +629,7 @@ namespace AcManager.Controls.Presentation {
         #endregion
 
         #region Transitions
-        public class FrameAnimationEntry {
+        public class FrameAnimationEntry : IWithId {
             public string DisplayName { get; }
 
             public string Id { get; }

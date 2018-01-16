@@ -27,7 +27,7 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
             InitializeComponent();
 
-            NewIconLabel.Text = _key != null ? ValuesStorage.GetString(_key, UpgradeIconEditor.TryToGuessLabel(Car?.DisplayName)) ?? "S1" : @"?";
+            NewIconLabel.Text = _key != null ? ValuesStorage.Get(_key, UpgradeIconEditor.TryToGuessLabel(Car?.DisplayName)) ?? "S1" : @"?";
             NewIconLabel_UpdateFontSize();
 
             FocusLabel();

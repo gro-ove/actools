@@ -18,7 +18,7 @@ namespace AcManager.Tools.Objects {
         public bool SpecificControlsPreset {
             get {
                 InitializeControlsKeys();
-                return _specificControlsPreset ?? (_specificControlsPreset = ValuesStorage.GetBool(_keySpecificControlsPreset)).Value;
+                return _specificControlsPreset ?? (_specificControlsPreset = ValuesStorage.Get(_keySpecificControlsPreset, false)).Value;
             }
             set {
                 if (Equals(value, SpecificControlsPreset)) return;
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
                 if (!_controlsPresetFilenameLoaded) {
                     InitializeControlsKeys();
                     _controlsPresetFilenameLoaded = true;
-                    _controlsPresetFilename = ValuesStorage.GetString(_keyControlsPresetFilename);
+                    _controlsPresetFilename = ValuesStorage.Get<string>(_keyControlsPresetFilename);
                     _currentControlsPresetName = _controlsPresetFilename == null ? null : ControlsSettings.GetCurrentPresetName(_controlsPresetFilename);
                 }
 
@@ -60,7 +60,7 @@ namespace AcManager.Tools.Objects {
                 if (!_controlsPresetFilenameLoaded) {
                     InitializeControlsKeys();
                     _controlsPresetFilenameLoaded = true;
-                    _controlsPresetFilename = ValuesStorage.GetString(_keyControlsPresetFilename);
+                    _controlsPresetFilename = ValuesStorage.Get<string>(_keyControlsPresetFilename);
                 }
 
                 return _controlsPresetFilename;
@@ -77,10 +77,9 @@ namespace AcManager.Tools.Objects {
         }
 
         public object SelectedControlsPreset {
-            get { return null; }
+            get => null;
             set {
-                var entry = value as ISavedPresetEntry;
-                if (entry != null) {
+                if (value is ISavedPresetEntry entry) {
                     ControlsPresetFilename = entry.Filename;
                 }
             }

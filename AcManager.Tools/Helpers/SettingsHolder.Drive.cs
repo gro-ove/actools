@@ -121,7 +121,7 @@ namespace AcManager.Tools.Helpers {
             [NotNull]
             public StarterType SelectedStarterType {
                 get => _selectedStarterType ??
-                        (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.GetString("Settings.DriveSettings.SelectedStarterType")) ??
+                        (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.Get<string>("Settings.DriveSettings.SelectedStarterType")) ??
                                 DefaultStarterType);
                 set {
                     if (Equals(value, _selectedStarterType)) return;
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool StarterFallbackIfNotAvailable {
                 get => _fallbackIfNotAvailable ??
-                        (_fallbackIfNotAvailable = ValuesStorage.GetBool("Settings.DriveSettings.FallbackIfNotAvailable", true)).Value;
+                        (_fallbackIfNotAvailable = ValuesStorage.Get("Settings.DriveSettings.FallbackIfNotAvailable", true)).Value;
                 set {
                     if (Equals(value, _fallbackIfNotAvailable)) return;
                     _fallbackIfNotAvailable = value;
@@ -156,7 +156,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _acServiceStopAtExit;
 
             public bool AcServiceStopAtExit {
-                get => _acServiceStopAtExit ?? (_acServiceStopAtExit = ValuesStorage.GetBool("Settings.DriveSettings.AcServiceStopAtExit", true)).Value;
+                get => _acServiceStopAtExit ?? (_acServiceStopAtExit = ValuesStorage.Get("Settings.DriveSettings.AcServiceStopAtExit", true)).Value;
                 set {
                     if (Equals(value, _acServiceStopAtExit)) return;
                     _acServiceStopAtExit = value;
@@ -184,7 +184,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool PresetsPerModeAutoUpdate {
                 get => _presetsPerModeAutoUpdate ??
-                        (_presetsPerModeAutoUpdate = ValuesStorage.GetBool("Settings.DriveSettings.PresetsPerModeAutoUpdate", true)).Value;
+                        (_presetsPerModeAutoUpdate = ValuesStorage.Get("Settings.DriveSettings.PresetsPerModeAutoUpdate", true)).Value;
                 set {
                     if (Equals(value, _presetsPerModeAutoUpdate)) return;
                     _presetsPerModeAutoUpdate = value;
@@ -196,7 +196,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _watchForSharedMemory;
 
             public bool WatchForSharedMemory {
-                get => _watchForSharedMemory ?? (_watchForSharedMemory = ValuesStorage.GetBool("Settings.DriveSettings.WatchForSharedMemory", true)).Value;
+                get => _watchForSharedMemory ?? (_watchForSharedMemory = ValuesStorage.Get("Settings.DriveSettings.WatchForSharedMemory", true)).Value;
                 set {
                     if (Equals(value, _watchForSharedMemory)) return;
                     _watchForSharedMemory = value;
@@ -212,7 +212,7 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, _ignoredInterfaces)) return;
                     _ignoredInterfaces = value.ToList();
-                    ValuesStorage.Set("Settings.OnlineSettings.IgnoredInterfaces", value);
+                    ValuesStorage.Storage.SetStringList("Settings.OnlineSettings.IgnoredInterfaces", value);
                     OnPropertyChanged();
                 }
             }
@@ -220,7 +220,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _hideWhileRacing;
 
             public bool HideWhileRacing {
-                get => _hideWhileRacing ?? (_hideWhileRacing = ValuesStorage.GetBool("Settings.DriveSettings.HideWhileRacing", true)).Value;
+                get => _hideWhileRacing ?? (_hideWhileRacing = ValuesStorage.Get("Settings.DriveSettings.HideWhileRacing", true)).Value;
                 set {
                     if (Equals(value, _hideWhileRacing)) return;
                     _hideWhileRacing = value;
@@ -233,7 +233,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SaveDevAppsInAppsPresets {
                 get => _saveDevAppsInAppsPresets ??
-                        (_saveDevAppsInAppsPresets = ValuesStorage.GetBool("Settings.DriveSettings.SaveDevAppsInAppsPresets", false)).Value;
+                        (_saveDevAppsInAppsPresets = ValuesStorage.Get("Settings.DriveSettings.SaveDevAppsInAppsPresets", false)).Value;
                 set {
                     if (Equals(value, _saveDevAppsInAppsPresets)) return;
                     _saveDevAppsInAppsPresets = value;
@@ -246,7 +246,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CopyFilterToSystemForOculus {
                 get => _copyFilterToSystemForOculus ??
-                        (_copyFilterToSystemForOculus = ValuesStorage.GetBool("Settings.DriveSettings.CopyFilterToSystemForOculus", true)).Value;
+                        (_copyFilterToSystemForOculus = ValuesStorage.Get("Settings.DriveSettings.CopyFilterToSystemForOculus", true)).Value;
                 set {
                     if (Equals(value, _copyFilterToSystemForOculus)) return;
                     _copyFilterToSystemForOculus = value;
@@ -258,7 +258,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _sidekickIntegration;
 
             public bool SidekickIntegration {
-                get => _sidekickIntegration ?? (_sidekickIntegration = ValuesStorage.GetBool("Settings.DriveSettings.SidekickIntegration", true)).Value;
+                get => _sidekickIntegration ?? (_sidekickIntegration = ValuesStorage.Get("Settings.DriveSettings.SidekickIntegration", true)).Value;
                 set {
                     if (Equals(value, _sidekickIntegration)) return;
                     _sidekickIntegration = value;
@@ -271,7 +271,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SidekickUpdateExistingKunos {
                 get => _sidekickUpdateExistingKunos ??
-                        (_sidekickUpdateExistingKunos = ValuesStorage.GetBool("Settings.DriveSettings.SidekickUpdateExistingKunos", false)).Value;
+                        (_sidekickUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingKunos", false)).Value;
                 set {
                     if (Equals(value, _sidekickUpdateExistingKunos)) return;
                     _sidekickUpdateExistingKunos = value;
@@ -284,7 +284,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SidekickUpdateExistingMods {
                 get => _sidekickUpdateExistingMods ??
-                        (_sidekickUpdateExistingMods = ValuesStorage.GetBool("Settings.DriveSettings.SidekickUpdateExistingMods", true)).Value;
+                        (_sidekickUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingMods", true)).Value;
                 set {
                     if (Equals(value, _sidekickUpdateExistingMods)) return;
                     _sidekickUpdateExistingMods = value;
@@ -297,7 +297,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SidekickOdometerImportValues {
                 get => _sidekickOdometerImportValues ??
-                        (_sidekickOdometerImportValues = ValuesStorage.GetBool("Settings.DriveSettings.sidekickOdometerImportValues", true)).Value;
+                        (_sidekickOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerImportValues", true)).Value;
                 set {
                     if (Equals(value, _sidekickOdometerImportValues)) return;
                     _sidekickOdometerImportValues = value;
@@ -310,7 +310,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool SidekickOdometerExportValues {
                 get => _sidekickOdometerExportValues ??
-                        (_sidekickOdometerExportValues = ValuesStorage.GetBool("Settings.DriveSettings.sidekickOdometerExportValues", true)).Value;
+                        (_sidekickOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerExportValues", true)).Value;
                 set {
                     if (Equals(value, _sidekickOdometerExportValues)) return;
                     _sidekickOdometerExportValues = value;
@@ -323,7 +323,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RaceEssentialsIntegration {
                 get => _raceEssentialsIntegration ??
-                        (_raceEssentialsIntegration = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsIntegration", true)).Value;
+                        (_raceEssentialsIntegration = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsIntegration", true)).Value;
                 set {
                     if (Equals(value, _raceEssentialsIntegration)) return;
                     _raceEssentialsIntegration = value;
@@ -336,7 +336,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RaceEssentialsUpdateExistingKunos {
                 get => _raceEssentialsUpdateExistingKunos ??
-                        (_raceEssentialsUpdateExistingKunos = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", false)).Value;
+                        (_raceEssentialsUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", false)).Value;
                 set {
                     if (Equals(value, _raceEssentialsUpdateExistingKunos)) return;
                     _raceEssentialsUpdateExistingKunos = value;
@@ -349,7 +349,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RaceEssentialsUpdateExistingMods {
                 get => _raceEssentialsUpdateExistingMods ??
-                        (_raceEssentialsUpdateExistingMods = ValuesStorage.GetBool("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", true)).Value;
+                        (_raceEssentialsUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", true)).Value;
                 set {
                     if (Equals(value, _raceEssentialsUpdateExistingMods)) return;
                     _raceEssentialsUpdateExistingMods = value;
@@ -362,7 +362,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool StereoOdometerImportValues {
                 get => _stereoOdometerImportValues ??
-                        (_stereoOdometerImportValues = ValuesStorage.GetBool("Settings.DriveSettings.stereoOdometerImportValues", true)).Value;
+                        (_stereoOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerImportValues", true)).Value;
                 set {
                     if (Equals(value, _stereoOdometerImportValues)) return;
                     _stereoOdometerImportValues = value;
@@ -375,7 +375,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool StereoOdometerExportValues {
                 get => _stereoOdometerExportValues ??
-                        (_stereoOdometerExportValues = ValuesStorage.GetBool("Settings.DriveSettings.stereoOdometerExportValues", true)).Value;
+                        (_stereoOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerExportValues", true)).Value;
                 set {
                     if (Equals(value, _stereoOdometerExportValues)) return;
                     _stereoOdometerExportValues = value;
@@ -387,7 +387,7 @@ namespace AcManager.Tools.Helpers {
             private string _preCommand;
 
             public string PreCommand {
-                get => _preCommand ?? (_preCommand = ValuesStorage.GetString("Settings.DriveSettings.PreCommand", ""));
+                get => _preCommand ?? (_preCommand = ValuesStorage.Get("Settings.DriveSettings.PreCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preCommand)) return;
@@ -400,7 +400,7 @@ namespace AcManager.Tools.Helpers {
             private string _postCommand;
 
             public string PostCommand {
-                get => _postCommand ?? (_postCommand = ValuesStorage.GetString("Settings.DriveSettings.PostCommand", ""));
+                get => _postCommand ?? (_postCommand = ValuesStorage.Get("Settings.DriveSettings.PostCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postCommand)) return;
@@ -413,7 +413,7 @@ namespace AcManager.Tools.Helpers {
             private string _preReplayCommand;
 
             public string PreReplayCommand {
-                get => _preReplayCommand ?? (_preReplayCommand = ValuesStorage.GetString("Settings.DriveSettings.PreReplayCommand", ""));
+                get => _preReplayCommand ?? (_preReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PreReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preReplayCommand)) return;
@@ -426,7 +426,7 @@ namespace AcManager.Tools.Helpers {
             private string _postReplayCommand;
 
             public string PostReplayCommand {
-                get => _postReplayCommand ?? (_postReplayCommand = ValuesStorage.GetString("Settings.DriveSettings.PostReplayCommand", ""));
+                get => _postReplayCommand ?? (_postReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PostReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postReplayCommand)) return;
@@ -439,7 +439,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateStart;
 
             public bool ImmediateStart {
-                get => _immediateStart ?? (_immediateStart = ValuesStorage.GetBool("Settings.DriveSettings.ImmediateStart", false)).Value;
+                get => _immediateStart ?? (_immediateStart = ValuesStorage.Get("Settings.DriveSettings.ImmediateStart", false)).Value;
                 set {
                     if (Equals(value, _immediateStart)) return;
                     _immediateStart = value;
@@ -451,7 +451,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateCancel;
 
             public bool ImmediateCancel {
-                get => _immediateCancel ?? (_immediateCancel = ValuesStorage.GetBool("Settings.DriveSettings.ImmediateCancel", false)).Value;
+                get => _immediateCancel ?? (_immediateCancel = ValuesStorage.Get("Settings.DriveSettings.ImmediateCancel", false)).Value;
                 set {
                     if (Equals(value, _immediateCancel)) return;
                     _immediateCancel = value;
@@ -463,7 +463,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _continueOnEscape;
 
             public bool ContinueOnEscape {
-                get => _continueOnEscape ?? (_continueOnEscape = ValuesStorage.GetBool("Settings.DriveSettings.ContinueOnEscape", false)).Value;
+                get => _continueOnEscape ?? (_continueOnEscape = ValuesStorage.Get("Settings.DriveSettings.ContinueOnEscape", false)).Value;
                 set {
                     if (Equals(value, _continueOnEscape)) return;
                     _continueOnEscape = value;
@@ -475,7 +475,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _skipPracticeResults;
 
             public bool SkipPracticeResults {
-                get => _skipPracticeResults ?? (_skipPracticeResults = ValuesStorage.GetBool("Settings.DriveSettings.SkipPracticeResults", false)).Value;
+                get => _skipPracticeResults ?? (_skipPracticeResults = ValuesStorage.Get("Settings.DriveSettings.SkipPracticeResults", false)).Value;
                 set {
                     if (Equals(value, _skipPracticeResults)) return;
                     _skipPracticeResults = value;
@@ -487,7 +487,7 @@ namespace AcManager.Tools.Helpers {
             private int? _raceResultsLimit;
 
             public int RaceResultsLimit {
-                get => _raceResultsLimit ?? (_raceResultsLimit = ValuesStorage.GetInt("Settings.DriveSettings.RaceResultsLimit", 1000)).Value;
+                get => _raceResultsLimit ?? (_raceResultsLimit = ValuesStorage.Get("Settings.DriveSettings.RaceResultsLimit", 1000)).Value;
                 set {
                     value = value.Round(10);
                     if (Equals(value, _raceResultsLimit)) return;
@@ -500,7 +500,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _tryToLoadReplays;
 
             public bool TryToLoadReplays {
-                get => _tryToLoadReplays ?? (_tryToLoadReplays = ValuesStorage.GetBool("Settings.DriveSettings.TryToLoadReplays", true)).Value;
+                get => _tryToLoadReplays ?? (_tryToLoadReplays = ValuesStorage.Get("Settings.DriveSettings.TryToLoadReplays", true)).Value;
                 set {
                     if (Equals(value, _tryToLoadReplays)) return;
                     _tryToLoadReplays = value;
@@ -512,7 +512,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _autoSaveReplays;
 
             public bool AutoSaveReplays {
-                get => _autoSaveReplays ?? (_autoSaveReplays = ValuesStorage.GetBool("Settings.DriveSettings.AutoSaveReplays", false)).Value;
+                get => _autoSaveReplays ?? (_autoSaveReplays = ValuesStorage.Get("Settings.DriveSettings.AutoSaveReplays", false)).Value;
                 set {
                     if (Equals(value, _autoSaveReplays)) return;
                     _autoSaveReplays = value;
@@ -525,7 +525,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool AutoAddReplaysExtension {
                 get => _autoAddReplaysExtension ??
-                        (_autoAddReplaysExtension = ValuesStorage.GetBool("Settings.DriveSettings.AutoAddReplaysExtension", true)).Value;
+                        (_autoAddReplaysExtension = ValuesStorage.Get("Settings.DriveSettings.AutoAddReplaysExtension", true)).Value;
                 set {
                     if (Equals(value, _autoAddReplaysExtension)) return;
                     _autoAddReplaysExtension = value;
@@ -542,7 +542,7 @@ namespace AcManager.Tools.Helpers {
                 get
                         =>
                                 _replaysNameFormat ??
-                                        (_replaysNameFormat = ValuesStorage.GetString("Settings.DriveSettings.ReplaysNameFormat", DefaultReplaysNameFormat));
+                                        (_replaysNameFormat = ValuesStorage.Get("Settings.DriveSettings.ReplaysNameFormat", DefaultReplaysNameFormat));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _replaysNameFormat)) return;
@@ -555,7 +555,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _use32BitVersion;
 
             public bool Use32BitVersion {
-                get => _use32BitVersion ?? (_use32BitVersion = ValuesStorage.GetBool("Settings.DriveSettings.Use32BitVersion", false)).Value;
+                get => _use32BitVersion ?? (_use32BitVersion = ValuesStorage.Get("Settings.DriveSettings.Use32BitVersion", false)).Value;
                 set {
                     if (Equals(value, _use32BitVersion)) return;
                     _use32BitVersion = value;
@@ -567,7 +567,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _runSteamIfNeeded;
 
             public bool RunSteamIfNeeded {
-                get => _runSteamIfNeeded ?? (_runSteamIfNeeded = ValuesStorage.GetBool("Settings.DriveSettings.RunSteamIfNeeded", true)).Value;
+                get => _runSteamIfNeeded ?? (_runSteamIfNeeded = ValuesStorage.Get("Settings.DriveSettings.RunSteamIfNeeded", true)).Value;
                 set {
                     if (Equals(value, _runSteamIfNeeded)) return;
                     _runSteamIfNeeded = value;
@@ -579,7 +579,7 @@ namespace AcManager.Tools.Helpers {
             private string _playerName;
 
             public string PlayerName {
-                get => _playerName ?? (_playerName = ValuesStorage.GetString("Settings.DriveSettings.PlayerName", null));
+                get => _playerName ?? (_playerName = ValuesStorage.Get<string>("Settings.DriveSettings.PlayerName"));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _playerName)) return;
@@ -593,7 +593,7 @@ namespace AcManager.Tools.Helpers {
             private string _playerNationality;
 
             public string PlayerNationality {
-                get => _playerNationality ?? (_playerNationality = ValuesStorage.GetString("Settings.DriveSettings.PlayerNationality", null));
+                get => _playerNationality ?? (_playerNationality = ValuesStorage.Get<string>("Settings.DriveSettings.PlayerNationality"));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _playerNationality)) return;
@@ -607,7 +607,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool DifferentPlayerNameOnline {
                 get => _differentPlayerNameOnline ??
-                        (_differentPlayerNameOnline = ValuesStorage.GetBool("Settings.DriveSettings.DifferentPlayerNameOnline", false)).Value;
+                        (_differentPlayerNameOnline = ValuesStorage.Get("Settings.DriveSettings.DifferentPlayerNameOnline", false)).Value;
                 set {
                     if (Equals(value, _differentPlayerNameOnline)) return;
                     _differentPlayerNameOnline = value;
@@ -619,7 +619,7 @@ namespace AcManager.Tools.Helpers {
             private string _playerNameOnline;
 
             public string PlayerNameOnline {
-                get => _playerNameOnline ?? (_playerNameOnline = ValuesStorage.GetString("Settings.DriveSettings.PlayerNameOnline", PlayerName));
+                get => _playerNameOnline ?? (_playerNameOnline = ValuesStorage.Get("Settings.DriveSettings.PlayerNameOnline", PlayerName));
                 set {
                     value = value.Trim();
                     if (Equals(value, _playerNameOnline)) return;
@@ -633,7 +633,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool QuickDriveTrackDayViaPractice {
                 get => _quickDriveTrackDayViaPractice ??
-                        (_quickDriveTrackDayViaPractice = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveTrackDayViaPractice", true)).Value;
+                        (_quickDriveTrackDayViaPractice = ValuesStorage.Get("Settings.DriveSettings.QuickDriveTrackDayViaPractice", true)).Value;
                 set {
                     if (Equals(value, _quickDriveTrackDayViaPractice)) return;
                     _quickDriveTrackDayViaPractice = value;
@@ -648,7 +648,7 @@ namespace AcManager.Tools.Helpers {
                 get
                         =>
                                 _quickDriveAllowCustomData
-                                        ?? (_quickDriveAllowCustomData = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveAllowCustomData", false)).Value
+                                        ?? (_quickDriveAllowCustomData = ValuesStorage.Get("Settings.DriveSettings.QuickDriveAllowCustomData", false)).Value
                         ;
                 set {
                     if (Equals(value, _quickDriveAllowCustomData)) return;
@@ -661,7 +661,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveExpandBounds;
 
             public bool QuickDriveExpandBounds {
-                get => _quickDriveExpandBounds ?? (_quickDriveExpandBounds = ValuesStorage.GetBool("Settings.DriveSettings.ExpandBounds", false)).Value;
+                get => _quickDriveExpandBounds ?? (_quickDriveExpandBounds = ValuesStorage.Get("Settings.DriveSettings.ExpandBounds", false)).Value;
                 set {
                     if (Equals(value, _quickDriveExpandBounds)) return;
                     _quickDriveExpandBounds = value;
@@ -677,7 +677,7 @@ namespace AcManager.Tools.Helpers {
                 get
                         =>
                                 _quickDriveAiLimitations
-                                        ?? (_quickDriveAiLimitations = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveAiLimitations", false)).Value;
+                                        ?? (_quickDriveAiLimitations = ValuesStorage.Get("Settings.DriveSettings.QuickDriveAiLimitations", false)).Value;
                 set {
                     if (Equals(value, _quickDriveAiLimitations)) return;
                     _quickDriveAiLimitations = value;
@@ -689,7 +689,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveAiLevelInName;
 
             public bool QuickDriveAiLevelInName {
-                get => _quickDriveAiLevelInName ?? (_quickDriveAiLevelInName = ValuesStorage.GetBool("RaceGrid.AiLevelInDriverName", false)).Value;
+                get => _quickDriveAiLevelInName ?? (_quickDriveAiLevelInName = ValuesStorage.Get("RaceGrid.AiLevelInDriverName", false)).Value;
                 set {
                     if (Equals(value, _quickDriveAiLevelInName)) return;
                     _quickDriveAiLevelInName = value;
@@ -704,7 +704,7 @@ namespace AcManager.Tools.Helpers {
                 get
                         =>
                                 _quickDriveAiAggressionInName ??
-                                        (_quickDriveAiAggressionInName = ValuesStorage.GetBool("RaceGrid.AiAggressionInDriverName", false)).Value;
+                                        (_quickDriveAiAggressionInName = ValuesStorage.Get("RaceGrid.AiAggressionInDriverName", false)).Value;
                 set {
                     if (Equals(value, _quickDriveAiAggressionInName)) return;
                     _quickDriveAiAggressionInName = value;
@@ -716,7 +716,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveUseSkinNames;
 
             public bool QuickDriveUseSkinNames {
-                get => _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value
+                get => _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.Get("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value
                         ;
                 set {
                     if (Equals(value, _quickDriveUseSkinNames)) return;
@@ -729,7 +729,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveCheckTrack;
 
             public bool QuickDriveCheckTrack {
-                get => _quickDriveCheckTrack ?? (_quickDriveCheckTrack = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveCheckTrack", true)).Value;
+                get => _quickDriveCheckTrack ?? (_quickDriveCheckTrack = ValuesStorage.Get("Settings.DriveSettings.QuickDriveCheckTrack", true)).Value;
                 set {
                     if (Equals(value, _quickDriveCheckTrack)) return;
                     _quickDriveCheckTrack = value;
@@ -741,7 +741,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _alwaysRecordGhost;
 
             public bool AlwaysRecordGhost {
-                get => _alwaysRecordGhost ?? (_alwaysRecordGhost = ValuesStorage.GetBool("Settings.DriveSettings.AlwaysRecordGhost", false)).Value;
+                get => _alwaysRecordGhost ?? (_alwaysRecordGhost = ValuesStorage.Get("Settings.DriveSettings.AlwaysRecordGhost", false)).Value;
                 set {
                     if (Equals(value, _alwaysRecordGhost)) return;
                     _alwaysRecordGhost = value;
@@ -755,7 +755,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _kunosCareerUserAiLevel;
 
             public bool KunosCareerUserAiLevel {
-                get => _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", true)).Value
+                get => _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.Get("Settings.DriveSettings.KunosCareerUserAiLevel", true)).Value
                         ;
                 set {
                     if (Equals(value, _kunosCareerUserAiLevel)) return;
@@ -768,7 +768,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _kunosCareerUserSkin;
 
             public bool KunosCareerUserSkin {
-                get => _kunosCareerUserSkin ?? (_kunosCareerUserSkin = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserSkin", true)).Value;
+                get => _kunosCareerUserSkin ?? (_kunosCareerUserSkin = ValuesStorage.Get("Settings.DriveSettings.KunosCareerUserSkin", true)).Value;
                 set {
                     if (Equals(value, _kunosCareerUserSkin)) return;
                     _kunosCareerUserSkin = value;
@@ -780,7 +780,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickSwitches;
 
             public bool QuickSwitches {
-                get => _quickSwitches ?? (_quickSwitches = ValuesStorage.GetBool("Settings.DriveSettings.QuickSwitches", true)).Value;
+                get => _quickSwitches ?? (_quickSwitches = ValuesStorage.Get("Settings.DriveSettings.QuickSwitches", true)).Value;
                 set {
                     if (Equals(value, _quickSwitches)) return;
                     _quickSwitches = value;
@@ -801,7 +801,7 @@ namespace AcManager.Tools.Helpers {
                         }).ToArray());
                 set {
                     if (Equals(value, _quickSwitchesList)) return;
-                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitchesList", value);
+                    ValuesStorage.Storage.SetStringList("Settings.DriveSettings.QuickSwitchesList", value);
                     _quickSwitchesList = value;
                     OnPropertyChanged();
                 }
@@ -811,7 +811,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool AutomaticallyConvertBmpToJpg {
                 get => _automaticallyConvertBmpToJpg ??
-                        (_automaticallyConvertBmpToJpg = ValuesStorage.GetBool("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", false)).Value;
+                        (_automaticallyConvertBmpToJpg = ValuesStorage.Get("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", false)).Value;
                 set {
                     if (Equals(value, _automaticallyConvertBmpToJpg)) return;
                     _automaticallyConvertBmpToJpg = value;
@@ -824,7 +824,7 @@ namespace AcManager.Tools.Helpers {
 
             [CanBeNull]
             public string LocalAddress {
-                get => _localAddress ?? (_localAddress = ValuesStorage.GetString("Settings.DriveSettings.LocalAddress", null));
+                get => _localAddress ?? (_localAddress = ValuesStorage.Get<string>("Settings.DriveSettings.LocalAddress"));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _localAddress)) return;
@@ -837,7 +837,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _weatherSpecificClouds;
 
             public bool WeatherSpecificClouds {
-                get => _weatherSpecificClouds ?? (_weatherSpecificClouds = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificClouds", true)).Value;
+                get => _weatherSpecificClouds ?? (_weatherSpecificClouds = ValuesStorage.Get("Settings.DriveSettings.WeatherSpecificClouds", true)).Value;
                 set {
                     if (Equals(value, _weatherSpecificClouds)) return;
                     _weatherSpecificClouds = value;
@@ -852,7 +852,7 @@ namespace AcManager.Tools.Helpers {
                 get
                         =>
                                 _weatherSpecificPpFilter ??
-                                        (_weatherSpecificPpFilter = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificPpFilter", true)).Value;
+                                        (_weatherSpecificPpFilter = ValuesStorage.Get("Settings.DriveSettings.WeatherSpecificPpFilter", true)).Value;
                 set {
                     if (Equals(value, _weatherSpecificPpFilter)) return;
                     _weatherSpecificPpFilter = value;
@@ -865,7 +865,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool WeatherSpecificTyreSmoke {
                 get => _weatherSpecificTyreSmoke ??
-                        (_weatherSpecificTyreSmoke = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificTyreSmoke", true)).Value;
+                        (_weatherSpecificTyreSmoke = ValuesStorage.Get("Settings.DriveSettings.WeatherSpecificTyreSmoke", true)).Value;
                 set {
                     if (Equals(value, _weatherSpecificTyreSmoke)) return;
                     _weatherSpecificTyreSmoke = value;
@@ -878,7 +878,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool RhmIntegration {
                 get => _rhmIntegration ??
-                        (_rhmIntegration = ValuesStorage.GetBool("Settings.DriveSettings.RhmIntegration", false)).Value;
+                        (_rhmIntegration = ValuesStorage.Get("Settings.DriveSettings.RhmIntegration", false)).Value;
                 set {
                     if (Equals(value, _rhmIntegration)) return;
                     _rhmIntegration = value;
@@ -891,7 +891,7 @@ namespace AcManager.Tools.Helpers {
 
             [CanBeNull]
             public string RhmLocation {
-                get => _rhmLocation ?? (_rhmLocation = ValuesStorage.GetString("Settings.DriveSettings.RhmLocation", null));
+                get => _rhmLocation ?? (_rhmLocation = ValuesStorage.Get<string>("Settings.DriveSettings.RhmLocation"));
                 set {
                     value = value?.Trim();
                     if (Equals(value, _rhmLocation)) return;
@@ -904,7 +904,7 @@ namespace AcManager.Tools.Helpers {
             private string _rhmSettingsLocation;
 
             public string RhmSettingsLocation {
-                get => _rhmSettingsLocation ?? (_rhmSettingsLocation = ValuesStorage.GetString("Settings.DriveSettings.RhmSettingsLocation",
+                get => _rhmSettingsLocation ?? (_rhmSettingsLocation = ValuesStorage.Get("Settings.DriveSettings.RhmSettingsLocation",
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RealHeadMotion", "Settings.xml")));
                 set {
                     value = value.Trim();
@@ -931,7 +931,7 @@ namespace AcManager.Tools.Helpers {
 
             public DelayEntry RhmKeepAlivePeriod {
                 get {
-                    var saved = ValuesStorage.GetTimeSpan("Settings.DriveSettings.RhmKeepAlivePeriod");
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.DriveSettings.RhmKeepAlivePeriod");
                     return _rhmKeepAlivePeriod ?? (_rhmKeepAlivePeriod = RhmKeepAlivePeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
                             RhmKeepAlivePeriods.ElementAt(4));
                 }
@@ -978,7 +978,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CheckAndFixControlsOrder {
                 get => _checkAndFixControlsOrder
-                        ?? (_checkAndFixControlsOrder = ValuesStorage.GetBool("Settings.DriveSettings.CheckAndFixControlsOrder", false)).Value;
+                        ?? (_checkAndFixControlsOrder = ValuesStorage.Get("Settings.DriveSettings.CheckAndFixControlsOrder", false)).Value;
                 set {
                     if (Equals(value, _checkAndFixControlsOrder)) return;
                     _checkAndFixControlsOrder = value;
@@ -990,7 +990,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _showExtraComboBoxes;
 
             public bool ShowExtraComboBoxes {
-                get => _showExtraComboBoxes ?? (_showExtraComboBoxes = ValuesStorage.GetBool("Settings.DriveSettings.ShowExtraComboBoxes", true)).Value;
+                get => _showExtraComboBoxes ?? (_showExtraComboBoxes = ValuesStorage.Get("Settings.DriveSettings.ShowExtraComboBoxes", true)).Value;
                 set {
                     if (Equals(value, _showExtraComboBoxes)) return;
                     _showExtraComboBoxes = value;

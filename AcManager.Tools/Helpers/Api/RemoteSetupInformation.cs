@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -109,13 +110,13 @@ namespace AcManager.Tools.Helpers.Api {
             var url = $@"http://thesetupmarket.com/#/setups/Assetto%20Corsa/{(string)o["author"]?["_id"]}/{id}";
             var ratings = o["ratings"] as JArray;
             return new RemoteSetupInformation(id,
-                    (string)o["file_name"], ((string)o["downloads"]).AsInt(),
+                    (string)o["file_name"], ((string)o["downloads"]).As<int>(),
                     DateTime.TryParse((string)o["added_date"]?["timestamp"] ?? "", CultureInfo.InvariantCulture,
                             DateTimeStyles.None, out var v) ? v : (DateTime?)null,
                     carId, trackId,
                     (string)o["author"]?["display_name"],
                     (string)o["version"],
-                    ratings?.Count > 0 ? ratings.Average(x => ((string)x["rating"]).AsDouble()) : (double?)null,
+                    ratings?.Count > 0 ? ratings.Average(x => ((string)x["rating"]).As<double>()) : (double?)null,
                     (string)o["type"],
                     TryParse((string)o["best_time"]),
                     url);

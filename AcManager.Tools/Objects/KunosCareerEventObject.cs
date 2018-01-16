@@ -12,6 +12,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 
 namespace AcManager.Tools.Objects {
     public class KunosCareerEventObject : KunosEventObjectBase {
@@ -80,7 +81,7 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadData(IniFile ini) {
             base.LoadData(ini);
-            UserAiLevel = ValuesStorage.GetInt(UserAiLevelKey, AiLevel);
+            UserAiLevel = ValuesStorage.Get(UserAiLevelKey, AiLevel);
         }
 
         protected override void LoadConditions(IniFile ini) {

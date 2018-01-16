@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
@@ -17,11 +18,11 @@ namespace AcManager.Controls.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return parameter as string == "relative" ? value.AsDouble() * 1.8 : ToFahrenheit(value.AsDouble());
+            return parameter as string == "relative" ? value.As<double>() * 1.8 : ToFahrenheit(value.As<double>());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            return parameter as string == "relative" ? value.AsDouble() / 1.8 : ToCelsius(value.AsDouble());
+            return parameter as string == "relative" ? value.As<double>() / 1.8 : ToCelsius(value.As<double>());
         }
     }
 }

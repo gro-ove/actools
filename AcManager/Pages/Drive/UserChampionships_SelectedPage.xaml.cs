@@ -27,6 +27,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
@@ -112,7 +113,7 @@ namespace AcManager.Pages.Drive {
 
         private void ScrollLayoutUpdated(object sender, EventArgs e) {
             if (_positionLoaded) return;
-            var value = ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d;
+            var value = ValuesStorage.Get<double>(KeyScrollValue);
             _scroll?.ScrollToHorizontalOffset(value);
             _positionLoaded = true;
         }

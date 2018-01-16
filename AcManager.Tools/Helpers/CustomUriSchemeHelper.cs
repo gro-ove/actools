@@ -94,8 +94,8 @@ namespace AcManager.Tools.Helpers {
 
         public static void Initialize() {
             SettingsHolder.Common.PropertyChanged += OnSettingsChanged;
-            if (!MainExecutingFile.IsInDevelopment && (OptionRegisterEachTime || ValuesStorage.GetString(KeyRegisteredLocation) != MainExecutingFile.Location
-                    && ValuesStorage.GetString(KeyRegisteredVersion) != Version)) {
+            if (!MainExecutingFile.IsInDevelopment && (OptionRegisterEachTime || ValuesStorage.Get<string>(KeyRegisteredLocation) != MainExecutingFile.Location
+                    && ValuesStorage.Get<string>(KeyRegisteredVersion) != Version)) {
                 EnsureRegistered();
             }
         }

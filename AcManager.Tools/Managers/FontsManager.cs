@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
@@ -72,7 +73,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public DateTime? LastUsingsRescan {
-            get => ValuesStorage.GetDateTime("FontsManager.LastUsingsRescan");
+            get => ValuesStorage.Get<DateTime?>("FontsManager.LastUsingsRescan");
             set {
                 if (Equals(value, LastUsingsRescan)) return;
 

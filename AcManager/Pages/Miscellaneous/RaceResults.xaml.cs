@@ -28,6 +28,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -324,8 +325,8 @@ namespace AcManager.Pages.Miscellaneous {
                     var match = Regex.Match(x.Name, @"^(.+) \((\d+(?:[,\.]\d+)?)%(?:, (\d+(?:[,\.]\d+)?)?%\))$");
                     if (match.Success) {
                         var cleanName = match.Groups[1].Value;
-                        var aiLevel = match.Groups[2].Value.AsDouble();
-                        var aiAggression = match.Groups[3].Success ? match.Groups[3].Value.AsDouble() : (double?)null;
+                        var aiLevel = match.Groups[2].Value.As<double>();
+                        var aiAggression = match.Groups[3].Success ? match.Groups[3].Value.As<double>() : (double?)null;
                         return new RaceGridEntry(x.Car) {
                             CarSkin = x.Car.GetSkinById(x.SkinId),
                             Name = cleanName,

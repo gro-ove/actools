@@ -14,6 +14,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -126,9 +127,9 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void LoadProgress() {
-            TakenPlace = SpecialEventsManager.ProgressStorage.GetInt(KeyTakenPlace, 5);
+            TakenPlace = SpecialEventsManager.ProgressStorage.Get(KeyTakenPlace, 5);
             if (AiLevels != null) {
-                SelectedLevel = AiLevels.GetByIdOrDefault(SpecialEventsManager.ProgressStorage.GetInt(KeySelectedLevel)) ??
+                SelectedLevel = AiLevels.GetByIdOrDefault(SpecialEventsManager.ProgressStorage.Get(KeySelectedLevel, 0)) ??
                         AiLevels.ElementAtOrDefault(1);
             }
         }

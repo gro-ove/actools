@@ -63,7 +63,7 @@ namespace AcManager.UserControls {
 
         [CanBeNull]
         private static CarObject LoadSelected() {
-            var saved = ValuesStorage.GetString(KeySelectedCar);
+            var saved = ValuesStorage.Get<string>(KeySelectedCar);
             return saved == null ? null : CarsManager.Instance.GetById(saved);
         }
 

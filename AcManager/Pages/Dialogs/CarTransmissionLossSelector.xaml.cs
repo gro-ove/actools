@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarTransmissionLossSelector : INotifyPropertyChanged {
@@ -45,7 +46,7 @@ namespace AcManager.Pages.Dialogs {
             Car = car;
 
             _key = ".CarTransmissionLossSelector:" + car.Id;
-            Value = CacheStorage.GetDouble(_key, 0.13d);
+            Value = CacheStorage.Get(_key, 0.13d);
 
             InitializeComponent();
             DataContext = this;

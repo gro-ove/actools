@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using AcManager.Tools;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.ServerPreset {
@@ -16,13 +17,13 @@ namespace AcManager.Pages.ServerPreset {
         private class SpecialOffForNegativeConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                var number = value.AsInt();
+                var number = value.As<int>();
                 return number < 0 ? ToolsStrings.AcSettings_Off : number.ToString();
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                return value as string == ToolsStrings.AcSettings_Off ? -1 : value.AsInt();
+                return value as string == ToolsStrings.AcSettings_Off ? -1 : value.As<int>();
             }
         }
     }

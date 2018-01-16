@@ -10,6 +10,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -36,7 +37,7 @@ namespace AcManager.Tools.Managers.Online {
         /// HTTP port are known.
         /// </summary>
         public bool IsFullyLoaded {
-            get { return _isFullyLoaded; }
+            get => _isFullyLoaded;
             private set {
                 if (Equals(value, _isFullyLoaded)) return;
                 _isFullyLoaded = value;
@@ -50,7 +51,7 @@ namespace AcManager.Tools.Managers.Online {
         /// For json-requests directly to launcher server, non-changeable.
         /// </summary>
         public int PortHttp {
-            get { return _portHttp; }
+            get => _portHttp;
             private set {
                 if (Equals(value, _portHttp)) return;
                 _portHttp = value;
@@ -64,7 +65,7 @@ namespace AcManager.Tools.Managers.Online {
         /// As a query argument for //aclobby1.grecian.net/lobby.ashx/….
         /// </summary>
         public int Port {
-            get { return _port; }
+            get => _port;
             private set {
                 if (Equals(value, _port)) return;
                 _port = value;
@@ -78,7 +79,7 @@ namespace AcManager.Tools.Managers.Online {
         /// For race.ini & acs.exe.
         /// </summary>
         public int PortRace {
-            get { return _portRace; }
+            get => _portRace;
             private set {
                 if (Equals(value, _portRace)) return;
                 _portRace = value;
@@ -89,7 +90,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _passwordRequired;
 
         public bool PasswordRequired {
-            get { return _passwordRequired; }
+            get => _passwordRequired;
             set {
                 if (Equals(value, _passwordRequired)) return;
                 _passwordRequired = value;
@@ -109,7 +110,7 @@ namespace AcManager.Tools.Managers.Online {
             get {
                 if (!_passwordLoaded) {
                     _passwordLoaded = true;
-                    _password = ValuesStorage.GetEncryptedString(KeyPasswordStorage);
+                    _password = ValuesStorage.GetEncrypted<string>(KeyPasswordStorage);
                 }
 
                 return _password;
@@ -128,7 +129,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _passwordWasWrong;
 
         public bool PasswordWasWrong {
-            get { return _passwordWasWrong; }
+            get => _passwordWasWrong;
             set {
                 if (Equals(value, _passwordWasWrong)) return;
                 _passwordWasWrong = value;
@@ -171,7 +172,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _country;
 
         public string Country {
-            get { return _country; }
+            get => _country;
             set {
                 if (value == @"na" || string.IsNullOrWhiteSpace(value)) value = ToolsStrings.Common_NA;
                 if (Equals(value, _country)) return;
@@ -183,7 +184,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _countryId;
 
         public string CountryId {
-            get { return _countryId; }
+            get => _countryId;
             set {
                 if (value == @"na") value = "";
                 if (Equals(value, _countryId)) return;
@@ -195,7 +196,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _bookingMode;
 
         public bool BookingMode {
-            get { return _bookingMode; }
+            get => _bookingMode;
             set {
                 if (Equals(value, _bookingMode)) return;
                 _bookingMode = value;
@@ -210,7 +211,7 @@ namespace AcManager.Tools.Managers.Online {
         private int _currentDriversCount;
 
         public int CurrentDriversCount {
-            get { return _currentDriversCount; }
+            get => _currentDriversCount;
             set {
                 if (Equals(value, _currentDriversCount)) return;
                 _currentDriversCount = value;
@@ -225,7 +226,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _time;
 
         public string Time {
-            get { return _time; }
+            get => _time;
             set {
                 if (Equals(value, _time)) return;
                 _time = value;
@@ -236,7 +237,7 @@ namespace AcManager.Tools.Managers.Online {
         private RaceMode _raceMode;
 
         public RaceMode RaceMode {
-            get { return _raceMode; }
+            get => _raceMode;
             set {
                 if (Equals(value, _raceMode)) return;
                 _raceMode = value;
@@ -247,7 +248,7 @@ namespace AcManager.Tools.Managers.Online {
         private DateTime _sessionEnd;
 
         public DateTime SessionEnd {
-            get { return _sessionEnd; }
+            get => _sessionEnd;
             set {
                 if (Equals(value, _sessionEnd)) return;
                 _sessionEnd = value;
@@ -259,7 +260,7 @@ namespace AcManager.Tools.Managers.Online {
         private Game.SessionType? _currentSessionType;
 
         public Game.SessionType? CurrentSessionType {
-            get { return _currentSessionType; }
+            get => _currentSessionType;
             set {
                 if (Equals(value, _currentSessionType)) return;
                 _currentSessionType = value;
@@ -289,7 +290,7 @@ namespace AcManager.Tools.Managers.Online {
         private int _capacity;
 
         public int Capacity {
-            get { return _capacity; }
+            get => _capacity;
             set {
                 if (Equals(value, _capacity)) return;
                 _capacity = value;
@@ -303,7 +304,7 @@ namespace AcManager.Tools.Managers.Online {
         private long? _ping;
 
         public long? Ping {
-            get { return _ping; }
+            get => _ping;
             set {
                 if (Equals(value, _ping)) return;
                 _ping = value;
@@ -314,7 +315,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _isAvailable;
 
         public bool IsAvailable {
-            get { return _isAvailable; }
+            get => _isAvailable;
             set {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
@@ -326,7 +327,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public string TrackId {
-            get { return _trackId; }
+            get => _trackId;
             set {
                 if (Equals(value, _trackId)) return;
                 _trackId = value;
@@ -339,7 +340,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public TrackObjectBase Track {
-            get { return _track; }
+            get => _track;
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
@@ -352,7 +353,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public IReadOnlyList<CarEntry> Cars {
-            get { return _cars; }
+            get => _cars;
             private set {
                 if (Equals(value, _cars)) return;
                 _cars = value?.ToListIfItIsNot();
@@ -363,7 +364,7 @@ namespace AcManager.Tools.Managers.Online {
         private int _connectedDrivers;
 
         public int ConnectedDrivers {
-            get { return _connectedDrivers; }
+            get => _connectedDrivers;
             set {
                 if (Equals(value, _connectedDrivers)) return;
                 _connectedDrivers = value;
@@ -374,7 +375,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _isBookedForPlayer;
 
         public bool IsBookedForPlayer {
-            get { return _isBookedForPlayer; }
+            get => _isBookedForPlayer;
             set {
                 if (Equals(value, _isBookedForPlayer)) return;
                 _isBookedForPlayer = value;
@@ -386,7 +387,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public IReadOnlyList<CurrentDriver> CurrentDrivers {
-            get { return _currentDrivers; }
+            get => _currentDrivers;
             private set {
                 if (Equals(value, _currentDrivers)) return;
                 _currentDrivers = value;
@@ -399,7 +400,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _hasFriends;
 
         public bool HasFriends {
-            get { return _hasFriends; }
+            get => _hasFriends;
             set {
                 if (Equals(value, _hasFriends)) return;
                 _hasFriends = value;
@@ -428,7 +429,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public IReadOnlyList<Session> Sessions {
-            get { return _sessions; }
+            get => _sessions;
             private set {
                 if (Equals(value, _sessions)) return;
                 _sessions = value;
@@ -441,7 +442,7 @@ namespace AcManager.Tools.Managers.Online {
         private ServerStatus _status;
 
         public ServerStatus Status {
-            get { return _status; }
+            get => _status;
             set {
                 if (Equals(value, _status)) return;
                 _status = value;
@@ -462,7 +463,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         [NotNull]
         public IReadOnlyList<string> Errors {
-            get { return _errors; }
+            get => _errors;
             set {
                 if (Equals(value, _errors)) return;
                 _errors = value;
@@ -482,7 +483,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _hasErrors;
 
         public bool HasErrors {
-            get { return _hasErrors; }
+            get => _hasErrors;
             private set {
                 if (Equals(value, _hasErrors)) return;
                 _hasErrors = value;
@@ -493,7 +494,7 @@ namespace AcManager.Tools.Managers.Online {
         private AsyncProgressEntry _updateProgress;
 
         public AsyncProgressEntry UpdateProgress {
-            get { return _updateProgress; }
+            get => _updateProgress;
             set {
                 if (Equals(value, _updateProgress)) return;
                 _updateProgress = value;
@@ -511,7 +512,7 @@ namespace AcManager.Tools.Managers.Online {
             get {
                 if (!_lastConnectedLoaded) {
                     _lastConnectedLoaded = true;
-                    _lastConnected = StatsStorage.GetDateTime(KeyLastConnected);
+                    _lastConnected = StatsStorage.Get<DateTime?>(KeyLastConnected);
                 }
 
                 return _lastConnected;

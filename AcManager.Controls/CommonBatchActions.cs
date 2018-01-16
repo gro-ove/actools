@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -63,7 +64,7 @@ namespace AcManager.Controls {
             public BetterObservableCollection<string> Tags { get; }
             private List<string> _originalTags;
 
-            private bool _sortTags = ValuesStorage.GetBool("_ba.addTag.sort", true);
+            private bool _sortTags = ValuesStorage.Get("_ba.addTag.sort", true);
             public bool SortTags {
                 get => _sortTags;
                 set {
@@ -74,7 +75,7 @@ namespace AcManager.Controls {
                 }
             }
 
-            private bool _cleanUp = ValuesStorage.GetBool("_ba.addTag.clean");
+            private bool _cleanUp = ValuesStorage.Get("_ba.addTag.clean", false);
             public bool CleanUp {
                 get => _cleanUp;
                 set {
@@ -150,7 +151,7 @@ namespace AcManager.Controls {
                 DisplayApply = RemoveRating ? "Un-rate" : "Rate";
             }
 
-            private double _rating = ValuesStorage.GetDouble("_ba.setRating.value", 4d);
+            private double _rating = ValuesStorage.Get("_ba.setRating.value", 4d);
             public double Rating {
                 get => _rating;
                 set {
@@ -162,7 +163,7 @@ namespace AcManager.Controls {
                 }
             }
 
-            private bool _removeRating = ValuesStorage.GetBool("_ba.setRating.remove", true);
+            private bool _removeRating = ValuesStorage.Get("_ba.setRating.remove", true);
             public bool RemoveRating {
                 get => _removeRating;
                 set {
@@ -301,7 +302,7 @@ namespace AcManager.Controls {
                 Priority = 1;
             }
 
-            private bool _packSeparately = ValuesStorage.GetBool("_ba.pack.separately");
+            private bool _packSeparately = ValuesStorage.Get("_ba.pack.separately", false);
 
             public bool PackSeparately {
                 get => _packSeparately;

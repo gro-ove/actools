@@ -393,7 +393,7 @@ namespace AcManager.Pages.Selected {
 
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
-            private bool _recalculatePwRatioAutomatically = ValuesStorage.GetBool(KeyRecalculatePwRatioAutomatically, true);
+            private bool _recalculatePwRatioAutomatically = ValuesStorage.Get<bool>(KeyRecalculatePwRatioAutomatically, true);
 
             public bool RecalculatePwRatioAutomatically {
                 get => _recalculatePwRatioAutomatically;

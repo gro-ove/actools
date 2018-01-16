@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -292,11 +293,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, [NotNull] string doNotAskAgainKey, Window owner = null) {
             var key = "__doNotAskAgain:" + doNotAskAgainKey;
             return ShowMessage(text, title, button,
-                    new ShowMessageCallbacks(() => ValuesStorage.GetEnumNullable<MessageBoxResult>(key), k => {
+                    new ShowMessageCallbacks(() => ValuesStorage.Get<MessageBoxResult?>(key), k => {
                         if (!k.HasValue) {
                             ValuesStorage.Remove(key);
                         } else {
-                            ValuesStorage.SetEnum(key, k.Value);
+                            ValuesStorage.Set(key, k.Value);
                         }
                     }), owner);
         }

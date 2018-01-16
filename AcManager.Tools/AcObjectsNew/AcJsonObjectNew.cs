@@ -179,7 +179,13 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected void LoadVersionInfo(JObject json) {
-            Author = json.GetStringValueOnly("author")?.Trim() ?? (TestIfKunos() ? AuthorKunos : null);
+            if (TestIfKunos()) {
+                Author = AuthorKunos;
+            } else {
+                var author = json.GetStringValueOnly("author")?.Trim();
+                Author = author == AuthorKunos ? null : author;
+            }
+
             Version = json.GetStringValueOnly("version")?.Trim();
             Url = json.GetStringValueOnly("url")?.Trim();
 

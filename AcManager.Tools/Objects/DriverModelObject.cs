@@ -42,7 +42,7 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged();
 
                 IsUsed = value.Any();
-                ValuesStorage.Set(KeyUsingsCarsIds, value);
+                ValuesStorage.Storage.SetStringList(KeyUsingsCarsIds, value);
             }
         }
 

@@ -67,6 +67,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
@@ -120,7 +121,7 @@ namespace AcManager {
                 SetTryingToRunFlag();
             }
 
-            if (AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.GetBool(AppAppearanceManager.KeySoftwareRendering)) {
+            if (AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering)) {
                 SwitchToSoftwareRendering();
             }
 
@@ -221,7 +222,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             if (!AppArguments.GetBool(AppFlag.PreventDisableWebBrowserEmulationMode) && (
-                    ValuesStorage.GetInt(WebBrowserEmulationModeDisabledKey) < WebBrowserHelper.EmulationModeDisablingVersion ||
+                    ValuesStorage.Get<int>(WebBrowserEmulationModeDisabledKey) < WebBrowserHelper.EmulationModeDisablingVersion ||
                             AppArguments.GetBool(AppFlag.ForceDisableWebBrowserEmulationMode))) {
                 try {
                     WebBrowserHelper.DisableBrowserEmulationMode();
@@ -377,7 +378,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"),
-                    new DelegateCommand<string>(id => { NeutralColorGradingLut.CreateNeutralLut(id.AsInt(16)); }));
+                    new DelegateCommand<string>(id => { NeutralColorGradingLut.CreateNeutralLut(id.As(16)); }));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {

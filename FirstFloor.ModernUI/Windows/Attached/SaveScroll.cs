@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -89,7 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var k = GetProperKey(viewer);
             if (k != null) {
                 _lastScrolled = DateTime.Now;
-                viewer.ScrollToVerticalOffset(ValuesStorage.GetDouble(k));
+                viewer.ScrollToVerticalOffset(ValuesStorage.Get<double>(k));
             }
         }
 

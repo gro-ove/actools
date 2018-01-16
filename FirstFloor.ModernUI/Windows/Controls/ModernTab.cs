@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
@@ -150,9 +151,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (!skipLoading && SavePolicy == SavePolicy.Flexible && SaveKey != null) {
-                Frame.Source = ValuesStorage.GetUri(SaveKey) ?? Links.FirstOrDefault()?.Source;
+                Frame.Source = ValuesStorage.Get<Uri>(SaveKey) ?? Links.FirstOrDefault()?.Source;
             } else {
-                var saved = skipLoading || SaveKey == null ? null : ValuesStorage.GetString(SaveKey);
+                var saved = skipLoading || SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey);
                 _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved))
                         ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
             }

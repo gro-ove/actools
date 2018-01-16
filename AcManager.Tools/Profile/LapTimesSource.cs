@@ -72,8 +72,8 @@ namespace AcManager.Tools.Profile {
             _enabledKey = enabledKey;
             _autoAddKey = _enabledKey + ":autoAdd";
             var enabledByDefault1 = enabledByDefault;
-            _isEnabled = ValuesStorage.GetBool(_enabledKey, enabledByDefault1);
-            _autoAddEntries = ValuesStorage.GetBool(_autoAddKey, enabledByDefault1);
+            _isEnabled = ValuesStorage.Get<bool>(_enabledKey, enabledByDefault1);
+            _autoAddEntries = ValuesStorage.Get<bool>(_autoAddKey, enabledByDefault1);
         }
 
         private string _detailsUrl;

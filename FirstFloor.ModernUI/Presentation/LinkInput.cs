@@ -17,7 +17,7 @@ namespace FirstFloor.ModernUI.Presentation {
         internal string PreviousValue;
 
         public override string DisplayName {
-            get { return _value; }
+            get => _value;
             set {
                 value = value.Trim();
                 if (_value == value) return;

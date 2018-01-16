@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class AppScaleProperty : NotifyPropertyChanged {
@@ -14,7 +15,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void EnsureLoaded() {
             if (!_scaleLoaded) {
                 _scaleLoaded = true;
-                _scale = _delayed = ValuesStorage.GetDouble("__uiScale_2", 1d);
+                _scale = _delayed = ValuesStorage.Get("__uiScale_2", 1d);
             }
 
             if (_scale < 0.1 || _scale > 4d || double.IsNaN(_scale) || double.IsInfinity(_scale)) {

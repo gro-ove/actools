@@ -20,7 +20,7 @@ namespace AcManager.Controls.ViewModels {
         public UploaderParams(IStorage storage) {
             Storage = storage;
             UploadersList = Uploaders.GetUploaders(storage).ToArray();
-            SelectedUploader = UploadersList.GetByIdOrDefault(Storage.GetString(KeySelectedUploader)) ??
+            SelectedUploader = UploadersList.GetByIdOrDefault(Storage.Get<string>(KeySelectedUploader)) ??
                     UploadersList.First();
         }
 

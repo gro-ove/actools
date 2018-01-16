@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class ToThicknessConverter : IMultiValueConverter {
@@ -13,10 +14,10 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             var i = 0;
             return new Thickness(
-                    double.IsNaN(Left) ? (i < values.Length ? values[i++].AsDouble() : 0d) : Left,
-                    double.IsNaN(Top) ? (i < values.Length ? values[i++].AsDouble() : 0d) : Top,
-                    double.IsNaN(Right) ? (i < values.Length ? values[i++].AsDouble() : 0d) : Right,
-                    double.IsNaN(Bottom) ? (i < values.Length ? values[i].AsDouble() : 0d) : Bottom);
+                    double.IsNaN(Left) ? (i < values.Length ? values[i++].As<double>() : 0d) : Left,
+                    double.IsNaN(Top) ? (i < values.Length ? values[i++].As<double>() : 0d) : Top,
+                    double.IsNaN(Right) ? (i < values.Length ? values[i++].As<double>() : 0d) : Right,
+                    double.IsNaN(Bottom) ? (i < values.Length ? values[i].As<double>() : 0d) : Bottom);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
