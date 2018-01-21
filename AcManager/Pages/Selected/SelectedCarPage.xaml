@@ -287,7 +287,8 @@
         </Grid>
 
         <!-- description -->
-        <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
+        <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
+            Placeholder="None" />
       </StackPanel>
     </StackPanel>
   </c:AcObjectBase>

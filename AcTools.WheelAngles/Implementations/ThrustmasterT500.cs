@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using HidLibrary;
+using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
+    [UsedImplicitly]
     internal class ThrustmasterT500 : IWheelSteerLockSetter {
         public virtual string ControllerName => "Thrustmaster T500RS";
 

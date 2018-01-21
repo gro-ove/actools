@@ -1,23 +1,27 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Utils {
-    public class TextureReader : BaseRenderer {
-        public TextureReader() {
-            Initialize();
+    public class TextureReader : IDisposable {
+        private readonly Renderer _renderer;
+
+        private class Renderer : BaseRenderer {
+            protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
+            protected override void InitializeInner() {}
+            protected override void ResizeInner() {}
+            protected override void OnTickOverride(float dt) { }
         }
 
-        protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
-
-        protected override void InitializeInner() {}
-
-        protected override void ResizeInner() {}
-
-        protected override void OnTickOverride(float dt) { }
+        public TextureReader() {
+            _renderer = new Renderer();
+            _renderer.Initialize();
+        }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public byte[] ToPngNoFormat(byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
@@ -26,21 +30,19 @@ namespace AcTools.Render.Base.Utils {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public byte[] ToPng(byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
-            Format format;
-            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, downsize, out format);
+            return ToPng(_renderer.DeviceContextHolder, bytes, ignoreAlpha, downsize, out _);
         }
 
         public byte[] ToPng(byte[] bytes, bool ignoreAlpha, out Format format) {
-            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, null, out format);
+            return ToPng(_renderer.DeviceContextHolder, bytes, ignoreAlpha, null, out format);
         }
 
         public byte[] ToPng(byte[] bytes, bool ignoreAlpha, Size? downsize, out Format format) {
-            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, downsize, out format);
+            return ToPng(_renderer.DeviceContextHolder, bytes, ignoreAlpha, downsize, out format);
         }
 
         public static byte[] ToPng(DeviceContextHolder holder, byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
-            Format format;
-            return ToPng(holder, bytes, ignoreAlpha, downsize, out format);
+            return ToPng(holder, bytes, ignoreAlpha, downsize, out _);
         }
 
         public static byte[] ToPng(DeviceContextHolder holder, byte[] bytes, bool ignoreAlpha, out Format format) {
@@ -57,8 +59,16 @@ namespace AcTools.Render.Base.Utils {
                 using (var resource = ShaderResourceView.FromMemory(holder.Device, bytes)) {
                     var texture = (Texture2D)resource.Resource;
                     var loaded = texture.Description;
-                    var width = downsize?.Width ?? loaded.Width;
-                    var height = downsize?.Height ?? loaded.Height;
+
+                    int width, height;
+                    if (downsize.HasValue) {
+                        var scale = Math.Min((double)downsize.Value.Width / loaded.Width, (double)downsize.Value.Height / loaded.Height);
+                        width = (loaded.Width * scale).RoundToInt();
+                        height = (loaded.Height * scale).RoundToInt();
+                    } else {
+                        width = loaded.Width;
+                        height = loaded.Height;
+                    }
 
                     effect.Initialize(holder.Device);
 
@@ -92,6 +102,10 @@ namespace AcTools.Render.Base.Utils {
                     holder.DeviceContext.Rasterizer.SetViewports(viewports);
                 }
             }
+        }
+
+        public void Dispose() {
+            _renderer?.Dispose();
         }
     }
 }

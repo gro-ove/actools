@@ -187,7 +187,8 @@ namespace AcManager.Controls.Dialogs {
                     current = _images[position];
                 }
 
-                CurrentDetails = _details?.Invoke(_originalImages[position]);
+                var details = _details?.Invoke(_originalImages[position]);
+                CurrentDetails = details is string s ? new BbCodeBlock { BbCode = s } : details;
 
                 if (current is string path) {
                     var loaded = BetterImage.LoadBitmapSource(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);

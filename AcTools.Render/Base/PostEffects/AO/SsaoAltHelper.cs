@@ -1,5 +1,6 @@
 using System;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using SlimDX;
@@ -30,12 +31,13 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxSamplesKernel.Set(samplesKernel);
         }
 
-        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
-                float aoPower, float aoRadiusMultiplier, bool accumulationMode) {
+        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera,
+                TargetResourceTexture target, float aoPower, float aoRadiusMultiplier, bool accumulationMode) {
             SetBlurEffectTextures(depth, normals);
-            SetRandomValues(holder, _effect.FxNoiseMap, _effect.FxNoiseSize, accumulationMode);
+            SetRandomValues(holder, _effect.FxNoiseMap, _effect.FxNoiseSize, accumulationMode, target.Size);
 
-            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.DeviceContext.Rasterizer.SetViewports(target.Viewport);
+            holder.DeviceContext.OutputMerger.SetTargets(target.TargetView);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxDepthMap.SetResource(depth);
             _effect.FxNormalMap.SetResource(normals);

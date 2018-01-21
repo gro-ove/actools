@@ -359,6 +359,22 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private LodObject _currentLodObject;
         private readonly LodObject _mainLodObject;
         private readonly Dictionary<int, LodObject> _lodsObjects = new Dictionary<int, LodObject>(1);
+
+        public override bool DebugMode {
+            get => _currentLodObject.DebugMode;
+            set {
+                if (Equals(value, DebugMode)) return;
+                _currentLodObject.DebugMode = value;
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+                OnPropertyChanged();
+
+                if (_driver != null) {
+                    _driver.DebugMode = value;
+                }
+
+                UpdateCrewDebugMode();
+            }
+        }
         #endregion
 
         #region Skins

@@ -436,6 +436,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsDirty = true;
                 OnPropertyChanged();
                 UpdateMeshDebug(CarNode);
+                UpdateMeshDebug(ShowroomNode);
             }
         }
 

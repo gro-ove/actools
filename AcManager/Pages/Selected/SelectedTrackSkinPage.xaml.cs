@@ -1,15 +1,24 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcTools.Kn5File;
+using AcTools.Render.Base;
+using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -20,9 +29,15 @@ namespace AcManager.Pages.Selected {
         public class ViewModel : SelectedAcObjectViewModel<TrackSkinObject> {
             public TrackObject Track { get; }
 
-            public ViewModel(TrackObject car, [NotNull] TrackSkinObject acObject) : base(acObject) {
-                Track = car;
+            public ViewModel(TrackObject track, [NotNull] TrackSkinObject acObject) : base(acObject) {
+                Track = track;
             }
+
+            private AsyncCommand _overrideTexturesCommand;
+
+            public AsyncCommand OverrideTexturesCommand => _overrideTexturesCommand ?? (_overrideTexturesCommand = new AsyncCommand(async () => {
+                await TrackSkinTexturesDialog.Run(SelectedObject);
+            }));
 
             /*protected override void FilterExec(string type) {
                 switch (type) {
@@ -95,11 +110,11 @@ namespace AcManager.Pages.Selected {
             }, () => SelectedObject.Enabled));
         }
 
-        private string _carId, _id;
+        private string _trackId, _id;
 
         void IParametrizedUriContent.OnUri(Uri uri) {
-            _carId = uri.GetQueryParam("TrackId");
-            if (_carId == null) throw new ArgumentException("Track ID is missing");
+            _trackId = uri.GetQueryParam("TrackId");
+            if (_trackId == null) throw new ArgumentException("Track ID is missing");
 
             _id = uri.GetQueryParam("Id");
             if (_id == null) throw new ArgumentException(ToolsStrings.Common_IdIsMissing);
@@ -110,7 +125,7 @@ namespace AcManager.Pages.Selected {
 
         async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
             do {
-                _trackObject = await TracksManager.Instance.GetByIdAsync(_carId);
+                _trackObject = await TracksManager.Instance.GetByIdAsync(_trackId);
                 if (_trackObject == null) {
                     _object = null;
                     return;
@@ -122,7 +137,7 @@ namespace AcManager.Pages.Selected {
 
         void ILoadableContent.Load() {
             do {
-                _trackObject = TracksManager.Instance.GetById(_carId);
+                _trackObject = TracksManager.Instance.GetById(_trackId);
                 if (_trackObject == null) {
                     _object = null;
                     return;
@@ -140,7 +155,6 @@ namespace AcManager.Pages.Selected {
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
-
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift))
             });

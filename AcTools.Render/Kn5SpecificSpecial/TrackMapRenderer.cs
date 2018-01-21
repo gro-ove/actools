@@ -227,6 +227,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private readonly string _modelsIniFilename;
         private List<TrackComplexModelEntry> _models;
 
+        public IKn5TextureLoader TextureLoader { get; set; } = DefaultKn5TextureLoader.Instance;
+        public IKn5NodeLoader NodeLoader { get; set; } = DefaultKn5NodeLoader.Instance;
+        public IKn5MaterialLoader MaterialLoader { get; set; } = DefaultKn5MaterialLoader.Instance;
+
         public TrackComplexModelDescription([NotNull] string modelsIniFilename) {
             _modelsIniFilename = modelsIniFilename;
         }
@@ -242,17 +246,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return from section in new IniFile(_modelsIniFilename).GetSections("MODEL")
                    let rot = section.GetSlimVector3("ROTATION")
                    select new TrackComplexModelEntry {
-                       Kn5 = Kn5.FromFile(Path.Combine(directory, section.GetNonEmpty("FILE") ?? "")),
+                       Kn5 = Kn5.FromFile(Path.Combine(directory, section.GetNonEmpty("FILE") ?? ""), TextureLoader, MaterialLoader, NodeLoader),
                        Matrix = Matrix.Translation(section.GetSlimVector3("POSITION")) * Matrix.RotationYawPitchRoll(rot.X, rot.Y, rot.Z),
                    };
         }
 
-        public void Load() {
+        private void Load() {
             if (_models != null) return;
             _models = LoadModels().ToList();
         }
 
-        internal IEnumerable<TrackComplexModelEntry> GetEntries() {
+        public IEnumerable<TrackComplexModelEntry> GetEntries() {
             Load();
             return _models;
         }

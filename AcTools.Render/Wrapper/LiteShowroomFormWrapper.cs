@@ -377,15 +377,17 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         _renderer.ToneMapping = _renderer.ToneMapping.NextValue();
                     } else if (!args.Control && !args.Alt && !args.Shift) {
                         _renderer.ShowMovementArrows = !_renderer.ShowMovementArrows;
-                    } else if (args.Control && !args.Alt && !args.Shift) {
-                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Phong;
-                        Renderer.IsDirty = true;
-                    } else if (!args.Control && args.Alt && !args.Shift) {
-                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Pn;
-                        Renderer.IsDirty = true;
-                    } else if (!args.Control && !args.Alt && args.Shift) {
-                        Kn5MaterialDarkMaps.TesselationMode = TesselationMode.Disabled;
-                        Renderer.IsDirty = true;
+                    } else if (dark != null) {
+                        if (args.Control && !args.Alt && !args.Shift) {
+                            dark.TesselationMode = TesselationMode.Phong;
+                            Renderer.IsDirty = true;
+                        } else if (!args.Control && args.Alt && !args.Shift) {
+                            dark.TesselationMode = TesselationMode.Pn;
+                            Renderer.IsDirty = true;
+                        } else if (!args.Control && !args.Alt && args.Shift) {
+                            dark.TesselationMode = TesselationMode.Disabled;
+                            Renderer.IsDirty = true;
+                        }
                     }
                     break;
 
@@ -500,8 +502,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.WipersEnabled = !_renderer.CarNode.WipersEnabled;
                         }
-                    } else {
-                        _renderer.ShowWireframe = !_renderer.ShowWireframe;
+                    } else if (dark != null) {
+                        dark.WireframeMode = dark.WireframeMode.NextValue();
                     }
                     break;
 

@@ -3,7 +3,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
     xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render" xmlns:cs="clr-namespace:AcManager.CustomShowroom"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d">
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:materials="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Materials;assembly=AcTools.Render" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
@@ -355,7 +356,7 @@
               ItemsSource="{x:Static cs:DarkRendererSettings.CarAmbientShadowsModes}">
             <mui:BetterComboBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
               </DataTemplate>
             </mui:BetterComboBox.ItemTemplate>
           </mui:BetterComboBox>
@@ -443,7 +444,7 @@
             <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Type}" ItemsSource="{x:Static cs:DarkRendererSettings.LightTypes}">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
-                  <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                  <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
                 </DataTemplate>
               </mui:BetterComboBox.ItemTemplate>
             </mui:BetterComboBox>
@@ -927,7 +928,7 @@
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static cs:DarkRendererSettings.AoTypes}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+              <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
             </DataTemplate>
           </mui:BetterComboBox.ItemTemplate>
         </mui:BetterComboBox>
@@ -1017,7 +1018,7 @@
         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.AoType}" ItemsSource="{x:Static cs:DarkRendererSettings.AoTypes}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+              <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
             </DataTemplate>
           </mui:BetterComboBox.ItemTemplate>
         </mui:BetterComboBox>
@@ -1123,7 +1124,44 @@
   <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
-      <TextBlock Text="PCSS params:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
+      <TextBlock Text="Wireframe &amp; Mesh:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
+
+      <CheckBox IsChecked="{Binding Renderer.MeshDebug}">
+        <Label Content="Debug mesh" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding Renderer.MeshDebugWithEmissive}"
+          Visibility="{Binding Renderer.MeshDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Label Content="Debug mesh with emissive maps" />
+      </CheckBox>
+
+      <DockPanel Style="{StaticResource DockPanel}">
+        <Label Content="Mode:" />
+        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.WireframeMode}" ItemsSource="{x:Static cs:DarkRendererSettings.WireframeModes}">
+          <mui:BetterComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+            </DataTemplate>
+          </mui:BetterComboBox.ItemTemplate>
+        </mui:BetterComboBox>
+      </DockPanel>
+
+      <CheckBox IsChecked="{Binding Renderer.IsWireframeColored}"
+          Visibility="{Binding Renderer.WireframeMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static materials:WireframeMode.Filled}}">
+        <Label Content="Colored wireframe" />
+      </CheckBox>
+
+      <mui:ColorPicker Color="{Binding WireframeColor}" IsEnabled="{Binding Renderer.IsWireframeColored}"
+          Visibility="{Binding Renderer.WireframeMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static materials:WireframeMode.Filled}}" />
+      <DockPanel DataContext="{Binding Renderer}"
+          Visibility="{Binding WireframeMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static materials:WireframeMode.Filled}}">
+        <mui:ValueLabel Value="{Binding WireframeBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+        <Slider Minimum="0" Maximum="300" Value="{Binding WireframeBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+            TickFrequency="30" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <TextBlock Text="PCSS params:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
       <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UsePcss}">
         <mui:ValueLabel Value="{Binding PcssSceneScale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"

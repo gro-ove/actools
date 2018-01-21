@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using AcManager.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -39,6 +40,7 @@ using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Button = System.Windows.Controls.Button;
@@ -488,6 +490,49 @@ namespace AcManager.CustomShowroom {
                 UserPresetsControl.CurrentUserPreset =
                         UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
             }
+
+            SetSelected();
+            Model.PropertyChanged += (s, _) => {
+                if (_.PropertyName == nameof(Model.Mode)) {
+                    SetSelected();
+                }
+            };
+        }
+
+        private ScaleTransform _selectionScaleTransform;
+        private TranslateTransform _selectionTranslateTransform;
+        private EasingFunctionBase _selectionEasingFunction;
+
+        [NotNull]
+        private Tuple<Point, Size, double> GetSelected() {
+            var selected = TabsButtonsPanel.FindLogicalChildren<ModernToggleButton>().FirstOrDefault(x => x.CommandParameter as Mode? == Model.Mode)
+                    ?? HomeButton;
+            return Tuple.Create(selected.TransformToAncestor(TabsButtonsPanel).Transform(new Point(0, 0)),
+                    new Size(selected.ActualWidth / TabsButtonsPanel.ActualWidth, selected.ActualHeight / TabsButtonsPanel.ActualHeight),
+                    ReferenceEquals(selected, HomeButton) ? 0d : 1d);
+        }
+
+        private void SetSelected() {
+            var selected = GetSelected();
+            if (_selectionScaleTransform == null) {
+                _selectionScaleTransform = new ScaleTransform { ScaleX = selected.Item2.Width, ScaleY = selected.Item2.Height };
+                _selectionTranslateTransform = new TranslateTransform { X = selected.Item1.X, Y = selected.Item1.Y };
+                CurrentTabHighlight.RenderTransform = new TransformGroup { Children = { _selectionScaleTransform, _selectionTranslateTransform } };
+                CurrentTabHighlight.Opacity = selected.Item3;
+            } else {
+                var duration = TimeSpan.FromSeconds(0.12 + (((_selectionTranslateTransform.X - selected.Item1.X).Abs() - 100d) / 300d).Clamp(0d, 0.3d));
+                var easing = _selectionEasingFunction ?? (_selectionEasingFunction = (EasingFunctionBase)FindResource("StandardEase"));
+                _selectionTranslateTransform.BeginAnimation(TranslateTransform.XProperty,
+                        new DoubleAnimation { To = selected.Item1.X, Duration = duration, EasingFunction = easing });
+                _selectionTranslateTransform.BeginAnimation(TranslateTransform.YProperty,
+                        new DoubleAnimation { To = selected.Item1.Y, Duration = duration, EasingFunction = easing });
+                _selectionScaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty,
+                        new DoubleAnimation { To = selected.Item2.Width, Duration = duration, EasingFunction = easing });
+                _selectionScaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty,
+                        new DoubleAnimation { To = selected.Item2.Height, Duration = duration, EasingFunction = easing });
+                CurrentTabHighlight.BeginAnimation(OpacityProperty,
+                        new DoubleAnimation { To = selected.Item3, Duration = TimeSpan.FromMilliseconds(300), EasingFunction = easing });
+            }
         }
 
         public ViewModel Model => (ViewModel)DataContext;
@@ -534,6 +579,7 @@ namespace AcManager.CustomShowroom {
                     }
 
                     _mode = value;
+                    _mainModeCommand?.RaiseCanExecuteChanged();
 
                     if (renderer?.SelectedObject != null && Mode != Mode.Selected) {
                         try {
@@ -1162,7 +1208,7 @@ namespace AcManager.CustomShowroom {
 
             public DelegateCommand MainModeCommand => _mainModeCommand ?? (_mainModeCommand = new DelegateCommand(() => {
                 Mode = Mode.Main;
-            }));
+            }, () => Mode != Mode.Main));
 
             private AsyncCommand _updateKn5Command;
 

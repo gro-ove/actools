@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialDark : Kn5MaterialSimpleBase, IAcDynamicMaterial {
+    public class Kn5MaterialDark : Kn5MaterialDarkBase, IAcDynamicMaterial {
         /// <summary>
         /// Should be set before Kn5MaterialSimple.Initialize()
         /// </summary>
@@ -35,6 +35,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 Emissive = Kn5Material.GetPropertyValueCByName("ksEmissive"),
                 Flags = Flags
             };
+        }
+
+        protected override EffectDarkMaterial.StandartMaterial CreateWireframeMaterial() {
+            var result = base.CreateWireframeMaterial();
+            result.Flags |= Flags;
+            result.Emissive = _material.Emissive;
+            return result;
         }
 
         protected override void RefreshOverride(IDeviceContextHolder contextHolder) {

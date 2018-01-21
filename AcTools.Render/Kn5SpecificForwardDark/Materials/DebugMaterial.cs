@@ -5,6 +5,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
@@ -15,6 +16,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DebugMaterial : ISkinnedMaterial, IAcDynamicMaterial {
         private EffectDarkMaterial _effect;
         private EffectDarkMaterial.StandartMaterial _material;
+        private Vector3 _emissive;
         private IRenderableTexture _txDiffuse, _txNormal;
 
         [NotNull]
@@ -53,12 +55,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 flags |= EffectDarkMaterial.UseNormalAlphaAsAlpha;
             }
 
+            _emissive = Kn5Material.GetPropertyValueCByName("ksEmissive");
             _material = new EffectDarkMaterial.StandartMaterial {
                 Ambient = Kn5Material.GetPropertyValueAByName("ksAmbient"),
                 Diffuse = Kn5Material.GetPropertyValueAByName("ksDiffuse"),
                 Specular = Kn5Material.GetPropertyValueAByName("ksSpecular"),
                 SpecularExp = Kn5Material.GetPropertyValueAByName("ksSpecularEXP"),
-                Emissive = Kn5Material.GetPropertyValueCByName("ksEmissive"),
                 Flags = flags
             };
         }
@@ -105,6 +107,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             _bonesMode = false;
             PrepareStates(contextHolder, mode);
+            _material.Emissive = GetParams(contextHolder).MeshDebugWithEmissive ? _emissive : Vector3.Zero;
             _effect.FxMaterial.Set(_material);
             _effect.FxDiffuseMap.SetResource(_txDiffuse);
             _effect.FxNormalMap.SetResource(_txNormal);
@@ -122,37 +125,94 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect.FxBoneTransforms.SetMatrixArray(bones);
         }
 
-        protected virtual EffectReadyTechnique GetTechnique() {
+        private EffectReadyTechnique GetTechnique() {
             return IsBlending
                     ? (_bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug)
                     : (_bonesMode ? _effect.TechSkinnedDebug_NoAlpha : _effect.TechDebug_NoAlpha);
         }
 
-        protected virtual EffectReadyTechnique GetShadowTechnique() {
+        private EffectReadyTechnique GetShadowTechnique() {
             return _bonesMode ? _effect.TechSkinnedDepthOnly : _effect.TechDepthOnly;
         }
 
-        protected virtual EffectReadyTechnique GetSslrTechnique() {
+        private EffectReadyTechnique GetGBufferTechnique() {
             return _bonesMode ? _effect.TechGPass_SkinnedDebug : _effect.TechGPass_Debug;
         }
 
-        private EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.Shadow) {
-                return GetShadowTechnique();
-            }
+        private DarkMaterialsParams _materialsParams;
 
-            if (mode == SpecialRenderMode.GBuffer) {
-                _effect.FxGPassTransparent.Set(IsBlending);
-                _effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.0001f : -1f);
-                return GetSslrTechnique();
-            }
+        private DarkMaterialsParams GetParams(IDeviceContextHolder contextHolder) {
+            return _materialsParams ?? (_materialsParams = contextHolder.Get<DarkMaterialsParams>());
+        }
 
-            return GetTechnique();
+        private void DrawShadow(IDeviceContextHolder contextHolder, int indices) {
+            GetShadowTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+        }
+
+        private void DrawGBuffer(IDeviceContextHolder contextHolder, int indices) {
+            _effect.FxGPassTransparent.Set(IsBlending);
+            _effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.01f : -1f);
+            if (GetParams(contextHolder).IsMirrored) {
+                contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.InvertedState;
+                GetGBufferTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+                contextHolder.DeviceContext.Rasterizer.State = null;
+            } else {
+                GetGBufferTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+            }
+        }
+
+        private void DrawMain(IDeviceContextHolder contextHolder, int indices) {
+            var tech = GetTechnique();
+            var materialParams = GetParams(contextHolder);
+            var isMirrored = materialParams.IsMirrored;
+            switch (materialParams.WireframeMode) {
+                case WireframeMode.Disabled:
+                    if (isMirrored) {
+                        contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.InvertedState;
+                        tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                        contextHolder.DeviceContext.Rasterizer.State = null;
+                    } else {
+                        tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    }
+                    break;
+                case WireframeMode.LinesOnly:
+                    contextHolder.DeviceContext.Rasterizer.State = isMirrored
+                            ? contextHolder.States.WireframeInvertedState : contextHolder.States.WireframeState;
+                    tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    contextHolder.DeviceContext.Rasterizer.State = null;
+                    break;
+                case WireframeMode.Filled:
+                    contextHolder.DeviceContext.Rasterizer.State = isMirrored ? contextHolder.States.InvertedState : null;
+                    tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+                    contextHolder.DeviceContext.Rasterizer.State = materialParams.IsMirrored
+                            ? contextHolder.States.WireframeInvertedBiasState : contextHolder.States.WireframeBiasState;
+                    if (materialParams.IsWireframeColored) {
+                        var v = materialParams.WireframeColor.ToVector3() * materialParams.WireframeBrightness;
+                        _effect.FxMaterial.Set(new EffectDarkMaterial.StandartMaterial { Flags = EffectDarkMaterial.DebugUseReflAsColor });
+                        _effect.FxReflectiveMaterial.Set(new EffectDarkMaterial.ReflectiveMaterial { FresnelC = v.X, FresnelExp = v.Y, FresnelMaxLevel = v.Z });
+                        (IsBlending ? _effect.TechDebug : _effect.TechDebug_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                    } else {
+                        (IsBlending ? _effect.TechStandard : _effect.TechStandard_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                    }
+                    contextHolder.DeviceContext.Rasterizer.State = null;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = _bonesMode ? _effect.LayoutPNTGW4B : _effect.LayoutPNTG;
-            GetTechnique(mode).DrawAllPasses(contextHolder.DeviceContext, indices);
+
+            if (mode == SpecialRenderMode.Shadow) {
+                DrawShadow(contextHolder, indices);
+            } else if (mode == SpecialRenderMode.GBuffer) {
+                DrawGBuffer(contextHolder, indices);
+            } else {
+                DrawMain(contextHolder, indices);
+            }
+
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }

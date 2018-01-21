@@ -26,6 +26,74 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
+        #region Material parameters
+        private readonly DarkMaterialsParams _materialsParams = new DarkMaterialsParams();
+
+        public TesselationMode TesselationMode {
+            get => _materialsParams.TesselationMode;
+            set {
+                if (Equals(value, _materialsParams.TesselationMode)) return;
+                _materialsParams.TesselationMode = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        public WireframeMode WireframeMode {
+            get => _materialsParams.WireframeMode;
+            set {
+                if (Equals(value, _materialsParams.WireframeMode)) return;
+                _materialsParams.WireframeMode = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        public bool IsWireframeColored {
+            get => _materialsParams.IsWireframeColored;
+            set {
+                if (Equals(value, _materialsParams.IsWireframeColored)) return;
+                _materialsParams.IsWireframeColored = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        public Color WireframeColor {
+            get => _materialsParams.WireframeColor;
+            set {
+                if (Equals(value, _materialsParams.WireframeColor)) return;
+                _materialsParams.WireframeColor = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        public float WireframeBrightness {
+            get => _materialsParams.WireframeBrightness;
+            set {
+                if (Equals(value, _materialsParams.WireframeBrightness)) return;
+                _materialsParams.WireframeBrightness = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        public bool MeshDebugWithEmissive {
+            get => _materialsParams.MeshDebugWithEmissive;
+            set {
+                if (Equals(value, _materialsParams.MeshDebugWithEmissive)) return;
+                _materialsParams.MeshDebugWithEmissive = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+        #endregion
+
         private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _mirrorTemporaryBuffer;
         private TargetResourceDepthTexture _mirrorDepthBuffer;
 
@@ -81,15 +149,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             ResizeGBuffers();
         }
 
-        public override bool ShowWireframe {
-            get => base.ShowWireframe;
-            set {
-                base.ShowWireframe = value;
-                (_carWrapper?.ElementAtOrDefault(0) as FlatMirror)?.SetInvertedRasterizerState(
-                        value ? DeviceContextHolder.States.WireframeInvertedState : null);
-            }
-        }
-
         private TargetResourceTexture _aoBuffer;
 
         [CanBeNull]
@@ -108,6 +167,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (ShowroomNode == null) {
                 CarNode?.StopMovement();
                 CarNode?.ResetPosition();
+            } else if (MeshDebug) {
+                UpdateMeshDebug(ShowroomNode);
             }
 
             OnShowroomChangedLights();
@@ -134,7 +195,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private void ResizeAoBuffer() {
             if (DeviceContextHolder == null) return;
-            _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
+            _aoBuffer?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
         }
 
         private bool _gBuffersReady;
@@ -231,9 +292,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                                     CarSlots.Select(x => x.CarNode).Concat(Lights.Select(x => x.Enabled ? x.GetRenderableObject() : null)).NonNull()),
                             mirrorPlane, !AnyGround)
                     : new FlatMirror(mirrorPlane, OpaqueGround, !AnyGround);
-            if (FlatMirror && ShowWireframe) {
-                _mirror.SetInvertedRasterizerState(DeviceContextHolder.States.WireframeInvertedState);
-            }
 
             _carWrapper.Insert(0, _mirror);
 
@@ -425,6 +483,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         protected override void InitializeInner() {
             base.InitializeInner();
+            DeviceContextHolder.Set(_materialsParams);
             for (var i = 0; i < _lightProbes.Count; i++) {
                 _lightProbes[i].Initialize(DeviceContextHolder);
             }
@@ -558,9 +617,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private void UpdateMeshDebug([CanBeNull] Kn5RenderableCar carNode) {
-            if (carNode != null) {
-                carNode.DebugMode = _meshDebug;
+        private void UpdateMeshDebug([CanBeNull] Kn5RenderableFile node) {
+            if (node != null) {
+                node.DebugMode = _meshDebug;
             }
         }
 
@@ -590,7 +649,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = GetRasterizerState();
+            DeviceContext.Rasterizer.State = null;
 
             // Draw reflection if needed
             if (showroomNode == null && FlatMirror && _mirror != null) {
@@ -901,10 +960,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (UseAo) {
                     var aoRadius = AoRadius;
                     if (AoType.IsScreenSpace()) {
-                        aoRadius *= (float)(ShotInProcess ? ShotResolutionMultiplier : ResolutionMultiplier);
+                        aoRadius *= (float)(ShotInProcess ? ShotResolutionMultiplier : 1f);
                     }
 
-                    aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView,
+                    aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer,
                             AoOpacity, aoRadius, UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep || _accumulationDofShotInProcess);
                     aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
                 } else {
@@ -920,6 +979,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     _aoShadowEffect.FxDepthMap.SetResource(_lastDepthBuffer);
                     _aoShadowEffect.FxShadowOpacity.Set(CarShadowsOpacity);
 
+                    DeviceContext.Rasterizer.SetViewports(_aoBuffer.Viewport);
                     DeviceContext.OutputMerger.SetTargets(_aoBuffer.TargetView);
                     DeviceContextHolder.PrepareQuad(_aoShadowEffect.LayoutPT);
                     DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MultiplyState;
@@ -943,6 +1003,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 effect.FxUseAo.Set(true);
 
                 if (AoDebug) {
+                    DeviceContext.Rasterizer.SetViewports(InnerBuffer.Viewport);
                     if (_aoBuffer?.Format == Format.R8_UNorm) {
                         DeviceContextHolder.GetHelper<CopyHelper>().DrawFromRed(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
                     } else {
@@ -952,6 +1013,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             }
 
+            DeviceContext.Rasterizer.SetViewports(Viewport);
             if (UseSslr && _sslr != null) {
                 // Draw actual scene to _sslrBufferScene
                 SetInnerBuffer(_sslr.BufferScene);

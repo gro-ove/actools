@@ -206,22 +206,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public bool DebugMode {
-            get { return _currentLodObject.DebugMode; }
-            set {
-                if (Equals(value, DebugMode)) return;
-                _currentLodObject.DebugMode = value;
-                _skinsWatcherHolder?.RaiseSceneUpdated();
-                OnPropertyChanged();
-
-                if (_driver != null) {
-                    _driver.DebugMode = value;
-                }
-
-                UpdateCrewDebugMode();
-            }
-        }
-
         [NotNull]
         public string CarId => Path.GetFileName(_rootDirectory) ?? "-";
         #endregion

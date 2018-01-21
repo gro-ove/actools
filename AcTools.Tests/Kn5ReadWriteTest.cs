@@ -9,7 +9,6 @@ namespace AcTools.Tests {
         [Test]
         public void SkipTexturesTest() {
             var f = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
-            f = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_911_carrera_rsr\porsche_911_carrera_rsr.kn5";
 
             var normal = Kn5.FromFile(f);
             var withoutTexture = Kn5.FromFile(f, SkippingTextureLoader.Instance);
@@ -19,7 +18,6 @@ namespace AcTools.Tests {
         [Test]
         public void Main() {
             var f = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
-            f = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_911_carrera_rsr\porsche_911_carrera_rsr.kn5";
 
             var t = Path.GetTempFileName();
             var kn5 = Kn5.FromFile(f);

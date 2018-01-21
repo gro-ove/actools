@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers.AcSettings;
@@ -23,16 +24,13 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
+    public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent, IImmediateContent, ILocalKeyBindings {
         public class ViewModel : SelectedAcObjectViewModel<PythonAppObject> {
             [NotNull]
             public PythonAppConfigs Configs { get; }
 
             [NotNull]
             public IReadOnlyList<PythonAppConfigKeyValue> KeyValues { get; }
-
-            [CanBeNull]
-            public PythonAppConfigKeyValue IsWaitingForKey => KeyValues.FirstOrDefault(x => x.IsWaiting);
 
             public ViewModel([NotNull] PythonAppObject acObject) : base(acObject) {
                 IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
@@ -54,13 +52,6 @@ namespace AcManager.Pages.Selected {
                 base.Unload();
             }
 
-            private DelegateCommand<PythonAppConfigKeyValue> _toggleWaitingCommand;
-
-            public DelegateCommand<PythonAppConfigKeyValue> ToggleWaitingCommand
-                => _toggleWaitingCommand ?? (_toggleWaitingCommand = new DelegateCommand<PythonAppConfigKeyValue>(o => {
-                    o.IsWaiting = true;
-                }, o => o != null));
-
             private CommandBase _testCommand;
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
@@ -79,47 +70,12 @@ namespace AcManager.Pages.Selected {
                     AcSettingsHolder.Python.SetActivated(SelectedObject.Id, value);
                 }
             }
-        }
 
-        private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            var key = (Keys)KeyInterop.VirtualKeyFromKey(e.Key);
-            PythonAppConfigKeyValue waiting = null;
-            foreach (var value in ((ViewModel)DataContext).KeyValues) {
-                value.IsPressed = key == value.Value;
-                if (!value.IsWaiting) continue;
-                if (waiting == null) {
-                    waiting = value;
-                } else {
-                    value.IsWaiting = false;
-                }
-            }
+            private DelegateCommand _changeIconCommand;
 
-            if (waiting == null) return;
-            switch (e.Key) {
-                case Key.Escape:
-                case Key.Back:
-                case Key.Enter:
-                    waiting.IsWaiting = false;
-                    e.Handled = true;
-                    break;
-
-                case Key.Delete:
-                    waiting.ClearCommand.Execute();
-                    e.Handled = true;
-                    break;
-
-                default:
-                    waiting.Value = (Keys)KeyInterop.VirtualKeyFromKey(e.Key);
-                    waiting.IsWaiting = false;
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        private void OnPreviewKeyUp(object sender, KeyEventArgs e) {
-            foreach (var value in ((ViewModel)DataContext).KeyValues) {
-                value.IsPressed = false;
-            }
+            public DelegateCommand ChangeIconCommand => _changeIconCommand ?? (_changeIconCommand = new DelegateCommand(() => {
+                AppIconEditor.RunAsync(SelectedObject).Forget();
+            }));
         }
 
         private string _id;
@@ -154,6 +110,10 @@ namespace AcManager.Pages.Selected {
             return true;
         }
 
+        public SelectedPythonAppPage() {
+            KeyBindingsController = new LocalKeyBindingsController(this);
+        }
+
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
@@ -165,6 +125,7 @@ namespace AcManager.Pages.Selected {
         private void SetModel() {
             _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
+            KeyBindingsController.Set(_model.KeyValues);
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
@@ -172,42 +133,14 @@ namespace AcManager.Pages.Selected {
 
         private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
-        private void OnFileButtonClick(object sender, RoutedEventArgs e) {
-            if (!(((FrameworkElement)sender).DataContext is PythonAppConfigFileValue entry)) return;
-
-            try {
-                if (entry.DirectoryMode) {
-                    var dialog = new FolderBrowserDialog {
-                        ShowNewFolderButton = true,
-                        SelectedPath = entry.Value
-                    };
-
-                    if (dialog.ShowDialog() == DialogResult.OK) {
-                        entry.Value = dialog.SelectedPath;
-                    }
-                } else {
-                    var directory = Path.GetDirectoryName(entry.Value);
-                    if (string.IsNullOrWhiteSpace(directory)) {
-                        directory = _model.SelectedObject.Location;
-                    }
-
-                    var dialog = new OpenFileDialog {
-                        Filter = entry.Filter ?? DialogFilterPiece.AllFiles.WinFilter,
-                        InitialDirectory = directory,
-                        FileName = Path.GetFileName(entry.Value) ?? ""
-                    };
-
-                    if (dialog.ShowDialog() == true) {
-                        entry.Value = dialog.FileName;
-                    }
-                }
-            } catch (ArgumentException ex) {
-                NonfatalError.Notify("Can’t open dialog", ex);
-            }
-        }
-
         private void OnIconClick(object sender, MouseButtonEventArgs e) {
             AppIconEditor.RunAsync(_model.SelectedObject).Forget();
         }
+
+        private void OnWindowIconClick(object sender, MouseButtonEventArgs e) {
+            AppIconEditor.RunAsync((PythonAppWindow)((FrameworkElement)sender).DataContext).Forget();
+        }
+
+        public LocalKeyBindingsController KeyBindingsController { get; }
     }
 }

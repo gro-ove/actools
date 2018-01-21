@@ -1,6 +1,6 @@
 // Options
 
-#define ENABLE_TESSELATION 1  // Optionally, car paint meshes can be smoothed
+#define ENABLE_TESSELATION 0  // Optionally, car paint meshes can be smoothed
 
 // Kunos-compatible shaders and more
 
@@ -437,7 +437,9 @@ float4 ps_Debug(PS_IN pin, uniform bool alphaOutput) : SV_Target {
 		alpha = diffuseMapValue.a;
 	}
 
-	float3 ambient = GetAmbient(normal) * GetAo(pin.PosH.xy);
+	float3 ambient = (HAS_FLAG(DEBUG_USE_REFL_AS_COLOR)
+	    ? float3(gReflectiveMaterial.FresnelC, gReflectiveMaterial.FresnelExp, gReflectiveMaterial.FresnelMaxLevel)
+	    : GetAmbient(normal)) * GetAo(pin.PosH.xy);
 
 #if COMPLEX_LIGHTING == 0
 	float diffuseMultiplier = GetDiffuseMultiplier(normal);

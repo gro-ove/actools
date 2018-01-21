@@ -66,7 +66,7 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\fiat_131_abarth\fiat_131_abarth.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\alfa_romeo_33\alfa_romeo_33.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\bmw_m3_e30\bmw_m3_e30.kn5";
-            kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ft_morgan_3_wheeler\ft_morgan_3_wheeler.kn5";
+            //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ft_morgan_3_wheeler\ft_morgan_3_wheeler.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ks_ruf_rt12r\ruf_rt12r.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_orion_mk7_ng\acc_orion_mk7_ng.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\__balls_refl\sphere.kn5";
@@ -90,8 +90,7 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
-            showroomKn5File = null;
-
+            //showroomKn5File = null;
             return showroomKn5File;
         }
     }

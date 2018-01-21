@@ -160,18 +160,6 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        private bool _showWireframe;
-
-        public virtual bool ShowWireframe {
-            get => _showWireframe;
-            set {
-                if (Equals(_showWireframe, value)) return;
-                _showWireframe = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _useBloom;
 
         public bool UseBloom {
@@ -253,14 +241,10 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        public RasterizerState GetRasterizerState() {
-            return ShowWireframe ? DeviceContextHolder.States.WireframeState : null;
-        }
-
         protected virtual void DrawScene() {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = GetRasterizerState();
+            DeviceContext.Rasterizer.State = null;
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);

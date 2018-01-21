@@ -13,6 +13,7 @@ using HidLibrary;
 using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
+    [UsedImplicitly]
     internal class LogitechG25 : IWheelSteerLockSetter {
         public virtual string ControllerName => "Logitech G25";
 
@@ -23,7 +24,7 @@ namespace AcTools.WheelAngles.Implementations {
         public int MaximumSteerLock => 900;
         public int MinimumSteerLock => 40;
 
-        public bool Apply(int steerLock, bool isReset, out int appliedValue) {
+        public virtual bool Apply(int steerLock, bool isReset, out int appliedValue) {
             if (isReset) {
                 // Don’t need to reset, Logitech does that for you as soon as AC is closed. Now, that’s neat.
                 appliedValue = steerLock;
@@ -46,7 +47,71 @@ namespace AcTools.WheelAngles.Implementations {
         }
 
         #region SDK-related stuff
-        private const string LogitechSteeringWheel = "LogitechSteeringWheel.dll";
+        private static int _applyId;
+
+        private async void ApplyLater(int value) {
+            var id = ++_applyId;
+            Process process = null;
+
+            for (var i = 0; i < 30; i++) {
+                await Task.Delay(300);
+                process = AcProcess.TryToFind();
+                if (_applyId != id) return;
+                if (process != null) break;
+            }
+
+            if (process == null) {
+                AcToolsLogging.NonFatalErrorNotifyBackground($"Can’t set {ControllerName} steer lock", "Failed to find game process");
+                return;
+            }
+
+            await Task.Delay(2000);
+            if (process.HasExitedSafe()) {
+                AcToolsLogging.Write("Process finished");
+                return;
+            }
+
+            Initialize(process.MainWindowHandle);
+            var properties = new LogiControllerPropertiesData();
+            LogiGetCurrentControllerProperties(0, ref properties);
+            AcToolsLogging.Write("WheelRange: " + properties.WheelRange);
+            AcToolsLogging.Write("ForceEnable: " + properties.ForceEnable);
+            AcToolsLogging.Write("OverallGain: " + properties.OverallGain);
+            AcToolsLogging.Write("SpringGain: " + properties.SpringGain);
+            AcToolsLogging.Write("DamperGain: " + properties.DamperGain);
+            AcToolsLogging.Write("DefaultSpringEnabled: " + properties.DefaultSpringEnabled);
+            AcToolsLogging.Write("DefaultSpringGain: " + properties.DefaultSpringGain);
+            AcToolsLogging.Write("CombinePedals: " + properties.CombinePedals);
+            AcToolsLogging.Write("GameSettingsEnabled: " + properties.GameSettingsEnabled);
+            AcToolsLogging.Write("AllowGameSettings: " + properties.AllowGameSettings);
+            properties.WheelRange = value;
+            LogiSetPreferredControllerProperties(properties);
+            Apply();
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 2)]
+        private struct LogiControllerPropertiesData {
+            public bool ForceEnable;
+            public int OverallGain;
+            public int SpringGain;
+            public int DamperGain;
+            public bool DefaultSpringEnabled;
+            public int DefaultSpringGain;
+            public bool CombinePedals;
+            public int WheelRange;
+            public bool GameSettingsEnabled;
+            public bool AllowGameSettings;
+        }
+
+        [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool LogiSetPreferredControllerProperties(LogiControllerPropertiesData properties);
+
+        [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool LogiGetCurrentControllerProperties(int index, ref LogiControllerPropertiesData properties);
+        #endregion
+
+        #region Global SDK-related stuff
+        protected const string LogitechSteeringWheel = "LogitechSteeringWheel.dll";
         private static bool? _logitechDllInitialized;
 
         private static IEnumerable<string> LocateLogitechSteeringWheelDll() {
@@ -77,7 +142,9 @@ namespace AcTools.WheelAngles.Implementations {
                 "32", "x86", "64", "x64", null
             };
 
-            return Extend(programFiles, appPaths, sdkFolders, sdkSubFolders, platforms);
+            return Extend(programFiles, appPaths, sdkFolders, sdkSubFolders, platforms, new[] {
+                LogitechSteeringWheel
+            });
 
             IEnumerable<string> Extend(params string[][] extra) {
                 var sb = new List<string>(extra.Length);
@@ -95,7 +162,7 @@ namespace AcTools.WheelAngles.Implementations {
             }
         }
 
-        private static bool LoadLogitechSteeringWheelDll() {
+        protected static bool LoadLogitechSteeringWheelDll() {
             if (_logitechDllInitialized.HasValue) return _logitechDllInitialized.Value;
 
             // Library is in PATH, next to executable, somewhere in system or in a list of libraries to load, nice.
@@ -125,75 +192,32 @@ namespace AcTools.WheelAngles.Implementations {
             return (_logitechDllInitialized = false).Value;
         }
 
-        private static int _applyId;
-
-        private async void ApplyLater(int value) {
-            var id = ++_applyId;
-            Process process = null;
-
-            for (var i = 0; i < 30; i++) {
-                await Task.Delay(300);
-                process = AcProcess.TryToFind();
-                if (_applyId != id) return;
-                if (process != null) break;
-            }
-
-            if (process == null) {
-                AcToolsLogging.NonFatalErrorNotifyBackground($"Can’t set {ControllerName} steer lock", "Failed to find game process");
-                return;
-            }
-
-            await Task.Delay(2000);
-            if (process.HasExitedSafe()) {
-                AcToolsLogging.Write("Process finished");
-                return;
-            }
-
-            LogiSteeringInitializeWithWindow(true, process.MainWindowHandle);
-            AcToolsLogging.Write("Initialized");
-
-            var properties = new LogiControllerPropertiesData();
-            LogiGetCurrentControllerProperties(0, ref properties);
-            AcToolsLogging.Write("WheelRange: " + properties.WheelRange);
-            AcToolsLogging.Write("ForceEnable: " + properties.ForceEnable);
-            AcToolsLogging.Write("OverallGain: " + properties.OverallGain);
-            AcToolsLogging.Write("SpringGain: " + properties.SpringGain);
-            AcToolsLogging.Write("DamperGain: " + properties.DamperGain);
-            AcToolsLogging.Write("DefaultSpringEnabled: " + properties.DefaultSpringEnabled);
-            AcToolsLogging.Write("DefaultSpringGain: " + properties.DefaultSpringGain);
-            AcToolsLogging.Write("CombinePedals: " + properties.CombinePedals);
-            AcToolsLogging.Write("GameSettingsEnabled: " + properties.GameSettingsEnabled);
-            AcToolsLogging.Write("AllowGameSettings: " + properties.AllowGameSettings);
-            properties.WheelRange = value;
-            LogiSetPreferredControllerProperties(properties);
+        protected static void Apply() {
+            AcToolsLogging.Write("Applying…");
             LogiUpdate();
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 2)]
-        private struct LogiControllerPropertiesData {
-            public bool ForceEnable;
-            public int OverallGain;
-            public int SpringGain;
-            public int DamperGain;
-            public bool DefaultSpringEnabled;
-            public int DefaultSpringGain;
-            public bool CombinePedals;
-            public int WheelRange;
-            public bool GameSettingsEnabled;
-            public bool AllowGameSettings;
+        private static bool _initialized;
+
+        protected static void Initialize(IntPtr mainWindowHandle) {
+            if (_initialized) {
+                LogiSteeringShutdown();
+                AcToolsLogging.Write("Previous initialization shutdown");
+            }
+
+            _initialized = true;
+            LogiSteeringInitializeWithWindow(true, mainWindowHandle);
+            AcToolsLogging.Write("Initialized");
         }
 
         [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool LogiSteeringInitializeWithWindow(bool ignoreXInputControllers, IntPtr windowHandle);
 
         [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool LogiSteeringShutdown();
+
+        [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool LogiUpdate();
-
-        [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool LogiSetPreferredControllerProperties(LogiControllerPropertiesData properties);
-
-        [DllImport(LogitechSteeringWheel, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool LogiGetCurrentControllerProperties(int index, ref LogiControllerPropertiesData properties);
         #endregion
     }
 }

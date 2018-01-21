@@ -48,9 +48,7 @@ namespace FirstFloor.ModernUI {
 
         protected WrappedFilteredCollection([NotNull] IReadOnlyList<TSource> collection) {
             _source = collection ?? throw new ArgumentNullException(nameof(collection));
-
-            var notify = collection as INotifyCollectionChanged;
-            if (notify != null) {
+            if (collection is INotifyCollectionChanged notify) {
                 WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.AddHandler(notify, nameof(notify.CollectionChanged),
                         OnItemsSourceCollectionChanged);
             }
@@ -325,8 +323,7 @@ namespace FirstFloor.ModernUI {
 
         public void CopyTo(Array array, int index) {
             EnsureRebuilt(out var wrapped, out var _);
-            var wrappers = array as TWrapper[];
-            if (wrappers != null) {
+            if (array is TWrapper[] wrappers) {
                 wrapped.CopyTo(wrappers, index);
             } else {
                 var objects = (object[])array;
@@ -337,11 +334,12 @@ namespace FirstFloor.ModernUI {
             }
         }
 
-        public int Count{
+        public int Count {
             get {
                 EnsureRebuilt(out var wrapped, out var _);
                 return wrapped.Count;
-            }}
+            }
+        }
 
         [NonSerialized]
         private object _syncRoot;
@@ -408,11 +406,11 @@ namespace FirstFloor.ModernUI {
             OnIndexerChanged();
         }
 
-        protected void OnPropertyChanged(PropertyChangedEventArgs e) {
+        private void OnPropertyChanged(PropertyChangedEventArgs e) {
             PropertyChanged?.Invoke(this, e);
         }
 
-        protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
+        private void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             CollectionChanged?.Invoke(this, e);
         }
 

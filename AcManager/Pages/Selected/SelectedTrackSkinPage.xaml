@@ -11,7 +11,6 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
-      <mui:BindingProxy x:Key="Model" Data="{Binding}" />
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -31,6 +30,8 @@
             </CompositeCollection>
           </mui:ButtonWithComboBox.MenuItems>
         </mui:ButtonWithComboBox>
+        <Separator />
+        <Button Content="Override textures" Command="{Binding OverrideTexturesCommand}" ToolTip="Pick textures to override" />
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -91,7 +92,8 @@
       </c:PropertiesGrid>
 
       <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
-      <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" Height="200" />
+      <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" Height="200"
+          Placeholder="None" />
     </StackPanel>
   </ac:AcObjectBase>
 </sel:SelectedAcJsonObjectPage>

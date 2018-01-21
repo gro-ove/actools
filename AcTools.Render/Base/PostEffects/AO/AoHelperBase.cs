@@ -11,7 +11,7 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base.PostEffects.AO {
     public abstract class AoHelperBase  : IRenderHelper {
-        // TODO: move blur to separate effect
+        // TODO: Move blur to separate effect
         private EffectPpAoBlur _blurEffect;
 
         public virtual void OnInitialize(DeviceContextHolder holder) {
@@ -26,7 +26,8 @@ namespace AcTools.Render.Base.PostEffects.AO {
         private bool? _accumulationMode;
         private float _randomSize;
 
-        public void SetRandomValues(DeviceContextHolder holder, EffectOnlyResourceVariable texture, EffectOnlyVector4Variable size, bool accumulationMode) {
+        public void SetRandomValues(DeviceContextHolder holder, EffectOnlyResourceVariable texture, EffectOnlyVector4Variable size, bool accumulationMode,
+                Vector2 targetSize) {
             if (_accumulationMode != accumulationMode) {
                 _accumulationMode = accumulationMode;
 
@@ -35,22 +36,22 @@ namespace AcTools.Render.Base.PostEffects.AO {
                 _randomSize = randomSize;
 
                 if (!accumulationMode) {
-                    size.Set(new Vector4(holder.Width / _randomSize, holder.Height / _randomSize, 0f, 0f));
+                    size.Set(new Vector4(targetSize.X / _randomSize, targetSize.Y / _randomSize, 0f, 0f));
                 }
             } else if (accumulationMode) {
-                size.Set(new Vector4(holder.Width / _randomSize, holder.Height / _randomSize, MathUtils.Random(0f, 1f), MathUtils.Random(0f, 1f)));
+                size.Set(new Vector4(targetSize.X / _randomSize, targetSize.Y / _randomSize, MathUtils.Random(0f, 1f), MathUtils.Random(0f, 1f)));
             }
         }
 
-        public abstract void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
-                float aoPower, float aoRadiusMultiplier, bool accumulationMode);
+        public abstract void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera,
+                TargetResourceTexture target, float aoPower, float aoRadiusMultiplier, bool accumulationMode);
 
         public virtual void OnResize(DeviceContextHolder holder) {}
 
         private float[] _gaussianBlur;
 
         private static float[] GaussianBlur() {
-            var radius = EffectPpSsao.BlurRadius;
+            const int radius = EffectPpSsao.BlurRadius;
             var weights = new float[radius * 2 + 1];
 
             var sqrtTwoPiTimesRadiusRecip = 1f / ((float)Math.Sqrt(2f * MathF.PI) * radius);
@@ -61,7 +62,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
                 weights[i] = sqrtTwoPiTimesRadiusRecip * (-x * sqrtTwoPiTimesRadiusRecip).Exp();
             }
 
-            /* NORMALIZE */
+            // Normalize
             var div = weights.Sum();
             for (var i = 0; i < weights.Length; i++) {
                 weights[i] /= div;

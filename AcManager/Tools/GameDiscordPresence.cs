@@ -12,6 +12,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
+using SlimDX.Direct3D11;
 
 namespace AcManager.Tools {
     public class GameDiscordPresence : Game.GameHandler {
@@ -95,6 +96,7 @@ namespace AcManager.Tools {
 
                 await Task.Delay(BuildInformation.IsDebugConfiguration ? 3000 : 15000);
             }
+
         }
 
         private static string GetSessionName(Game.BaseModeProperties properties) {

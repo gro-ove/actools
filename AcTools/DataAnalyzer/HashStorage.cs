@@ -103,9 +103,7 @@ namespace AcTools.DataAnalyzer {
                 if (pair.Key == carId) continue;
 
                 var pairHash = pair.Value[index];
-
-                RulesSet.Rule[] workedRules = null;
-                var value = RulesSet.CompareHashes(hashValues, pairHash, set, keepWorkedRules, out workedRules);
+                var value = RulesSet.CompareHashes(hashValues, pairHash, set, keepWorkedRules, out var workedRules);
                 if (value > threshold) {
                     yield return new Simular { CarId = pair.Key, Value = value, WorkedRules = workedRules };
                 }

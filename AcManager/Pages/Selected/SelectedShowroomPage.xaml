@@ -123,7 +123,9 @@
         </Grid>
 
         <!-- description -->
-        <TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding SelectedObject.Description}" TextWrapping="Wrap" />
+        <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
+        <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
+            Placeholder="None" />
       </StackPanel>
     </StackPanel>
   </c:AcObjectBase>

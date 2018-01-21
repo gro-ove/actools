@@ -1,4 +1,5 @@
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using SlimDX;
@@ -13,12 +14,13 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect = holder.GetEffect<EffectPpHbao>();
         }
 
-        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
-                float aoPower, float aoRadiusMultiplier, bool accumulationMode) {
+        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera,
+                TargetResourceTexture target, float aoPower, float aoRadiusMultiplier, bool accumulationMode) {
             SetBlurEffectTextures(depth, normals);
-            SetRandomValues(holder, _effect.FxNoiseMap, _effect.FxNoiseSize, accumulationMode);
+            SetRandomValues(holder, _effect.FxNoiseMap, _effect.FxNoiseSize, accumulationMode, target.Size);
 
-            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.DeviceContext.Rasterizer.SetViewports(target.Viewport);
+            holder.DeviceContext.OutputMerger.SetTargets(target.TargetView);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxDepthMap.SetResource(depth);
             // _effect.FxNormalMap.SetResource(normals);
@@ -32,12 +34,12 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxNearFar.Set(new Vector2((near - far) / (far * near), far / (far * near)));
 
             var valueY = (0.5f * c.FovY).Tan();
-            var valueX = valueY / holder.Height * holder.Width;
+            var valueX = valueY / target.Height * target.Width;
             _effect.FxValues.Set(new Vector4(
                     valueX,
                     valueY,
-                    3f * aoRadiusMultiplier * valueX / holder.Width,
-                    3f * aoRadiusMultiplier * valueY / holder.Height * holder.Width / holder.Height));
+                    3f * aoRadiusMultiplier * valueX / target.Width,
+                    3f * aoRadiusMultiplier * valueY / target.Height * target.Width / target.Height));
 
             // var view = Matrix.LookAtLH(c.Position, (c.Position + c.Look), c.Up);
             // var proj = Matrix.PerspectiveFovLH(c.FovY, c.Aspect, c.NearZValue, c.FarZValue);

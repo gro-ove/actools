@@ -240,6 +240,7 @@ namespace AcManager.CustomShowroom {
             public override float AmbientBrightness { get; set; } = 3f;
             public override float BackgroundBrightness { get; set; } = 3f;
             public override float FlatMirrorReflectiveness { get; set; } = 0.6f;
+            public override bool FlatMirrorReflectedLight { get; set; } = false;
             public override float LightBrightness { get; set; } = 12f;
             public override float Lightθ { get; set; } = 45f;
             public override float Lightφ { get; set; } = 0f;
@@ -324,6 +325,7 @@ namespace AcManager.CustomShowroom {
                     AmbientBrightness = AmbientBrightness,
                     BackgroundBrightness = BackgroundBrightness,
                     FlatMirrorReflectiveness = FlatMirrorReflectiveness,
+                    FlatMirrorReflectedLight = FlatMirrorReflectedLight,
                     LightBrightness = LightBrightness,
                     LightDirection = new double[] { light.X, light.Y, light.Z },
                     MaterialsReflectiveness = MaterialsReflectiveness,
@@ -806,8 +808,8 @@ namespace AcManager.CustomShowroom {
 
             var filename = UserPresetsControl.GetCurrentFilename(DarkRendererSettings.DefaultPresetableKeyValue);
             if (filename != null) {
-                var relative = FileUtils.GetRelativePath(filename, PresetsManager.Instance.Combine(DarkRendererSettings.DefaultPresetableKeyValue));
-                filename = relative == filename ? null : Path.Combine(PresetsManager.Instance.Combine(DefaultPresetableKeyValue), relative);
+                var relative = FileUtils.GetPathWithin(filename, PresetsManager.Instance.Combine(DarkRendererSettings.DefaultPresetableKeyValue));
+                filename = relative == null ? null : Path.Combine(PresetsManager.Instance.Combine(DefaultPresetableKeyValue), relative);
             }
 
             PresetsManager.Instance.SavePresetUsingDialog(null, new PresetsCategory(DefaultPresetableKeyValue),

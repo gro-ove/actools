@@ -152,8 +152,7 @@ namespace AcManager.Tools.Objects {
                     }
 
                     void ProcessPieces(JToken token, string childrenKey = null) {
-                        var o = token as JObject;
-                        if (o == null) return;
+                        if (!(token is JObject o)) return;
                         foreach (var t in o) {
                             var b = (JObject)t.Value;
                             if (b == null) continue;
@@ -263,7 +262,7 @@ namespace AcManager.Tools.Objects {
         /// <summary>
         /// Update data in server’s folder according to actual data.
         /// </summary>
-        public async Task PrepareServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        private async Task PrepareServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             for (var i = 0; i < CarIds.Length; i++) {
                 var carId = CarIds[i];
                 progress?.Report(new AsyncProgressEntry(carId, i, CarIds.Length + 1));
@@ -291,7 +290,7 @@ namespace AcManager.Tools.Objects {
         private string _inviteCommand;
 
         public string InviteCommand {
-            get { return _inviteCommand; }
+            get => _inviteCommand;
             set {
                 if (Equals(value, _inviteCommand)) return;
                 _inviteCommand = value;
@@ -360,10 +359,10 @@ namespace AcManager.Tools.Objects {
         }
 
         [ItemCanBeNull]
-        private async Task<string> LoadWinWrapper(CancellationToken cancellation) {
+        private static async Task<string> LoadWinWrapper(CancellationToken cancellation) {
             var wrapperFilename = FilesStorage.Instance.GetFilename("Server Wrapper", "AcServerWrapper.exe");
 
-            var data = await CmApiProvider.GetStaticDataAsync("ac_server_wrapper", TimeSpan.Zero);
+            var data = await CmApiProvider.GetStaticDataAsync("ac_server_wrapper", TimeSpan.Zero, cancellation: cancellation);
             if (cancellation.IsCancellationRequested || data == null) return null;
 
             if (data.Item2) {
@@ -390,17 +389,17 @@ namespace AcManager.Tools.Objects {
         }
 
         [ItemCanBeNull]
-        private async Task<string> LoadLinux32Wrapper(CancellationToken cancellation) {
-            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x86", TimeSpan.Zero))?.Item1;
+        private static async Task<string> LoadLinux32Wrapper(CancellationToken cancellation) {
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x86", TimeSpan.Zero, cancellation: cancellation))?.Item1;
         }
 
         [ItemCanBeNull]
-        private async Task<string> LoadLinux64Wrapper(CancellationToken cancellation) {
-            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero))?.Item1;
+        private static async Task<string> LoadLinux64Wrapper(CancellationToken cancellation) {
+            return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero, cancellation: cancellation))?.Item1;
         }
 
-        private async Task RunWrapper(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            progress.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
+        private async Task RunWrapper(string serverExecutable, ICollection<string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
             var wrapperFilename = await LoadWinWrapper(cancellation);
             if (cancellation.IsCancellationRequested) return;
 
@@ -523,7 +522,7 @@ namespace AcManager.Tools.Objects {
         private BetterObservableCollection<string> _runningLog;
 
         public BetterObservableCollection<string> RunningLog {
-            get { return _runningLog; }
+            get => _runningLog;
             set {
                 if (Equals(value, _runningLog)) return;
                 _runningLog = value;

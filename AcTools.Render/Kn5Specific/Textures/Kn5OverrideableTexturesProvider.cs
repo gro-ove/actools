@@ -322,7 +322,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected async void UpdateOverrideLater([NotNull] string filename) {
             if (CurrentDirectory == null) return;
 
-            var local = FileUtils.TryToGetRelativePath(filename, CurrentDirectory)?.ToLowerInvariant();
+            var local = FileUtils.GetPathWithin(filename, CurrentDirectory)?.ToLowerInvariant();
             if (string.IsNullOrEmpty(local)) return;
 
             if (_updateInProcess.Contains(local)) return;

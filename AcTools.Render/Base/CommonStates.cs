@@ -16,7 +16,7 @@ namespace AcTools.Render.Base {
         private BlendState _opaqueBlendState, _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
 
         private RasterizerState _doubleSidedState, _doubleSidedClockwiseState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState,
-                _wireframeInvertedState, _ambientShadowState, _shadowsState, _shadowsPointState;
+                _wireframeInvertedState, _wireframeBiasState, _wireframeInvertedBiasState, _ambientShadowState, _shadowsState, _shadowsPointState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -200,6 +200,18 @@ namespace AcTools.Render.Base {
                     IsDepthClipEnabled = true
                 }));
 
+        public RasterizerState WireframeBiasState => _wireframeBiasState ?? (_wireframeBiasState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Wireframe,
+                    CullMode = CullMode.Back,
+                    IsFrontCounterclockwise = false,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true,
+                    DepthBias = -30,
+                    DepthBiasClamp = 0.0f,
+                    SlopeScaledDepthBias = -0.35f
+                }));
+
         public RasterizerState WireframeInvertedState => _wireframeInvertedState ?? (_wireframeInvertedState =
                 RasterizerState.FromDescription(_device, new RasterizerStateDescription {
                     FillMode = FillMode.Wireframe,
@@ -207,6 +219,18 @@ namespace AcTools.Render.Base {
                     IsFrontCounterclockwise = true,
                     IsAntialiasedLineEnabled = false,
                     IsDepthClipEnabled = true
+                }));
+
+        public RasterizerState WireframeInvertedBiasState => _wireframeInvertedBiasState ?? (_wireframeInvertedBiasState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Wireframe,
+                    CullMode = CullMode.Back,
+                    IsFrontCounterclockwise = true,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true,
+                    DepthBias = -30,
+                    DepthBiasClamp = 0.0f,
+                    SlopeScaledDepthBias = -0.35f
                 }));
 
         public RasterizerState AmbientShadowState => _ambientShadowState ?? (_ambientShadowState =
@@ -264,6 +288,8 @@ namespace AcTools.Render.Base {
                 DisposeHelper.Dispose(ref _invertedState);
                 DisposeHelper.Dispose(ref _wireframeState);
                 DisposeHelper.Dispose(ref _wireframeInvertedState);
+                DisposeHelper.Dispose(ref _wireframeBiasState);
+                DisposeHelper.Dispose(ref _wireframeInvertedBiasState);
                 DisposeHelper.Dispose(ref _ambientShadowState);
                 DisposeHelper.Dispose(ref _shadowsState);
                 DisposeHelper.Dispose(ref _shadowsPointState);

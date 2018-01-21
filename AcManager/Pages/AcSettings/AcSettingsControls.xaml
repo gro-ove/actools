@@ -72,8 +72,8 @@
 
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
 
-                <ItemsControl ItemsSource="{Binding Axis}" Margin="0 8 0 0"
-                    Visibility="{Binding Axis.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                <ItemsControl ItemsSource="{Binding VisibleAxis}" Margin="0 8 0 0"
+                    Visibility="{Binding VisibleAxis.Count, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type t:DirectInputAxle}">
                       <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DefaultName}" Background="Transparent">
@@ -95,8 +95,8 @@
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <ItemsControl ItemsSource="{Binding Buttons}" Margin="0 8 -4 0"
-                    Visibility="{Binding Buttons.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                <ItemsControl ItemsSource="{Binding VisibleButtons}" Margin="0 8 -4 0"
+                    Visibility="{Binding VisibleButtons.Count, Converter={StaticResource MoreToVisibilityConverter}}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />

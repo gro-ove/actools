@@ -28,6 +28,7 @@ namespace AcManager.DiscordRpc {
     }
 
     public class DiscordImage {
+        [NotNull]
         public static string OptionDefaultImage = "";
 
         [NotNull]

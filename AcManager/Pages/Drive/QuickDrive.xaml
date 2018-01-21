@@ -204,9 +204,9 @@
                   <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
                       HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
                   <mui:LimitedViewbox MinimumScale="0.84" MaximumScale="1" Margin="7 3 20 5" IsHitTestVisible="False" VerticalAlignment="Bottom"
-                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                      HorizontalAlignment="Left" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                     <TextBlock Text="{Binding DataContext.SelectedTrack.MainTrackObject.DisplayActiveSkins, ElementName=This}" TextTrimming="CharacterEllipsis"
-                        VerticalAlignment="Bottom" Margin="0 0 0 -1" />
+                        VerticalAlignment="Bottom" Margin="0 0 0 -1" TextAlignment="Left" />
                   </mui:LimitedViewbox>
                 </mui:Cell>
                 <ControlTemplate.Triggers>

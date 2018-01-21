@@ -25,17 +25,23 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
-        public DialogFilterPiece(string displayName, params string[] filter) {
+        public DialogFilterPiece([NotNull] string displayName, [NotNull] params string[] filter) {
             Filter = string.Join(";", filter);
             ShortName = displayName;
             DisplayName = $"{ShortName} ({Filter})";
             BaseExtension = filter.Length > 0 && filter[0].StartsWith("*.") ? filter[0].Substring(1) : null;
         }
 
+        [NotNull]
         public string Filter { get; }
+
+        [NotNull]
         public string ShortName { get; }
+
+        [CanBeNull]
         public string BaseExtension { get; }
 
+        [NotNull]
         public string WinFilter => $"{DisplayName}|{Filter}";
     }
 
@@ -104,12 +110,16 @@ namespace FirstFloor.ModernUI.Dialogs {
                 var filters = p.GetFilters().ToList();
                 var dialog = new OpenFileDialog {
                     Filter = string.Join("|", filters.Select(x => x.WinFilter)),
-                    DefaultExt = p.DetaultExtension ?? filters[0].BaseExtension,
                     CheckFileExists = p.CheckFileExists,
                     RestoreDirectory = p.RestoreDirectory,
                     DereferenceLinks = p.DereferenceLinks,
                     ValidateNames = p.ValidateNames,
                 };
+
+                var extension = p.DetaultExtension ?? filters[0].BaseExtension;
+                if (extension != null) {
+                    dialog.DefaultExt = extension;
+                }
 
                 if (p.Title != null) {
                     dialog.Title = p.Title;
@@ -151,7 +161,6 @@ namespace FirstFloor.ModernUI.Dialogs {
                 var filters = p.GetFilters().ToList();
                 var dialog = new SaveFileDialog {
                     Filter = string.Join("|", filters.Select(x => $"{x.DisplayName}|{x.Filter}")),
-                    DefaultExt = p.DetaultExtension ?? filters[0].BaseExtension,
                     AddExtension = p.AddExtension,
                     CheckPathExists = p.CheckPathExists,
                     CreatePrompt = p.CreatePrompt,
@@ -160,6 +169,11 @@ namespace FirstFloor.ModernUI.Dialogs {
                     DereferenceLinks = p.DereferenceLinks,
                     ValidateNames = p.ValidateNames,
                 };
+
+                var extension = p.DetaultExtension ?? filters[0].BaseExtension;
+                if (extension != null) {
+                    dialog.DefaultExt = extension;
+                }
 
                 if (p.Title != null) {
                     dialog.Title = p.Title;

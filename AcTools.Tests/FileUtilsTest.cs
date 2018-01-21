@@ -17,11 +17,29 @@ namespace AcTools.Tests {
             Assert.AreEqual(@"system32\a.exe",
                     FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:/WinDOws"));
 
-            Assert.AreEqual(@"C:\Windows\system32\a.exe",
+            Assert.AreEqual(@"..\system32\a.exe",
                     FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\s"));
 
-            Assert.AreEqual(@"",
+            Assert.AreEqual(@"..\Windows",
                     FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
+        }
+
+        [Test]
+        public void GetPathWithin() {
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetPathWithin(@"C:\Windows\system32\a.exe", @"C:\Windows"));
+
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetPathWithin(@"C:\WiNDows\system32\a.exe", @"C:\Windows\"));
+
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetPathWithin(@"C:\Windows\system32\a.exe", @"C:/WinDOws"));
+
+            Assert.AreEqual(null,
+                    FileUtils.GetPathWithin(@"C:\Windows\system32\a.exe", @"C:\Windows\s"));
+
+            Assert.AreEqual(@"",
+                    FileUtils.GetPathWithin(@"C:\Windows", @"C:\Windows"));
         }
 
         [Test]

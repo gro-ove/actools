@@ -97,9 +97,10 @@ namespace AcManager.DiscordRpc {
         }
 
         public Task UpdateAsync(DiscordRichPresence presence, int pid) {
+            var details = presence.Details.Limit(128, "Unknown details");
             var activity = new JObject {
-                ["state"] = presence.State.Limit(128),
-                ["details"] = presence.Details.Limit(128),
+                ["state"] = presence.State.Limit(128, "Unknown state"),
+                ["details"] = details,
                 ["instance"] = presence.Instance
             };
 
@@ -113,18 +114,18 @@ namespace AcManager.DiscordRpc {
                 activity["assets"] = new JObject();
 
                 if (presence.LargeImage != null) {
-                    activity["assets"]["large_image"] = presence.LargeImage.Key.Limit(32);
-                    activity["assets"]["large_text"] = presence.LargeImage.Text.Limit(128);
+                    activity["assets"]["large_image"] = presence.LargeImage.Key.Limit(32, DiscordImage.OptionDefaultImage);
+                    activity["assets"]["large_text"] = presence.LargeImage.Text.Limit(128, details);
                 }
 
                 if (presence.SmallImage != null) {
-                    activity["assets"]["small_image"] = presence.SmallImage.Key.Limit(32);
-                    activity["assets"]["small_text"] = presence.SmallImage.Text.Limit(128);
+                    activity["assets"]["small_image"] = presence.SmallImage.Key.Limit(32, DiscordImage.OptionDefaultImage);
+                    activity["assets"]["small_text"] = presence.SmallImage.Text.Limit(128, details);
                 }
             }
 
             activity["party"] = new JObject {
-                ["id"] = presence.Party?.Id.Limit(128) ?? $"_party{pid}",
+                ["id"] = (presence.Party?.Id).Limit(128, $"_party{pid}"),
             };
 
             if (presence.Party != null) {
@@ -140,9 +141,9 @@ namespace AcManager.DiscordRpc {
 
             if (presence.Party?.MatchSecret != null || presence.Party?.JoinSecret != null || presence.Party?.SpectateSecret != null) {
                 activity["secrets"] = new JObject();
-                if (presence.Party.MatchSecret != null) activity["secrets"]["match"] = presence.Party.MatchSecret.Limit(128);
-                if (presence.Party.JoinSecret != null) activity["secrets"]["join"] = presence.Party.JoinSecret.Limit(128);
-                if (presence.Party.SpectateSecret != null) activity["secrets"]["spectate"] = presence.Party.SpectateSecret.Limit(128);
+                if (presence.Party.MatchSecret != null) activity["secrets"]["match"] = presence.Party.MatchSecret.Limit(128, "_matchSecret");
+                if (presence.Party.JoinSecret != null) activity["secrets"]["join"] = presence.Party.JoinSecret.Limit(128, "_joinSecret");
+                if (presence.Party.SpectateSecret != null) activity["secrets"]["spectate"] = presence.Party.SpectateSecret.Limit(128, "_spectateSecret");
             }
 
             var footprint = activity.ToString(Formatting.None);

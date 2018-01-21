@@ -33,10 +33,24 @@ namespace AcManager.Tools.Managers {
         public static AutocompleteValuesList TrackTagsList { get; } = new AutocompleteValuesList();
         public static ListCollectionView TrackTagsListView => TrackTagsList.View;
 
-        public static AutocompleteValuesList TrackSkinTagsList { get; } = new AutocompleteValuesList();
+        public static AutocompleteValuesList AppTagsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView AppTagsListView => AppTagsList.View;
+
+        public static AutocompleteValuesList TrackSkinTagsList { get; } = new AutocompleteValuesList {
+            @"season",
+            @"billboards",
+            @"spectators",
+            @"real"
+        };
+
         public static ListCollectionView TrackSkinTagsListView => TrackSkinTagsList.View;
 
-        public static AutocompleteValuesList TrackSkinCategoriesList { get; } = new AutocompleteValuesList();
+        public static AutocompleteValuesList TrackSkinCategoriesList { get; } = new AutocompleteValuesList {
+            @"season",
+            @"billboards",
+            @"spectators"
+        };
+
         public static ListCollectionView TrackSkinCategoriesListView => TrackSkinCategoriesList.View;
 
         public static AutocompleteValuesList ShowroomTagsList { get; } = new AutocompleteValuesList();

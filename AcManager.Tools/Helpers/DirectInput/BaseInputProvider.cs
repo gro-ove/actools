@@ -8,6 +8,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
             Id = id;
         }
 
+        private bool _isVisible = true;
+
+        public bool IsVisible {
+            get => _isVisible;
+            set {
+                if (Equals(value, _isVisible)) return;
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ShortName { get; protected set; }
 
         private T _value;

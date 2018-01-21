@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -26,15 +27,22 @@ namespace AcManager.Tools.Objects {
         [NotNull]
         public string CarId { get; }
 
+        private readonly Lazy<string> _nameFromId;
+
         public CarSkinObject([NotNull] string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
+            _nameFromId = new Lazy<string>(() => {
+                var cut = Regex.Replace(Id, @"^\d\d?_", "");
+                if (string.IsNullOrEmpty(cut)) cut = Id;
+                return AcStringValues.NameFromId(cut);
+            });
         }
 
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
-                Name =  AcStringValues.NameFromId(Id);
+                Name = string.Empty;
                 Changed = true;
                 return true;
             }
@@ -91,7 +99,8 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public override string DisplayName => SettingsHolder.Content.CarSkinsDisplayId || string.IsNullOrWhiteSpace(Name) ? Id : Name;
+        public override string DisplayName => SettingsHolder.Content.CarSkinsDisplayId ? Id
+                : string.IsNullOrWhiteSpace(Name) ? _nameFromId.Value : Name;
 
         protected override void InitializeLocations() {
             base.InitializeLocations();

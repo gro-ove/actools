@@ -118,6 +118,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public new bool? ShowDialog() {
+            if (Owner == null) {
+                Owner = Application.Current?.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive) ?? Application.Current?.MainWindow;
+            }
+
             DimOwner();
 
             if (Owner == null || Owner.Visibility == Visibility.Hidden) {

@@ -83,7 +83,7 @@
           <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
               Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}" Placeholder="?"
-              IsReadOnly="True" />
+              IsReadOnly="True" PreviewMouseLeftButtonUp="OnVersionClick" />
         </DockPanel>
 
         <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"

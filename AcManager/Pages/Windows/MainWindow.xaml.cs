@@ -152,6 +152,7 @@ namespace AcManager.Pages.Windows {
             }
 
             ContentInstallationManager.PluginsNavigator = this;
+            UpdateDiscordRichPresence();
 
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
@@ -700,17 +701,15 @@ namespace AcManager.Pages.Windows {
         private void OnContentTitleLinkDrop(object sender, DragEventArgs e) {
             if (e.Data.GetData(TrackObjectBase.DraggableFormat) is TrackObjectBase trackObject) {
                 TracksListPage.Show(trackObject);
+            } else if (e.Data.GetData(PythonAppObject.DraggableFormat) is PythonAppObject appObject) {
+                PythonAppsListPage.Show(appObject);
+            } else if (e.Data.GetData(RaceGridEntry.DraggableFormat) is RaceGridEntry raceGridEntry) {
+                CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
+            } else if (e.Data.GetData(CarObject.DraggableFormat) is CarObject carObject) {
+                CarsListPage.Show(carObject);
             } else {
-                if (e.Data.GetData(RaceGridEntry.DraggableFormat) is RaceGridEntry raceGridEntry) {
-                    CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
-                } else {
-                    if (e.Data.GetData(CarObject.DraggableFormat) is CarObject carObject) {
-                        CarsListPage.Show(carObject);
-                    } else {
-                        e.Effects = DragDropEffects.None;
-                        return;
-                    }
-                }
+                e.Effects = DragDropEffects.None;
+                return;
             }
 
             e.Effects = DragDropEffects.Copy;
@@ -749,13 +748,11 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private IDisposable _previousPresence;
+        private DiscordRichPresence _discordPresence = new DiscordRichPresence(1, "Preparing to race", "Somewhere in menus").Default();
 
         // In general, that information should be provided by webpages directly, but just in case some of
         // them will fail to do that, here are some lower-priority messages.
         private void UpdateDiscordRichPresence() {
-            _previousPresence?.Dispose();
-
             string details;
             switch (CurrentGroupKey) {
                 case "drive":
@@ -787,7 +784,7 @@ namespace AcManager.Pages.Windows {
                     break;
             }
 
-            _previousPresence = new DiscordRichPresence(0, "Preparing to race", details).Default();
+            _discordPresence.Details = details;
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
@@ -811,6 +808,12 @@ namespace AcManager.Pages.Windows {
             if (uri.ToString().Contains("/Pages/AcSettings/")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            if (uri.ToString().Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
+                CurrentGroupKey = "settings";
+                NavigateTo(uri);
                 return true;
             }
 

@@ -405,6 +405,44 @@ namespace AcTools.Utils.Helpers {
             });
         }
 
+        private static readonly char[] Quotes = { '"', '\'', '`', '“', '”' };
+
+        /// <summary>
+        /// Turns string like “qwe 'ABC\' DEF' `r r`t 'ABC\' DEF' y” to “qwe ___sub_0__ ___sub_1__t ___sub_2__ y”,
+        /// which later can be turned to “qwe ABC' DEF r rt ABC' DEF y” with unwrap callback.
+        /// </summary>
+        /// <param name="s">Input string.</param>
+        /// <param name="unwrap">Callback for unwrapping.</param>
+        /// <returns>Wrapped string.</returns>
+        /// <remarks>I got slightly carried away trying to shorten it, sorry about it.</remarks>
+        public static string WrapQuoted([CanBeNull] this string s, out Func<string, string> unwrap) {
+            if (!(s?.IndexOfAny(Quotes) > -1)) {
+                unwrap = x => x;
+                return s;
+            }
+
+            var dictionary = new Dictionary<string, string>();
+            StringBuilder r = new StringBuilder(s.Length), u = new StringBuilder();
+            for (int i = 0, w = 0; i <= s.Length; i++) {
+                string c = (i < s.Length ? s[i] : (char)w).ToString(), t;
+                if (c == "\\" && i < s.Length - 1) {
+                    (w > 0 ? u : r).Append((t = s[++i].ToString()) != "\\" && Array.IndexOf(Quotes, t[0]) == -1 ? c + t : t);
+                } else if (c[0] == w && w > 0){
+                    r.Append(t = "___sub_" + dictionary.Count + "__");
+                    dictionary[t] = u.ToString();
+                    w = u.Clear().Length;
+                } else if (w > 0){
+                    u.Append(c);
+                } else if (Array.IndexOf(Quotes, c[0]) != -1) {
+                    w = c == "“" ? '”' : c[0];
+                } else if (c[0] > 0) {
+                    r.Append(c);
+                }
+            }
+            unwrap = x => dictionary.Aggregate(x, (t, p) => t.Replace(p.Key, p.Value));
+            return r.ToString();
+        }
+
         #region Cut Base64
         [Pure, CanBeNull]
         public static string ToCutBase64([CanBeNull] this string decoded) {

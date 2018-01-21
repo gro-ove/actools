@@ -57,6 +57,9 @@ namespace AcManager.Tools {
                 menu.AddSeparator();
             }
 
+            menu.AddItem("Manage skins", () => TrackSkinsListPage.Open(track.MainTrackObject));
+            menu.AddSeparator();
+
             if (!QuickDrive.IsActive()) {
                 menu.AddItem("Open track in Quick Drive", () => QuickDrive.Show(track: track));
             }

@@ -84,6 +84,12 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
+        public static IEnumerable<T> SelectMany<T>([NotNull] this IEnumerable<IEnumerable<T>> source) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.SelectMany(x => x);
+        }
+
+        [NotNull]
         public static T ElementAtOr<T>([NotNull] this IEnumerable<T> source, int index, [NotNull] T defaultValue) {
             if (source == null) throw new ArgumentNullException(nameof(source));
 

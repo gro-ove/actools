@@ -1,6 +1,10 @@
 // structs
 static const dword HAS_NORMAL_MAP = 1;
 static const dword NM_OBJECT_SPACE = 2;
+static const dword HAS_DETAILS_MAP = 4; // maps
+static const dword DEBUG_USE_REFL_AS_COLOR = 8;
+static const dword IS_ADDITIVE = 16; // reflective
+static const dword IS_CARPAINT = 32; // maps
 static const dword USE_NORMAL_ALPHA_AS_ALPHA = 64;
 static const dword ALPHA_TEST = 128;
 
@@ -21,7 +25,6 @@ Texture2D gDiffuseMap;
 Texture2D gNormalMap;
 
 // reflective
-static const dword IS_ADDITIVE = 16;
 
 struct ReflectiveMaterial {
 	float FresnelC;
@@ -30,9 +33,6 @@ struct ReflectiveMaterial {
 };
 
 // maps
-static const dword HAS_DETAILS_MAP = 4;
-static const dword IS_CARPAINT = 32;
-
 struct MapsMaterial {
 	float DetailsUvMultiplier;
 	float DetailsNormalBlend;

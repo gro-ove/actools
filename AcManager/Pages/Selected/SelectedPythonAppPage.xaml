@@ -1,34 +1,16 @@
-﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedPythonAppPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<selected:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedPythonAppPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance selected:SelectedPythonAppPage+ViewModel}" Unloaded="OnUnloaded" PreviewKeyDown="OnPreviewKeyDown"
-    PreviewKeyUp="OnPreviewKeyUp">
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance selected:SelectedPythonAppPage+ViewModel}" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ValueLabel.xaml" />
       </ResourceDictionary.MergedDictionaries>
-
-      <Style x:Key="PropertyLabel" TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
-        <Setter Property="Margin" Value="0 4 8 0" />
-        <Setter Property="Width" Value="168" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="DockPanel.Dock" Value="Left" />
-      </Style>
-
-      <Style x:Key="ValueLabel" TargetType="{x:Type mui:ValueLabel}" BasedOn="{StaticResource {x:Type mui:ValueLabel}}">
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0 0 16 0" />
-        <Setter Property="Width" Value="160" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="DockPanel.Dock" Value="Left" />
-      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -56,159 +38,86 @@
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Delete_AppTooltip}" />
+        <Separator />
+        <Button Content="Edit icons" Command="{Binding ChangeIconCommand}" ToolTip="Edit windows’ icons" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
     <mui:SpacingStackPanel Spacing="8">
-      <StackPanel Style="{StaticResource SettingsPanel}">
-        <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
-          <Label Content="{x:Static g:AppStrings.AcObject_AppActivated}" />
-        </CheckBox>
+      <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
+        <Label Content="{x:Static g:AppStrings.AcObject_AppActivated}" />
+      </CheckBox>
 
-        <DockPanel Visibility="{Binding SelectedObject.Version, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-            ToolTip="Taken from changelog or readme files">
-          <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedObject}">
-            <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-                Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
-          </Button>
-          <Label Content="Version:" />
-          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Version, Mode=OneWay}" Placeholder="?" IsReadOnly="True" />
-        </DockPanel>
+      <StackPanel>
+        <TextBlock Text="Windows:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
+        <mui:Switch Value="{Binding SelectedObject.Windows.Value.Count, FallbackValue=0}" Background="Transparent"
+            ToolTip="You can add lines like “# app window: Window Name” to your code to help CM figure out their names" Height="27">
+          <mui:BooleanSwitch Value="{Binding SelectedObject.Windows.IsSet}" mui:Switch.When="0">
+            <mui:BooleanSwitch.True>
+              <mui:PlaceholderTextBlock Placeholder="No windows found" />
+            </mui:BooleanSwitch.True>
+            <mui:BooleanSwitch.False>
+              <mui:PlaceholderTextBlock Placeholder="Loading…" />
+            </mui:BooleanSwitch.False>
+          </mui:BooleanSwitch>
+          <ItemsControl ItemsSource="{Binding SelectedObject.Windows.Value}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}" Margin="0 0 4 4"
+                    Padding="4 2">
+                  <DockPanel>
+                    <mui:BetterImage Filename="{Binding IconOff}" Width="16" Height="16" Margin="0 0 4 0" PreviewMouseLeftButtonUp="OnWindowIconClick" />
+                    <TextBlock Text="{Binding DisplayName}" Background="{DynamicResource ButtonBackground}" Foreground="{DynamicResource ButtonText}" />
+                  </DockPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+        </mui:Switch>
+
+        <TextBlock Text="Tags:" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
+        <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.TrackSkinTagsListView}" />
+
+        <c:PropertiesGrid Columns="2" Margin="0 8 0 8">
+          <mui:BetterTextBox c:PropertiesGrid.Label="ID:" Text="{Binding SelectedObject.Id, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+
+          <mui:Cell ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+            <c:PropertiesGrid.Label>
+              <MultiBinding Converter="{x:Static selected:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
+                <Binding Path="SelectedObject" />
+                <Binding Path="SelectedObject.VersionInfoDisplay" />
+              </MultiBinding>
+            </c:PropertiesGrid.Label>
+            <FrameworkElement.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
+                <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+              </ContextMenu>
+            </FrameworkElement.ContextMenu>
+            <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedObject}">
+              <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                  Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
+            </Button>
+            <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" />
+            <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
+          </mui:Cell>
+        </c:PropertiesGrid>
+
+        <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
+        <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" Height="60"
+            Placeholder="None" />
       </StackPanel>
 
-      <ItemsControl ItemsSource="{Binding Configs}" Margin="0 0 8 0">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <DockPanel>
-              <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
-                  Visibility="{Binding IsResettable, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" Margin="0 0 0 8" />
-              <ItemsControl ItemsSource="{Binding Sections}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <DockPanel>
-                      <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top"
-                          Margin="20 0 0 8" TextWrapping="Wrap" Style="{StaticResource Label}" />
-                      <ItemsControl ItemsSource="{Binding}" Margin="40 0 0 20">
-                        <ItemsControl.ItemsPanel>
-                          <ItemsPanelTemplate>
-                            <mui:UniformGridWithOrientation Orientation="Vertical" VerticalSpacing="4" HorizontalSpacing="20" Columns="2" />
-                          </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                          <DataTemplate>
-                            <Border mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent">
-                              <FrameworkElement.ContextMenu>
-                                <ContextMenu IsEnabled="{Binding IsResettable}">
-                                  <MenuItem Header="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}" />
-                                </ContextMenu>
-                              </FrameworkElement.ContextMenu>
-
-                              <ContentControl Content="{Binding}" ToolTip="{Binding ToolTip}" IsEnabled="{Binding IsEnabled}">
-                                <ContentControl.Resources>
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigBoolValue}">
-                                    <CheckBox IsChecked="{Binding Value}">
-                                      <Label Content="{Binding DisplayName}" />
-                                    </CheckBox>
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigRangeValue}">
-                                    <DockPanel>
-                                      <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding Value}" mui:BetterTextBox.Mode="Number"
-                                          Postfix="{Binding Postfix}" Style="{StaticResource ValueLabel}" />
-                                      <Slider Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Value="{Binding Value}" TickFrequency="{Binding Tick}"
-                                          TickPlacement="BottomRight" />
-                                    </DockPanel>
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigKeyValue}">
-                                    <DockPanel Margin="2" Background="Transparent">
-                                      <DockPanel.ContextMenu>
-                                        <ContextMenu>
-                                          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}"
-                                              InputGestureText="Delete" />
-                                        </ContextMenu>
-                                      </DockPanel.ContextMenu>
-
-                                      <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}"
-                                          Style="{StaticResource Label}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="120" TextAlignment="Left" />
-                                      <Button CommandParameter="{Binding}" Style="{StaticResource WaitingButton}" Margin="0 0 8 0"
-                                          Command="{Binding DataContext.ToggleWaitingCommand, RelativeSource={RelativeSource AncestorType=selected:SelectedPythonAppPage}}">
-                                        <mui:Cell HorizontalAlignment="Stretch">
-                                          <mui:Cell
-                                              Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                                            <TextBlock Text="{Binding DisplayValue}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
-                                                TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}"
-                                                Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
-                                                Visibility="{Binding Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static forms:Keys.None}}"
-                                                TextTrimming="CharacterEllipsis" />
-                                            <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
-                                                Visibility="{Binding IsPressed, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                          </mui:Cell>
-                                          <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}"
-                                              HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
-                                              Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                              TextTrimming="CharacterEllipsis" />
-                                        </mui:Cell>
-                                      </Button>
-                                    </DockPanel>
-
-                                    <!--<DockPanel>
-                                      <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" Style="{StaticResource PropertyLabel}" />
-                                      <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" />
-                                    </DockPanel>-->
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigNumberValue}">
-                                    <DockPanel>
-                                      <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
-                                          Style="{StaticResource PropertyLabel}" />
-                                      <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" />
-                                    </DockPanel>
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigOptionsValue}">
-                                    <DockPanel>
-                                      <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
-                                          Style="{StaticResource PropertyLabel}" />
-                                      <mui:BetterComboBox ItemsSource="{Binding Values}" DisplayMemberPath="DisplayName"
-                                          SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False" />
-                                    </DockPanel>
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigFileValue}">
-                                    <DockPanel>
-                                      <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
-                                          Style="{StaticResource PropertyLabel}" />
-                                      <Button DockPanel.Dock="Right" Padding="4 2" Margin="2 0 0 0" Content="…" Click="OnFileButtonClick" />
-                                      <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" />
-                                    </DockPanel>
-                                  </DataTemplate>
-
-                                  <DataTemplate DataType="{x:Type t:PythonAppConfigValue}">
-                                    <DockPanel>
-                                      <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
-                                          Style="{StaticResource PropertyLabel}" />
-                                      <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" />
-                                    </DockPanel>
-                                  </DataTemplate>
-                                </ContentControl.Resources>
-                              </ContentControl>
-                            </Border>
-                          </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                      </ItemsControl>
-                    </DockPanel>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </DockPanel>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+      <c:MessageBlock CloseKey="appconfigsmoved" Margin="0 8 0 0">
+        <mui:BbCodeBlock BbCode="Configs were moved to [url=&quot;/Pages/Settings/PythonAppsSettings.xaml|_top&quot;]the Settings section[/url]." />
+      </c:MessageBlock>
     </mui:SpacingStackPanel>
 
   </c:AcObjectBase>
-</selected:SelectedAcObjectPage>
+</selected:SelectedAcJsonObjectPage>

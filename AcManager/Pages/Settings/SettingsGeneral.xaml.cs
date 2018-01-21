@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -166,6 +167,16 @@ namespace AcManager.Pages.Settings {
             if (!_loaded) return;
             _loaded = false;
             Model.Unload();
+        }
+
+        private int _clicks;
+
+        private void OnVersionClick(object sender, MouseButtonEventArgs e) {
+            if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 7 &&
+                    ModernDialog.ShowMessage(AppStrings.About_DeveloperMode, AppStrings.About_DeveloperMode_Title, MessageBoxButton.YesNo) ==
+                            MessageBoxResult.Yes) {
+                SettingsHolder.Common.DeveloperMode = true;
+            }
         }
     }
 }

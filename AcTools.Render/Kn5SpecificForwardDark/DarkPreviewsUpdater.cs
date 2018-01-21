@@ -11,6 +11,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
+using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -67,6 +68,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool FlatMirrorBlurred = false;
         public double FlatMirrorBlurMuiltiplier = 1d;
         public double FlatMirrorReflectiveness = 1d;
+        public bool FlatMirrorReflectedLight = false;
 
         public float CubemapAmbient = 0.5f;
         public bool CubemapAmbientWhite = true;
@@ -189,6 +191,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ FlatMirrorBlurred.GetHashCode();
                 if (FlatMirrorBlurMuiltiplier != 1d) hashCode = (hashCode * 397) ^ FlatMirrorBlurMuiltiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorReflectiveness.GetHashCode();
+                if (FlatMirrorReflectedLight) hashCode = (hashCode * 397) ^ 13214385;
                 hashCode = (hashCode * 397) ^ CubemapAmbient.GetHashCode();
                 hashCode = (hashCode * 397) ^ CubemapAmbientWhite.GetHashCode();
                 hashCode = (hashCode * 397) ^ UseBloom.GetHashCode();
@@ -359,7 +362,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.MsaaSampleCount = options.MsaaSampleCount;
 
             // Switches
-            renderer.ShowWireframe = options.WireframeMode;
+            renderer.WireframeMode = options.WireframeMode ? WireframeMode.LinesOnly : WireframeMode.Disabled;
             renderer.MeshDebug = options.MeshDebugMode;
 
             // Flat mirror
@@ -368,6 +371,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.FlatMirrorBlurred = options.FlatMirrorBlurred;
             renderer.FlatMirrorBlurMuiltiplier = (float)options.FlatMirrorBlurMuiltiplier;
             renderer.FlatMirrorReflectiveness = (float)options.FlatMirrorReflectiveness;
+            renderer.FlatMirrorReflectedLight = options.FlatMirrorReflectedLight;
 
             // Cool effects
             renderer.CubemapAmbient = options.CubemapAmbient;

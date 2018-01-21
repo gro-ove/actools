@@ -392,6 +392,7 @@
     <Compile Include="Miscellaneous\CupEventArgs.cs" />
     <Compile Include="Miscellaneous\FakeCarsHelper.cs" />
     <Compile Include="Miscellaneous\ICupSupportedObject.cs" />
+    <Compile Include="Miscellaneous\ILocalKeyBindingInput.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\OAuth.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
@@ -399,6 +400,18 @@
     <Compile Include="Objects\CarObject.CustomData.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
+    <Compile Include="Objects\PythonAppConfig.cs" />
+    <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
+    <Compile Include="Objects\PythonAppConfigFileValue.cs" />
+    <Compile Include="Objects\PythonAppConfigKeyValue.cs" />
+    <Compile Include="Objects\PythonAppConfigNumberValue.cs" />
+    <Compile Include="Objects\PythonAppConfigOptionsValue.cs" />
+    <Compile Include="Objects\PythonAppConfigRangeValue.cs" />
+    <Compile Include="Objects\PythonAppConfigs.cs" />
+    <Compile Include="Objects\PythonAppConfigSection.cs" />
+    <Compile Include="Objects\PythonAppConfigValue.cs" />
+    <Compile Include="Objects\PythonAppWindow.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />

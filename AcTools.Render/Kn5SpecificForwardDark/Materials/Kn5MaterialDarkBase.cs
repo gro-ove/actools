@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -6,6 +7,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
@@ -13,7 +15,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleBase : IRenderableMaterial {
+    public class Kn5MaterialDarkBase : IRenderableMaterial {
         public bool IsBlending { get; private set; }
 
         [NotNull]
@@ -25,7 +27,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         protected EffectDarkMaterial Effect { get; private set; }
 
-        internal Kn5MaterialSimpleBase([NotNull] Kn5MaterialDescription description) {
+        internal Kn5MaterialDarkBase([NotNull] Kn5MaterialDescription description) {
             if (description == null) throw new ArgumentNullException(nameof(description));
             if (description.Material == null) throw new ArgumentNullException(nameof(description.Material));
 
@@ -118,22 +120,83 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechGPass_Standard;
         }
 
-        protected EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.Shadow) {
-                return GetShadowTechnique();
-            }
+        private DarkMaterialsParams _materialsParams;
 
-            if (mode == SpecialRenderMode.GBuffer) {
-                Effect.FxGPassTransparent.Set(IsBlending);
-                Effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.01f : -1f);
-                return GetGBufferTechnique();
-            }
+        protected DarkMaterialsParams GetParams(IDeviceContextHolder contextHolder) {
+            return _materialsParams ?? (_materialsParams = contextHolder.Get<DarkMaterialsParams>());
+        }
 
-            return GetTechnique();
+        private void DrawShadow(IDeviceContextHolder contextHolder, int indices) {
+            GetShadowTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+        }
+
+        private void DrawGBuffer(IDeviceContextHolder contextHolder, int indices) {
+            Effect.FxGPassTransparent.Set(IsBlending);
+            Effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.01f : -1f);
+            if (GetParams(contextHolder).IsMirrored) {
+                contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.InvertedState;
+                GetGBufferTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+                contextHolder.DeviceContext.Rasterizer.State = null;
+            } else {
+                GetGBufferTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
+            }
+        }
+
+        protected virtual EffectDarkMaterial.StandartMaterial CreateWireframeMaterial() {
+            return new EffectDarkMaterial.StandartMaterial { Flags = EffectDarkMaterial.DebugUseReflAsColor };
+        }
+
+        private void DrawMain(IDeviceContextHolder contextHolder, int indices) {
+            var tech = GetTechnique();
+            var materialParams = GetParams(contextHolder);
+            var isMirrored = materialParams.IsMirrored;
+            switch (materialParams.WireframeMode) {
+                case WireframeMode.Disabled:
+                    if (isMirrored) {
+                        contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.InvertedState;
+                        tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                        contextHolder.DeviceContext.Rasterizer.State = null;
+                    } else {
+                        tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    }
+                    break;
+                case WireframeMode.LinesOnly:
+                    contextHolder.DeviceContext.Rasterizer.State = isMirrored
+                            ? contextHolder.States.WireframeInvertedState : contextHolder.States.WireframeState;
+                    tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    contextHolder.DeviceContext.Rasterizer.State = null;
+                    break;
+                case WireframeMode.Filled:
+                    contextHolder.DeviceContext.Rasterizer.State = isMirrored ? contextHolder.States.InvertedState : null;
+                    tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    var depth = contextHolder.DeviceContext.OutputMerger.DepthStencilState;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+                    contextHolder.DeviceContext.Rasterizer.State = materialParams.IsMirrored
+                            ? contextHolder.States.WireframeInvertedBiasState : contextHolder.States.WireframeBiasState;
+                    if (materialParams.IsWireframeColored) {
+                        var v = materialParams.WireframeColor.ToVector3() * materialParams.WireframeBrightness;
+                        Effect.FxMaterial.Set(CreateWireframeMaterial());
+                        Effect.FxReflectiveMaterial.Set(new EffectDarkMaterial.ReflectiveMaterial { FresnelC = v.X, FresnelExp = v.Y, FresnelMaxLevel = v.Z });
+                        (IsBlending ? Effect.TechDebug : Effect.TechDebug_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                    } else {
+                        (IsBlending ? Effect.TechStandard : Effect.TechStandard_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                    }
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = depth;
+                    contextHolder.DeviceContext.Rasterizer.State = null;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public virtual void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            GetTechnique(mode).DrawAllPasses(contextHolder.DeviceContext, indices);
+            if (mode == SpecialRenderMode.Shadow) {
+                DrawShadow(contextHolder, indices);
+            } else if (mode == SpecialRenderMode.GBuffer) {
+                DrawGBuffer(contextHolder, indices);
+            } else {
+                DrawMain(contextHolder, indices);
+            }
         }
 
         public void Dispose() {}

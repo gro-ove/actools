@@ -4,6 +4,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
+using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -307,8 +308,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 noGround ? FlatMirrorMode.ShadowOnlyGround :
                         opaqueMode ? FlatMirrorMode.SolidGround : FlatMirrorMode.TransparentMirror) {}
 
-        private RasterizerState _rasterizerState;
-
         public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.GBuffer) return;
             _object.Draw(holder, camera, mode, filter);
@@ -319,25 +318,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _object.Draw(holder, camera, mode);
         }
 
-        public void DrawReflection(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null,
-                RasterizerState rasterizerState = null) {
+        public void DrawReflection(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (camera != null && camera.Position.Y > 0) {
-                var state = contextHolder.DeviceContext.Rasterizer.State;
                 try {
-                    contextHolder.DeviceContext.Rasterizer.State = rasterizerState ?? _rasterizerState ?? contextHolder.States.InvertedState;
+                    contextHolder.Get<DarkMaterialsParams>().IsMirrored = true;
                     base.Draw(contextHolder, camera, mode, filter);
                 } finally {
-                    contextHolder.DeviceContext.Rasterizer.State = state;
+                    contextHolder.Get<DarkMaterialsParams>().IsMirrored = false;
                 }
             }
         }
 
         public void SetMode(IDeviceContextHolder contextHolder, FlatMirrorMode mode) {
             _object.SetMode(contextHolder, mode);
-        }
-
-        public void SetInvertedRasterizerState(RasterizerState state) {
-            _rasterizerState = state;
         }
 
         public override void Dispose() {

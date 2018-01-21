@@ -378,6 +378,7 @@ namespace AcManager.Tools.GameProperties {
 
             private static readonly Dictionary<string, JoyCommandBase> ExtraCommands;
             private static bool _isInPits, _isDriving;
+            private static bool _delaysAvailable;
 
             static MemoryListener() {
                 var startStopSession = new CallbackJoyCommand(() => {
@@ -405,7 +406,7 @@ namespace AcManager.Tools.GameProperties {
                 AcSharedMemory.Instance.Updated += (sender, args) => {
                     _isInPits = args.Current?.Graphics.IsInPits == true;
                     _isDriving = IsDriving(args.Current);
-                    startStopSession.DelayedName = _isDriving ? "Setup car in pits" : null;
+                    startStopSession.DelayedName = _isDriving && _delaysAvailable ? "Setup car in pits" : null;
 
                     bool IsDriving(AcShared shared) {
                         if (shared == null) return false;
@@ -480,13 +481,16 @@ namespace AcManager.Tools.GameProperties {
 
             public MemoryListener() {
                 var ini = new IniFile(AcPaths.GetCfgControlsFilename());
+                var isAcFullscreen = new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"].GetBool("FULLSCREEN", false);
+                var isCmAppInstalled = CmInGameAppHelper.IsAvailable();
                 var delayEnabled = ini["__EXTRA_CM"].GetBool("DELAY_SPECIFIC_SYSTEM_COMMANDS", true);
                 var showDelay = delayEnabled && ini["__EXTRA_CM"].GetBool("SHOW_SYSTEM_DELAYS", true);
-                var isAcFullscreen = new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"].GetBool("FULLSCREEN", false);
                 _ignorePovInPits = ini["__EXTRA_CM"].GetBool("SYSTEM_IGNORE_POV_IN_PITS", true);
 
                 var keyToCommand = new Dictionary<Keys, JoyCommandBase>();
                 var joyToCommand = new Dictionary<JoyKey, JoyCommandBase>();
+                var delaysAvailable = delayEnabled && (!isAcFullscreen || isCmAppInstalled);
+                _delaysAvailable = delaysAvailable;
 
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
                     var section = ini[n];
@@ -499,7 +503,7 @@ namespace AcManager.Tools.GameProperties {
                     var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
                     var key = section.GetInt("KEY", -1);
 
-                    var delayedName = delayEnabled ? AcSettingsHolder.Controls.SystemRaceButtonEntries.FirstOrDefault(
+                    var delayedName = delaysAvailable ? AcSettingsHolder.Controls.SystemRaceButtonEntries.FirstOrDefault(
                             x => x.Delayed && x.WheelButton.Id == n)?.WheelButton.DisplayName : null;
 
                     if (isExtra && key != -1) {

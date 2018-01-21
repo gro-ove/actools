@@ -16,6 +16,8 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public int Height => Description.Height;
 
+        public Vector2 Size => new Vector2(Width, Height);
+
         /// <summary>
         /// Commonly used in shaders.
         /// </summary>
@@ -31,7 +33,7 @@ namespace AcTools.Render.Base.TargetTextures {
             if (holder == null) throw new ArgumentNullException(nameof(holder));
             if (width == Width && height == Height && (!sample.HasValue || sample == Description.SampleDescription)) return false;
             Dispose();
-            
+
             Description.Width = width;
             Description.Height = height;
             Description.SampleDescription = sample ?? DefaultSampleDescription;

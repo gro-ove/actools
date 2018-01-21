@@ -66,7 +66,7 @@
       <CheckBox IsChecked="{Binding Controls.HardwareLock}" mui:NewMarkService.New="True">
         <CheckBox.ToolTip>
           <mui:BbCodeBlock MaxWidth="480"
-              BbCode="CM will try to adjust device’s steering lock, [b]very experimental[/b].[br][br]Be ready to fix steering lock in device’s settings in case CM will fail to revert it back." />
+              BbCode="CM will try to adjust device’s steering lock, [b]experimental[/b].[br][br]If you adjusted [mono][b]STEER/SCALE[/b][/mono] in [mono][b]config.ini[/mono][/b], you might want to change it back, especially now when CM can sync virtual and real steering wheels automatically. Be ready to fix steering lock in device’s settings in case CM will fail to revert it back.[br][br]If you want to see your device added here and ready to do some testing of various pre-release builds, please, contact me, maybe there is a way." />
         </CheckBox.ToolTip>
         <DockPanel Style="{x:Null}">
           <Label Content="Try to set hardware lock" DockPanel.Dock="Top" Margin="0 0 0 2" />

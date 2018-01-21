@@ -19,8 +19,9 @@ namespace AcManager.DiscordRpc {
             Logging.Warning(message, m, p, l);
         }
 
-        public static string Limit([CanBeNull] this string s, int length) {
-            return s != null && s.Length > length ? s.Substring(0, length) : s;
+        [NotNull]
+        public static string Limit([CanBeNull] this string s, int length, [NotNull] string alternativeValue) {
+            return string.IsNullOrWhiteSpace(s) ? alternativeValue : s.Length > length ? s.Substring(0, length) : s;
         }
 
         public static long ToTimestamp(this DateTime dt) {

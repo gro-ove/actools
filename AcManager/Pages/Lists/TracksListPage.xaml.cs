@@ -72,9 +72,9 @@ namespace AcManager.Pages.Lists {
         private static string _selectNextTrackLayoutId; // TODO
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var track = obj as TrackObjectBase;
-            if (track == null) return;
-            QuickDrive.Show(track: track);
+            if (obj is TrackObjectBase track) {
+                QuickDrive.Show(track: track);
+            }
         }
     }
 }

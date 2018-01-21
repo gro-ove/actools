@@ -5,7 +5,7 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class DebugColliderMaterial : Kn5MaterialSimpleBase {
+    public class DebugColliderMaterial : Kn5MaterialDarkBase {
         public DebugColliderMaterial() : base(new Kn5MaterialDescription(new Kn5Material {
             BlendMode = Kn5MaterialBlendMode.AlphaBlend,
             DepthMode = Kn5MaterialDepthMode.DepthOff

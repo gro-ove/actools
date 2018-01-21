@@ -83,7 +83,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private void Watcher_Changed(object sender, FileSystemEventArgs e) {
             if (!LiveReload || _directory == null) return;
 
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
+            var local = FileUtils.GetPathWithin(e.FullPath, _directory);
             if (!string.IsNullOrEmpty(local)) {
                 UpdateOverrideLater(e.FullPath);
             }
@@ -92,7 +92,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private void Watcher_Created(object sender, FileSystemEventArgs e) {
             if (!LiveReload || _directory == null) return;
 
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
+            var local = FileUtils.GetPathWithin(e.FullPath, _directory);
             if (!string.IsNullOrEmpty(local)) {
                 UpdateOverrideLater(e.FullPath);
             }
@@ -101,7 +101,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private void Watcher_Deleted(object sender, FileSystemEventArgs e) {
             if (!LiveReload || _directory == null) return;
 
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
+            var local = FileUtils.GetPathWithin(e.FullPath, _directory);
             if (!string.IsNullOrEmpty(local)) {
                 UpdateOverrideLater(e.FullPath);
             }
@@ -110,8 +110,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private void Watcher_Renamed(object sender, RenamedEventArgs e) {
             if (!LiveReload || _directory == null) return;
 
-            var localOld = FileUtils.TryToGetRelativePath(e.OldFullPath, _directory);
-            var localNew = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
+            var localOld = FileUtils.GetPathWithin(e.OldFullPath, _directory);
+            var localNew = FileUtils.GetPathWithin(e.FullPath, _directory);
 
             if (!string.IsNullOrEmpty(localOld)) {
                 UpdateOverrideLater(e.OldFullPath);
@@ -125,7 +125,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private async void UpdateOverrideLater([NotNull] string filename) {
             if (_directory == null) return;
 
-            var local = FileUtils.TryToGetRelativePath(filename, _directory)?.ToLowerInvariant();
+            var local = FileUtils.GetPathWithin(filename, _directory)?.ToLowerInvariant();
             if (string.IsNullOrEmpty(local)) return;
 
             IRenderableTexture texture;

@@ -7,11 +7,11 @@ using AcTools.Render.Shaders;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleMirror : Kn5MaterialSimpleBase {
+    public class Kn5MaterialDarkMirror : Kn5MaterialDarkBase {
         private EffectDarkMaterial.StandartMaterial _material;
         private EffectDarkMaterial.ReflectiveMaterial _reflMaterial;
 
-        internal Kn5MaterialSimpleMirror() : base(new Kn5MaterialDescription(new Kn5Material())) { }
+        internal Kn5MaterialDarkMirror() : base(new Kn5MaterialDescription(new Kn5Material())) { }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectDarkMaterial.StandartMaterial {

@@ -32,7 +32,7 @@ namespace AcManager.Tools.Objects {
             var manager = new TrackSkinsManager(Id, new InheritingAcDirectories(FileAcManager.Directories, SkinsDirectory), OnSkinsCollectionReady) {
                 ScanWrapper = this
             };
-            manager.Created += OnSkinsManagerCreated;
+            manager.Created += OnTrackSkinCreated;
             return manager;
         }
 
@@ -50,10 +50,11 @@ namespace AcManager.Tools.Objects {
             UpdateDisplayActiveSkins();
         }
 
-        private void OnSkinsManagerCreated(object sender, AcObjectEventArgs<TrackSkinObject> args) {
+        private void OnTrackSkinCreated(object sender, AcObjectEventArgs<TrackSkinObject> args) {
             if (_skinsActiveIds == null) {
                 try {
-                    _skinsActiveIds = JArray.Parse(File.ReadAllText(SkinsCombinedFilename)).Select(x => (string)x).NonNull().ToList();
+                    _skinsActiveIds = File.Exists(SkinsCombinedFilename)
+                            ? JArray.Parse(File.ReadAllText(SkinsCombinedFilename)).Select(x => (string)x).NonNull().ToList() : new List<string>();
                 } catch (Exception e) {
                     _skinsActiveIds = new List<string>();
                     Logging.Warning(e);
@@ -61,18 +62,11 @@ namespace AcManager.Tools.Objects {
             }
 
             if (_skinsActiveIds.Contains(args.AcObject.Id)) {
+                Logging.Debug("A");
                 _busyApplyingSkins.Do(() => args.AcObject.IsActive = true);
+                Logging.Debug("B");
             }
-
-            /*_errors.Add(args.AcObject.Errors);
-            args.AcObject.AcObjectOutdated += OnAcObjectOutdated;*/
         }
-
-        /*private void OnAcObjectOutdated(object sender, EventArgs e) {
-            var ac = (AcCommonObject)sender;
-            ac.AcObjectOutdated -= OnAcObjectOutdated;
-            _errors.Remove(ac.Errors);
-        }*/
 
         protected override void OnAcObjectOutdated() {
             foreach (var obj in SkinsManager.LoadedOnly) {
@@ -100,6 +94,7 @@ namespace AcManager.Tools.Objects {
         private bool _again, _working;
 
         public void ForceSkinEnabled([NotNull] TrackSkinObject skin) {
+            Logging.Debug("AA");
             if (_busyApplyingSkins.Is) {
                 foreach (var other in EnabledOnlySkins.ApartFrom(skin)) {
                     other.IsActive = false;
@@ -114,6 +109,7 @@ namespace AcManager.Tools.Objects {
                     ApplySkins(GetActiveSkins());
                 });
             }
+            Logging.Debug("AB");
         }
 
         private void Try(Action action, ref int totalFailures, int attempts = 3) {
@@ -241,12 +237,6 @@ namespace AcManager.Tools.Objects {
                 return;
             }
 
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                Logging.Debug(e);
-            }
-
             UpdateDisplayActiveSkins();
             _busyApplyingSkins.Task(async () => {
                 ApplyingSkins = true;
@@ -310,8 +300,13 @@ namespace AcManager.Tools.Objects {
         public AcEnabledOnlyCollection<TrackSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
 
         private void UpdateDisplayActiveSkins() {
-            var v = SkinsManager.EnabledOnly.Where(x => x.IsActive).Select(x => x.DisplayName).JoinToReadableString();
-            DisplayActiveSkins = string.IsNullOrWhiteSpace(v) ? "No skins found" : v;
+            if (EnabledOnlySkins.Count == 0) {
+                DisplayActiveSkins = "No skins found";
+                return;
+            }
+
+            var v = EnabledOnlySkins.Where(x => x.IsActive).Select(x => x.DisplayName).JoinToReadableString();
+            DisplayActiveSkins = string.IsNullOrWhiteSpace(v) ? "No active skins" : v;
         }
 
         private string _displayActiveSkins;
@@ -320,12 +315,13 @@ namespace AcManager.Tools.Objects {
             get => _displayActiveSkins;
             set {
                 if (Equals(value, _displayActiveSkins)) return;
+                Logging.Debug(value);
                 _displayActiveSkins = value;
                 OnPropertyChanged();
             }
         }
 
-        /* TODO: force sorting by ID! */
+        /* TODO: Force sorting by ID! */
 
         [CanBeNull]
         private TrackSkinObject _selectedSkin;

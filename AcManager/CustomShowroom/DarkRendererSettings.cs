@@ -20,6 +20,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
+using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -93,6 +94,7 @@ namespace AcManager.CustomShowroom {
         };
 
         public static ToneMappingFn[] ToneMappings { get; } = EnumExtension.GetValues<ToneMappingFn>();
+        public static WireframeMode[] WireframeModes { get; } = EnumExtension.GetValues<WireframeMode>();
         public static AoType[] AoTypes { get; } = EnumExtension.GetValues<AoType>().Where(AoTypeExtension.IsProductionReady).ToArray();
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
 
@@ -167,6 +169,7 @@ namespace AcManager.CustomShowroom {
             public virtual float AmbientBrightness { get; set; } = 3.0f;
             public virtual float BackgroundBrightness { get; set; } = 0.2f;
             public virtual float FlatMirrorReflectiveness { get; set; } = 0.6f;
+            public virtual bool FlatMirrorReflectedLight { get; set; } = false;
             public virtual float LightBrightness { get; set; }
             public virtual float Lightθ { get; set; } = 50f;
             public virtual float Lightφ { get; set; } = 104f;
@@ -186,6 +189,13 @@ namespace AcManager.CustomShowroom {
             [JsonProperty("SsaoOpacity")]
             public virtual float AoOpacity { get; set; } = 0.3f;
             public virtual float AoRadius { get; set; } = 1f;
+
+            public virtual bool MeshDebug { get; set; } = false;
+            public virtual bool MeshDebugWithEmissive { get; set; } = true;
+            public virtual WireframeMode WireframeMode { get; set; } = WireframeMode.Disabled;
+            public virtual bool IsWireframeColored { get; set; } = true;
+            public virtual Color WireframeColor { get; set; } = Colors.White;
+            public virtual float WireframeBrightness { get; set; } = 2.5f;
 
             public virtual bool UseDof { get; set; } = true;
             public virtual float DofFocusPlane { get; set; } = 1.6f;
@@ -355,6 +365,7 @@ namespace AcManager.CustomShowroom {
             obj.AmbientBrightness = Renderer.AmbientBrightness;
             obj.BackgroundBrightness = Renderer.BackgroundBrightness;
             obj.FlatMirrorReflectiveness = Renderer.FlatMirrorReflectiveness;
+            obj.FlatMirrorReflectedLight = Renderer.FlatMirrorReflectedLight;
             obj.LightBrightness = Renderer.LightBrightness;
             obj.Lightθ = LightθDeg;
             obj.Lightφ = LightφDeg;
@@ -372,6 +383,13 @@ namespace AcManager.CustomShowroom {
             obj.PcssLightScale = Renderer.PcssLightScale;
             obj.AoOpacity = Renderer.AoOpacity;
             obj.AoRadius = Renderer.AoRadius;
+
+            obj.MeshDebug = Renderer.MeshDebug;
+            obj.MeshDebugWithEmissive = Renderer.MeshDebugWithEmissive;
+            obj.WireframeMode = Renderer.WireframeMode;
+            obj.IsWireframeColored = Renderer.IsWireframeColored;
+            obj.WireframeColor = WireframeColor;
+            obj.WireframeBrightness = Renderer.WireframeBrightness;
 
             obj.UseDof = Renderer.UseDof;
             obj.DofFocusPlane = Renderer.DofFocusPlane;
@@ -587,6 +605,7 @@ namespace AcManager.CustomShowroom {
             Renderer.AmbientBrightness = o.AmbientBrightness;
             Renderer.BackgroundBrightness = o.BackgroundBrightness;
             Renderer.FlatMirrorReflectiveness = o.FlatMirrorReflectiveness;
+            Renderer.FlatMirrorReflectedLight = o.FlatMirrorReflectedLight;
             Renderer.LightBrightness = o.LightBrightness;
             LightθDeg = o.Lightθ;
             LightφDeg = o.Lightφ;
@@ -647,6 +666,13 @@ namespace AcManager.CustomShowroom {
             Renderer.PcssLightScale = o.PcssLightScale;
             Renderer.AoOpacity = o.AoOpacity;
             Renderer.AoRadius = o.AoRadius;
+
+            Renderer.MeshDebug = o.MeshDebug;
+            Renderer.MeshDebugWithEmissive = o.MeshDebugWithEmissive;
+            Renderer.WireframeMode = o.WireframeMode;
+            Renderer.IsWireframeColored = o.IsWireframeColored;
+            WireframeColor = o.WireframeColor;
+            Renderer.WireframeBrightness = o.WireframeBrightness;
 
             Renderer.UseDof = o.UseDof;
             Renderer.DofFocusPlane = o.DofFocusPlane;
@@ -804,7 +830,7 @@ namespace AcManager.CustomShowroom {
             _presetableKeyValue = presetableKeyValue;
             Renderer = renderer;
             Renderer.SetLightsDescriptionProvider(this);
-            TryToGuessCarLights = ValuesStorage.Get<bool>(KeyTryToGuessCarLights, true);
+            TryToGuessCarLights = ValuesStorage.Get(KeyTryToGuessCarLights, true);
 
             CameraPosition.PropertyChanged += OnCameraCoordinatePropertyChanged;
             CameraLookAt.PropertyChanged += OnCameraCoordinatePropertyChanged;
@@ -836,6 +862,7 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.AmbientBrightness):
                 case nameof(Renderer.BackgroundBrightness):
                 case nameof(Renderer.FlatMirrorReflectiveness):
+                case nameof(Renderer.FlatMirrorReflectedLight):
                 case nameof(Renderer.LightBrightness):
                 case nameof(Renderer.MaterialsReflectiveness):
                 case nameof(Renderer.CarShadowsOpacity):
@@ -858,7 +885,47 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.AccumulationDofApertureSize):
                 case nameof(Renderer.AccumulationDofIterations):
                 case nameof(Renderer.CubemapReflectionFacesPerFrame):
+                case nameof(Renderer.MeshDebug):
+                case nameof(Renderer.MeshDebugWithEmissive):
+                case nameof(Renderer.WireframeMode):
+                case nameof(Renderer.IsWireframeColored):
+                case nameof(Renderer.WireframeBrightness):
                     ActionExtension.InvokeInMainThread(SaveLater);
+                    break;
+
+                case nameof(Renderer.LightColor):
+                    ActionExtension.InvokeInMainThread(() => {
+                        OnPropertyChanged(nameof(LightColor));
+                        SaveLater();
+                    });
+                    break;
+
+                case nameof(Renderer.AmbientDown):
+                    ActionExtension.InvokeInMainThread(() => {
+                        OnPropertyChanged(nameof(AmbientDownColor));
+                        SaveLater();
+                    });
+                    break;
+
+                case nameof(Renderer.AmbientUp):
+                    ActionExtension.InvokeInMainThread(() => {
+                        OnPropertyChanged(nameof(AmbientUpColor));
+                        SaveLater();
+                    });
+                    break;
+
+                case nameof(Renderer.BackgroundColor):
+                    ActionExtension.InvokeInMainThread(() => {
+                        OnPropertyChanged(nameof(BackgroundColor));
+                        SaveLater();
+                    });
+                    break;
+
+                case nameof(Renderer.WireframeColor):
+                    ActionExtension.InvokeInMainThread(() => {
+                        OnPropertyChanged(nameof(WireframeColor));
+                        SaveLater();
+                    });
                     break;
 
                 case nameof(Renderer.Lights):
@@ -1190,40 +1257,31 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        // All OnPropertyChanged() are handled by OnRendererPropertyChanged()
+        // TODO: Use converter instead?
         public Color BackgroundColor {
             get => Renderer.BackgroundColor.ToColor();
-            set {
-                if (Equals(value, BackgroundColor)) return;
-                Renderer.BackgroundColor = value.ToColor();
-                OnPropertyChanged();
-            }
+            set => Renderer.BackgroundColor = value.ToColor();
+        }
+
+        public Color WireframeColor {
+            get => Renderer.WireframeColor.ToColor();
+            set => Renderer.WireframeColor = value.ToColor();
         }
 
         public Color LightColor {
             get => Renderer.LightColor.ToColor();
-            set {
-                if (Equals(value, LightColor)) return;
-                Renderer.LightColor = value.ToColor();
-                OnPropertyChanged();
-            }
+            set => Renderer.LightColor = value.ToColor();
         }
 
         public Color AmbientDownColor {
             get => Renderer.AmbientDown.ToColor();
-            set {
-                if (Equals(value, AmbientDownColor)) return;
-                Renderer.AmbientDown = value.ToColor();
-                OnPropertyChanged();
-            }
+            set => Renderer.AmbientDown = value.ToColor();
         }
 
         public Color AmbientUpColor {
             get => Renderer.AmbientUp.ToColor();
-            set {
-                if (Equals(value, AmbientUpColor)) return;
-                Renderer.AmbientUp = value.ToColor();
-                OnPropertyChanged();
-            }
+            set => Renderer.AmbientUp = value.ToColor();
         }
         #endregion
 

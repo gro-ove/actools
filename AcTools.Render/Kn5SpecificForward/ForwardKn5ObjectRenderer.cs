@@ -374,7 +374,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         protected override void DrawScene() {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = GetRasterizerState();
+            DeviceContext.Rasterizer.State = null;
 
             // draw a scene, apart from car
             if (ShowroomNode != null) {

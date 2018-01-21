@@ -30,7 +30,8 @@
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Path:" />
-          <mui:BetterTextBox Text="{Binding ObjectPath, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:BetterTextBox Text="{Binding ObjectPath, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?"
+              ToolTip="{Binding ObjectPath, Mode=OneWay}" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Material:" />
@@ -51,6 +52,10 @@
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Vertices:" />
           <mui:BetterTextBox Text="{Binding VerticesCount, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+        </DockPanel>
+        <DockPanel>
+          <Label DockPanel.Dock="Left" Width="100" Content="Flags:" />
+          <mui:BetterTextBox Text="{Binding Flags, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
         </DockPanel>
 
         <uc:BakedShadowsSettings Margin="0 20 0 0" DataContext="{Binding BakedShadows}"

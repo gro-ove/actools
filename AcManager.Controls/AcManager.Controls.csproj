@@ -149,6 +149,8 @@
     <Compile Include="Helpers\CupUi.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\FilterHints.cs" />
+    <Compile Include="Helpers\ILocalKeyBindings.cs" />
+    <Compile Include="Helpers\LocalKeyBindingsController.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
     <Compile Include="Presentation\ExtraProgressRings.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
@@ -245,7 +247,7 @@
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
-    <Compile Include="Helpers\FinishableControl.cs" />
+    <Compile Include="Helpers\IFinishableControl.cs" />
     <Compile Include="ViewModels\AcListPageViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapper.cs" />
     <Compile Include="ViewModels\AcObjectSorter.cs" />

@@ -58,7 +58,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             var watcher = Get(directory);
 
             void OnCreated(object sender, FileSystemEventArgs e) {
-                var local = FileUtils.TryToGetRelativePath(e.FullPath, directory);
+                var local = FileUtils.GetPathWithin(e.FullPath, directory);
                 if (local == string.Empty) {
                     callback(null);
                 } else if (local != null) {
@@ -67,14 +67,14 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             void OnChanged(object sender, FileSystemEventArgs e) {
-                var local = FileUtils.TryToGetRelativePath(e.FullPath, directory);
+                var local = FileUtils.GetPathWithin(e.FullPath, directory);
                 if (!string.IsNullOrEmpty(local)) {
                     callback(e.FullPath);
                 }
             }
 
             void OnDeleted(object sender, FileSystemEventArgs e) {
-                var local = FileUtils.TryToGetRelativePath(e.FullPath, directory);
+                var local = FileUtils.GetPathWithin(e.FullPath, directory);
                 if (local == string.Empty) {
                     callback(null);
                 } else if (local != null) {
@@ -83,8 +83,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             void OnRenamed(object sender, RenamedEventArgs e) {
-                var localOld = FileUtils.TryToGetRelativePath(e.OldFullPath, directory);
-                var localNew = FileUtils.TryToGetRelativePath(e.FullPath, directory);
+                var localOld = FileUtils.GetPathWithin(e.OldFullPath, directory);
+                var localNew = FileUtils.GetPathWithin(e.FullPath, directory);
 
                 if (localOld == string.Empty || localNew == string.Empty) {
                     callback(null);

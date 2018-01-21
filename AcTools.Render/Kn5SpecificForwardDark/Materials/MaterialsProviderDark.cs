@@ -24,7 +24,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             switch (key as string) {
                 case BasicMaterials.MirrorKey:
-                    return new Kn5MaterialSimpleMirror();
+                    return new Kn5MaterialDarkMirror();
                 case BasicMaterials.DebugLinesKey:
                     return new DebugLinesMaterial();
                 case BasicMaterials.DebugColliderKey:
@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                     return new InvisibleMaterial();
 
                 case "GL":
-                    return new Kn5MaterialSimpleGl(description);
+                    return new Kn5MaterialDarkGl(description);
 
                 case "ksTyres":
                 case "ksBrakeDisc":
@@ -100,11 +100,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
                 case "ksSky":
                 case "ksSkyBox":
-                    return new Kn5MaterialSimpleSky(description);
+                    return new Kn5MaterialDarkSky(description);
 
                 default:
                     if (shader.IndexOf("skinned", StringComparison.OrdinalIgnoreCase) != -1) {
-                        return new Kn5MaterialSimpleSkinnedGl(description);
+                        return new Kn5MaterialDarkSkinnedGl(description);
                     }
 
                     return new Kn5MaterialDark(description);

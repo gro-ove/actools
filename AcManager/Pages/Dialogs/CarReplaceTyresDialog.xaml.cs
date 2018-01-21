@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls.WebParts;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -145,8 +146,7 @@ namespace AcManager.Pages.Dialogs {
                     TyresView.CustomSort = this;
                     TyresView.Filter = o => {
                         if (_filterObj == null) return true;
-                        var t = o as TyresEntry;
-                        return t != null && _filterObj.Test(t);
+                        return o is TyresEntry t && _filterObj.Test(t);
                     };
                 }
 
@@ -381,11 +381,8 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public object Convert(IDataObject data) {
-                var set = data.GetData(TyresSet.DraggableFormat) as TyresSet;
-                if (set != null) return set;
-
-                var tyre = data.GetData(TyresEntry.DraggableFormat) as TyresEntry;
-                if (tyre != null) {
+                if (data.GetData(TyresSet.DraggableFormat) is TyresSet set) return set;
+                if (data.GetData(TyresEntry.DraggableFormat) is TyresEntry tyre) {
                     if (SetsVersion != tyre.Version) {
                         UpdateVersionLater(tyre);
                         return null;
@@ -532,8 +529,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 var sets = GetSets(target).ToList();
                 if (sets.Count == 0) {
-                    ShowMessage("Can’t detect current tyres params", ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
-                    return false;
+                    throw new Exception("Can’t detect current tyres params");
                 }
 
                 var list = await GetList(SettingsHolder.Content.CarReplaceTyresDonorFilter);
@@ -1071,52 +1067,48 @@ namespace AcManager.Pages.Dialogs {
         public static IValueConverter AppropriateLevelToColorConverter { get; } = new AppropriateLevelToColorConverterInner();
 
         private async void OnFrontSlotDrop(object sender, DragEventArgs e) {
-            var tyre = e.Data.GetData(TyresEntry.DraggableFormat) as TyresEntry;
-            if (tyre == null) return;
+            if (e.Data.GetData(TyresEntry.DraggableFormat) is TyresEntry tyre) {
+                e.Handled = true;
 
-            e.Handled = true;
+                if (((FrameworkElement)sender).DataContext is TyresSet set) {
+                    e.Effects = DragDropEffects.Copy;
 
-            var set = ((FrameworkElement)sender).DataContext as TyresSet;
-            if (set == null) return;
+                    await Task.Delay(1);
+                    if (Model.PrepareTyre(tyre, false)) {
+                        if (Keyboard.Modifiers == ModifierKeys.Shift && _draggingFrom != null) {
+                            if (_draggingFromRearSlot) {
+                                _draggingFrom.Rear = set.Front;
+                            } else {
+                                _draggingFrom.Front = set.Front;
+                            }
+                        }
 
-            e.Effects = DragDropEffects.Copy;
-
-            await Task.Delay(1);
-            if (Model.PrepareTyre(tyre, false)) {
-                if (Keyboard.Modifiers == ModifierKeys.Shift && _draggingFrom != null) {
-                    if (_draggingFromRearSlot) {
-                        _draggingFrom.Rear = set.Front;
-                    } else {
-                        _draggingFrom.Front = set.Front;
+                        set.Front = tyre;
                     }
                 }
-
-                set.Front = tyre;
             }
         }
 
         private async void OnRearSlotDrop(object sender, DragEventArgs e) {
-            var tyre = e.Data.GetData(TyresEntry.DraggableFormat) as TyresEntry;
-            if (tyre == null) return;
+            if (e.Data.GetData(TyresEntry.DraggableFormat) is TyresEntry tyre) {
+                e.Handled = true;
 
-            e.Handled = true;
+                if (((FrameworkElement)sender).DataContext is TyresSet set) {
+                    e.Effects = DragDropEffects.Copy;
 
-            var set = ((FrameworkElement)sender).DataContext as TyresSet;
-            if (set == null) return;
+                    await Task.Delay(1);
+                    if (Model.PrepareTyre(tyre, true)) {
+                        if (Keyboard.Modifiers == ModifierKeys.Shift && _draggingFrom != null) {
+                            if (_draggingFromRearSlot) {
+                                _draggingFrom.Rear = set.Rear;
+                            } else {
+                                _draggingFrom.Front = set.Rear;
+                            }
+                        }
 
-            e.Effects = DragDropEffects.Copy;
-
-            await Task.Delay(1);
-            if (Model.PrepareTyre(tyre, true)) {
-                if (Keyboard.Modifiers == ModifierKeys.Shift && _draggingFrom != null) {
-                    if (_draggingFromRearSlot) {
-                        _draggingFrom.Rear = set.Rear;
-                    } else {
-                        _draggingFrom.Front = set.Rear;
+                        set.Rear = tyre;
                     }
                 }
-
-                set.Rear = tyre;
             }
         }
 
@@ -1124,19 +1116,17 @@ namespace AcManager.Pages.Dialogs {
         private bool _draggingFromRearSlot;
 
         private void OnFrontSlotMouseDown(object sender, MouseButtonEventArgs e) {
-            var set = ((FrameworkElement)sender).DataContext as TyresSet;
-            if (set == null) return;
-
-            _draggingFrom = set;
-            _draggingFromRearSlot = false;
+            if (((FrameworkElement)sender).DataContext is TyresSet set) {
+                _draggingFrom = set;
+                _draggingFromRearSlot = false;
+            }
         }
 
         private void OnRearSlotMouseDown(object sender, MouseButtonEventArgs e) {
-            var set = ((FrameworkElement)sender).DataContext as TyresSet;
-            if (set == null) return;
-
-            _draggingFrom = set;
-            _draggingFromRearSlot = true;
+            if (((FrameworkElement)sender).DataContext is TyresSet set) {
+                _draggingFrom = set;
+                _draggingFromRearSlot = true;
+            }
         }
     }
 

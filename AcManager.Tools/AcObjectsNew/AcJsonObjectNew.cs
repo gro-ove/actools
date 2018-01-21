@@ -178,7 +178,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id.StartsWith(@"ks_");
         }
 
-        protected void LoadVersionInfo(JObject json) {
+        protected virtual void LoadVersionInfo(JObject json) {
             if (TestIfKunos()) {
                 Author = AuthorKunos;
             } else {

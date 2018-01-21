@@ -8,17 +8,9 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public enum TesselationMode {
-        Disabled, Phong, Pn
-    }
-
     public class Kn5MaterialDarkMaps : Kn5MaterialDarkReflective {
-        // Temporary
-        public static TesselationMode TesselationMode;
-
         private EffectDarkMaterial.MapsMaterial _material;
         private IRenderableTexture _txNormal, _txMaps, _txDetails, _txDetailsNormal;
         private bool _hasNormalMap;
@@ -95,30 +87,28 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            var tech = GetTechnique(mode);
+        /*private void DrawTesselation(IDeviceContextHolder contextHolder, int indices) {
+            contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
-            if (tech == Effect.TechMaps_NoAlpha && TesselationMode != TesselationMode.Disabled && EffectDarkMaterial.EnableTesselation) {
-                contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
-
-                switch (TesselationMode) {
-                    case TesselationMode.Phong:
-                        tech = Effect.TechMaps_TesselatePhong;
-                        break;
-                    case TesselationMode.Pn:
-                        tech = Effect.TechMaps_TesselatePn;
-                        break;
-                }
-
-                tech.DrawAllPasses(contextHolder.DeviceContext, indices);
-                contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                // contextHolder.DeviceContext.Rasterizer.State = null;
-                contextHolder.DeviceContext.HullShader.Set(null);
-                contextHolder.DeviceContext.DomainShader.Set(null);
-            } else {
-                tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+            EffectReadyTechnique tech;
+            switch (GetParams(contextHolder).TesselationMode) {
+                case TesselationMode.Phong:
+                    tech = Effect.TechMaps_TesselatePhong;
+                    break;
+                case TesselationMode.Pn:
+                    tech = Effect.TechMaps_TesselatePn;
+                    break;
+                case TesselationMode.Disabled:
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-        }
+
+            tech.DrawAllPasses(contextHolder.DeviceContext, indices);
+            contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            contextHolder.DeviceContext.HullShader.Set(null);
+            contextHolder.DeviceContext.DomainShader.Set(null);
+        }*/
 
         protected override EffectReadyTechnique GetTechnique() {
             return IsBlending ? Effect.TechMaps : Effect.TechMaps_NoAlpha;

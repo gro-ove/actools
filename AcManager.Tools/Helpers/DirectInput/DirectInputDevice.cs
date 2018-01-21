@@ -193,6 +193,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public DirectInputButton[] Buttons { get; }
         public DirectInputPov[] Povs { get; }
 
+        public List<DirectInputAxle> VisibleAxis { get; }
+        public List<DirectInputButton> VisibleButtons { get; }
+        public List<DirectInputPov> VisiblePovs { get; }
+
         private Joystick _joystick;
 
         public override string ToString() {
@@ -247,6 +251,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
             Axis = axes;
             Buttons = buttons;
             Povs = povs;
+            VisibleAxis = Axis.Where(x => x.IsVisible).ToList();
+            VisibleButtons = Buttons.Where(x => x.IsVisible).ToList();
+            VisiblePovs = Povs.Where(x => x.IsVisible).ToList();
         }
 
         private void GetCapabilities([CanBeNull] out string displayName, out DirectInputAxle[] axes,out DirectInputButton[] buttons,  out DirectInputPov[] povs) {
@@ -261,25 +268,32 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }
 
             DirectInputAxle[] Axles(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
-                return Enumerable.Range(0, 8).Take(take ?? int.MaxValue).Where(test ?? (x => true))
-                                 .Select(x => new DirectInputAxle(this, x, name?.Invoke(x))).ToArray();
+                return Enumerable.Range(0, 8).Take(take ?? int.MaxValue)
+                                 .Select(x => new DirectInputAxle(this, x, name?.Invoke(x)) {
+                                     IsVisible = test?.Invoke(x) != false
+                                 })
+                                 .ToArray();
             }
 
             DirectInputButton[] Buttons(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
                 return Enumerable.Range(0, _joystick.Capabilities.ButtonCount)
-                                 .Take(take?? int.MaxValue).Where(test ?? (x => true))
-                                 .Select(x => new DirectInputButton(this, x, name?.Invoke(x))).ToArray();
+                                 .Take(take?? int.MaxValue)
+                                 .Select(x => new DirectInputButton(this, x, name?.Invoke(x)) {
+                                     IsVisible = test?.Invoke(x) != false
+                                 }).ToArray();
             }
 
             DirectInputPov[] Povs(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
                 return Enumerable.Range(0, _joystick.Capabilities.PovCount)
-                                 .Take(take ?? int.MaxValue).Where(test ?? (x => true))
+                                 .Take(take ?? int.MaxValue)
                                  .SelectMany(x => Enumerable.Range(0, 4).Select(y => new {
                                      Id = x,
                                      Direction = (DirectInputPovDirection)y
                                  }))
                                  .Select(x => new DirectInputPov(this, x.Id, x.Direction,
-                                         name?.Invoke(x.Id) ?? (_joystick.Capabilities.PovCount == 1 ? "POV" : null))).ToArray();
+                                         name?.Invoke(x.Id) ?? (_joystick.Capabilities.PovCount == 1 ? "POV" : null)) {
+                                             IsVisible = test?.Invoke(x.Id) != false
+                                         }).ToArray();
             }
         }
 

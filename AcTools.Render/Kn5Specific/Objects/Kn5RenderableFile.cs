@@ -126,7 +126,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [NotNull]
         public RenderableList RootObject {
-            get { return _rootObject; }
+            get => _rootObject;
             protected set {
                 if (_rootObject != null) {
                     _rootObject.MatrixChanged -= OnRootObjectMatrixChanged;
@@ -208,22 +208,41 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public void RefreshMaterial(DeviceContextHolder contextHolder, uint materialId) {
+            EnsureInitialized(contextHolder);
+            SharedMaterials.GetMaterial(materialId).Refresh(LocalHolder);
+        }
+
+        private void EnsureInitialized(IDeviceContextHolder contextHolder) {
             if (LocalHolder == null) {
                 SharedMaterials = InitializeMaterials(contextHolder);
                 TexturesProvider = InitializeTextures(contextHolder);
                 LocalHolder = InitializeLocalHolder(contextHolder);
+                if (_debugMode) {
+                    SetDebugMode(true);
+                }
             }
-
-            SharedMaterials.GetMaterial(materialId)?.Refresh(LocalHolder);
         }
 
         protected void DrawInitialize(IDeviceContextHolder contextHolder) {
             UpdateModelMatrixInverted();
+            EnsureInitialized(contextHolder);
+        }
 
-            if (LocalHolder == null) {
-                SharedMaterials = InitializeMaterials(contextHolder);
-                TexturesProvider = InitializeTextures(contextHolder);
-                LocalHolder = InitializeLocalHolder(contextHolder);
+        private bool _debugMode;
+
+        public virtual bool DebugMode {
+            get => _debugMode;
+            set {
+                if (Equals(value, _debugMode)) return;
+                _debugMode = value;
+                if (LocalHolder == null) return;
+                SetDebugMode(value);
+            }
+        }
+
+        private void SetDebugMode(bool value) {
+            foreach (var node in this.GetAllChildren().OfType<IKn5RenderableObject>()) {
+                node.SetDebugMode(LocalHolder, value);
             }
         }
 

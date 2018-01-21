@@ -1,6 +1,8 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
+    [UsedImplicitly]
     internal class LogitechG27 : LogitechG25 {
         public override string ControllerName => "Logitech G27";
 

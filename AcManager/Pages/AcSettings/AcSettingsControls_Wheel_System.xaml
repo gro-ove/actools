@@ -151,7 +151,8 @@
           <ItemsControl ItemsSource="{Binding SystemReplayButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Discord:" />
-          <ItemsControl ItemsSource="{Binding SystemDiscordButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
+          <ItemsControl ItemsSource="{Binding SystemDiscordButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20"
+              IsEnabled="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}, Converter={StaticResource InvertBooleanConverter}}" />
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Options:" />
           <StackPanel Style="{StaticResource SettingsPanel}">
@@ -193,7 +194,7 @@
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Related video options:" />
           <CheckBox IsChecked="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
-            <Label Content="Fullscreen (disable to delay race-terminating commands and show popups)" />
+            <Label Content="Fullscreen (disable to delay race-terminating commands, show popups and accept Discord join requests)" />
           </CheckBox>
 
         </StackPanel>

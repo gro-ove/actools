@@ -194,7 +194,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (string.IsNullOrWhiteSpace(name)) return false;
                 return name.Contains("*") || name.Contains("?")
                         ? GetFiles(name).Aggregate(false, (current, filename) => current | AddFilename(filename, true))
-                        : AddFilename(FileUtils.NormalizePath(Path.Combine(_current.Location, name)), false);
+                        : AddFilename(Path.IsPathRooted(name) ? name : FileUtils.NormalizePath(Path.Combine(_current.Location, name)), false);
             }
 
             public bool Has(string name) {

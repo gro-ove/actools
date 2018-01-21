@@ -2,9 +2,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:utils="clr-namespace:AcTools.Utils;assembly=AcTools"
-    mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False"
-    Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250"
-    LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Padding="24">
+    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}"
+    ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded"
+    ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
+    Padding="24">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -18,23 +19,114 @@
   </mui:ModernDialog.Resources>
 
   <mui:Cell>
-    <mui:SpacingStackPanel Margin="-4 -16 -4 0" Spacing="8" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="1"
-        WindowChrome.IsHitTestVisibleInChrome="True">
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}" Command="{Binding SelectModeCommand}"
-          CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" ToolTip="Visual settings"
-          Visibility="{Binding Settings, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource SendPhotoData}"
-          Command="{Binding TransferToCmPreviewsCommand}" ToolTip="Save settings as CM Previews preset"
-          Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CameraIconData}" Command="{Binding SelectModeCommand}"
-          CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Shot}" ToolTip="Make a shot" />
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource EyePhotoData}" Command="{Binding SelectModeCommand}"
-          CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Camera}" ToolTip="Camera settings" />
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CarIconData}" Command="{Binding SelectModeCommand}"
-          CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Car}" ToolTip="Car params" />
-      <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CarsIconData}" Command="{Binding SelectModeCommand}"
-          CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}" ToolTip="Several cars" />
-    </mui:SpacingStackPanel>
+    <mui:Cell x:Name="TabsButtonsPanel" Margin="-25 -25 -25 0" Panel.ZIndex="1">
+      <Border x:Name="CurrentTabHighlight">
+        <Border Background="{DynamicResource Accent}" Opacity="0.5" />
+      </Border>
+      <mui:SpacingStackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+        <mui:SpacingStackPanel.Resources>
+          <Style TargetType="{x:Type mui:ModernToggleButton}">
+            <Setter Property="Width" Value="38" />
+            <Setter Property="Height" Value="29" />
+            <Setter Property="Background" Value="{DynamicResource Accent}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="1" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type mui:ModernToggleButton}">
+                  <mui:Cell x:Name="Cell">
+                    <Border x:Name="MouseOver" Background="{DynamicResource Accent}" Opacity="0" />
+                    <mui:Cell x:Name="Pressed" Opacity="0">
+                      <Border Background="{DynamicResource Accent}" />
+                      <Border Background="{DynamicResource WindowBackground}" Opacity="0.2" />
+                    </mui:Cell>
+                    <Path Data="{TemplateBinding IconData}" Width="13" Height="13" Fill="{DynamicResource ButtonText}" Stretch="Uniform" />
+                  </mui:Cell>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="Tag">
+                      <Trigger.Value>
+                        <system:Boolean>False</system:Boolean>
+                      </Trigger.Value>
+                      <Trigger.EnterActions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Cell" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.EnterActions>
+                      <Trigger.ExitActions>
+                        <BeginStoryboard>
+                          <Storyboard FillBehavior="Stop">
+                            <DoubleAnimation Storyboard.TargetName="Cell" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.ExitActions>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Trigger.EnterActions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="MouseOver" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.EnterActions>
+                      <Trigger.ExitActions>
+                        <BeginStoryboard>
+                          <Storyboard FillBehavior="Stop">
+                            <DoubleAnimation Storyboard.TargetName="MouseOver" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.ExitActions>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                      <Trigger.EnterActions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Pressed" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.EnterActions>
+                      <Trigger.ExitActions>
+                        <BeginStoryboard>
+                          <Storyboard FillBehavior="Stop">
+                            <DoubleAnimation Storyboard.TargetName="Pressed" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.12" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.ExitActions>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                      <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </mui:SpacingStackPanel.Resources>
+        <mui:ModernToggleButton IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Background="Transparent"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Main}}"
+            x:Name="HomeButton" MoreCommand="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" Tag="{Binding MainModeCommand.IsAbleToExecute}" />
+        <mui:ModernToggleButton IconData="{StaticResource GearIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Visual settings"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.VisualSettings}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}"
+            Visibility="{Binding Settings, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+        <mui:ModernToggleButton IconData="{StaticResource CameraIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Make a shot"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Shot}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Shot}" />
+        <mui:ModernToggleButton IconData="{StaticResource EyePhotoData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Camera settings"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Camera}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Camera}" />
+        <mui:ModernToggleButton IconData="{StaticResource CarIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Car params"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Car}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Car}" />
+        <mui:ModernToggleButton IconData="{StaticResource CarsIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Several cars"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Cars}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}" />
+      </mui:SpacingStackPanel>
+    </mui:Cell>
 
     <DockPanel Margin="-4 16 -4 -20">
       <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
@@ -44,13 +136,6 @@
         <FrameworkElement.Resources>
           <ResourceDictionary>
             <DockPanel x:Key="VisualSettings" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
-              <DockPanel Margin="0 0 0 8" Dock="Top">
-                <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                    IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                    ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                <TextBlock Text="Settings" Style="{StaticResource Heading2}" />
-              </DockPanel>
-
               <DockPanel ToolTip="Press Ctrl+Shift+Tab to toggle limiter" Margin="0 0 0 4" Dock="Top" Style="{StaticResource DockPanel}">
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
                 <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
@@ -124,10 +209,9 @@
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
                 </CheckBox>
 
-
                 <!--<c:MessageBlock>
-                <mui:BbCodeBlock BbCode="Now, with updated Paint Shop, CM will automatically download and update rules for various cars. It might take some time." />
-              </c:MessageBlock>-->
+                  <mui:BbCodeBlock BbCode="Now, with updated Paint Shop, CM will automatically download and update rules for various cars. It might take some time." />
+                </c:MessageBlock>-->
 
                 <mui:AsyncButton Margin="0 20 0 0" Command="{Binding PaintShopCommand}">
                   <DockPanel>
@@ -148,13 +232,10 @@
                     Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
 
                 <!--<mui:ReferenceSwitch Value="{Binding PaintShopRulesLoader}">
-                <StackPanel Margin="0 4 0 0">
-                  <TextBlock Text="Updating obsolete rules…" Style="{StaticResource Label}" />
-                </StackPanel>
-              </mui:ReferenceSwitch>-->
-
-                <!--<Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
-                  ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy camera position" />-->
+                  <StackPanel Margin="0 4 0 0">
+                    <TextBlock Text="Updating obsolete rules…" Style="{StaticResource Label}" />
+                  </StackPanel>
+                </mui:ReferenceSwitch>-->
 
                 <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -167,12 +248,6 @@
 
             <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
               <StackPanel>
-                <DockPanel Margin="0 0 0 8">
-                  <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                      IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                      ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                  <TextBlock Text="Selected object" Style="{StaticResource Heading2}" />
-                </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
                       Padding="4 0" />
@@ -183,7 +258,8 @@
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
                       Margin="4 0 0 0" Padding="4 0" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                  <mui:BetterTextBox Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
+                  <mui:BetterTextBox Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True"
+                      Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
@@ -214,13 +290,6 @@
 
             <ScrollViewer x:Key="Camera" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
               <mui:SpacingStackPanel Spacing="4">
-                <DockPanel Margin="0 0 0 4">
-                  <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                      IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                      ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                  <TextBlock Text="Camera" Style="{StaticResource Heading2}" />
-                </DockPanel>
-
                 <Label Content="Position:" />
                 <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraPosition}">
                   <DockPanel>
@@ -297,18 +366,8 @@
                 mui:SaveScroll.Key="__csAmbientShadows">
               <StackPanel>
                 <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                  <!--<StackPanel.ContextMenu>
-                  <ContextMenu>
-                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}" Command="{Binding AmbientShadow.ResetCommand}" />
-                  </ContextMenu>
-                </StackPanel.ContextMenu>-->
-
-                  <DockPanel Margin="0 0 0 8">
-                    <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                        IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                        ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
-                  </DockPanel>
+                  <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8"
+                      Text="{Binding Source={x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}, Converter={StaticResource ColonConverter}}" />
 
                   <DockPanel Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding AmbientShadow.Diffusion}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
@@ -335,11 +394,11 @@
                         Value="{Binding AmbientShadow.WheelMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
                   </DockPanel>
                   <!--<DockPanel Margin="0 0 0 4">
-                  <mui:ValueLabel Value="{Binding AmbientShadow.Brightness}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                      Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                  <Slider Minimum="150" Maximum="400" TickFrequency="50" TickPlacement="None" IsSnapToTickEnabled="False"
-                      Value="{Binding AmbientShadow.Brightness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
-                </DockPanel>-->
+                    <mui:ValueLabel Value="{Binding AmbientShadow.Brightness}" Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                    <Slider Minimum="150" Maximum="400" TickFrequency="50" TickPlacement="None" IsSnapToTickEnabled="False"
+                        Value="{Binding AmbientShadow.Brightness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>-->
                   <DockPanel Margin="0 0 0 4" IsEnabled="{Binding AmbientShadow.HideWheels, Converter={StaticResource InvertBooleanConverter}}">
                     <mui:ValueLabel Value="{Binding AmbientShadow.UpDelta, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                         Postfix=" cm" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Raise wheels for body shadow" />
@@ -415,13 +474,6 @@
 
             <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Shot" mui:SaveScroll.Key="__csShot">
               <mui:SpacingStackPanel Spacing="8">
-                <DockPanel>
-                  <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                      IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                      ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                  <TextBlock Text="Screenshots" Style="{StaticResource Heading2}" />
-                </DockPanel>
-
                 <c:MessageBlock Visibility="{Binding ShotMagickWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <mui:BbCodeBlock Style="{StaticResource Small}"
                       BbCode="[b]Magick.NET plugin is not active.[/b] Please, go to Settings/Plugins and install it to make high-quality screenshots." />
@@ -517,18 +569,13 @@
                   <Button Content="Make a shot" Command="{Binding ShotCommand}" />
                 </DockPanel>
 
+                <Button Content="Save as previews preset" Command="{Binding ShotCommand}" Margin="0 -4 0 0"
+                    Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </mui:SpacingStackPanel>
             </ScrollViewer>
 
             <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
               <mui:SpacingStackPanel Spacing="4">
-                <DockPanel Margin="0 0 0 4">
-                  <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                      IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                      ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                  <TextBlock Text="Cars" Style="{StaticResource Heading2}" />
-                </DockPanel>
-
                 <ItemsControl mui:Draggable.Destination="{x:Static cs:CarSlotWrapped.DraggableFormat}" mui:Draggable.Enabled="True"
                     ItemsSource="{Binding Cars.Slots}" ItemTemplate="{StaticResource CarSlotWrappedTemplate}" Background="Transparent" Padding="0 0 0 12" />
 

@@ -12,6 +12,7 @@ using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Shaders;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -613,9 +614,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _reflectedLight.Brightness = LightBrightness * FlatMirrorReflectiveness;
                 _reflectedLight.Color = LightColor;
                 _reflectedLight.ShadowsResolution = ShadowMapSize;
-                _reflectedLight.Enabled = true;
-            } else {
-                _reflectedLight.Enabled = false;
             }
 
             for (var i = _lights.Length - 1; i >= 0; i--) {
@@ -710,6 +708,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private EffectDarkMaterial.Mode _darkMode;
 
         private EffectDarkMaterial.Mode FindAppropriateMode() {
+            _reflectedLight.Enabled = IsFlatMirrorReflectedLightEnabled;
+
             if (IsInDebugMode()) {
                 _complexMode = true;
                 _areaLightsMode = true;
@@ -730,7 +730,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             }
 
-            _complexMode = useComplex || IsFlatMirrorReflectedLightEnabled;
+            _complexMode = useComplex;
 
             if (areaLights) {
                 _areaLightsMode = true;

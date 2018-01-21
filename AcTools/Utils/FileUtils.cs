@@ -403,48 +403,6 @@ namespace AcTools.Utils {
             return result;
         }
 
-        public static string NormalizePath(string filename) {
-            var parts = filename.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                    StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 2) {
-                return filename == "." ? "" : filename;
-            }
-
-            var sb = new List<string>(parts.Length * 2);
-            for (var i = 0; i < parts.Length; i++) {
-                var part = parts[i];
-                if (part == ".") continue;
-                if (part == ".." && sb.Count > 0) {
-                    sb.RemoveAt(sb.Count - 1);
-                    continue;
-                }
-
-                sb.Add(part);
-            }
-
-            return sb.JoinToString(Path.DirectorySeparatorChar);
-        }
-
-        /// <summary>
-        /// Is A in any way a parent of B?
-        /// </summary>
-        /// <param name="parent">For example, “C:\Windows”</param>
-        /// <param name="child">For example, “c:/windows/system32”</param>
-        /// <returns>For example, true</returns>
-        public static bool Affects([NotNull] string parent, [NotNull] string child) {
-            if (parent == null) throw new ArgumentNullException(nameof(parent));
-            if (child == null) throw new ArgumentNullException(nameof(child));
-
-            parent = NormalizePath(parent);
-            child = NormalizePath(child);
-
-            if (string.Equals(parent, child, StringComparison.OrdinalIgnoreCase)) return true;
-            if (!child.StartsWith(parent, StringComparison.OrdinalIgnoreCase)) return false;
-
-            var s = child.SubstringExt(parent.Length);
-            return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;
-        }
-
         private static bool TryToHardLink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (destination == null) throw new ArgumentNullException(nameof(destination));
@@ -539,11 +497,11 @@ namespace AcTools.Utils {
                 Directory.CreateDirectory(destination);
 
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
-                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                    Directory.CreateDirectory(Path.Combine(destination, GetPathWithin(dirPath, source) ?? source));
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    File.Copy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    File.Copy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
                 }
             } else {
                 File.Copy(source, destination, true);
@@ -556,11 +514,11 @@ namespace AcTools.Utils {
                 Directory.CreateDirectory(destination);
 
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
-                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                    Directory.CreateDirectory(Path.Combine(destination, GetPathWithin(dirPath, source) ?? source));
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    HardLink(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    HardLink(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
                 }
             } else {
                 HardLink(source, destination, true);
@@ -572,11 +530,11 @@ namespace AcTools.Utils {
                 Directory.CreateDirectory(destination);
 
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
-                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                    Directory.CreateDirectory(Path.Combine(destination, GetPathWithin(dirPath, source) ?? source));
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    HardLinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                    HardLinkOrCopy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
                 }
             } else {
                 HardLinkOrCopy(source, destination, true);
@@ -591,15 +549,15 @@ namespace AcTools.Utils {
                     Directory.CreateDirectory(destination);
 
                     foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories).Where(x => filter(x, true))) {
-                        Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                        Directory.CreateDirectory(Path.Combine(destination, GetPathWithin(dirPath, source) ?? source));
                     }
 
                     foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories).Where(x => filter(x, false))) {
-                        HardLinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                        HardLinkOrCopy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
                     }
                 } else {
                     foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories).Where(x => filter(x, false))) {
-                        var target = Path.Combine(destination, GetRelativePath(filePath, source));
+                        var target = Path.Combine(destination, GetPathWithin(filePath, source) ?? source);
                         EnsureFileDirectoryExists(target);
                         HardLinkOrCopy(filePath, target, true);
                     }
@@ -657,8 +615,7 @@ namespace AcTools.Utils {
                 path += Path.DirectorySeparatorChar + "*";
             }
 
-            Kernel32.Win32FindData findData;
-            var handle = Kernel32.FindFirstFile(path, out findData);
+            var handle = Kernel32.FindFirstFile(path, out var findData);
             if (handle != Kernel32.InvalidHandleValue) {
                 try {
                     do {

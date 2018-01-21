@@ -377,12 +377,7 @@
   </DataTemplate>
 
   <DockPanel x:Key="Skin" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
-    <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8">
-      <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-          IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-          ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-      <TextBlock Text="Paint Shop" Style="{StaticResource Heading2}" />
-    </DockPanel>
+    <TextBlock Text="Paint Shop:" Style="{StaticResource Heading2}" DockPanel.Dock="Top" Margin="0 0 0 8" />
 
     <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
         Visibility="{Binding HasNumbers, Converter={StaticResource BooleanToVisibilityConverter}}">

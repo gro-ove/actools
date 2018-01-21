@@ -21,9 +21,7 @@ namespace AcTools.Render.Base.Materials {
         [NotNull]
         public IRenderableMaterial GetMaterial(object key) {
             var keyHash = key.GetHashCode();
-
-            IRenderableMaterial material;
-            if (_materials.TryGetValue(keyHash, out material)) return material;
+            if (_materials.TryGetValue(keyHash, out var material)) return material;
             return _materials[keyHash] = CreateMaterial(key);
         }
 

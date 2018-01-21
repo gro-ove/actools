@@ -1,26 +1,31 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace FirstFloor.ModernUI.Commands {
-    public class CombinedCommand : CommandBase {
-        private readonly ICommand _first;
-        private readonly ICommand _second;
-
-        public CombinedCommand(ICommand first, ICommand second) : base(false, false) {
-            _first = first;
-            _second = second;
+    public class CombinedCommand : AsyncCommand<object> {
+        public CombinedCommand(ICommand first, ICommand second) : base(
+                GetExecute(first, second),
+                o => first.CanExecute(o) && second.CanExecute(o)) {
             WeakEventManager<ICommand, EventArgs>.AddHandler(first, nameof(ICommand.CanExecuteChanged), Handler);
             WeakEventManager<ICommand, EventArgs>.AddHandler(second, nameof(ICommand.CanExecuteChanged), Handler);
         }
 
-        protected override bool CanExecuteOverride(object parameter) {
-            return _first.CanExecute(parameter) && _second.CanExecute(parameter);
-        }
+        private static Func<object, Task> GetExecute(ICommand first, ICommand second) {
+            return async o => {
+                if (first is IAsyncCommand firstAsync) {
+                    await firstAsync.ExecuteAsync(o);
+                } else {
+                    first.Execute(o);
+                }
 
-        protected override void ExecuteOverride(object parameter) {
-            _first.Execute(parameter);
-            _second.Execute(parameter);
+                if (second is IAsyncCommand secondAsync) {
+                    await secondAsync.ExecuteAsync(o);
+                } else {
+                    second.Execute(o);
+                }
+            };
         }
 
         private void Handler(object sender, EventArgs eventArgs) {

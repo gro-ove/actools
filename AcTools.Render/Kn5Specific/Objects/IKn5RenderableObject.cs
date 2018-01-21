@@ -13,9 +13,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         bool IsInitialized { get; }
 
-        void SetMirrorMode(IDeviceContextHolder holder, bool enabled);
+        void SetMirrorMode([NotNull] IDeviceContextHolder holder, bool enabled);
 
-        void SetDebugMode(IDeviceContextHolder holder, bool enabled);
+        void SetDebugMode([NotNull] IDeviceContextHolder holder, bool enabled);
 
         void SetTransparent(bool? isTransparent);
 

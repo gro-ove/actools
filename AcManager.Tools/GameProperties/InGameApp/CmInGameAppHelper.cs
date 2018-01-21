@@ -48,7 +48,7 @@ namespace AcManager.Tools.GameProperties.InGameApp {
         private bool _isActive;
 
         private CmInGameAppHelper() {
-            _isActive = new IniFile(AcPaths.GetCfgAppsFilename())[OptionAppId.ToUpperInvariant()].GetBool("ACTIVE", false);
+            _isActive = IsAvailable();
             Logging.Write($"Is app active: {_isActive}");
         }
 
@@ -56,6 +56,11 @@ namespace AcManager.Tools.GameProperties.InGameApp {
 
         public static CmInGameAppHelper GetInstance() {
             return _instance ?? (_instance = new CmInGameAppHelper());
+        }
+
+        public static bool IsAvailable() {
+            return PythonAppsManager.Instance.GetById(OptionAppId) != null
+                    && new IniFile(AcPaths.GetCfgAppsFilename())[OptionAppId.ToUpperInvariant()].GetBool("ACTIVE", false);
         }
 
         private static readonly Busy Busy = new Busy();

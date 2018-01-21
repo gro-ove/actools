@@ -397,6 +397,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnCollapseIfMissingChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((BetterImage)o)._collapseIfMissing = (bool)e.NewValue;
         }
+
+        public static readonly DependencyProperty CollapseIfNullProperty = DependencyProperty.Register(nameof(CollapseIfNull), typeof(bool),
+                typeof(BetterImage), new PropertyMetadata(OnCollapseIfNullChanged));
+
+        private bool _collapseIfNull;
+
+        public bool CollapseIfNull {
+            get => _collapseIfNull;
+            set => SetValue(CollapseIfNullProperty, value);
+        }
+
+        private static void OnCollapseIfNullChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            var b = (BetterImage)o;
+            b._collapseIfNull = (bool)e.NewValue;
+            if (b._filename == null) {
+                b.Visibility = Visibility.Collapsed;
+            }
+        }
         #endregion
 
         #region Loading
@@ -1146,8 +1164,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private ICancellable _currentTask;
+        private bool _isLoadedHandlerSet;
 
         private void OnFilenameChanged(string value) {
+            if (!IsLoaded) {
+                if (!_isLoadedHandlerSet) {
+                    Loaded += OnLoaded;
+                    _isLoadedHandlerSet = true;
+                }
+                return;
+            }
+
+            if (CollapseIfNull) {
+                if (value != null) {
+                    Visibility = Visibility.Visible;
+                } else {
+                    Visibility = Visibility.Collapsed;
+                    SetCurrent(BitmapEntry.Empty);
+                    return;
+                }
+            }
+
             if (CollapseIfMissing) {
                 if (File.Exists(GetActualFilename(value))) {
                     Visibility = Visibility.Visible;
@@ -1161,6 +1198,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (ReloadImage() && ClearOnChange) {
                 ClearCurrent();
             }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            Loaded -= OnLoaded;
+            _isLoadedHandlerSet = false;
+            OnFilenameChanged(_filename);
         }
 
         private Size _size;

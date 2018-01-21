@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -53,6 +54,7 @@ namespace AcManager.CustomShowroom {
             public string ObjectPath { get; }
             public int VerticesCount { get; }
             public int TrianglesCount { get; }
+            public string Flags { get; }
 
             [CanBeNull]
             public Kn5Material Material { get; }
@@ -74,6 +76,15 @@ namespace AcManager.CustomShowroom {
                 _activeSkin = activeSkin;
                 _kn5 = kn5;
                 _renderableObject = renderableObject;
+
+                var flagsList = new[] {
+                    renderableObject.OriginalNode.IsTransparent ? "Transparent" : null,
+                    // renderableObject.OriginalNode.IsRenderable ? "Renderable" : null,
+                    renderableObject.OriginalNode.IsVisible ? "Visible" : null,
+                    renderableObject.OriginalNode.Layer != 0 ? $"Layer #{renderableObject.OriginalNode.Layer}" : null,
+                }.NonNull().ToList();
+                var flags = flagsList.Count == 0 ? "None" : flagsList.JoinToString(", ");
+                Flags = flags.Length > 0 ? char.ToUpper(flags.FirstOrDefault()) + flags.Substring(1) : "";
 
                 ObjectName = renderableObject.OriginalNode.Name;
                 VerticesCount = renderableObject.OriginalNode.Vertices.Length;
@@ -117,8 +128,7 @@ namespace AcManager.CustomShowroom {
                             width = FlexibleParser.ParseInt(match.Groups[1].Value);
                             height = FlexibleParser.ParseInt(match.Groups[2].Value);
                         } else {
-                            int value;
-                            if (FlexibleParser.TryParseInt(result, out value)) {
+                            if (FlexibleParser.TryParseInt(result, out var value)) {
                                 width = height = value;
                             } else {
                                 NonfatalError.Notify(ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed,
