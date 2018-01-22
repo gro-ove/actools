@@ -86,8 +86,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AiFile\Ai.Stats.cs" />
-    <Compile Include="AiFile\AiLane.cs" />
+    <Compile Include="AiFile\AiSpline.Stats.cs" />
+    <Compile Include="AiFile\AiSpline.cs" />
     <Compile Include="AcdFile\AcdEntry.cs" />
     <Compile Include="AcdFile\Acd.cs" />
     <Compile Include="AcdFile\AcdEncryption.cs" />
@@ -96,6 +96,8 @@
     <Compile Include="AcToolsInformation.cs" />
     <Compile Include="AcToolsLogging.cs" />
     <Compile Include="AiFile\AiPoint.cs" />
+    <Compile Include="AiFile\AiPointExtra.cs" />
+    <Compile Include="AiFile\AiSplineGrid.cs" />
     <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />

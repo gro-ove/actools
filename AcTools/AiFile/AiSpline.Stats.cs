@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.AiFile {
-    public partial class AiLane {
+    public partial class AiSpline {
         private static float Sqr(float v) {
             return v * v;
         }
@@ -115,13 +116,12 @@ namespace AcTools.AiFile {
         }
 
         public Tuple<float, float> CalculateWidth() {
-            var points = Points;
+            var points = PointsExtra;
             var list = new List<float>(points.Length);
             for (var j = 0; j < points.Length; j++) {
-                list.Add(points[j].Width);
+                list.AddSorted(points[j].Width);
             }
 
-            list.Sort();
             return Tuple.Create(list[list.Count / 100], list[list.Count - list.Count / 2 - 1]);
         }
     }

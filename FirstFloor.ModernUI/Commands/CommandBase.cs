@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
@@ -121,32 +122,27 @@ namespace FirstFloor.ModernUI.Commands {
             var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
             var asString = parameter as string ?? parameter.ToString();
             if (type == typeof(bool)) {
-                bool value;
-                if (bool.TryParse(asString, out value)) {
+                if (bool.TryParse(asString, out var value)) {
                     result = (T)(object)value;
                     return true;
                 }
             } else if (typeof(T) == typeof(int)) {
-                int value;
-                if (int.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                if (int.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out var value)) {
                     result = (T)(object)value;
                     return true;
                 }
             } else if(typeof(T) == typeof(double)) {
-                double value;
-                if (double.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                if (double.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out var value)) {
                     result = (T)(object)value;
                     return true;
                 }
             } else if (typeof(T) == typeof(long)) {
-                long value;
-                if (long.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                if (long.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out var value)) {
                     result = (T)(object)value;
                     return true;
                 }
             } else if(typeof(T) == typeof(float)) {
-                float value;
-                if (float.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                if (float.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out var value)) {
                     result = (T)(object)value;
                     return true;
                 }
@@ -160,8 +156,8 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         private bool Convert(object value, out T result) {
-            if (value is T) {
-                result = (T)value;
+            if (value is T variable) {
+                result = variable;
                 return true;
             }
 
@@ -185,8 +181,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected sealed override void ExecuteOverride(object parameter) {
-            T value;
-            if (Convert(parameter, out value)) {
+            if (Convert(parameter, out var value)) {
                 ExecuteOverride(value);
             } else {
                 Logging.Error($"Invalid type: {parameter?.GetType().Name ?? @"<NULL>"} (required: {typeof(T)})");
@@ -194,8 +189,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected sealed override bool CanExecuteOverride(object parameter) {
-            T value;
-            if (Convert(parameter, out value)) {
+            if (Convert(parameter, out var value)) {
                 return AlwaysCanExecute || CanExecuteOverride(value);
             }
 

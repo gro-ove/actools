@@ -241,7 +241,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             private bool _dirty;
             private ShaderResourceView _view;
             private IRenderableObject _obj;
-            private AiLane _lane;
+            private AiSpline _spline;
 
             private void Initialize(IDeviceContextHolder holder) {
                 // TODO: errors handling!
@@ -251,11 +251,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
                 _dirty = false;
                 if (AiLaneMode) {
-                    if (_lane == null) {
-                        _lane = AiLane.FromFile(GetAiLaneFastFilename(Filename));
+                    if (_spline == null) {
+                        _spline = AiSpline.FromFile(GetAiLaneFastFilename(Filename));
                     }
 
-                    _obj = AiLaneObject.Create(_lane, AiLaneWidth);
+                    _obj = AiLaneObject.Create(_spline, AiLaneWidth);
                     _obj.ParentMatrix = Matrix.Identity;
                     _obj.UpdateBoundingBox();
 

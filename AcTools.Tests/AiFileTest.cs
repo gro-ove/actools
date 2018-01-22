@@ -12,7 +12,7 @@ namespace AcTools.Tests {
         private void TestTrack(string path, float length, float minWidth, float maxWidth, float lengthError = 0.008f, float widthError = 0.1f) {
             var f = Path.Combine(AcRoot, path);
 
-            var ai = AiLane.FromFile(f);
+            var ai = AiSpline.FromFile(f);
             Assert.AreEqual(length, ai.CalculateLength(), length * lengthError, "Length is wrong");
 
             var w = ai.CalculateWidth();

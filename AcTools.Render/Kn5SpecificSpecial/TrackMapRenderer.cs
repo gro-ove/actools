@@ -44,7 +44,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Camera = new CameraOrtho();
         }
 
-        public TrackMapPreparationRenderer(AiLane kn5) : base(kn5) {
+        public TrackMapPreparationRenderer(AiSpline kn5) : base(kn5) {
             Camera = new CameraOrtho();
         }
 
@@ -269,9 +269,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private readonly Kn5 _kn5;
 
         [CanBeNull]
-        private readonly AiLane _aiLane;
+        private readonly AiSpline _aiSpline;
 
-        public bool AiLaneMode => _aiLane != null;
+        public bool AiLaneMode => _aiSpline != null;
 
         [CanBeNull]
         private readonly TrackComplexModelDescription _description;
@@ -291,8 +291,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _kn5 = kn5;
         }
 
-        public TrackMapRenderer(AiLane aiLane) {
-            _aiLane = aiLane;
+        public TrackMapRenderer(AiSpline aiSpline) {
+            _aiSpline = aiSpline;
         }
 
         public TrackMapRenderer(TrackComplexModelDescription description) {
@@ -389,7 +389,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private void RebuildAiLane() {
             RootNode.Dispose();
             RootNode = new RenderableList("_root", Matrix.Identity, new[] {
-                AiLaneObject.Create(_aiLane, AiLaneActualWidth ? (float?)null : AiLaneWidth)
+                AiLaneObject.Create(_aiSpline, AiLaneActualWidth ? (float?)null : AiLaneWidth)
             });
             UpdateFiltered();
             _aiLaneDirty = false;
@@ -398,9 +398,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new TrackMapMaterialsFactory());
 
-            if (_aiLane != null) {
+            if (_aiSpline != null) {
                 RootNode = new RenderableList("_root", Matrix.Identity, new [] {
-                    AiLaneObject.Create(_aiLane, AiLaneActualWidth ? (float?)null : AiLaneWidth)
+                    AiLaneObject.Create(_aiSpline, AiLaneActualWidth ? (float?)null : AiLaneWidth)
                 });
                 _aiLaneDirty = false;
             } else if (_kn5 != null) {
@@ -447,7 +447,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private ITrackMapRendererFilter _filter;
 
         protected void UpdateFiltered() {
-            if (_aiLane != null) {
+            if (_aiSpline != null) {
                 FilteredNode = RootNode;
             } else {
                 FilteredNode = Filter(RootNode, n => n is RenderableList ||
