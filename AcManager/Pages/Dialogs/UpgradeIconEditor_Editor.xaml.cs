@@ -9,7 +9,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
+using AcTools;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor_Editor : IFinishableControl {
@@ -47,22 +49,27 @@ namespace AcManager.Pages.Dialogs {
             NewIconLabel.IsReadOnly = true;
             NewIconLabel.IsReadOnlyCaretVisible = false;
             NewIconLabel.SelectionLength = 0;
-            NewIconLabel.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
             CreateNewIcon();
         }
 
-        private async void CreateNewIcon() {
-            await Task.Delay(100);
+        private void CreateNewIcon() {
             if (Car == null) return;
 
             ValuesStorage.Set(_key, NewIconLabel.Text);
             // TODO: Save style?
 
-            var bmp = new RenderTargetBitmap(64, 64, 96, 96, PixelFormats.Pbgra32);
+            var size = new Size(CommonAcConsts.UpgradeIconWidth, CommonAcConsts.UpgradeIconHeight);
+            NewIcon.Measure(size);
+            NewIcon.Arrange(new Rect(size));
+            NewIcon.ApplyTemplate();
+            NewIcon.UpdateLayout();
+
+            var bmp = new RenderTargetBitmap(CommonAcConsts.UpgradeIconWidth, CommonAcConsts.UpgradeIconHeight, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(NewIcon);
 
             try {
                 bmp.SaveAsPng(Car.UpgradeIcon);
+                BetterImage.Refresh(Car.UpgradeIcon);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
             } catch (Exception ex) {

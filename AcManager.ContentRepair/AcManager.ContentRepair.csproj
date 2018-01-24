@@ -76,7 +76,6 @@
     <Compile Include="Critical\CarDefaultTyreSetRepair.cs" />
     <Compile Include="Critical\EmptyErsRepair.cs" />
     <Compile Include="Critical\MissingAeroLutRepair.cs" />
-    <Compile Include="Critical\RodLengthHeaveRepair.cs" />
     <Compile Include="Repairs\CarAiShiftingPointsRepair.cs" />
     <Compile Include="Repairs\CarDashCameraRepair.cs" />
     <Compile Include="Repairs\CarDriver3DRepair.cs" />
@@ -90,6 +89,7 @@
     <Compile Include="CommonFixes.cs" />
     <Compile Include="ContentRepairSuggestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repairs\RodLengthHeaveRepair.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">

@@ -333,7 +333,7 @@ namespace AcManager.Pages.ServerPreset {
         }));
 
         public class PackCarDataHolder : NotifyPropertyChanged {
-            private bool _value = ValuesStorage.Get<bool>("serverWrapper:packCarData", true);
+            private bool _value = ValuesStorage.Get("serverWrapper:packCarData", true);
 
             public bool Value {
                 get => _value;

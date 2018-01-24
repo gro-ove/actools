@@ -18,7 +18,7 @@
       <system:String x:Key="ZeroWidthString">​</system:String>
 
       <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type entries:ContentEntryBase}">
-        <DockPanel>
+        <DockPanel Margin="0 0 0 12">
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
@@ -94,7 +94,7 @@
       </DataTemplate>
 
       <DataTemplate x:Key="FontEntryDataTemplate" DataType="{x:Type entries:FontContentEntry}">
-        <DockPanel>
+        <DockPanel Margin="0 0 0 12">
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
@@ -170,7 +170,7 @@
       </DataTemplate>
 
       <DataTemplate x:Key="TrackEntryDataTemplate" DataType="{x:Type entries:TrackContentEntry}">
-        <DockPanel>
+        <DockPanel Margin="0 0 0 12">
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
               Visibility="{Binding SingleEntry, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
@@ -328,8 +328,8 @@
       </c:MessageBlock>
     </mui:BooleanSwitch>
 
-    <ListBox x:Name="ItemsListBox" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" mui:FancyScrollHelper.Outside="True"
-        Margin="-24 0 -24 0" Padding="0 0 0 0" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+    <ListBox x:Name="ItemsListBox" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" Margin="-24 0 -24 0" Padding="0 0 0 0"
+        ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="t:ContentInstallationEntry">
           <Border ClipToBounds="True">
@@ -408,7 +408,7 @@
                       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
                         <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
                             Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Button Content="Scan again" /><!-- TODO -->
+                        <Button Content="Scan again" Command="{Binding RetryCommand}" />
                       </mui:SpacingUniformGrid>
                     </mui:SpacingStackPanel>
                   </mui:ReferenceSwitch.Null>
@@ -428,7 +428,7 @@
                       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
                         <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
                             Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Button Content="Retry" /><!-- TODO -->
+                        <Button Content="Retry" Command="{Binding RetryCommand}" />
                       </mui:SpacingUniformGrid>
                     </mui:SpacingStackPanel>
                   </mui:ReferenceSwitch.NonNull>
@@ -484,19 +484,14 @@
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
+                        <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 20 0 4" Style="{StaticResource Label}"
                             Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
 
-                        <ItemsControl ItemsSource="{Binding Entries}">
+                        <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
                           <ItemsControl.ItemTemplateSelector>
                             <di:AdditionalContentEntryTemplateSelectorInner BasicTemplate="{StaticResource EntryDataTemplate}"
                                 FontTemplate="{StaticResource FontEntryDataTemplate}" TrackTemplate="{StaticResource TrackEntryDataTemplate}" />
                           </ItemsControl.ItemTemplateSelector>
-                          <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                              <mui:SpacingStackPanel Spacing="8" />
-                            </ItemsPanelTemplate>
-                          </ItemsControl.ItemsPanel>
                         </ItemsControl>
 
                       </DockPanel>

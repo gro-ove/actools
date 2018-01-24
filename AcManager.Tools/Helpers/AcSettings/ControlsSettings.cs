@@ -32,7 +32,6 @@ using Key = System.Windows.Input.Key;
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
         public static bool OptionDebugControlles = false;
-        public static TimeSpan OptionRescanPeriod = TimeSpan.FromSeconds(1d);
         public static IFilter<string> OptionIgnoreControlsFilter;
 
         public const string SubBuiltInPresets = "presets";

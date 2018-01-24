@@ -9,6 +9,9 @@
   </ResourceDictionary.MergedDictionaries>
 
   <Border x:Key="DialogBackgroundContent" x:Shared="False" Background="{DynamicResource DialogBackgroundContentBrush}" />
+  <ItemsPanelTemplate x:Key="DialogMainButtonsPanelTemplate">
+    <StackPanel Orientation="Horizontal" />
+  </ItemsPanelTemplate>
 
   <Style TargetType="c:ModernDialog">
     <Style.Resources>
@@ -39,6 +42,7 @@
     <Setter Property="ButtonsMargin" Value="24 0 24 24" />
     <Setter Property="ButtonsRowContentAlignment" Value="Right" />
     <Setter Property="BackgroundContent" Value="{StaticResource DialogBackgroundContent}" />
+    <Setter Property="MainButtonsPanelTemplate" Value="{StaticResource DialogMainButtonsPanelTemplate}" />
 
     <Setter Property="Template">
       <Setter.Value>
@@ -73,19 +77,16 @@
 
                       <!-- buttons -->
                       <DockPanel x:Name="PART_BottomRow" DockPanel.Dock="Bottom" Margin="{TemplateBinding ButtonsMargin}" Panel.ZIndex="1">
-                        <ItemsControl x:Name="PART_BottomRow_Buttons" DockPanel.Dock="Right" ItemsSource="{TemplateBinding Buttons}">
-                          <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                              <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                          </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                        <ItemsControl x:Name="PART_BottomRow_Buttons" DockPanel.Dock="Right" ItemsSource="{TemplateBinding Buttons}"
+                            ItemsPanel="{TemplateBinding MainButtonsPanelTemplate}" />
                         <ContentControl x:Name="PART_BottomRow_Content" HorizontalAlignment="{TemplateBinding ButtonsRowContentAlignment}"
                             Content="{TemplateBinding ButtonsRowContent}" />
                       </DockPanel>
 
                       <!-- content -->
-                      <c:TransitioningContentControl x:Name="PART_Content" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" />
+                      <Border Margin="{TemplateBinding ContentMargin}" Padding="{TemplateBinding Padding}">
+                        <c:TransitioningContentControl x:Name="PART_Content" Content="{TemplateBinding Content}" />
+                      </Border>
                     </DockPanel>
 
                     <!-- Resize grip -->

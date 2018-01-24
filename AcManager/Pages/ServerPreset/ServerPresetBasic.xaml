@@ -98,7 +98,7 @@
         </DockPanel>
         <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
             ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
-          <Label Content="Show on lobby" />
+          <Label Content="Make server public (show on lobby)" />
         </CheckBox>
         <DockPanel Margin="0 20 0 8">
           <Label Content="Welcome msg file:" />

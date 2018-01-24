@@ -32,6 +32,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _ready = new Dictionary<string, Tuple<Texture2D, ShaderResourceView>>();
             }
 
+            public void OnNewKn5(string kn5Filename) { }
+
             public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
                 if (textureSize > 4e6) {
                     AcToolsLogging.Write($"{textureName}: {(double)textureSize / 1024 / 1024:F1} MB");

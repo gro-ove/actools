@@ -96,6 +96,7 @@ namespace AcManager.Pages.Selected {
                                 try {
                                     FileUtils.Recycle(SelectedObject.BrandBadge);
                                     File.Copy(entry.Filename, SelectedObject.BrandBadge);
+                                    BetterImage.Refresh(SelectedObject.BrandBadge);
                                 } catch (Exception ex) {
                                     Logging.Warning(ex);
                                 }
@@ -393,7 +394,7 @@ namespace AcManager.Pages.Selected {
 
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
-            private bool _recalculatePwRatioAutomatically = ValuesStorage.Get<bool>(KeyRecalculatePwRatioAutomatically, true);
+            private bool _recalculatePwRatioAutomatically = ValuesStorage.Get(KeyRecalculatePwRatioAutomatically, true);
 
             public bool RecalculatePwRatioAutomatically {
                 get => _recalculatePwRatioAutomatically;
@@ -413,11 +414,8 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand RecalculatePwRatioCommand => _recalculatePwRatioCommand ?? (_recalculatePwRatioCommand = new DelegateCommand(() => {
                 var obj = SelectedObject;
-
-                double power, weight;
-                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out power) ||
-                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out weight)) return;
-
+                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out var power) ||
+                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out var weight)) return;
                 var ratio = weight / power;
                 obj.SpecsPwRatio = SpecsFormat(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
             }));
@@ -804,13 +802,6 @@ namespace AcManager.Pages.Selected {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new ChangeCarParentDialog((CarObject)SelectedAcObject).ShowDialog();
-            }
-        }
-
-        private void SpecsInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                e.Handled = true;
-                new CarSpecsEditor((CarObject)SelectedAcObject).ShowDialog();
             }
         }
         #endregion

@@ -685,9 +685,14 @@
         </DockPanel>
       </mui:SpacingStackPanel>
 
-      <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
+      <mui:ModernTab Grid.Column="1" LinksMargin="0 0 0 20" FrameMargin="0 0 0 4" LinksHorizontalAlignment="Left"
           SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="OnModeTabNavigated" VerticalAlignment="Stretch"
           ContentLoader="{x:Static drive:QuickDrive.ContentLoader}">
+        <mui:ModernTab.LinksListBoxTemplate>
+          <ControlTemplate>
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+          </ControlTemplate>
+        </mui:ModernTab.LinksListBoxTemplate>
         <mui:ModernTab.Links>
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Practice}" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Hotlap}" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />

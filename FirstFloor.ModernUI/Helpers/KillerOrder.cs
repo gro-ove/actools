@@ -10,7 +10,8 @@ namespace FirstFloor.ModernUI.Helpers {
     public class KillerOrder<T> : KillerOrder {
         public new T Victim => (T)base.Victim;
 
-        public KillerOrder(T victim, TimeSpan timeout) : base(victim, timeout) { }
+        public KillerOrder(T victim, TimeSpan timeout) : base(victim, timeout, default(CancellationToken)) { }
+        public KillerOrder(T victim, TimeSpan timeout, CancellationToken cancellation) : base(victim, timeout, cancellation) { }
     }
 
     public class KillerOrder : IDisposable {
@@ -30,15 +31,30 @@ namespace FirstFloor.ModernUI.Helpers {
             return new KillerOrder<T>(victim, timeout);
         }
 
-        protected KillerOrder(object victim, TimeSpan timeout) {
+        public static KillerOrder<T> Create<T>(T victim, long timeout, CancellationToken cancellation) {
+            return new KillerOrder<T>(victim, TimeSpan.FromMilliseconds(timeout), cancellation);
+        }
+
+        public static KillerOrder<T> Create<T>(T victim, TimeSpan timeout, CancellationToken cancellation) {
+            return new KillerOrder<T>(victim, timeout, cancellation);
+        }
+
+        protected KillerOrder(object victim, TimeSpan timeout, CancellationToken cancellation) {
             Victim = victim;
             Timeout = timeout;
-            KillAfter = DateTime.Now + timeout;
-            Register(this);
+            Delay();
+
+            if (Timeout != TimeSpan.MaxValue) {
+                Register(this);
+            }
+
+            if (cancellation != default(CancellationToken)) {
+                cancellation.Register(Kill);
+            }
         }
 
         public void Delay() {
-            KillAfter = DateTime.Now + Timeout;
+            KillAfter = Timeout == TimeSpan.MaxValue ? DateTime.MaxValue : DateTime.Now + Timeout;
         }
 
         public void Pause() {
@@ -52,6 +68,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var disposable = Victim as IDisposable;
             disposable?.Dispose();
+        }
+
+        public IProgress<T> DelayingProgress<T>() {
+            return new Progress<T>(v => Delay());
         }
 
         private void Kill() {

@@ -72,7 +72,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
-            get => ValuesStorage.Get<bool>(KeyEnabled, true) && !IsObsolete;
+            get => ValuesStorage.Get(KeyEnabled, true) && !IsObsolete;
             set {
                 if (value == IsEnabled) return;
                 if (value) {

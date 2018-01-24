@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetAdvanced" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer x:Name="ScrollViewer">
+    <StackPanel Style="{StaticResource SettingsCompactPanel}">
+
+      <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+      <DockPanel>
+        <Label Content="Address:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Local port:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+            Maximum="65535" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Auth:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <TextBlock Text="FTP data:" Style="{StaticResource SettingsPanel.Heading2}" />
+      <c:MessageBlock Margin="0 0 0 8">
+        <mui:BbCodeBlock
+            BbCode="This section doesn’t affect actual AC server, it only allows you to quickly upload all necessary files (including executable) to a remote server via FTP." />
+      </c:MessageBlock>
+      <DockPanel>
+        <Label Content="Host:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.FtpHost}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Login:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.FtpLogin}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Password:" />
+        <mui:AsyncButton Content="Verify connection" Command="{Binding SelectedObject.FtpVerifyConnectionCommand}" />
+        <mui:ProperPasswordBox Password="{Binding SelectedObject.FtpPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Folder:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.FtpDirectory}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Target:" />
+        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedObject.FtpMode}">
+          <mui:BetterComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+            </DataTemplate>
+          </mui:BetterComboBox.ItemTemplate>
+        </mui:BetterComboBox>
+      </DockPanel>
+      <CheckBox IsChecked="{Binding SelectedObject.FtpClearBeforeUpload}">
+        <Label Content="Clear folder before upload" TextBlock.Foreground="{DynamicResource Error}" />
+      </CheckBox>
+      <mui:AsyncButton Content="Upload content" Command="{Binding SelectedObject.FtpUploadContentCommand}" />
+
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

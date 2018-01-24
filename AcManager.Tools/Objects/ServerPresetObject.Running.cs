@@ -26,13 +26,13 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     public enum ServerPresetPackMode {
         [Description("Windows")]
-        Windows,
+        Windows = 0,
 
         [Description("Linux (32-bit)")]
-        Linux32,
+        Linux32 = 1,
 
         [Description("Linux (64-bit)")]
-        Linux64,
+        Linux64 = 2,
     }
 
     public partial class ServerPresetObject {

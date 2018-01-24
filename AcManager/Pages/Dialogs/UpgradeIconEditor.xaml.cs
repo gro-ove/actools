@@ -1,15 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Forms;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Microsoft.Win32;
+using Button = System.Windows.Controls.Button;
+using DataFormats = System.Windows.DataFormats;
+using DragEventArgs = System.Windows.DragEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor {
@@ -26,16 +31,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private static WeakReference<UpgradeIconEditor> _instance;
-        public static UpgradeIconEditor Instance {
-            get {
-                if (_instance == null) {
-                    return null;
-                }
-
-                UpgradeIconEditor result;
-                return _instance.TryGetTarget(out result) ? result : null;
-            }
-        }
+        public static UpgradeIconEditor Instance => _instance != null && _instance.TryGetTarget(out var result) ? result : null;
 
         public CarObject Car { get; }
 
@@ -47,11 +43,15 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
 
             Buttons = new[] {
-                OkButton, 
-                CreateExtraDialogButton(AppStrings.Common_SelectFile, SelectFile), 
+                OkButton,
+                CreateExtraDialogButton(AppStrings.Common_SelectFile, SelectFile),
                 CreateExtraDialogButton(AppStrings.Common_ViewUserFolder, () => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.UpgradeIcons)),
                 CancelButton
             };
+
+            foreach (var button in Buttons.OfType<Button>()) {
+                button.Padding = new Thickness(2, 1, 2, 3);
+            }
 
             Closing += UpgradeIconEditor_Closing;
         }

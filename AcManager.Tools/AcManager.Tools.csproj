@@ -261,8 +261,10 @@
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputDevices.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPov.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPovDirection.cs" />
+    <Compile Include="Helpers\FtpClient.cs" />
     <Compile Include="Helpers\IconManager.cs" />
     <Compile Include="Helpers\IndexDirectDownloader.cs" />
     <Compile Include="Helpers\AcContext.cs" />
@@ -412,6 +414,7 @@
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
+    <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />

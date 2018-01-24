@@ -14,6 +14,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.Dialogs {
@@ -44,14 +45,14 @@ namespace AcManager.Pages.Dialogs {
                 CancelButton
             };
 
-            Closing += BrandBadgeEditor_Closing;
+            Closing += OnClosing;
 
             FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += OnBrandBadgesUpdate;
             Icons = new BetterObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges));
             UpdateSelected();
         }
 
-        private void BrandBadgeEditor_Closing(object sender, CancelEventArgs e) {
+        private void OnClosing(object sender, CancelEventArgs e) {
             FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update -= OnBrandBadgesUpdate;
 
             if (MessageBoxResult != MessageBoxResult.OK) return;
@@ -63,6 +64,7 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
+                BetterImage.Refresh(Car.BrandBadge);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, AppStrings.BrandBadge_CannotChange_Commentary, ex);
             } catch (Exception ex) {

@@ -246,7 +246,7 @@ namespace AcManager.Pages.Selected {
                     }
 
                     using (WaitingDialog.Create("Loading AI lane…")) {
-                        var length = (await Task.Run(() => AiLane.FromFile(filename).CalculateLength())).ToString("F0");
+                        var length = (await Task.Run(() => AiSpline.FromFile(filename).CalculateLength())).ToString("F0");
                         SelectedTrackConfiguration.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, length);
                     }
                 } catch (Exception e) {
@@ -264,7 +264,7 @@ namespace AcManager.Pages.Selected {
                     }
 
                     using (WaitingDialog.Create("Loading AI lane…")) {
-                        var width = await Task.Run(() => AiLane.FromFile(filename).CalculateWidth());
+                        var width = await Task.Run(() => AiSpline.FromFile(filename).CalculateWidth());
                         if (width.Item2 < 1f) {
                             throw new InformativeException("Can’t recalculate width", "It appears AI fast lane has no width");
                         }

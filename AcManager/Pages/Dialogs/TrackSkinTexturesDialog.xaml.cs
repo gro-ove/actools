@@ -72,6 +72,8 @@ namespace AcManager.Pages.Dialogs {
                     _textureName = textureName;
                 }
 
+                public void OnNewKn5(string kn5Filename) { }
+
                 public byte[] Result { get; set; }
 
                 public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
@@ -160,6 +162,8 @@ namespace AcManager.Pages.Dialogs {
                 private readonly string _destination;
                 private readonly IProgress<string> _progress;
 
+                public void OnNewKn5(string kn5Filename) { }
+
                 public SavingTextureLoader(IEnumerable<string> toSave, string destination, IProgress<string> progress) {
                     _destination = destination;
                     _progress = progress;
@@ -202,6 +206,35 @@ namespace AcManager.Pages.Dialogs {
             }, () => DisplaySummary != null));
         }
 
+        private class AsImagesLoader : IKn5TextureLoader {
+            private string _kn5Filename;
+            private readonly string _trackSkinLocation;
+            private readonly TextureReader _textureReader;
+            private readonly IProgress<string> _progress;
+            private readonly Dictionary<string, TextureEntry> _result;
+
+            public void OnNewKn5(string kn5Filename) {
+                _kn5Filename = kn5Filename;
+            }
+
+            public AsImagesLoader(string trackSkinLocation, TextureReader textureReader, IProgress<string> progress, Dictionary<string, TextureEntry> result) {
+                _trackSkinLocation = trackSkinLocation;
+                _textureReader = textureReader;
+                _progress = progress;
+                _result = result;
+            }
+
+            public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
+                _progress?.Report($@"{Path.GetFileName(_kn5Filename)}/{textureName}");
+                _result[textureName] = new TextureEntry(textureName,
+                        BetterImage.LoadBitmapSourceFromBytes(_textureReader.ToPng(reader.ReadBytes(textureSize), true, new System.Drawing.Size(128, 128))),
+                        _kn5Filename,
+                        textureSize,
+                        File.Exists(Path.Combine(_trackSkinLocation, textureName)));
+                return null;
+            }
+        }
+
         public static async Task Run(TrackSkinObject trackSkin) {
             try {
                 var track = TracksManager.Instance.GetById(trackSkin.TrackId);
@@ -210,6 +243,7 @@ namespace AcManager.Pages.Dialogs {
                 var images = new Dictionary<string, TextureEntry>();
                 using (var waiting = WaitingDialog.Create("Loading textures…"))
                 using (var reader = new TextureReader()) {
+                    var loader = new AsImagesLoader(trackSkin.Location, reader, waiting, images);
                     await Task.Run(() => {
                         var modelsFilename = track.ModelsFilename;
                         if (!File.Exists(modelsFilename)) {
@@ -218,27 +252,13 @@ namespace AcManager.Pages.Dialogs {
                                 throw new Exception("Model not found");
                             }
 
-                            Proceed(Kn5.FromFile(kn5Filename,
-                                    materialLoader: SkippingMaterialLoader.Instance,
-                                    nodeLoader: SkippingNodeLoader.Instance));
+                            Kn5.FromFile(kn5Filename, loader, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance);
                         } else {
-                            foreach (var entry in new TrackComplexModelDescription(modelsFilename) {
+                            new TrackComplexModelDescription(modelsFilename) {
+                                TextureLoader = loader,
                                 MaterialLoader = SkippingMaterialLoader.Instance,
                                 NodeLoader = SkippingNodeLoader.Instance
-                            }.GetEntries()) {
-                                Proceed(entry.Kn5);
-                            }
-                        }
-
-                        void Proceed(Kn5 kn5) {
-                            foreach (var texture in kn5.TexturesData) {
-                                waiting.Report(Path.GetFileName(kn5.OriginalFilename) + "/" + texture.Key);
-                                images[texture.Key] = new TextureEntry(texture.Key,
-                                        BetterImage.LoadBitmapSourceFromBytes(reader.ToPng(texture.Value, true, new System.Drawing.Size(128, 128))),
-                                        kn5.OriginalFilename,
-                                        texture.Value.LongLength,
-                                        File.Exists(Path.Combine(trackSkin.Location, texture.Key)));
-                            }
+                            }.GetEntries();
                         }
                     });
                 }

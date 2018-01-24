@@ -93,7 +93,7 @@ namespace AcManager.Pages.Dialogs {
                     var bmp = new RenderTargetBitmap(CommonAcConsts.AppIconWidth, CommonAcConsts.AppIconHeight, 96, 96, PixelFormats.Pbgra32);
                     bmp.Render(result);
                     bmp.SaveAsPng(data.IconOriginal);
-                    BetterImage.ReloadImage(data.IconOriginal);
+                    BetterImage.Refresh(data.IconOriginal);
                 }
             }
         }

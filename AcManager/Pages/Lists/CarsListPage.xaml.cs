@@ -116,7 +116,7 @@ namespace AcManager.Pages.Lists {
                 DisplayApply = "Try";
             }
 
-            private bool _updateBrandBadge = ValuesStorage.Get<bool>("_ba.fixBrand.badge", SettingsHolder.Content.ChangeBrandIconAutomatically);
+            private bool _updateBrandBadge = ValuesStorage.Get("_ba.fixBrand.badge", SettingsHolder.Content.ChangeBrandIconAutomatically);
 
             public bool UpdateBrandBadge {
                 get => _updateBrandBadge;
@@ -128,7 +128,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _searchInTags = ValuesStorage.Get<bool>("_ba.fixBrand.fromTags", true);
+            private bool _searchInTags = ValuesStorage.Get("_ba.fixBrand.fromTags", true);
             public bool SearchInTags {
                 get => _searchInTags;
                 set {
@@ -139,7 +139,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _searchInTheMiddle = ValuesStorage.Get<bool>("_ba.fixBrand.fromMiddle", true);
+            private bool _searchInTheMiddle = ValuesStorage.Get("_ba.fixBrand.fromMiddle", true);
             public bool SearchInTheMiddle {
                 get => _searchInTheMiddle;
                 set {
@@ -150,7 +150,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _updateName = ValuesStorage.Get<bool>("_ba.fixBrand.name", true);
+            private bool _updateName = ValuesStorage.Get("_ba.fixBrand.name", true);
 
             public bool UpdateName {
                 get => _updateName;
@@ -163,7 +163,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _fixNamesWithoutBrands = ValuesStorage.Get<bool>("_ba.fixBrand.fixName", true);
+            private bool _fixNamesWithoutBrands = ValuesStorage.Get("_ba.fixBrand.fixName", true);
 
             public bool FixNamesWithoutBrands {
                 get => _fixNamesWithoutBrands && _updateName;
@@ -272,7 +272,7 @@ namespace AcManager.Pages.Lists {
                 DisplayApply = "Recalculate";
             }
 
-            private bool _scaleToMaxValues = ValuesStorage.Get<bool>("_ba.recalculateCurves.scaleToMaxValues", true);
+            private bool _scaleToMaxValues = ValuesStorage.Get("_ba.recalculateCurves.scaleToMaxValues", true);
 
             public bool ScaleToMaxValues {
                 get => _scaleToMaxValues;
@@ -299,7 +299,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _rebuildFromData = ValuesStorage.Get<bool>("_ba.recalculateCurves.rebuildFromData", true);
+            private bool _rebuildFromData = ValuesStorage.Get("_ba.recalculateCurves.rebuildFromData", true);
 
             public bool RebuildFromData {
                 get => _rebuildFromData;
@@ -312,7 +312,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _updateMaxValues = ValuesStorage.Get<bool>("_ba.recalculateCurves.updateMaxValues", true);
+            private bool _updateMaxValues = ValuesStorage.Get("_ba.recalculateCurves.updateMaxValues", true);
 
             public bool UpdateMaxValues {
                 get => !_scaleToMaxValues && _updateMaxValues;
@@ -411,7 +411,7 @@ namespace AcManager.Pages.Lists {
                 DisplayApply = "Fix";
             }
 
-            private bool _sortTags = ValuesStorage.Get<bool>("_ba.sortOutTags.sort", true);
+            private bool _sortTags = ValuesStorage.Get("_ba.sortOutTags.sort", true);
             public bool SortTags {
                 get => _sortTags;
                 set {
@@ -423,7 +423,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _cleanUpTags = ValuesStorage.Get<bool>("_ba.sortOutTags.cleanUp", true);
+            private bool _cleanUpTags = ValuesStorage.Get("_ba.sortOutTags.cleanUp", true);
 
             public bool CleanUpTags {
                 get => _cleanUpTags;
@@ -645,7 +645,7 @@ namespace AcManager.Pages.Lists {
                 return true;
             }
 
-            private bool _differentOnly = ValuesStorage.Get<bool>("_ba.syncCarLogos.differentOnly", true);
+            private bool _differentOnly = ValuesStorage.Get("_ba.syncCarLogos.differentOnly", true);
             public bool DifferentOnly {
                 get => _differentOnly;
                 set {
@@ -656,7 +656,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _preferHardlinks = ValuesStorage.Get<bool>("_ba.syncCarLogos.hardlinks", true);
+            private bool _preferHardlinks = ValuesStorage.Get("_ba.syncCarLogos.hardlinks", true);
 
             public bool PreferHardlinks {
                 get => _preferHardlinks;
@@ -691,7 +691,7 @@ namespace AcManager.Pages.Lists {
             public BatchAction_PackCars() : base("Batch.PackCars") {}
 
             #region Properies
-            private bool _packData = ValuesStorage.Get<bool>("_ba.packCars.data", true);
+            private bool _packData = ValuesStorage.Get("_ba.packCars.data", true);
             public bool PackData {
                 get => _packData;
                 set {
@@ -702,7 +702,7 @@ namespace AcManager.Pages.Lists {
                 }
             }
 
-            private bool _includeTemplates = ValuesStorage.Get<bool>("_ba.packCars.templates", true);
+            private bool _includeTemplates = ValuesStorage.Get("_ba.packCars.templates", true);
             public bool IncludeTemplates {
                 get => _includeTemplates;
                 set {

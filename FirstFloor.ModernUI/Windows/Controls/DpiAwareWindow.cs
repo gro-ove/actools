@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
@@ -58,11 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _isPerMonitorDpiAware = ModernUiHelper.TrySetPerMonitorDpiAware();
 
             // set the default owner
-            var app = Application.Current;
-            if (app != null && !ReferenceEquals(app.MainWindow, this)) {
-                Owner = app.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
-                        ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null);
-            }
+            Owner = GetDefaultOwner();
 
             foreach (var gesture in NavigationCommands.BrowseBack.InputGestures.OfType<KeyGesture>()
                                                       .Where(x => x.Key == Key.Back && x.Modifiers == ModifierKeys.None)
@@ -71,6 +68,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             NewWindowCreated?.Invoke(this, EventArgs.Empty);
+        }
+
+        private Window GetDefaultOwner() {
+            var app = Application.Current;
+            return app == null || ReferenceEquals(app.MainWindow, this) ? null
+                    : app.Windows.OfType<DpiAwareWindow>().Where(x => !ReferenceEquals(x, Owner)).FirstOrDefault(x => x.IsActive)
+                            ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null);
         }
 
         public new static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string),
@@ -117,9 +121,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public static readonly DependencyProperty DoNotAttachToWaitingDialogsProperty = DependencyProperty.Register(nameof(DoNotAttachToWaitingDialogs), typeof(bool),
+                typeof(DpiAwareWindow), new PropertyMetadata(false, (o, e) => {
+                    ((DpiAwareWindow)o)._doNotAttachToWaitingDialogs = (bool)e.NewValue;
+                }));
+
+        private bool _doNotAttachToWaitingDialogs;
+
+        public bool DoNotAttachToWaitingDialogs {
+            get => _doNotAttachToWaitingDialogs;
+            set => SetValue(DoNotAttachToWaitingDialogsProperty, value);
+        }
+
         public new bool? ShowDialog() {
-            if (Owner == null) {
-                Owner = Application.Current?.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive) ?? Application.Current?.MainWindow;
+            if (Owner != null && (!Owner.IsVisible || DoNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
+                Owner = GetDefaultOwner();
             }
 
             DimOwner();

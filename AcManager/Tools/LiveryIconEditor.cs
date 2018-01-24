@@ -413,10 +413,9 @@ namespace AcManager.Tools {
         #region Generation
         public void CreateNewIcon() {
             var size = new Size(CommonAcConsts.LiveryWidth, CommonAcConsts.LiveryHeight);
-
             var result = new ContentPresenter {
-                Width = CommonAcConsts.LiveryWidth,
-                Height = CommonAcConsts.LiveryHeight,
+                Width = size.Width,
+                Height = size.Height,
                 Content = _styleObject
             };
 

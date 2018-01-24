@@ -467,10 +467,18 @@ namespace AcManager.Tools.GameProperties {
                 }
             }
 
+            [CanBeNull]
             private readonly KeyValuePair<JoyKey, JoyCommandBase>[] _joyToCommand;
+
+            [CanBeNull]
             private readonly KeyValuePair<Keys, JoyCommandBase>[] _keyToCommand;
+
+            [CanBeNull]
             private readonly DirectInput _directInput;
+
+            [CanBeNull]
             private readonly List<Joystick> _devices;
+
             private readonly bool _ignorePovInPits;
 
             [CanBeNull]
@@ -579,6 +587,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             private void OnTick() {
+                if (_devices == null) return;
                 var povAvailable = !(_ignorePovInPits && _isInPits);
                 for (var index = _devices.Count - 1; index >= 0; index--) {
                     for (var i = 0; i < _joyToCommand.Length; i++) {
@@ -645,6 +654,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             private JoyCommandBase GetCommand(Keys key) {
+                if (_keyToCommand == null) return null;
                 for (var i = _keyToCommand.Length - 1; i >= 0; i--) {
                     var x = _keyToCommand[i];
                     if (x.Key == key) {

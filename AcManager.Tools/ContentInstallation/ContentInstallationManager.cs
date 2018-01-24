@@ -77,8 +77,15 @@ namespace AcManager.Tools.ContentInstallation {
                     break;
                 case nameof(ContentInstallationEntry.IsDeleted):
                     // No reason to save here, list will be changed as well
-                    if (sender is ContentInstallationEntry entry) {
-                        DownloadList.Remove(entry);
+                    if (sender is ContentInstallationEntry deletedEntry) {
+                        DownloadList.Remove(deletedEntry);
+                    }
+                    break;
+                case nameof(ContentInstallationEntry.RestartFrom):
+                    // No reason to save here, list will be changed as well
+                    if (sender is ContentInstallationEntry restartedEntry) {
+                        InstallAsync(restartedEntry.RestartFrom, restartedEntry.InstallationParams);
+                        DownloadList.Remove(restartedEntry);
                     }
                     break;
             }

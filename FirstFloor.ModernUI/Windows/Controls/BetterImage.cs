@@ -802,7 +802,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Forces all BetterImages which showing specific filename to reload their content.
         /// </summary>
         /// <param name="filename"></param>
-        public static void ReloadImage([CanBeNull] string filename) {
+        public static void Refresh([CanBeNull] string filename) {
             if (string.IsNullOrWhiteSpace(filename)) return;
 
 #if ZIP_SUPPORT

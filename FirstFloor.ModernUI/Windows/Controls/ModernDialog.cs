@@ -360,6 +360,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(ButtonsMarginProperty, value);
         }
 
+        public static readonly DependencyProperty MainButtonsPanelTemplateProperty = DependencyProperty.Register(nameof(MainButtonsPanelTemplate),
+                typeof(ItemsPanelTemplate), typeof(ModernDialog));
+
+        public ItemsPanelTemplate MainButtonsPanelTemplate {
+            get => (ItemsPanelTemplate)GetValue(MainButtonsPanelTemplateProperty);
+            set => SetValue(MainButtonsPanelTemplateProperty, value);
+        }
+
+        public static readonly DependencyProperty ContentMarginProperty = DependencyProperty.Register(nameof(ContentMargin), typeof(Thickness),
+                typeof(ModernDialog));
+
+        public Thickness ContentMargin {
+            get => (Thickness)GetValue(ContentMarginProperty);
+            set => SetValue(ContentMarginProperty, value);
+        }
+
         public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(nameof(ShowTitle), typeof(bool),
                 typeof(ModernDialog), new PropertyMetadata(true));
 

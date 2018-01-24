@@ -11,6 +11,8 @@
         public static readonly int PreviewHeight = 575;
         public static readonly int LiveryWidth = 64;
         public static readonly int LiveryHeight = 64;
+        public static readonly int UpgradeIconWidth = 64;
+        public static readonly int UpgradeIconHeight = 64;
         public static readonly int AppIconWidth = 64;
         public static readonly int AppIconHeight = 64;
 

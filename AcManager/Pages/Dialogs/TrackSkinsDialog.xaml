@@ -1,7 +1,7 @@
 ﻿<mui:ModernWindow x:Class="AcManager.Pages.Dialogs.TrackSkinsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" MinWidth="600" Width="800" Height="720"
-        MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized"
-        Closed="OnClosed" LocationAndSizeKey="TrackSkinsDialog.LS" d:DataContext="{d:DesignInstance di:TrackSkinsDialog+ViewModel}"
-        Title="{Binding SelectedTrack.DisplayNameWithoutCount, StringFormat={x:Static g:AppStrings.Dialog_CarSkinsFormat}}" SaveKey="TrackSkinsDialog" />
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" MinWidth="600" Width="800" Height="720" DoNotAttachToWaitingDialogs="True"
+    MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized"
+    Closed="OnClosed" LocationAndSizeKey="TrackSkinsDialog.LS" d:DataContext="{d:DesignInstance di:TrackSkinsDialog+ViewModel}"
+    Title="{Binding SelectedTrack.DisplayNameWithoutCount, StringFormat={x:Static g:AppStrings.Dialog_CarSkinsFormat}}" SaveKey="TrackSkinsDialog" />

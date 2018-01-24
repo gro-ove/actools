@@ -137,7 +137,7 @@ namespace AcManager.Tools.Helpers.Api {
                 case OpenWeatherType.HeavyShowerRainAndDrizzle:
                 case OpenWeatherType.HeavyIntensityShowerRain:
                     return WeatherType.HeavyRain;
-                    
+
                 case OpenWeatherType.LightSnow:
                 case OpenWeatherType.LightShowerSnow:
                     return WeatherType.LightSnow;
@@ -149,14 +149,14 @@ namespace AcManager.Tools.Helpers.Api {
                 case OpenWeatherType.HeavySnow:
                 case OpenWeatherType.HeavyShowerSnow:
                     return WeatherType.HeavySnow;
-                    
+
                 case OpenWeatherType.LightRainAndSnow:
                     return WeatherType.LightSleet;
 
                 case OpenWeatherType.RainAndSnow:
                 case OpenWeatherType.Sleet:
                     return WeatherType.Sleet;
-                    
+
                 case OpenWeatherType.ShowerSleet:
                     return WeatherType.HeavySleet;
 
@@ -168,11 +168,11 @@ namespace AcManager.Tools.Helpers.Api {
 
                 case OpenWeatherType.Haze:
                     return WeatherType.Haze;
-                    
+
                 case OpenWeatherType.Sand:
                 case OpenWeatherType.SandAndDustWhirls:
                     return WeatherType.Sand;
-                    
+
                 case OpenWeatherType.Dust:
                 case OpenWeatherType.VolcanicAsh:
                     return WeatherType.Dust;
@@ -267,11 +267,13 @@ namespace AcManager.Tools.Helpers.Api {
 
                 var windSpeed = FlexibleParser.ParseDouble(windNode.Descendants(@"speed").First().Attribute("value")?.Value);
                 var windDirection = FlexibleParser.ParseDouble(windNode.Descendants(@"direction").First().Attribute("value")?.Value);
-                
+
+                var humidity = FlexibleParser.ParseDouble(doc.Descendants(@"humidity").FirstOrDefault()?.Attribute(@"value")?.Value);
+                var pressure = FlexibleParser.ParseDouble(doc.Descendants(@"pressure").FirstOrDefault()?.Attribute(@"value")?.Value);
+
                 var icon = weatherNode.Attribute(@"icon")?.Value;
                 var iconUri = icon == null ? null : string.Format(IconUri, icon);
-                
-                return new WeatherDescription(type, temperature, description, windSpeed, windDirection, iconUri);
+                return new WeatherDescription(type, temperature, description, windSpeed, windDirection, humidity, pressure, iconUri);
             }
         }
     }

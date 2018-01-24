@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
@@ -18,6 +18,7 @@ namespace AcManager.Tools.Helpers {
     public class CookieAwareWebClient : WebClient {
         public CookieAwareWebClient() {
             Headers[HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent;
+            Encoding = Encoding.UTF8;
         }
 
         private class CookieContainer {
@@ -61,6 +62,10 @@ namespace AcManager.Tools.Helpers {
             public CookieContainer() {
                 _cookies = new Dictionary<string, CookieHolder>();
             }
+        }
+
+        public IDisposable MaskAsCommonBrowser() {
+            return SetUserAgent(CmApiProvider.UserAgentAlt);
         }
 
         private readonly CookieContainer _container = new CookieContainer();

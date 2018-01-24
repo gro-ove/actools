@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,19 +115,39 @@ namespace AcManager.Tools.ContentInstallation {
 
             [CanBeNull]
             public FileNode GetSubFile([NotNull] string name) {
+                var index = name.IndexOfAny(new[] { '/', '\\' });
+                if (index != -1) {
+                    return GetSubDirectory(name.Substring(0, index))?.GetSubFile(name.Substring(index + 1));
+                }
+
                 return _files.GetValueOrDefault(name.ToLowerInvariant());
             }
 
             [CanBeNull]
             public DirectoryNode GetSubDirectory([NotNull] string name) {
+                var index = name.IndexOfAny(new[] { '/', '\\' });
+                if (index != -1) {
+                    return GetSubDirectory(name.Substring(0, index))?.GetSubDirectory(name.Substring(index + 1));
+                }
+
                 return _directories.GetValueOrDefault(name.ToLowerInvariant());
             }
 
             public bool HasSubFile([NotNull] string name) {
+                var index = name.IndexOfAny(new[] { '/', '\\' });
+                if (index != -1) {
+                    return GetSubDirectory(name.Substring(0, index))?.HasSubFile(name.Substring(index + 1)) == true;
+                }
+
                 return _files.ContainsKey(name.ToLowerInvariant());
             }
 
             public bool HasSubDirectory([NotNull] string name) {
+                var index = name.IndexOfAny(new[] { '/', '\\' });
+                if (index != -1) {
+                    return GetSubDirectory(name.Substring(0, index))?.HasSubDirectory(name.Substring(index + 1)) == true;
+                }
+
                 return _directories.ContainsKey(name.ToLowerInvariant());
             }
 
@@ -478,47 +499,6 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
-            var uiCarSkin = directory.GetSubFile("ui_skin.json");
-            if ((uiCarSkin != null || directory.HasSubFile("preview.jpg") || directory.HasSubFile("livery.png"))
-                    && CarsManager.Instance != null /* for crawlers only */) {
-                var icon = await (directory.GetSubFile("livery.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
-                cancellation.ThrowIfCancellationRequested();
-
-                string carId;
-                var skinFor = await (directory.GetSubFile("cm_skin_for.json")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
-                if (skinFor != null) {
-                    carId = JsonExtension.Parse(skinFor.ToUtf8String())["id"]?.ToString();
-                } else {
-                    carId = _installationParams.CarId;
-
-                    if (carId == null && directory.Parent?.NameLowerCase == "skins") {
-                        carId = directory.Parent.Parent?.Name;
-                    }
-
-                    if (carId == null) {
-                        carId = AcContext.Instance.CurrentCar?.Id;
-                    }
-                }
-
-                if (carId == null) {
-                    throw new Exception("Can’t figure out car’s ID");
-                }
-
-                var skinId = directory.Name;
-                if (skinId != null){
-                    string name;
-                    if (uiCarSkin != null) {
-                        var data = await uiCarSkin.Info.ReadAsync() ?? throw new MissingContentException();
-                        var parsed = JsonExtension.Parse(data.ToUtf8String());
-                        name = parsed.GetStringValueOnly("name");
-                    } else {
-                        name = AcStringValues.NameFromId(skinId);
-                    }
-
-                    return new CarSkinContentEntry(directory.Key ?? "", skinId, carId, name, icon);
-                }
-            }
-
             var uiTrackSkin = directory.GetSubFile("ui_track_skin.json");
             if (uiTrackSkin != null && TracksManager.Instance != null) {
                 var icon = await (directory.GetSubFile("preview.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
@@ -565,6 +545,47 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
+            var uiCarSkin = directory.GetSubFile("ui_skin.json");
+            if ((uiCarSkin != null || directory.HasSubFile("preview.jpg") && directory.HasSubFile("livery.png"))
+                    && CarsManager.Instance != null /* for crawlers only */) {
+                var icon = await (directory.GetSubFile("livery.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                cancellation.ThrowIfCancellationRequested();
+
+                string carId;
+                var skinFor = await (directory.GetSubFile("cm_skin_for.json")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                if (skinFor != null) {
+                    carId = JsonExtension.Parse(skinFor.ToUtf8String())["id"]?.ToString();
+                } else {
+                    carId = _installationParams.CarId;
+
+                    if (carId == null && directory.Parent?.NameLowerCase == "skins") {
+                        carId = directory.Parent.Parent?.Name;
+                    }
+
+                    if (carId == null) {
+                        carId = AcContext.Instance.CurrentCar?.Id;
+                    }
+                }
+
+                if (carId == null) {
+                    throw new Exception("Can’t figure out car’s ID");
+                }
+
+                var skinId = directory.Name;
+                if (skinId != null){
+                    string name;
+                    if (uiCarSkin != null) {
+                        var data = await uiCarSkin.Info.ReadAsync() ?? throw new MissingContentException();
+                        var parsed = JsonExtension.Parse(data.ToUtf8String());
+                        name = parsed.GetStringValueOnly("name");
+                    } else {
+                        name = AcStringValues.NameFromId(skinId);
+                    }
+
+                    return new CarSkinContentEntry(directory.Key ?? "", skinId, carId, name, icon);
+                }
+            }
+
             // New textures
             if (directory.NameLowerCase == "damage" && directory.HasSubFile("flatspot_fl.png")) {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "damage");
@@ -572,8 +593,14 @@ namespace AcManager.Tools.ContentInstallation {
 
             if (directory.Parent?.NameLowerCase == "crew_brand" && directory.HasSubFile("Brands_Crew.dds") && directory.HasSubFile("Brands_Crew.jpg")
                     && directory.HasSubFile("Brands_Crew_NM.dds")) {
-                return new CrewBrandConfigEntry(directory.Key ?? "", directory.Name ?? "clouds");
+                return new CrewBrandEntry(directory.Key ?? "", directory.Name ?? "unknown");
             }
+
+            if (directory.Parent?.NameLowerCase == "crew_helmet" && directory.HasSubFile("Crew_HELMET_Color.dds")) {
+                return new CrewHelmetEntry(directory.Key ?? "", directory.Name ?? "unknown");
+            }
+
+            // TODO: More driver and crew textures
 
             if (directory.NameLowerCase == "clouds" && directory.Files.Any(x => x.NameLowerCase.StartsWith("cloud") && x.NameLowerCase.EndsWith(".dds"))) {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "clouds");
@@ -673,6 +700,46 @@ namespace AcManager.Tools.ContentInstallation {
                     case "tyre_smoke_grass.ini":
                     case "vr.ini":
                         return new SystemConfigEntry(file.Key, file.Name);
+                }
+            }
+
+            if (file.NameLowerCase == ReshadeSetupEntry.ReshadeFileName && file.Parent.HasSubFile(ReshadeSetupEntry.ReshadeConfigFileName)) {
+                var reshadeEntry = await GetReshadeEntry();
+                if (reshadeEntry != null) {
+                    return reshadeEntry;
+                }
+
+                async Task<ContentEntryBase> GetReshadeEntry() {
+                    var root = file.Parent;
+                    var configuration = root.GetSubFile(ReshadeSetupEntry.ReshadeConfigFileName);
+                    if (configuration == null) return null;
+
+                    var data = await configuration.Info.ReadAsync();
+                    if (data == null) throw new MissingContentException();
+
+                    var ini = IniFile.Parse(data.ToUtf8String())["GENERAL"];
+                    var presets = ini.GetNonEmpty("PresetFiles")?.Split(',').Select(ToRelativePath).NonNull().ToList();
+                    if (presets == null || presets.Count == 0) return null;
+
+                    var resources = ini.GetNonEmpty("EffectSearchPaths")?.Split(',')
+                                       .Concat(ini.GetNonEmpty("TextureSearchPaths")?.Split(',') ?? new string[0])
+                                       .Select(ToRelativePath).NonNull().ToList() ?? new List<string>();
+
+                    return new ReshadeSetupEntry(file.Key, presets.JoinToReadableString(), presets.Concat(resources));
+
+                    string ToRelativePath(string input) {
+                        if (!Path.IsPathRooted(input)) return input;
+
+                        while (input != null) {
+                            var index = input.IndexOfAny(new[] { '/', '\\' });
+                            if (index == -1) return null;
+
+                            input = input.Substring(index + 1);
+                            if (root.HasSubFile(input)) return input;
+                        }
+
+                        return null;
+                    }
                 }
             }
 

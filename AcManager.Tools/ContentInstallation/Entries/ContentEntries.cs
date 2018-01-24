@@ -304,7 +304,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
                 : base(path, id, name, version, iconData) { }
 
-        protected sealed override bool GenericModSupportedByDesign => true;
+        protected sealed override bool GenericModSupportedByDesign => IsNew;
 
         public abstract FileAcManager<T> GetManager();
 

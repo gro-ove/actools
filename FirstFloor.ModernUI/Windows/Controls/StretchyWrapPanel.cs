@@ -80,6 +80,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(RearrangeForBestFitProperty, value);
         }
 
+        public static readonly DependencyProperty LineSpaceProperty = DependencyProperty.Register(nameof(LineSpace), typeof(double),
+                typeof(StretchyWrapPanel), new PropertyMetadata(0d, (o, e) => {
+                    ((StretchyWrapPanel)o)._lineSpace = (double)e.NewValue;
+                }));
+
+        private double _lineSpace;
+
+        public double LineSpace {
+            get => _lineSpace;
+            set => SetValue(LineSpaceProperty, value);
+        }
+
         private struct UVSize {
             internal UVSize(Orientation orientation, Size size) {
                 U = V = 0d;
@@ -146,6 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     itemHeightSet ? itemHeight : constraint.Height);
 
             var children = InternalChildren;
+            var lines = 1;
 
             for (int i = 0, count = children.Count; i < count; i++) {
                 var child = children[i];
@@ -164,12 +177,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     panelSize.U = Math.Max(curLineSize.U, panelSize.U);
                     panelSize.V += curLineSize.V;
                     curLineSize = sz;
+                    lines++;
 
                     if (sz.U > uLimit) {
                         // The element is wider then the constrint - give it a separate line
                         panelSize.U = Math.Max(sz.U, panelSize.U);
                         panelSize.V += sz.V;
                         curLineSize = new UVSize(orientation);
+                        lines++;
                     }
                 } else {
                     // Continue to accumulate a line
@@ -180,10 +195,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // The last line size, if any should be added
             panelSize.U = Math.Max(curLineSize.U, panelSize.U);
-            panelSize.V += curLineSize.V;
+            panelSize.V += curLineSize.V + LineSpace * (lines - 1);
 
             // Go from UV space to W/H space
-            return new Size(panelSize.Width, panelSize.Height);
+            return new Size(panelSize.Width, Math.Max(panelSize.Height, 0));
         }
 
         private Size MeasureBestFit(Size constraint) {
@@ -236,8 +251,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 panelSize.V += line.V;
             }
 
+            panelSize.V += LineSpace * Math.Max(lines.Count - 1, 0);
+
             // Go from UV space to W/H space
-            return new Size(panelSize.Width, panelSize.Height);
+            return new Size(panelSize.Width, Math.Max(panelSize.Height, 0));
         }
 
         protected override Size ArrangeOverride(Size finalSize) {
@@ -275,7 +292,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         ArrangeLineStretch(orientation, children, accumulatedV, currentLineSize.V, firstInLine, i, uLimit, StretchProportionally);
                     }
 
-                    accumulatedV += currentLineSize.V;
+                    accumulatedV += currentLineSize.V + LineSpace;
                     currentLineSize = childSize;
                     firstInLine = i;
                 } else {
@@ -433,7 +450,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     line.ArrangeStretch(orientation, children, accumulatedV, uLimit, StretchProportionally);
                 }
 
-                accumulatedV += line.Size.V;
+                accumulatedV += line.Size.V + LineSpace;
             }
 
             return finalSize;

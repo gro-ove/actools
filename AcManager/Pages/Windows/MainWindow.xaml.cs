@@ -156,6 +156,8 @@ namespace AcManager.Pages.Windows {
 
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
+#else
+            MenuLinkGroups.Remove(BrowserLinkGroup);
 #endif
         }
 
@@ -323,9 +325,7 @@ namespace AcManager.Pages.Windows {
         public class ViewModel : NotifyPropertyChanged {
             private CommandBase _enterKeyCommand;
 
-            public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new DelegateCommand(() => {
-                new AppKeyDialog().ShowDialog();
-            }));
+            public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new DelegateCommand(() => { new AppKeyDialog().ShowDialog(); }));
 
             private DelegateCommand _showAdditionalContentDialogCommand;
 
@@ -403,7 +403,8 @@ namespace AcManager.Pages.Windows {
                             ClearValue(BackgroundContentProperty);
                         }
                     } else {
-                        var animatedBackground = Regex.IsMatch(filename, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
+                        var animatedBackground = Regex.IsMatch(filename, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$",
+                                RegexOptions.IgnoreCase) ?
                                 filename : null;
                         var staticBackground = animatedBackground == null ? filename : Regex.Replace(filename, @"\.\w+$", @".jpg");
 
@@ -496,6 +497,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private bool _closed;
+
         private void OnClosing(object sender, CancelEventArgs e) {
             if (_closed) return;
 
@@ -568,9 +570,7 @@ namespace AcManager.Pages.Windows {
 
         private ICommand _quickSwitchesCommand;
 
-        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new DelegateCommand(() => {
-            ToggleQuickSwitches();
-        }));
+        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new DelegateCommand(() => { ToggleQuickSwitches(); }));
 
         private int _popupId;
 

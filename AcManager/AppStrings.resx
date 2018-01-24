@@ -2258,7 +2258,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Select file</value>
   </data>
   <data name="Common_ViewUserFolder" xml:space="preserve">
-    <value>View user folder</value>
+    <value>User library</value>
   </data>
   <data name="BrandBadge_CannotChange" xml:space="preserve">
     <value>Can’t change brand’s badge</value>

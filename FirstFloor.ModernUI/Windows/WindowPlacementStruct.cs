@@ -80,57 +80,70 @@ namespace FirstFloor.ModernUI.Windows {
         public const int ShowStateNormal = 1;
         public const int ShowStateMinimized = 1;
 
-        public static void SetPlacement(IntPtr windowHandle, [CanBeNull] string placementXml) {
-            if (string.IsNullOrEmpty(placementXml)) {
-                return;
-            }
-
-            var xmlBytes = Encoding.GetBytes(placementXml);
-
+        private static void SetPlacementStruct(IntPtr windowHandle, WindowPlacementStruct placement) {
             try {
-                WindowPlacementStruct placement;
-                using (var memoryStream = new MemoryStream(xmlBytes)) {
-                    placement = (WindowPlacementStruct)Serializer.Deserialize(memoryStream);
-                }
-
                 placement.length = Marshal.SizeOf(typeof(WindowPlacementStruct));
                 placement.flags = 0;
                 placement.showCmd = placement.showCmd == ShowStateMinimized ? ShowStateNormal : placement.showCmd;
                 SetWindowPlacement(windowHandle, ref placement);
             } catch (InvalidOperationException e) {
                 Logging.Error(e);
-                // Parsing placement XML failed. Fail silently.
             }
         }
 
-        private static WindowPlacementRect GetPlacementRect(IntPtr windowHandle) {
+        private static WindowPlacementStruct GetPlacementStruct(IntPtr windowHandle) {
             GetWindowPlacement(windowHandle, out var placement);
-            return placement.Rect;
+            return placement;
+        }
+
+        public static void SetPlacementRect(this Window window, Rect rect) {
+            var handle = new WindowInteropHelper(window).Handle;
+            var placement = GetPlacementStruct(handle);
+            placement.normalPosition = new WindowPlacementRect {
+                Left = (int)rect.Left,
+                Top = (int)rect.Top,
+                Right = (int)rect.Right,
+                Bottom = (int)rect.Bottom
+            };
+            SetPlacementStruct(handle, placement);
+        }
+
+        public static Rect GetPlacementRect(this Window window) {
+            var rect = GetPlacementStruct(new WindowInteropHelper(window).Handle).Rect;
+            return new Rect(rect.Left, rect.Top, rect.Width, rect.Height);
         }
 
         private static string GetPlacement(IntPtr windowHandle) {
-            GetWindowPlacement(windowHandle, out var placement);
             using (var memoryStream = new MemoryStream()) {
                 using (var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8)) {
-                    Serializer.Serialize(xmlTextWriter, placement);
+                    Serializer.Serialize(xmlTextWriter, GetPlacementStruct(windowHandle));
                     var xmlBytes = memoryStream.ToArray();
                     return Encoding.GetString(xmlBytes);
                 }
             }
         }
 
-        public static void SetPlacement(this Window window, [CanBeNull] string placementXml) {
-            SetPlacement(new WindowInteropHelper(window).Handle, placementXml);
+        private static void SetPlacement(IntPtr windowHandle, [CanBeNull] string placementXml) {
+            if (string.IsNullOrEmpty(placementXml)) return;
+            try {
+                using (var memoryStream = new MemoryStream(Encoding.GetBytes(placementXml))) {
+                    SetPlacementStruct(windowHandle, (WindowPlacementStruct)Serializer.Deserialize(memoryStream));
+                }
+            } catch (InvalidOperationException e) {
+                Logging.Error(e);
+            }
         }
 
         public static string GetPlacement(this Window window) {
             return GetPlacement(new WindowInteropHelper(window).Handle);
         }
 
-        public static bool IsWindowOnAnyScreen(this Window window, bool autoAdjustWindow = true) {
-            var handle = new WindowInteropHelper(window).Handle;
-            var placement = GetPlacementRect(handle);
-            var screen = Screen.FromHandle(handle);
+        public static void SetPlacement(this Window window, [CanBeNull] string placementXml) {
+            SetPlacement(new WindowInteropHelper(window).Handle, placementXml);
+        }
+
+        public static bool IsWindowOnScreen(this Window window, Screen screen, bool autoAdjustWindow = true) {
+            var placement = window.GetPlacementRect();
             var width = placement.Width;
             var height = placement.Height;
             var left = placement.Left;
@@ -166,6 +179,10 @@ namespace FirstFloor.ModernUI.Windows {
             }
 
             return false;
+        }
+
+        public static bool IsWindowOnAnyScreen(this Window window, bool autoAdjustWindow = true) {
+            return window.IsWindowOnScreen(Screen.FromHandle(new WindowInteropHelper(window).Handle), autoAdjustWindow);
         }
     }
 }

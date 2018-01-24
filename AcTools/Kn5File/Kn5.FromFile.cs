@@ -6,14 +6,18 @@ using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public interface IKn5TextureLoader {
+        void OnNewKn5(string kn5Filename);
+
         [CanBeNull]
         byte[] LoadTexture([NotNull] string textureName, [NotNull] ReadAheadBinaryReader reader, int textureSize);
     }
 
     public class SkippingTextureLoader : IKn5TextureLoader {
+        [NotNull]
         public static readonly SkippingTextureLoader Instance = new SkippingTextureLoader();
 
         private SkippingTextureLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
             reader.Skip(textureSize);
@@ -22,9 +26,11 @@ namespace AcTools.Kn5File {
     }
 
     public class DefaultKn5TextureLoader : IKn5TextureLoader {
+        [NotNull]
         public static readonly DefaultKn5TextureLoader Instance = new DefaultKn5TextureLoader();
 
         private DefaultKn5TextureLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
             var result = MemoryChunk.Bytes(textureSize).Execute(() => new byte[textureSize]);
@@ -34,14 +40,18 @@ namespace AcTools.Kn5File {
     }
 
     public interface IKn5MaterialLoader {
+        void OnNewKn5(string kn5Filename);
+
         [CanBeNull]
         Kn5Material LoadMaterial([NotNull] ReadAheadBinaryReader reader);
     }
 
     public class SkippingMaterialLoader : IKn5MaterialLoader {
+        [NotNull]
         public static readonly SkippingMaterialLoader Instance = new SkippingMaterialLoader();
 
         private SkippingMaterialLoader() {}
+        public void OnNewKn5(string kn5Filename) { }
 
         public Kn5Material LoadMaterial(ReadAheadBinaryReader reader) {
             ((Kn5Reader)reader).SkipMaterial();
@@ -50,9 +60,11 @@ namespace AcTools.Kn5File {
     }
 
     public class DefaultKn5MaterialLoader : IKn5MaterialLoader {
+        [NotNull]
         public static readonly DefaultKn5MaterialLoader Instance = new DefaultKn5MaterialLoader();
 
         private DefaultKn5MaterialLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         public Kn5Material LoadMaterial(ReadAheadBinaryReader reader) {
             return ((Kn5Reader)reader).ReadMaterial();
@@ -60,14 +72,18 @@ namespace AcTools.Kn5File {
     }
 
     public interface IKn5NodeLoader {
+        void OnNewKn5(string kn5Filename);
+
         [CanBeNull]
         Kn5Node LoadNode([NotNull] ReadAheadBinaryReader reader);
     }
 
     public class HierarchyOnlyNodeLoader : IKn5NodeLoader {
+        [NotNull]
         public static readonly HierarchyOnlyNodeLoader Instance = new HierarchyOnlyNodeLoader();
 
         private HierarchyOnlyNodeLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         private static Kn5Node LoadHierarchy(Kn5Reader reader) {
             var node = reader.ReadNodeHierarchy();
@@ -90,9 +106,11 @@ namespace AcTools.Kn5File {
     }
 
     public class SkippingNodeLoader : IKn5NodeLoader {
+        [NotNull]
         public static readonly SkippingNodeLoader Instance = new SkippingNodeLoader();
 
         private SkippingNodeLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         private static Kn5Node SkipNode(Kn5Reader reader) {
             var node = reader.ReadNodeHierarchy();
@@ -116,9 +134,11 @@ namespace AcTools.Kn5File {
     }
 
     public class DefaultKn5NodeLoader : IKn5NodeLoader {
+        [NotNull]
         public static readonly DefaultKn5NodeLoader Instance = new DefaultKn5NodeLoader();
 
         private DefaultKn5NodeLoader() { }
+        public void OnNewKn5(string kn5Filename) { }
 
         private static Kn5Node LoadNode(Kn5Reader reader) {
             var node = reader.ReadNode();
@@ -149,13 +169,16 @@ namespace AcTools.Kn5File {
             }
 
             var kn5 = new Kn5(filename);
+            (textureLoader = textureLoader ?? DefaultKn5TextureLoader.Instance).OnNewKn5(filename);
+            (materialLoader = materialLoader ?? DefaultKn5MaterialLoader.Instance).OnNewKn5(filename);
+            (nodeLoader = nodeLoader ?? DefaultKn5NodeLoader.Instance).OnNewKn5(filename);
 
             using (var reader = new Kn5Reader(filename)) {
                 kn5.FromFile_Header(reader);
-                kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
+                kn5.FromFile_Textures(reader, textureLoader);
                 if (nodeLoader != SkippingNodeLoader.Instance || materialLoader != SkippingMaterialLoader.Instance) {
-                    kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
-                    kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                    kn5.FromFile_Materials(reader, materialLoader);
+                    kn5.FromFile_Nodes(reader, nodeLoader);
                 }
             }
 
@@ -166,13 +189,16 @@ namespace AcTools.Kn5File {
         public static Kn5 FromStream(Stream entry, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
                 IKn5NodeLoader nodeLoader = null) {
             var kn5 = new Kn5(string.Empty);
+            (textureLoader = textureLoader ?? DefaultKn5TextureLoader.Instance).OnNewKn5(string.Empty);
+            (materialLoader = materialLoader ?? DefaultKn5MaterialLoader.Instance).OnNewKn5(string.Empty);
+            (nodeLoader = nodeLoader ?? DefaultKn5NodeLoader.Instance).OnNewKn5(string.Empty);
 
             using (var reader = new Kn5Reader(entry)) {
                 kn5.FromFile_Header(reader);
-                kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
+                kn5.FromFile_Textures(reader, textureLoader);
                 if (nodeLoader != SkippingNodeLoader.Instance || materialLoader != SkippingMaterialLoader.Instance) {
-                    kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
-                    kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
+                    kn5.FromFile_Materials(reader, materialLoader);
+                    kn5.FromFile_Nodes(reader, nodeLoader);
                 }
             }
 

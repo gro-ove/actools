@@ -8,7 +8,7 @@
     Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+    LocationAndSizeKey="MainWindow_LS" x:Name="Window" WindowStyle="None">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -243,6 +243,11 @@
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>
+    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Browser">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="Manage Sources" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 

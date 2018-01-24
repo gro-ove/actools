@@ -22,6 +22,8 @@ namespace AcManager.CustomShowroom {
                 _kn5 = kn5;
             }
 
+            public void OnNewKn5(string kn5Filename) { }
+
             public void GetTexture(string textureName, Func<int, Stream> writer) {
                 _textureName = textureName;
                 _fn = writer;

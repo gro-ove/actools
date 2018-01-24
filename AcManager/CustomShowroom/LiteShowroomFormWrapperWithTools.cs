@@ -14,6 +14,8 @@ using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.CustomShowroom {
     public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots, ICustomShowroomShots {
+        public static bool OptionAttachedToolsLogging = false;
+
         private readonly AttachedHelper _helper;
         private readonly LiteShowroomTools _tools;
 
@@ -21,8 +23,12 @@ namespace AcManager.CustomShowroom {
 
         public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
                 : base(renderer, car.DisplayName) {
-            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this);
-            _helper = new AttachedHelper(this, _tools, limitHeight: false);
+            if (OptionAttachedToolsLogging) {
+                Logging.Here();
+            }
+
+            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this, OptionAttachedToolsLogging);
+            _helper = new AttachedHelper(this, _tools, limitHeight: false, verbose: OptionAttachedToolsLogging);
             GoToNormalMode();
 
             renderer.VisibleUi = false;
@@ -55,6 +61,10 @@ namespace AcManager.CustomShowroom {
         private bool? _lastVisibleTools;
 
         protected sealed override void GoToNormalMode() {
+            if (OptionAttachedToolsLogging) {
+                Logging.Debug("Switching to normal mode…");
+            }
+
             _switchingInProgress = true;
 
             try {
@@ -80,9 +90,17 @@ namespace AcManager.CustomShowroom {
             } finally {
                 _switchingInProgress = false;
             }
+
+            if (OptionAttachedToolsLogging) {
+                Logging.Here();
+            }
         }
 
         protected override void GoToToolMode() {
+            if (OptionAttachedToolsLogging) {
+                Logging.Debug("Switching to tool mode…");
+            }
+
             _switchingInProgress = true;
 
             try {
@@ -106,6 +124,10 @@ namespace AcManager.CustomShowroom {
                 UpdateSize();
             } finally {
                 _switchingInProgress = false;
+            }
+
+            if (OptionAttachedToolsLogging) {
+                Logging.Here();
             }
         }
 

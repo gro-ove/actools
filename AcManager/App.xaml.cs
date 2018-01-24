@@ -40,6 +40,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.DirectInput;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Helpers.PresetsPerMode;
 using AcManager.Tools.Profile;
@@ -249,7 +250,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             };
 
             AppArguments.Set(AppFlag.ControlsDebugMode, ref ControlsSettings.OptionDebugControlles);
-            AppArguments.Set(AppFlag.ControlsRescanPeriod, ref ControlsSettings.OptionRescanPeriod);
+            AppArguments.Set(AppFlag.ControlsRescanPeriod, ref DirectInputDevices.OptionMinRescanPeriod);
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
@@ -694,6 +695,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
             DiscordConnector.Instance.Dispose();
+            DirectInputDevices.Shutdown();
             Dispose();
         }
 

@@ -10,9 +10,63 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
+    public class ReshadeSetupEntry : ContentEntryBase {
+        public static string ReshadeFileName = "dxgi.dll";
+        public static string ReshadeConfigFileName = "dxgi.ini";
+        public static string ReshadeDefaultShaders = "reshade-shaders";
+
+        private readonly List<string> _toInstall;
+
+        public ReshadeSetupEntry([NotNull] string path, string presetName, IEnumerable<string> toInstall)
+                : base(path, presetName, presetName) {
+            _toInstall = toInstall.Prepend(ReshadeFileName, ReshadeConfigFileName).ToList();
+        }
+
+        public override double Priority => 1000d;
+
+        protected sealed override bool GenericModSupportedByDesign => IsNew;
+        public override string GenericModTypeName => "Reshade";
+        public override string NewFormat => "Reshade setup {0}";
+        public override string ExistingFormat => "Update for Reshade setup {0}";
+
+        protected override IEnumerable<UpdateOption> GetUpdateOptions() {
+            yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst) { RemoveExisting = true };
+        }
+
+        protected override ICopyCallback GetCopyCallback(string destination) {
+            return new CopyCallback(info => {
+                if (string.Equals(info.Key, ReshadeConfigFileName, StringComparison.OrdinalIgnoreCase)) {
+                    FileUtils.Recycle(ExistingInstallation().ToArray());
+                }
+
+                return _toInstall.Contains(info.Key) || _toInstall.Any(x => FileUtils.Affects(x, info.Key))
+                        ? Path.Combine(AcRootDirectory.Instance.RequireValue, info.Key) : null;
+            });
+        }
+
+        private static IEnumerable<string> ExistingInstallation() {
+            yield return Path.Combine(AcRootDirectory.Instance.RequireValue, ReshadeFileName);
+            yield return Path.Combine(AcRootDirectory.Instance.RequireValue, ReshadeConfigFileName);
+            yield return Path.Combine(AcRootDirectory.Instance.RequireValue, ReshadeDefaultShaders);
+        }
+
+        protected override Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
+            if (ExistingInstallation().Any(FileUtils.Exists)) {
+                return Task.FromResult(Tuple.Create(Name, (string)null));
+            }
+
+            return Task.FromResult<Tuple<string, string>>(null);
+        }
+
+        protected override Task<string> GetDestination(CancellationToken cancellation) {
+            return Task.FromResult(AcRootDirectory.Instance.RequireValue);
+        }
+    }
+
     public class CmThemeEntry : ContentEntryBase {
         public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
                 : base(path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
@@ -22,7 +76,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => null;
         public override string NewFormat => "New CM theme {0}";
-        public override string ExistingFormat => "Update for a CM theme {0}";
+        public override string ExistingFormat => "Update for CM theme {0}";
 
         public static string GetVersion(string data, out bool isTheme) {
             var doc = XDocument.Parse(data);
@@ -74,7 +128,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", id);
         }
 
-        protected sealed override bool GenericModSupportedByDesign => true;
+        protected sealed override bool GenericModSupportedByDesign => IsNew;
         public override string GenericModTypeName => "Set of textures";
         public override string NewFormat => "New set of textures “{0}”";
         public override string ExistingFormat => "Update for the set of textures “{0}”";
@@ -105,12 +159,56 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
     }
 
-    internal class CrewBrandConfigEntry : ContentEntryBase {
-        public override double Priority => 109d;
+    internal class CrewHelmetEntry : ContentEntryBase {
+        public override double Priority => 109.5d;
 
         private readonly string _destination;
 
-        public CrewBrandConfigEntry([NotNull] string path, [NotNull] string id, string name = null) : base(path, id, GetName(id, name)) {
+        public CrewHelmetEntry([NotNull] string path, [NotNull] string id, string name = null) : base(path, id, GetName(id, name)) {
+            _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", "crew_helmet", id);
+        }
+
+        private static string GetName(string id, string name) {
+            return name ?? AcStringValues.NameFromId(id);
+        }
+
+        protected sealed override bool GenericModSupportedByDesign => IsNew;
+        public override string GenericModTypeName => "Crew helmet textures";
+        public override string NewFormat => "New crew helmet textures “{0}”";
+        public override string ExistingFormat => "Update for the crew helmet textures “{0}”";
+
+        protected override IEnumerable<UpdateOption> GetUpdateOptions() {
+            yield return new UpdateOption("Install") {
+                RemoveExisting = false
+            };
+        }
+
+        protected override ICopyCallback GetCopyCallback(string destination) {
+            var path = EntryPath;
+            return new CopyCallback(fileInfo => {
+                var filename = fileInfo.Key;
+                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
+
+                var subFilename = FileUtils.GetRelativePath(filename, path);
+                return Path.Combine(destination, subFilename);
+            });
+        }
+
+        protected override Task<string> GetDestination(CancellationToken cancellation) {
+            return Task.FromResult(_destination);
+        }
+
+        protected override Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
+            return Task.FromResult(Directory.Exists(_destination) ? Tuple.Create(Name, (string)null) : null);
+        }
+    }
+
+    internal class CrewBrandEntry : ContentEntryBase {
+        public override double Priority => 109.6d;
+
+        private readonly string _destination;
+
+        public CrewBrandEntry([NotNull] string path, [NotNull] string id, string name = null) : base(path, id, GetName(id, name)) {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", "crew_brand", id);
         }
 
@@ -118,7 +216,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return name ?? AcStringValues.NameFromId(id);
         }
 
-        protected sealed override bool GenericModSupportedByDesign => true;
+        protected sealed override bool GenericModSupportedByDesign => IsNew;
         public override string GenericModTypeName => "Crew brand textures";
         public override string NewFormat => "New crew brand textures “{0}”";
         public override string ExistingFormat => "Update for the crew brand textures “{0}”";
@@ -159,10 +257,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             _destination = Path.Combine(AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
         }
 
-        protected sealed override bool GenericModSupportedByDesign => true;
+        protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => "AC config";
         public override string NewFormat => "New AC config {0}";
-        public override string ExistingFormat => "Update for a AC config {0}";
+        public override string ExistingFormat => "Update for AC config {0}";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
             yield return new UpdateOption("Install") {

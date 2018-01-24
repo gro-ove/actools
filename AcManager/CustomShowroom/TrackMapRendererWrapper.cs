@@ -91,7 +91,7 @@ namespace AcManager.CustomShowroom {
                             modelsFilename == null ?
                                     new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename))) :
                                     new TrackMapPreparationRenderer(await Task.Run(() => TrackComplexModelDescription.CreateLoaded(modelsFilename))) :
-                            new TrackMapPreparationRenderer(await Task.Run(() => AiLane.FromFile(aiLaneFilename)));
+                            new TrackMapPreparationRenderer(await Task.Run(() => AiSpline.FromFile(aiLaneFilename)));
                 }
 
                 var wrapper = new TrackMapRendererWrapper(track, renderer);

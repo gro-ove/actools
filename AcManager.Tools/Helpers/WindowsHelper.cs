@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -43,6 +44,8 @@ namespace AcManager.Tools.Helpers {
         [Localizable(false)]
         public static void ViewInBrowser([CanBeNull] string url) {
             if (string.IsNullOrWhiteSpace(url)) return;
+
+            url = Regex.Replace(url, @"^(?![a-z]{2,6}://)", "https://");
             try {
                 Process.Start(url);
             } catch (Exception) {

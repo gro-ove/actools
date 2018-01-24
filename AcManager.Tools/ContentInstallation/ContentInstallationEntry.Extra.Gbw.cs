@@ -25,6 +25,10 @@ namespace AcManager.Tools.ContentInstallation {
                 return new ExtraOption[0];
             }
 
+            foreach (var weather in entries.OfType<WeatherContentEntry>()) {
+                weather.SelectedOption = weather.UpdateOptions.FirstOrDefault(x => x.RemoveExisting) ?? weather.SelectedOption;
+            }
+
             await WeatherManager.Instance.EnsureLoadedAsync();
 
             // Now, when data is loaded, we’re ready to create some extra options

@@ -14,6 +14,7 @@
       <CollectionViewSource x:Key="PackServerPresetsItems" Source="{Binding PackServerPresets}" />
       <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/ServerPresetRunningLog.xaml</system:Uri>
       <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/ServerPresetEntryList.xaml</system:Uri>
+      <system:Uri x:Key="AdvancedUri">/Pages/ServerPreset/ServerPresetAdvanced.xaml</system:Uri>
       <system:Uri x:Key="WrappedUri">/Pages/ServerPreset/ServerPresetWrapped.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -75,6 +76,11 @@
       <mui:ModernTab x:Name="Tab" Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 12 0 0" SaveKey="__serpr.st"
           mui:ModernFrame.TopSource="/Pages/ServerPreset/ServerPresetBasic.xaml" FrameNavigated="OnFrameNavigated"
           SelectedSource="/Pages/ServerPreset/ServerPresetBasic.xaml" SavePolicy="Strict">
+        <mui:ModernTab.LinksListBoxTemplate>
+          <ControlTemplate>
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+          </ControlTemplate>
+        </mui:ModernTab.LinksListBoxTemplate>
         <mui:ModernTab.Links>
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
           <mui:Link x:Name="MainBasicLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetBasic.xaml" />
@@ -83,6 +89,7 @@
           <mui:Link x:Name="AssistsLink" DisplayName="Rules" Source="/Pages/ServerPreset/ServerPresetAssists.xaml" />
           <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
           <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />
+          <mui:Link DisplayName="Advanced" Source="{StaticResource AdvancedUri}" />
           <mui:Link DisplayName="Wrapper" Source="{StaticResource WrappedUri}" />
         </mui:ModernTab.Links>
       </mui:ModernTab>

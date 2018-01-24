@@ -54,8 +54,8 @@
             </DockPanel.ToolTip>
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
-            <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" ToolTip="{Binding AppIcon.Value}"
-                Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}" Margin="0 0 4 0" ClearOnChange="True" />
+            <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
+                Margin="0 0 4 0" ClearOnChange="True" />
             <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
           </DockPanel>
           <DataTemplate.Triggers>

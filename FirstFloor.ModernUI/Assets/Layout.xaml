@@ -5,7 +5,6 @@
     <Thickness x:Key="ContentMarginWithPadding">20</Thickness>
     <Thickness x:Key="InnerContentMargin">16 28 16 16</Thickness>
     <Thickness x:Key="StatusMargin">16 8 4 8</Thickness>
-    <Thickness x:Key="HeaderMargin">0 -28 44 0</Thickness>
 
     <!-- Bottom row, to override in dialogs -->
     <Style x:Key="BottomRow" TargetType="FrameworkElement">

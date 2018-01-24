@@ -65,7 +65,7 @@
   <Style TargetType="c:ModernTab">
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="LinksHorizontalAlignment" Value="Right" />
-    <Setter Property="LinksMargin" Value="{DynamicResource HeaderMargin}" />
+    <Setter Property="LinksMargin" Value="0 0 0 4" />
     <Setter Property="FrameMargin" Value="0" />
     <Setter Property="c:ModernFrame.TopSource" Value="{x:Null}" />
 
@@ -83,17 +83,14 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:ModernTab">
-          <c:Cell>
-            <!-- link list -->
+          <DockPanel>
             <ListBox x:Name="PART_LinkList" VerticalAlignment="Top" ItemsSource="{TemplateBinding Links}"
                 ItemContainerStyle="{StaticResource ModernTabLinkItem}" ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
                 ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}" HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}"
-                Margin="{TemplateBinding LinksMargin}" Template="{TemplateBinding LinksListBoxTemplate}" />
-
-            <!-- content -->
+                Margin="{TemplateBinding LinksMargin}" Template="{TemplateBinding LinksListBoxTemplate}" DockPanel.Dock="Top" />
             <c:ModernFrame x:Name="PART_Frame" Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                 ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
-          </c:Cell>
+          </DockPanel>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -101,9 +98,6 @@
     <Style.Triggers>
       <Trigger Property="Layout" Value="TabWithTitle">
         <Trigger.Setters>
-          <Setter Property="LinksHorizontalAlignment" Value="Right" />
-          <Setter Property="LinksMargin" Value="0 0 0 4" />
-          <Setter Property="FrameMargin" Value="0" />
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="c:ModernTab">
@@ -125,8 +119,6 @@
                       </CompositeCollection>
                     </ItemsControl.ItemsSource>
                   </ListBox>
-
-                  <!-- content -->
                   <c:ModernFrame x:Name="PART_Frame" Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                       ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
                 </DockPanel>
@@ -148,7 +140,6 @@
                     <ColumnDefinition />
                   </Grid.ColumnDefinitions>
 
-                  <!-- link list -->
                   <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}"
                       ScrollViewer.HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                       Template="{TemplateBinding LinksListBoxTemplate}">
@@ -187,11 +178,7 @@
                       </DataTemplate>
                     </ListBox.ItemTemplate>
                   </ListBox>
-
-                  <!-- Separator -->
                   <c:ModernTabSplitter Grid.Column="1" />
-
-                  <!-- content -->
                   <c:ModernFrame Grid.Column="2" x:Name="PART_Frame"
                       Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                       ContentLoader="{TemplateBinding ContentLoader}" Margin="32 0 0 0" />

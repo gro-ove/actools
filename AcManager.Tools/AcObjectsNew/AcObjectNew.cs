@@ -37,7 +37,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public virtual string Name {
-            get { return _name; }
+            get => _name;
             protected set {
                 if (Equals(value, _name)) return;
                 _name = value;

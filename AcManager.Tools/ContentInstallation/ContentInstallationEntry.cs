@@ -51,24 +51,24 @@ namespace AcManager.Tools.ContentInstallation {
         public bool PreferCleanInstallation { get; }
 
         [NotNull]
-        private readonly ContentInstallationParams _installationParams;
+        public ContentInstallationParams InstallationParams { get; }
 
         internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
-            _installationParams = installationParams ?? ContentInstallationParams.Default;
+            InstallationParams = installationParams ?? ContentInstallationParams.Default;
             Source = source;
             AddedDateTime = DateTime.Now;
-            DisplayName = _installationParams.DisplayName ?? Source.Split(new[]{ '?', '&' }, 2)[0].Split('/', '\\').Last();
-            InformationUrl = _installationParams.InformationUrl;
-            Version = _installationParams.Version;
+            DisplayName = InstallationParams.DisplayName ?? Source.Split(new[]{ '?', '&' }, 2)[0].Split('/', '\\').Last();
+            InformationUrl = InstallationParams.InformationUrl;
+            Version = InstallationParams.Version;
 
-            if (_installationParams.CupType.HasValue) {
-                var manager = CupClient.Instance.GetAssociatedManager(_installationParams.CupType.Value);
-                DisplayUpdateFor = _installationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
+            if (InstallationParams.CupType.HasValue) {
+                var manager = CupClient.Instance.GetAssociatedManager(InstallationParams.CupType.Value);
+                DisplayUpdateFor = InstallationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
                 if (string.IsNullOrWhiteSpace(DisplayUpdateFor)) {
                     DisplayUpdateFor = null;
                 }
 
-                PreferCleanInstallation = _installationParams.PreferCleanInstallation;
+                PreferCleanInstallation = InstallationParams.PreferCleanInstallation;
             }
         }
 
@@ -106,7 +106,7 @@ namespace AcManager.Tools.ContentInstallation {
                 ["cancelled"] = IsCancelling || Cancelled,
                 ["failedMessage"] = FailedMessage,
                 ["failedCommentary"] = FailedCommentary,
-                ["params"] = _installationParams == ContentInstallationParams.Default ? null : JObject.FromObject(_installationParams)
+                ["params"] = InstallationParams == ContentInstallationParams.Default ? null : JObject.FromObject(InstallationParams)
             }.ToString(Formatting.None);
         }
 
@@ -134,9 +134,9 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged(nameof(State));
                 OnPropertyChanged(nameof(IsFailed));
                 OnPropertyChanged(nameof(IsEmpty));
-                _deleteDelayCommand?.RaiseCanExecuteChanged();
 
                 if (value.IsReady) {
+                    _deleteDelayCommand?.RaiseCanExecuteChanged();
                     ContentInstallationManager.Instance?.UpdateBusyStates();
                 }
             }
@@ -175,7 +175,7 @@ namespace AcManager.Tools.ContentInstallation {
             IsDeleting = true;
             await Task.Delay(StateChangeDelay);
             IsDeleted = true;
-        }, () => State == ContentInstallationEntryState.Finished && !IsDeleted));
+        }, () => (State == ContentInstallationEntryState.WaitingForConfirmation || State == ContentInstallationEntryState.Finished) && !IsDeleted));
 
         private bool _isConfirming;
 
@@ -293,6 +293,7 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(State));
                 _applyPasswordCommand?.RaiseCanExecuteChanged();
+                _deleteDelayCommand?.RaiseCanExecuteChanged();
                 ContentInstallationManager.Instance.UpdateBusyStates();
             }
         }
@@ -370,6 +371,7 @@ namespace AcManager.Tools.ContentInstallation {
                 OnPropertyChanged(nameof(State));
                 ContentInstallationManager.Instance.UpdateBusyStates();
                 _confirmCommand?.RaiseCanExecuteChanged();
+                _deleteDelayCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -543,6 +545,24 @@ namespace AcManager.Tools.ContentInstallation {
             WindowsHelper.ViewFile(LocalFilename);
         }, () => LocalFilename != null && File.Exists(LocalFilename)));
 
+        private string _restartFrom;
+
+        public string RestartFrom {
+            get => _restartFrom;
+            set {
+                if (Equals(value, _restartFrom)) return;
+                _restartFrom = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AsyncCommand _retryCommand;
+
+        public AsyncCommand RetryCommand => _retryCommand ?? (_retryCommand = new AsyncCommand(() => {
+            RestartFrom = LocalFilename ?? Source;
+            return DeleteDelayCommand.ExecuteAsync();
+        }));
+
         private static string GetFileNameFromUrl(string url) {
             var fileName = FileUtils.EnsureFileNameIsValid(
                     url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
@@ -657,10 +677,10 @@ namespace AcManager.Tools.ContentInstallation {
 
                     LocalFilename = localFilename;
 
-                    if (_installationParams.Checksum != null) {
+                    if (InstallationParams.Checksum != null) {
                         using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
                         using (var sha1 = new SHA1Managed()) {
-                            if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), _installationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
+                            if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), InstallationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";
                                 return false;
                             }
@@ -672,7 +692,7 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         // Scan for content
-                        using (var installator = await FromFile(localFilename, _installationParams, cancellation.Token)) {
+                        using (var installator = await FromFile(localFilename, InstallationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
                             if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator
@@ -744,7 +764,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             Entries = entries.OrderByDescending(x => x.Priority).ThenBy(x => x.Name).ToArray();
-                            Entries.ForEach(x => x.SetInstallationParams(_installationParams));
+                            Entries.ForEach(x => x.SetInstallationParams(InstallationParams));
                             ExtraOptions = (await GetExtraOptionsAsync(Entries)).ToArray();
 
                             if (Entries.Length == 0) {
@@ -814,7 +834,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                            await _installationParams.PostInstallation(progress, cancellation.Token);
+                            await InstallationParams.PostInstallation(progress, cancellation.Token);
                         }
 
                         return true;
@@ -848,7 +868,7 @@ namespace AcManager.Tools.ContentInstallation {
         private List<InstallationDetails> _toInstall;
 
         string ICopyCallback.File(IFileInfo info) {
-            if (!_installationParams.AllowExecutables && ExecutablesRegex.IsMatch(info.Key) ||
+            if (!InstallationParams.AllowExecutables && ExecutablesRegex.IsMatch(info.Key) ||
                     _toInstall == null) return null;
             return _toInstall.Select(x => {
                 var destination = x.CopyCallback.File(info);

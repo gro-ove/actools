@@ -11,6 +11,8 @@ using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SlimDX.Windows;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -19,6 +21,8 @@ using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 
 namespace AcManager.CustomShowroom {
     internal class AttachedHelper {
+        public static bool OptionAutoHideTools = true;
+
         private static readonly WeakList<AttachedHelper> Instances = new WeakList<AttachedHelper>();
 
         [CanBeNull]
@@ -37,7 +41,7 @@ namespace AcManager.CustomShowroom {
         private readonly RenderForm _parent;
 
         [CanBeNull]
-        private Window _child;
+        private DpiAwareWindow _child;
         private readonly List<Window> _attached = new List<Window>();
 
         private bool _visible;
@@ -53,11 +57,14 @@ namespace AcManager.CustomShowroom {
 
         private readonly int _padding;
         private readonly bool _limitHeight;
+        private readonly bool _verbose;
         private readonly int _offset;
 
-        public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] Window window, int offset = -1, int padding = 10, bool limitHeight = true) {
+        public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow window, int offset = -1, int padding = 10, bool limitHeight = true,
+                bool verbose = false) {
             _padding = padding;
             _limitHeight = limitHeight;
+            _verbose = verbose;
 
             _wrapper = parent;
             _parent = parent.Form;
@@ -69,6 +76,10 @@ namespace AcManager.CustomShowroom {
             _parent.LostFocus += OnLostFocus;
             parent.FullscreenChanged += OnFullscreenChanged;
 
+            if (_verbose) {
+                Logging.Here();
+            }
+
             _child = window;
             var child = _child;
 
@@ -78,6 +89,10 @@ namespace AcManager.CustomShowroom {
             }
 
             ElementHost.EnableModelessKeyboardInterop(child);
+
+            if (_verbose) {
+                Logging.Debug("Showing and activating child…");
+            }
 
             child.Show();
             child.Activate();
@@ -202,8 +217,22 @@ namespace AcManager.CustomShowroom {
         }
 
         private void UpdatePosition(double w, double h) {
+            if (_verbose) {
+                Logging.Here();
+            }
+
             var n = GetStickyLocation(_stickyLocation, w, h);
-            if (n == null || _child == null) return;
+            if (_verbose) {
+                Logging.Debug($"Sticky position: {n?.X ?? -1}, {n?.Y ?? -1}");
+            }
+
+            if (n == null || _child == null) {
+                if (_verbose) {
+                    Logging.Debug("Nothing to do");
+                }
+
+                return;
+            }
 
             var location = n.Value;
 
@@ -214,37 +243,58 @@ namespace AcManager.CustomShowroom {
                 return;
             }
 
-            if (location.X + _child.Width > screen.Bounds.Width) {
-                location.X = screen.Bounds.Width - _child.Width;
+            if (location.X + _child.Width > screen.Bounds.Right) {
+                location.X = screen.Bounds.Right - _child.Width;
             }
 
-            if (location.Y + _child.Height > screen.Bounds.Height) {
-                location.Y = screen.Bounds.Height - _child.Height;
+            if (location.Y + _child.Height > screen.Bounds.Bottom) {
+                location.Y = screen.Bounds.Bottom - _child.Height;
             }
 
-            if (location.X < 0) location.X = 0;
-            if (location.Y < 0) location.Y = 0;
+            if (location.X < screen.Bounds.Left) location.X = screen.Bounds.Left;
+            if (location.Y < screen.Bounds.Top) location.Y = screen.Bounds.Top;
 
             _skip = true;
+
+            if (_verbose) {
+                Logging.Debug($"Set: {location.X}, {location.Y}");
+            }
+
             _child.Left = location.X;
             _child.Top = location.Y;
             _skip = false;
         }
 
         private void UpdatePosition() {
+            if (_verbose) {
+                Logging.Debug("Child: " + _child);
+            }
+
             if (_child == null) return;
             UpdatePosition(_child.Width, _child.Height);
         }
 
         private void ChildActivated(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Debug("Child activated: " + _child);
+            }
+
             UpdateVisibility(_parent.Focused);
         }
 
         private void ChildDeactivated(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Debug("Child deactivated: " + _child);
+            }
+
             UpdateVisibility(_parent.Focused);
         }
 
         private void ChildClosed(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Warning("Child closed: " + _child);
+            }
+
             _child = null;
             Instances.Remove(this);
         }
@@ -252,7 +302,7 @@ namespace AcManager.CustomShowroom {
         private readonly Busy _busyUpdating = new Busy();
 
         private bool IsAnyActive() {
-            return _parent.Focused || _child?.IsActive == true || _attached.Any(x => x.IsActive);
+            return !OptionAutoHideTools || (_parent.Focused || _child?.IsActive == true || _attached.Any(x => x.IsActive));
         }
 
         private Visibility GetVisibility() {
@@ -260,9 +310,22 @@ namespace AcManager.CustomShowroom {
         }
 
         private async Task UpdateVisibility(Window child, Visibility visibility, bool setFocus) {
-            if (child == null) return;
+            if (_verbose) {
+                Logging.Debug("Value: " + visibility + "; set focus: " + setFocus);
+            }
+
+            if (child == null) {
+                if (_verbose) {
+                    Logging.Warning("No child to update");
+                }
+                return;
+            }
 
             if (visibility != child.Visibility) {
+                if (_verbose) {
+                    Logging.Here();
+                }
+
                 child.Visibility = visibility;
 
                 if (visibility == Visibility.Visible) {
@@ -275,10 +338,13 @@ namespace AcManager.CustomShowroom {
                     _parent.Focus();
                     _parent.Activate();
                 }
+            } else if (_verbose) {
+                Logging.Debug("Nothing to do");
             }
         }
 
         private void UpdateVisibility(bool keepFocus) {
+            Logging.Debug($"Update visibility; keep focus: {keepFocus}, is busy: {_busyUpdating.Is}");
             _busyUpdating.DoDelay(async () => {
                 var visibility = GetVisibility();
                 await UpdateVisibility(_child, visibility, keepFocus);
@@ -289,14 +355,26 @@ namespace AcManager.CustomShowroom {
         }
 
         protected void OnGotFocus(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Here();
+            }
+
             UpdateVisibility(true);
         }
 
         protected void OnLostFocus(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Here();
+            }
+
             UpdateVisibility(false);
         }
 
         public void Attach(string tag, Window window) {
+            if (_verbose) {
+                Logging.Debug($"Tag: {tag}, window: {window}");
+            }
+
             if (tag != null) {
                 try {
                     _attached.FirstOrDefault(x => Equals(x.Tag, tag))?.Close();
@@ -323,6 +401,10 @@ namespace AcManager.CustomShowroom {
         }
 
         public Task AttachAndWaitAsync(string tag, Window window) {
+            if (_verbose) {
+                Logging.Debug($"Tag: {tag}, window: {window}");
+            }
+
             if (tag != null) {
                 try {
                     _attached.FirstOrDefault(x => Equals(x.Tag, tag))?.Close();
@@ -353,6 +435,10 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnWindowClosed(object sender, EventArgs eventArgs) {
+            if (_verbose) {
+                Logging.Here();
+            }
+
             _attached.Remove((Window)sender);
         }
 
@@ -375,6 +461,10 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnLoad(object sender, EventArgs e) {
+            if (_verbose) {
+                Logging.Here();
+            }
+
             UpdateVisibility(true);
         }
 

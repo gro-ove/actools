@@ -431,9 +431,16 @@ namespace AcManager.CustomShowroom {
         public static ILiveryGenerator LiveryGenerator { get; set; }
 
         private readonly string _loadPreset;
+        private readonly bool _verbose;
 
-        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, ICustomShowroomShots shots) {
+        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, ICustomShowroomShots shots,
+                bool verbose = false) {
             _loadPreset = loadPreset;
+            _verbose = verbose;
+
+            if (_verbose) {
+                Logging.Here();
+            }
 
             DataContext = new ViewModel(renderer, car, skinId, shots);
             InputBindings.AddRange(new[] {
@@ -446,6 +453,10 @@ namespace AcManager.CustomShowroom {
             InitializeComponent();
             Buttons = new Button[0];
             this.OnActualUnload(() => Model.Dispose());
+
+            if (_verbose) {
+                Logging.Debug($"Window created");
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e) {
@@ -471,6 +482,10 @@ namespace AcManager.CustomShowroom {
         private bool _loaded;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_verbose) {
+                Logging.Debug($"Window loaded: {ActualWidth}×{ActualHeight}, top: {Top}, left: {Left}");
+            }
+
             if (_loaded) return;
             _loaded = true;
 
@@ -1407,6 +1422,12 @@ namespace AcManager.CustomShowroom {
             public void Dispose() {
                 Renderer = null;
                 DisposeSkinItems();
+            }
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            if (_verbose) {
+                Logging.Debug($"Window unloaded: {ActualWidth}×{ActualHeight}, top: {Top}, left: {Left}");
             }
         }
     }

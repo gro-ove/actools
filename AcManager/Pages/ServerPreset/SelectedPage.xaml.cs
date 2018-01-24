@@ -75,6 +75,8 @@ namespace AcManager.Pages.ServerPreset {
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
 
         public partial class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
+            public ServerPresetPackMode[] Modes { get; } = EnumExtension.GetValues<ServerPresetPackMode>();
+
             private readonly Busy _busy = new Busy();
 
             [CanBeNull]

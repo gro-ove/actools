@@ -38,7 +38,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 return null;
             }
         }
@@ -67,7 +67,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 return null;
             }
         }
@@ -79,7 +79,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 var encrypted = Encrypt(Encoding.UTF8.GetBytes(input), pass);
                 return encrypted == null ? null : Convert.ToBase64String(encrypted);
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 return null;
             }
         }
@@ -91,7 +91,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 var decrypted = Decrypt(Convert.FromBase64String(input), pass);
                 return decrypted == null ? null : Encoding.UTF8.GetString(decrypted);
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 return null;
             }
         }

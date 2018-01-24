@@ -559,10 +559,7 @@
     <Resource Include="Assets\Background.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <TemplatesToUpdate>~/bin/t4auto Assets\ExtraProgressRings.tt Assets\ExtraProgressRings.xaml</TemplatesToUpdate>
-  </PropertyGroup>
-  <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
+  <Import Project="..\Libraries\PreBuildEvents.props" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

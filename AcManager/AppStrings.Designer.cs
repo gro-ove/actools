@@ -2956,7 +2956,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View user folder.
+        ///   Looks up a localized string similar to User library.
         /// </summary>
         public static string Common_ViewUserFolder {
             get {

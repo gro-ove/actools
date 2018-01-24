@@ -120,11 +120,11 @@ namespace AcManager.Pages.Dialogs {
                         ).Trim() : SelectedText;
             }
 
-            private CommandBase _saveCommand;
+            private DelegateCommand _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(SelectedText)));
+            public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(SelectedText)));
         }
-        
+
         private static string GetSearchAddress(AcCommonObject obj) {
             return SettingsHolder.Content.SearchEngine?.GetUri(obj.Name ?? obj.Id, true) ??
                     $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.Name ?? obj.Id)}&ia=web";

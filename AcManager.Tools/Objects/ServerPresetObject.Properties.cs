@@ -3,6 +3,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Windows;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
@@ -10,12 +14,16 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
         #region Data
+
         #region Common fields
         private string _trackId;
 
@@ -178,9 +186,7 @@ namespace AcManager.Tools.Objects {
             var d = Environment.CurrentDirectory;
             Environment.CurrentDirectory = ServerPresetsManager.ServerDirectory;
 
-            return new ActionAsDisposable(() => {
-                Environment.CurrentDirectory = d;
-            });
+            return new ActionAsDisposable(() => { Environment.CurrentDirectory = d; });
         }
 
         private string _welcomeMessage;
@@ -227,7 +233,7 @@ namespace AcManager.Tools.Objects {
         private bool _welcomeMessageChanged;
 
         public bool WelcomeMessageChanged {
-            get { return _welcomeMessageChanged; }
+            get => _welcomeMessageChanged;
             set {
                 if (Equals(value, _welcomeMessageChanged)) return;
                 _welcomeMessageChanged = value;
@@ -259,7 +265,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string WelcomeMessagePath {
-            get { return _welcomeMessagePath; }
+            get => _welcomeMessagePath;
             set {
                 if (string.IsNullOrWhiteSpace(value)) value = null;
                 if (IsLocalMessage(value)) {
@@ -281,7 +287,7 @@ namespace AcManager.Tools.Objects {
         private bool _welcomeMessageMissing;
 
         public bool WelcomeMessageMissing {
-            get { return _welcomeMessageMissing; }
+            get => _welcomeMessageMissing;
             set {
                 if (Equals(value, _welcomeMessageMissing)) return;
                 _welcomeMessageMissing = value;
@@ -556,7 +562,7 @@ namespace AcManager.Tools.Objects {
         private bool _raceGasPenaltyDisabled;
 
         public bool RaceGasPenaltyDisabled {
-            get { return _raceGasPenaltyDisabled; }
+            get => _raceGasPenaltyDisabled;
             set {
                 if (Equals(value, _raceGasPenaltyDisabled)) return;
                 _raceGasPenaltyDisabled = value;
@@ -683,7 +689,7 @@ namespace AcManager.Tools.Objects {
         private double _timeMultiplier;
 
         public double TimeMultiplier {
-            get { return _timeMultiplier; }
+            get => _timeMultiplier;
             set {
                 value = value.Clamp(0, 60).Round();
                 if (Equals(value, _timeMultiplier)) return;
@@ -698,8 +704,7 @@ namespace AcManager.Tools.Objects {
         public string DisplayTime {
             get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
             set {
-                int time;
-                if (!FlexibleParser.TryParseTime(value, out time)) return;
+                if (!FlexibleParser.TryParseTime(value, out var time)) return;
                 Time = time;
             }
         }
@@ -756,6 +761,7 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+
         public event NotifyCollectionChangedEventHandler WeatherCollectionChanged;
         public event PropertyChangedEventHandler WeatherEntryPropertyChanged;
 
@@ -867,6 +873,142 @@ namespace AcManager.Tools.Objects {
             }
         }
         #endregion
+
+        #endregion
+
+        #region Advanced
+        private int? _pluginUdpPort;
+
+        public int? PluginUdpPort {
+            get => _pluginUdpPort;
+            set {
+                if (value == 0) value = null;
+                if (Equals(value, _pluginUdpPort)) return;
+                _pluginUdpPort = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _pluginUdpAddress;
+
+        public string PluginUdpAddress {
+            get => _pluginUdpAddress;
+            set {
+                if (Equals(value, _pluginUdpAddress)) return;
+                _pluginUdpAddress = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _pluginAuthAddress;
+
+        public string PluginAuthAddress {
+            get => _pluginAuthAddress;
+            set {
+                if (Equals(value, _pluginAuthAddress)) return;
+                _pluginAuthAddress = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _ftpHost;
+
+        public string FtpHost {
+            get => _ftpHost;
+            set {
+                if (Equals(value, _ftpHost)) return;
+                _ftpHost = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    _ftpVerifyConnectionCommand?.RaiseCanExecuteChanged();
+                    _ftpUploadContentCommand?.RaiseCanExecuteChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _ftpLogin;
+
+        public string FtpLogin {
+            get => _ftpLogin;
+            set {
+                if (Equals(value, _ftpLogin)) return;
+                _ftpLogin = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    _ftpVerifyConnectionCommand?.RaiseCanExecuteChanged();
+                    _ftpUploadContentCommand?.RaiseCanExecuteChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _ftpPassword;
+
+        public string FtpPassword {
+            get => _ftpPassword;
+            set {
+                if (Equals(value, _ftpPassword)) return;
+                _ftpPassword = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    _ftpVerifyConnectionCommand?.RaiseCanExecuteChanged();
+                    _ftpUploadContentCommand?.RaiseCanExecuteChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _ftpDirectory;
+
+        public string FtpDirectory {
+            get => _ftpDirectory;
+            set {
+                if (Equals(value, _ftpDirectory)) return;
+                _ftpDirectory = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _ftpClearBeforeUpload;
+
+        public bool FtpClearBeforeUpload {
+            get => _ftpClearBeforeUpload;
+            set {
+                if (Equals(value, _ftpClearBeforeUpload)) return;
+                _ftpClearBeforeUpload = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private ServerPresetPackMode _ftpMode;
+
+        public ServerPresetPackMode FtpMode {
+            get => _ftpMode;
+            set {
+                if (Equals(value, _ftpMode)) return;
+                _ftpMode = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
         #endregion
     }
 }

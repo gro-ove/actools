@@ -1,11 +1,10 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.LiteShowroomTools" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:utils="clr-namespace:AcTools.Utils;assembly=AcTools"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}"
-    ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded"
-    ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
-    Padding="24">
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False"
+    Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" Unloaded="OnUnloaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250"
+    LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Padding="24">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

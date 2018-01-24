@@ -54,7 +54,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public bool GForcesBinded {
-            get => ValuesStorage.Get<bool>("AcSettings.CameraOnboard.GForceBinded", true);
+            get => ValuesStorage.Get("AcSettings.CameraOnboard.GForceBinded", true);
             set {
                 if (Equals(value, GForcesBinded)) return;
                 ValuesStorage.Set("AcSettings.CameraOnboard.GForceBinded", value);

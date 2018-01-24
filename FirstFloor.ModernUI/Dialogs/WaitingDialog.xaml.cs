@@ -155,7 +155,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                         _cancellationTokenSource = new CancellationTokenSource();
                         Buttons = new[] { CreateCloseDialogButton(CancellationText, false, true, MessageBoxResult.Cancel) };
                         Padding = new Thickness(24, 20, 24, 20);
-                        Closing += WaitingDialog_Closing;
+                        Closing += OnClosing;
                         return _cancellationTokenSource.Token;
                     });
                 }
@@ -164,7 +164,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         private bool _closeWithoutCancellation;
 
-        private void WaitingDialog_Closing(object sender, CancelEventArgs e) {
+        private void OnClosing(object sender, CancelEventArgs e) {
             if (!_closeWithoutCancellation && _cancellationTokenSource != null) {
                 _cancellationTokenSource.Cancel();
                 IsCancelled = true;
@@ -184,6 +184,8 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
+        public TimeSpan FirstAppearDelay { get; set; } = TimeSpan.FromMilliseconds(500);
+
         private bool _shown, _closed, _disposed;
 
         private async void EnsureShown() {
@@ -195,7 +197,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             _shown = true;
 
             // ReSharper disable once MethodSupportsCancellation
-            await Task.Delay(500);
+            await Task.Delay(FirstAppearDelay);
             if (_closed || _disposed) return;
 
             var app = Application.Current;

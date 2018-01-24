@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Processes;
@@ -96,6 +98,29 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private static readonly Lazier<string> PasswordKey = Lazier.Create(() => {
+            var key = ".spo.passwordKey";
+            if (ValuesStorage.Contains(key)) {
+                var v = ValuesStorage.GetEncrypted<string>(key);
+                if (v != null) return v;
+            }
+
+            var g = PasswordKeyGenerator();
+            ValuesStorage.SetEncrypted(key, g);
+            return g;
+        });
+
+        private static string PasswordKeyGenerator() {
+            // Server presets might be shared, to let’s chunk in tons of data potentially unavailable to somebody else
+            return new StringBuilder().Append(SteamIdHelper.Instance.Value).Append('/')
+                                      .Append(AcRootDirectory.Instance.Value).Append('/')
+                                      .Append(MainExecutingFile.Location).Append('/')
+                                      .Append(Environment.UserName).Append('/')
+                                      .Append(Environment.MachineName).Append('/')
+                                      .Append("is8grzju0rlc6nxw")
+                                      .ToString().GetChecksum();
+        }
+
         protected override void LoadData(IniFile ini) {
             foreach (var session in Sessions) {
                 session.Load(ini);
@@ -159,6 +184,20 @@ namespace AcManager.Tools.Objects {
             }
 
             Weather = weather;
+
+            PluginUdpPort = section.GetIntNullable("UDP_PLUGIN_LOCAL_PORT");
+            PluginUdpAddress = section.GetNonEmpty("UDP_PLUGIN_ADDRESS");
+            PluginAuthAddress = section.GetNonEmpty("AUTH_PLUGIN_ADDRESS");
+
+            var ftp = ini["FTP"];
+            FtpHost = ftp.GetNonEmpty("HOST");
+            FtpLogin = ftp.GetNonEmpty("LOGIN");
+            FtpDirectory = ftp.GetNonEmpty("FOLDER");
+            FtpMode = ftp.GetIntEnum("LINUX", ServerPresetPackMode.Windows);
+
+            // Storing password separately, to avoid conflicts with the official manager and its encryption
+            FtpPassword = StringCipher.Decrypt(ftp.GetNonEmpty("__CM_PASSWORD"), PasswordKey.RequireValue);
+            FtpClearBeforeUpload = ftp.GetBool("__CM_CLEAR_BEFORE_UPLOAD", false);
         }
 
         private void LoadEntryListData(IniFile ini) {
@@ -244,6 +283,18 @@ namespace AcManager.Tools.Objects {
                 }
                 section.Remove("WELCOME_MESSAGE");
             }
+
+            section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
+            section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
+            section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);
+
+            var ftp = ini["FTP"];
+            ftp.Set("HOST", FtpHost);
+            ftp.Set("LOGIN", FtpLogin);
+            ftp.Set("FOLDER", FtpDirectory);
+            ftp.Set("__CM_PASSWORD", StringCipher.Encrypt(FtpPassword, PasswordKey.RequireValue));
+            ftp.Set("__CM_CLEAR_BEFORE_UPLOAD", FtpClearBeforeUpload);
+            ftp.SetIntEnum("LINUX", FtpMode);
         }
 
         public override void Save() {
